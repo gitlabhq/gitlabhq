@@ -4,7 +4,7 @@ group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Design Management **(FREE)**
+# Design management **(FREE)**
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/660) in GitLab 12.2.
 > - Support for SVGs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12771) in GitLab 12.4.

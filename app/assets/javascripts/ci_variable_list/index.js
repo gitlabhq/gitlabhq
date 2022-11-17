@@ -5,9 +5,7 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import CiAdminVariables from './components/ci_admin_variables.vue';
 import CiGroupVariables from './components/ci_group_variables.vue';
 import CiProjectVariables from './components/ci_project_variables.vue';
-import LegacyCiVariableSettings from './components/legacy_ci_variable_settings.vue';
 import { cacheConfig, resolvers } from './graphql/settings';
-import createStore from './store';
 
 const mountCiVariableListApp = (containerEl) => {
   const {
@@ -76,62 +74,10 @@ const mountCiVariableListApp = (containerEl) => {
   });
 };
 
-const mountLegacyCiVariableListApp = (containerEl) => {
-  const {
-    endpoint,
-    projectId,
-    isGroup,
-    isProject,
-    maskableRegex,
-    protectedByDefault,
-    awsLogoSvgPath,
-    awsTipDeployLink,
-    awsTipCommandsLink,
-    awsTipLearnLink,
-    containsVariableReferenceLink,
-    protectedEnvironmentVariablesLink,
-    maskedEnvironmentVariablesLink,
-    environmentScopeLink,
-  } = containerEl.dataset;
-
-  const parsedIsProject = parseBoolean(isProject);
-  const parsedIsGroup = parseBoolean(isGroup);
-  const isProtectedByDefault = parseBoolean(protectedByDefault);
-
-  const store = createStore({
-    endpoint,
-    projectId,
-    isGroup: parsedIsGroup,
-    isProject: parsedIsProject,
-    maskableRegex,
-    isProtectedByDefault,
-    awsLogoSvgPath,
-    awsTipDeployLink,
-    awsTipCommandsLink,
-    awsTipLearnLink,
-    containsVariableReferenceLink,
-    protectedEnvironmentVariablesLink,
-    maskedEnvironmentVariablesLink,
-    environmentScopeLink,
-  });
-
-  return new Vue({
-    el: containerEl,
-    store,
-    render(createElement) {
-      return createElement(LegacyCiVariableSettings);
-    },
-  });
-};
-
-export default (containerId = 'js-ci-project-variables') => {
+export default (containerId = 'js-ci-variables') => {
   const el = document.getElementById(containerId);
 
-  if (el) {
-    if (gon.features?.ciVariableSettingsGraphql) {
-      mountCiVariableListApp(el);
-    } else {
-      mountLegacyCiVariableListApp(el);
-    }
-  }
+  if (!el) return;
+
+  mountCiVariableListApp(el);
 };

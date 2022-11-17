@@ -10,7 +10,7 @@
         If you use Elasticsearch 6.8, **you must upgrade your Elasticsearch version to 7.x** prior to upgrading to GitLab 15.0.
         You should not upgrade to Elasticsearch 8 until you have completed the GitLab 15.0 upgrade.
 
-        View the [version requirements](https://docs.gitlab.com/ee/integration/elasticsearch.html#version-requirements) for details.
+        View the [version requirements](https://docs.gitlab.com/ee/integration/advanced_search/elasticsearch.html#version-requirements) for details.
 # The following items are not published on the docs page, but may be used in the future.
   stage: "Enablement"
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350275

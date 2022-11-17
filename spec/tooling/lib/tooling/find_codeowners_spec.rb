@@ -63,7 +63,7 @@ RSpec.describe Tooling::FindCodeowners do
             }
           },
           '[Compliance]': {
-            '@gitlab-org/manage/compliance': {
+            '@gitlab-org/govern/compliance': {
               entries: %w[
                 /ee/app/services/audit_events/build_service.rb
               ],
@@ -115,7 +115,7 @@ RSpec.describe Tooling::FindCodeowners do
     it 'retains the array and expands the patterns for the compliance group' do
       compliance = subject.load_definitions.dig(
         :'[Compliance]',
-        :'@gitlab-org/manage/compliance')
+        :'@gitlab-org/govern/compliance')
 
       expect(compliance).to eq(
         entries: %w[

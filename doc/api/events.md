@@ -10,7 +10,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ### Actions
 
-See [User contribution events](../user/profile/index.md#user-contribution-events) for available types for the `action` parameter.
+See [User contribution events](../user/profile/contributions_calendar.md#user-contribution-events) for available types for the `action` parameter.
 These options are in lowercase.
 
 ### Target Types

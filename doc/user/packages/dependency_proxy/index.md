@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -299,7 +299,7 @@ hub_docker_quota_check:
 
 ## Troubleshooting
 
-## Authentication error: "HTTP Basic: Access Denied"
+### Authentication error: "HTTP Basic: Access Denied"
 
 If you receive an `HTTP Basic: Access denied` error when authenticating against the Dependency Proxy, refer to the [two-factor authentication troubleshooting guide](../../profile/account/two_factor_authentication.md#troubleshooting).
 

@@ -27,6 +27,7 @@ import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   DEFAULT_NONE_ANY,
+  FILTERED_SEARCH_TERM,
   OPERATOR_IS_ONLY,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
@@ -38,12 +39,22 @@ import {
   TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
-  FILTERED_SEARCH_TERM,
+  OPERATOR_IS_NOT_OR,
+  OPERATOR_IS_AND_IS_NOT,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { WORK_ITEM_TYPE_ENUM_TASK } from '~/work_items/constants';
 import {
   CREATED_DESC,
   defaultTypeTokenOptions,
@@ -59,16 +70,6 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   RELATIVE_POSITION_ASC,
-  TOKEN_TYPE_ASSIGNEE,
-  TOKEN_TYPE_AUTHOR,
-  TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_CONTACT,
-  TOKEN_TYPE_LABEL,
-  TOKEN_TYPE_MILESTONE,
-  TOKEN_TYPE_MY_REACTION,
-  TOKEN_TYPE_ORGANIZATION,
-  TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_TYPE,
   TYPE_TOKEN_TASK_OPTION,
   UPDATED_DESC,
   urlSortParams,
@@ -140,7 +141,6 @@ export default {
     'hasAnyProjects',
     'hasBlockedIssuesFeature',
     'hasIssueWeightsFeature',
-    'hasMultipleIssueAssigneesFeature',
     'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
@@ -239,21 +239,17 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
-        types: this.apiFilterParams.types || this.defaultWorkItemTypes,
+        types: this.apiFilterParams.types || defaultWorkItemTypes,
       };
     },
     namespace() {
       return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
     },
-    defaultWorkItemTypes() {
-      return this.isWorkItemsEnabled
-        ? defaultWorkItemTypes
-        : defaultWorkItemTypes.filter((type) => type !== WORK_ITEM_TYPE_ENUM_TASK);
-    },
     typeTokenOptions() {
-      return this.isWorkItemsEnabled
-        ? defaultTypeTokenOptions.concat(TYPE_TOKEN_TASK_OPTION)
-        : defaultTypeTokenOptions;
+      return defaultTypeTokenOptions.concat(TYPE_TOKEN_TASK_OPTION);
+    },
+    hasOrFeature() {
+      return this.glFeatures.orIssuableQueries;
     },
     hasSearch() {
       return (
@@ -271,9 +267,6 @@ export default {
     },
     isOpenTab() {
       return this.state === IssuableStates.Opened;
-    },
-    isWorkItemsEnabled() {
-      return this.glFeatures.workItems;
     },
     showCsvButtons() {
       return this.isProject && this.isSignedIn;
@@ -324,8 +317,8 @@ export default {
           icon: 'user',
           token: AuthorToken,
           dataType: 'user',
-          unique: !this.hasMultipleIssueAssigneesFeature,
           defaultAuthors: DEFAULT_NONE_ANY,
+          operators: this.hasOrFeature ? OPERATOR_IS_NOT_OR : OPERATOR_IS_AND_IS_NOT,
           fetchAuthors: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
           preloadedAuthors,
@@ -565,6 +558,7 @@ export default {
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
         bulkUpdateSidebar.initStatusDropdown();
         bulkUpdateSidebar.initSubscriptionsDropdown();
+        bulkUpdateSidebar.initMoveIssuesButton();
 
         const usersSelect = await import('~/users_select');
         const UsersSelect = usersSelect.default;
@@ -793,6 +787,7 @@ export default {
       :show-page-size-change-controls="showPageSizeControls"
       :has-next-page="pageInfo.hasNextPage"
       :has-previous-page="pageInfo.hasPreviousPage"
+      :show-filtered-search-friendly-text="hasOrFeature"
       show-work-item-type-icon
       @click-tab="handleClickTab"
       @dismiss-alert="handleDismissAlert"
@@ -959,12 +954,17 @@ export default {
 
     <gl-empty-state
       v-else
-      :description="$options.i18n.noIssuesSignedOutDescription"
       :title="$options.i18n.noIssuesSignedOutTitle"
       :svg-path="emptyStateSvgPath"
       :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
       :primary-button-link="signInPath"
-    />
+    >
+      <template #description>
+        <gl-link :href="issuesHelpPagePath" target="_blank">{{
+          $options.i18n.noIssuesSignedOutDescription
+        }}</gl-link>
+      </template>
+    </gl-empty-state>
 
     <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
   </div>

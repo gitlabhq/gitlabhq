@@ -14,8 +14,10 @@ RSpec.describe 'Database schema' do
     issues: %w[work_item_type_id]
   }.with_indifferent_access.freeze
 
+  TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
+
   # List of columns historically missing a FK, don't add more columns
-  # See: https://docs.gitlab.com/ee/development/foreign_keys.html#naming-foreign-keys
+  # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
@@ -32,7 +34,7 @@ RSpec.describe 'Database schema' do
     chat_names: %w[chat_id team_id user_id],
     chat_teams: %w[team_id],
     ci_builds: %w[erased_by_id trigger_request_id partition_id],
-    ci_builds_metadata: %w[partition_id],
+    p_ci_builds_metadata: %w[partition_id],
     ci_job_artifacts: %w[partition_id],
     ci_namespace_monthly_usages: %w[namespace_id],
     ci_pipeline_variables: %w[partition_id],
@@ -107,7 +109,7 @@ RSpec.describe 'Database schema' do
   }.with_indifferent_access.freeze
 
   context 'for table' do
-    ActiveRecord::Base.connection.tables.sort.each do |table|
+    (ActiveRecord::Base.connection.tables - TABLE_PARTITIONS).sort.each do |table|
       describe table do
         let(:indexes) { connection.indexes(table) }
         let(:columns) { connection.columns(table) }
@@ -213,6 +215,7 @@ RSpec.describe 'Database schema' do
     "ApplicationSetting" => %w[repository_storages_weighted],
     "AlertManagement::Alert" => %w[payload],
     "Ci::BuildMetadata" => %w[config_options config_variables],
+    "Ci::BuildMetadata::Partitioned" => %w[config_options config_variables id_tokens runtime_runner_features secrets],
     "ExperimentSubject" => %w[context],
     "ExperimentUser" => %w[context],
     "Geo::Event" => %w[payload],

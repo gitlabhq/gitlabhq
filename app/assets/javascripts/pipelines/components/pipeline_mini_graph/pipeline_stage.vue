@@ -27,6 +27,7 @@ export default {
   },
   dropdownPopperOpts: {
     placement: 'bottom',
+    positionFixed: true,
   },
   components: {
     CiIcon,
@@ -136,25 +137,19 @@ export default {
         :is-active="isDropdownOpen"
         :size="24"
         :status="stage.status"
-        class="gl-align-items-center gl-border gl-display-inline-flex gl-z-index-1"
+        class="gl-display-inline-flex gl-align-items-center gl-border gl-z-index-1"
       />
     </template>
-    <div
-      v-if="isLoading"
-      class="gl-display-flex gl-justify-content-center gl-p-2"
-      data-testid="pipeline-stage-loading-state"
-    >
+    <div v-if="isLoading" class="gl--flex-center gl-p-2" data-testid="pipeline-stage-loading-state">
       <gl-loading-icon size="sm" class="gl-mr-3" />
-      <p class="gl-mb-0">{{ $options.i18n.loadingText }}</p>
+      <p class="gl-line-height-normal gl-mb-0">{{ $options.i18n.loadingText }}</p>
     </div>
     <ul
       v-else
       class="js-builds-dropdown-list scrollable-menu"
       data-testid="mini-pipeline-graph-dropdown-menu-list"
     >
-      <div
-        class="gl-align-items-center gl-border-b gl-display-flex gl-font-weight-bold gl-justify-content-center gl-pb-3"
-      >
+      <div class="gl--flex-center gl-border-b gl-font-weight-bold gl-pb-3">
         <span class="gl-mr-1">{{ $options.i18n.stage }}</span>
         <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
       </div>

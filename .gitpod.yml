@@ -1,28 +1,38 @@
+# Gitpod file reference
+# https://www.gitpod.io/docs/configure/workspaces/tasks
+
 image: registry.gitlab.com/gitlab-org/gitlab-development-kit/gitpod-workspace:stable
 
 tasks:
 
   - name: GDK
+    # "command:" emits gitpod-start
+    before: |
+      START_UNIXTIME="$(date +%s)"
+      echo START_UNIXTIME="$(date +%s)" > /workspace/gitpod_start_time.sh
     command: |
-      echo START_TIME_IN_SECONDS="$(date +%s)" | tee /workspace/gitpod_start_time.sh
+      # send signal to other tasks that Gitpod started
       gp sync-done gitpod-start
+      echo "Waiting for other task to copy GDK.."
       gp sync-await gdk-copied && cd /workspace/gitlab-development-kit && gdk help
 
-  - init: |
-      echo "$(date) – Copying GDK" | tee -a /workspace/startup.log
-      cp -r $HOME/gitlab-development-kit /workspace/
+  - name: GitLab
+    # "command:" emits gdk-copied
+    init: |
       (
         set -e
+        echo "$(date) – Copying GDK" | tee -a /workspace/startup.log
+        cp -r $HOME/gitlab-development-kit /workspace/
         cd /workspace/gitlab-development-kit
-        # Ensure GitLab directory is symlinked under the GDK
+        # ensure GitLab directory is symlinked under the GDK
         ln -nfs "$GITPOD_REPO_ROOT" /workspace/gitlab-development-kit/gitlab
-        mv /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
+        mv -v /workspace/gitlab-development-kit/secrets.yml /workspace/gitlab-development-kit/gitlab/config
         # ensure gdk.yml has correct instance settings
-        gdk config set gitlab.rails.port 443
-        gdk config set gitlab.rails.https.enabled true
-        gdk config set webpack.host 127.0.0.1
-        gdk config set webpack.static false
-        gdk config set webpack.live_reload false
+        gdk config set gitlab.rails.port 443  |& tee -a /workspace/startup.log
+        gdk config set gitlab.rails.https.enabled true  |& tee -a /workspace/startup.log
+        gdk config set webpack.host 127.0.0.1  |& tee -a /workspace/startup.log
+        gdk config set webpack.static false  |& tee -a /workspace/startup.log
+        gdk config set webpack.live_reload false  |& tee -a /workspace/startup.log
         # reconfigure GDK
         echo "$(date) – Reconfiguring GDK" | tee -a /workspace/startup.log
         gdk reconfigure
@@ -36,9 +46,9 @@ tasks:
       )
     command: |
       (
-        gp sync-await gitpod-start
         set -e
         gp sync-done gdk-copied
+        gp sync-await gitpod-start
         [[ -f /workspace/gitpod_start_time.sh ]] && source /workspace/gitpod_start_time.sh
         SECONDS=0
         cd /workspace/gitlab-development-kit
@@ -67,15 +77,14 @@ tasks:
           make gitlab-db-migrate
         fi
         cd /workspace/gitlab-development-kit/gitlab
-        # Display which branch we're on
-        git branch --show-current
-        # Install Lefthook
+        echo "--- on branch: $(git branch --show-current)"
+        echo "--- installing lefthook"
         bundle exec lefthook install
+        echo "--- resetting db/structure.sql"
         git checkout db/structure.sql
-        cd /workspace/gitlab-development-kit
-        # Waiting for GitLab ...
+        echo "--- waiting for GitLab"
         gp ports await 3000
-        printf "Waiting for GitLab at $(gp url 3000) ..."
+        printf "Awaiting /-/readiness on $(gp url 3000) ..."
         # Check /-/readiness which returns JSON, but we're only interested in the exit code
         #
         # We use http://localhost:3000 instead of the public hostname because
@@ -86,7 +95,7 @@ tasks:
         printf "$(date) – GitLab is up (took ~%.1f minutes)\n" "$((10*$SECONDS/60))e-1" | tee -a /workspace/startup.log
         gp preview $(gp url 3000) || true
         PREBUILD_LOG=(/workspace/.gitpod/prebuild-log-*)
-        [[ -f /workspace/gitpod_start_time.sh ]] && printf "Took %.1f minutes from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitpod.yml being executed through to completion %s\n" "$((10*(($(date +%s)-${START_TIME_IN_SECONDS}))/60))e-1" "$([[ -f "$PREBUILD_LOG" ]] && echo "With Prebuilds")"
+        [[ -f /workspace/gitpod_start_time.sh ]] && printf "Took %.1f minutes from https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitpod.yml being executed through to completion %s\n" "$((10*(($(date +%s)-${START_UNIXTIME}))/60))e-1" "$([[ -f "$PREBUILD_LOG" ]] && echo "With Prebuilds")"
       )
 
 ports:
@@ -116,5 +125,5 @@ vscode:
     - karunamurti.haml@1.4.1
     - octref.vetur@0.36.0
     - dbaeumer.vscode-eslint@2.2.6
-    - GitLab.gitlab-workflow@3.48.1
+    - GitLab.gitlab-workflow@3.56.0
     - DavidAnson.vscode-markdownlint@0.47.0

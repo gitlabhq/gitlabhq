@@ -12,6 +12,10 @@ milestone: "14.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67147
 time_frame: all
 data_source: database
+instrumentation_class: InProductMarketingEmailCtaClickedMetric
+options:
+  track: admin_verify
+  series: 0
 data_category: optional
 distribution:
 - ce

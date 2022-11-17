@@ -10,6 +10,8 @@ module Groups
       reject_parent_id!
       remove_unallowed_params
 
+      before_assignment_hook(group, params)
+
       if renaming_group_with_container_registry_images?
         group.errors.add(:base, container_images_error)
         return false
@@ -24,8 +26,6 @@ module Groups
       return false unless update_shared_runners
 
       handle_changes
-
-      before_assignment_hook(group, params)
 
       handle_namespace_settings
 

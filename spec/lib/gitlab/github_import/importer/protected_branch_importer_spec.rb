@@ -6,20 +6,23 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
   subject(:importer) { described_class.new(github_protected_branch, project, client) }
 
   let(:branch_name) { 'protection' }
-  let(:allow_force_pushes_on_github) { true }
+  let(:allow_force_pushes_on_github) { false }
+  let(:require_code_owner_reviews_on_github) { false }
   let(:required_conversation_resolution) { false }
   let(:required_signatures) { false }
   let(:required_pull_request_reviews) { false }
   let(:expected_push_access_level) { Gitlab::Access::MAINTAINER }
   let(:expected_merge_access_level) { Gitlab::Access::MAINTAINER }
-  let(:expected_allow_force_push) { true }
+  let(:expected_allow_force_push) { false }
+  let(:expected_code_owner_approval_required) { false }
   let(:github_protected_branch) do
     Gitlab::GithubImport::Representation::ProtectedBranch.new(
       id: branch_name,
       allow_force_pushes: allow_force_pushes_on_github,
       required_conversation_resolution: required_conversation_resolution,
       required_signatures: required_signatures,
-      required_pull_request_reviews: required_pull_request_reviews
+      required_pull_request_reviews: required_pull_request_reviews,
+      require_code_owner_reviews: require_code_owner_reviews_on_github
     )
   end
 
@@ -35,7 +38,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
           name: 'protection',
           push_access_levels_attributes: [{ access_level: expected_push_access_level }],
           merge_access_levels_attributes: [{ access_level: expected_merge_access_level }],
-          allow_force_push: expected_allow_force_push
+          allow_force_push: expected_allow_force_push,
+          code_owner_approval_required: expected_code_owner_approval_required
         }
       end
 
@@ -70,41 +74,35 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
     end
 
     context 'when branch is protected on GitLab' do
-      before do
-        create(
-          :protected_branch,
-          project: project,
-          name: 'protect*',
-          allow_force_push: allow_force_pushes_on_gitlab
-        )
+      using RSpec::Parameterized::TableSyntax
+
+      where(
+        :allow_force_pushes_on_github,
+        :allow_force_pushes_on_gitlab,
+        :expected_allow_force_push
+      ) do
+        true   | true   | true
+        true   | false  | false
+        false  | true   | false
+        false  | false  | false
       end
 
-      context 'when branch protection rule on Gitlab is stricter than on Github' do
-        let(:allow_force_pushes_on_github) { true }
-        let(:allow_force_pushes_on_gitlab) { false }
-        let(:expected_allow_force_push) { false }
-
-        it_behaves_like 'create branch protection by the strictest ruleset'
-      end
-
-      context 'when branch protection rule on Github is stricter than on Gitlab' do
-        let(:allow_force_pushes_on_github) { false }
-        let(:allow_force_pushes_on_gitlab) { true }
-        let(:expected_allow_force_push) { false }
-
-        it_behaves_like 'create branch protection by the strictest ruleset'
-      end
-
-      context 'when branch protection rules on Github and Gitlab are the same' do
-        let(:allow_force_pushes_on_github) { true }
-        let(:allow_force_pushes_on_gitlab) { true }
-        let(:expected_allow_force_push) { true }
+      with_them do
+        before do
+          create(
+            :protected_branch,
+            project: project,
+            name: 'protect*',
+            allow_force_push: allow_force_pushes_on_gitlab
+          )
+        end
 
         it_behaves_like 'create branch protection by the strictest ruleset'
       end
     end
 
     context 'when branch is not protected on GitLab' do
+      let(:allow_force_pushes_on_github) { true }
       let(:expected_allow_force_push) { true }
 
       it_behaves_like 'create branch protection by the strictest ruleset'
@@ -113,6 +111,30 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
     context "when branch is default" do
       before do
         allow(project).to receive(:default_branch).and_return(branch_name)
+      end
+
+      context 'when "allow force pushes - everyone" rule is enabled' do
+        let(:allow_force_pushes_on_github) { true }
+
+        context 'when there is any default branch protection' do
+          before do
+            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
+          end
+
+          let(:expected_allow_force_push) { false }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+
+        context 'when there is no default branch protection' do
+          before do
+            stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
+          end
+
+          let(:expected_allow_force_push) { allow_force_pushes_on_github }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
       end
 
       context 'when required_conversation_resolution rule is enabled' do
@@ -241,7 +263,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
             :protected_branch,
             project: project,
             name: 'protect*',
-            allow_force_push: true
+            allow_force_push: true,
+            code_owner_approval_required: false
           )
         end
 
@@ -296,6 +319,68 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchImporter do
 
         it_behaves_like 'create branch protection by the strictest ruleset'
       end
+    end
+
+    context 'when the code_owner_approval_required feature is available', if: Gitlab.ee? do
+      before do
+        stub_licensed_features(code_owner_approval_required: true)
+      end
+
+      context 'when branch is protected on GitLab' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(
+          :require_code_owner_reviews_on_github,
+          :require_code_owner_reviews_on_gitlab,
+          :expected_code_owner_approval_required
+        ) do
+          true   | true   | true
+          true   | false  | true
+          false  | true   | true
+          false  | false  | false
+        end
+
+        with_them do
+          before do
+            create(
+              :protected_branch,
+              project: project,
+              name: 'protect*',
+              allow_force_push: true,
+              code_owner_approval_required: require_code_owner_reviews_on_gitlab
+            )
+          end
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+      end
+
+      context 'when branch is not protected on GitLab' do
+        context 'when require_code_owner_reviews rule is enabled on GitHub' do
+          let(:require_code_owner_reviews_on_github) { true }
+          let(:expected_code_owner_approval_required) { true }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+
+        context 'when require_code_owner_reviews rule is disabled on GitHub' do
+          let(:require_code_owner_reviews_on_github) { false }
+          let(:expected_code_owner_approval_required) { false }
+
+          it_behaves_like 'create branch protection by the strictest ruleset'
+        end
+      end
+    end
+
+    context 'when the code_owner_approval_required feature is not available' do
+      before do
+        stub_licensed_features(code_owner_approval_required: false)
+      end
+
+      let(:require_code_owner_reviews_on_github) { true }
+      let(:expected_code_owner_approval_required) { false }
+
+      it_behaves_like 'create branch protection by the strictest ruleset'
     end
   end
 end

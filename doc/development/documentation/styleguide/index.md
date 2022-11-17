@@ -18,10 +18,21 @@ In addition to this page, the following resources can help you craft and contrib
 - [Recommended word list](word_list.md)
 - [Doc style and consistency testing](../testing.md)
 - [Guidelines for UI error messages](https://design.gitlab.com/content/error-messages/)
+- [Documentation global navigation](../site_architecture/global_nav.md)
 - [GitLab Handbook style guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines)
 - [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/welcome/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 - [Recent updates to this guide](https://gitlab.com/dashboard/merge_requests?scope=all&state=merged&label_name[]=tw-style&not[label_name][]=docs%3A%3Afix)
+
+## The GitLab voice
+
+The GitLab brand guidelines define the
+[voice used by the larger organization](https://design.gitlab.com/brand/overview/#tone-of-voice).
+
+Building on that guidance, the voice in the GitLab documentation strives to be concise,
+direct, and precise. The goal is to provide information that's easy to search and scan.
+
+The voice in the documentation should be conversational but brief, friendly but succinct.
 
 ## Documentation is the single source of truth (SSOT)
 
@@ -125,6 +136,23 @@ Maintaining a knowledge base separate from the documentation would
 be against the documentation-first methodology, because the content would overlap with
 the documentation.
 
+## Writing for localization
+
+The GitLab documentation is not localized, but we follow guidelines that
+help benefit translation. For example, we:
+
+- Write in [active voice](word_list.md#active-voice).
+- Write in [present tense](word_list.md#future-tense).
+- Avoid words that can be translated incorrectly, like:
+  - [since and because](word_list.md#since)
+  - [once and after](word_list.md#once)
+  - [it](word_list.md#it)
+- Avoid [ing](word_list.md#-ing-words) words.
+
+[The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,
+and with translation in mind. [The word list](word_list.md) and our Vale rules
+also aid in consistency, which is important for localization.
+
 ## Markdown
 
 All GitLab documentation is written using [Markdown](https://en.wikipedia.org/wiki/Markdown).
@@ -143,26 +171,17 @@ Hard-coded HTML is valid, although it's discouraged from being used. HTML is per
 - Special styling is required.
 - Reviewed and approved by a technical writer.
 
-### Headings in Markdown
+### Heading levels in Markdown
 
 Each documentation page begins with a level 1 heading (`#`). This becomes the `h1` element when
 the page is rendered to HTML. There can be only **one** level 1 heading per page.
 
 - For each subsection, increment the heading level. In other words, increment the number of `#` characters
-  in front of the heading.
-- Avoid headings greater than `H5` (`#####`). If you need more than five heading levels, move the topics to a new page instead.
-  Headings greater than `H5` do not display in the right sidebar navigation.
+  in front of the topic title.
+- Avoid heading levels greater than `H5` (`#####`). If you need more than five heading levels, move the topics to a new page instead.
+  Heading levels greater than `H5` do not display in the right sidebar navigation.
 - Do not skip a level. For example: `##` > `####`.
-- Leave one blank line before and after the heading.
-
-When you change heading text, the anchor link changes. To avoid broken links:
-
-- Do not use step numbers in headings.
-- When possible, do not use words that might change in the future.
-
-Also, do not use links as part of heading text.
-
-See also [heading guidelines for specific topic types](../structure.md).
+- Leave one blank line before and after the topic title.
 
 ### Backticks in Markdown
 
@@ -221,9 +240,9 @@ GitLab documentation should be clear and easy to understand.
 
 As a company, we tend toward lowercase.
 
-#### Headings
+#### Topic titles
 
-Use sentence case. For example:
+Use sentence case for topic titles. For example:
 
 - `# Use variables to configure pipelines`
 - `## Use the To-Do List`
@@ -329,7 +348,7 @@ Some contractions, however, should be avoided:
 ### Acronyms
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
-When possible, try to avoid acronyms in headings.
+When possible, try to avoid acronyms in topic titles.
 
 ### Numbers
 
@@ -374,21 +393,30 @@ You can use italics when you are introducing a term for the first time. Otherwis
 
 ### Punctuation
 
-Follow these guidelines for punctuation:
+Follow these guidelines for punctuation.
 
 <!-- vale gitlab.Repetition = NO -->
 
 - End full sentences with a period.
-- Use one space between sentences.
-- Do not use semicolons. Use two sentences instead.
-- Do not use double spaces. (Tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).)
-- Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
-- Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the tab key.
 - Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
-- Avoid dashes. Use separate sentences, or commas, instead.
-- Do not use typographer's ("curly") quotes. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
 
 <!-- vale gitlab.Repetition = YES -->
+
+When spacing content:
+
+- Use one space between sentences. (Use of more than one space is tested in [`SentenceSpacing.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SentenceSpacing.yml).)
+- Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
+- Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the <kbd>Tab</kbd> key.
+
+<!-- vale gitlab.NonStandardQuotes = NO -->
+
+Do not use these punctuation characters:
+
+- `;` (semicolon): Use two sentences instead.
+- `–` (en dash) or `—` (em dash): Use separate sentences, or commas, instead.
+- `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
+
+<!-- vale gitlab.NonStandardQuotes = YES -->
 
 ### Placeholder text
 
@@ -677,22 +705,27 @@ use a URL like `https://docs.gitlab.com/charts/`.
 
 ### Anchor links
 
-Each heading has an anchor link. For example, a topic with the title
+Each topic title has an anchor link. For example, a topic with the title
 `## This is an example` has the anchor `#this-is-an-example`.
 
-The first topic on a page (the `h1`) has an anchor link,
+The first topic title on a page (the `h1`) has an anchor link,
 but do not use it. Link to the page instead.
 
-If a heading has a [product tier badge](#product-tier-badges),
-do not include it in the anchor link. For example, for the heading
+If a topic title has a [product tier badge](#product-tier-badges),
+do not include it in the anchor link. For example, for the topic
 `## This is an example **(FREE)**`, use the anchor `#this-is-an-example`.
 
 With Kramdown, you can add a custom ID to an HTML element, but these IDs
 don't work in `/help`, so you should not use them.
 
+When you change topic title text, the anchor link changes. To avoid broken links:
+
+- Do not use step numbers in topic titles.
+- When possible, do not use words that might change in the future.
+
 #### Changing links and titles
 
-When you change a heading, the anchor link changes. To ensure you update
+When you change a topic title, the anchor link changes. To ensure you update
 any related links, search these directories:
 
 - `doc/*`
@@ -823,7 +856,7 @@ To open either project or group settings:
 
 ```markdown
 1. On the top bar, select **Main menu**, and:
-   - For a project, select ***Projects** and find your project.
+   - For a project, select **Projects** and find your project.
    - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
@@ -1195,7 +1228,7 @@ Instead of adding a note:
 
 - Re-write the sentence as part of a paragraph.
 - Put the information into its own paragraph.
-- Put the content under a new subheading.
+- Put the content under a new topic title.
 
 If you must use a note, use this format:
 
@@ -1311,6 +1344,7 @@ It renders on the GitLab documentation site as:
 > - Second item in the list
 
 ## Tabs
+<!-- markdownlint-disable tabs-blank-lines -->
 
 On the docs site, you can format text so it's displayed as tabs.
 
@@ -1329,6 +1363,7 @@ Here's some other content in tab two.
 
 ::EndTabs
 ```
+<!-- markdownlint-enable tabs-blank-lines -->
 
 This code renders on the GitLab documentation site as:
 
@@ -1378,25 +1413,25 @@ When names change, it is more complicated to search or grep text that has line b
 
 ### Product tier badges
 
-Tier badges are displayed as orange text next to a heading. These badges link to the GitLab
+Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
 pricing page. For example:
 
 ![Tier badge](img/tier_badge.png)
 
 You must assign a tier badge:
 
-- To all H1 topic headings, except the pages under `doc/development/*`.
-- To topic headings that don't apply to the same tier as the H1.
+- To all H1 topic titles, except the pages under `doc/development/*`.
+- To topic titles that don't apply to the same tier as the H1.
 
-To add a tier badge to a heading, add the relevant tier badge
-after the heading text. For example:
+To add a tier badge to a topic title, add the relevant tier badge
+after the title text. For example:
 
 ```markdown
-# Heading title **(FREE)**
+# Topic title **(FREE)**
 ```
 
 Do not add tier badges inline with other text, except for [API attributes](../restful_api_styleguide.md).
-The single source of truth for a feature should be the heading where the
+The single source of truth for a feature should be the topic where the
 functionality is described.
 
 #### Available product tier badges

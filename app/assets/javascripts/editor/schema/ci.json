@@ -103,7 +103,9 @@
     "workflow": {
       "type": "object",
       "properties": {
-        "name": { "$ref": "#/definitions/workflowName" },
+        "name": {
+          "$ref": "#/definitions/workflowName"
+        },
         "rules": {
           "type": "array",
           "items": {
@@ -130,7 +132,7 @@
                 "$ref": "#/definitions/exists"
               },
               "variables": {
-                "$ref": "#/definitions/variables"
+                "$ref": "#/definitions/rulesVariables"
               },
               "when": {
                 "type": "string",
@@ -688,7 +690,7 @@
                 "$ref": "#/definitions/exists"
               },
               "variables": {
-                "$ref": "#/definitions/variables"
+                "$ref": "#/definitions/rulesVariables"
               },
               "when": {
                 "$ref": "#/definitions/when"
@@ -742,10 +744,57 @@
                 "description": {
                   "type": "string",
                   "markdownDescription": "Explains what the variable is used for, what the acceptable values are. Variables with `description` are prefilled when running a pipeline manually. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesdescription)."
+                },
+                "expand": {
+                  "type": "boolean",
+                  "markdownDescription": "If the variable is expandable or not. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesexpand)."
                 }
               },
               "additionalProperties": false
             }
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "jobVariables": {
+      "markdownDescription": "Defines variables for a job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "oneOf": [
+            {
+              "type": [
+                "string",
+                "number"
+              ]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "expand": {
+                  "type": "boolean",
+                  "markdownDescription": "Defines if the variable is expandable or not. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variablesexpand)."
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "additionalProperties": false
+      }
+    },
+    "rulesVariables": {
+      "markdownDescription": "Defines variables for a rule result. [Learn More](https://docs.gitlab.com/ee/ci/yaml/index.html#rulesvariables).",
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": [
+            "string",
+            "number"
           ]
         },
         "additionalProperties": false
@@ -791,19 +840,6 @@
       "markdownDescription": "Additional attributes will be provided to job if any of the provided paths matches an existing file in the repository. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#rulesexists).",
       "items": {
         "type": "string"
-      }
-    },
-    "variables": {
-      "markdownDescription": "Defines environment variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#variables).",
-      "type": "object",
-      "patternProperties": {
-        ".*": {
-          "type": [
-            "string",
-            "number"
-          ]
-        },
-        "additionalProperties": false
       }
     },
     "timeout": {
@@ -858,137 +894,77 @@
       ]
     },
     "when": {
-      "markdownDescription": "Describes the conditions for when to run the job. Defaults to 'on_success'.",
+      "markdownDescription": "Describes the conditions for when to run the job. Defaults to 'on_success'. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when).",
       "default": "on_success",
-      "oneOf": [
-        {
-          "enum": [
-            "on_success"
-          ],
-          "description": "Execute job only when all jobs from prior stages succeed."
-        },
-        {
-          "enum": [
-            "on_failure"
-          ],
-          "description": "Execute job when at least one job from prior stages fails."
-        },
-        {
-          "enum": [
-            "always"
-          ],
-          "description": "Execute job regardless of the status from prior stages."
-        },
-        {
-          "enum": [
-            "manual"
-          ],
-          "markdownDescription": "Execute the job manually from Gitlab UI or API. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when)."
-        },
-        {
-          "enum": [
-            "delayed"
-          ],
-          "markdownDescription": "Execute a job after the time limit in 'start_in' expires. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#when)."
-        },
-        {
-          "enum": [
-            "never"
-          ],
-          "description": "Never execute the job."
-        }
+      "type": "string",
+      "enum": [
+        "on_success",
+        "on_failure",
+        "always",
+        "never",
+        "manual",
+        "delayed"
       ]
     },
     "cache": {
+      "markdownDescription": "Use `cache` to specify a list of files and directories to cache between jobs. You can only use paths that are in the local working copy. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cache)",
       "properties": {
-        "when": {
-          "markdownDescription": "Defines when to save the cache, based on the status of the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachewhen).",
-          "default": "on_success",
-          "oneOf": [
-            {
-              "enum": [
-                "on_success"
-              ],
-              "description": "Save the cache only when the job succeeds."
-            },
-            {
-              "enum": [
-                "on_failure"
-              ],
-              "description": "Save the cache only when the job fails. "
-            },
-            {
-              "enum": [
-                "always"
-              ],
-              "description": "Always save the cache. "
-            }
-          ]
-        }
-      }
-    },
-    "cache_entry": {
-      "type": "object",
-      "description": "Specify files or directories to cache between jobs. Can be set globally or per job.",
-      "additionalProperties": false,
-      "properties": {
-        "paths": {
-          "type": "array",
-          "description": "List of files or paths to cache.",
-          "items": {
-            "type": "string"
-          }
-        },
         "key": {
+          "markdownDescription": "Use the `cache:key` keyword to give each cache a unique identifying key. All jobs that use the same cache key use the same cache, including in different pipelines. Must be used with `cache:path`, or nothing is cached. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachekey).",
           "oneOf": [
             {
               "type": "string",
-              "description": "Unique cache ID, to allow e.g. specific branch or job cache. Environment variables can be used to set up unique keys (e.g. \"$CI_COMMIT_REF_SLUG\" for per branch cache)."
+              "pattern": "^(?!.*\\/)^(.*[^.]+.*)$"
             },
             {
               "type": "object",
-              "description": "When you include cache:key:files, you must also list the project files that will be used to generate the key, up to a maximum of two files. The cache key will be a SHA checksum computed from the most recent commits (up to two, if two files are listed) that changed the given files.",
               "properties": {
                 "files": {
+                  "markdownDescription": "Use the `cache:key:files` keyword to generate a new key when one or two specific files change. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachekeyfiles)",
                   "type": "array",
                   "items": {
                     "type": "string"
                   },
                   "minItems": 1,
                   "maxItems": 2
+                },
+                "prefix": {
+                  "markdownDescription": "Use `cache:key:prefix` to combine a prefix with the SHA computed for `cache:key:files`. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachekeyprefix)",
+                  "type": "string"
                 }
               }
             }
           ]
         },
-        "untracked": {
-          "type": "boolean",
-          "description": "Set to `true` to cache untracked files.",
-          "default": false
+        "paths": {
+          "type": "array",
+          "markdownDescription": "Use the `cache:paths` keyword to choose which files or directories to cache. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachepaths)",
+          "items": {
+            "type": "string"
+          }
         },
         "policy": {
           "type": "string",
-          "description": "Determines the strategy for downloading and updating the cache.",
+          "markdownDescription": "Determines the strategy for downloading and updating the cache. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachepolicy)",
           "default": "pull-push",
-          "oneOf": [
-            {
-              "enum": [
-                "pull"
-              ],
-              "description": "Pull will download cache but skip uploading after job completes."
-            },
-            {
-              "enum": [
-                "push"
-              ],
-              "description": "Push will skip downloading cache and always recreate cache after job completes."
-            },
-            {
-              "enum": [
-                "pull-push"
-              ],
-              "description": "Pull-push will both download cache at job start and upload cache on job success."
-            }
+          "enum": [
+            "pull",
+            "push",
+            "pull-push"
+          ]
+        },
+        "untracked": {
+          "type": "boolean",
+          "markdownDescription": "Use `untracked: true` to cache all files that are untracked in your Git repository. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cacheuntracked)",
+          "default": false
+        },
+        "when": {
+          "markdownDescription": "Defines when to save the cache, based on the status of the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachewhen).",
+          "default": "on_success",
+          "enum": [
+            "on_success",
+            "on_failure",
+            "always"
           ]
         }
       }
@@ -1228,7 +1204,7 @@
           "$ref": "#/definitions/rules"
         },
         "variables": {
-          "$ref": "#/definitions/variables"
+          "$ref": "#/definitions/jobVariables"
         },
         "cache": {
           "$ref": "#/definitions/cache"

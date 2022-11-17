@@ -6,9 +6,18 @@
     "variable_type"
   ],
   "properties": {
-    "key": { "type": "string" },
-    "value": { "type": "string" },
-    "variable_type": { "type": "string" }
+    "key": {
+      "type": "string"
+    },
+    "value": {
+      "type": "string"
+    },
+    "variable_type": {
+      "type": "string"
+    },
+    "raw": {
+      "type": "boolean"
+    }
   },
   "additionalProperties": false
 }

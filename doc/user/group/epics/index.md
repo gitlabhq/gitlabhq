@@ -37,15 +37,9 @@ Also, read more about possible [planning hierarchies](../planning_hierarchy/inde
 
 ### Child issues from different group hierarchies
 
-<!-- When feature flag is removed, integrate this info as a sentence in
-https://docs.gitlab.com/ee/user/group/epics/manage_epics.html#add-an-existing-issue-to-an-epic -->
-
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371081) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `epic_issues_from_different_hierarchies`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/373304) in GitLab 15.5.
-
-FLAG:
-On self-managed GitLab, by default this feature is unavailable. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `epic_issues_from_different_hierarchies`.
-On GitLab.com, this feature is available.
+> - Feature flag `epic_issues_from_different_hierarchies` removed in GitLab 15.6.
 
 You can add issues from a different group hierarchy to an epic.
 To do it, paste the issue URL when
@@ -77,6 +71,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

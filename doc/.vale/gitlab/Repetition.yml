@@ -3,9 +3,9 @@
 #
 # Checks for duplicate words, like `the the` or `and and`.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: repetition
-message: '"%s" is repeated.'
+message: "Remove this duplicate word: '%s'."
 level: error
 alpha: true
 tokens:

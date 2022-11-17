@@ -7,7 +7,21 @@ import {
   FILTER_UPCOMING,
   OPERATOR_IS,
   OPERATOR_IS_NOT,
+  OPERATOR_OR,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_EPIC,
   TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -46,10 +60,8 @@ export const i18n = {
   noIssuesSignedInDescription: __('Learn more about issues.'),
   noIssuesSignedInTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
-  noIssuesSignedOutDescription: __(
-    'The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project.',
-  ),
-  noIssuesSignedOutTitle: __('There are no issues to show'),
+  noIssuesSignedOutDescription: __('Learn more about issues.'),
+  noIssuesSignedOutTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),
@@ -136,20 +148,6 @@ export const specialFilterValues = [
   FILTER_STARTED,
 ];
 
-export const TOKEN_TYPE_AUTHOR = 'author_username';
-export const TOKEN_TYPE_ASSIGNEE = 'assignee_username';
-export const TOKEN_TYPE_MILESTONE = 'milestone';
-export const TOKEN_TYPE_LABEL = 'labels';
-export const TOKEN_TYPE_TYPE = 'type';
-export const TOKEN_TYPE_RELEASE = 'release';
-export const TOKEN_TYPE_MY_REACTION = 'my_reaction_emoji';
-export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
-export const TOKEN_TYPE_ITERATION = 'iteration';
-export const TOKEN_TYPE_EPIC = 'epic_id';
-export const TOKEN_TYPE_WEIGHT = 'weight';
-export const TOKEN_TYPE_CONTACT = 'crm_contact';
-export const TOKEN_TYPE_ORGANIZATION = 'crm_organization';
-
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
 
 // This should be consistent with Issue::TYPES_FOR_LIST in the backend
@@ -194,6 +192,9 @@ export const filters = {
       },
       [OPERATOR_IS_NOT]: {
         [NORMAL_FILTER]: 'not[assignee_username][]',
+      },
+      [OPERATOR_OR]: {
+        [NORMAL_FILTER]: 'or[assignee_username][]',
       },
     },
   },

@@ -36,6 +36,7 @@ module QA
         # @param [<RSpec::Core::ExampleGroup, RSpec::Core::Example>] example
         # @return [void]
         def set_skip_metadata(example)
+          return if Runtime::Scenario.attributes[:test_metadata_only]
           return skip_only(example.metadata) if example.metadata.key?(:only)
           return skip_except(example.metadata) if example.metadata.key?(:except)
         end

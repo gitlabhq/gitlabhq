@@ -56,7 +56,7 @@ module Gitlab
         # Note that we use ActiveRecord::Base here and not ApplicationRecord.
         # This is deliberate, as we also use these classes to apply load
         # balancing to, and the load balancer must be enabled for _all_ models
-        # that inher from ActiveRecord::Base; not just our own models that
+        # that inherit from ActiveRecord::Base; not just our own models that
         # inherit from ApplicationRecord.
         main: ::ActiveRecord::Base,
         ci: ::Ci::ApplicationRecord.connection_class? ? ::Ci::ApplicationRecord : nil
@@ -217,13 +217,13 @@ module Gitlab
       Rails.application.config.paths['db'].each do |db_path|
         path = Rails.root.join(db_path, 'post_migrate').to_s
 
-        unless Rails.application.config.paths['db/migrate'].include? path
-          Rails.application.config.paths['db/migrate'] << path
+        next if Rails.application.config.paths['db/migrate'].include? path
 
-          # Rails memoizes migrations at certain points where it won't read the above
-          # path just yet. As such we must also update the following list of paths.
-          ActiveRecord::Migrator.migrations_paths << path
-        end
+        Rails.application.config.paths['db/migrate'] << path
+
+        # Rails memoizes migrations at certain points where it won't read the above
+        # path just yet. As such we must also update the following list of paths.
+        ActiveRecord::Migrator.migrations_paths << path
       end
     end
 

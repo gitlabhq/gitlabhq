@@ -1,0 +1,38 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getRunnerJobs($id: CiRunnerID!, $first: Int, $last: Int, $before: String, $after: String) {
+  runner(id: $id) {
+    id
+    projectCount
+    jobs(before: $before, after: $after, first: $first, last: $last) {
+      nodes {
+        id
+        detailedStatus {
+          # fields for `<ci-badge>`
+          id
+          detailsPath
+          group
+          icon
+          text
+        }
+        pipeline {
+          id
+          project {
+            id
+            name
+            webUrl
+          }
+        }
+        shortSha
+        commitPath
+        finishedAt
+        duration
+        queuedDuration
+        tags
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

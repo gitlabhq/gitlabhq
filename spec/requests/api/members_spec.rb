@@ -270,39 +270,42 @@ RSpec.describe API::Members do
         end
       end
 
-      context 'when authenticated as a non-member or member with insufficient rights' do
-        %i[access_requester stranger developer].each do |type|
-          context "as a #{type}" do
-            it 'returns 403' do
-              user = public_send(type)
-              post api("/#{source_type.pluralize}/#{source.id}/members", user),
-                   params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+      context 'when authenticated as a non-member or member with insufficient membership management rights' do
+        context 'when the user does not have rights to manage members' do
+          %i[access_requester stranger developer].each do |type|
+            context "as a #{type}" do
+              it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+                let(:route) do
+                  post api("/#{source_type.pluralize}/#{source.id}/members", public_send(type)),
+                       params: { user_id: access_requester.id, access_level: Member::MAINTAINER }
+                end
+              end
+            end
+          end
+        end
 
-              expect(response).to have_gitlab_http_status(:forbidden)
+        context 'when the user has the rights to manage members but tries to manage members with a higher access level' do
+          # the other 'maintainer' is in fact an owner of the group!
+          let(:maintainer) { maintainer2 }
+
+          before do
+            source.add_maintainer(maintainer)
+          end
+
+          context 'when an access requester is added as OWNER' do
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                     params: { user_id: access_requester.id, access_level: Member::OWNER }
+              end
             end
           end
 
-          context 'adding a member of higher access level' do
-            before do
-              # the other 'maintainer' is in fact an owner of the group!
-              source.add_maintainer(maintainer2)
-            end
-
-            context 'when an access requester' do
-              it 'is not successful' do
-                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer2),
-                     params: { user_id: access_requester.id, access_level: Member::OWNER }
-
-                expect(response).to have_gitlab_http_status(:forbidden)
-              end
-            end
-
-            context 'when a totally new user' do
-              it 'is not successful' do
-                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer2),
+          context 'when a totally new user is added as OWNER' do
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                      params: { user_id: stranger.id, access_level: Member::OWNER }
-
-                expect(response).to have_gitlab_http_status(:forbidden)
               end
             end
           end
@@ -561,27 +564,31 @@ RSpec.describe API::Members do
       context 'when authenticated as a non-member or member with insufficient rights' do
         %i[access_requester stranger developer].each do |type|
           context "as a #{type}" do
-            it 'returns 403' do
-              user = public_send(type)
-              put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
-                  params: { access_level: Member::MAINTAINER }
-
-              expect(response).to have_gitlab_http_status(:forbidden)
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", public_send(type)),
+                     params: { access_level: Member::MAINTAINER }
+              end
             end
           end
         end
 
         context 'as a maintainer updating a member to one with higher access level than themselves' do
+          # the other 'maintainer' is in fact an owner of the group!
+          let(:maintainer) { maintainer2 }
+
           before do
             # the other 'maintainer' is in fact an owner of the group!
             source.add_maintainer(maintainer2)
           end
 
-          it 'returns 403' do
-            put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer2),
-                params: { access_level: Member::OWNER }
-
-            expect(response).to have_gitlab_http_status(:forbidden)
+          context 'updating a member to OWNER' do
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
+                     params: { access_level: Member::OWNER }
+              end
+            end
           end
         end
       end
@@ -600,18 +607,19 @@ RSpec.describe API::Members do
 
         context 'when updating a member with higher access level' do
           let(:owner) { create(:user) }
+          # the other 'maintainer' is in fact an owner of the group!
+          let(:maintainer) { maintainer2 }
 
           before do
             source.add_owner(owner)
-            # the other 'maintainer' is in fact an owner of the group!
-            source.add_maintainer(maintainer2)
+            source.add_maintainer(maintainer)
           end
 
-          it 'returns 403' do
-            put api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer2),
-                params: { access_level: Member::DEVELOPER }
-
-            expect(response).to have_gitlab_http_status(:forbidden)
+          it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+            let(:route) do
+              put api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer),
+                   params: { access_level: Member::OWNER }
+            end
           end
         end
       end
@@ -676,11 +684,10 @@ RSpec.describe API::Members do
       context 'when authenticated as a non-member or member with insufficient rights' do
         %i[access_requester stranger].each do |type|
           context "as a #{type}" do
-            it 'returns 403' do
-              user = public_send(type)
-              delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user)
-
-              expect(response).to have_gitlab_http_status(:forbidden)
+            it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+              let(:route) do
+                delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", public_send(type))
+              end
             end
           end
         end
@@ -709,18 +716,18 @@ RSpec.describe API::Members do
 
         context 'when attempting to delete a member with higher access level' do
           let(:owner) { create(:user) }
+          # the other 'maintainer' is in fact an owner of the group!
+          let(:maintainer) { maintainer2 }
 
           before do
             source.add_owner(owner)
-            # the other 'maintainer' is in fact an owner of the group!
-            source.add_maintainer(maintainer2)
+            source.add_maintainer(maintainer)
           end
 
-          it 'returns 403' do
-            delete api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer2),
-                   params: { access_level: Member::DEVELOPER }
-
-            expect(response).to have_gitlab_http_status(:forbidden)
+          it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+            let(:route) do
+              delete api("/#{source_type.pluralize}/#{source.id}/members/#{owner.id}", maintainer)
+            end
           end
         end
 
@@ -799,11 +806,11 @@ RSpec.describe API::Members do
     end
 
     context 'adding owner to project' do
-      it 'returns 403' do
-        post api("/projects/#{project.id}/members", maintainer),
-             params: { user_id: stranger.id, access_level: Member::OWNER }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
+      it_behaves_like 'a 403 response when user does not have rights to manage members of a specific access level' do
+        let(:route) do
+          post api("/projects/#{project.id}/members", maintainer),
+               params: { user_id: access_requester.id, access_level: Member::OWNER }
+        end
       end
     end
 

@@ -13,7 +13,7 @@ Object {
 
 exports[`Grouped Issues List with data renders a report item with the correct props 1`] = `
 Object {
-  "component": "TestIssueBody",
+  "component": "CodequalityIssueBody",
   "iconComponent": "IssueStatusIcon",
   "isNew": false,
   "issue": Object {

@@ -20,6 +20,7 @@ RSpec.describe Gitlab::Metrics::System do
       VmHWM:      2468 kB
       VmRSS:      2468 kB
       RssAnon:    260 kB
+      RssFile:    1024 kB
       SNIP
     end
 
@@ -132,18 +133,26 @@ RSpec.describe Gitlab::Metrics::System do
 
     describe '.memory_usage_rss' do
       context 'without PID' do
-        it "returns the current process' resident set size (RSS) in bytes" do
+        it "returns a hash containing RSS metrics in bytes for current process" do
           mock_existing_proc_file('/proc/self/status', proc_status)
 
-          expect(described_class.memory_usage_rss).to eq(2527232)
+          expect(described_class.memory_usage_rss).to eq(
+            total: 2527232,
+            anon: 266240,
+            file: 1048576
+          )
         end
       end
 
       context 'with PID' do
-        it "returns the given process' resident set size (RSS) in bytes" do
+        it "returns a hash containing RSS metrics in bytes for given process" do
           mock_existing_proc_file('/proc/7/status', proc_status)
 
-          expect(described_class.memory_usage_rss(pid: 7)).to eq(2527232)
+          expect(described_class.memory_usage_rss(pid: 7)).to eq(
+            total: 2527232,
+            anon: 266240,
+            file: 1048576
+          )
         end
       end
     end
@@ -241,8 +250,12 @@ RSpec.describe Gitlab::Metrics::System do
     end
 
     describe '.memory_usage_rss' do
-      it 'returns 0' do
-        expect(described_class.memory_usage_rss).to eq(0)
+      it 'returns 0 for all components' do
+        expect(described_class.memory_usage_rss).to eq(
+          total: 0,
+          anon: 0,
+          file: 0
+        )
       end
     end
 

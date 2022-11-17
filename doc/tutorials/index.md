@@ -1,6 +1,6 @@
 ---
 stage: none
-group: unassigned
+group: Tutorials
 info: For assistance with this tutorials page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
@@ -44,6 +44,8 @@ collaborating, and more.
 |-------|-------------|--------------------|
 | [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | For hands-on learning, select **Sample GitLab Project** and create a project with example issues and merge requests. | **{star}** |
 | [Migrate to GitLab](../user/project/import/index.md) | If you are coming to GitLab from another platform, you can import or convert your projects. | |
+| [Run an agile iteration](agile_sprint.md) | Use group, projects, and iterations to run an agile development iteration. |
+| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for multi-team planning (SAFe)](https://www.youtube.com/watch?v=KmASFwSap7c) (37m 37s) | A use case of a multi-team organization that uses GitLab with [Scaled Agile Framework (SAFe)](https://about.gitlab.com/solutions/agile-delivery/scaled-agile/). |
 
 ## Use CI/CD pipelines
 
@@ -51,7 +53,7 @@ CI/CD pipelines are used to automatically build, test, and deploy your code.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Get started: Create a pipeline](../ci/quick_start/index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
+| [Create and run your first GitLab CI/CD pipeline](../ci/quick_start/index.md) | Create a `.gitlab-ci.yml` file and start a pipeline. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Get started: Learn about CI/CD](https://www.youtube.com/watch?v=sIegJaLy2ug) (9m 02s) | Learn about the `.gitlab-ci.yml` file and how it's used. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CI deep dive](https://www.youtube.com/watch?v=ZVUbmVac-m8&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=27) (22m 51s) | Take a closer look at pipelines and continuous integration concepts. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [CD deep dive](https://www.youtube.com/watch?v=Cn0rzND-Yjw&list=PL05JrBw4t0KorkxIFgZGnzzxjZRCGROt_&index=10) (47m 54s) | Learn about deploying in GitLab. | |
@@ -114,7 +116,6 @@ content:
 
 - Find learning tracks and certification options at [GitLab Learn](https://about.gitlab.com/learn/).
   GitLab learning platform login required (email and password for non-GitLab team members).
-  For more information, see [First time login details](https://about.gitlab.com/handbook/people-group/learning-and-development/gitlab-learn/user/#first-time-login-to-gitlab-learn).
 
 - Find recent tutorials on the GitLab blog by [searching by the `tutorial` tag](https://about.gitlab.com/blog/tags.html#tutorial).
 

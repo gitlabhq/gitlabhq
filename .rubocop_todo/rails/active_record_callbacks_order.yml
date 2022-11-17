@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Rails/ActiveRecordCallbacksOrder:
-  Details: grace period
   Exclude:
     - 'app/models/award_emoji.rb'
     - 'app/models/gpg_key.rb'

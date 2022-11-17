@@ -281,76 +281,28 @@ module Nav
     end
 
     def projects_submenu_items(builder:)
-      if Feature.enabled?(:remove_extra_primary_submenu_options)
-        title = _('View all projects')
+      title = _('View all projects')
 
-        builder.add_primary_menu_item(
-          id: 'your',
-          title: title,
-          href: dashboard_projects_path,
-          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
-        )
-      else
-        # These project links come from `app/views/layouts/nav/projects_dropdown/_show.html.haml`
-        [
-          { id: 'your', title: _('Your projects'), href: dashboard_projects_path },
-          { id: 'starred', title: _('Starred projects'), href: starred_dashboard_projects_path },
-          { id: 'explore', title: _('Explore projects'), href: explore_root_path },
-          { id: 'topics', title: _('Explore topics'), href: topics_explore_projects_path }
-        ].each do |item|
-          builder.add_primary_menu_item(
-            **item,
-            data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
-          )
-        end
-
-        title = _('Create new project')
-
-        builder.add_secondary_menu_item(
-          id: 'create',
-          title: title,
-          href: new_project_path,
-          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
-        )
-      end
+      builder.add_primary_menu_item(
+        id: 'your',
+        title: title,
+        href: dashboard_projects_path,
+        data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+      )
     end
 
     def groups_submenu
       # These group links come from `app/views/layouts/nav/groups_dropdown/_show.html.haml`
       builder = ::Gitlab::Nav::TopNavMenuBuilder.new
 
-      if Feature.enabled?(:remove_extra_primary_submenu_options)
-        title = _('View all groups')
+      title = _('View all groups')
 
-        builder.add_primary_menu_item(
-          id: 'your',
-          title: title,
-          href: dashboard_groups_path,
-          data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
-        )
-      else
-        [
-          { id: 'your', title: _('Your groups'), href: dashboard_groups_path },
-          { id: 'explore', title: _('Explore groups'), href: explore_groups_path }
-        ].each do |item|
-          builder.add_primary_menu_item(
-            **item,
-            data: { qa_selector: 'menu_item_link', qa_title: item[:title], **menu_data_tracking_attrs(item[:title]) }
-          )
-        end
-
-        if current_user.can_create_group?
-          title = _('Create group')
-
-          builder.add_secondary_menu_item(
-            id: 'create',
-            title: title,
-            href: new_group_path,
-            data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
-          )
-        end
-      end
-
+      builder.add_primary_menu_item(
+        id: 'your',
+        title: title,
+        href: dashboard_groups_path,
+        data: { qa_selector: 'menu_item_link', qa_title: title, **menu_data_tracking_attrs(title) }
+      )
       builder.build
     end
   end

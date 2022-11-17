@@ -210,7 +210,7 @@ Example responses:
 
 Checks if a project's latest (`HEAD` of the project's default branch)
 `.gitlab-ci.yml` configuration is valid. This endpoint uses all namespace
-specific data available, including variables, local includes, and so on.
+specific data available, including variables and local includes.
 
 ```plaintext
 GET /projects/:id/ci/lint

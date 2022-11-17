@@ -11,7 +11,7 @@ RSpec.describe Gitlab::InactiveProjectsDeletionWarningTracker, :freeze_time do
     end
 
     it 'returns the list of projects for which deletion warning email has been sent' do
-      expected_hash = { "project:1" => "#{Date.current}" }
+      expected_hash = { "project:1" => Date.current.to_s }
 
       expect(Gitlab::InactiveProjectsDeletionWarningTracker.notified_projects).to eq(expected_hash)
     end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::InactiveProjectsDeletionWarningTracker, :freeze_time do
     end
 
     it 'returns the date if a deletion warning email has been sent for a given project' do
-      expect(Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).notification_date).to eq("#{Date.current}")
+      expect(Gitlab::InactiveProjectsDeletionWarningTracker.new(project_id).notification_date).to eq(Date.current.to_s)
     end
 
     it 'returns nil if a deletion warning email has not been sent for a given project' do

@@ -40,10 +40,11 @@ RSpec.describe Preloaders::LabelsPreloader do
 
   def access_data(labels)
     labels.each do |label|
-      if label.is_a?(ProjectLabel)
+      case label
+      when ProjectLabel
         label.project.project_feature
         label.lazy_subscription(user, label.project)
-      elsif label.is_a?(GroupLabel)
+      when GroupLabel
         label.group.route
         label.lazy_subscription(user)
       end

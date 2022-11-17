@@ -87,6 +87,12 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
         it_behaves_like 'error response', "Timeline text can't be blank"
       end
 
+      context 'when note is more than 280 characters long' do
+        let(:params) { { note: 'n' * 281, occurred_at: occurred_at } }
+
+        it_behaves_like 'error response', 'Timeline text is too long (maximum is 280 characters)'
+      end
+
       context 'when occurred_at is nil' do
         let(:params) { { note: 'Updated note' } }
 

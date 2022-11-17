@@ -89,6 +89,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    showFriendlyText: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     syncFilterAndSort: {
       type: Boolean,
       required: false,
@@ -319,7 +324,7 @@ export default {
         (sortBy) =>
           sortBy.sortDirection.ascending === sort || sortBy.sortDirection.descending === sort,
       );
-      this.selectedSortDirection = Object.keys(this.selectedSortOption.sortDirection).find(
+      this.selectedSortDirection = Object.keys(this.selectedSortOption?.sortDirection || {}).find(
         (key) => this.selectedSortOption.sortDirection[key] === sort,
       );
     },
@@ -351,6 +356,7 @@ export default {
       :close-button-title="__('Close')"
       :clear-recent-searches-text="__('Clear recent searches')"
       :no-recent-searches-text="__(`You don't have any recent searches`)"
+      :show-friendly-text="showFriendlyText"
       class="flex-grow-1"
       @history-item-selected="handleHistoryItemSelected"
       @clear="onClear"

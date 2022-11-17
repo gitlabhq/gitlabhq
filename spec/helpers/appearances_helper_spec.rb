@@ -169,4 +169,13 @@ RSpec.describe AppearancesHelper do
       expect(helper.brand_title).to eq(helper.default_brand_title)
     end
   end
+
+  describe '#default_brand_title' do
+    it 'returns the default title' do
+      edition = Gitlab.ee? ? 'Enterprise' : 'Community'
+      expected_default_brand_title = "GitLab #{edition} Edition"
+
+      expect(helper.default_brand_title).to eq _(expected_default_brand_title)
+    end
+  end
 end

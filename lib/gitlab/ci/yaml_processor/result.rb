@@ -6,12 +6,17 @@ module Gitlab
   module Ci
     class YamlProcessor
       class Result
-        attr_reader :errors, :warnings
+        attr_reader :errors, :warnings,
+                    :root_variables, :root_variables_with_prefill_data,
+                    :stages, :jobs,
+                    :workflow_rules, :workflow_name
 
         def initialize(ci_config: nil, errors: [], warnings: [])
           @ci_config = ci_config
           @errors = errors || []
           @warnings = warnings || []
+
+          assign_valid_attributes if valid?
         end
 
         def valid?
@@ -32,32 +37,8 @@ module Gitlab
           end
         end
 
-        def workflow_rules
-          @workflow_rules ||= @ci_config.workflow_rules
-        end
-
-        def workflow_name
-          @workflow_name ||= @ci_config.workflow_name&.strip
-        end
-
-        def root_variables
-          @root_variables ||= transform_to_array(@ci_config.variables)
-        end
-
-        def jobs
-          @jobs ||= @ci_config.normalized_jobs
-        end
-
-        def stages
-          @stages ||= @ci_config.stages
-        end
-
         def included_templates
           @included_templates ||= @ci_config.included_templates
-        end
-
-        def variables_with_data
-          @ci_config.variables_with_data
         end
 
         def yaml_variables_for(job_name)
@@ -81,6 +62,22 @@ module Gitlab
         end
 
         private
+
+        def assign_valid_attributes
+          @root_variables = if YamlProcessor::FeatureFlags.enabled?(:ci_raw_variables_in_yaml_config)
+                              transform_to_array(@ci_config.variables_with_data)
+                            else
+                              transform_to_array(@ci_config.variables)
+                            end
+
+          @root_variables_with_prefill_data = @ci_config.variables_with_prefill_data
+
+          @stages = @ci_config.stages
+          @jobs = @ci_config.normalized_jobs
+
+          @workflow_rules = @ci_config.workflow_rules
+          @workflow_name = @ci_config.workflow_name&.strip
+        end
 
         def stage_builds_attributes(stage)
           jobs.values
@@ -129,12 +126,8 @@ module Gitlab
               start_in: job[:start_in],
               trigger: job[:trigger],
               bridge_needs: job.dig(:needs, :bridge)&.first,
-              release: release(job)
+              release: job[:release]
             }.compact }.compact
-        end
-
-        def release(job)
-          job[:release]
         end
 
         def transform_to_array(variables)

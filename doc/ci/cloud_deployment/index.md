@@ -76,7 +76,7 @@ Prerequisites:
 
 - [Authenticate AWS with GitLab](#authenticate-gitlab-with-aws).
 - Create a cluster on Amazon ECS.
-- Create related components, like an ECS service, a database on Amazon RDS, and so on.
+- Create related components, like an ECS service or a database on Amazon RDS.
 - Create an ECS task definition, where the value for the `containerDefinitions[].name` attribute is
   the same as the `Container name` defined in your targeted ECS service. The task definition can be:
   - An existing task definition in ECS.

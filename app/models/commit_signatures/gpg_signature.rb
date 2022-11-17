@@ -49,5 +49,9 @@ module CommitSignatures
 
       Gitlab::Gpg::Commit.new(commit)
     end
+
+    def user
+      gpg_key&.user
+    end
   end
 end

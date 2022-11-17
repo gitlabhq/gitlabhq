@@ -19,7 +19,7 @@ RSpec.describe Admin::IntegrationsController do
 
   describe '#edit' do
     Integration.available_integration_names.each do |integration_name|
-      context "#{integration_name}" do
+      context integration_name.to_s do
         it 'successfully displays the template' do
           get :edit, params: { id: integration_name }
 

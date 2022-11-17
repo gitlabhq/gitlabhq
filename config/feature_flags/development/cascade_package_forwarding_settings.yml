@@ -1,8 +1,0 @@
----
-name: cascade_package_forwarding_settings
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99285
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375761
-milestone: '15.5'
-type: development
-group: group::package
-default_enabled: false

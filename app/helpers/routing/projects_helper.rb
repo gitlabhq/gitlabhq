@@ -43,7 +43,14 @@ module Routing
     end
 
     def work_item_url(entity, *args)
-      project_work_items_url(entity.project, entity.id, *args)
+      unless Feature.enabled?(:use_iid_in_work_items_path, entity.project.group)
+        return project_work_items_url(entity.project, entity.id, *args)
+      end
+
+      options = args.first || {}
+      options[:iid_path] = true
+
+      project_work_items_url(entity.project, entity.iid, **options)
     end
 
     def merge_request_url(entity, *args)
@@ -89,7 +96,9 @@ module Routing
     private
 
     def use_work_items_path?(issue)
-      issue.issue_type == 'task' && issue.project.work_items_feature_flag_enabled?
+      issue.issue_type == 'task'
     end
   end
 end
+
+Routing::ProjectsHelper.prepend_mod

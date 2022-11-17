@@ -1,8 +1,11 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'GraphQL API architecture foundation'
+status: accepted
+creation-date: "2021-01-07"
+authors: [ "@grzesiek" ]
+coach: "@kamil"
+approvers: [ "@dsatcher", "@deuley" ]
+owning-stage: "~devops::manage"
+participating-stages: []
 ---
 
 # GraphQL API
@@ -155,43 +158,3 @@ state synchronization mechanisms and hooking into existing ones.
 1. [Build a scalable state synchronization for GraphQL](https://gitlab.com/groups/gitlab-org/-/epics/5319)
 1. [Add support for direct uploads for GraphQL](https://gitlab.com/gitlab-org/gitlab/-/issues/280819)
 1. [Review GraphQL design choices related to security](https://gitlab.com/gitlab-org/security/gitlab/-/issues/339)
-
-## Status
-
-Current status: in progress.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Grzegorz Bizon          |
-| Architecture Evolution Coach | Kamil Trzciński         |
-| Engineering Leader           | Darva Satcher           |
-| Product Manager              | Patrick Deuley          |
-| Domain Expert / GraphQL      | Charlie Ablett          |
-| Domain Expert / GraphQL      | Alex Kalderimis         |
-| Domain Expert / GraphQL      | Natalia Tepluhina       |
-| Domain Expert / Scalability  | Bob Van Landuyt         |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | Darva Satcher          |
-| Product                      | Patrick Deuley         |
-| Engineering                  | Paul Slaughter         |
-
-Domain Experts:
-
-| Area                         | Who
-|------------------------------|------------------------|
-| Domain Expert / GraphQL      | Charlie Ablett         |
-| Domain Expert / GraphQL      | Alex Kalderimis        |
-| Domain Expert / GraphQL      | Natalia Tepluhina      |
-| Domain Expert / Scalability  | Bob Van Landuyt        |
-
-<!-- vale gitlab.Spelling = YES -->

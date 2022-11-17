@@ -190,7 +190,7 @@ class Wiki
   end
 
   def empty?
-    !repository_exists? || list_page_paths.empty?
+    !repository_exists? || list_page_paths(limit: 1).empty?
   end
 
   def exists?
@@ -207,9 +207,29 @@ class Wiki
   #
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def list_pages(limit: 0, direction: DIRECTION_ASC, load_content: false)
+  def list_pages(direction: DIRECTION_ASC, load_content: false, limit: 0, offset: 0)
     create_wiki_repository unless repository_exists?
-    list_pages_with_repository_rpcs(limit: limit, direction: direction, load_content: load_content)
+
+    paths = list_page_paths(limit: limit, offset: offset)
+    return [] if paths.empty?
+
+    pages = paths.map do |path|
+      page = Gitlab::Git::WikiPage.new(
+        url_path: sluggified_title(strip_extension(path)),
+        title: canonicalize_filename(path),
+        format: find_page_format(path),
+        path: sluggified_title(path),
+        raw_data: '',
+        name: canonicalize_filename(path),
+        historical: false
+      )
+      WikiPage.new(self, page)
+    end
+    sort_pages!(pages, direction)
+    pages = pages.take(limit) if limit > 0
+    fetch_pages_content!(pages) if load_content
+
+    pages
   end
 
   def sidebar_entries(limit: Gitlab::WikiPages::MAX_SIDEBAR_PAGES, **options)
@@ -229,7 +249,27 @@ class Wiki
   # Returns an initialized WikiPage instance or nil
   def find_page(title, version = nil, load_content: true)
     create_wiki_repository unless repository_exists?
-    find_page_with_repository_rpcs(title, version, load_content: load_content)
+
+    version = version.presence || default_branch
+    path = find_matched_file(title, version)
+    return if path.blank?
+
+    blob_options = load_content ? {} : { limit: 0 }
+    blob = repository.blob_at(version, path, **blob_options)
+    commit = repository.commit(blob.commit_id)
+    format = find_page_format(path)
+
+    page = Gitlab::Git::WikiPage.new(
+      url_path: sluggified_title(strip_extension(path)),
+      title: canonicalize_filename(path),
+      format: format,
+      path: sluggified_title(path),
+      raw_data: blob.data,
+      name: canonicalize_filename(path),
+      historical: version == default_branch ? false : check_page_historical(path, commit),
+      version: Gitlab::Git::WikiPageVersion.new(commit, format)
+    )
+    WikiPage.new(self, page)
   end
 
   def find_sidebar(version = nil)
@@ -313,12 +353,6 @@ class Wiki
     title_array = title.split("/")
     title = title_array.pop
     [title, title_array.join("/")]
-  end
-
-  # TODO: This method is redundant. Should be replaced by create_wiki_repository
-  def ensure_repository
-    create_wiki_repository
-    raise CouldNotCreateWikiError unless repository_exists?
   end
 
   def hook_attrs
@@ -457,7 +491,7 @@ class Wiki
     escaped_path = RE2::Regexp.escape(sluggified_title(title))
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)^#{escaped_path}\\.(#{file_extension_regexp})$")
 
-    matched_files = repository.search_files_by_regexp(path_regexp, version)
+    matched_files = repository.search_files_by_regexp(path_regexp, version, limit: 1)
     return if matched_files.blank?
 
     Gitlab::EncodingHelper.encode_utf8_no_detect(matched_files.first)
@@ -470,29 +504,6 @@ class Wiki
 
   def check_page_historical(path, commit)
     repository.last_commit_for_path(default_branch, path)&.id != commit&.id
-  end
-
-  def find_page_with_repository_rpcs(title, version, load_content: true)
-    version = version.presence || default_branch
-    path = find_matched_file(title, version)
-    return if path.blank?
-
-    blob_options = load_content ? {} : { limit: 0 }
-    blob = repository.blob_at(version, path, **blob_options)
-    commit = repository.commit(blob.commit_id)
-    format = find_page_format(path)
-
-    page = Gitlab::Git::WikiPage.new(
-      url_path: sluggified_title(strip_extension(path)),
-      title: canonicalize_filename(path),
-      format: format,
-      path: sluggified_title(path),
-      raw_data: blob.data,
-      name: canonicalize_filename(path),
-      historical: version == default_branch ? false : check_page_historical(path, commit),
-      version: Gitlab::Git::WikiPageVersion.new(commit, format)
-    )
-    WikiPage.new(self, page)
   end
 
   def file_extension_regexp
@@ -509,34 +520,11 @@ class Wiki
     path.sub(/\.[^.]+\z/, "")
   end
 
-  def list_page_paths
+  def list_page_paths(limit: 0, offset: 0)
     return [] if repository.empty?
 
     path_regexp = Gitlab::EncodingHelper.encode_utf8_no_detect("(?i)\\.(#{file_extension_regexp})$")
-    repository.search_files_by_regexp(path_regexp, default_branch)
-  end
-
-  def list_pages_with_repository_rpcs(limit:, direction:, load_content:)
-    paths = list_page_paths
-    return [] if paths.empty?
-
-    pages = paths.map do |path|
-      page = Gitlab::Git::WikiPage.new(
-        url_path: sluggified_title(strip_extension(path)),
-        title: canonicalize_filename(path),
-        format: find_page_format(path),
-        path: sluggified_title(path),
-        raw_data: '',
-        name: canonicalize_filename(path),
-        historical: false
-      )
-      WikiPage.new(self, page)
-    end
-    sort_pages!(pages, direction)
-    pages = pages.take(limit) if limit > 0
-    fetch_pages_content!(pages) if load_content
-
-    pages
+    repository.search_files_by_regexp(path_regexp, default_branch, limit: limit, offset: offset)
   end
 
   # After migrating to normal repository RPCs, it's very expensive to sort the
@@ -552,7 +540,7 @@ class Wiki
   def fetch_pages_content!(pages)
     blobs =
       repository
-      .blobs_at(pages.map { |page| [default_branch, page.path] } )
+      .blobs_at(pages.map { |page| [default_branch, page.path] })
       .to_h { |blob| [blob.path, blob.data] }
 
     pages.each do |page|

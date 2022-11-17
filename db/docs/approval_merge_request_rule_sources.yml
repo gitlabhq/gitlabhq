@@ -4,6 +4,6 @@ classes:
 - ApprovalMergeRequestRuleSource
 feature_categories:
 - source_code_management
-description: TODO
+description: Keeps connection between merge request and project approval rule
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'

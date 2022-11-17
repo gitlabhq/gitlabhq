@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Group empty states' do
   let(:group) { create(:group) }
-  let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
+  let(:user) { create(:group_member, :developer, user: create(:user), group: group).user }
 
   before do
     sign_in(user)

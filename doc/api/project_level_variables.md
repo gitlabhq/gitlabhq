@@ -31,6 +31,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "value": "TEST_1",
         "protected": false,
         "masked": true,
+        "raw": false,
         "environment_scope": "*"
     },
     {
@@ -39,6 +40,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "value": "TEST_2",
         "protected": false,
         "masked": false,
+        "raw": false,
         "environment_scope": "*"
     }
 ]
@@ -70,6 +72,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "value": "TEST_1",
     "protected": false,
     "masked": true,
+    "raw": false,
     "environment_scope": "*"
 }
 ```
@@ -92,6 +95,7 @@ POST /projects/:id/variables
 | `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
 | `protected`         | boolean        | no       | Whether the variable is protected. Default: `false`                                                                                           |
 | `masked`            | boolean        | no       | Whether the variable is masked. Default: `false`                                                                                              |
+| `raw`               | boolean        | no       | Whether the variable is expandable. Default: `false`                                                                                          |
 | `environment_scope` | string         | no       | The `environment_scope` of the variable. Default: `*`                                                                                         |
 
 ```shell
@@ -106,6 +110,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
     "value": "new value",
     "protected": false,
     "masked": false,
+    "raw": false,
     "environment_scope": "*"
 }
 ```
@@ -127,6 +132,7 @@ PUT /projects/:id/variables/:key
 | `variable_type`     | string         | no       | The type of a variable. Available types are: `env_var` (default) and `file`                                                                   |
 | `protected`         | boolean        | no       | Whether the variable is protected                                                                                                             |
 | `masked`            | boolean        | no       | Whether the variable is masked                                                                                                                |
+| `raw`               | boolean        | no       | Whether the variable is expandable. Default: `false`                                                                                          |
 | `environment_scope` | string         | no       | The `environment_scope` of the variable                                                                                                       |
 | `filter`            | hash           | no       | Available filters: `[environment_scope]`. See the [`filter` parameter details](#the-filter-parameter).                                        |
 
@@ -142,6 +148,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
     "value": "updated value",
     "protected": true,
     "masked": false,
+    "raw": false,
     "environment_scope": "*"
 }
 ```

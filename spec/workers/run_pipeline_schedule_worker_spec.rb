@@ -42,14 +42,42 @@ RSpec.describe RunPipelineScheduleWorker do
       end
     end
 
-    context 'when everything is ok' do
-      let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService) }
+    describe "#run_pipeline_schedule" do
+      let(:create_pipeline_service) { instance_double(Ci::CreatePipelineService, execute: service_response) }
+      let(:service_response) { instance_double(ServiceResponse, payload: pipeline, error?: false) }
 
-      it 'calls the Service' do
+      before do
         expect(Ci::CreatePipelineService).to receive(:new).with(project, user, ref: pipeline_schedule.ref).and_return(create_pipeline_service)
-        expect(create_pipeline_service).to receive(:execute!).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule)
 
-        worker.perform(pipeline_schedule.id, user.id)
+        expect(create_pipeline_service).to receive(:execute).with(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: pipeline_schedule).and_return(service_response)
+      end
+
+      context "when pipeline is persisted" do
+        let(:pipeline) { instance_double(Ci::Pipeline, persisted?: true) }
+
+        it "returns the service response" do
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
+        end
+
+        it "does not log errors" do
+          expect(worker).not_to receive(:log_extra_metadata_on_done)
+
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response)
+        end
+      end
+
+      context "when pipeline was not persisted" do
+        let(:service_response) { instance_double(ServiceResponse, error?: true, message: "Error", payload: pipeline) }
+        let(:pipeline) { instance_double(Ci::Pipeline, persisted?: false) }
+
+        it "logs a pipeline creation error" do
+          expect(worker)
+            .to receive(:log_extra_metadata_on_done)
+            .with(:pipeline_creation_error, service_response.message)
+            .and_call_original
+
+          expect(worker.perform(pipeline_schedule.id, user.id)).to eq(service_response.message)
+        end
       end
     end
 
@@ -77,21 +105,6 @@ RSpec.describe RunPipelineScheduleWorker do
         expect(Gitlab::AppLogger)
           .to receive(:error)
           .with(a_string_matching('ActiveRecord::StatementInvalid'))
-          .and_call_original
-
-        worker.perform(pipeline_schedule.id, user.id)
-      end
-    end
-
-    context 'when pipeline cannot be created' do
-      before do
-        allow(Ci::CreatePipelineService).to receive(:new) { raise Ci::CreatePipelineService::CreateError }
-      end
-
-      it 'logging a pipeline error' do
-        expect(worker)
-          .to receive(:log_extra_metadata_on_done)
-          .with(:pipeline_creation_error, an_instance_of(Ci::CreatePipelineService::CreateError))
           .and_call_original
 
         worker.perform(pipeline_schedule.id, user.id)

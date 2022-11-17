@@ -38,7 +38,7 @@ Next, the Ingress needs to be annotated for Prometheus monitoring. Two new annot
 - `prometheus.io/scrape: "true"`
 - `prometheus.io/port: "10254"`
 
-Managing these settings depends on how NGINX Ingress has been deployed. If you have deployed via the [official Helm chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress), metrics can be enabled with `controller.stats.enabled` along with the required annotations. Alternatively it is possible to edit the NGINX Ingress YAML directly in the [Kubernetes dashboard](https://github.com/kubernetes/dashboard).
+Managing these settings depends on how NGINX Ingress has been deployed. If you have deployed via the [official Helm chart](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx), metrics can be enabled with `controller.stats.enabled` along with the required annotations. Alternatively it is possible to edit the NGINX Ingress YAML directly in the [Kubernetes dashboard](https://github.com/kubernetes/dashboard).
 
 ## Specifying the Environment label
 

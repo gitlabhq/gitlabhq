@@ -8,7 +8,6 @@
   variables:
     USE_BUNDLE_INSTALL: "false"
     SETUP_DB: "false"
-    QA_EXPORT_TEST_METRICS: "false"
   before_script:
     - !reference [.default-before_script, before_script]
     - cd qa && bundle install
@@ -78,8 +77,8 @@ e2e:package-and-test:
     SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${CI_COMMIT_SHA}"
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"
-    RUN_WITH_BUNDLE: "true" # instructs pipeline to install and run gitlab-qa gem via bundler
-    QA_PATH: qa # sets the optional path for bundler to run from
+    RUN_WITH_BUNDLE: "true"  # instructs pipeline to install and run gitlab-qa gem via bundler
+    QA_PATH: qa  # sets the optional path for bundler to run from
   trigger:
     strategy: depend
     forward:

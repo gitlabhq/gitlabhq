@@ -14,6 +14,8 @@ main_report = JSON.parse(File.read(main_report_file))
 new_report = main_report.dup
 
 ARGV.each do |report_file|
+  next unless File.exist?(report_file)
+
   report = JSON.parse(File.read(report_file))
 
   # Remove existing values

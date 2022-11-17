@@ -1,8 +1,0 @@
----
-name: limit_assignees_per_issuable
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95673
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373237
-milestone: '15.5'
-type: development
-group: group::code review
-default_enabled: false

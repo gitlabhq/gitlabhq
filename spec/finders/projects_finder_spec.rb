@@ -350,43 +350,6 @@ RSpec.describe ProjectsFinder do
         end
       end
 
-      describe 'filter by without_deleted' do
-        let_it_be(:pending_delete_project) { create(:project, :public, pending_delete: true) }
-
-        let(:params) { { without_deleted: without_deleted } }
-
-        shared_examples 'returns all projects' do
-          it { expect(subject).to include(public_project, internal_project, pending_delete_project) }
-        end
-
-        context 'when without_deleted is true' do
-          let(:without_deleted) { true }
-
-          it 'returns projects that are not pending_delete' do
-            expect(subject).not_to include(pending_delete_project)
-            expect(subject).to include(public_project, internal_project)
-          end
-        end
-
-        context 'when without_deleted is false' do
-          let(:without_deleted) { false }
-
-          it_behaves_like 'returns all projects'
-        end
-
-        context 'when without_deleted is nil' do
-          let(:without_deleted) { nil }
-
-          it_behaves_like 'returns all projects'
-        end
-
-        context 'when without_deleted is not present' do
-          let(:params) { {} }
-
-          it_behaves_like 'returns all projects'
-        end
-      end
-
       describe 'filter by last_activity_after' do
         let(:params) { { last_activity_after: 60.minutes.ago } }
 
@@ -396,6 +359,15 @@ RSpec.describe ProjectsFinder do
         end
 
         it { is_expected.to match_array([internal_project]) }
+      end
+
+      describe 'always filters by without_deleted' do
+        let_it_be(:pending_delete_project) { create(:project, :public, pending_delete: true) }
+
+        it 'returns projects that are not pending_delete' do
+          expect(subject).not_to include(pending_delete_project)
+          expect(subject).to include(public_project, internal_project)
+        end
       end
 
       describe 'filter by last_activity_before' do

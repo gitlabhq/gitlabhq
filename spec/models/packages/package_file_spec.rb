@@ -314,7 +314,7 @@ RSpec.describe Packages::PackageFile, type: :model do
       # to `1`.
       expect(package_file)
         .to receive(:update_column)
-        .with(:file_store, ::Packages::PackageFileUploader::Store::LOCAL)
+        .with('file_store', ::Packages::PackageFileUploader::Store::LOCAL)
 
       expect { subject }.to change { package_file.size }.from(nil).to(3513)
     end

@@ -260,6 +260,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `gitlab_id`                             | The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `gitlab_secret`                         | The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
+| `auth_cookie_session_timeout`           | Authentication cookie session timeout in seconds (default: 600s). A value of `0` means the cookie is deleted after the browser session ends. |
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
 | `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
@@ -512,7 +513,7 @@ internet connectivity is gated by a proxy. To use a proxy for GitLab Pages:
 
 ### Using a custom Certificate Authority (CA)
 
-When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md#gitlab-pages-access-control) and
+When using certificates issued by a custom CA, [Access Control](../../user/project/pages/pages_access_control.md) and
 the [online view of HTML job artifacts](../../ci/pipelines/job_artifacts.md#download-job-artifacts)
 fails to work if the custom CA is not recognized.
 
@@ -820,8 +821,8 @@ database encryption. Proceed with caution.
 
 It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as
-configuring your DNS server to return multiple IPs for your Pages server,
-configuring a load balancer to work at the IP level, and so on. If you wish to
+configuring your DNS server to return multiple IPs for your Pages server, or
+configuring a load balancer to work at the IP level. If you wish to
 set up GitLab Pages on multiple servers, perform the above procedure for each
 Pages server.
 
@@ -1073,7 +1074,8 @@ sudo gitlab-rake gitlab:pages:deployments:migrate_to_object_storage
 You can track progress and verify that all Pages deployments migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
+- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
 - `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
 
 Verify `objectstg` below (where `store=2`) has count of all Pages deployments:
@@ -1213,7 +1215,7 @@ the section below.
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->
 

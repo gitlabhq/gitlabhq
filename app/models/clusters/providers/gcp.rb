@@ -9,10 +9,10 @@ module Clusters
 
       belongs_to :cluster, inverse_of: :provider_gcp, class_name: 'Clusters::Cluster'
 
-      default_value_for :zone, 'us-central1-a'
-      default_value_for :num_nodes, 3
-      default_value_for :machine_type, 'n1-standard-2'
-      default_value_for :cloud_run, false
+      attribute :zone, default: 'us-central1-a'
+      attribute :num_nodes, default: 3
+      attribute :machine_type, default: 'n1-standard-2'
+      attribute :cloud_run, default: false
 
       scope :cloud_run, -> { where(cloud_run: true) }
 

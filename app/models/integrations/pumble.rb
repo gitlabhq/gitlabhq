@@ -36,7 +36,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "https://api.pumble.com/workspaces/x/...", required: true },
+        { type: 'text', name: 'webhook', help: 'https://api.pumble.com/workspaces/x/...', required: true },
         { type: 'checkbox', name: 'notify_only_broken_pipelines' },
         {
           type: 'select',
@@ -51,7 +51,7 @@ module Integrations
 
     def notify(message, opts)
       header = { 'Content-Type' => 'application/json' }
-      response = Gitlab::HTTP.post(webhook, headers: header, body: { text: message.summary }.to_json)
+      response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump({ text: message.summary }))
 
       response if response.success?
     end

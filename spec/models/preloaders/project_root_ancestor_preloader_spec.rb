@@ -63,6 +63,14 @@ RSpec.describe Preloaders::ProjectRootAncestorPreloader do
 
         it_behaves_like 'executes N matching DB queries', 0, :full_path
       end
+
+      context 'when projects are an array and not an ActiveRecord::Relation' do
+        before do
+          described_class.new(projects, :namespace, additional_preloads).execute
+        end
+
+        it_behaves_like 'executes N matching DB queries', 4
+      end
     end
 
     context 'when the preloader is not used' do

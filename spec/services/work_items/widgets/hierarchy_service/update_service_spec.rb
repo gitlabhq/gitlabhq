@@ -42,18 +42,6 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
       let_it_be(:child_work_item3) { create(:work_item, :task, project: project) }
       let_it_be(:child_work_item4) { create(:work_item, :task, project: project) }
 
-      context 'when work_items_hierarchy feature flag is disabled' do
-        let(:params) { { children: [child_work_item4] } }
-
-        before do
-          stub_feature_flags(work_items_hierarchy: false)
-        end
-
-        it_behaves_like 'raises a WidgetError' do
-          let(:message) { '`work_items_hierarchy` feature flag disabled for this project' }
-        end
-      end
-
       context 'when user has insufficient permissions to link work items' do
         let(:params) { { children: [child_work_item4] } }
 
@@ -104,16 +92,6 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
       let_it_be(:work_item) { create(:work_item, :task, project: project) }
 
       let(:params) { { parent: parent_work_item } }
-
-      context 'when work_items_hierarchy feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items_hierarchy: false)
-        end
-
-        it_behaves_like 'raises a WidgetError' do
-          let(:message) { '`work_items_hierarchy` feature flag disabled for this project' }
-        end
-      end
 
       context 'when user has insufficient permissions to link work items' do
         it_behaves_like 'raises a WidgetError' do

@@ -137,7 +137,7 @@ To add links to other accounts:
 
 ## Show private contributions on your user profile page
 
-In the user contribution calendar graph and recent activity list, you can see your [contribution actions](#user-contribution-events) to private projects.
+In the user contribution calendar graph and recent activity list, you can see your [contribution actions](contributions_calendar.md#user-contribution-events) to private projects.
 
 To show private contributions:
 
@@ -311,7 +311,7 @@ git config --global user.email <your email address>
 
 ## User activity
 
-GitLab tracks user contribution activity. You can follow or unfollow other users from either:
+GitLab tracks [user contribution activity](contributions_calendar.md). You can follow or unfollow other users from either:
 
 - Their [user profiles](#access-your-user-profile).
 - The small popover that appears when you hover over a user's name ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76050)
@@ -325,83 +325,6 @@ To view a user's activity in a top-level Activity view:
 1. From a user's profile, select **Follow**.
 1. In the GitLab menu, select **Activity**.
 1. Select the **Followed users** tab.
-
-### User contribution events
-
-Each of these contribution events is tracked:
-
-- `approved`
-  - Merge request
-- `closed`
-  - [Epic](../group/epics/index.md)
-  - Issue
-  - Merge request
-  - Milestone
-- `commented` on any `Noteable` record.
-  - Alert
-  - Commit
-  - Design
-  - Issue
-  - Merge request
-  - Snippet
-- `created`
-  - Design
-  - [Epic](../group/epics/index.md)
-  - Issue
-  - Merge request
-  - Milestone
-  - Project
-  - Wiki page
-- `destroyed`
-  - Design
-  - Milestone
-  - Wiki page
-- `expired`
-  - Project membership
-- `joined`
-  - Project membership
-- `left`
-  - Project membership
-- `merged`
-  - Merge request
-- `pushed` commits to (or deleted commits from) a repository, individually or in bulk.
-  - Project
-- `reopened`
-  - [Epic](../group/epics/index.md)
-  - Issue
-  - Merge request
-  - Milestone
-- `updated`
-  - Design
-  - Wiki page
-
-### Retrieve user activity as a feed
-
-GitLab provides RSS feeds of user activity. To subscribe to the
-RSS feed of a user's activity:
-
-1. Go to the [user's profile](#access-your-user-profile).
-1. In the top right, select the feed symbol **{rss}** to display the results as an RSS feed in Atom format.
-
-The URL of the result contains both a feed token, and
-the user's activity that you're authorized to view.
-You can add this URL to your feed reader.
-
-### Reset the user activity feed token
-
-Feed tokens are sensitive and can reveal information from confidential issues.
-If you think your feed token has been exposed, you should reset it.
-
-To reset your feed token:
-
-1. On the top bar, in the top right corner, select your avatar.
-1. Select **Edit profile**.
-1. On the left sidebar, select **Access Tokens**.
-1. Scroll down. In the **Feed token** section, select the
-   **reset this token** link.
-1. On the confirmation box, select **OK**.
-
-A new token is generated.
 
 ## Troubleshooting
 

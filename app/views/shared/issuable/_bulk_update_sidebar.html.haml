@@ -1,5 +1,6 @@
 - type = local_assigns.fetch(:type)
 - is_issue = type == :issues
+- move_data = { projects_fetch_path: autocomplete_projects_path(project_id: @project.id), project_full_path: @project.full_path }
 
 %aside.issues-bulk-update.js-right-sidebar.right-sidebar{ "aria-live" => "polite", data: { 'signed-in': current_user.present? }, 'aria-label': _('Bulk update') }
   .issuable-sidebar.hidden
@@ -33,7 +34,7 @@
         .title
           = _('Milestone')
         .filter-item
-          = dropdown_tag(_("Select milestone"), options: { title: _("Assign milestone"), toggle_class: "js-milestone-select js-extra-options js-filter-submit js-filter-bulk-update", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", placeholder: _("Search milestones"), data: { show_no: true, field_name: "update[milestone_id]", project_id: @project.id, use_id: true, default_label: _("Milestone") } })
+          .js-milestone-dropdown-root{ data: { full_path: @project.full_path, workspace_type: Namespaces::ProjectNamespace.sti_name.downcase } }
       - if is_issue
         = render_if_exists 'shared/issuable/iterations_dropdown', parent: @project.group
       - if is_issue
@@ -42,6 +43,9 @@
         .title
           = _('Subscriptions')
         .js-subscriptions-dropdown
+      - if is_issue
+        .block
+          .js-move-issues{ data: move_data }
 
       = hidden_field_tag "update[issuable_ids]", []
       = hidden_field_tag :state_event, params[:state_event]

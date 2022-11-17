@@ -8,7 +8,7 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       include PaginationParams
@@ -16,14 +16,20 @@ module API
       before { authenticate! }
 
       desc "Get a commit's statuses" do
-        success Entities::CommitStatus
+        success code: 200, model: Entities::CommitStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
       end
       params do
-        requires :sha,   type: String, desc: 'The commit hash'
-        optional :ref,   type: String, desc: 'The ref'
-        optional :stage, type: String, desc: 'The stage'
-        optional :name,  type: String, desc: 'The name'
-        optional :all,   type: String, desc: 'Show all statuses, default: false'
+        requires :sha,   type: String, desc: 'The commit hash', documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
+        optional :ref,   type: String, desc: 'The ref', documentation: { example: 'develop' }
+        optional :stage, type: String, desc: 'The stage', documentation: { example: 'test' }
+        optional :name,  type: String, desc: 'The name', documentation: { example: 'bundler:audit' }
+        optional :all,   type: Boolean, desc: 'Show all statuses', documentation: { default: false }
         use :pagination
       end
       # rubocop: disable CodeReuse/ActiveRecord
@@ -43,19 +49,32 @@ module API
       # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Post status to a commit' do
-        success Entities::CommitStatus
+        success code: 200, model: Entities::CommitStatus
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
       end
       params do
-        requires :sha,         type: String,  desc: 'The commit hash'
-        requires :state,       type: String,  desc: 'The state of the status',
-                               values: %w(pending running success failed canceled)
-        optional :ref,         type: String,  desc: 'The ref'
-        optional :target_url,  type: String,  desc: 'The target URL to associate with this status'
-        optional :description, type: String,  desc: 'A short description of the status'
-        optional :name,        type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"', documentation: { default: 'default' }
-        optional :context,     type: String,  desc: 'A string label to differentiate this status from the status of other systems. Default: "default"', documentation: { default: 'default' }
-        optional :coverage,    type: Float,   desc: 'The total code coverage'
-        optional :pipeline_id, type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
+        requires :sha,          type: String, desc: 'The commit hash',
+                                documentation: { example: '18f3e63d05582537db6d183d9d557be09e1f90c8' }
+        requires :state,        type: String, desc: 'The state of the status',
+                                values: %w(pending running success failed canceled),
+                                documentation: { example: 'pending' }
+        optional :ref,          type: String, desc: 'The ref',
+                                documentation: { example: 'develop' }
+        optional :target_url,   type: String, desc: 'The target URL to associate with this status',
+                                documentation: { example: 'https://gitlab.example.com/janedoe/gitlab-foss/builds/91' }
+        optional :description,  type: String, desc: 'A short description of the status'
+        optional :name,         type: String, desc: 'A string label to differentiate this status from the status of other systems',
+                                documentation: { example: 'coverage', default: 'default' }
+        optional :context,      type: String, desc: 'A string label to differentiate this status from the status of other systems',
+                                documentation: { example: 'coverage', default: 'default' }
+        optional :coverage,     type: Float, desc: 'The total code coverage',
+                                documentation: { example: 100.0 }
+        optional :pipeline_id,  type: Integer, desc: 'An existing pipeline ID, when multiple pipelines on the same commit SHA have been triggered'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ':id/statuses/:sha' do

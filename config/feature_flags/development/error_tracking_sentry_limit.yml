@@ -1,8 +1,0 @@
----
-name: error_tracking_sentry_limit
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/84209
-rollout_issue_url:  https://gitlab.com/gitlab-org/gitlab/-/issues/372427
-milestone: '15.4'
-type: development
-group: group::observability
-default_enabled: false

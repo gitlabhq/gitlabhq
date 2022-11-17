@@ -118,9 +118,9 @@ module Gitlab
         return unless enabled?
 
         # Tell sidekiq to restart itself
-        # Keep extra safe to wait `Sidekiq.options[:timeout] + 2` seconds before SIGKILL
+        # Keep extra safe to wait `Sidekiq[:timeout] + 2` seconds before SIGKILL
         refresh_state(:shutting_down)
-        signal_and_wait(Sidekiq.options[:timeout] + 2, 'SIGTERM', 'gracefully shut down')
+        signal_and_wait(Sidekiq[:timeout] + 2, 'SIGTERM', 'gracefully shut down')
         return unless enabled?
 
         # Ideally we should never reach this condition
@@ -221,7 +221,7 @@ module Gitlab
       end
 
       def get_rss_kb
-        Gitlab::Metrics::System.memory_usage_rss / 1.kilobytes
+        Gitlab::Metrics::System.memory_usage_rss[:total] / 1.kilobytes
       end
 
       def get_soft_limit_rss_kb

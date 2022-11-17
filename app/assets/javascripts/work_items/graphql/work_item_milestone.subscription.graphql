@@ -1,0 +1,17 @@
+#import "~/work_items/graphql/milestone.fragment.graphql"
+
+subscription issuableMilestone($issuableId: IssuableID!) {
+  issuableMilestoneUpdated(issuableId: $issuableId) {
+    ... on WorkItem {
+      id
+      widgets {
+        ... on WorkItemWidgetMilestone {
+          type
+          milestone {
+            ...MilestoneFragment
+          }
+        }
+      }
+    }
+  }
+}

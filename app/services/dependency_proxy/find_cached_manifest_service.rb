@@ -19,6 +19,7 @@ module DependencyProxy
       head_result = DependencyProxy::HeadManifestService.new(@image, @tag, @token).execute
 
       return respond if cached_manifest_matches?(head_result)
+      return respond if @manifest && head_result[:status] == :error
 
       success(manifest: nil, from_cache: false)
     rescue Timeout::Error, *Gitlab::HTTP::HTTP_ERRORS

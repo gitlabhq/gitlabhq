@@ -7,7 +7,7 @@ value_description:
 extra_properties:
 identifiers:
 product_section: dev
-product_stage: ecosystem
+product_stage: manage
 product_group: group::integrations
 product_category:
 milestone: "14.0"

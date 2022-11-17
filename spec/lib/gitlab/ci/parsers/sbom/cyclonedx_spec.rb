@@ -100,15 +100,52 @@ RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
       ]
     end
 
+    before do
+      allow(report).to receive(:add_component)
+    end
+
     it 'adds each component, ignoring unused attributes' do
       expect(report).to receive(:add_component)
-        .with(an_object_having_attributes(name: "activesupport", version: "5.1.4", component_type: "library"))
+        .with(
+          an_object_having_attributes(
+            name: "activesupport",
+            version: "5.1.4",
+            component_type: "library",
+            purl: an_object_having_attributes(type: "gem")
+          )
+        )
       expect(report).to receive(:add_component)
-        .with(an_object_having_attributes(name: "byebug", version: "10.0.0", component_type: "library"))
+        .with(
+          an_object_having_attributes(
+            name: "byebug",
+            version: "10.0.0",
+            component_type: "library",
+            purl: an_object_having_attributes(type: "gem")
+          )
+        )
       expect(report).to receive(:add_component)
         .with(an_object_having_attributes(name: "minimal-component", version: nil, component_type: "library"))
 
       parse!
+    end
+
+    context 'when a component has an invalid purl' do
+      before do
+        components.push(
+          {
+            "name" => "invalid-component",
+            "version" => "v0.0.1",
+            "purl" => "pkg:nil",
+            "type" => "library"
+          }
+        )
+      end
+
+      it 'adds an error to the report' do
+        expect(report).to receive(:add_error).with("/components/#{components.size - 1}/purl is invalid")
+
+        parse!
+      end
     end
   end
 

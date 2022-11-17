@@ -51,6 +51,10 @@ Rails.application.configure do
   config.autoload_paths.push("#{config.root}/spec/components/previews")
 
   config.lookbook.page_paths = ["#{config.root}/spec/components/docs"]
+  config.lookbook.preview_params_options_eval = true
+  config.lookbook.preview_display_options = {
+    theme: ["light", "dark (alpha)"]
+  }
 
   # Adds additional error checking when serving assets at runtime.
   # Checks for improperly declared sprockets dependencies.

@@ -15,12 +15,7 @@ class MergeRequestDiffFile < ApplicationRecord
   end
 
   def utf8_diff
-    fetched_diff = if Feature.enabled?(:externally_stored_diffs_caching_export) &&
-                      merge_request_diff&.stored_externally?
-                     diff_export
-                   else
-                     diff
-                   end
+    fetched_diff = merge_request_diff&.stored_externally? ? diff_export : diff
 
     return '' if fetched_diff.blank?
 

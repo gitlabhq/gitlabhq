@@ -24,7 +24,7 @@ module Spam
 
       label = spamcheck_error ? 'ERROR' : spamcheck_result.to_s.upcase
 
-      histogram.observe( { result: label }, external_spam_check_round_trip_time )
+      histogram.observe({ result: label }, external_spam_check_round_trip_time)
 
       # assign result to a var for logging it before reassigning to nil when monitorMode is true
       original_spamcheck_result = spamcheck_result

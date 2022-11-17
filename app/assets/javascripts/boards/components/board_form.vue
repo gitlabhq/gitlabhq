@@ -84,7 +84,7 @@ export default {
   },
   computed: {
     ...mapState(['error']),
-    ...mapGetters(['isIssueBoard', 'isGroupBoard', 'isProjectBoard']),
+    ...mapGetters(['isGroupBoard', 'isProjectBoard']),
     isNewForm() {
       return this.currentPage === formType.new;
     },

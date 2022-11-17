@@ -31,6 +31,7 @@ import {
 import deleteContainerRepositoryTagsMutation from '../graphql/mutations/delete_container_repository_tags.mutation.graphql';
 import getContainerRepositoryDetailsQuery from '../graphql/queries/get_container_repository_details.query.graphql';
 import getContainerRepositoryTagsQuery from '../graphql/queries/get_container_repository_tags.query.graphql';
+import getContainerRepositoriesDetails from '../graphql/queries/get_container_repositories_details.query.graphql';
 
 const REPOSITORY_IMPORTING_ERROR_MESSAGE = 'repository importing';
 
@@ -144,6 +145,13 @@ export default {
             {
               query: getContainerRepositoryTagsQuery,
               variables: { ...this.queryVariables, first: GRAPHQL_PAGE_SIZE },
+            },
+            {
+              query: getContainerRepositoriesDetails,
+              variables: {
+                fullPath: this.config.isGroupPage ? this.config.groupPath : this.config.projectPath,
+                isGroupPage: this.config.isGroupPage,
+              },
             },
           ],
         });

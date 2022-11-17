@@ -39,15 +39,15 @@ module Gitlab
 
             def verify_order_by_attributes_on_model!(model, order_by_columns)
               order_by_columns.map(&:column).each do |column|
-                unless model.columns_hash[column.attribute_name.to_s]
-                  text = <<~TEXT
+                next if model.columns_hash[column.attribute_name.to_s]
+
+                text = <<~TEXT
                     The "RecordLoaderStrategy" does not support the following ORDER BY column because
                     it's not available on the \"#{model.table_name}\" table: #{column.attribute_name}
 
                     Omit the "finder_query" parameter to use the "OrderValuesLoaderStrategy".
-                  TEXT
-                  raise text
-                end
+                TEXT
+                raise text
               end
             end
           end

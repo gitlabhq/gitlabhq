@@ -236,47 +236,4 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate do
       end
     end
   end
-
-  context 'with pipeline name' do
-    let(:config) do
-      { workflow: { name: ' Pipeline name  ' }, rspec: { script: 'rspec' } }
-    end
-
-    context 'with feature flag disabled' do
-      before do
-        stub_feature_flags(pipeline_name: false)
-      end
-
-      it 'does not build pipeline_metadata' do
-        run_chain
-
-        expect(pipeline.pipeline_metadata).to be_nil
-      end
-    end
-
-    context 'with feature flag enabled' do
-      before do
-        stub_feature_flags(pipeline_name: true)
-      end
-
-      it 'builds pipeline_metadata' do
-        run_chain
-
-        expect(pipeline.pipeline_metadata.title).to eq('Pipeline name')
-        expect(pipeline.pipeline_metadata.project).to eq(pipeline.project)
-      end
-
-      context 'with empty name' do
-        let(:config) do
-          { workflow: { name: '  ' }, rspec: { script: 'rspec' } }
-        end
-
-        it 'strips whitespace from name' do
-          run_chain
-
-          expect(pipeline.pipeline_metadata).to be_nil
-        end
-      end
-    end
-  end
 end

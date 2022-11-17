@@ -143,6 +143,18 @@ RSpec.describe API::Ci::SecureFiles do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['name']).to eq(secure_file.name)
+        expect(json_response['expires_at']).to be nil
+        expect(json_response['metadata']).to be nil
+      end
+
+      it 'returns project secure file details with metadata when supported' do
+        secure_file_with_metadata = create(:ci_secure_file_with_metadata, project: project)
+        get api("/projects/#{project.id}/secure_files/#{secure_file_with_metadata.id}", maintainer)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['name']).to eq(secure_file_with_metadata.name)
+        expect(json_response['expires_at']).to eq('2022-04-26T19:20:40.000Z')
+        expect(json_response['metadata'].keys).to match_array(%w[id issuer subject expires_at])
       end
 
       it 'responds with 404 Not Found if requesting non-existing secure file' do

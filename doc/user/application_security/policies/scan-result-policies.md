@@ -6,6 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Scan result policies **(ULTIMATE)**
 
+> Group-level scan result policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/7622) in GitLab 15.6.
+
 You can use scan result policies to take action based on scan results. For example, one type of scan
 result policy is a security approval policy that allows approval to be required based on the
 findings of one or more security scan jobs. Scan result policies are evaluated after a CI scanning
@@ -20,7 +22,8 @@ job is fully executed. The following video gives you an overview of GitLab scan 
 
 ## Scan result policy editor
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77814) in GitLab 14.8.
+> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/369473) in GitLab 15.6.
 
 NOTE:
 Only project Owners have the [permissions](../../permissions.md#project-members-permissions)
@@ -37,6 +40,9 @@ do not go through a merge request and are committed directly to the default bran
 before the policy changes take effect.
 
 The [policy editor](index.md#policy-editor) supports YAML mode and rule mode.
+
+NOTE:
+Propagating scan result policies created for groups with a large number of projects will take a while to complete.
 
 ## Scan result policies schema
 

@@ -35,10 +35,6 @@ module QA
             element :status_icon, 'ci-status-icon-${status}' # rubocop:disable QA/ElementWithPattern
           end
 
-          view 'app/views/projects/pipelines/_info.html.haml' do
-            element :pipeline_badges
-          end
-
           view 'app/assets/javascripts/pipelines/components/graph/job_group_dropdown.vue' do
             element :job_dropdown_container
             element :jobs_dropdown_menu
@@ -66,12 +62,6 @@ module QA
 
           def has_no_job?(job_name)
             has_no_element?(:job_link, text: job_name)
-          end
-
-          def has_tag?(tag_name)
-            within_element(:pipeline_badges) do
-              has_selector?('.badge', text: tag_name)
-            end
           end
 
           def linked_pipelines

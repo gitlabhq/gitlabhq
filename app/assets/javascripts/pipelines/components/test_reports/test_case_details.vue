@@ -73,6 +73,7 @@ export default {
 
 <template>
   <gl-modal
+    data-testid="test-case-details-modal"
     :modal-id="modalId"
     :title="testCase.classname"
     :action-primary="$options.modalCloseButton"

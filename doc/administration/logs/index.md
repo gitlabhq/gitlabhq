@@ -340,6 +340,12 @@ associated SSH key can download the project in question by using a `git fetch` o
 - `params`: Key-value pairs passed in a query string or HTTP body (sensitive parameters, such as passwords and tokens, are filtered out)
 - `ua`: The User-Agent of the requester
 
+NOTE:
+As of [`Grape Logging`](https://github.com/aserafin/grape_logging) v1.8.4,
+the `view_duration_s` is calculated by [`duration_s - db_duration_s`](https://github.com/aserafin/grape_logging/blob/v1.8.4/lib/grape_logging/middleware/request_logger.rb#L117-L119).
+Therefore, `view_duration_s` can be affected by multiple different factors, like read-write
+process on Redis or external HTTP, not only the serialization process.
+
 ## `application.log`
 
 Depending on your installation method, this file is located at:
@@ -417,44 +423,16 @@ like this example:
 }
 ```
 
-## `kubernetes.log`
+## `kubernetes.log` (DEPRECATED)
+
+> [Deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
 
 Depending on your installation method, this file is located at:
 
 - Omnibus GitLab: `/var/log/gitlab/gitlab-rails/kubernetes.log`
 - Installations from source: `/home/git/gitlab/log/kubernetes.log`
 
-It logs information related to the Kubernetes Integration, including errors
-during installing cluster applications on your managed Kubernetes
-clusters.
-
-Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
-Line breaks have been added to the following example for clarity:
-
-```json
-{
-  "severity":"ERROR",
-  "time":"2018-11-23T15:14:54.652Z",
-  "exception":"Kubeclient::HttpError",
-  "error_code":401,
-  "service":"Clusters::Applications::CheckInstallationProgressService",
-  "app_id":14,
-  "project_ids":[1],
-  "group_ids":[],
-  "message":"Unauthorized"
-}
-{
-  "severity":"ERROR",
-  "time":"2018-11-23T15:42:11.647Z",
-  "exception":"Kubeclient::HttpError",
-  "error_code":null,
-  "service":"Clusters::Applications::InstallService",
-  "app_id":2,
-  "project_ids":[19],
-  "group_ids":[],
-  "message":"SSL_connect returned=1 errno=0 state=error: certificate verify failed (unable to get local issuer certificate)"
-}
-```
+It logs information related to [certificate-based clusters](../../user/project/clusters/index.md), such as connectivity errors. Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 
 ## `git_json.log`
 

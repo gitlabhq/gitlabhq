@@ -4,7 +4,7 @@ module Types
   class RepositoryType < BaseObject
     graphql_name 'Repository'
 
-    authorize :download_code
+    authorize :read_code
 
     field :blobs, Types::Repository::BlobType.connection_type, null: true, resolver: Resolvers::BlobsResolver, calls_gitaly: true,
                                                                description: 'Blobs contained within the repository'

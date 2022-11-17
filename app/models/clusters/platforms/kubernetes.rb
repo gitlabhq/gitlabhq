@@ -10,6 +10,7 @@ module Clusters
       include NullifyIfBlank
 
       RESERVED_NAMESPACES = %w(gitlab-managed-apps).freeze
+      REQUIRED_K8S_MIN_VERSION = 23
 
       IGNORED_CONNECTION_EXCEPTIONS = [
         Gitlab::UrlBlocker::BlockedUrlError,
@@ -20,6 +21,8 @@ module Clusters
         OpenSSL::X509::StoreError,
         OpenSSL::SSL::SSLError
       ].freeze
+
+      FailedVersionCheckError = Class.new(StandardError)
 
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_work_type = :external_dependency
@@ -64,9 +67,7 @@ module Clusters
         unknown_authorization: nil,
         rbac: 1,
         abac: 2
-      }
-
-      default_value_for :authorization_type, :rbac
+      }, _default: :rbac
 
       nullify_if_blank :namespace
 
@@ -208,6 +209,29 @@ module Clusters
         kubeclient.get_ingresses(namespace: namespace).as_json
       rescue Kubeclient::ResourceNotFoundError
         []
+      rescue NoMethodError => e
+        # We get NoMethodError for Kubernetes versions < 1.19. Since we only support >= 1.23
+        # we will ignore this error for previous versions. For more details read:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/371249#note_1079866043
+        return [] if server_version < REQUIRED_K8S_MIN_VERSION
+
+        raise e
+      end
+
+      def server_version
+        full_url = Gitlab::UrlSanitizer.new("#{api_url}/version").full_url
+
+        # We can't use `kubeclient` to check the cluster version because it does not support it
+        # https://github.com/ManageIQ/kubeclient/issues/309
+        response = Gitlab::HTTP.perform_request(
+          Net::HTTP::Get, full_url,
+          headers: { "Authorization" => "Bearer #{token}" },
+          cert_store: kubeclient_ssl_options[:cert_store])
+
+        Gitlab::ErrorTracking.track_exception(FailedVersionCheckError.new) unless response.success?
+
+        json_response = Gitlab::Json.parse(response.body)
+        json_response["minor"].to_i
       end
 
       def build_kube_client!

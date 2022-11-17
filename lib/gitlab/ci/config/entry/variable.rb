@@ -33,6 +33,10 @@ module Gitlab
             def value_with_data
               { value: @config.to_s }
             end
+
+            def value_with_prefill_data
+              value_with_data
+            end
           end
 
           class ComplexVariable < ::Gitlab::Config::Entry::Node
@@ -48,6 +52,9 @@ module Gitlab
               validates :key, alphanumeric: true
               validates :config_value, alphanumeric: true, allow_nil: false, if: :config_value_defined?
               validates :config_description, alphanumeric: true, allow_nil: false, if: :config_description_defined?
+              validates :config_expand, boolean: true,
+                                        allow_nil: false,
+                                        if: -> { ci_raw_variables_in_yaml_config_enabled? && config_expand_defined? }
 
               validate do
                 allowed_value_data = Array(opt(:allowed_value_data))
@@ -67,7 +74,22 @@ module Gitlab
             end
 
             def value_with_data
-              { value: value, description: config_description }.compact
+              if ci_raw_variables_in_yaml_config_enabled?
+                {
+                  value: value,
+                  raw: (!config_expand if config_expand_defined?)
+                }.compact
+              else
+                {
+                  value: value
+                }.compact
+              end
+            end
+
+            def value_with_prefill_data
+              value_with_data.merge(
+                description: config_description
+              ).compact
             end
 
             def config_value
@@ -78,12 +100,24 @@ module Gitlab
               @config[:description]
             end
 
+            def config_expand
+              @config[:expand]
+            end
+
             def config_value_defined?
               config.key?(:value)
             end
 
             def config_description_defined?
               config.key?(:description)
+            end
+
+            def config_expand_defined?
+              config.key?(:expand)
+            end
+
+            def ci_raw_variables_in_yaml_config_enabled?
+              YamlProcessor::FeatureFlags.enabled?(:ci_raw_variables_in_yaml_config)
             end
           end
 
@@ -110,8 +144,10 @@ module Gitlab
               config_value.first
             end
 
-            def value_with_data
-              super.merge(value_options: config_value).compact
+            def value_with_prefill_data
+              super.merge(
+                value_options: config_value
+              ).compact
             end
           end
 

@@ -41,6 +41,11 @@ module Gitlab
       # as the underlying implementation of this varies wildly based on
       # the adapter in use.
       #
+      # This method does, in some situations, differ in the data it returns
+      # compared to .generate. Counter-intuitively, this is closest in
+      # terms of response to JSON.generate and to the default ActiveSupport
+      # .to_json method.
+      #
       # @param object [Object] the object to convert to JSON
       # @return [String]
       def dump(object)
@@ -162,22 +167,10 @@ module Gitlab
       # @return [Boolean, String, Array, Hash, Object]
       # @raise [JSON::ParserError]
       def handle_legacy_mode!(data)
-        return data unless feature_table_exists?
+        return data unless Feature.feature_flags_available?
         return data unless Feature.enabled?(:json_wrapper_legacy_mode)
 
         raise parser_error if INVALID_LEGACY_TYPES.any? { |type| data.is_a?(type) }
-      end
-
-      # There are a variety of database errors possible when checking the feature
-      # flags at the wrong time during boot, e.g. during migrations. We don't care
-      # about these errors, we just need to ensure that we skip feature detection
-      # if they will fail.
-      #
-      # @return [Boolean]
-      def feature_table_exists?
-        Feature::FlipperFeature.table_exists?
-      rescue StandardError
-        false
       end
     end
 
@@ -261,6 +254,20 @@ module Gitlab
         end
 
         buffer.string
+      end
+    end
+
+    class RailsEncoder < ActiveSupport::JSON::Encoding::JSONGemEncoder
+      # Rails doesn't provide a way of changing the JSON adapter for
+      # render calls in controllers, so here we're overriding the parent
+      # class method to use our generator, and it's monkey-patched in
+      # config/initializers/active_support_json.rb
+      def stringify(jsonified)
+        Gitlab::Json.dump(jsonified)
+      rescue EncodingError => ex
+        # Raise the same error as the default implementation if we encounter
+        # an error. These are usually related to invalid UTF-8 errors.
+        raise JSON::GeneratorError, ex
       end
     end
   end

@@ -61,7 +61,7 @@ module Packages
         create_objects(distribution.architectures, architectures, error_label: 'Architecture')
       end
 
-      def create_objects(objects, object_names_from_params, error_label: )
+      def create_objects(objects, object_names_from_params, error_label:)
         object_names_from_params.each do |name|
           new_object = objects.create(name: name)
           append_errors(new_object, error_label)

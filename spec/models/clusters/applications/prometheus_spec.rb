@@ -12,6 +12,13 @@ RSpec.describe Clusters::Applications::Prometheus do
   include_examples 'cluster application helm specs', :clusters_applications_prometheus
   include_examples 'cluster application initial status specs'
 
+  describe 'default values' do
+    subject(:prometheus) { build(:clusters_applications_prometheus) }
+
+    it { expect(prometheus.alert_manager_token).to be_an_instance_of(String) }
+    it { expect(prometheus.version).to eq(described_class::VERSION) }
+  end
+
   describe 'after_destroy' do
     let(:cluster) { create(:cluster, :with_installed_helm) }
     let(:application) { create(:clusters_applications_prometheus, :installed, cluster: cluster) }
@@ -130,7 +137,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     end
 
     context 'with knative installed' do
-      let(:knative) { create(:clusters_applications_knative, :updated ) }
+      let(:knative) { create(:clusters_applications_knative, :updated) }
       let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
 
       subject { prometheus.install_command }
@@ -161,7 +168,7 @@ RSpec.describe Clusters::Applications::Prometheus do
     end
 
     describe '#predelete' do
-      let(:knative) { create(:clusters_applications_knative, :updated ) }
+      let(:knative) { create(:clusters_applications_knative, :updated) }
       let(:prometheus) { create(:clusters_applications_prometheus, cluster: knative.cluster) }
 
       subject { prometheus.uninstall_command.predelete }

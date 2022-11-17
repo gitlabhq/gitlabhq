@@ -16,6 +16,7 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
   let(:referenced_table_name) { '_test_referenced_table' }
   let(:other_referenced_table_name) { '_test_other_referenced_table' }
   let(:parent_table_name) { "#{table_name}_parent" }
+  let(:lock_tables) { [] }
 
   let(:model) { define_batchable_model(table_name, connection: connection) }
 
@@ -27,7 +28,8 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
       table_name: table_name,
       partitioning_column: partitioning_column,
       parent_table_name: parent_table_name,
-      zero_partition_value: partitioning_default
+      zero_partition_value: partitioning_default,
+      lock_tables: lock_tables
     )
   end
 
@@ -165,6 +167,16 @@ RSpec.describe Gitlab::Database::Partitioning::ConvertTableToFirstListPartition 
 
       it 'partitions without error' do
         expect { partition }.not_to raise_error
+      end
+    end
+
+    context 'with locking tables' do
+      let(:lock_tables) { [table_name] }
+
+      it 'locks the table' do
+        recorder = ActiveRecord::QueryRecorder.new { partition }
+
+        expect(recorder.log).to include(/LOCK "_test_table_to_partition" IN ACCESS EXCLUSIVE MODE/)
       end
     end
 

@@ -1,0 +1,8 @@
+= render Pajamas::AlertComponent.new(variant: :warning,
+                title: _('Machine Learning Experiment Tracking is in Incubating Phase'),
+                alert_options: { class: 'gl-my-3' }) do |c|
+  = c.body do
+    = _('GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited')
+    = link_to _('Learn more.'), 'https://about.gitlab.com/handbook/engineering/incubation/', target: "_blank"
+  = c.actions do
+    = link_to _('Feedback and Updates'), 'https://gitlab.com/groups/gitlab-org/-/epics/8560', target: "_blank"

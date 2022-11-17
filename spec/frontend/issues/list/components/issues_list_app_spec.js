@@ -33,16 +33,6 @@ import {
   CREATED_DESC,
   RELATIVE_POSITION,
   RELATIVE_POSITION_ASC,
-  TOKEN_TYPE_ASSIGNEE,
-  TOKEN_TYPE_AUTHOR,
-  TOKEN_TYPE_CONFIDENTIAL,
-  TOKEN_TYPE_CONTACT,
-  TOKEN_TYPE_LABEL,
-  TOKEN_TYPE_MILESTONE,
-  TOKEN_TYPE_MY_REACTION,
-  TOKEN_TYPE_ORGANIZATION,
-  TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_TYPE,
   urlSortParams,
 } from '~/issues/list/constants';
 import eventHub from '~/issues/list/eventhub';
@@ -57,7 +47,19 @@ import {
   WORK_ITEM_TYPE_ENUM_TASK,
   WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
-import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  FILTERED_SEARCH_TERM,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_CONTACT,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_ORGANIZATION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 
 import('~/issuable/bulk_update_sidebar');
 import('~/users_select');
@@ -89,7 +91,6 @@ describe('CE IssuesListApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
-    hasMultipleIssueAssigneesFeature: true,
     hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
@@ -131,7 +132,6 @@ describe('CE IssuesListApp component', () => {
   const mountComponent = ({
     provide = {},
     data = {},
-    workItems = false,
     issuesQueryResponse = mockIssuesQueryResponse,
     issuesCountsQueryResponse = mockIssuesCountsQueryResponse,
     sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
@@ -150,9 +150,6 @@ describe('CE IssuesListApp component', () => {
       apolloProvider: createMockApollo(requestHandlers),
       router,
       provide: {
-        glFeatures: {
-          workItems,
-        },
         ...defaultProvide,
         ...provide,
       },
@@ -605,17 +602,20 @@ describe('CE IssuesListApp component', () => {
         beforeEach(() => {
           wrapper = mountComponent({
             provide: { hasAnyIssues: false, isSignedIn: false },
+            mountFn: mount,
           });
         });
 
         it('shows empty state', () => {
           expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noIssuesSignedOutDescription,
             title: IssuesListApp.i18n.noIssuesSignedOutTitle,
             svgPath: defaultProvide.emptyStateSvgPath,
             primaryButtonText: IssuesListApp.i18n.noIssuesSignedOutButtonText,
             primaryButtonLink: defaultProvide.signInPath,
           });
+          expect(findGlEmptyState().text()).toContain(
+            IssuesListApp.i18n.noIssuesSignedOutDescription,
+          );
         });
       });
     });
@@ -1060,45 +1060,23 @@ describe('CE IssuesListApp component', () => {
   });
 
   describe('fetching issues', () => {
-    describe('when work_items feature flag is disabled', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ workItems: false });
-        jest.runOnlyPendingTimers();
-      });
-
-      it('fetches issue, incident, and test case types', () => {
-        const types = [
-          WORK_ITEM_TYPE_ENUM_ISSUE,
-          WORK_ITEM_TYPE_ENUM_INCIDENT,
-          WORK_ITEM_TYPE_ENUM_TEST_CASE,
-        ];
-
-        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
-        expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
-          expect.objectContaining({ types }),
-        );
-      });
+    beforeEach(() => {
+      wrapper = mountComponent();
+      jest.runOnlyPendingTimers();
     });
 
-    describe('when work_items feature flag is enabled', () => {
-      beforeEach(() => {
-        wrapper = mountComponent({ workItems: true });
-        jest.runOnlyPendingTimers();
-      });
+    it('fetches issue, incident, test case, and task types', () => {
+      const types = [
+        WORK_ITEM_TYPE_ENUM_ISSUE,
+        WORK_ITEM_TYPE_ENUM_INCIDENT,
+        WORK_ITEM_TYPE_ENUM_TEST_CASE,
+        WORK_ITEM_TYPE_ENUM_TASK,
+      ];
 
-      it('fetches issue, incident, test case, and task types', () => {
-        const types = [
-          WORK_ITEM_TYPE_ENUM_ISSUE,
-          WORK_ITEM_TYPE_ENUM_INCIDENT,
-          WORK_ITEM_TYPE_ENUM_TEST_CASE,
-          WORK_ITEM_TYPE_ENUM_TASK,
-        ];
-
-        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
-        expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
-          expect.objectContaining({ types }),
-        );
-      });
+      expect(mockIssuesQueryResponse).toHaveBeenCalledWith(expect.objectContaining({ types }));
+      expect(mockIssuesCountsQueryResponse).toHaveBeenCalledWith(
+        expect.objectContaining({ types }),
+      );
     });
   });
 });

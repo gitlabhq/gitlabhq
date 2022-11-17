@@ -28,7 +28,7 @@ To select a project to serve as the custom template repository:
 1. Add custom templates to the selected repository.
 
 After you add templates, you can use them for the entire instance.
-They are available in the [Web Editor's dropdown](../../project/repository/web_editor.md#template-dropdowns)
+They are available in the [Web Editor's dropdown list](../../project/repository/web_editor.md#template-dropdowns)
 and through the [API settings](../../../api/settings.md).
 
 ## Supported file types and locations
@@ -67,9 +67,9 @@ extension and not be empty. So, the hierarchy should look like this:
     |-- another_metrics-dashboard.yml
 ```
 
-Your custom templates are displayed on the dropdown menu when a new file is added through the GitLab UI:
+Your custom templates are displayed on the dropdown list when a new file is added through the GitLab UI:
 
-![Custom template dropdown menu](img/file_template_user_dropdown.png)
+![Custom template dropdown list](img/file_template_user_dropdown.png)
 
 If this feature is disabled or no templates are present,
 no **Custom** section displays in the selection dropdown.
@@ -82,6 +82,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

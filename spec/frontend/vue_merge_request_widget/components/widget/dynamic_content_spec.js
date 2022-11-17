@@ -25,6 +25,10 @@ describe('~/vue_merge_request_widget/components/widget/dynamic_content.vue', () 
           header: ['This is a header', 'This is a subheader'],
           text: 'Main text for the row',
           subtext: 'Optional: Smaller sub-text to be displayed below the main text',
+          helpPopover: {
+            options: { title: 'Widget help popover title' },
+            content: { text: 'Widget help popover content' },
+          },
           icon: {
             name: EXTENSION_ICONS.success,
           },

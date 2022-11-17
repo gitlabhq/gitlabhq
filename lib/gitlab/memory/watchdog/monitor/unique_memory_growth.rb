@@ -16,7 +16,7 @@ module Gitlab
             reference_uss = reference_mem[:uss]
             memory_limit = max_mem_growth * reference_uss
 
-            return { threshold_violated: false, payload: {} } unless worker_uss > memory_limit
+            return { threshold_violated: false, payload: {} } if worker_uss <= memory_limit
 
             { threshold_violated: true, payload: payload(worker_uss, reference_uss, memory_limit) }
           end

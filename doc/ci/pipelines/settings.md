@@ -82,9 +82,10 @@ You can set pending or running pipelines to cancel automatically when a new pipe
 Use the [`interruptible`](../yaml/index.md#interruptible) keyword to indicate if a
 running job can be cancelled before it completes.
 
-## Skip outdated deployment jobs
+## Prevent outdated deployment jobs
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/25276) in GitLab 12.9.
+> - In GitLab 15.5, the behavior was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) to prevent outdated job runs.
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
@@ -97,29 +98,10 @@ To avoid this scenario:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. Select the **Skip outdated deployment jobs** checkbox.
+1. Select the **Prevent outdated deployment jobs** checkbox.
 1. Select **Save changes**.
 
-When a new deployment starts, older deployment jobs are skipped. Skipped jobs are labeled:
-
-- `forward deployment failure` in the pipeline view.
-- `The deployment job is older than the previously succeeded deployment job, and therefore cannot be run`
-  when viewing the completed job.
-
-Job age is determined by the job start time, not the commit time, so a newer commit
-can be skipped in some circumstances.
-
-For more information, see [Deployment safety](../environments/deployment_safety.md).
-
-## Retry outdated jobs
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211339) in GitLab 13.6.
-
-A deployment job can fail because a newer one has run. If you retry the failed deployment job, the
-environment could be overwritten with older source code. If you select **Retry**, a modal warns you
-about this and asks for confirmation.
-
-For more information, see [Deployment safety](../environments/deployment_safety.md).
+For more information, see [Deployment safety](../environments/deployment_safety.md#prevent-outdated-deployment-jobs).
 
 ## Specify a custom CI/CD configuration file
 
@@ -246,53 +228,6 @@ averaged.
 To add test coverage results to a merge request using the project's `.gitlab-ci.yml` file, provide a regular expression
 using the [`coverage`](../yaml/index.md#coverage) keyword.
 
-<!-- start_remove The following content will be removed on remove_date: '2023-08-22' -->
-
-### Add test coverage results using project settings (removed)
-
-> - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 14.8. Replaced by [`coverage` keyword](../yaml/index.md#coverage).
-> - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
-
-This feature is in its end-of-life process. It was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/17633)
-in GitLab 14.8. The feature is [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/17633) in GitLab 15.0.
-
-To migrate from a project setting to the `coverage` keyword, add the [former project setting](#locate-former-project-setting)
-to a CI/CD job. For example:
-
-- A Go test coverage project setting:  `coverage: \d+.\d+% of statements`.
-- A CI/CD job with `coverage` keyword setting:
-
-  ```yaml
-  unit-test:
-    stage: test
-    coverage: '/coverage: \d+.\d+% of statements/'
-    script:
-      - go test -cover
-  ```
-
-The `.gitlab-ci.yml` job [`coverage`](../yaml/index.md#coverage) keyword must be:
-
-- A regular expression starts and ends with the `/` character.
-- Defined as single-quoted string.
-
-You can verify correct syntax using the [pipeline editor](../pipeline_editor/index.md).
-
-#### Locate former project setting
-
-To migrate from the project coverage setting to the `coverage` keyword, use the
-regular expression displayed in the settings. Available in GitLab 14.10 and earlier:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **General pipelines**.
-
-The regular expression you need is in the **Test coverage parsing** field.
-
-If you need to retrieve the project coverage setting from many projects, you can
-[use the API to programmatically retrieve the setting](https://gitlab.com/gitlab-org/gitlab/-/issues/17633#note_945941397).
-
-<!-- end_remove -->
-
 ### Test coverage examples
 
 Use this regex for commonly used test tools.
@@ -302,6 +237,7 @@ Use this regex for commonly used test tools.
 - Simplecov (Ruby). Example: `/\(\d+.\d+\%\) covered/`.
 - pytest-cov (Python). Example: `/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/`.
 - Scoverage (Scala). Example: `/Statement coverage[A-Za-z\.*]\s*:\s*([^%]+)/`.
+- `pest --coverage --colors=never` (PHP). Example: `/^\s*Cov:\s*\d+\.\d+?%$/`.
 - `phpunit --coverage-text --colors=never` (PHP). Example: `/^\s*Lines:\s*\d+.\d+\%/`.
 - gcovr (C/C++). Example: `/^TOTAL.*\s+(\d+\%)$/`.
 - `tap --coverage-report=text-summary` (NodeJS). Example: `/^Statements\s*:\s*([^%]+)/`.
@@ -437,12 +373,12 @@ https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg
 ```
 
 To get the coverage report from a specific job, add
-the `job=coverage_job_name` parameter to the URL. For example, the following
-Markdown code embeds the test coverage report badge of the `coverage` job
-in your `README.md`:
+the `job=coverage_job_name` parameter to the URL. For example, you can use code
+similar to the following to add the test coverage report badge of the `coverage` job
+to a Markdown file:
 
 ```markdown
-![coverage](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage)
+![coverage](https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?job=coverage)
 ```
 
 #### Test coverage report badge colors and limits
@@ -527,6 +463,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

@@ -698,6 +698,38 @@ entry.
 - [Add environment keyword to pages job](gitlab-org/gitlab@73af406f9101da0a2f076ac023de5dfd60c85445) by @edith007 ([merge request](gitlab-org/gitlab!98283))
 - [Remove feature flag ci_variables_refactoring_to_variable](gitlab-org/gitlab@f5d1e8277fb8c326082e58536aeae21ab3fd289c) ([merge request](gitlab-org/gitlab!97967))
 
+## 15.4.5 (2022-11-15)
+
+### Fixed (1 change)
+
+- [Revert Sidekiq default routing rules](gitlab-org/gitlab@b8b62286bc660decc83dad6295b121e134451924) ([merge request](gitlab-org/gitlab!103641))
+
+## 15.4.4 (2022-11-02)
+
+### Security (12 changes)
+
+- [Datadog API key leak by changing integration URL](gitlab-org/security/gitlab@15e90bacccbc5146411c7a4ac3400470d3985c18) ([merge request](gitlab-org/security/gitlab!2865))
+- [Redact confidential references in Jira issue descriptions](gitlab-org/security/gitlab@8b60fe8c3150348973a9d3ad79d781614db47103) ([merge request](gitlab-org/security/gitlab!2871))
+- [Forbid reading emojis on internal notes](gitlab-org/security/gitlab@ec9b40a9e9d3c91dc690d74d76187e41b5884ff9) ([merge request](gitlab-org/security/gitlab!2836))
+- [Same-site redirect vulnerability](gitlab-org/security/gitlab@de86e0b20c34d1475ab7535bc3ed0d7a21727a20) ([merge request](gitlab-org/security/gitlab!2879))
+- [BYPASS: Stored-XSS with CSP-bypass via scoped labels' color](gitlab-org/security/gitlab@52e8105445cdba63be5c4e866cb289d13b6d6e7c) ([merge request](gitlab-org/security/gitlab!2861))
+- [Fix Running Upstream Pipelines Jobs Without Permission](gitlab-org/security/gitlab@ad2fe7b8555fd568944718f5fb087de8de7b2425) ([merge request](gitlab-org/security/gitlab!2882))
+- [Add length limit to addressable URLs](gitlab-org/security/gitlab@8c44b371bd120979b339e4e5dbb7208fb048eadd) ([merge request](gitlab-org/security/gitlab!2829))
+- [Add a redirect wall before artifact redirect to pages](gitlab-org/security/gitlab@837c0f2245847c43d6cfd8f1d7860e46ffacfe18) ([merge request](gitlab-org/security/gitlab!2812))
+- [Sandbox swagger-ui to prevent injection attacks](gitlab-org/security/gitlab@90567191fae7f7d84d001e52f0adc11155dc564f) ([merge request](gitlab-org/security/gitlab!2849))
+- [Fix external project permission when using CI prefill variables](gitlab-org/security/gitlab@ae39f2b5a5a27b6e85ef642b768963b7ed018a14) ([merge request](gitlab-org/security/gitlab!2822))
+- [Resolve users can view audit events from other members](gitlab-org/security/gitlab@f819d033a190b2b5f7d635395575e5472b1fe8e7) ([merge request](gitlab-org/security/gitlab!2842))
+- [Path traversal fix for Secure Files](gitlab-org/security/gitlab@bd138464ee5fa71755f2b4d9b9aaaa3c8017a165) ([merge request](gitlab-org/security/gitlab!2848))
+
+## 15.4.3 (2022-10-19)
+
+### Fixed (4 changes)
+
+- [Sign in: use custom logo again](gitlab-org/gitlab@5822562c4c3508927e3b217749867736e91316f3) ([merge request](gitlab-org/gitlab!101235))
+- [Fix closing of external issues](gitlab-org/gitlab@1302f992e3706b698c983961f596fcab03704c3f) ([merge request](gitlab-org/gitlab!101235))
+- [Sign in: use custom logo again](gitlab-org/gitlab@d760473a022ef485be7e258ab5fc406f05a127a4) ([merge request](gitlab-org/gitlab!101235))
+- [Fix REST/GRAPHQL APIs handling TODOs WorkItem target](gitlab-org/gitlab@f4157b08596040bbc504292c4a75fe2100aa570c) ([merge request](gitlab-org/gitlab!100081))
+
 ## 15.4.2 (2022-10-04)
 
 ### Fixed (1 change)
@@ -1355,6 +1387,23 @@ entry.
 - [Drop unused security findings index](gitlab-org/gitlab@0fbee5c0d4eb896547f695326f6e1ce081f34a47) ([merge request](gitlab-org/gitlab!95450))
 - [Improve specs with shared examples](gitlab-org/gitlab@dd3f2ecd882e89511eaa927102fc4101f684a38f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95539)) **GitLab Enterprise Edition**
 - [Fix Style/Next offenses](gitlab-org/gitlab@bdf877063ba1d8d4df1216f7875905343d9e5e33) ([merge request](gitlab-org/gitlab!93329))
+
+## 15.3.5 (2022-11-02)
+
+### Security (12 changes)
+
+- [Datadog API key leak by changing integration URL](gitlab-org/security/gitlab@3a8868210a210f07e08324a328e937fd818e34d3) ([merge request](gitlab-org/security/gitlab!2864))
+- [Redact confidential references in Jira issue descriptions](gitlab-org/security/gitlab@97178d0d8e1af412b949e81b5f53d8d9cf07371b) ([merge request](gitlab-org/security/gitlab!2872))
+- [Forbid reading emojis on internal notes](gitlab-org/security/gitlab@7684247b947b946e2865ec61a2f7eddd9a25daf7) ([merge request](gitlab-org/security/gitlab!2838))
+- [Same-site redirect vulnerability](gitlab-org/security/gitlab@4c0737d57b9d9f5f86ffdd5b0c25f9805d05d5f7) ([merge request](gitlab-org/security/gitlab!2880))
+- [BYPASS: Stored-XSS with CSP-bypass via scoped labels' color](gitlab-org/security/gitlab@a72e2384e95ed083a139252d51b6638fe4128c14) ([merge request](gitlab-org/security/gitlab!2862))
+- [Fix Running Upstream Pipelines Jobs Without Permission](gitlab-org/security/gitlab@f6545466e181f3688d5ed67023cd0f1bd6220a7c) ([merge request](gitlab-org/security/gitlab!2883))
+- [Add length limit to addressable URLs](gitlab-org/security/gitlab@411bba8ac053211906d40d24b9fdb2c565d33f62) ([merge request](gitlab-org/security/gitlab!2830))
+- [Add a redirect wall before artifact redirect to pages](gitlab-org/security/gitlab@2b9a6ccddb77cab46217ef0fd633af2f32548313) ([merge request](gitlab-org/security/gitlab!2813))
+- [Sandbox swagger-ui to prevent injection attacks](gitlab-org/security/gitlab@3b8771478b8615d24794fc49195b5f2f8257df0c) ([merge request](gitlab-org/security/gitlab!2850))
+- [Fix external project permission when using CI prefill variables](gitlab-org/security/gitlab@107e583c97b39951c08728fdff1b44e8c6fa7f6f) ([merge request](gitlab-org/security/gitlab!2823))
+- [Resolve users can view audit events from other members](gitlab-org/security/gitlab@cdcd5ed72312dfddcd3e91ae824188a0dd88e745) ([merge request](gitlab-org/security/gitlab!2843))
+- [Path traversal fix for Secure Files](gitlab-org/security/gitlab@90bbaaa1ce2d0978cf89fabf1f302da1f9f938df) ([merge request](gitlab-org/security/gitlab!2847))
 
 ## 15.3.4 (2022-09-29)
 

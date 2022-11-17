@@ -53,11 +53,11 @@ module Git
     def create_pipelines
       return unless params.fetch(:create_pipelines, true)
 
-      Ci::CreatePipelineService
-        .new(project, current_user, pipeline_params)
-        .execute!(:push, pipeline_options)
-    rescue Ci::CreatePipelineService::CreateError => ex
-      log_pipeline_errors(ex)
+      response = Ci::CreatePipelineService
+          .new(project, current_user, pipeline_params)
+          .execute(:push, **pipeline_options)
+
+      log_pipeline_errors(response.message) unless response.payload.persisted?
     end
 
     def execute_project_hooks
@@ -148,14 +148,14 @@ module Git
       {}
     end
 
-    def log_pipeline_errors(exception)
+    def log_pipeline_errors(error_message)
       data = {
         class: self.class.name,
         correlation_id: Labkit::Correlation::CorrelationId.current_id.to_s,
         project_id: project.id,
         project_path: project.full_path,
         message: "Error creating pipeline",
-        errors: exception.to_s,
+        errors: error_message,
         pipeline_params: sanitized_pipeline_params
       }
 

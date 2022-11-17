@@ -6961,7 +6961,7 @@
         "id": 2,
         "pipeline_id": 36,
         "project_id": 5,
-        "title": "Build pipeline"
+        "name": "Build pipeline"
       },
       "notes": [
         {

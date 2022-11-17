@@ -202,6 +202,22 @@ RSpec.describe BulkImports::Clients::HTTP do
     it 'returns version as an instance of Gitlab::VersionInfo' do
       expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
     end
+
+    context 'when /version endpoint is not available' do
+      it 'requests /metadata endpoint' do
+        response_double = double(code: 404, success?: false, parsed_response: 'Not Found', request: double(path: double(path: '/version')))
+
+        allow(Gitlab::HTTP).to receive(:get)
+          .with('http://gitlab.example/api/v4/version', anything)
+          .and_return(response_double)
+
+        expect(Gitlab::HTTP).to receive(:get)
+          .with('http://gitlab.example/api/v4/metadata', anything)
+          .and_return(version_response)
+
+        expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
+      end
+    end
   end
 
   describe '#compatible_for_project_migration?' do

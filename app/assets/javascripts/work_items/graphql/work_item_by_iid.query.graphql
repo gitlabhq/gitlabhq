@@ -1,0 +1,12 @@
+#import "./work_item.fragment.graphql"
+
+query workItemByIid($fullPath: ID!, $iid: String) {
+  workspace: project(fullPath: $fullPath) {
+    id
+    workItems(iid: $iid) {
+      nodes {
+        ...WorkItem
+      }
+    }
+  }
+}

@@ -7,6 +7,8 @@ export const PACKAGE_SETTINGS_DESCRIPTION = s__(
 );
 export const PACKAGE_FORMATS_TABLE_HEADER = s__('PackageRegistry|Package formats');
 export const MAVEN_PACKAGE_FORMAT = s__('PackageRegistry|Maven');
+export const NPM_PACKAGE_FORMAT = s__('PackageRegistry|npm');
+export const PYPI_PACKAGE_FORMAT = s__('PackageRegistry|PyPI');
 export const GENERIC_PACKAGE_FORMAT = s__('PackageRegistry|Generic');
 
 export const DUPLICATES_TOGGLE_LABEL = s__('PackageRegistry|Allow duplicates');
@@ -15,10 +17,64 @@ export const DUPLICATES_SETTINGS_EXCEPTION_LEGEND = s__(
   'PackageRegistry|Publish packages if their name or version matches this regex.',
 );
 
+export const PACKAGE_FORWARDING_SETTINGS_HEADER = s__('PackageRegistry|Package forwarding');
+export const PACKAGE_FORWARDING_SETTINGS_DESCRIPTION = s__(
+  'PackageRegistry|Forward package requests to a public registry if the packages are not found in the GitLab package registry.',
+);
+export const PACKAGE_FORWARDING_CHECKBOX_LABEL = s__(
+  `PackageRegistry|Forward %{packageType} package requests`,
+);
+export const PACKAGE_FORWARDING_ENFORCE_LABEL = s__(
+  `PackageRegistry|Enforce %{packageType} setting for all subgroups`,
+);
+
+const MAVEN_PACKAGE_REQUESTS_FORWARDING = 'mavenPackageRequestsForwarding';
+const LOCK_MAVEN_PACKAGE_REQUESTS_FORWARDING = 'lockMavenPackageRequestsForwarding';
+const MAVEN_PACKAGE_REQUESTS_FORWARDING_LOCKED = 'mavenPackageRequestsForwardingLocked';
+const NPM_PACKAGE_REQUESTS_FORWARDING = 'npmPackageRequestsForwarding';
+const LOCK_NPM_PACKAGE_REQUESTS_FORWARDING = 'lockNpmPackageRequestsForwarding';
+const NPM_PACKAGE_REQUESTS_FORWARDING_LOCKED = 'npmPackageRequestsForwardingLocked';
+const PYPI_PACKAGE_REQUESTS_FORWARDING = 'pypiPackageRequestsForwarding';
+const LOCK_PYPI_PACKAGE_REQUESTS_FORWARDING = 'lockPypiPackageRequestsForwarding';
+const PYPI_PACKAGE_REQUESTS_FORWARDING_LOCKED = 'pypiPackageRequestsForwardingLocked';
+
+export const PACKAGE_FORWARDING_FORM_BUTTON = __('Save changes');
+
 export const DEPENDENCY_PROXY_HEADER = s__('DependencyProxy|Dependency Proxy');
 export const DEPENDENCY_PROXY_DESCRIPTION = s__(
   'DependencyProxy|Enable the Dependency Proxy and settings for clearing the cache.',
 );
+
+export const PACKAGE_FORWARDING_FIELDS = [
+  {
+    label: NPM_PACKAGE_FORMAT,
+    testid: 'npm',
+    modelNames: {
+      forwarding: NPM_PACKAGE_REQUESTS_FORWARDING,
+      lockForwarding: LOCK_NPM_PACKAGE_REQUESTS_FORWARDING,
+      isLocked: NPM_PACKAGE_REQUESTS_FORWARDING_LOCKED,
+    },
+  },
+  {
+    label: PYPI_PACKAGE_FORMAT,
+    testid: 'pypi',
+    modelNames: {
+      forwarding: PYPI_PACKAGE_REQUESTS_FORWARDING,
+      lockForwarding: LOCK_PYPI_PACKAGE_REQUESTS_FORWARDING,
+      isLocked: PYPI_PACKAGE_REQUESTS_FORWARDING_LOCKED,
+    },
+  },
+];
+
+export const MAVEN_FORWARDING_FIELDS = {
+  label: MAVEN_PACKAGE_FORMAT,
+  testid: 'maven',
+  modelNames: {
+    forwarding: MAVEN_PACKAGE_REQUESTS_FORWARDING,
+    lockForwarding: LOCK_MAVEN_PACKAGE_REQUESTS_FORWARDING,
+    isLocked: MAVEN_PACKAGE_REQUESTS_FORWARDING_LOCKED,
+  },
+};
 
 // Parameters
 

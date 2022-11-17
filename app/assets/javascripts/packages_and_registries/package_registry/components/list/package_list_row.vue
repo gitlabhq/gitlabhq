@@ -2,6 +2,7 @@
 import {
   GlDropdown,
   GlDropdownItem,
+  GlFormCheckbox,
   GlIcon,
   GlSprintf,
   GlTooltipDirective,
@@ -26,6 +27,7 @@ export default {
   components: {
     GlDropdown,
     GlDropdownItem,
+    GlFormCheckbox,
     GlIcon,
     GlSprintf,
     GlTruncate,
@@ -44,6 +46,11 @@ export default {
     packageEntity: {
       type: Object,
       required: true,
+    },
+    selected: {
+      type: Boolean,
+      default: false,
+      required: false,
     },
   },
   computed: {
@@ -90,7 +97,15 @@ export default {
 </script>
 
 <template>
-  <list-item data-testid="package-row">
+  <list-item data-testid="package-row" v-bind="$attrs">
+    <template #left-action>
+      <gl-form-checkbox
+        v-if="packageEntity.canDestroy"
+        class="gl-m-0"
+        :checked="selected"
+        @change="$emit('select')"
+      />
+    </template>
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
         <router-link
@@ -168,12 +183,9 @@ export default {
         category="tertiary"
         no-caret
       >
-        <gl-dropdown-item
-          data-testid="action-delete"
-          variant="danger"
-          @click="$emit('packageToDelete', packageEntity)"
-          >{{ $options.i18n.deletePackage }}</gl-dropdown-item
-        >
+        <gl-dropdown-item data-testid="action-delete" variant="danger" @click="$emit('delete')">{{
+          $options.i18n.deletePackage
+        }}</gl-dropdown-item>
       </gl-dropdown>
     </template>
   </list-item>

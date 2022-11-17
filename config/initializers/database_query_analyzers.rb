@@ -1,15 +1,19 @@
 # frozen_string_literal: true
 
 # Currently we register validator only for `dev` or `test` environment
-Gitlab::Database::QueryAnalyzer.instance.hook!
-Gitlab::Database::QueryAnalyzer.instance.all_analyzers.append(::Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics)
-Gitlab::Database::QueryAnalyzer.instance.all_analyzers.append(
-  ::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification
-)
+Gitlab::Database::QueryAnalyzer.instance.tap do |query_analyzer|
+  query_analyzer.hook!
 
-if Gitlab.dev_or_test_env?
-  query_analyzer = ::Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
-  Gitlab::Database::QueryAnalyzer.instance.all_analyzers.append(query_analyzer)
+  query_analyzer.all_analyzers.tap do |analyzers|
+    analyzers.append(::Gitlab::Database::QueryAnalyzers::GitlabSchemasMetrics)
+    analyzers.append(::Gitlab::Database::QueryAnalyzers::PreventCrossDatabaseModification)
+    analyzers.append(::Gitlab::Database::QueryAnalyzers::Ci::PartitioningRoutingAnalyzer)
+
+    if Gitlab.dev_or_test_env?
+      analyzers.append(::Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection)
+      analyzers.append(::Gitlab::Database::QueryAnalyzers::QueryRecorder)
+    end
+  end
 end
 
 Gitlab::Application.configure do |config|

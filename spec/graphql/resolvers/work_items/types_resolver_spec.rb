@@ -29,16 +29,6 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
         expect(result.to_a).to contain_exactly(WorkItems::Type.default_by_type(:task))
       end
     end
-
-    context 'when work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'returns nil' do
-        expect(result).to be_nil
-      end
-    end
   end
 
   describe '#resolve' do
@@ -52,16 +42,6 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
       let(:object) { project }
 
       it_behaves_like 'a work item type resolver'
-    end
-
-    context 'when parent is not a group or project' do
-      let(:object) { 'not a project/group' }
-
-      it 'returns nil because of feature flag check' do
-        result = resolve(described_class, obj: object, args: {})
-
-        expect(result).to be_nil
-      end
     end
   end
 end

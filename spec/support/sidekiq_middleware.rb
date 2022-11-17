@@ -6,6 +6,15 @@ require 'sidekiq/testing'
 module SidekiqMiddleware
   def with_sidekiq_server_middleware(&block)
     Sidekiq::Testing.server_middleware.clear
+
+    if Gem::Version.new(Sidekiq::VERSION) != Gem::Version.new('6.5.7')
+      raise 'New version of sidekiq detected, please remove this line'
+    end
+
+    # This line is a workaround for a Sidekiq bug that is already fixed in v7.0.0
+    # https://github.com/mperham/sidekiq/commit/1b83a152786ed382f07fff12d2608534f1e3c922
+    Sidekiq::Testing.server_middleware.instance_variable_set(:@config, Sidekiq)
+
     Sidekiq::Testing.server_middleware(&block)
   ensure
     Sidekiq::Testing.server_middleware.clear

@@ -18,9 +18,9 @@ import {
 } from '~/issues/show';
 import { parseIssuableData } from '~/issues/show/utils/parse_data';
 import LabelsSelect from '~/labels/labels_select';
-import MilestoneSelect from '~/milestones/milestone_select';
 import initNotesApp from '~/notes';
 import { store } from '~/notes/stores';
+import { mountMilestoneDropdown } from '~/sidebar/mount_sidebar';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
 import initLinkedResources from '~/linked_resources';
@@ -41,11 +41,11 @@ export function initForm() {
   new IssuableForm($('.issue-form')); // eslint-disable-line no-new
   new IssuableTemplateSelectors({ warnTemplateOverride: true }); // eslint-disable-line no-new
   new LabelsSelect(); // eslint-disable-line no-new
-  new MilestoneSelect(); // eslint-disable-line no-new
   new ShortcutsNavigation(); // eslint-disable-line no-new
 
   initTitleSuggestions();
   initTypePopover();
+  mountMilestoneDropdown();
 }
 
 export function initShow() {

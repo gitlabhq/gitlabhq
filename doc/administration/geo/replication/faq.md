@@ -22,7 +22,7 @@ For each project to sync:
 
 1. Geo issues a `git fetch geo --mirror` to get the latest information from the **primary** site.
    If there are no changes, the sync is fast. Otherwise, it has to pull the latest commits.
-1. The **secondary** site updates the tracking database to store the fact that it has synced projects A, B, C, and so on.
+1. The **secondary** site updates the tracking database to store the fact that it has synced projects by name.
 1. Repeat until all projects are synced.
 
 When someone pushes a commit to the **primary** site, it generates an event in the GitLab database that the repository has changed.
@@ -45,8 +45,8 @@ Read the documentation for [Disaster Recovery](../disaster_recovery/index.md).
 ## What data is replicated to a **secondary** site?
 
 We currently replicate project repositories, LFS objects, generated
-attachments and avatars, and the whole database. This means user accounts,
-issues, merge requests, groups, project data, and so on, are available for
+attachments and avatars, and the whole database. This means information such as user accounts,
+issues, merge requests, groups, and project data are available for
 query.
 
 For more details, see the [supported Geo data types](datatypes.md).
@@ -58,8 +58,8 @@ Pushing directly to a **secondary** site (for both HTTP and SSH, including Git L
 ## How long does it take to have a commit replicated to a **secondary** site?
 
 All replication operations are asynchronous and are queued to be dispatched. Therefore, it depends on a lot of
-factors including the amount of traffic, how big your commit is, the
-connectivity between your sites, your hardware, and so on.
+factors such as the amount of traffic, how big your commit is, the
+connectivity between your sites, and your hardware.
 
 ## What if the SSH server runs at a different port?
 

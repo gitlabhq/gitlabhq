@@ -62,7 +62,7 @@ developed and tested. We aim to be compatible with most external
 
 To set up an external database, you can either:
 
-- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, bare metal not managed by Omnibus, and so on).
+- Set up [streaming replication](https://www.postgresql.org/docs/12/warm-standby.html#STREAMING-REPLICATION-SLOTS) yourself (for example Amazon RDS, or bare metal not managed by Omnibus).
 - Perform the Omnibus configuration manually as follows.
 
 #### Leverage your cloud provider's tools to replicate the primary database
@@ -78,7 +78,7 @@ cloud providers:
 - Azure Database for PostgreSQL - [Create and manage read replicas in Azure Database for PostgreSQL](https://learn.microsoft.com/en-us/azure/postgresql/single-server/how-to-read-replicas-portal)
 - Google Cloud SQL - [Creating read replicas](https://cloud.google.com/sql/docs/postgres/replication/create-replica)
 
-Once your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
+When your read-only replica is set up, you can skip to [configure your secondary site](#configure-secondary-site-to-use-the-external-read-replica)
 
 #### Manually configure the primary database for replication
 

@@ -109,6 +109,8 @@
   - 1
 - - container_repository
   - 1
+- - container_repository_delete
+  - 1
 - - create_commit_signature
   - 2
 - - create_github_webhook
@@ -257,6 +259,8 @@
   - 1
 - - integrations_slack_event
   - 1
+- - integrations_slack_interactivity
+  - 1
 - - invalid_gpg_signature_update
   - 2
 - - issuable_export_csv
@@ -296,6 +300,8 @@
 - - merge_requests_create_approval_event
   - 1
 - - merge_requests_create_approval_note
+  - 1
+- - merge_requests_delete_branch
   - 1
 - - merge_requests_delete_source_branch
   - 1

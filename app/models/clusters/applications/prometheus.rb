@@ -15,7 +15,7 @@ module Clusters
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
 
-      default_value_for :version, VERSION
+      attribute :version, default: VERSION
 
       scope :preload_cluster_platform, -> { preload(cluster: [:platform_kubernetes]) }
 
@@ -24,7 +24,7 @@ module Clusters
         key: Settings.attr_encrypted_db_key_base_32,
         algorithm: 'aes-256-gcm'
 
-      default_value_for(:alert_manager_token) { SecureRandom.hex }
+      after_initialize :set_alert_manager_token, if: :new_record?
 
       after_destroy do
         cluster.find_or_build_integration_prometheus.destroy
@@ -100,6 +100,10 @@ module Clusters
       end
 
       private
+
+      def set_alert_manager_token
+        self.alert_manager_token = SecureRandom.hex
+      end
 
       def install_knative_metrics
         return [] unless cluster.application_knative_available?

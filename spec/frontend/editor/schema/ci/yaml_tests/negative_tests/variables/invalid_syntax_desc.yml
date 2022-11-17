@@ -1,0 +1,4 @@
+variables:
+  FOO:
+    value: BAR
+    desc: A single value variable

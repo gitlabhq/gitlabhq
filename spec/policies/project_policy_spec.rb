@@ -323,7 +323,7 @@ RSpec.describe ProjectPolicy do
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
-        :destroy_release, :download_code, :build_download_code
+        :download_code, :build_download_code
       ]
     end
 
@@ -533,6 +533,41 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  context 'with timeline event tags' do
+    context 'when user is member of the project' do
+      it 'allows access to timeline event tags' do
+        expect(described_class.new(owner, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(developer, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(guest, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(admin, project)).to be_allowed(:read_incident_management_timeline_event_tag)
+      end
+    end
+
+    context 'when user is a maintainer/owner' do
+      it 'allows to create timeline event tags' do
+        expect(described_class.new(maintainer, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(owner, project)).to be_allowed(:admin_incident_management_timeline_event_tag)
+      end
+    end
+
+    context 'when user is a developer/guest/reporter' do
+      it 'disallows creation' do
+        expect(described_class.new(developer, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(guest, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+        expect(described_class.new(reporter, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+      end
+    end
+
+    context 'when user is not a member of the project' do
+      let(:project) { private_project }
+
+      it 'disallows access to the timeline event tags' do
+        expect(described_class.new(non_member, project)).to be_disallowed(:read_incident_management_timeline_event_tag)
+        expect(described_class.new(non_member, project)).to be_disallowed(:admin_incident_management_timeline_event_tag)
+      end
+    end
+  end
+
   context 'reading a project' do
     it 'allows access when a user has read access to the repo' do
       expect(described_class.new(owner, project)).to be_allowed(:read_project)
@@ -629,17 +664,7 @@ RSpec.describe ProjectPolicy do
     context 'when user is member of the project' do
       let(:current_user) { developer }
 
-      context 'when work_items feature flag is enabled' do
-        it { expect_allowed(:create_task) }
-      end
-
-      context 'when work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        it { expect_disallowed(:create_task) }
-      end
+      it { expect_allowed(:create_task) }
     end
   end
 
@@ -2299,6 +2324,74 @@ RSpec.describe ProjectPolicy do
     end
   end
 
+  describe 'infrastructure feature' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:guest_permissions) { [] }
+
+    let(:developer_permissions) do
+      guest_permissions + [:read_terraform_state, :read_pod_logs, :read_prometheus]
+    end
+
+    let(:maintainer_permissions) do
+      developer_permissions + [:create_cluster, :read_cluster, :update_cluster, :admin_cluster, :admin_terraform_state, :admin_project_google_cloud]
+    end
+
+    where(:project_visibility, :access_level, :role, :allowed) do
+      :public   | ProjectFeature::ENABLED   | :maintainer | true
+      :public   | ProjectFeature::ENABLED   | :developer  | true
+      :public   | ProjectFeature::ENABLED   | :guest      | true
+      :public   | ProjectFeature::ENABLED   | :anonymous  | true
+      :public   | ProjectFeature::PRIVATE   | :maintainer | true
+      :public   | ProjectFeature::PRIVATE   | :developer  | true
+      :public   | ProjectFeature::PRIVATE   | :guest      | true
+      :public   | ProjectFeature::PRIVATE   | :anonymous  | false
+      :public   | ProjectFeature::DISABLED  | :maintainer | false
+      :public   | ProjectFeature::DISABLED  | :developer  | false
+      :public   | ProjectFeature::DISABLED  | :guest      | false
+      :public   | ProjectFeature::DISABLED  | :anonymous  | false
+      :internal | ProjectFeature::ENABLED   | :maintainer | true
+      :internal | ProjectFeature::ENABLED   | :developer  | true
+      :internal | ProjectFeature::ENABLED   | :guest      | true
+      :internal | ProjectFeature::ENABLED   | :anonymous  | false
+      :internal | ProjectFeature::PRIVATE   | :maintainer | true
+      :internal | ProjectFeature::PRIVATE   | :developer  | true
+      :internal | ProjectFeature::PRIVATE   | :guest      | true
+      :internal | ProjectFeature::PRIVATE   | :anonymous  | false
+      :internal | ProjectFeature::DISABLED  | :maintainer | false
+      :internal | ProjectFeature::DISABLED  | :developer  | false
+      :internal | ProjectFeature::DISABLED  | :guest      | false
+      :internal | ProjectFeature::DISABLED  | :anonymous  | false
+      :private  | ProjectFeature::ENABLED   | :maintainer | true
+      :private  | ProjectFeature::ENABLED   | :developer  | true
+      :private  | ProjectFeature::ENABLED   | :guest      | true
+      :private  | ProjectFeature::ENABLED   | :anonymous  | false
+      :private  | ProjectFeature::PRIVATE   | :maintainer | true
+      :private  | ProjectFeature::PRIVATE   | :developer  | true
+      :private  | ProjectFeature::PRIVATE   | :guest      | true
+      :private  | ProjectFeature::PRIVATE   | :anonymous  | false
+      :private  | ProjectFeature::DISABLED  | :maintainer | false
+      :private  | ProjectFeature::DISABLED  | :developer  | false
+      :private  | ProjectFeature::DISABLED  | :guest      | false
+      :private  | ProjectFeature::DISABLED  | :anonymous  | false
+    end
+
+    with_them do
+      let(:current_user) { user_subject(role) }
+      let(:project) { project_subject(project_visibility) }
+
+      it 'allows/disallows the abilities based on the infrastructure access level' do
+        project.project_feature.update!(infrastructure_access_level: access_level)
+
+        if allowed
+          expect_allowed(*permissions_abilities(role))
+        else
+          expect_disallowed(*permissions_abilities(role))
+        end
+      end
+    end
+  end
+
   describe 'access_security_and_compliance' do
     context 'when the "Security & Compliance" is enabled' do
       before do
@@ -2788,6 +2881,27 @@ RSpec.describe ProjectPolicy do
           end
         end
       end
+    end
+  end
+
+  describe 'read_code' do
+    let(:current_user) { create(:user) }
+
+    before do
+      allow(subject).to receive(:allowed?).and_call_original
+      allow(subject).to receive(:allowed?).with(:download_code).and_return(can_download_code)
+    end
+
+    context 'when the current_user can download_code' do
+      let(:can_download_code) { true }
+
+      it { expect_allowed(:read_code) }
+    end
+
+    context 'when the current_user cannot download_code' do
+      let(:can_download_code) { false }
+
+      it { expect_disallowed(:read_code) }
     end
   end
 

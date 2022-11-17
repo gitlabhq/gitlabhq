@@ -64,6 +64,7 @@ After your merge request has been approved according to our [approval guidelines
 | Upgrade notes | | |
 | GitLab Settings updated | Yes/No| |
 | Migration required | Yes/No | |
+| Breaking change to UI or public API | Yes/No | <!-- How should the breaking change be communicated? --> |
 | Thanks | | |
 
 [security process for developers]: https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/developer.md

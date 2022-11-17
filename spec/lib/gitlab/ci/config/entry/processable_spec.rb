@@ -208,7 +208,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
 
         it 'reports error about variable' do
           expect(entry.errors)
-            .to include 'variables:var2 config must be a string'
+            .to include 'variables:var2 config uses invalid data keys: description'
         end
       end
     end
@@ -248,7 +248,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
       with_them do
         let(:config) { { script: 'ls', rules: rules, only: only }.compact }
 
-        it "#{name}" do
+        it name.to_s do
           expect(workflow).to receive(:has_rules?) { has_workflow_rules? }
 
           entry.compose!(deps)
@@ -443,6 +443,29 @@ RSpec.describe Gitlab::Ci::Config::Entry::Processable do
             stage: 'test',
             only: { refs: %w[branches tags] },
             job_variables: {},
+            root_variables_inheritance: true
+          )
+        end
+      end
+
+      context 'when variables have "expand" data' do
+        let(:config) do
+          {
+            script: 'echo',
+            variables: { 'VAR1' => 'val 1',
+                         'VAR2' => { value: 'val 2', expand: false },
+                         'VAR3' => { value: 'val 3', expand: true } }
+          }
+        end
+
+        it 'returns correct value' do
+          expect(entry.value).to eq(
+            name: :rspec,
+            stage: 'test',
+            only: { refs: %w[branches tags] },
+            job_variables: { 'VAR1' => { value: 'val 1' },
+                             'VAR2' => { value: 'val 2', raw: true },
+                             'VAR3' => { value: 'val 3', raw: false } },
             root_variables_inheritance: true
           )
         end

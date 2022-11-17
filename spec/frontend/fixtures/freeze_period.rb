@@ -16,7 +16,7 @@ RSpec.describe 'Freeze Periods (JavaScript fixtures)' do
   around do |example|
     freeze_time do
       # Mock time to sept 19 (intl. talk like a pirate day)
-      Timecop.travel(2020, 9, 19)
+      travel_to(Time.utc(2020, 9, 19))
 
       example.run
     end

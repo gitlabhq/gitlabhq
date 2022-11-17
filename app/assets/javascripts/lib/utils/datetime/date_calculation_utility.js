@@ -271,6 +271,25 @@ export const secondsToMilliseconds = (seconds) => seconds * 1000;
 export const secondsToDays = (seconds) => Math.round(seconds / 86400);
 
 /**
+ * Returns the date `n` seconds after the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfSeconds number of seconds after
+ * @return {Date} A `Date` object `n` seconds after the provided `Date`
+ */
+export const nSecondsAfter = (date, numberOfSeconds) =>
+  new Date(date.getTime() + numberOfSeconds * 1000);
+
+/**
+ * Returns the date `n` seconds before the date provided
+ *
+ * @param {Date} date the initial date
+ * @param {Number} numberOfSeconds number of seconds before
+ * @return {Date} A `Date` object `n` seconds before the provided `Date`
+ */
+export const nSecondsBefore = (date, numberOfSeconds) => nSecondsAfter(date, -numberOfSeconds);
+
+/**
  * Returns the date `n` days after the date provided
  *
  * @param {Date} date the initial date

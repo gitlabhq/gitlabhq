@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    context 'Add suggestions to a Merge Request' do
+    context 'Add suggestions to a Merge Request', product_group: :code_review do
       let(:commit_message) { 'Applying suggested change for testing purposes.' }
 
       let(:project) do

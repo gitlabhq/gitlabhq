@@ -2,6 +2,7 @@
 
 fragment WorkItem on WorkItem {
   id
+  iid
   title
   state
   description

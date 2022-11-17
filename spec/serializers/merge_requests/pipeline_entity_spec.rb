@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe MergeRequests::PipelineEntity do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be(:pipeline) { create(:ci_pipeline, project: project, name: 'Build pipeline') }
 
   let(:request) { double('request') }
 
@@ -25,15 +25,20 @@ RSpec.describe MergeRequests::PipelineEntity do
 
   describe '#as_json' do
     it 'contains required fields' do
+      allow(pipeline).to receive(:merge_request_event_type).and_return(:merged_result)
+
       is_expected.to include(
         :id, :path, :active, :coverage, :ref, :commit, :details,
-        :flags, :triggered, :triggered_by
+        :flags, :triggered, :triggered_by, :name
       )
       expect(subject[:commit]).to include(:short_id, :commit_path)
       expect(subject[:ref]).to include(:branch)
-      expect(subject[:details]).to include(:artifacts, :name, :status, :stages, :finished_at)
+      expect(subject[:details]).to include(:artifacts, :name, :event_type_name, :status, :stages, :finished_at)
       expect(subject[:details][:status]).to include(:icon, :favicon, :text, :label, :tooltip)
       expect(subject[:flags]).to include(:merge_request_pipeline)
+
+      expect(subject[:details][:event_type_name]).to eq('Merged result pipeline')
+      expect(subject[:details][:name]).to eq('Merged result pipeline')
     end
 
     it 'returns presented coverage' do
@@ -45,6 +50,16 @@ RSpec.describe MergeRequests::PipelineEntity do
         .represent(pipeline, request: request, disable_coverage: true)
 
       expect(entity.as_json).not_to include(:coverage)
+    end
+
+    context 'when pipeline_name feature flag is disabled' do
+      before do
+        stub_feature_flags(pipeline_name: false)
+      end
+
+      it 'does not return name' do
+        is_expected.not_to include(:name)
+      end
     end
   end
 end

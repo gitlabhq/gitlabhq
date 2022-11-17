@@ -110,6 +110,7 @@ linters:
       - Cop/LineBreakAfterGuardClauses
       - Cop/ProjectPathHelper
       - Gitlab/FeatureAvailableUsage
+      - Gitlab/Json
       - GitlabSecurity/PublicSend
       - Layout/EmptyLineAfterGuardClause
       - Layout/LeadingCommentSpace

@@ -21,9 +21,9 @@ While any events could trigger an Audit Event, not all events should. In general
 - Not attributable to one specific user.
 - Not of specific interest to an administrator or owner persona.
 - Are tracking information for product feature adoption.
-- Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/manage/compliance/audit-events/#what-is-not-planned-right-now).
+- Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/govern/compliance/audit-events/#what-is-not-planned-right-now).
 
-If you have any questions, please reach out to `@gitlab-org/manage/compliance` to see if an Audit Event, or some other approach, may be best for your event.
+If you have any questions, please reach out to `@gitlab-org/govern/compliance` to see if an Audit Event, or some other approach, may be best for your event.
 
 ## Audit Event Schemas
 
@@ -120,7 +120,7 @@ end
 Because every audit event is persisted to the database, consider the amount of data we expect to generate, and the rate of generation, for new
 audit events. For new audit events that will produce a lot of data in the database, consider adding a
 [streaming-only audit event](#event-streaming) instead. If you have questions about this, feel free to ping
-`@gitlab-org/manage/compliance/backend` in an issue or merge request.
+`@gitlab-org/govern/compliance/backend` in an issue or merge request.
 
 ## Audit Event instrumentation flows
 
@@ -205,8 +205,10 @@ All new audit events must have a type definition stored in `config/audit_events/
 
 To add a new audit event type:
 
-1. Create a new file in `config/audit_events/types/` with the filename matching the name of the event type. For example, a definition for the event type triggered when a
-   user is added to a project might be stored in `config/audit_events/types/project_add_user.yml`.
+1. Create the YAML definition. You can either:
+   - Use the `bin/audit-event-type` CLI to create the YAML definition automatically.
+   - Perform manual steps to create a new file in `config/audit_events/types/` with the filename matching the name of the event type. For example,
+     a definition for the event type triggered when a user is added to a project might be stored in `config/audit_events/types/project_add_user.yml`.
 1. Add contents to the file that conform to the [schema](#schema) defined in `config/audit_events/types/type_schema.json`.
 1. Ensure that all calls to `Gitlab::Audit::Auditor` use the `name` defined in your file.
 

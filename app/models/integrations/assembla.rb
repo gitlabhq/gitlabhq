@@ -12,6 +12,7 @@ module Integrations
       required: true
 
     field :subdomain,
+      exposes_secrets: true,
       placeholder: ''
 
     def title
@@ -34,7 +35,9 @@ module Integrations
       return unless supported_events.include?(data[:object_kind])
 
       url = "https://atlas.assembla.com/spaces/#{subdomain}/github_tool?secret_key=#{token}"
-      Gitlab::HTTP.post(url, body: { payload: data }.to_json, headers: { 'Content-Type' => 'application/json' })
+      body = { payload: data }
+
+      Gitlab::HTTP.post(url, body: Gitlab::Json.dump(body), headers: { 'Content-Type' => 'application/json' })
     end
   end
 end

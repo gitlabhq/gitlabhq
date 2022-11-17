@@ -67,7 +67,7 @@ module API
       detail 'This feature was introduced in GitLab 14.1.'
     end
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     post 'error_tracking/collector/api/:id/envelope' do
       # There is a reason why we have such uncommon path.
@@ -119,7 +119,7 @@ module API
       detail 'This feature was introduced in GitLab 14.1.'
     end
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     post 'error_tracking/collector/api/:id/store' do
       # There is a reason why we have such uncommon path.

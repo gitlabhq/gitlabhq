@@ -24,6 +24,7 @@ import {
   GO_TO_MILESTONE_LIST,
   GO_TO_YOUR_SNIPPETS,
   GO_TO_PROJECT_FIND_FILE,
+  GO_TO_YOUR_REVIEW_REQUESTS,
 } from './keybindings';
 import { disableShortcuts, shouldDisableShortcuts } from './shortcuts_toggle';
 
@@ -93,6 +94,9 @@ export default class Shortcuts {
     );
     Mousetrap.bind(keysFor(GO_TO_YOUR_MERGE_REQUESTS), () =>
       findAndFollowLink('.dashboard-shortcuts-merge_requests'),
+    );
+    Mousetrap.bind(keysFor(GO_TO_YOUR_REVIEW_REQUESTS), () =>
+      findAndFollowLink('.dashboard-shortcuts-review_requests'),
     );
     Mousetrap.bind(keysFor(GO_TO_YOUR_PROJECTS), () =>
       findAndFollowLink('.dashboard-shortcuts-projects'),

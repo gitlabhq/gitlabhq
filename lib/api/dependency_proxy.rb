@@ -12,11 +12,18 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, types: [String, Integer],
+                    desc: 'The ID or URL-encoded path of the group owned by the authenticated user'
     end
     resource :groups, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Deletes all dependency_proxy_blobs for a group' do
-        detail 'This feature was introduced in GitLab 12.10'
+      desc 'Purge the dependency proxy for a group' do
+        detail 'Schedules for deletion the cached manifests and blobs for a group.'\
+          'This endpoint requires the Owner role for the group.'
+        success code: 202
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags %w[dependency_proxy]
       end
       delete ':id/dependency_proxy/cache' do
         not_found! unless user_group.dependency_proxy_feature_available?

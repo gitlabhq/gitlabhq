@@ -45,12 +45,19 @@ export default {
       if (this.status === 'closed') return 'gl-bg-red-50';
       return null;
     },
+    hasActionsSlot() {
+      return this.$scopedSlots.actions?.()?.length;
+    },
   },
 };
 </script>
 
 <template>
-  <div class="mr-widget-body media" :class="wrapperClasses" v-on="$listeners">
+  <div
+    class="mr-widget-body media mr-widget-body-line-height-1 gl-line-height-normal"
+    :class="wrapperClasses"
+    v-on="$listeners"
+  >
     <div v-if="isLoading" class="gl-w-full mr-conflict-loader">
       <slot name="loading">
         <div class="gl-display-flex">
@@ -67,13 +74,19 @@ export default {
       </slot>
       <div class="gl-display-flex gl-w-full">
         <div
-          :class="{ 'gl-display-flex': actions.length, 'gl-md-display-flex': !actions.length }"
+          :class="{
+            'gl-display-flex gl-align-items-center': actions.length,
+            'gl-md-display-flex gl-align-items-center': !actions.length,
+          }"
           class="media-body"
         >
           <slot></slot>
           <div
-            :class="{ 'gl-flex-direction-column-reverse': !actions.length }"
-            class="gl-display-flex gl-md-display-block gl-font-size-0 gl-ml-auto"
+            :class="{
+              'state-container-action-buttons gl-flex-direction-column gl-flex-wrap gl-justify-content-end': !actions.length,
+              'gl-md-pt-0 gl-pt-3': hasActionsSlot,
+            }"
+            class="gl-display-flex gl-font-size-0 gl-ml-auto gl-gap-3"
           >
             <slot name="actions">
               <actions v-if="actions.length" :tertiary-buttons="actions" />

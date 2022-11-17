@@ -14,33 +14,31 @@
   .cover-block.user-cover-block{ class: [('border-bottom' if profile_tabs.empty?)] }
     = render layout: 'users/cover_controls' do
       - if @user == current_user
-        = link_to profile_path, class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
-          title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-          = sprite_icon('pencil')
+        = render Pajamas::ButtonComponent.new(href: profile_path,
+          icon: 'pencil',
+          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Edit profile'), 'aria-label': 'Edit profile', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
       - elsif current_user
         - if @user.abuse_report
-          %button{ class: link_classes + 'btn gl-button btn-danger btn-icon', title: s_('UserProfile|Already reported for abuse'),
-            data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } }>
-            = sprite_icon('error')
+          = render Pajamas::ButtonComponent.new(variant: :danger,
+            icon: 'error',
+            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Already reported for abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
         - else
-          = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referer), class: link_classes + 'btn gl-button btn-default btn-icon',
-            title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-            = sprite_icon('error')
+          = render Pajamas::ButtonComponent.new(href: new_abuse_report_path(user_id: @user.id, ref_url: request.referer),
+            icon: 'error',
+            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Report abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
       - verified_gpg_keys = @user.gpg_keys.select(&:verified?)
       - if verified_gpg_keys.any?
-        = link_to user_gpg_keys_path,
-          class: link_classes + 'btn btn-default btn-md gl-button btn-icon has-tooltip',
-          title: n_('View public GPG key', 'View public GPG keys', verified_gpg_keys.length),
-          data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-          = sprite_icon('key', css_class: 'gl-button-icon gl-icon')
+        = render Pajamas::ButtonComponent.new(href: user_gpg_keys_path,
+          icon: 'key',
+          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: n_('View public GPG key', 'View public GPG keys', verified_gpg_keys.length), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
       - if can?(current_user, :read_user_profile, @user)
-        = link_to user_path(@user, rss_url_options), class: link_classes + 'btn gl-button btn-default btn-icon has-tooltip',
-          title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
-          = sprite_icon('rss')
+        = render Pajamas::ButtonComponent.new(href: user_path(@user, rss_url_options),
+          icon: 'rss',
+          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Subscribe'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
       - if current_user && current_user.admin?
-        = link_to [:admin, @user], class: link_classes + 'btn gl-button btn-default btn-icon', title: s_('UserProfile|View user in admin area'),
-          data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-          = sprite_icon('user')
+        = render Pajamas::ButtonComponent.new(href: [:admin, @user],
+          icon: 'user',
+          button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|View user in admin area'), data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}})
       - if current_user && current_user.id != @user.id
         - if current_user.following?(@user)
           = form_tag user_unfollow_path(@user, :json), class: link_classes + 'gl-display-inline-block' do
@@ -58,12 +56,12 @@
 
       - if @user.blocked? || !@user.confirmed?
         .user-info
-          .cover-title
+          %h1.cover-title
             = user_display_name(@user)
         = render "users/profile_basic_info"
       - else
         .user-info
-          .cover-title{ itemprop: 'name' }
+          %h1.cover-title{ itemprop: 'name' }
             = @user.name
             - if @user.pronouns.present?
               %span.gl-font-base.gl-text-gray-500.gl-vertical-align-middle
@@ -132,7 +130,6 @@
           .gl-text-gray-900
             .profile-user-bio
               = @user.bio
-
 
     - unless profile_tabs.empty?
       .scrolling-tabs-container

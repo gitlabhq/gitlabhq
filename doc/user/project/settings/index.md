@@ -45,7 +45,7 @@ If you're an instance administrator, you can administer all project topics from 
 
 ## Add a compliance framework to a project **(PREMIUM)**
 
-[Compliance frameworks](../../group/manage.md#compliance-frameworks) can be assigned to projects within group that has a
+[Compliance frameworks](../../group/compliance_frameworks.md) can be assigned to projects within group that has a
 compliance framework using either:
 
 - The GitLab UI:
@@ -91,9 +91,12 @@ Use the toggles to enable or disable features in the project.
 | **Wiki**                         | ✓                         | Enables a separate system for [documentation](../wiki/index.md). |
 | **Snippets**                     | ✓                         | Enables [sharing of code and text](../../snippets.md). |
 | **Pages**                        | ✓                         | Allows you to [publish static websites](../pages/index.md). |
-| **Operations**                   | ✓                         | Control access to Operations-related features, including [Operations Dashboard](../../../operations/index.md), [Environments and Deployments](../../../ci/environments/index.md), [Feature Flags](../../../operations/feature_flags.md). |
 | **Metrics Dashboard**            | ✓                         | Control access to [metrics dashboard](../integrations/prometheus.md).                                                                                                                                                                    |
 | **Releases**                     | ✓                         | Control access to [Releases](../releases/index.md).                                                                                                                                                                                      |
+| **Environments**                 | ✓                         | Control access to [Environments and Deployments](../../../ci/environments/index.md).                                                                   |
+| **Feature flags**                | ✓                         | Control access to [Feature Flags](../../../operations/feature_flags.md).                                                                               |
+| **Monitor**                      | ✓                         | Control access to [Monitor](../../../operations/index.md) features.                                                                                            |
+| **Infrastructure**               | ✓                         | Control access to [Infrastructure](../../infrastructure/index.md) features.                                                                                                    |
 
 When you disable a feature, the following additional features are also disabled:
 
@@ -277,7 +280,7 @@ To delete a project:
 1. In the "Delete project" section, select **Delete project**.
 1. Confirm the action when asked to.
 
-This action deletes a project including all associated resources (issues, merge requests, and so on).
+This action deletes a project including all associated resources (such as issues and merge requests).
 
 WARNING:
 The default deletion behavior for projects was changed to [delayed project deletion](https://gitlab.com/gitlab-org/gitlab/-/issues/32935)

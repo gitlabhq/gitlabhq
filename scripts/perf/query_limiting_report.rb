@@ -124,19 +124,19 @@ class QueryLimitingReport
 
       file_lines.each_index do |index|
         line = file_lines[index]
-        if line =~ /#{CODE_LINES_SEARCH_STRING}/o
-          issue_iid = line.slice(%r{issues/(\d+)\D}, 1)
-          line_number = index + 1
-          code_line = {
-            file_location: "#{filename}:#{line_number}",
-            filename: filename,
-            line_number: line_number,
-            line: line,
-            issue_iid: issue_iid.to_i,
-            has_issue_iid: !issue_iid.nil?
-          }
-          code_lines << code_line
-        end
+        next unless line =~ /#{CODE_LINES_SEARCH_STRING}/o
+
+        issue_iid = line.slice(%r{issues/(\d+)\D}, 1)
+        line_number = index + 1
+        code_line = {
+          file_location: "#{filename}:#{line_number}",
+          filename: filename,
+          line_number: line_number,
+          line: line,
+          issue_iid: issue_iid.to_i,
+          has_issue_iid: !issue_iid.nil?
+        }
+        code_lines << code_line
       end
     end
 

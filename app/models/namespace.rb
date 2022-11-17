@@ -40,9 +40,9 @@ class Namespace < ApplicationRecord
 
   PATH_TRAILING_VIOLATIONS = %w[.git .atom .].freeze
 
-  # The first date in https://docs.gitlab.com/ee/user/usage_quotas.html#namespace-storage-limit-enforcement-schedule
-  # Determines when we start enforcing namespace storage
-  MIN_STORAGE_ENFORCEMENT_DATE = Date.new(2022, 10, 19)
+  # This date is just a placeholder until namespace storage enforcement timeline is confirmed at which point
+  # this should be replaced, see https://about.gitlab.com/pricing/faq-efficient-free-tier/#user-limits-on-gitlab-saas-free-tier
+  MIN_STORAGE_ENFORCEMENT_DATE = 3.months.from_now.to_date
   # https://gitlab.com/gitlab-org/gitlab/-/issues/367531
   MIN_STORAGE_ENFORCEMENT_USAGE = 5.gigabytes
 
@@ -91,6 +91,7 @@ class Namespace < ApplicationRecord
   validates :name,
     presence: true,
     length: { maximum: 255 }
+  validates :name, uniqueness: { scope: [:type, :parent_id] }, if: -> { parent_id.present? }
 
   validates :description, length: { maximum: 255 }
 
@@ -550,11 +551,12 @@ class Namespace < ApplicationRecord
   end
 
   def shared_runners_setting_higher_than?(other_setting)
-    if other_setting == SR_ENABLED
+    case other_setting
+    when SR_ENABLED
       false
-    elsif other_setting == SR_DISABLED_WITH_OVERRIDE
+    when SR_DISABLED_WITH_OVERRIDE
       shared_runners_setting == SR_ENABLED
-    elsif other_setting == SR_DISABLED_AND_UNOVERRIDABLE
+    when SR_DISABLED_AND_UNOVERRIDABLE
       shared_runners_setting == SR_ENABLED || shared_runners_setting == SR_DISABLED_WITH_OVERRIDE
     else
       raise ArgumentError

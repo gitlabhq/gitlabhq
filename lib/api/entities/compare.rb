@@ -7,21 +7,24 @@ module API
         compare.commits.last
       end
 
-      expose :commits, using: Entities::Commit do |compare, _|
+      expose :commits, documentation: { is_array: true }, using: Entities::Commit do |compare, _|
         compare.commits
       end
 
-      expose :diffs, using: Entities::Diff do |compare, _|
+      expose :diffs, documentation: { is_array: true }, using: Entities::Diff do |compare, _|
         compare.diffs.diffs.to_a
       end
 
-      expose :compare_timeout do |compare, _|
+      expose :compare_timeout, documentation: { type: 'boolean' } do |compare, _|
         compare.diffs.diffs.overflow?
       end
 
-      expose :same, as: :compare_same_ref
+      expose :same, as: :compare_same_ref, documentation: { type: 'boolean' }
 
-      expose :web_url do |compare, _|
+      expose :web_url,
+        documentation: {
+          example: "https://gitlab.example.com/gitlab/gitlab-foss/-/compare/main...feature"
+        } do |compare, _|
         Gitlab::UrlBuilder.build(compare)
       end
     end

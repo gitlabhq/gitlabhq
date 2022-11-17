@@ -85,8 +85,15 @@ module QA
               end
             end
           end
-
           alias_method :wait_for_success, :has_imported_project?
+
+          # Select advanced github import option
+          #
+          # @param [Symbol] option_name
+          # @return [void]
+          def select_advanced_option(option_name)
+            check_element(:advanced_settings_checkbox, true, option_name: option_name)
+          end
         end
       end
     end

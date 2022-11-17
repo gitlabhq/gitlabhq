@@ -42,10 +42,15 @@ func NewGoCloudObject(p *GoCloudObjectParams) (*GoCloudObject, error) {
 	return o, nil
 }
 
+const ChunkSize = 5 * 1024 * 1024
+
 func (o *GoCloudObject) Upload(ctx context.Context, r io.Reader) error {
 	defer o.bucket.Close()
 
-	writer, err := o.bucket.NewWriter(ctx, o.objectName, nil)
+	writerOptions := &blob.WriterOptions{
+		BufferSize: ChunkSize,
+	}
+	writer, err := o.bucket.NewWriter(ctx, o.objectName, writerOptions)
 	if err != nil {
 		log.ContextLogger(ctx).WithError(err).Error("error creating GoCloud bucket")
 		return err

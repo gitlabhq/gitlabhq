@@ -47,8 +47,7 @@ export const CHILD_VIEW = 'child';
 
 // Pipeline tabs
 
-export const TAB_QUERY_PARAM = 'tab';
-
+export const pipelineTabName = 'graph';
 export const needsTabName = 'dag';
 export const jobsTabName = 'builds';
 export const failedJobsTabName = 'failures';

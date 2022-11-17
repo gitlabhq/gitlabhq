@@ -1,7 +1,7 @@
 - display_issuable_type = issuable_display_type(@merge_request)
 
-.float-left.btn-group.gl-md-ml-3.gl-display-flex.dropdown.gl-new-dropdown.gl-md-w-auto.gl-w-full
-  = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret has-tooltip gl-display-none! gl-md-display-inline-flex!", data: { toggle: 'dropdown', title: _('Merge request actions'), testid: 'merge-request-actions' } do
+.btn-group.gl-md-ml-3.gl-display-flex.dropdown.gl-new-dropdown.gl-md-w-auto.gl-w-full
+  = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md gl-button gl-dropdown-toggle btn-default-tertiary dropdown-icon-only dropdown-toggle-no-caret has-tooltip gl-display-none! gl-md-display-inline-flex!", data: { toggle: 'dropdown', title: _('Merge request actions'), testid: 'merge-request-actions', 'aria-label': _('Merge request actions') } do
     = sprite_icon "ellipsis_v", size: 16, css_class: "dropdown-icon gl-icon"
   = button_tag type: 'button', class: "btn dropdown-toggle btn-default btn-md btn-block gl-button gl-dropdown-toggle gl-md-display-none!", data: { 'toggle' => 'dropdown' } do
     %span.gl-new-dropdown-button-text= _('Merge request actions')
@@ -11,7 +11,7 @@
       .gl-new-dropdown-contents
         %ul
           - if current_user && moved_mr_sidebar_enabled?
-            %li.gl-new-dropdown-item.js-sidebar-subscriptions-entry-point
+            %li.gl-new-dropdown-item.js-sidebar-subscriptions-widget-root
             %li.gl-new-dropdown-divider
               %hr.dropdown-divider
           - if can?(current_user, :update_merge_request, @merge_request)
@@ -36,7 +36,7 @@
                   = _('Reopen')
                   = display_issuable_type
           - if moved_mr_sidebar_enabled?
-            %li.gl-new-dropdown-item#js-lock-entry-point
+            %li.gl-new-dropdown-item.js-sidebar-lock-root
             %li.gl-new-dropdown-item
               %button.dropdown-item.js-copy-reference{ type: "button", data: { 'clipboard-text': @merge_request.to_reference(full: true) } }
                 .gl-new-dropdown-item-text-wrapper

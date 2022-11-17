@@ -23,7 +23,7 @@
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
-  documentation_link: https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#code-quality-widget
+  documentation_link: https://docs.gitlab.com/ee/ci/testing/code_quality.html#code-quality-widget
   image_url: https://about.gitlab.com/images/13_6/code_quality_severity.png
   published_at: 2020-11-22
   release: 13.6

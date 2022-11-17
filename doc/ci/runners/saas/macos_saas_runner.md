@@ -14,7 +14,7 @@ Use these runners to build, test, and deploy apps for the Apple ecosystem (macOS
 of all the capabilities of the GitLab single DevOps platform and not have to manage or operate a
 build environment.
 
-Jobs handled by macOS shared runners on GitLab.com **time out after 2 hours**, regardless of the timeout configured in a project.
+Jobs handled by macOS shared runners on GitLab.com **time out after 3 hours**, regardless of the timeout configured in a project.
 
 ## Access request process
 

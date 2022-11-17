@@ -5,6 +5,7 @@ module Ci
     include Ci::HasVariable
     include Presentable
     include Ci::Maskable
+    include Ci::RawVariable
     prepend HasEnvironmentScope
 
     belongs_to :group, class_name: "::Group"

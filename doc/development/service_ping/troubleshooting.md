@@ -120,3 +120,45 @@ To work around this bug, you have two options:
   1. Expand **Usage Statistics**.
   1. Clear the **Enable Service Ping** checkbox.
   1. Select **Save Changes**.
+
+## Generate Service Ping
+
+### Generate or get the cached Service Ping in rails console
+
+Use the following method in the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true)
+```
+
+### Generate a fresh new Service Ping
+
+Use the following method in the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+This also refreshes the cached Service Ping displayed in the Admin Area.
+
+```ruby
+Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)
+```
+
+### Generate and print
+
+Generates Service Ping data in JSON format.
+
+```shell
+gitlab-rake gitlab:usage_data:generate
+```
+
+Generates Service Ping data in YAML format:
+
+```shell
+gitlab-rake gitlab:usage_data:dump_sql_in_yaml
+```
+
+### Generate and send Service Ping
+
+Prints the metrics saved in `conversational_development_index_metrics`.
+
+```shell
+gitlab-rake gitlab:usage_data:generate_and_send
+```

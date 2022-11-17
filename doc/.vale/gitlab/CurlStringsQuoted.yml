@@ -3,9 +3,9 @@
 #
 # Ensures all code blocks using `curl` wrap URL strings in quotation marks.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'For consistency across all cURL examples, always wrap the URL in double quotes ("): %s'
+message: "For the cURL example, use double quotes around the URL: %s"
 link: https://docs.gitlab.com/ee/development/documentation/restful_api_styleguide.html#curl-commands
 level: error
 scope: code

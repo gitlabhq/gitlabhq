@@ -9,7 +9,7 @@ module Mutations
       include FindsProject
       include Mutations::WorkItems::Widgetable
 
-      description "Creates a work item. Available only when feature flag `work_items` is enabled."
+      description "Creates a work item."
 
       authorize :create_work_item
 
@@ -22,6 +22,9 @@ module Mutations
       argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
                required: false,
                description: 'Input for hierarchy widget.'
+      argument :milestone_widget, ::Types::WorkItems::Widgets::MilestoneInputType,
+               required: false,
+               description: 'Input for milestone widget.'
       argument :project_path, GraphQL::Types::ID,
                required: true,
                description: 'Full path of the project the work item is associated with.'
@@ -38,10 +41,6 @@ module Mutations
 
       def resolve(project_path:, **attributes)
         project = authorized_find!(project_path)
-
-        unless project.work_items_feature_flag_enabled?
-          return { errors: ['`work_items` feature flag disabled for this project'] }
-        end
 
         spam_params = ::Spam::SpamParams.new_from_request(request: context[:request])
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)

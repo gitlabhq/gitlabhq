@@ -15,21 +15,25 @@ module TodosHelper
 
   def todo_action_name(todo)
     case todo.action
-    when Todo::ASSIGNED then todo.self_added? ? 'assigned' : 'assigned you'
-    when Todo::REVIEW_REQUESTED then 'requested a review of'
-    when Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED then "mentioned #{todo_action_subject(todo)} on"
-    when Todo::BUILD_FAILED then 'The pipeline failed in'
-    when Todo::MARKED then 'added a todo for'
-    when Todo::APPROVAL_REQUIRED then "set #{todo_action_subject(todo)} as an approver for"
-    when Todo::UNMERGEABLE then 'Could not merge'
-    when Todo::MERGE_TRAIN_REMOVED then "Removed from Merge Train:"
+    when Todo::ASSIGNED then todo.self_added? ? _('assigned') : _('assigned you')
+    when Todo::REVIEW_REQUESTED then s_('Todos|requested a review of')
+    when Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED then format(
+      s_("Todos|mentioned %{who} on"), who: todo_action_subject(todo)
+    )
+    when Todo::BUILD_FAILED then s_('Todos|The pipeline failed in')
+    when Todo::MARKED then s_('Todos|added a todo for')
+    when Todo::APPROVAL_REQUIRED then format(
+      s_("Todos|set %{who} as an approver for"), who: todo_action_subject(todo)
+    )
+    when Todo::UNMERGEABLE then s_('Todos|Could not merge')
+    when Todo::MERGE_TRAIN_REMOVED then s_("Todos|Removed from Merge Train:")
     end
   end
 
   def todo_self_addressing(todo)
     case todo.action
-    when Todo::ASSIGNED then 'to yourself'
-    when Todo::REVIEW_REQUESTED then 'from yourself'
+    when Todo::ASSIGNED then _('to yourself')
+    when Todo::REVIEW_REQUESTED then _('from yourself')
     end
   end
 
@@ -66,9 +70,9 @@ module TodosHelper
     return _('alert') if todo.for_alert?
 
     target_type = if todo.for_issue_or_work_item?
-                    todo.target.issue_type
+                    IntegrationsHelper.integration_issue_type(todo.target.issue_type)
                   else
-                    todo.target_type
+                    IntegrationsHelper.integration_todo_target_type(todo.target_type)
                   end
 
     target_type.titleize.downcase
@@ -109,12 +113,18 @@ module TodosHelper
     return unless show_todo_state?(todo)
 
     state = todo.target.state.to_s
+    raw_state_to_i18n = {
+      "closed" => _('Closed'),
+      "merged" => _('Merged'),
+      "resolved" => _('Resolved')
+    }
 
     case todo.target
     when MergeRequest
-      if state == 'closed'
+      case state
+      when 'closed'
         background_class = 'gl-bg-red-500'
-      elsif state == 'merged'
+      when 'merged'
         background_class = 'gl-bg-blue-500'
       end
     when Issue
@@ -124,7 +134,7 @@ module TodosHelper
     end
 
     tag.span class: "gl-my-0 gl-px-2 status-box #{background_class}" do
-      todo.target.state.to_s.capitalize
+      raw_state_to_i18n[state] || state.capitalize
     end
   end
 
@@ -237,7 +247,7 @@ module TodosHelper
   end
 
   def todo_action_subject(todo)
-    todo.self_added? ? 'yourself' : 'you'
+    todo.self_added? ? s_('Todos|yourself') : _('you')
   end
 
   def show_todo_state?(todo)

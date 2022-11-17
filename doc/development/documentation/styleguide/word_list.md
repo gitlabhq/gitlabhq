@@ -35,7 +35,7 @@ Don't use backticks.
 
 ## 2FA, two-factor authentication
 
-Spell out **two-factor authentication** in sentence case for the first use and in section headings, and **2FA**
+Spell out **two-factor authentication** in sentence case for the first use and in topic titles, and **2FA**
 thereafter. If the first word in a sentence, do not capitalize `factor` or `authentication`. For example:
 
 - Two-factor authentication (2FA) helps secure your account. Set up 2FA when you first log in.
@@ -63,6 +63,23 @@ Access levels are different than [roles](#roles) or [permissions](#permissions).
 When you create a user, you choose an access level: **Regular**, **Auditor**, or **Admin**.
 
 Capitalize these words when you refer to the UI. Otherwise use lowercase.
+
+## active voice
+
+Use active voice instead of passive.
+
+Use:
+
+- The contributor writes the documentation.
+
+Instead of:
+
+- The documentation is written by contributors.
+
+NOTE:
+If you can add the phrase "by zombies" to the phrase,
+the construction is passive. For example, `The button is selected by zombies`
+is passive. `Zombies select the button` is active.
 
 ## administrator
 
@@ -460,6 +477,10 @@ Do not use **foo** in product documentation. You can use it in our API and contr
 
 When possible, use present tense instead of future tense. For example, use **after you execute this command, GitLab displays the result** instead of **after you execute this command, GitLab will display the result**. ([Vale](../testing.md#vale) rule: [`FutureTense.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FutureTense.yml))
 
+## GB, gigabytes
+
+For **GB** and **MB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+
 ## Geo
 
 Use title case for **Geo**.
@@ -570,6 +591,15 @@ Do not use Latin abbreviations. Use **that is** instead. ([Vale](../testing.md#v
 
 Do not use **in order to**. Use **to** instead. ([Vale](../testing.md#vale) rule: [`Wordy.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Wordy.yml))
 
+## -ing words
+
+Remove **-ing** words whenever possible. They can be difficult to translate,
+and more precise terms are usually available. For example:
+
+- Instead of **The files using storage are deleted**, use **The files that use storage are deleted**.
+- Instead of **Delete files using the Edit button**, use **Delete files by using the Edit button**.
+- Instead of **Replicating your server is required**, use **You must replicate your server**.
+
 ## issue
 
 Use lowercase for **issue**.
@@ -581,6 +611,21 @@ Use lowercase for **issue board**.
 ## issue weights
 
 Use lowercase for **issue weights**.
+
+## it
+
+When you use the word **it**, ensure the word it refers to is obvious.
+If it's not obvious, repeat the word rather than using **it**.
+
+Use:
+
+- The field returns a connection. The field accepts four arguments.
+
+Instead of:
+
+- The field returns a connection. It accepts four arguments.
+
+See also [this, these, that, those](#this-these-that-those).
 
 ## job
 
@@ -692,6 +737,10 @@ Do not use `master`. Use `main` when you need a sample [default branch name](#de
 
 **Might** means something has the probability of occurring. **May** gives permission to do something. Consider **can** instead of **may**.
 
+## MB, megabytes
+
+For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+
 ## me, myself, mine
 
 Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
@@ -720,24 +769,18 @@ Do not use **navigate**. Use **go** instead. For example:
 
 ## need to, should
 
-Try to avoid **needs to**, because it's wordy. Avoid **should** when you can be more specific. If something is required, use **must**.
+Try to avoid **needs to**, because it's wordy. If something is recommended, use **should** instead. If something is required, use **must**.
 
 Use:
 
-- You must set the variable.
-- Set the variable.
+- You should set the variable. (recommended)
+- You must set the variable. (required)
+- Set the variable. (required)
 
 Instead of:
 
 - You need to set the variable.
-
-**Should** is acceptable for recommended actions or items, or in cases where an event may not
-happen. For example:
-
-- Although you can configure the installation manually, you should use the express configuration to
-  avoid complications.
-- You should see a success message in the console. Contact support if an error message appears
-  instead.
+- We recommend that you set the variable.
 
 ## note that
 
@@ -811,7 +854,7 @@ When writing about the Owner role:
   - Instead of: if you are an owner
 
 Do not use bold.
- 
+
 Do not use **Owner permissions**. A user who is assigned the Owner role has a set of associated permissions.
 An Owner is the highest role a user can have.
 
@@ -892,6 +935,10 @@ Instead of:
 
 - Select **Create user** or **Save changes** if you created a new user or
   edited an existing one respectively.
+
+## review app
+
+Use lowercase for **review app**.
 
 ## roles
 
@@ -981,7 +1028,11 @@ Use **setup** as a noun, and **set up** as a verb. For example:
 
 ## sign in
 
-Use **sign in** instead of **sign on** or **log on** or **log in**. If the user interface has different words, use those.
+Use **sign in** or **sign in to**.
+
+Do not use **sign on** or **sign into**, or **log on**, **log in**, or **log into**.
+
+If the user interface has different words, use those.
 
 You can use **single sign-on**.
 
@@ -1108,6 +1159,14 @@ For example:
 
 See also [**enter**](#enter).
 
+## units of measurement
+
+Use a space between the number and the unit of measurement. For example, **128 GB**.
+([Vale](../testing.md#vale) rule: [`Units.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Units.yml))
+
+For other guidance, follow
+[the Microsoft style guidelines](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/term-collections/bits-bytes-terms).
+
 ## update
 
 Use **update** for installing a newer **patch** version of the software only. For example:
@@ -1173,7 +1232,26 @@ Instead of:
 
 - We created a feature for you to add widgets.
 
-One exception: You can use **we recommend** instead of **it is recommended** or **GitLab recommends**. ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
+
+## while
+
+Use **while** to refer only to something occurring in time. For example,
+**Leave the window open while the process runs.**
+
+Do not use **while** for comparison. For example, use:
+
+- Job 1 can run quickly. However, job 2 is more precise.
+
+Instead of:
+
+- While job 1 can run quickly, job 2 is more precise.
+
+For details, see the [Microsoft style guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/w/while).
+
+## whilst
+
+Do not use **whilst**. Use [while](#while) instead. **While** is more succinct and easier for non-native English speakers to understand.
 
 ## whitelist
 
@@ -1202,6 +1280,20 @@ Use:
 Instead of:
 
 - Users can configure a pipeline.
+
+## you can
+
+When possible, start sentences with an active verb instead of **you can**.
+For example:
+
+- Use code review analytics to view merge request data.
+- Create a board to organize your team tasks.
+- Configure variables to restrict pushes to a repository.
+
+Use **you can** for optional actions. For example:
+
+- Use code review analytics to view metrics per merge request. You can also use the API.
+- Enter the name and value pairs. You can add up to 20 pairs per streaming destination.
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

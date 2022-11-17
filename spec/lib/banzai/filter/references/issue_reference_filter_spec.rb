@@ -392,7 +392,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
 
   context 'cross-project URL in link href' do
     let(:reference_link) { %{<a href="#{reference}">Reference</a>} }
-    let(:reference) { "#{issue_url + "#note_123"}" }
+    let(:reference) { (issue_url + "#note_123").to_s }
     let(:issue)     { create(:issue, project: project2) }
     let(:project2)  { create(:project, :public, namespace: namespace) }
     let(:namespace) { create(:namespace, name: 'cross-reference') }
@@ -497,7 +497,7 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter do
     end
 
     it 'links to a valid reference for cross-reference in link href' do
-      reference = "#{issue_url + "#note_123"}"
+      reference = (issue_url + "#note_123").to_s
       reference_link = %{<a href="#{reference}">Reference</a>}
 
       doc = reference_filter("See #{reference_link}", context)

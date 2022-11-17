@@ -45,7 +45,7 @@ By default both administrators and anyone with the **Owner** role can delete a p
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
    - (GitLab 15.1 and later) **Allowed to delete projects**, and select **Administrators**.
-   - (GitLab 15.0 and earlier) **Default project deletion projection** and select **Only admins can delete project**.
+   - (GitLab 15.0 and earlier) **Default project deletion protection** and select **Only admins can delete project**.
 1. Select **Save changes**.
 
 ## Deletion protection **(PREMIUM SELF)**
@@ -82,8 +82,8 @@ To configure delayed project deletion:
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
 1. Scroll to:
-   - (GitLab 15.1 and later) **Deletion projection** and select keep deleted groups and projects, and select a retention period.
-   - (GitLab 15.0 and earlier) **Default delayed project projection** and select **Enable delayed project deletion by
+   - (GitLab 15.1 and later) **Deletion protection** and select keep deleted groups and projects, and select a retention period.
+   - (GitLab 15.0 and earlier) **Default delayed project protection** and select **Enable delayed project deletion by
      default for newly-created groups.** Then set a retention period in **Default deletion delay**.
 1. Select **Save changes**.
 
@@ -262,7 +262,7 @@ These options specify the permitted types and lengths for SSH keys.
 
 To specify a restriction for each key type:
 
-1. Select the desired option from the dropdown.
+1. Select the desired option from the dropdown list.
 1. Select **Save changes**.
 
 For more details, see [SSH key restrictions](../../../security/ssh_keys_restrictions.md).
@@ -280,13 +280,13 @@ work in every repository. They can only be re-enabled by an administrator user o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87579) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `group_ip_restrictions_allow_global`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) in GitLab 15.4. [Feature flag `group_ip_restrictions_allow_global`](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) removed.
 
-This setting allows you to set IP address ranges to be combined with group-level IP allowlists.
-It helps administrators prevent aspects of the GitLab installation from being blocked
-from working as intended when an IP allowlist is used.
+Administrators can set IP address ranges to be combined with [group-level IP restrictions](../../group/access_and_permissions.md#restrict-access-to-groups-by-ip-address).
+Use globally-allowed IP addresses to allow aspects of the GitLab installation to work even when group-level IP address
+restrictions are set.
 
-For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, specify that range in this
-field, as otherwise any group-level restrictions that don't include that range cause the Pages
-daemon to be unable to fetch artifacts from the pipeline runs.
+For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, you can specify that range as globally-allowed.
+This means GitLab Pages can still fetch artifacts from pipelines even if group-level IP address restrictions don't
+include the `10.0.0.0/24` range.
 
 To add a IP address range to the group-level allowlist:
 
@@ -294,7 +294,11 @@ To add a IP address range to the group-level allowlist:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Visibility and access controls** section.
-1. In **Globally-allowed IP ranges**, provide a value.
+1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:
+   - Has no limit on the number of IP address ranges.
+   - Has a size limit of 1 GB.
+   - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
+     this list by type of authorization.
 1. Select **Save changes**.
 
 <!-- ## Troubleshooting
@@ -305,6 +309,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

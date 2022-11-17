@@ -1,6 +1,9 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
+import MockAdapter from 'axios-mock-adapter';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import axios from '~/lib/utils/axios_utils';
+import httpStatus from '~/lib/utils/http_status';
 import ArtifactsBlock from '~/jobs/components/job/sidebar/artifacts_block.vue';
 import JobRetryForwardDeploymentModal from '~/jobs/components/job/sidebar/job_retry_forward_deployment_modal.vue';
 import JobsContainer from '~/jobs/components/job/sidebar/jobs_container.vue';
@@ -10,6 +13,7 @@ import createStore from '~/jobs/store';
 import job, { jobsInStage } from '../../mock_data';
 
 describe('Sidebar details block', () => {
+  let mock;
   let store;
   let wrapper;
 
@@ -18,6 +22,8 @@ describe('Sidebar details block', () => {
   const findArtifactsBlock = () => wrapper.findComponent(ArtifactsBlock);
   const findNewIssueButton = () => wrapper.findByTestId('job-new-issue');
   const findTerminalLink = () => wrapper.findByTestId('terminal-link');
+  const findJobStagesDropdown = () => wrapper.findComponent(StagesDropdown);
+  const findJobsContainer = () => wrapper.findComponent(JobsContainer);
 
   const createWrapper = (props) => {
     store = createStore();
@@ -34,6 +40,13 @@ describe('Sidebar details block', () => {
       }),
     );
   };
+
+  beforeEach(() => {
+    mock = new MockAdapter(axios);
+    mock.onGet().reply(httpStatus.OK, {
+      name: job.stage,
+    });
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -110,31 +123,72 @@ describe('Sidebar details block', () => {
   describe('stages dropdown', () => {
     beforeEach(() => {
       createWrapper();
-      return store.dispatch('receiveJobSuccess', { ...job, stage: 'aStage' });
+      return store.dispatch('receiveJobSuccess', job);
     });
 
     describe('with stages', () => {
       it('renders value provided as selectedStage as selected', () => {
-        expect(wrapper.findComponent(StagesDropdown).props('selectedStage')).toBe('aStage');
+        expect(findJobStagesDropdown().props('selectedStage')).toBe(job.stage);
       });
     });
 
     describe('without jobs for stages', () => {
-      beforeEach(() => store.dispatch('receiveJobSuccess', job));
-
       it('does not render jobs container', () => {
-        expect(wrapper.findComponent(JobsContainer).exists()).toBe(false);
+        expect(findJobsContainer().exists()).toBe(false);
       });
     });
 
     describe('with jobs for stages', () => {
-      beforeEach(async () => {
-        await store.dispatch('receiveJobSuccess', job);
-        await store.dispatch('receiveJobsForStageSuccess', jobsInStage.latest_statuses);
+      beforeEach(() => {
+        return store.dispatch('receiveJobsForStageSuccess', jobsInStage.latest_statuses);
       });
 
-      it('renders list of jobs', () => {
-        expect(wrapper.findComponent(JobsContainer).exists()).toBe(true);
+      it('renders list of jobs', async () => {
+        expect(findJobsContainer().exists()).toBe(true);
+      });
+    });
+
+    describe('when job data changes', () => {
+      const stageArg = job.pipeline.details.stages.find((stage) => stage.name === job.stage);
+
+      beforeEach(async () => {
+        jest.spyOn(store, 'dispatch');
+      });
+
+      describe('and the job stage is currently selected', () => {
+        describe('when the status changed', () => {
+          it('refetch the jobs list for the stage', async () => {
+            await store.dispatch('receiveJobSuccess', { ...job, status: 'new' });
+
+            expect(store.dispatch).toHaveBeenNthCalledWith(2, 'fetchJobsForStage', { ...stageArg });
+          });
+        });
+
+        describe('when the status did not change', () => {
+          it('does not refetch the jobs list for the stage', async () => {
+            await store.dispatch('receiveJobSuccess', { ...job });
+
+            expect(store.dispatch).toHaveBeenCalledTimes(1);
+            expect(store.dispatch).toHaveBeenNthCalledWith(1, 'receiveJobSuccess', {
+              ...job,
+            });
+          });
+        });
+      });
+
+      describe('and the job stage is not currently selected', () => {
+        it('does not refetch the jobs list for the stage', async () => {
+          // Setting stage to `random` on the job means that we are looking
+          // at `build` stage currently, but the job we are seeing in the logs
+          // belong to `random`, so we shouldn't have to refetch
+          await store.dispatch('receiveJobSuccess', { ...job, stage: 'random' });
+
+          expect(store.dispatch).toHaveBeenCalledTimes(1);
+          expect(store.dispatch).toHaveBeenNthCalledWith(1, 'receiveJobSuccess', {
+            ...job,
+            stage: 'random',
+          });
+        });
       });
     });
   });

@@ -1,6 +1,5 @@
 ---
 Gitlab/NoCodeCoverageComment:
-  Details: grace period
   Exclude:
     - 'app/models/integration.rb'
     - 'app/services/ci/job_artifacts/destroy_batch_service.rb'

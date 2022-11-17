@@ -11,7 +11,7 @@ module MirrorAuthentication
 
     # We should generate a key even if there's no SSH URL present
     before_validation :generate_ssh_private_key!, if: -> {
-      regenerate_ssh_private_key || ( auth_method == 'ssh_public_key' && ssh_private_key.blank? )
+      regenerate_ssh_private_key || (auth_method == 'ssh_public_key' && ssh_private_key.blank?)
     }
 
     credentials_field :auth_method, reader: false

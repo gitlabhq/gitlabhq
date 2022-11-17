@@ -5,17 +5,30 @@ module API
     class ResourceGroups < ::API::Base
       include PaginationParams
 
+      ci_resource_groups_tags = %w[ci_resource_groups]
+
+      RESOURCE_GROUP_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
+                                        .merge(key: API::NO_SLASH_URL_PART_REGEX)
+
       before { authenticate! }
 
       feature_category :continuous_delivery
       urgency :low
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id,
+                 types: [String, Integer],
+                 desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
       end
       resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'Get all resource groups for this project' do
+        desc 'Get all resource groups for a project' do
           success Entities::Ci::ResourceGroup
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
+          tags ci_resource_groups_tags
         end
         params do
           use :pagination
@@ -26,27 +39,38 @@ module API
           present paginate(user_project.resource_groups), with: Entities::Ci::ResourceGroup
         end
 
-        desc 'Get a single resource group' do
+        desc 'Get a specific resource group' do
           success Entities::Ci::ResourceGroup
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags ci_resource_groups_tags
         end
         params do
           requires :key, type: String, desc: 'The key of the resource group'
         end
-        get ':id/resource_groups/:key' do
+        get ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
 
           present resource_group, with: Entities::Ci::ResourceGroup
         end
 
-        desc 'List upcoming jobs of a resource group' do
+        desc 'List upcoming jobs for a specific resource group' do
           success Entities::Ci::JobBasic
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
+          tags ci_resource_groups_tags
         end
         params do
           requires :key, type: String, desc: 'The key of the resource group'
 
           use :pagination
         end
-        get ':id/resource_groups/:key/upcoming_jobs' do
+        get ':id/resource_groups/:key/upcoming_jobs', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :read_resource_group, resource_group
           authorize! :read_build, user_project
 
@@ -57,15 +81,25 @@ module API
           present paginate(upcoming_processables), with: Entities::Ci::JobBasic
         end
 
-        desc 'Edit a resource group' do
+        desc 'Edit an existing resource group' do
+          detail "Updates an existing resource group's properties."
           success Entities::Ci::ResourceGroup
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags ci_resource_groups_tags
         end
         params do
           requires :key, type: String, desc: 'The key of the resource group'
-          optional :process_mode, type: String, desc: 'The process mode',
-                                  values: ::Ci::ResourceGroup.process_modes.keys
+
+          optional :process_mode,
+                   type: String,
+                   desc: 'The process mode of the resource group',
+                   values: ::Ci::ResourceGroup.process_modes.keys
         end
-        put ':id/resource_groups/:key' do
+        put ':id/resource_groups/:key', requirements: RESOURCE_GROUP_ENDPOINT_REQUIREMENTS do
           authorize! :update_resource_group, resource_group
 
           if resource_group.update(declared_params(include_missing: false))

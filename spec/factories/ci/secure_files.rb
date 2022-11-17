@@ -13,4 +13,13 @@ FactoryBot.define do
       end
     end
   end
+
+  factory :ci_secure_file_with_metadata, class: 'Ci::SecureFile' do
+    sequence(:name) { |n| "file#{n}.cer" }
+    file { fixture_file_upload('spec/fixtures/ci_secure_files/sample.cer', 'application/octet-stream') }
+    checksum { 'foo1234' }
+    project
+
+    after(:create, &:update_metadata!)
+  end
 end

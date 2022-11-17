@@ -7,6 +7,10 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
 
   subject(:integration) { described_class.new }
 
+  let_it_be(:project) { create(:project, :repository, name: 'project') }
+
+  it_behaves_like Integrations::BaseCi
+
   it_behaves_like Integrations::ResetSecretFields do
     let(:integration) { subject }
   end
@@ -43,7 +47,6 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
       )
     end
 
-    let(:project)    { create(:project, :repository, name: 'project') }
     let(:path)       { project.full_path }
     let(:drone_url)  { 'http://drone.example.com' }
     let(:sha)        { '2ab7834c' }
@@ -192,7 +195,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   describe "execute" do
     include_context :drone_ci_integration
 
-    let(:user) { create(:user, username: 'username') }
+    let(:user) { build(:user, username: 'username') }
     let(:push_sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end

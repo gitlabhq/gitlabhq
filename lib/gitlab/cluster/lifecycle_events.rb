@@ -63,6 +63,15 @@ module Gitlab
     #
     #     Sidekiq/Puma Single: This is called immediately.
     #
+    # - on_worker_stop (on worker process):
+    #
+    #     Puma Cluster: Called in the worker process
+    #       exactly once after it stops processing requests
+    #       but before it shuts down.
+    #
+    #     Sidekiq: Called after the scheduler shuts down but
+    #       before the worker finishes ongoing jobs.
+    #
     # Blocks will be executed in the order in which they are registered.
     #
     class LifecycleEvents
@@ -113,6 +122,10 @@ module Gitlab
           end
         end
 
+        def on_worker_stop(&block)
+          (@worker_stop_hooks ||= []) << block
+        end
+
         #
         # Lifecycle integration methods (called from puma.rb, etc.)
         #
@@ -135,6 +148,10 @@ module Gitlab
 
         def do_before_master_restart
           call(:master_restart_hooks, @master_restart_hooks)
+        end
+
+        def do_worker_stop
+          call(:worker_stop_hooks, @worker_stop_hooks)
         end
 
         # DEPRECATED

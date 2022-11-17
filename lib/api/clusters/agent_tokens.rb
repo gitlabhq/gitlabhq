@@ -10,7 +10,7 @@ module API
       feature_category :kubernetes_management
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
@@ -18,22 +18,24 @@ module API
         end
         resource ':id/cluster_agents/:agent_id' do
           resource :tokens do
-            desc 'List agent tokens' do
-              detail 'This feature was introduced in GitLab 15.0.'
+            desc 'List tokens for an agent' do
+              detail 'This feature was introduced in GitLab 15.0. Returns a list of tokens for an agent.'
               success Entities::Clusters::AgentTokenBasic
+              tags %w[cluster_agents]
             end
             params do
               use :pagination
             end
             get do
-              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
+              agent_tokens = ::Clusters::AgentTokensFinder.new(user_project, current_user, params[:agent_id]).execute
 
-              present paginate(agent.agent_tokens), with: Entities::Clusters::AgentTokenBasic
+              present paginate(agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end
 
             desc 'Get a single agent token' do
-              detail 'This feature was introduced in GitLab 15.0.'
+              detail 'This feature was introduced in GitLab 15.0. Gets a single agent token.'
               success Entities::Clusters::AgentToken
+              tags %w[cluster_agents]
             end
             params do
               requires :token_id, type: Integer, desc: 'The ID of the agent token'
@@ -47,8 +49,9 @@ module API
             end
 
             desc 'Create an agent token' do
-              detail 'This feature was introduced in GitLab 15.0.'
+              detail 'This feature was introduced in GitLab 15.0. Creates a new token for an agent.'
               success Entities::Clusters::AgentTokenWithToken
+              tags %w[cluster_agents]
             end
             params do
               requires :name, type: String, desc: 'The name for the token'
@@ -71,7 +74,8 @@ module API
             end
 
             desc 'Revoke an agent token' do
-              detail 'This feature was introduced in GitLab 15.0.'
+              detail 'This feature was introduced in GitLab 15.0. Revokes an agent token.'
+              tags %w[cluster_agents]
             end
             params do
               requires :token_id, type: Integer, desc: 'The ID of the agent token'

@@ -20,7 +20,7 @@ class AdjustTaskNoteRenameBackgroundMigrationValues < Gitlab::Database::Migratio
 
     scope :for_configuration, ->(job_class_name, table_name, column_name, job_arguments) do
       where(job_class_name: job_class_name, table_name: table_name, column_name: column_name)
-        .where("job_arguments = ?", job_arguments.to_json) # rubocop:disable Rails/WhereEquals
+        .where("job_arguments = ?", Gitlab::Json.dump(job_arguments)) # rubocop:disable Rails/WhereEquals
     end
   end
 

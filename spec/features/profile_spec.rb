@@ -27,41 +27,20 @@ RSpec.describe 'Profile account page', :js do
       expect(User.exists?(user.id)).to be_truthy
     end
 
-    context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-      it 'deletes user', :js, :sidekiq_inline do
+    it 'deletes user', :js, :sidekiq_inline do
+      click_button 'Delete account'
+
+      fill_in 'password', with: user.password
+
+      page.within '.modal' do
         click_button 'Delete account'
-
-        fill_in 'password', with: user.password
-
-        page.within '.modal' do
-          click_button 'Delete account'
-        end
-
-        expect(page).to have_content('Account scheduled for removal')
-        expect(
-          Users::GhostUserMigration.where(user: user,
-                                          initiator_user: user)
-        ).to be_exists
-      end
-    end
-
-    context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-      before do
-        stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
       end
 
-      it 'deletes user', :js, :sidekiq_inline do
-        click_button 'Delete account'
-
-        fill_in 'password', with: user.password
-
-        page.within '.modal' do
-          click_button 'Delete account'
-        end
-
-        expect(page).to have_content('Account scheduled for removal')
-        expect(User.exists?(user.id)).to be_falsy
-      end
+      expect(page).to have_content('Account scheduled for removal')
+      expect(
+        Users::GhostUserMigration.where(user: user,
+                                        initiator_user: user)
+      ).to be_exists
     end
 
     it 'shows invalid password flash message', :js do

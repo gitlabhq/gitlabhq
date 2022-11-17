@@ -33,7 +33,7 @@ describe('Image List Row', () => {
   const findListItemComponent = () => wrapper.findComponent(ListItem);
   const findShowFullPathButton = () => wrapper.findComponent(GlButton);
 
-  const mountComponent = (props, features = {}) => {
+  const mountComponent = (props) => {
     wrapper = shallowMount(Component, {
       stubs: {
         RouterLink,
@@ -47,9 +47,6 @@ describe('Image List Row', () => {
       },
       provide: {
         config: {},
-        glFeatures: {
-          ...features,
-        },
       },
       directives: {
         GlTooltip: createMockDirective(),
@@ -88,23 +85,43 @@ describe('Image List Row', () => {
   });
 
   describe('image title and path', () => {
-    it('contains a link to the details page', () => {
+    it('renders shortened name of image and contains a link to the details page', () => {
       mountComponent();
 
       const link = findDetailsLink();
-      expect(link.text()).toBe(item.path);
-      expect(findDetailsLink().props('to')).toMatchObject({
+      expect(link.text()).toBe('gitlab-test/rails-12009');
+
+      expect(link.props('to')).toMatchObject({
         name: 'details',
         params: {
           id: getIdFromGraphQLId(item.id),
         },
       });
+
+      expect(findShowFullPathButton().exists()).toBe(true);
     });
 
     it('when the image has no name lists the path', () => {
       mountComponent({ item: { ...item, name: '' } });
 
+      expect(findDetailsLink().text()).toBe('gitlab-test');
+    });
+
+    it('clicking on shortened name of image hides the button & shows full path', async () => {
+      mountComponent();
+
+      const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
+      const mockFocusFn = jest.fn();
+      wrapper.vm.$refs.imageName.$el.focus = mockFocusFn;
+
+      await findShowFullPathButton().trigger('click');
+
+      expect(findShowFullPathButton().exists()).toBe(false);
       expect(findDetailsLink().text()).toBe(item.path);
+      expect(mockFocusFn).toHaveBeenCalled();
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_show_full_path', {
+        label: 'registry_image_list',
+      });
     });
 
     it('contains a clipboard button', () => {
@@ -147,35 +164,6 @@ describe('Image List Row', () => {
       });
       it('the clipboard button is disabled', () => {
         expect(findClipboardButton().attributes('disabled')).toBe('true');
-      });
-    });
-
-    describe('when containerRegistryShowShortenedPath feature enabled', () => {
-      let trackingSpy;
-
-      beforeEach(() => {
-        mountComponent({}, { containerRegistryShowShortenedPath: true });
-        trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-      });
-
-      it('renders shortened name of image', () => {
-        expect(findShowFullPathButton().exists()).toBe(true);
-        expect(findDetailsLink().text()).toBe('gitlab-test/rails-12009');
-      });
-
-      it('clicking on shortened name of image hides the button & shows full path', async () => {
-        const btn = findShowFullPathButton();
-        const mockFocusFn = jest.fn();
-        wrapper.vm.$refs.imageName.$el.focus = mockFocusFn;
-
-        await btn.trigger('click');
-
-        expect(findShowFullPathButton().exists()).toBe(false);
-        expect(findDetailsLink().text()).toBe(item.path);
-        expect(mockFocusFn).toHaveBeenCalled();
-        expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_show_full_path', {
-          label: 'registry_image_list',
-        });
       });
     });
   });

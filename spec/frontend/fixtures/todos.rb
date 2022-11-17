@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Todos (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'todos-project') }
   let(:user) { project.first_owner }
   let(:issue_1) { create(:issue, title: 'issue_1', project: project) }

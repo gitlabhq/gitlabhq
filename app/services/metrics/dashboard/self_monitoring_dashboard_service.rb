@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Fetches the self monitoring metrics dashboard and formats the output.
+# Fetches the self-monitoring metrics dashboard and formats the output.
 # Use Gitlab::Metrics::Dashboard::Finder to retrieve dashboards.
 module Metrics
   module Dashboard

@@ -8,7 +8,7 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
 
   let(:teamcity_url) { 'https://gitlab.teamcity.com' }
   let(:teamcity_full_url) { 'https://gitlab.teamcity.com/httpAuth/app/rest/builds/branch:unspecified:any,revision:123' }
-  let(:project) { create(:project) }
+  let_it_be(:project) { create(:project) }
 
   subject(:integration) do
     described_class.create!(
@@ -21,6 +21,10 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       }
     )
   end
+
+  it_behaves_like Integrations::BaseCi
+
+  it_behaves_like Integrations::ResetSecretFields
 
   include_context Integrations::EnableSslVerification do
     describe '#enable_ssl_verification' do
@@ -117,50 +121,6 @@ RSpec.describe Integrations::Teamcity, :use_clean_rails_memory_store_caching do
       it { is_expected.not_to validate_presence_of(:teamcity_url) }
       it { is_expected.not_to validate_presence_of(:username) }
       it { is_expected.not_to validate_presence_of(:password) }
-    end
-  end
-
-  describe 'Callbacks' do
-    let(:teamcity_integration) { integration }
-
-    describe 'before_validation :reset_password' do
-      context 'when a password was previously set' do
-        it 'resets password if url changed' do
-          teamcity_integration.teamcity_url = 'http://gitlab1.com'
-          teamcity_integration.valid?
-
-          expect(teamcity_integration.password).to be_nil
-        end
-
-        it 'does not reset password if username changed' do
-          teamcity_integration.username = 'some_name'
-          teamcity_integration.valid?
-
-          expect(teamcity_integration.password).to eq('password')
-        end
-
-        it "does not reset password if new url is set together with password, even if it's the same password" do
-          teamcity_integration.teamcity_url = 'http://gitlab_edited.com'
-          teamcity_integration.password = 'password'
-          teamcity_integration.valid?
-
-          expect(teamcity_integration.password).to eq('password')
-          expect(teamcity_integration.teamcity_url).to eq('http://gitlab_edited.com')
-        end
-      end
-
-      it 'saves password if new url is set together with password when no password was previously set' do
-        teamcity_integration.password = nil
-
-        teamcity_integration.teamcity_url = 'http://gitlab_edited.com'
-        teamcity_integration.password = 'password'
-        teamcity_integration.save!
-
-        expect(teamcity_integration.reload).to have_attributes(
-          teamcity_url: 'http://gitlab_edited.com',
-          password: 'password'
-        )
-      end
     end
   end
 

@@ -38,6 +38,6 @@ RSpec.describe Gitlab::Analytics::CycleAnalytics::Median do
       merge_request2.metrics.update!(merged_at: Time.zone.now)
     end
 
-    expect(subject).to be_within(0.5).of(7.5.minutes.seconds)
+    expect(subject).to be_within(5.seconds).of(7.5.minutes.seconds)
   end
 end

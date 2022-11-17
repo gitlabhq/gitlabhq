@@ -302,6 +302,7 @@ included_attributes:
     - :environments_access_level
     - :feature_flags_access_level
     - :releases_access_level
+    - :infrastructure_access_level
   prometheus_metrics:
     - :created_at
     - :updated_at
@@ -585,7 +586,7 @@ included_attributes:
     - :target_sha
   pipeline_metadata:
     - :project_id
-    - :title
+    - :name
   stages:
     - :name
     - :status
@@ -717,6 +718,7 @@ included_attributes:
     - :environments_access_level
     - :feature_flags_access_level
     - :releases_access_level
+    - :infrastructure_access_level
     - :allow_merge_on_skipped_pipeline
     - :auto_devops_deploy_strategy
     - :auto_devops_enabled

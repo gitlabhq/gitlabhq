@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlFormGroup, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton, GlFormGroup } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getDraft, clearDraft, updateDraft } from '~/lib/utils/autosave';
@@ -7,22 +7,25 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_m
 import { __, s__ } from '~/locale';
 import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import workItemQuery from '../graphql/work_item.query.graphql';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { getWorkItemQuery } from '../utils';
+import workItemDescriptionSubscription from '../graphql/work_item_description.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WIDGET_TYPE_DESCRIPTION } from '../constants';
+import WorkItemDescriptionRendered from './work_item_description_rendered.vue';
 
 export default {
-  directives: {
-    SafeHtml: GlSafeHtmlDirective,
-  },
   components: {
     EditedAt,
     GlButton,
     GlFormGroup,
+    MarkdownEditor,
     MarkdownField,
+    WorkItemDescriptionRendered,
   },
-  mixins: [Tracking.mixin()],
+  mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   props: {
     workItemId: {
       type: String,
@@ -30,6 +33,15 @@ export default {
     },
     fullPath: {
       type: String,
+      required: true,
+    },
+    fetchByIid: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    queryVariables: {
+      type: Object,
       required: true,
     },
   },
@@ -41,21 +53,37 @@ export default {
       isSubmitting: false,
       isSubmittingWithKeydown: false,
       descriptionText: '',
+      descriptionHtml: '',
     };
   },
   apollo: {
     workItem: {
-      query: workItemQuery,
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
       variables() {
-        return {
-          id: this.workItemId,
-        };
+        return this.queryVariables;
+      },
+      update(data) {
+        return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
       },
       skip() {
         return !this.workItemId;
       },
+      result() {
+        this.descriptionText = this.workItemDescription?.description;
+        this.descriptionHtml = this.workItemDescription?.descriptionHtml;
+      },
       error() {
-        this.error = i18n.fetchError;
+        this.$emit('error', i18n.fetchError);
+      },
+      subscribeToMore: {
+        document: workItemDescriptionSubscription,
+        variables() {
+          return {
+            issuableId: this.workItemId,
+          };
+        },
       },
     },
   },
@@ -64,7 +92,7 @@ export default {
       return this.workItemId;
     },
     canEdit() {
-      return this.workItem?.userPermissions?.updateWorkItem;
+      return this.workItem?.userPermissions?.updateWorkItem || false;
     },
     tracking() {
       return {
@@ -72,12 +100,6 @@ export default {
         label: 'item_description',
         property: `type_${this.workItemType}`,
       };
-    },
-    descriptionHtml() {
-      return this.workItemDescription?.descriptionHtml;
-    },
-    descriptionEmpty() {
-      return this.descriptionHtml?.trim() === '';
     },
     workItemDescription() {
       const descriptionWidget = this.workItem?.widgets?.find(
@@ -114,7 +136,7 @@ export default {
 
       await this.$nextTick();
 
-      this.$refs.textarea.focus();
+      this.$refs.textarea?.focus();
     },
     async cancelEditing() {
       const isDirty = this.descriptionText !== this.workItemDescription?.description;
@@ -142,8 +164,10 @@ export default {
 
       updateDraft(this.autosaveKey, this.descriptionText);
     },
-    async updateWorkItem(event) {
-      if (event.key) {
+    async updateWorkItem(event = {}) {
+      const { key } = event;
+
+      if (key) {
         this.isSubmittingWithKeydown = true;
       }
 
@@ -179,73 +203,90 @@ export default {
 
       this.isSubmitting = false;
     },
+    setDescriptionText(newText) {
+      this.descriptionText = newText;
+      updateDraft(this.autosaveKey, this.descriptionText);
+    },
+    handleDescriptionTextUpdated(newText) {
+      this.descriptionText = newText;
+      this.updateWorkItem();
+    },
   },
 };
 </script>
 
 <template>
-  <gl-form-group
-    v-if="isEditing"
-    class="gl-my-5 gl-border-t gl-pt-6"
-    :label="__('Description')"
-    label-for="work-item-description"
-  >
-    <markdown-field
-      can-attach-file
-      :textarea-value="descriptionText"
-      :is-submitting="isSubmitting"
-      :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="$options.markdownDocsPath"
-      class="gl-p-3 bordered-box gl-mt-5"
+  <div>
+    <gl-form-group
+      v-if="isEditing"
+      class="gl-mb-5 gl-border-t gl-pt-6"
+      :label="__('Description')"
+      label-for="work-item-description"
     >
-      <template #textarea>
-        <textarea
-          id="work-item-description"
-          ref="textarea"
-          v-model="descriptionText"
-          :disabled="isSubmitting"
-          class="note-textarea js-gfm-input js-autosize markdown-area"
-          dir="auto"
-          data-supports-quick-actions="false"
-          :aria-label="__('Description')"
-          :placeholder="__('Write a comment or drag your files here…')"
-          @keydown.meta.enter="updateWorkItem"
-          @keydown.ctrl.enter="updateWorkItem"
-          @keydown.exact.esc.stop="cancelEditing"
-          @input="onInput"
-        ></textarea>
-      </template>
-    </markdown-field>
-
-    <div class="gl-display-flex">
-      <gl-button
-        category="primary"
-        variant="confirm"
-        :loading="isSubmitting"
-        data-testid="save-description"
-        @click="updateWorkItem"
-        >{{ __('Save') }}</gl-button
-      >
-      <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="cancelEditing">{{
-        __('Cancel')
-      }}</gl-button>
-    </div>
-  </gl-form-group>
-  <div v-else class="gl-mb-5 gl-border-t">
-    <div class="gl-display-inline-flex gl-align-items-center gl-mb-5">
-      <label class="d-block col-form-label gl-mr-5">{{ __('Description') }}</label>
-      <gl-button
-        v-if="canEdit"
-        class="gl-ml-auto"
-        icon="pencil"
-        data-testid="edit-description"
-        :aria-label="__('Edit description')"
-        @click="startEditing"
+      <markdown-editor
+        v-if="glFeatures.workItemsMvc2"
+        class="gl-my-3 common-note-form"
+        :value="descriptionText"
+        :render-markdown-path="markdownPreviewPath"
+        :markdown-docs-path="$options.markdownDocsPath"
+        :form-field-aria-label="__('Description')"
+        :form-field-placeholder="__('Write a comment or drag your files here…')"
+        form-field-id="work-item-description"
+        form-field-name="work-item-description"
+        enable-autocomplete
+        init-on-autofocus
+        @input="setDescriptionText"
+        @keydown.meta.enter="updateWorkItem"
+        @keydown.ctrl.enter="updateWorkItem"
       />
-    </div>
-
-    <div v-if="descriptionEmpty" class="gl-text-secondary gl-mb-5">{{ __('None') }}</div>
-    <div v-else v-safe-html="descriptionHtml" class="md gl-mb-5 gl-min-h-8"></div>
+      <markdown-field
+        v-else
+        can-attach-file
+        :textarea-value="descriptionText"
+        :is-submitting="isSubmitting"
+        :markdown-preview-path="markdownPreviewPath"
+        :markdown-docs-path="$options.markdownDocsPath"
+        class="gl-p-3 bordered-box gl-mt-5"
+      >
+        <template #textarea>
+          <textarea
+            id="work-item-description"
+            ref="textarea"
+            v-model="descriptionText"
+            :disabled="isSubmitting"
+            class="note-textarea js-gfm-input js-autosize markdown-area"
+            dir="auto"
+            data-supports-quick-actions="false"
+            :aria-label="__('Description')"
+            :placeholder="__('Write a comment or drag your files here…')"
+            @keydown.meta.enter="updateWorkItem"
+            @keydown.ctrl.enter="updateWorkItem"
+            @keydown.exact.esc.stop="cancelEditing"
+            @input="onInput"
+          ></textarea>
+        </template>
+      </markdown-field>
+      <div class="gl-display-flex">
+        <gl-button
+          category="primary"
+          variant="confirm"
+          :loading="isSubmitting"
+          data-testid="save-description"
+          @click="updateWorkItem"
+          >{{ __('Save') }}
+        </gl-button>
+        <gl-button category="tertiary" class="gl-ml-3" data-testid="cancel" @click="cancelEditing"
+          >{{ __('Cancel') }}
+        </gl-button>
+      </div>
+    </gl-form-group>
+    <work-item-description-rendered
+      v-else
+      :work-item-description="workItemDescription"
+      :can-edit="canEdit"
+      @startEditing="startEditing"
+      @descriptionUpdated="handleDescriptionTextUpdated"
+    />
     <edited-at
       v-if="lastEditedAt"
       :updated-at="lastEditedAt"

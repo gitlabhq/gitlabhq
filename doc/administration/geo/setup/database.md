@@ -478,18 +478,18 @@ data before running `pg_basebackup`.
    Each Geo **secondary** site must have its own unique replication slot name.
    Using the same slot name between two secondaries breaks PostgreSQL replication.
 
+   NOTE:
+   Replication slot names must only contain lowercase letters, numbers, and the underscore character.
+
+   When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
+   user in the first step.
+
    ```shell
    gitlab-ctl replicate-geo-database \
       --slot-name=<secondary_site_name> \
       --host=<primary_site_ip> \
       --sslmode=verify-ca
    ```
-
-   NOTE:
-   Replication slot names must only contain lowercase letters, numbers, and the underscore character.
-
-   When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
-   user in the first step.
 
    NOTE:
    If you have generated custom PostgreSQL certificates, you will want to use
@@ -619,7 +619,7 @@ If you still haven't [migrated from repmgr to Patroni](#migrating-from-repmgr-to
 1. Before migrating, we recommend that there is no replication lag between the **primary** and **secondary** sites and that replication is paused. In GitLab 13.2 and later, you can pause and resume replication with `gitlab-ctl geo-replication-pause` and `gitlab-ctl geo-replication-resume` on a Geo secondary database node.
 1. Follow the [instructions to migrate repmgr to Patroni](../../postgresql/replication_and_failover.md#switching-from-repmgr-to-patroni). When configuring Patroni on each **primary** site database node, add `patroni['replication_slots'] = { '<slot_name>' => 'physical' }`
 to `gitlab.rb` where `<slot_name>` is the name of the replication slot for your **secondary** site. This ensures that Patroni recognizes the replication slot as permanent and not drop it upon restarting.
-1. If database replication to the **secondary** site was paused before migration, resume replication once Patroni is confirmed working on the **primary** site.
+1. If database replication to the **secondary** site was paused before migration, resume replication after Patroni is confirmed working on the **primary** site.
 
 ### Migrating a single PostgreSQL node to Patroni
 

@@ -18,6 +18,9 @@
     },
     "line": {
       "type": "integer"
+    },
+    "web_url": {
+      "type": "string"
     }
   },
   "additionalProperties": false

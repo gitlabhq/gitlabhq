@@ -1,6 +1,5 @@
 ---
 Rails/FilePath:
-  Details: grace period
   Exclude:
     - 'app/controllers/help_controller.rb'
     - 'app/helpers/startupjs_helper.rb'

@@ -53,9 +53,10 @@ export const initCopyCodeButton = (selector = '#content-body') => {
     customElements.define('copy-code', CopyCodeButton);
   }
 
+  const exclude = document.querySelector('.file-content.code'); // this behavior is not needed when viewing raw file content, so excluding it as the unnecessary dom lookups can become expensive
   const el = document.querySelector(selector);
 
-  if (!el) return () => {};
+  if (!el || exclude) return () => {};
 
   const observer = new MutationObserver(() => addCodeButton());
 

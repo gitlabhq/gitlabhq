@@ -43,12 +43,17 @@ system tests, parameterized tests etc.
 Everything you should know about how to write good Frontend tests: Jest,
 testing promises, stubbing etc.
 
+## [Getting started with Feature tests](frontend_testing.md#get-started-with-feature-tests)
+
+Need to get started with feature tests? Here are some general guidelines,
+tips and tricks to get the most out of white-box testing.
+
 ## [Flaky tests](flaky_tests.md)
 
 What are flaky tests, the different kind of flaky tests we encountered, and what
 we do about them.
 
-## [GitLab pipelines](../pipelines.md)
+## [GitLab pipelines](../pipelines/index.md)
 
 How GitLab test suite is run in the CI context: setup, caches, artifacts,
 parallelization, monitoring.

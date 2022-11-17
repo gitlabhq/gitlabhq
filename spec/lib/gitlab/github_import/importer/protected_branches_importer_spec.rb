@@ -29,7 +29,10 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
     required_signatures = Struct.new(:url, :enabled, keyword_init: true)
     enforce_admins = Struct.new(:url, :enabled, keyword_init: true)
     allow_option = Struct.new(:enabled, keyword_init: true)
-    required_pull_request_reviews = Struct.new(:url, :dismissal_restrictions, keyword_init: true)
+    required_pull_request_reviews = Struct.new(
+      :url, :dismissal_restrictions, :require_code_owner_reviews,
+      keyword_init: true
+    )
     response.new(
       name: 'main',
       url: 'https://example.com/branches/main/protection',
@@ -58,7 +61,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
       ),
       required_pull_request_reviews: required_pull_request_reviews.new(
         url: 'https://example.com/branches/main/protection/required_pull_request_reviews',
-        dismissal_restrictions: {}
+        dismissal_restrictions: {},
+        require_code_owner_reviews: true
       )
     )
   end
@@ -160,6 +164,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
     let(:branch_struct) { Struct.new(:protection, :name, :url, keyword_init: true) }
     let(:protection_struct) { Struct.new(:enabled, keyword_init: true) }
     let(:protected_branch) { branch_struct.new(name: 'main', protection: protection_struct.new(enabled: true)) }
+    let(:second_protected_branch) { branch_struct.new(name: 'fix', protection: protection_struct.new(enabled: true)) }
     let(:unprotected_branch) { branch_struct.new(name: 'staging', protection: protection_struct.new(enabled: false)) }
     # when user has no admin rights on repo
     let(:unknown_protection_branch) { branch_struct.new(name: 'development', protection: nil) }
@@ -168,9 +173,9 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
 
     before do
       allow(client).to receive(:branches).with(project.import_source)
-        .and_return([protected_branch, unprotected_branch, unknown_protection_branch])
+        .and_return([protected_branch, second_protected_branch, unprotected_branch, unknown_protection_branch])
       allow(client).to receive(:branch_protection)
-        .with(project.import_source, protected_branch.name).once
+        .with(project.import_source, anything)
         .and_return(github_protection_rule)
       allow(Gitlab::GithubImport::ObjectCounter).to receive(:increment)
         .with(project, :protected_branch, :fetched)
@@ -180,12 +185,13 @@ RSpec.describe Gitlab::GithubImport::Importer::ProtectedBranchesImporter do
       subject.each_object_to_import do |object|
         expect(object).to eq github_protection_rule
       end
-      expect(Gitlab::GithubImport::ObjectCounter).to have_received(:increment).once
+      expect(Gitlab::GithubImport::ObjectCounter).to have_received(:increment).twice
     end
 
     context 'when protected branch is already processed' do
       it "doesn't process this branch" do
         subject.mark_as_imported(protected_branch)
+        subject.mark_as_imported(second_protected_branch)
 
         subject.each_object_to_import {}
         expect(Gitlab::GithubImport::ObjectCounter).not_to have_received(:increment)

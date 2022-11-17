@@ -13,6 +13,13 @@ module AccessTokensActions
   def index
     @resource_access_token = PersonalAccessToken.new
     set_index_vars
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: @active_access_tokens
+      end
+    end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -23,7 +30,7 @@ module AccessTokensActions
     if token_response.success?
       @resource_access_token = token_response.payload[:access_token]
       render json: { new_token: @resource_access_token.token,
-                     active_access_tokens: active_resource_access_tokens }, status: :ok
+                     active_access_tokens: active_access_tokens }, status: :ok
     else
       render json: { errors: token_response.errors }, status: :unprocessable_entity
     end
@@ -62,14 +69,9 @@ module AccessTokensActions
     resource.members.load
 
     @scopes = Gitlab::Auth.resource_bot_scopes
-    @active_resource_access_tokens = active_resource_access_tokens
+    @active_access_tokens = active_access_tokens
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
-
-  def active_resource_access_tokens
-    tokens = finder(state: 'active', sort: 'expires_at_asc_id_desc').execute.preload_users
-    represent(tokens)
-  end
 
   def finder(options = {})
     PersonalAccessTokensFinder.new({ user: bot_users, impersonation: false }.merge(options))

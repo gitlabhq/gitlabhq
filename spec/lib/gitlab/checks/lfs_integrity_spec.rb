@@ -9,13 +9,26 @@ RSpec.describe Gitlab::Checks::LfsIntegrity do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:newrev) do
-    operations = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      BareRepoOperations.new(repository.path)
-    end
+    newrev = repository.commit_files(
+      project.creator,
+      branch_name: 'lfs_integrity_spec',
+      message: 'New LFS objects',
+      actions: [{
+        action: :create,
+        file_path: 'files/lfs/some.iso',
+        content: <<~LFS
+        version https://git-lfs.github.com/spec/v1
+        oid sha256:91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897
+        size 1575078
+        LFS
+      }]
+    )
 
     # Create a commit not pointed at by any ref to emulate being in the
     # pre-receive hook so that `--not --all` returns some objects
-    operations.commit_tree('8856a329dd38ca86dfb9ce5aa58a16d88cc119bd', "New LFS objects")
+    repository.delete_branch('lfs_integrity_spec')
+
+    newrev
   end
 
   let(:newrevs) { [newrev] }

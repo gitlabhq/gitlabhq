@@ -129,9 +129,6 @@ export default {
     issuableId() {
       return this.issuable?.id;
     },
-    isRealtimeEnabled() {
-      return this.glFeatures.realtimeLabels;
-    },
   },
   apollo: {
     issuable: {
@@ -163,7 +160,7 @@ export default {
           };
         },
         skip() {
-          return !this.issuableId || !this.isDropdownVariantSidebar || !this.isRealtimeEnabled;
+          return !this.issuableId || !this.isDropdownVariantSidebar;
         },
         updateQuery(
           _,

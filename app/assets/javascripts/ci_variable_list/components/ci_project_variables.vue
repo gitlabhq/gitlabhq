@@ -1,160 +1,55 @@
 <script>
-import { createAlert } from '~/flash';
-import { __ } from '~/locale';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import getProjectEnvironments from '../graphql/queries/project_environments.query.graphql';
-import getProjectVariables from '../graphql/queries/project_variables.query.graphql';
-import { mapEnvironmentNames, reportMessageToSentry } from '../utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   ADD_MUTATION_ACTION,
   DELETE_MUTATION_ACTION,
   GRAPHQL_PROJECT_TYPE,
   UPDATE_MUTATION_ACTION,
-  environmentFetchErrorText,
-  genericMutationErrorText,
-  variableFetchErrorText,
 } from '../constants';
+import getProjectEnvironments from '../graphql/queries/project_environments.query.graphql';
+import getProjectVariables from '../graphql/queries/project_variables.query.graphql';
 import addProjectVariable from '../graphql/mutations/project_add_variable.mutation.graphql';
 import deleteProjectVariable from '../graphql/mutations/project_delete_variable.mutation.graphql';
 import updateProjectVariable from '../graphql/mutations/project_update_variable.mutation.graphql';
-import CiVariableSettings from './ci_variable_settings.vue';
+import CiVariableShared from './ci_variable_shared.vue';
 
 export default {
   components: {
-    CiVariableSettings,
+    CiVariableShared,
   },
-  inject: ['endpoint', 'projectFullPath', 'projectId'],
-  data() {
-    return {
-      hasNextPage: false,
-      isLoadingMoreItems: false,
-      loadingCounter: 0,
-      pageInfo: {},
-      projectEnvironments: [],
-      projectVariables: [],
-    };
-  },
-  apollo: {
-    projectEnvironments: {
-      query: getProjectEnvironments,
-      variables() {
-        return {
-          fullPath: this.projectFullPath,
-        };
-      },
-      update(data) {
-        return mapEnvironmentNames(data?.project?.environments?.nodes);
-      },
-      error() {
-        createAlert({ message: environmentFetchErrorText });
-      },
-    },
-    projectVariables: {
-      query: getProjectVariables,
-      variables() {
-        return {
-          after: null,
-          fullPath: this.projectFullPath,
-        };
-      },
-      update(data) {
-        return data?.project?.ciVariables?.nodes || [];
-      },
-      result({ data }) {
-        this.pageInfo = data?.project?.ciVariables?.pageInfo || this.pageInfo;
-        this.hasNextPage = this.pageInfo?.hasNextPage || false;
-        // Because graphQL has a limit of 100 items,
-        // we batch load all the variables by making successive queries
-        // to keep the same UX. As a safeguard, we make sure that we cannot go over
-        // 20 consecutive API calls, which means 2000 variables loaded maximum.
-        if (!this.hasNextPage) {
-          this.isLoadingMoreItems = false;
-        } else if (this.loadingCounter < 20) {
-          this.hasNextPage = false;
-          this.fetchMoreVariables();
-          this.loadingCounter += 1;
-        } else {
-          createAlert({ message: this.$options.tooManyCallsError });
-          reportMessageToSentry(this.$options.componentName, this.$options.tooManyCallsError, {});
-        }
-      },
-      error() {
-        this.isLoadingMoreItems = false;
-        this.hasNextPage = false;
-        createAlert({ message: variableFetchErrorText });
-      },
-    },
-  },
+  mixins: [glFeatureFlagsMixin()],
+  inject: ['projectFullPath', 'projectId'],
   computed: {
-    isLoading() {
-      return (
-        this.$apollo.queries.projectVariables.loading ||
-        this.$apollo.queries.projectEnvironments.loading ||
-        this.isLoadingMoreItems
-      );
+    graphqlId() {
+      return convertToGraphQLId(GRAPHQL_PROJECT_TYPE, this.projectId);
     },
-  },
-  methods: {
-    addVariable(variable) {
-      this.variableMutation(ADD_MUTATION_ACTION, variable);
-    },
-    deleteVariable(variable) {
-      this.variableMutation(DELETE_MUTATION_ACTION, variable);
-    },
-    fetchMoreVariables() {
-      this.isLoadingMoreItems = true;
-
-      this.$apollo.queries.projectVariables.fetchMore({
-        variables: {
-          fullPath: this.projectFullPath,
-          after: this.pageInfo.endCursor,
-        },
-      });
-    },
-    updateVariable(variable) {
-      this.variableMutation(UPDATE_MUTATION_ACTION, variable);
-    },
-    async variableMutation(mutationAction, variable) {
-      try {
-        const currentMutation = this.$options.mutationData[mutationAction];
-        const { data } = await this.$apollo.mutate({
-          mutation: currentMutation.action,
-          variables: {
-            endpoint: this.endpoint,
-            fullPath: this.projectFullPath,
-            projectId: convertToGraphQLId(GRAPHQL_PROJECT_TYPE, this.projectId),
-            variable,
-          },
-        });
-        if (data[currentMutation.name]?.errors?.length) {
-          const { errors } = data[currentMutation.name];
-          createAlert({ message: errors[0] });
-        }
-      } catch {
-        createAlert({ message: genericMutationErrorText });
-      }
-    },
-  },
-  componentName: 'ProjectVariables',
-  i18n: {
-    tooManyCallsError: __('Maximum number of variables loaded (2000)'),
   },
   mutationData: {
-    [ADD_MUTATION_ACTION]: { action: addProjectVariable, name: 'addProjectVariable' },
-    [UPDATE_MUTATION_ACTION]: { action: updateProjectVariable, name: 'updateProjectVariable' },
-    [DELETE_MUTATION_ACTION]: { action: deleteProjectVariable, name: 'deleteProjectVariable' },
+    [ADD_MUTATION_ACTION]: addProjectVariable,
+    [UPDATE_MUTATION_ACTION]: updateProjectVariable,
+    [DELETE_MUTATION_ACTION]: deleteProjectVariable,
+  },
+  queryData: {
+    ciVariables: {
+      lookup: (data) => data?.project?.ciVariables,
+      query: getProjectVariables,
+    },
+    environments: {
+      lookup: (data) => data?.project?.environments,
+      query: getProjectEnvironments,
+    },
   },
 };
 </script>
 
 <template>
-  <ci-variable-settings
+  <ci-variable-shared
+    :id="graphqlId"
     :are-scoped-variables-available="true"
-    :environments="projectEnvironments"
-    :is-loading="isLoading"
-    :variables="projectVariables"
-    @add-variable="addVariable"
-    @delete-variable="deleteVariable"
-    @update-variable="updateVariable"
+    component-name="ProjectVariables"
+    :full-path="projectFullPath"
+    :mutation-data="$options.mutationData"
+    :query-data="$options.queryData"
   />
 </template>

@@ -12,7 +12,7 @@ module Glfm
     include Shared
 
     def process
-      verify_cmd = "git status --porcelain #{GLFM_SPEC_OUTPUT_PATH} #{EXAMPLE_SNAPSHOTS_PATH}"
+      verify_cmd = "git status --porcelain #{GLFM_OUTPUT_SPEC_PATH} #{ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH}"
       verify_cmd_output = run_external_cmd(verify_cmd)
       unless verify_cmd_output.empty?
         msg = "ERROR: Cannot run `#{__FILE__}` because `#{verify_cmd}` shows the following uncommitted changes:\n" \
@@ -41,8 +41,20 @@ module Glfm
 
       return if verify_cmd_output.empty?
 
-      raise "The following files were modified by running GLFM scripts. Please review, verify, and commit " \
-        "the changes:\n#{verify_cmd_output}"
+      warn(
+        "ERROR: The following files were modified by running GLFM scripts. Please review, verify, and commit " \
+        "the changes:\n#{verify_cmd_output}\n"
+      )
+      warn("See the CI artifacts for the modified version of the files.\n")
+
+      warn("This is the output of `git diff`:\n")
+      diff_output = run_external_cmd('git diff')
+      warn(diff_output)
+
+      # Ensure that the diff output is flushed and output before we raise and exit.
+      $stderr.flush
+
+      raise('ERROR: The generated files are not up to date.')
     end
   end
 end

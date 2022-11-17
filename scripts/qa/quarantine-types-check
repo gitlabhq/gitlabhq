@@ -30,19 +30,19 @@ puts "\nAnalyzing quarantined test data...\n"
 tests = data_hash['examples']
 
 tests.each do |test|
-  if test['quarantine']
-    unless QUARANTINE_TYPES.include?(test['quarantine']['type'])
-      quarantine_type_errors.push(
-        <<~TYPE_ERRORS
+  next unless test['quarantine']
+
+  unless QUARANTINE_TYPES.include?(test['quarantine']['type'])
+    quarantine_type_errors.push(
+      <<~TYPE_ERRORS
            ==> #{test['full_description']}
                in file: #{test['id']}
                with type: "#{test['quarantine']['type']}"
-        TYPE_ERRORS
-      )
-    end
-
-    missing_issues.push(" ==> #{test['id']} - #{test['full_description']}\n") unless test['quarantine']['issue']
+      TYPE_ERRORS
+    )
   end
+
+  missing_issues.push(" ==> #{test['id']} - #{test['full_description']}\n") unless test['quarantine']['issue']
 end
 
 if quarantine_type_errors.empty? && missing_issues.empty?

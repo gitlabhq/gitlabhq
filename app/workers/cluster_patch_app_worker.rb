@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# DEPRECATED
+#
+# To be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/366573
 class ClusterPatchAppWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
@@ -12,9 +15,5 @@ class ClusterPatchAppWorker # rubocop:disable Scalability/IdempotentWorker
   worker_has_external_dependencies!
   loggable_arguments 0
 
-  def perform(app_name, app_id)
-    find_application(app_name, app_id) do |app|
-      Clusters::Applications::PatchService.new(app).execute
-    end
-  end
+  def perform(app_name, app_id); end
 end

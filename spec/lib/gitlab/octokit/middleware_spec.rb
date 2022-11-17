@@ -66,5 +66,13 @@ RSpec.describe Gitlab::Octokit::Middleware do
         it_behaves_like 'Public URL'
       end
     end
+
+    context 'when a non HTTP/HTTPS URL is provided' do
+      let(:env) { { url: 'ssh://172.16.0.0' } }
+
+      it 'raises an error' do
+        expect { middleware.call(env) }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+      end
+    end
   end
 end

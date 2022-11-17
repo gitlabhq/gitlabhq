@@ -44,8 +44,9 @@ You can quickly see which comments involve you, because
 mentions for yourself (the user currently signed in) are highlighted
 in a different color.
 
-Avoid mentioning `@all` in issues and merge requests, because it sends an email notification
-to all the members of that project's group. This might be interpreted as spam.
+Avoid mentioning `@all` in issues and merge requests. It sends an email notification
+to all members of that project's parent group, not only the participants of the project,
+and may be interpreted as spam.
 Notifications and mentions can be disabled in
 [a group's settings](../group/manage.md#disable-email-notifications).
 
@@ -77,7 +78,7 @@ To add a commit diff comment:
    You can select multiple lines by dragging the **Comment** (**{comment}**) icon.
 1. Enter your comment and select **Start a review** or **Add comment now**.
 
-The comment is displayed on the merge request's **Discussions** tab.
+The comment is displayed on the merge request's **Overview** tab.
 
 The comment is not displayed on your project's **Repository > Commits** page.
 
@@ -143,7 +144,7 @@ If you edit an existing comment to add a user mention that wasn't there before, 
 - Creates a to-do item for the mentioned user.
 - Does not send a notification email.
 
-## Prevent comments by locking an issue
+## Prevent comments by locking the discussion
 
 You can prevent public comments in an issue or merge request.
 When you do, only project members can add and edit comments.
@@ -153,12 +154,17 @@ Prerequisite:
 - In merge requests, you must have at least the Developer role.
 - In issues, you must have at least the Reporter role.
 
+To lock an issue or merge request:
+
 1. On the right sidebar, next to **Lock issue** or **Lock merge request**, select **Edit**.
 1. On the confirmation dialog, select **Lock**.
 
 Notes are added to the page details.
 
 If an issue or merge request is locked and closed, you cannot reopen it.
+
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action on the right sidebar, your project or instance might have [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions) enabled.
 
 ## Add an internal note
 
@@ -167,12 +173,9 @@ If an issue or merge request is locked and closed, you cannot reopen it.
 > - [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
 > - [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363045) permissions in GitLab 15.5 to at least the Reporter role. In GitLab 15.4 and earlier, issue or epic authors and assignees could also read and create internal notes.
 
-You can add an internal note **to an issue or an epic**. It's then visible only to the following people:
-
-- Project members who have at least the Reporter role
-- Issue or epic author
-- Users assigned to the issue or epic
+You can add an internal note **to an issue or an epic**. It's then visible only to project members who have at least the Reporter role.
 
 Keep in mind:
 
@@ -181,10 +184,7 @@ Keep in mind:
 
 Prerequisites:
 
-- You must either:
-  - Have at least the Reporter role for the project.
-  - Be the issue or epic assignee.
-  - Be the issue or epic author.
+- You must have at least the Reporter role for the project.
 
 To add an internal note:
 
@@ -200,14 +200,14 @@ You can also mark an [issue as confidential](../project/issues/confidential_issu
 
 For issues and merge requests with many comments, you can filter the page to show comments only.
 
-1. Open a merge request's **Discussion** tab, or epic or issue's **Overview** tab.
+1. Open the **Overview** tab in a merge request, issue, or epic.
 1. On the right side of the page, select from the filter:
    - **Show all activity**: Display all user comments and system notes.
      (issue updates, mentions from other issues, changes to the description, and so on).
    - **Show comments only**: Display only user comments.
    - **Show history only**: Display only activity notes.
 
-![Notes filters dropdown options](img/index_notes_filters.png)
+![Notes filters dropdown list options](img/index_notes_filters.png)
 
 GitLab saves your preference, so it persists when you visit the same page again
 from any device you're logged into.

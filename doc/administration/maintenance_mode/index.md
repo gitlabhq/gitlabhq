@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2149) in GitLab 13.9.
 
-Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, Container repositories, and so on.
+Maintenance Mode allows administrators to reduce write operations to a minimum while maintenance tasks are performed. The main goal is to block all external actions that change the internal state, including the PostgreSQL database, but especially files, Git repositories, and Container repositories.
 
-Once Maintenance Mode is enabled, in-progress actions finish relatively quickly since no new actions are coming in, and internal state changes are minimal.
+When Maintenance Mode is enabled, in-progress actions finish relatively quickly since no new actions are coming in, and internal state changes are minimal.
 In that state, various maintenance tasks are easier, and services can be stopped completely or be
 further degraded for a much shorter period of time than might otherwise be needed. For example, stopping cron jobs and draining queues should be fairly quick.
 
@@ -150,7 +150,7 @@ is turned off.
 
 Deployments don't go through because pipelines are unfinished.
 
-It is recommended to disable auto deploys during Maintenance Mode, and enable them once it is disabled.
+It is recommended to disable auto deploys during Maintenance Mode, and enable them when it is disabled.
 
 #### Terraform integration
 

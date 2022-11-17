@@ -44,12 +44,12 @@ end
 
 RSpec.shared_examples 'an email with X-GitLab headers containing IDs' do
   it 'has X-GitLab-*-ID header' do
-    is_expected.to have_header "X-GitLab-#{model.class.name}-ID", "#{model.id}"
+    is_expected.to have_header "X-GitLab-#{model.class.name}-ID", model.id.to_s
   end
 
   it 'has X-GitLab-*-IID header if model has iid defined' do
     if model.respond_to?(:iid)
-      is_expected.to have_header "X-GitLab-#{model.class.name}-IID", "#{model.iid}"
+      is_expected.to have_header "X-GitLab-#{model.class.name}-IID", model.iid.to_s
     else
       expect(subject.header["X-GitLab-#{model.class.name}-IID"]).to eq nil
     end

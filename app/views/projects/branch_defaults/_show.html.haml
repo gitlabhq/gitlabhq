@@ -1,0 +1,17 @@
+- expanded = expanded_by_default?
+
+%section.settings.no-animate#branch-defaults-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Branch defaults')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = s_('ProjectSettings|Select the default branch for this project, and configure the template for branch names.')
+
+  .settings-content
+    - url = namespace_project_settings_repository_path(@project.namespace, @project)
+    = gitlab_ui_form_for @project, url: url, method: :put, html: { multipart: true, class: "issue-settings-form js-issue-settings-form" }, authenticity_token: true do |f|
+      %input{ name: 'update_section', type: 'hidden', value: 'js-issue-settings' }
+        = render 'projects/branch_defaults/default_branch_fields', f: f
+        = render 'projects/branch_defaults/branch_names_fields', f: f
+      = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

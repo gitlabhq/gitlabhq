@@ -3,9 +3,16 @@
 module API
   module Entities
     class PersonalAccessToken < Grape::Entity
-      expose :id, :name, :revoked, :created_at, :scopes, :user_id, :last_used_at
-      expose :active?, as: :active
-      expose :expires_at do |personal_access_token|
+      expose :id, documentation: { type: 'integer', example: 2 }
+      expose :name, documentation: { type: 'string', example: 'John Doe' }
+      expose :revoked, documentation: { type: 'boolean' }
+      expose :created_at, documentation: { type: 'dateTime' }
+      expose :scopes, documentation: { type: 'array', example: ['api'] }
+      expose :user_id, documentation: { type: 'integer', example: 3 }
+      expose :last_used_at, documentation: { type: 'dateTime', example: '2020-08-31T15:53:00.073Z' }
+      expose :active?, as: :active, documentation: { type: 'boolean' }
+      expose :expires_at, documentation:
+        { type: 'dateTime', example: '2020-08-31T15:53:00.073Z' } do |personal_access_token|
         personal_access_token.expires_at ? personal_access_token.expires_at.strftime("%Y-%m-%d") : nil
       end
     end

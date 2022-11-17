@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe Projects::HashedStorage::MigrateRepositoryService do
-  include GitHelpers
-
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :legacy_storage, :repository, :wiki_repo, :design_repo) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }

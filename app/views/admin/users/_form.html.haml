@@ -75,8 +75,8 @@
 
     %div
       - if @user.new_record?
-        = f.submit _('Create user'), class: "btn gl-button btn-confirm"
+        = f.submit _('Create user'), pajamas_button: true
         = link_to _('Cancel'), admin_users_path, class: "gl-button btn btn-default btn-cancel"
       - else
-        = f.submit _('Save changes'), class: "btn gl-button btn-confirm"
+        = f.submit _('Save changes'), pajamas_button: true
         = link_to _('Cancel'), admin_user_path(@user), class: "gl-button btn btn-default btn-cancel"

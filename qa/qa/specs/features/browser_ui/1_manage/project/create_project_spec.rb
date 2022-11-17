@@ -7,9 +7,6 @@ module QA
         it 'creates a new project' do
           Page::Project::Show.perform do |project_page|
             expect(project_page).to have_content(project_name)
-            expect(project_page).to have_content(
-              /Project \S?#{project_name}\S+ was successfully created/
-            )
             expect(project_page).to have_content('The repository for this project is empty')
           end
         end

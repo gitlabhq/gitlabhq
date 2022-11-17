@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'Environment' do
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }
 
@@ -17,7 +17,7 @@ RSpec.describe 'Environment' do
   end
 
   describe 'environment details page' do
-    let!(:environment) { create(:environment, project: project) }
+    let_it_be(:environment) { create(:environment, project: project) }
     let!(:permissions) {}
     let!(:deployment) {}
     let!(:action) {}
@@ -160,10 +160,20 @@ RSpec.describe 'Environment' do
       end
 
       context 'with related deployable present' do
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-        let(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+        let_it_be(:previous_pipeline) { create(:ci_pipeline, project: project) }
 
-        let(:deployment) do
+        let_it_be(:previous_build) do
+          create(:ci_build, :success, pipeline: previous_pipeline, environment: environment.name)
+        end
+
+        let_it_be(:previous_deployment) do
+          create(:deployment, :success, environment: environment, deployable: previous_build)
+        end
+
+        let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+        let_it_be(:build) { create(:ci_build, pipeline: pipeline, environment: environment.name) }
+
+        let_it_be(:deployment) do
           create(:deployment, :success, environment: environment, deployable: build)
         end
 
@@ -171,12 +181,10 @@ RSpec.describe 'Environment' do
           visit_environment(environment)
         end
 
-        it 'does show build name' do
-          expect(page).to have_link("#{build.name} (##{build.id})")
-        end
-
-        it 'shows the re-deploy button' do
+        it 'shows deployment information and buttons', :js do
           expect(page).to have_button('Re-deploy to environment')
+          expect(page).to have_button('Rollback environment')
+          expect(page).to have_link("#{build.name} (##{build.id})")
         end
 
         context 'with manual action' do

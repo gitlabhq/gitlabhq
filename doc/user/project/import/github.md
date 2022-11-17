@@ -112,8 +112,8 @@ If you are not using the GitHub integration, you can still perform an authorizat
 1. Select **Generate token**.
 1. Copy the token hash.
 1. Go back to GitLab and provide the token to the GitHub importer.
-1. Hit the **List Your GitHub Repositories** button and wait while GitLab reads your repositories' information.
-   Once done, you are taken to the importer page to select the repositories to import.
+1. Select **List Your GitHub Repositories** and wait while GitLab reads your repositories' information.
+   When done, you are taken to the importer page to select the repositories to import.
 
 To use a newer personal access token in imports after previously performing these steps, sign out of
 your GitLab account and sign in again, or revoke the older personal access token in GitHub.
@@ -202,18 +202,21 @@ The following items of a project are imported:
   - Merge Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
-  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can be imported
-  [as an additional item](#select-additional-items-to-import). The feature flag was removed.
+  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
+  be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 - Pull request review comments.
 - Regular issue and pull request comments.
 - [Git Large File Storage (LFS) Objects](../../../topics/git/lfs/index.md).
-- Pull request reviews (GitLab.com and GitLab 13.7 and later).
-- Pull request "merged by" information (GitLab.com and GitLab 13.7 and later).
-- Pull request comments replies in discussions ([GitLab.com and GitLab 14.5 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/336596)).
-- Diff Notes suggestions ([GitLab.com and GitLab 14.7 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/340624)).
-- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4 with `github_importer_issue_events_import`
-  [feature flag](../../../administration/feature_flags.md) disabled by default.
-  From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
+- Pull request reviews.
+- Pull request assigned reviewers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355137) in GitLab 15.6.
+- Pull request "merged by" information.
+- Pull request comments replies in discussions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/336596) in
+  GitLab 14.5.
+- Diff Notes suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
+- Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
+  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
+  From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
+  removed.
 
 References to pull requests and issues are preserved. Each imported repository maintains visibility level unless that
 [visibility level is restricted](../../public_access.md#restrict-use-of-public-or-internal-projects), in which case it
@@ -225,7 +228,13 @@ Supported GitHub branch protection rules are mapped to GitLab branch protection 
 
 - GitHub rule **Require conversation resolution before merging** for the project's default branch is mapped to the [**All threads must be resolved** GitLab setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) in GitLab 15.5.
 - GitHub rule **Require a pull request before merging** is mapped to the **No one** option in the **Allowed to push** list of the branch protection rule. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) in GitLab 15.5.
-- GitHub rule **Require signed commits** for the project's default branch is mapped to the **Reject unsigned commits** GitLab setting. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) in GitLab 15.5.
+- GitHub rule **Require a pull request before merging - Require review from Code Owners** is mapped to the
+  [**Code owner approval** branch protection rule](../protected_branches.md#require-code-owner-approval-on-a-protected-branch). Requires GitLab Premium or higher.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/376683) in GitLab 15.6.
+- GitHub rule **Require signed commits** for the project's default branch is mapped to the **Reject unsigned commits** GitLab push rule. Requires GitLab Premium or higher.
+  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) in GitLab 15.5.
+- GitHub rule **Allow force pushes - Everyone** is mapped to the [**Allowed to force push** branch protection rule](../protected_branches.md#allow-force-push-on-a-protected-branch). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370943) in GitLab 15.6.
+- GitHub rule **Allow force pushes - Specify who can force push**  is proposed in issue [370945](https://gitlab.com/gitlab-org/gitlab/-/issues/370945).
 - Support for GitHub rule **Require status checks to pass before merging** was proposed in issue [370948](https://gitlab.com/gitlab-org/gitlab/-/issues/370948). However, this rule cannot be translated during project import into GitLab due to technical difficulties.
 You can still create [status checks](../merge_requests/status_checks.md) in GitLab yourself.
 
@@ -263,6 +272,112 @@ To disable the feature, run this command:
 Feature.disable(:github_importer_lower_per_page_limit, group)
 ```
 
+## Import from GitHub Enterprise on an internal network
+
+If your GitHub Enterprise instance is on a internal network that is unaccessible to the internet, you can use a reverse proxy
+to allow GitLab.com to access the instance.
+
+The proxy needs to:
+
+- Forward requests to the GitHub Enterprise instance.
+- Convert to the public proxy hostname all occurrences of the internal hostname in:
+  - The API response body.
+  - The API response `Link` header.
+
+GitHub API uses the `Link` header for pagination.
+
+After configuring the proxy, test it by making API requests. Below there are some examples of commands to test the API:
+
+```shell
+curl --header "Authorization: Bearer <YOUR-TOKEN>" "https://{PROXY_HOSTNAME}/user"
+
+### URLs in the response body should use the proxy hostname
+
+{
+  "login": "example_username",
+  "id": 1,
+  "url": "https://{PROXY_HOSTNAME}/users/example_username",
+  "html_url": "https://{PROXY_HOSTNAME}/example_username",
+  "followers_url": "https://{PROXY_HOSTNAME}/api/v3/users/example_username/followers",
+  ...
+  "created_at": "2014-02-11T17:03:25Z",
+  "updated_at": "2022-10-18T14:36:27Z"
+}
+```
+
+```shell
+curl --head --header "Authorization: Bearer <YOUR-TOKEN>" "https://{PROXY_DOMAIN}/api/v3/repos/{repository_path}/pulls?states=all&sort=created&direction=asc"
+
+### Link header should use the proxy hostname
+
+HTTP/1.1 200 OK
+Date: Tue, 18 Oct 2022 21:42:55 GMT
+Server: GitHub.com
+Content-Type: application/json; charset=utf-8
+Cache-Control: private, max-age=60, s-maxage=60
+...
+X-OAuth-Scopes: repo
+X-Accepted-OAuth-Scopes:
+github-authentication-token-expiration: 2022-11-22 18:13:46 UTC
+X-GitHub-Media-Type: github.v3; format=json
+X-RateLimit-Limit: 5000
+X-RateLimit-Remaining: 4997
+X-RateLimit-Reset: 1666132381
+X-RateLimit-Used: 3
+X-RateLimit-Resource: core
+Link: <https://{PROXY_DOMAIN}/api/v3/repositories/1/pulls?page=2>; rel="next", <https://{PROXY_DOMAIN}/api/v3/repositories/1/pulls?page=11>; rel="last"
+```
+
+Also test that cloning the repository using the proxy does not fail:
+
+```shell
+git clone -c http.extraHeader="Authorization: basic <base64 encode YOUR-TOKEN>" --mirror https://{PROXY_DOMAIN}/{REPOSITORY_PATH}.git
+```
+
+### Sample reverse proxy configuration
+
+The following configuration is an example on how to configure Apache HTTP Server as a reverse proxy
+
+WARNING:
+For simplicity, the snippet does not have configuration to encrypt the connection between the client and the proxy. However, for security reasons you should include that
+configuration. See [sample Apache TLS/SSL configuration](https://ssl-config.mozilla.org/#server=apache&version=2.4.41&config=intermediate&openssl=1.1.1k&guideline=5.6).
+
+```plaintext
+# Required modules
+LoadModule filter_module lib/httpd/modules/mod_filter.so
+LoadModule reflector_module lib/httpd/modules/mod_reflector.so
+LoadModule substitute_module lib/httpd/modules/mod_substitute.so
+LoadModule deflate_module lib/httpd/modules/mod_deflate.so
+LoadModule headers_module lib/httpd/modules/mod_headers.so
+LoadModule proxy_module lib/httpd/modules/mod_proxy.so
+LoadModule proxy_connect_module lib/httpd/modules/mod_proxy_connect.so
+LoadModule proxy_http_module lib/httpd/modules/mod_proxy_http.so
+LoadModule ssl_module lib/httpd/modules/mod_ssl.so
+
+<VirtualHost GITHUB_ENTERPRISE_HOSTNAME:80>
+  ServerName GITHUB_ENTERPRISE_HOSTNAME
+
+  # Enables reverse-proxy configuration with SSL support
+  SSLProxyEngine On
+  ProxyPass "/" "https://GITHUB_ENTERPRISE_HOSTNAME/"
+  ProxyPassReverse "/" "https://GITHUB_ENTERPRISE_HOSTNAME/"
+
+  # Replaces occurrences of the local GitHub Enterprise URL with the Proxy URL
+  # GitHub Enterprise compresses the responses, the filters INFLATE and DEFLATE needs to be used to
+  # decompress and compress the response back
+  AddOutputFilterByType INFLATE;SUBSTITUTE;DEFLATE application/json
+  Substitute "s|https://GITHUB_ENTERPRISE_HOSTNAME|https://PROXY_HOSTNAME|ni"
+  SubstituteMaxLineLength 50M
+
+  # GitHub API uses the response header "Link" for the API pagination
+  # For example:
+  #   <https://example.com/api/v3/repositories/1/issues?page=2>; rel="next", <https://example.com/api/v3/repositories/1/issues?page=3>; rel="last"
+  # The directive below replaces all occurrences of the GitHub Enterprise URL with the Proxy URL if the
+  # response header Link is present
+  Header edit* Link "https://GITHUB_ENTERPRISE_HOSTNAME" "https://PROXY_HOSTNAME"
+</VirtualHost>
+```
+
 ## Automate group and project import **(PREMIUM)**
 
 For information on automating user, group, and project import API calls, see
@@ -279,8 +394,8 @@ repository to be imported manually. Administrators can manually import the repos
 1. Run the following series of commands in the console:
 
    ```ruby
-   project_id = <PROJECT_ID> 
-   github_access_token =  <GITHUB_ACCESS_TOKEN> 
+   project_id = <PROJECT_ID>
+   github_access_token =  <GITHUB_ACCESS_TOKEN>
    github_repository_path = '<GROUP>/<REPOSITORY>'
 
    github_repository_url = "https://#{github_access_token}@github.com/#{github_repository_path}.git"

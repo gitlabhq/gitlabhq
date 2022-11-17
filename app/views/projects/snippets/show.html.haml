@@ -3,9 +3,9 @@
 - breadcrumb_title @snippet.to_reference
 - page_title "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
-#js-snippet-view{ data: {'qa-selector': 'snippet_view', 'snippet-gid': @snippet.to_global_id, 'report-abuse-path': snippet_report_abuse_path(@snippet), 'can-report-spam': @snippet.submittable_as_spam_by?(current_user).to_s } }
+#js-snippet-view{ data: { 'snippet-gid': @snippet.to_global_id, 'report-abuse-path': snippet_report_abuse_path(@snippet), 'can-report-spam': @snippet.submittable_as_spam_by?(current_user).to_s } }
 
-.row-content-block.top-block.content-component-block.gl-px-0.gl-py-2
+.gl-px-0.gl-py-2
   = render 'award_emoji/awards_block', awardable: @snippet, inline: true, api_awards_path: project_snippets_award_api_path(@snippet)
 
 #notes.limited-width-notes= render "shared/notes/notes_with_form", :autocomplete => true

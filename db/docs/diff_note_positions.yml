@@ -4,6 +4,6 @@ classes:
 - DiffNotePosition
 feature_categories:
 - source_code_management
-description: TODO
+description: Stores diff notes positions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28113
 milestone: '13.0'

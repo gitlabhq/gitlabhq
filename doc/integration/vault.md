@@ -18,7 +18,7 @@ GitLab by using our OpenID authentication feature.
 
 ## Prerequisites
 
-1. [Install Vault](https://www.vaultproject.io/docs/install).
+1. [Install Vault](https://developer.hashicorp.com/vault/docs/install).
 1. Run Vault.
 
 ## Get the OpenID Connect client ID and secret from GitLab
@@ -29,7 +29,7 @@ for authenticating into Vault. To do this, sign in to GitLab and follow these st
 1. In the top-right corner, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Applications**.
-1. Fill out the application **Name** and [**Redirect URI**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
+1. Fill out the application **Name** and [**Redirect URI**](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris).
 1. Select the **OpenID** scope.
 1. Select **Save application**.
 1. Copy the **Client ID** and **Client Secret**, or keep the page open for reference.
@@ -78,7 +78,7 @@ Success! Data written to: auth/oidc/config
 
 ## Write the OIDC role configuration
 
-You must tell Vault the [**Redirect URIs**](https://www.vaultproject.io/docs/auth/jwt#redirect-uris)
+You must tell Vault the [**Redirect URIs**](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris)
 and scopes given to GitLab when you created the application.
 
 Run the following command in the terminal:
@@ -128,7 +128,7 @@ Otherwise, anyone with a public account can access your Vault instance.
 
 ## Sign in using the Vault CLI (optional)
 
-You can also sign into Vault using the [Vault CLI](https://www.vaultproject.io/docs/commands).
+You can also sign into Vault using the [Vault CLI](https://developer.hashicorp.com/vault/docs/commands).
 
 1. To sign in with the role configuration you created in the previous example,
    run the following command in your terminal:
@@ -143,7 +143,7 @@ You can also sign into Vault using the [Vault CLI](https://www.vaultproject.io/d
    - `-method=oidc` to set Vault to use the `OIDC` sign-in method.
    - `port=8250` to set the port that GitLab should redirect to. This port
      number must match the port given to GitLab when listing
-     [Redirect URIs](https://www.vaultproject.io/docs/auth/jwt#redirect-uris).
+     [Redirect URIs](https://developer.hashicorp.com/vault/docs/auth/jwt#redirect-uris).
 
    After running this command, you should see a link in the terminal.
 

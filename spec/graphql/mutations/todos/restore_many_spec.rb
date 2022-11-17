@@ -80,7 +80,7 @@ RSpec.describe Mutations::Todos::RestoreMany do
   end
 
   def restore_mutation(todos)
-    mutation.resolve(ids: todos.map { |todo| global_id_of(todo) } )
+    mutation.resolve(ids: todos.map { |todo| global_id_of(todo) })
   end
 
   def expect_states_were_not_changed

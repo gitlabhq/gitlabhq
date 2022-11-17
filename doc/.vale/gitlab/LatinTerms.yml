@@ -3,10 +3,10 @@
 #
 # Checks for use of Latin terms.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
-message: 'Use "%s" instead of "%s", but consider rewriting the sentence.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
+message: "Use '%s' instead of '%s', but consider rewriting the sentence."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: warning
 nonword: true
 ignorecase: true

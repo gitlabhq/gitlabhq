@@ -150,13 +150,32 @@ RSpec.describe 'Admin::Users::User' do
       context 'before impersonating' do
         subject { visit admin_user_path(user_to_visit) }
 
-        let(:user_to_visit) { another_user }
+        let_it_be(:user_to_visit) { another_user }
+
+        shared_examples "user that cannot be impersonated" do
+          it 'disables impersonate button' do
+            subject
+
+            impersonate_btn = find('[data-testid="impersonate_user_link"]')
+
+            expect(impersonate_btn).not_to be_nil
+            expect(impersonate_btn['disabled']).not_to be_nil
+          end
+
+          it "shows tooltip with correct error message" do
+            subject
+
+            expect(find("span[title='#{impersonation_error_msg}']")).not_to be_nil
+          end
+        end
 
         context 'for other users' do
           it 'shows impersonate button for other users' do
             subject
 
             expect(page).to have_content('Impersonate')
+            impersonate_btn = find('[data-testid="impersonate_user_link"]')
+            expect(impersonate_btn['disabled']).to be_nil
           end
         end
 
@@ -171,15 +190,51 @@ RSpec.describe 'Admin::Users::User' do
         end
 
         context 'for blocked user' do
-          before do
-            another_user.block
+          let_it_be(:blocked_user) { create(:user, :blocked) }
+          let(:user_to_visit) { blocked_user }
+          let(:impersonation_error_msg) { _('You cannot impersonate a blocked user') }
+
+          it_behaves_like "user that cannot be impersonated"
+        end
+
+        context 'for user with expired password' do
+          let(:user_to_visit) do
+            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
+            another_user
           end
 
-          it 'does not show impersonate button for blocked user' do
-            subject
+          let(:impersonation_error_msg) { _("You cannot impersonate a user with an expired password") }
 
-            expect(page).not_to have_content('Impersonate')
+          it_behaves_like "user that cannot be impersonated"
+        end
+
+        context 'for internal user' do
+          let_it_be(:internal_user) { create(:user, :bot) }
+          let(:user_to_visit) { internal_user }
+          let(:impersonation_error_msg) { _("You cannot impersonate an internal user") }
+
+          it_behaves_like "user that cannot be impersonated"
+        end
+
+        context 'for locked user' do
+          let_it_be(:locked_user) { create(:user, :locked) }
+          let(:user_to_visit) { locked_user }
+          let(:impersonation_error_msg) { _("You cannot impersonate a user who cannot log in") }
+
+          it_behaves_like "user that cannot be impersonated"
+        end
+
+        context 'when already impersonating another user' do
+          let_it_be(:admin_user) { create(:user, :admin) }
+          let(:impersonation_error_msg) { _("You are already impersonating another user") }
+
+          subject do
+            visit admin_user_path(admin_user)
+            click_link 'Impersonate'
+            visit admin_user_path(another_user)
           end
+
+          it_behaves_like "user that cannot be impersonated"
         end
 
         context 'when impersonation is disabled' do
@@ -215,18 +270,6 @@ RSpec.describe 'Admin::Users::User' do
 
           icon = first('[data-testid="incognito-icon"]')
           expect(icon).not_to be nil
-        end
-
-        context 'a user with an expired password' do
-          before do
-            another_user.update!(password_expires_at: Time.zone.now - 5.minutes)
-          end
-
-          it 'does not redirect to password change page' do
-            subject
-
-            expect(page).to have_current_path('/')
-          end
         end
       end
 

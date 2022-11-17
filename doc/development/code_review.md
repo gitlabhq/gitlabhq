@@ -28,6 +28,13 @@ The reviewer can:
 - Give you a second opinion on the chosen solution and implementation.
 - Help look for bugs, logic problems, or uncovered edge cases.
 
+If the merge request is trivial (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
+you can skip the reviewer step and directly ask a [maintainer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
+Otherwise, a merge request should always be first reviewed by a reviewer in each
+[category (e.g. backend, database)](#approval-guidelines)
+the MR touches, as maintainers may not have the relevant domain knowledge, and
+also to spread the workload.
+
 For assistance with security scans or comments, include the Application Security Team (`@gitlab-com/gl-security/appsec`).
 
 The reviewers use the [reviewer functionality](../user/project/merge_requests/getting_started.md#reviewer) in the sidebar.
@@ -56,8 +63,8 @@ We make the following assumption with regards to automatically being considered 
 - Team members working in a specific stage/group (for example, create: source code) are considered domain experts for that area of the app they work on.
 - Team members working on a specific feature (for example, search) are considered domain experts for that feature.
 
-We default to assigning reviews to team members with domain expertise.
-When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation.
+We default to assigning reviews to team members with domain expertise for code reviews. For UX reviews we default to the recommended designer from the Reviewer roulette.
+When a suitable [domain expert](#domain-experts) isn't available, you can choose any team member to review the MR, or follow the [Reviewer roulette](#reviewer-roulette) recommendation (see above for UX reviews).
 
 To find a domain expert:
 
@@ -77,7 +84,7 @@ Reviewer roulette is an internal tool for use on GitLab.com, and not available f
 The [Danger bot](dangerbot.md) randomly picks a reviewer and a maintainer for
 each area of the codebase that your merge request seems to touch. It makes
 **recommendations** for developer reviewers and you should override it if you think someone else is a better
-fit. User-facing changes are required to have a UX review, too. Default to the recommended UX reviewer suggested.
+fit. User-facing changes are also required to have a UX review, even if it's behind a feature flag. Default to the recommended UX reviewer suggested.
 
 It picks reviewers and maintainers from the list at the
 [engineering projects](https://about.gitlab.com/handbook/engineering/projects/)
@@ -147,7 +154,7 @@ with [domain expertise](#domain-experts).
 | `~workhorse` changes | [Workhorse maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_workhorse). |
 | `~frontend` changes (*1*)       | [Frontend maintainer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_maintainers_frontend). |
 | `~UX` user-facing changes (*3*) | [Product Designer](https://about.gitlab.com/handbook/engineering/projects/#gitlab_reviewers_UX). Refer to the [design and user interface guidelines](contributing/design.md) for details. |
-| Adding a new JavaScript library (*1*) | - [Frontend foundations member](https://about.gitlab.com/direction/ecosystem/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
+| Adding a new JavaScript library (*1*) | - [Frontend foundations member](https://about.gitlab.com/direction/manage/foundations/) if the library significantly increases the [bundle size](https://gitlab.com/gitlab-org/frontend/playground/webpack-memory-metrics/-/blob/master/doc/report.md).<br/>- A [legal department member](https://about.gitlab.com/handbook/legal/) if the license used by the new library hasn't been approved for use in GitLab.<br/><br/>More information about license compatibility can be found in our [GitLab Licensing and Compatibility documentation](licensing.md). |
 | A new dependency or a file system change | - [Distribution team member](https://about.gitlab.com/company/team/). See how to work with the [Distribution team](https://about.gitlab.com/handbook/engineering/development/enablement/systems/distribution/#how-to-work-with-distribution) for more details.<br/>- For Rubygems, request an [AppSec review](gemfile.md#request-an-appsec-review). |
 | `~documentation` or `~UI text` changes | [Technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments) based on assignments in the appropriate [DevOps stage group](https://about.gitlab.com/handbook/product/categories/#devops-stages). |
 | Changes to development guidelines | Follow the [review process](development_processes.md#development-guidelines-review) and get the approvals accordingly. |
@@ -212,8 +219,8 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 ##### Security
 
-1. I have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/engineering/security/#when-to-request-a-security-review), I have added the `~security` label and I have `@`-mentioned `@gitlab-com/gl-security/appsec`.
-1. I have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/engineering/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+1. I have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/security/#when-to-request-a-security-review), I have added the `~security` label and I have `@`-mentioned `@gitlab-com/gl-security/appsec`.
+1. I have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
 
 ##### Deployment
 
@@ -508,7 +515,7 @@ people who add commits to an MR are not authorized to approve the merge request,
 so they must seek a maintainer who has not contributed to the MR to approve the MR before it can be merged.
 
 This policy is in place to satisfy the CHG-04 control of the GitLab
-[Change Management Controls](https://about.gitlab.com/handbook/engineering/security/security-assurance/security-compliance/guidance/change-management.html).
+[Change Management Controls](https://about.gitlab.com/handbook/security/security-assurance/security-compliance/guidance/change-management.html).
 
 To implement this policy in `gitlab-org/gitlab`, we have enabled the following
 settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
@@ -517,6 +524,9 @@ settings to ensure MRs get an approval from a top-level CODEOWNERS maintainer:
 - [Prevent approvals by users who add commits](../user/project/merge_requests/approvals/settings.md#prevent-approvals-by-users-who-add-commits).
 - [Prevent editing approval rules in merge requests](../user/project/merge_requests/approvals/settings.md#prevent-editing-approval-rules-in-merge-requests).
 - [Remove all approvals when commits are added to the source branch](../user/project/merge_requests/approvals/settings.md#remove-all-approvals-when-commits-are-added-to-the-source-branch)
+
+To update the code owners in the `CODEOWNERS` file for `gitlab-org/gitlab`, follow
+the process explained in the [code owners approvals handbook section](https://about.gitlab.com/handbook/engineering/workflow/code-review/#code-owner-approvals).
 
   There are scenarios such as rebasing locally or applying suggestions that are considered
   the same as adding a commit and could reset existing approvals. Approvals are not removed

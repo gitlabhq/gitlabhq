@@ -17,6 +17,6 @@ RSpec.shared_context 'runners resolver setup' do
   end
 
   let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group], token: 'mnopqr', description: 'group runner', contacted_at: 2.seconds.ago) }
-  let_it_be(:subgroup_runner) { create(:ci_runner, :group, groups: [subgroup], token: 'mnopqr', description: 'subgroup runner', contacted_at: 1.second.ago) }
+  let_it_be(:subgroup_runner) { create(:ci_runner, :group, groups: [subgroup], token: '123456', description: 'subgroup runner', contacted_at: 1.second.ago) }
   let_it_be(:instance_runner) { create(:ci_runner, :instance, description: 'shared runner', token: 'stuvxz', contacted_at: 2.minutes.ago, tag_list: %w(instance_runner active_runner)) }
 end

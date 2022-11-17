@@ -5,11 +5,11 @@ require 'spec_helper'
 RSpec.describe X509CertificateRevokeService do
   describe '#execute' do
     let(:service) { described_class.new }
-    let!(:x509_signature_1) { create(:x509_commit_signature, x509_certificate: x509_certificate, verification_status: :verified ) }
-    let!(:x509_signature_2) { create(:x509_commit_signature, x509_certificate: x509_certificate, verification_status: :verified ) }
+    let!(:x509_signature_1) { create(:x509_commit_signature, x509_certificate: x509_certificate, verification_status: :verified) }
+    let!(:x509_signature_2) { create(:x509_commit_signature, x509_certificate: x509_certificate, verification_status: :verified) }
 
     context 'for revoked certificates' do
-      let(:x509_certificate) { create(:x509_certificate, certificate_status: :revoked ) }
+      let(:x509_certificate) { create(:x509_certificate, certificate_status: :revoked) }
 
       it 'update all commit signatures' do
         expect do

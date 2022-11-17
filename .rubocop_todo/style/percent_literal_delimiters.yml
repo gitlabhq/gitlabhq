@@ -696,7 +696,6 @@ Style/PercentLiteralDelimiters:
     - 'spec/features/merge_request/user_sees_avatar_on_diff_notes_spec.rb'
     - 'spec/features/projects/active_tabs_spec.rb'
     - 'spec/features/projects/artifacts/user_downloads_artifacts_spec.rb'
-    - 'spec/features/projects/branches_spec.rb'
     - 'spec/features/projects/environments/environment_spec.rb'
     - 'spec/features/projects/integrations/user_activates_jira_spec.rb'
     - 'spec/features/projects/jobs_spec.rb'

@@ -78,6 +78,22 @@ RSpec.describe PasswordsController do
         end
       end
 
+      context 'password is weak' do
+        let(:password) { "password" }
+
+        it 'tracks the event' do
+          subject
+
+          expect(response.body).to have_content("must not contain commonly used combinations of words and letters")
+          expect_snowplow_event(
+            category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+            action: 'track_weak_password_error',
+            controller: 'PasswordsController',
+            method: 'create'
+          )
+        end
+      end
+
       it 'sets the username and caller_id in the context' do
         expect(controller).to receive(:update).and_wrap_original do |m, *args|
           m.call(*args)

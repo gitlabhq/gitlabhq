@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -133,6 +133,8 @@ Check the [Sidekiq log](../../../administration/logs/index.md#sidekiqlog)
 for any related errors. If you see `Validation failed: Version is invalid`, it means that the
 version in your `Chart.yaml` file does not follow [Helm Chart versioning specifications](https://helm.sh/docs/topics/charts/#charts-and-versioning).
 To fix the error, use the correct version syntax and upload the chart again.
+
+Support for providing better error messages for package processing errors in the UI is proposed in issue [330515](https://gitlab.com/gitlab-org/gitlab/-/issues/330515).
 
 ### `helm push` results in an error
 

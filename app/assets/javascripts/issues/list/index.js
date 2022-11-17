@@ -1,12 +1,11 @@
-import produce from 'immer';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
-import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';
+import { gqlClient } from './graphql';
 
 export function mountJiraIssuesListApp() {
   const el = document.querySelector('.js-jira-issues-import-status');
@@ -56,26 +55,6 @@ export function mountIssuesListApp() {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 
-  const resolvers = {
-    Mutation: {
-      reorderIssues: (_, { oldIndex, newIndex, namespace, serializedVariables }, { cache }) => {
-        const variables = JSON.parse(serializedVariables);
-        const sourceData = cache.readQuery({ query: getIssuesQuery, variables });
-
-        const data = produce(sourceData, (draftData) => {
-          const issues = draftData[namespace].issues.nodes.slice();
-          const issueToMove = issues[oldIndex];
-          issues.splice(oldIndex, 1);
-          issues.splice(newIndex, 0, issueToMove);
-
-          draftData[namespace].issues.nodes = issues;
-        });
-
-        cache.writeQuery({ query: getIssuesQuery, variables, data });
-      },
-    },
-  };
-
   const {
     autocompleteAwardEmojisPath,
     calendarPath,
@@ -97,7 +76,6 @@ export function mountIssuesListApp() {
     hasIssuableHealthStatusFeature,
     hasIssueWeightsFeature,
     hasIterationsFeature,
-    hasMultipleIssueAssigneesFeature,
     hasScopedLabelsFeature,
     importCsvIssuesPath,
     initialEmail,
@@ -125,7 +103,7 @@ export function mountIssuesListApp() {
     el,
     name: 'IssuesListRoot',
     apolloProvider: new VueApollo({
-      defaultClient: createDefaultClient(resolvers),
+      defaultClient: gqlClient,
     }),
     router: new VueRouter({
       base: window.location.pathname,
@@ -148,7 +126,6 @@ export function mountIssuesListApp() {
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
-      hasMultipleIssueAssigneesFeature: parseBoolean(hasMultipleIssueAssigneesFeature),
       hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       initialSort,
       isAnonymousSearchDisabled: parseBoolean(isAnonymousSearchDisabled),

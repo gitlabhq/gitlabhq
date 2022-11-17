@@ -269,7 +269,7 @@ $tabs-holder-z-index: 250;
 
   position: -webkit-sticky;
   position: sticky;
-  top: var(--top-pos);
+  top: calc(var(--top-pos) + var(--performance-bar-height, 0px));
   max-height: calc(100vh - var(--top-pos) - var(--system-header-height, 0px) - var(--performance-bar-height, 0px) - var(--review-bar-height, 0px));
 
   .drag-handle {
@@ -391,6 +391,10 @@ $tabs-holder-z-index: 250;
     text-overflow: ellipsis;
     min-width: 100px;
 
+    display: grid;
+    grid-template-columns: max-content minmax(0, max-content) max-content;
+    grid-gap: $gl-spacing-scale-2;
+
     @include media-breakpoint-up(xs) {
       min-width: 0;
       max-width: 100%;
@@ -404,6 +408,7 @@ $tabs-holder-z-index: 250;
 
 .deploy-heading,
 .merge-train-position-indicator {
+  padding: $gl-padding-8;
   @include media-breakpoint-up(md) {
     padding: $gl-padding-8 $gl-padding;
   }
@@ -475,6 +480,19 @@ $tabs-holder-z-index: 250;
   border: 1px solid var(--border-color, $border-color);
   border-radius: $border-radius-default;
   background: var(--white, $white);
+
+  > .mr-widget-section {
+    > :first-child {
+      border-top-left-radius: $border-radius-default - 1px;
+      border-top-right-radius: $border-radius-default - 1px;
+    }
+
+    > :last-child,
+    .deploy-heading:last-child {
+      border-bottom-left-radius: $border-radius-default - 1px;
+      border-bottom-right-radius: $border-radius-default - 1px;
+    }
+  }
 
   > .mr-widget-border-top:first-of-type {
     border-top: 0;
@@ -637,7 +655,6 @@ $tabs-holder-z-index: 250;
     word-break: break-all;
   }
 
-  .deploy-link,
   .label-branch {
     &.label-truncate {
       // NOTE: This selector targets its children because some of the HTML comes from
@@ -808,6 +825,13 @@ $tabs-holder-z-index: 250;
 
 .mr-widget-border-top {
   border-top: 1px solid var(--border-color, $border-color);
+
+  &:last-child {
+    .report-block-container {
+      border-bottom-left-radius: $border-radius-default - 1px;
+      border-bottom-right-radius: $border-radius-default - 1px;
+    }
+  }
 }
 
 .mr-widget-extension {
@@ -875,8 +899,11 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-workflow {
-  margin-top: $gl-padding;
   position: relative;
+
+  &:not(:first-child) {
+    margin-top: $gl-padding;
+  }
 
   &:not(:last-child)::before {
     content: '';
@@ -1078,6 +1105,31 @@ $tabs-holder-z-index: 250;
   border-top: 0;
 }
 
+.mr-widget-status-icon-level-1::before {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-left-0;
+  @include gl-top-0;
+  @include gl-bottom-0;
+  @include gl-right-0;
+  @include gl-opacity-3;
+  @include gl-rounded-full;
+  @include gl-border-solid;
+  @include gl-border-4;
+}
+
+.mr-widget-status-icon-level-1::after {
+  @include gl-content-empty;
+  @include gl-absolute;
+  @include gl-rounded-full;
+  @include gl-border-solid;
+  @include gl-border-4;
+  @include gl-left-2;
+  @include gl-right-2;
+  @include gl-top-2;
+  @include gl-bottom-2;
+}
+
 .memory-graph-container {
   background: var(--white, $white);
   border: 1px solid var(--gray-100, $gray-100);
@@ -1152,5 +1204,21 @@ $tabs-holder-z-index: 250;
     text-overflow: ellipsis;
     white-space: nowrap;
     margin-bottom: 0;
+  }
+}
+
+.commits ol:not(:last-of-type) {
+  margin-bottom: 0;
+}
+
+.mr-section-container {
+  .state-container-action-buttons {
+    @include media-breakpoint-up(md) {
+      flex-direction: row-reverse;
+
+      .btn {
+        margin-left: auto;
+      }
+    }
   }
 }

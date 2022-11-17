@@ -4,6 +4,9 @@ query issuableDetails($fullPath: ID!, $iid: String) {
     issuable: issue(iid: $iid) {
       id
       confidential
+      milestone {
+        id
+      }
     }
   }
 }

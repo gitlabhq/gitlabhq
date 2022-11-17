@@ -1,19 +1,11 @@
+- name = local_assigns.fetch(:name, nil)
 - project = @target_project || @project
-- extra_class = extra_class || ''
-- show_menu_above = show_menu_above || false
 - selected = local_assigns.fetch(:selected, nil)
 
-- selected_text = selected.try(:title) || params[:milestone_title]
-- dropdown_title = local_assigns.fetch(:dropdown_title, _('Filter by milestone'))
-- if selected.present? || params[:milestone_title].present?
-  = hidden_field_tag(name, name == :milestone_title ? selected_text : selected.id)
-= dropdown_tag(milestone_dropdown_label(selected_text), options: { title: dropdown_title, toggle_class: "js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone", dropdown_qa_selector: "issuable_milestone_dropdown_content",
-  placeholder: _('Search milestones'), footer_content: project.present?, data: { show_no: true, show_menu_above: show_menu_above, show_any: show_any, show_upcoming: show_upcoming, show_started: show_started, field_name: name, selected: selected_text, project_id: project.try(:id), default_label: _('Milestone'), qa_selector: "issuable_milestone_dropdown", testid: "issuable-milestone-dropdown" } }) do
-  - if project
-    %ul.dropdown-footer-list
-      %li
-        = link_to project_milestones_path(project) do
-          - if can? current_user, :admin_milestone, project
-            = _('Manage milestones')
-          - else
-            = _('View milestones')
+.js-milestone-dropdown-root{ data: { can_admin_milestone: can?(current_user, :admin_milestone, project),
+  full_path: project.full_path,
+  input_name: name,
+  milestone_id: selected.try(:id),
+  milestone_title: selected.try(:title),
+  project_milestones_path: project_milestones_path(project),
+  workspace_type: Namespaces::ProjectNamespace.sti_name.downcase } }

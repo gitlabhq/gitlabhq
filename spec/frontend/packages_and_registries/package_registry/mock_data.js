@@ -233,6 +233,12 @@ export const packageDetailsQuery = (extendPackage) => ({
       },
       versions: {
         nodes: packageVersions(),
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          endCursor: 'endCursor',
+          startCursor: 'startCursor',
+        },
         __typename: 'PackageConnection',
       },
       dependencyLinks: {
@@ -288,6 +294,33 @@ export const packageDestroyMutation = () => ({
   },
 });
 
+export const packagesDestroyMutation = () => ({
+  data: {
+    destroyPackages: {
+      errors: [],
+    },
+  },
+});
+
+export const packagesDestroyMutationError = () => ({
+  data: {
+    destroyPackages: null,
+  },
+  errors: [
+    {
+      message:
+        "The resource that you are attempting to access does not exist or you don't have permission to perform this action",
+      locations: [
+        {
+          line: 2,
+          column: 3,
+        },
+      ],
+      path: ['destroyPackages'],
+    },
+  ],
+});
+
 export const packageDestroyMutationError = () => ({
   data: {
     destroyPackage: null,
@@ -314,6 +347,7 @@ export const packageDestroyFilesMutation = () => ({
     },
   },
 });
+
 export const packageDestroyFilesMutationError = () => ({
   data: {
     destroyPackageFiles: null,

@@ -3,12 +3,12 @@
 #
 # Checks for generic, unhelpful subheadings.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Rename the subheading "%s", or re-purpose the content elsewhere.'
+message: "Rename the heading '%s', or re-purpose the content elsewhere."
 level: warning
 scope: heading
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/#headings-1
+link: https://docs.gitlab.com/ee/development/documentation/topic_types/concept.html#concept-headings
 ignorecase: false
 tokens:
   - How it works

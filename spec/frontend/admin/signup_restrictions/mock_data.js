@@ -4,6 +4,7 @@ export const rawMockData = {
   signupEnabled: 'true',
   requireAdminApprovalAfterUserSignup: 'true',
   sendUserConfirmationEmail: 'true',
+  emailConfirmationSetting: 'hard',
   minimumPasswordLength: '8',
   minimumPasswordLengthMin: '3',
   minimumPasswordLengthMax: '10',
@@ -22,6 +23,8 @@ export const rawMockData = {
   passwordLowercaseRequired: 'true',
   passwordUppercaseRequired: 'true',
   passwordSymbolRequired: 'true',
+  projectSharingHelpLink: 'project-sharing/help/link',
+  groupSharingHelpLink: 'group-sharing/help/link',
 };
 
 export const mockData = {
@@ -30,6 +33,7 @@ export const mockData = {
   signupEnabled: true,
   requireAdminApprovalAfterUserSignup: true,
   sendUserConfirmationEmail: true,
+  emailConfirmationSetting: 'hard',
   minimumPasswordLength: '8',
   minimumPasswordLengthMin: '3',
   minimumPasswordLengthMax: '10',
@@ -48,4 +52,6 @@ export const mockData = {
   passwordLowercaseRequired: true,
   passwordUppercaseRequired: true,
   passwordSymbolRequired: true,
+  projectSharingHelpLink: 'project-sharing/help/link',
+  groupSharingHelpLink: 'group-sharing/help/link',
 };

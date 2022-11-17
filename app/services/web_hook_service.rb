@@ -57,11 +57,11 @@ class WebHookService
   end
 
   def execute
-    return { status: :error, message: 'Hook disabled' } if disabled?
+    return ServiceResponse.error(message: 'Hook disabled') if disabled?
 
     if recursion_blocked?
       log_recursion_blocked
-      return { status: :error, message: 'Recursive webhook blocked' }
+      return ServiceResponse.error(message: 'Recursive webhook blocked')
     end
 
     Gitlab::WebHooks::RecursionDetection.register!(hook)
@@ -79,11 +79,7 @@ class WebHookService
       execution_duration: Gitlab::Metrics::System.monotonic_time - start_time
     )
 
-    {
-      status: :success,
-      http_status: response.code,
-      message: response.body
-    }
+    ServiceResponse.success(message: response.body, payload: { http_status: response.code })
   rescue *Gitlab::HTTP::HTTP_ERRORS,
          Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError => e
     execution_duration = Gitlab::Metrics::System.monotonic_time - start_time
@@ -97,10 +93,7 @@ class WebHookService
 
     Gitlab::AppLogger.error("WebHook Error after #{execution_duration.to_i.seconds}s => #{e}")
 
-    {
-      status: :error,
-      message: error_message
-    }
+    ServiceResponse.error(message: error_message)
   end
 
   def async_execute

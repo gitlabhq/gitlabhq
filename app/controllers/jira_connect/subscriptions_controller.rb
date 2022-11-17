@@ -27,6 +27,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   before_action :verify_qsh_claim!, only: :index
   before_action :allow_self_managed_content_security_policy, only: :index
   before_action :authenticate_user!, only: :create
+  before_action :set_cors_headers
 
   def index
     @subscriptions = current_jira_installation.subscriptions.preload_namespace_route
@@ -64,7 +65,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   private
 
   def allow_self_managed_content_security_policy
-    return unless Feature.enabled?(:jira_connect_oauth_self_managed)
+    return unless Feature.enabled?(:jira_connect_oauth_self_managed_setting)
 
     return unless current_jira_installation.instance_url?
 
@@ -83,7 +84,8 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   def allowed_instance_connect_src
     [
       Gitlab::Utils.append_path(current_jira_installation.instance_url, '/-/jira_connect/'),
-      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/api/')
+      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/api/'),
+      Gitlab::Utils.append_path(current_jira_installation.instance_url, '/oauth/token')
     ]
   end
 end

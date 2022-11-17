@@ -300,7 +300,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
       Gitlab::Ci::Variables::Collection.new
                      .append(key: 'CI_JOB_NAME', value: 'test-1')
                      .append(key: 'CI_BUILD_ID', value: '1')
-                     .append(key: 'RAW_VAR', value: '$TEST1', raw: true)
                      .append(key: 'TEST1', value: 'test-3')
                      .append(key: 'FILEVAR1', value: 'file value 1', file: true)
     end
@@ -322,10 +321,6 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
             value: 'key${TEST1}-${CI_JOB_NAME}',
             result: 'keytest-3-test-1'
           },
-          "complex expansions with raw variable": {
-            value: 'key${RAW_VAR}-${CI_JOB_NAME}',
-            result: 'key$TEST1-test-1'
-          },
           "missing variable not keeping original": {
             value: 'key${MISSING_VAR}-${CI_JOB_NAME}',
             result: 'key-test-1'
@@ -339,22 +334,22 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
             value: 'key-$TEST1-%%HOME%%-$${HOME}',
             result: 'key-test-3-%%HOME%%-$${HOME}'
           },
-          "file variable with expand_file_vars: true": {
+          "file variable with expand_file_refs: true": {
             value: 'key-$FILEVAR1-$TEST1',
             result: 'key-file value 1-test-3'
           },
-          "file variable with expand_file_vars: false": {
+          "file variable with expand_file_refs: false": {
             value: 'key-$FILEVAR1-$TEST1',
             result: 'key-$FILEVAR1-test-3',
-            expand_file_vars: false
+            expand_file_refs: false
           }
         }
       end
 
       with_them do
-        let(:options) { { keep_undefined: keep_undefined, expand_file_vars: expand_file_vars }.compact }
+        let(:options) { { keep_undefined: keep_undefined, expand_file_refs: expand_file_refs }.compact }
 
-        subject(:result) { collection.expand_value(value, **options) }
+        subject(:expanded_result) { collection.expand_value(value, **options) }
 
         it 'matches expected expansion' do
           is_expected.to eq(result)
@@ -509,17 +504,35 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
               { key: 'variable4', value: 'keyvalue${variable2}value3' }
             ]
           },
-          "complex expansions with raw variable": {
+          "complex expansions with raw variable with expand_raw_refs: true (default)": {
             variables: [
-              { key: 'variable3', value: 'key_${variable}_${variable2}' },
-              { key: 'variable', value: '$variable2', raw: true },
-              { key: 'variable2', value: 'value2' }
+              { key: 'variable1', value: 'value1' },
+              { key: 'raw_var', value: 'raw-$variable1', raw: true },
+              { key: 'nonraw_var', value: 'nonraw-$variable1' },
+              { key: 'variable2', value: '$raw_var and $nonraw_var' }
             ],
             keep_undefined: false,
             result: [
-              { key: 'variable', value: '$variable2', raw: true },
-              { key: 'variable2', value: 'value2' },
-              { key: 'variable3', value: 'key_$variable2_value2' }
+              { key: 'variable1', value: 'value1' },
+              { key: 'raw_var', value: 'raw-$variable1', raw: true },
+              { key: 'nonraw_var', value: 'nonraw-value1' },
+              { key: 'variable2', value: 'raw-$variable1 and nonraw-value1' }
+            ]
+          },
+          "complex expansions with raw variable with expand_raw_refs: false": {
+            variables: [
+              { key: 'variable1', value: 'value1' },
+              { key: 'raw_var', value: 'raw-$variable1', raw: true },
+              { key: 'nonraw_var', value: 'nonraw-$variable1' },
+              { key: 'variable2', value: '$raw_var and $nonraw_var' }
+            ],
+            keep_undefined: false,
+            expand_raw_refs: false,
+            result: [
+              { key: 'variable1', value: 'value1' },
+              { key: 'raw_var', value: 'raw-$variable1', raw: true },
+              { key: 'nonraw_var', value: 'nonraw-value1' },
+              { key: 'variable2', value: '$raw_var and nonraw-value1' }
             ]
           },
           "variable value referencing password with special characters": {
@@ -553,8 +566,9 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
 
       with_them do
         let(:collection) { Gitlab::Ci::Variables::Collection.new(variables) }
+        let(:options) { { keep_undefined: keep_undefined, expand_raw_refs: expand_raw_refs }.compact }
 
-        subject { collection.sort_and_expand_all(keep_undefined: keep_undefined) }
+        subject(:expanded_result) { collection.sort_and_expand_all(**options) }
 
         it 'returns Collection' do
           is_expected.to be_an_instance_of(Gitlab::Ci::Variables::Collection)
@@ -601,7 +615,8 @@ RSpec.describe Gitlab::Ci::Variables::Collection do
         it 'logs file_variable_is_referenced_in_another_variable once for VAR5' do
           expect(Gitlab::AppJsonLogger).to receive(:info).with(
             event: 'file_variable_is_referenced_in_another_variable',
-            project_id: project.id
+            project_id: project.id,
+            variable: 'FILEVAR4'
           ).once
 
           sort_and_expand_all

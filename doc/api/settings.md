@@ -109,12 +109,13 @@ Example response:
 ```
 
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
-the `file_template_project_id`, `delayed_project_deletion`, `delayed_group_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
+the `group_owners_can_manage_default_branch_protection`, `file_template_project_id`, `delayed_project_deletion`, `delayed_group_deletion`, `deletion_adjourned_period`, or the `geo_node_allowed_ips` parameters:
 
 ```json
 {
   "id" : 1,
   "signup_enabled" : true,
+  "group_owners_can_manage_default_branch_protection" : true,
   "file_template_project_id": 1,
   "geo_node_allowed_ips": "0.0.0.0/0, ::/0",
   "delayed_project_deletion": false,
@@ -224,6 +225,7 @@ Example response:
 Users on [GitLab Premium or Ultimate](https://about.gitlab.com/pricing/) may also see
 these parameters:
 
+- `group_owners_can_manage_default_branch_protection`
 - `file_template_project_id`
 - `geo_node_allowed_ips`
 - `geo_status_timeout`
@@ -295,6 +297,7 @@ listed in the descriptions of the relevant settings.
 | `diff_max_patch_bytes`                   | integer          | no                                   | Maximum [diff patch size](../user/admin_area/diff_limits.md), in bytes. |
 | `diff_max_files`                         | integer          | no                                   | Maximum [files in a diff](../user/admin_area/diff_limits.md). |
 | `diff_max_lines`                         | integer          | no                                   | Maximum [lines in a diff](../user/admin_area/diff_limits.md). |
+| `disable_admin_oauth_scopes`             | boolean          | no                                   | Stops administrators from connecting their GitLab accounts to non-trusted OAuth 2.0 applications that have the `api`, `read_api`, `read_repository`, `write_repository`, `read_registry`, `write_registry`, or `sudo` scopes. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375043) in GitLab 15.6. |
 | `disable_feed_token`                     | boolean          | no                                   | Disable display of RSS/Atom and calendar feed tokens. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231493) in GitLab 13.7. |
 | `disabled_oauth_sign_in_sources`         | array of strings | no                                   | Disabled OAuth sign-in sources. |
 | `dns_rebinding_protection_enabled`       | boolean          | no                                   | Enforce DNS rebinding attack protection. |
@@ -352,6 +355,7 @@ listed in the descriptions of the relevant settings.
 | `grafana_enabled`                        | boolean          | no                                   | Enable Grafana. |
 | `grafana_url`                            | string           | no                                   | Grafana URL. |
 | `gravatar_enabled`                       | boolean          | no                                   | Enable Gravatar. |
+| `group_owners_can_manage_default_branch_protection` **(PREMIUM SELF)** | boolean | no                                 | Prevent overrides of default branch protection. |
 | `hashed_storage_enabled`                 | boolean          | no                                   | Create new projects using hashed storage paths: Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance. (Always enabled in GitLab versions 13.0 and later, configuration is scheduled for removal in 14.0) |
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
 | `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page and help dropdown list. |

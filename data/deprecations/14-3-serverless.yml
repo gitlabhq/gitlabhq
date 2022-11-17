@@ -5,10 +5,10 @@
   removal_date: "2022-05-22"
   breaking_change: true
   body: |
-    [GitLab Serverless](https://docs.gitlab.com/ee/user/project/clusters/serverless/) is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
+    GitLab Serverless is a feature set to support Knative-based serverless development with automatic deployments and monitoring.
 
     We decided to remove the GitLab Serverless features as they never really resonated with our users. Besides, given the continuous development of Kubernetes and Knative, our current implementations do not even work with recent versions.
   stage: Configure
   tiers: [Core, Premium, Ultimate]
   issue_url: "https://gitlab.com/groups/gitlab-org/configure/-/epics/6"
-  documentation_url: "https://docs.gitlab.com/ee/user/project/clusters/serverless/"
+  documentation_url: "https://gitlab.com/groups/gitlab-org/configure/-/epics/6"

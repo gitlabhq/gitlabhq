@@ -38,7 +38,7 @@ RSpec.describe API::Validations::Validators::GitRef do
       expect_validation_error('test' => 'heads/f[/bar')
       expect_validation_error('test' => "heads/foo\t")
       expect_validation_error('test' => "heads/foo\177")
-      expect_validation_error('test' => "#{'a' * 1025}")
+      expect_validation_error('test' => 'a' * 1025)
       expect_validation_error('test' => nil)
       expect_validation_error('test' => '')
     end

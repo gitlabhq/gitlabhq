@@ -7,15 +7,19 @@ module Gitlab
         VERSION = 1
 
         def save_check(merge_check:, result_hash:)
-          Gitlab::Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.set(merge_check.cache_key + ":#{VERSION}", result_hash.to_json, ex: EXPIRATION)
           end
         end
 
         def retrieve_check(merge_check:)
-          Gitlab::Redis::Cache.with do |redis|
-            Gitlab::Json.parse(redis.get(merge_check.cache_key + ":#{VERSION}"))
+          with_redis do |redis|
+            Gitlab::Json.parse(redis.get(merge_check.cache_key + ":#{VERSION}"), symbolize_keys: true)
           end
+        end
+
+        def with_redis(&block)
+          Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
     end

@@ -205,8 +205,8 @@ module Gitlab
             raise "Column #{old_column} does not exist on #{table}"
           end
 
-          if column.default
-            raise "#{calling_operation} does not currently support columns with default values"
+          if column.default_function
+            raise "#{calling_operation} does not currently support columns with default functions"
           end
 
           unless column_exists?(table, batch_column_name)
@@ -269,17 +269,20 @@ module Gitlab
         def create_insert_trigger(trigger_name, quoted_table, quoted_old_column, quoted_new_column)
           function_name = function_name_for_trigger(trigger_name)
 
+          column = columns(quoted_table.delete('"').to_sym).find { |column| column.name == quoted_old_column.delete('"') }
+          quoted_default_value = connection.quote(column.default)
+
           execute(<<~SQL)
             CREATE OR REPLACE FUNCTION #{function_name}()
             RETURNS trigger
             LANGUAGE plpgsql
             AS $$
             BEGIN
-              IF NEW.#{quoted_old_column} IS NULL AND NEW.#{quoted_new_column} IS NOT NULL THEN
+              IF NEW.#{quoted_old_column} IS NOT DISTINCT FROM #{quoted_default_value} AND NEW.#{quoted_new_column} IS DISTINCT FROM #{quoted_default_value} THEN
                 NEW.#{quoted_old_column} = NEW.#{quoted_new_column};
               END IF;
 
-              IF NEW.#{quoted_new_column} IS NULL AND NEW.#{quoted_old_column} IS NOT NULL THEN
+              IF NEW.#{quoted_new_column} IS NOT DISTINCT FROM #{quoted_default_value} AND NEW.#{quoted_old_column} IS DISTINCT FROM #{quoted_default_value} THEN
                 NEW.#{quoted_new_column} = NEW.#{quoted_old_column};
               END IF;
 

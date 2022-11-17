@@ -69,6 +69,8 @@ RSpec.describe SessionsController do
 
       expect(controller.stored_location_for(:redirect)).to eq(search_path)
     end
+
+    it_behaves_like "switches to user preferred language", 'Sign in'
   end
 
   describe '#create' do

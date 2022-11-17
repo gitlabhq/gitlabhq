@@ -4,6 +4,8 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import * as Sentry from '@sentry/browser';
+import getStateQueryResponse from 'test_fixtures/graphql/merge_requests/get_state.query.graphql.json';
+import readyToMergeResponse from 'test_fixtures/graphql/merge_requests/states/ready_to_merge.query.graphql.json';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { securityReportMergeRequestDownloadPathsQueryResponse } from 'jest/vue_shared/security_reports/mock_data';
@@ -22,6 +24,10 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
+import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
+import readyToMergeQuery from 'ee_else_ce/vue_merge_request_widget/queries/states/ready_to_merge.query.graphql';
+import userPermissionsQuery from '~/vue_merge_request_widget/queries/permissions.query.graphql';
+import conflictsStateQuery from '~/vue_merge_request_widget/queries/states/conflicts.query.graphql';
 import { faviconDataUrl, overlayDataUrl } from '../lib/utils/mock_data';
 import mockData from './mock_data';
 import {
@@ -83,7 +89,39 @@ describe('MrWidgetOptions', () => {
       propsData: {
         mrData: { ...mrData },
       },
+      data() {
+        return { loading: false };
+      },
+
       ...options,
+      apolloProvider: createMockApollo([
+        [
+          getStateQuery,
+          jest.fn().mockResolvedValue({
+            data: {
+              project: {
+                ...getStateQueryResponse.data.project,
+                mergeRequest: {
+                  ...getStateQueryResponse.data.project.mergeRequest,
+                  mergeError: mrData.mergeError || null,
+                },
+              },
+            },
+          }),
+        ],
+        [readyToMergeQuery, jest.fn().mockResolvedValue(readyToMergeResponse)],
+        [
+          userPermissionsQuery,
+          jest.fn().mockResolvedValue({
+            data: { project: { mergeRequest: { userPermissions: {} } } },
+          }),
+        ],
+        [
+          conflictsStateQuery,
+          jest.fn().mockResolvedValue({ data: { project: { mergeRequest: {} } } }),
+        ],
+        ...(options.apolloMock || []),
+      ]),
     });
 
     return axios.waitForAll();
@@ -563,21 +601,6 @@ describe('MrWidgetOptions', () => {
       });
     });
 
-    describe('code quality widget', () => {
-      beforeEach(() => {
-        jest.spyOn(document, 'dispatchEvent');
-      });
-      it('renders the component when refactorCodeQualityExtension is false', () => {
-        createComponent(mockData, {}, { refactorCodeQualityExtension: false });
-        expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
-      });
-
-      it('does not render the component when refactorCodeQualityExtension is true', () => {
-        createComponent(mockData, {}, { refactorCodeQualityExtension: true });
-        expect(wrapper.find('.js-codequality-widget').exists()).toBe(true);
-      });
-    });
-
     describe('pipeline for target branch after merge', () => {
       describe('with information for target branch pipeline', () => {
         beforeEach(() => {
@@ -784,12 +807,12 @@ describe('MrWidgetOptions', () => {
       mock.onGet(mockData.merge_request_cached_widget_path).reply(() => [200, mrData]);
 
       return createComponent(mrData, {
-        apolloProvider: createMockApollo([
+        apolloMock: [
           [
             securityReportMergeRequestDownloadPathsQuery,
             async () => ({ data: securityReportMergeRequestDownloadPathsQueryResponse }),
           ],
-        ]),
+        ],
       });
     };
 
@@ -852,8 +875,10 @@ describe('MrWidgetOptions', () => {
       ${'closed'} | ${false} | ${'hides'}
       ${'merged'} | ${true}  | ${'shows'}
       ${'open'}   | ${true}  | ${'shows'}
-    `('$showText merge error when state is $state', ({ state, show }) => {
-      createComponent({ ...mockData, state, merge_error: 'Error!' });
+    `('$showText merge error when state is $state', async ({ state, show }) => {
+      createComponent({ ...mockData, state, mergeError: 'Error!' });
+
+      await waitForPromises();
 
       expect(wrapper.find('[data-testid="merge_error"]').exists()).toBe(show);
     });
@@ -917,8 +942,7 @@ describe('MrWidgetOptions', () => {
     });
 
     it('extension polling is not called if enablePolling flag is not passed', () => {
-      // called one time due to parent component polling (mount)
-      expect(pollRequest).toHaveBeenCalledTimes(1);
+      expect(pollRequest).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -1004,7 +1028,7 @@ describe('MrWidgetOptions', () => {
 
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(2);
+        expect(pollRequest).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -1042,7 +1066,7 @@ describe('MrWidgetOptions', () => {
         registerExtension(pollingErrorExtension);
         await createComponent();
 
-        expect(pollRequest).toHaveBeenCalledTimes(2);
+        expect(pollRequest).toHaveBeenCalledTimes(1);
       });
 
       it('captures sentry error and displays error when poll has failed', async () => {
@@ -1085,7 +1109,7 @@ describe('MrWidgetOptions', () => {
       await nextTick();
       await waitForPromises();
 
-      expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+      expect(Sentry.captureException).toHaveBeenCalledTimes(2);
       expect(Sentry.captureException).toHaveBeenCalledWith(new Error('Fetch error'));
       expect(wrapper.findComponent(StatusIcon).props('iconName')).toBe('failed');
     });

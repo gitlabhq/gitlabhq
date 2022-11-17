@@ -16,11 +16,10 @@ module Gitlab
           .where(has_vulnerabilities: false)
       end
 
+      operation_name :update_all
+
       def perform
-        each_sub_batch(
-          operation_name: :update_all,
-          batching_scope: RELATION
-        ) do |sub_batch|
+        each_sub_batch(batching_scope: RELATION) do |sub_batch|
           sub_batch
             .joins(VULNERABILITY_READS_JOIN)
             .update_all(has_vulnerabilities: true)

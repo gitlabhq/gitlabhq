@@ -34,7 +34,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
     against the official specification.
   - They support [snapshot testing](#markdown-snapshot-testing) of GitLab
     internal GLFM processing logic. This is accomplished by automatically
-    generating YAML ["example snapshot files"](#example-snapshot-files)
+    generating YAML ["example snapshot files"](#output-example-snapshot-files)
     which are used as fixtures to drive automated testing within the GitLab app.
 - There are [various scripts and logic](#scripts)
   which are used to accomplish the above goals.
@@ -104,13 +104,13 @@ serve as input to automated conformance tests. It is
 
 Here are the HTML-rendered versions of the specifications:
 
-- [GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html), which extends the:
+- [GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_spec/spec.html), which extends the:
 - [GitHub Flavored Markdown (GFM) specification](https://github.github.com/gfm/) (rendered from the [source `spec.txt` for GFM specification](https://github.com/github/cmark-gfm/blob/master/test/spec.txt)), which extends the:
 - [CommonMark specification](https://spec.commonmark.org/0.30/) (rendered from the [source `spec.txt` for CommonMark specification](https://github.com/commonmark/commonmark-spec/blob/master/spec.txt))
 
 NOTE:
 The creation of the
-[HTML-rendered version of the GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html)
+[HTML-rendered version of the GitLab Flavored Markdown (GLFM) specification](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_spec/spec.html)
 file is still pending.
 
 However, GLFM has more complex parsing, rendering, and testing requirements than
@@ -177,7 +177,7 @@ In this context, it should not be confused with other similar or related meaning
 _example_, such as
 [RSpec examples](https://relishapp.com/rspec/rspec-core/docs/example-groups/basic-structure-describe-it).
 
-See the section on the [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) file
+See the section on the [`glfm_official_specification.md`](#glfm_official_specificationmd) file
 for more details on the backtick-delimited Markdown+HTML example syntax.
 
 ### Parsers and renderers
@@ -341,7 +341,7 @@ The GitLab [Markdown API](../../../api/markdown.md) generates HTML
 for a given Markdown string using this method.
 
 The Markdown specified in the [Markdown examples](#markdown-examples) is used to automatically generate HTML in
-[`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) via
+[`glfm_specification/output_example_snapshots/html.yml`](#htmlyml) via
 [`update-example-snapshots.rb`](#update-example-snapshotsrb-script). These examples are
 used when running [Markdown snapshot testing](#markdown-snapshot-testing).
 
@@ -353,7 +353,7 @@ in the ProseMirror WYSIWYG editor.
 
 Just like static HTML,
 the Markdown specified in the [Markdown examples](#markdown-examples) is used to automatically generate HTML in
-[`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) via
+[`glfm_specification/output_example_snapshots/html.yml`](#htmlyml) via
 [`update-example-snapshots.rb`](#update-example-snapshotsrb-script). These examples are
 used when running [Markdown snapshot testing](#markdown-snapshot-testing).
 
@@ -387,10 +387,10 @@ Here are more details on the sources of canonical HTML examples:
    version of [`spec.txt`](#spectxt).
 1. For the examples which are part of the GLFM [_official specification_](#official-specifications),
    the canonical HTML is manually maintained and curated via the examples contained in the
-   [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) [input specification file](#input-specification-files).
+   [`glfm_official_specification.md`](#glfm_official_specificationmd) [input specification file](#input-specification-files).
 1. For the examples which are part of the GLFM [_internal extensions_](#internal-extensions),
    the canonical HTML **is never specified**, and **must be left empty in all examples** contained in
-   the [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd) [input specification file](#input-specification-files).
+   the [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd) [input specification file](#input-specification-files).
 
 ### Canonicalization of HTML
 
@@ -401,7 +401,7 @@ or HTML elements, to support specific appearance and behavioral requirements.
 Neither the backend nor the frontend rendering logic can directly render the clean, basic HTML
 which is necessary to perform comparison to the [canonical HTML](#canonical-html)
 when running [Markdown conformance testing](#markdown-conformance-testing)
-for the [GLFM official specification examples](#glfm_official_specification_examplesmd).
+for the [GLFM official specification examples](#glfm_official_specificationmd).
 
 Nor should they be able to, because:
 
@@ -443,7 +443,7 @@ Fixture-based normalization should be used whenever possible, because it is simp
 understand than regex-based normalization.
 
 The [Markdown snapshot testing](#markdown-snapshot-testing) uses RSpec to generate the
-[example snapshot files](#example-snapshot-files). RSpec enables you to:
+[example snapshot files](#output-example-snapshot-files). RSpec enables you to:
 
 - Use the same powerful fixture support and helpers as all the rest of the GitLab RSpec suite.
 - Use fixtures to control the state of the database when the example snapshots are generated.
@@ -575,10 +575,10 @@ The documentation on the implementation is split into three sections:
 
 1. [Scripts](#scripts).
 1. [Specification files](#specification-files).
-1. [Example snapshot files](#example-snapshot-files):
+1. [Example snapshot files](#output-example-snapshot-files):
    These YAML files are used as input data
    or fixtures to drive the various tests, and are located under
-   `glfm_specification/example_snapshots`. All example snapshot files are automatically
+   `glfm_specification/output_example_snapshots`. All example snapshot files are automatically
    generated based on the specification files and the implementation of the parsers and renderers.
    However, they can also be directly edited if necessary, such as to
    test-drive an incomplete implementation.
@@ -620,8 +620,8 @@ end
 subgraph input:<br/>input specification files
   C[ghfm_spec_v_0.29.md] --> A
   D[glfm_intro.md] --> A
-  E[glfm_official_specification_examples.md] --> A
-  F[glfm_internal_extension_examples.md] --> A
+  E[glfm_official_specification.md] --> A
+  F[glfm_internal_extensions.md] --> A
 end
 subgraph output:<br/>GLFM specification files
   A --> G[spec.txt]
@@ -646,7 +646,7 @@ script, which expects canonical HTML, against the GitLab renderer implementation
 
 `scripts/glfm/run-spec-tests.sh` is a convenience shell script which runs
 conformance specs via the CommonMark standard `spec_tests.py` script,
-which uses the `glfm_specification/output/spec.txt` file and `scripts/glfm/canonicalize-html.rb`
+which uses the `glfm_specification/output_spec/spec.txt` file and `scripts/glfm/canonicalize-html.rb`
 helper script to test the GLFM renderer implementations' support for rendering Markdown
 specification examples to canonical HTML.
 
@@ -672,9 +672,9 @@ end
 #### `update-example-snapshots.rb` script
 
 The `scripts/glfm/update-example-snapshots.rb` script uses the GLFM
-`glfm_specification/output/spec.txt` specification file and the
+`glfm_specification/output_spec/spec.txt` specification file and the
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml`
-file to create and update the [example snapshot](#example-snapshot-files)
+file to create and update the [example snapshot](#output-example-snapshot-files)
 YAML files:
 
 ```mermaid
@@ -746,7 +746,7 @@ runs the [`update-specification.rb`](#update-specificationrb-script).
 It fails with an exception and non-zero return code if running these scripts
 results in any diffs to the generated and committed
 [output specification files](#output-specification-files) or
-[example snapshot files](#example-snapshot-files).
+[example snapshot files](#output-example-snapshot-files).
 
 This script is run via the `glfm-verify` CI job to ensure that all changes to the
 [input specification files](#input-specification-files)
@@ -766,12 +766,16 @@ subcategories based on their usage and purpose:
       [`ghfm_spec_v_0.29.md`](#github-flavored-markdown-specification) specification.
     - `gitlab_flavored_markdown`: Contains all `glfm_*` files.
       - `*.md` [input specification files](#input-specification-files),
-        which represent the GLFM specification itself.
+        which represent the source of truth for the GLFM specification and all associated examples.
       - `*.yml` [input specification configuration files](#input-specification-configuration-files),
         which control various aspects of the automated GLFM scripts and processes.
-  - `output`: Contains [output specification files](#output-specification-files),
-    which are automatically generated from the
+  - `output_spec`: Contains the `spec.txt` and `spec.html` [output specification files](#output-specification-files),
+    which represent the [GLFM official specification](#official-specifications), and are automatically generated from the
     input files by running the [`update-specification.rb`](#update-specificationrb-script) script.
+  - `output_example_snapshots`: Contains [output example snapshot files](#output-example-snapshot-files).
+    which are used to drive [snapshot testing](#markdown-snapshot-testing), and are automatically generated from the
+    input files by running the [`update-specification.rb`](#update-specificationrb-script)
+    and [`scripts/glfm/update-example-snapshots.rb`](#update-example-snapshotsrb-script) scripts.
 
 #### Input specification files
 
@@ -790,31 +794,22 @@ is a copy of the official latest [GFM `spec.txt`](https://github.com/github/cmar
 - When it is downloaded, the version number is added to the filename.
 - The extension is changed from `*.txt` to `*.md` so that it can be handled better by Markdown editors.
 
+It currently contains additional **Introduction** and **Appendix** prose-only header sections which do not
+contain any examples.
+
+All header sections which contain examples are expected to be contained within a contiguous file section
+which is delimited by:
+
+1. The beginning of the second H1 header (the first one after the **Introduction** section)
+1. An `<!-- END TESTS -->` HTML comment line.
+
 NOTE:
 For extra clarity, this file uses the `ghfm` acronym in its name instead of `gfm`, as
 explained in the [Acronyms section](#acronyms-glfm-ghfm-gfm-commonmark).
 
-##### `glfm_intro.md`
+##### `glfm_official_specification.md`
 
-[`glfm_specification/input/gitlab_flavored_markdown/glfm_intro.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_intro.md)
-is the GitLab-specific version of the prose in the introduction section of the GLFM specification.
-
-- It is manually updated.
-- The `update-specification.rb` script inserts it into the generated GLFM `spec.txt` to replace
-  the GitHub-specific GFM version of the introductory section.
-
-##### `glfm_canonical_examples.txt`
-
-The `glfm_canonical_examples.txt` file is deprecated and no longer exists. It has been replaced by two files:
-
-- [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd)
-  which contains the [GLFM official specification](#official-specifications) examples.
-- [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd)
-  which contains the [GLFM internal extension](#internal-extensions) examples.
-
-##### `glfm_official_specification_examples.md`
-
-[`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md)
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification.md)
 consists of the manually updated Markdown+HTML examples for the
 [GLFM official specification](#official-specifications), and their associated documentation and descriptions.
 
@@ -832,7 +827,12 @@ consists of the manually updated Markdown+HTML examples for the
 - `H3` header sections must be nested within `H2` header sections. They cannot be
    nested directly within `H1` header sections.
 
-`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md` sample entries:
+It _may_ contain additional prose-only header sections which do not contain any examples.
+
+All header sections which contain examples _must_ be contained within a contiguous file section which
+is delimited by `<!-- BEGIN TESTS -->` and `<!-- END TESTS -->` HTML comment lines.
+
+`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification.md` sample entries:
 
 <!-- markdownlint-disable MD048 -->
 
@@ -864,13 +864,13 @@ bold
 
 <!-- markdownlint-enable MD048 -->
 
-##### `glfm_internal_extension_examples.md`
+##### `glfm_internal_extensions.md`
 
-[`glfm_specification/input/gitlab_flavored_markdown/glfm_internal_extension_examples.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_internal_extension_examples.md)
+[`glfm_specification/input/gitlab_flavored_markdown/glfm_internal_extensions.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/input/gitlab_flavored_markdown/glfm_internal_extensions.md)
 consists of the manually updated Markdown examples for the
 [GLFM internal extensions](#internal-extensions), and their associated documentation and descriptions.
 
-Its general format is identical to [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd),
+Its general format is identical to [`glfm_official_specification.md`](#glfm_official_specificationmd),
 consisting of `H1`, `H2`, or `H3` sections containing [Markdown examples](#markdown-examples) in the
 [standard backtick-delimited `spec.txt` format](#various-markdown-specifications).
 
@@ -878,7 +878,12 @@ However, as described in the [canonical HTML section](#canonical-html), only the
 example is specified, and the HTML portion is left empty, because internal extension examples are
 never used for [Markdown conformance testing](#markdown-conformance-testing).
 
-`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification_examples.md` sample entries:
+It _may_ contain additional prose-only header sections which do not contain any examples.
+
+All header sections which contain examples _must_ be contained within a contiguous file section which
+is delimited by `<!-- BEGIN TESTS -->` and `<!-- END TESTS -->` HTML comment lines.
+
+`glfm_specification/input/gitlab_flavored_markdown/glfm_official_specification.md` sample entries:
 
 NOTE:
 All lines in this example are prefixed with a `|` character. This prefix helps avoid false
@@ -908,7 +913,7 @@ See the main [specification files](#specification-files) section for more contex
 
 All of the manually curated example names in the configuration files must correspond to
 an existing [Markdown example](#markdown-examples) name found in
-[`example_snapshots/examples_index.yml`](#glfm_specificationexample_snapshotsexamples_indexyml),
+[`output_example_snapshots/examples_index.yml`](#examples_indexyml),
 which is automatically generated based on the [input specification files](#input-specification-files).
 
 If there is an invalid reference to an example name that does not exist, the
@@ -943,16 +948,16 @@ controls the behavior of the [scripts](#scripts) and [tests](#types-of-markdown-
 The following optional entries are supported for each example. They all default to `false`:
 
 - `skip_update_example_snapshots`: When true, skips any addition or update of any this example's entries
-  in the [`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) file
-  or the [`glfm_specification/example_snapshots/prosemirror_json.yml`](#glfm_specificationexample_snapshotsprosemirror_jsonyml) file.
+  in the [`glfm_specification/output_example_snapshots/html.yml`](#htmlyml) file
+  or the [`glfm_specification/output_example_snapshots/prosemirror_json.yml`](#prosemirror_jsonyml) file.
   If this value is truthy, then no other `skip_update_example_snapshot_*` entries can be truthy,
   and an error is raised if any of them are.
 - `skip_update_example_snapshot_html_static`: When true, skips addition or update of this example's [static HTML](#static-html)
-  entry in the [`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) file.
+  entry in the [`glfm_specification/output_example_snapshots/html.yml`](#htmlyml) file.
 - `skip_update_example_snapshot_html_wysiwyg`: When true, skips addition or update of this example's [WYSIWYG HTML](#wysiwyg-html)
-  entry in the [`glfm_specification/example_snapshots/html.yml`](#glfm_specificationexample_snapshotshtmlyml) file.
+  entry in the [`glfm_specification/output_example_snapshots/html.yml`](#htmlyml) file.
 - `skip_update_example_snapshot_prosemirror_json`: When true, skips addition or update of this example's
-  entry in the [`glfm_specification/example_snapshots/prosemirror_json.yml`](#glfm_specificationexample_snapshotsprosemirror_jsonyml) file.
+  entry in the [`glfm_specification/output_example_snapshots/prosemirror_json.yml`](#prosemirror_jsonyml) file.
 - `skip_running_conformance_static_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
   of the [static HTML](#static-html) for this example.
 - `skip_running_conformance_wysiwyg_tests`: When true, skips running the [Markdown conformance tests](#markdown-conformance-testing)
@@ -962,7 +967,7 @@ The following optional entries are supported for each example. They all default 
 - `skip_running_snapshot_wysiwyg_html_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
   of the [WYSIWYG HTML](#wysiwyg-html) for this example.
 - `skip_running_snapshot_prosemirror_json_tests`: When true, skips running the [Markdown snapshot tests](#markdown-snapshot-testing)
-  of the [ProseMirror JSON](#glfm_specificationexample_snapshotsprosemirror_jsonyml) for this example.
+  of the [ProseMirror JSON](#prosemirror_jsonyml) for this example.
 
 `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` sample entry:
 
@@ -1033,9 +1038,9 @@ or [environment-variable-based normalization](#environment-variable-based-normal
       snapshot:
         07_01_00_href: *07_01_00_href
         07_01_00_id: *07_01_00_id
-    wysiwyg:
-      07_01_00_href: *07_01_00_href
-      07_01_00_id: *07_01_00_id
+      wysiwyg:
+        07_01_00_href: *07_01_00_href
+        07_01_00_id: *07_01_00_id
   prosemirror_json:
     07_01_00_href: *07_01_00_href
     07_01_00_id: *07_01_00_id
@@ -1093,36 +1098,66 @@ move or copy a hosted version of the rendered HTML `spec.html` version to anothe
 
 ##### spec.txt
 
-[`glfm_specification/output/spec.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.txt)
+[`glfm_specification/output_spec/spec.txt`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_spec/spec.txt)
 is a Markdown specification file, in the standard format
 with prose and Markdown + canonical HTML examples.
 
-It also serves as input for other scripts such as `update-example-snapshots.rb`
-and `run-spec-tests.sh`.
+It also serves as input for other scripts such as
+`run-spec-tests.sh`.
 
 It is generated or updated by the `update-specification.rb` script, using the
 [input specification files](#input-specification-files) as input.
 See the [`update-specification.rb` script section](#update-specificationrb-script)
 for a diagram and more description on this process.
 
+NOTE:
+Even though `spec.txt` is a Markdown file, it is named with a `*.txt` extension
+for consistency with the GFM and CommonMark specifications. All other GLFM
+Markdown files are named with a `*.md` extension for compatibility with
+various editors to enable Markdown formatting and syntax highlighting.
+
 ##### spec.html
 
-[`glfm_specification/output/spec.html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output/spec.html)
+[`glfm_specification/output_spec/spec.html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_spec/spec.html)
 is an HTML file, rendered based on `spec.txt`. It is
-also generated (or updated) by the `update-specification.rb` script at the same time as
+generated (or updated) by the `update-specification.rb` script at the same time as
 `spec.txt`.
 
 It corresponds to the HTML-rendered versions of the
 "GitHub Flavored Markdown" (<abbr title="GitHub Flavored Markdown">GFM</abbr>)
 [specification](https://github.github.com/gfm/)
-and the [CommonMark specification](https://spec.commonmark.org/0.30/).
+and the [CommonMark specification](https://spec.commonmark.org/0.30/), but only
+contains GitLab Flavored Markdown (GLFM) examples.
 
-### Example snapshot files
+NOTE:
 
-The `example_snapshots` directory contains files which are generated by the
-`update-example-snapshots.rb` script based off of the files in the
-`glfm_specification/input` directory. They are used as fixtures to drive the
-various Markdown snapshot tests.
+The formatting of this HTML is currently not identical to the GFM and CommonMark
+HTML-rendered specification. It is only the raw output of running `spec.txt` through
+the GitLab Markdown renderer. Properly formatting the HTML will require
+duplicating or reusing the Lua script and template from the CommonMark project:
+[CommonMark Makefile](https://github.com/commonmark/commonmark-spec/blob/master/Makefile#L11)
+
+#### Output example snapshot files
+
+The `output_example_snapshots` directory contains files which are generated by the
+`update-specification.rb` and `update-example-snapshots.rb` scripts based off of the files in the
+`glfm_specification/input` directory.
+
+The `output-specification.rb` script generates
+`output_snapshot_examples/snapshot_spec.md` and `output_snapshot_examples/snapshot_spec.html`.
+These files are Markdown specification files containing examples generated based on input files,
+similar to the `output_spec/spec.txt` and `output_spec/spec.html`, with the following differences:
+
+1. They contain a superset of _all_ examples from
+   the Commonmark, GitHub Flavored Markdown, and GitLab Flavored Markdown specifications, whereas
+   `spec.*` only contains the GLFM specification. This is to provide a single place to refer to
+   all examples when working with [snapshot testing](#markdown-snapshot-testing).
+1. They contain _only_ header sections which contain examples. They do not contain any prose-only
+   sections which do not contain examples.
+
+The `update-example-snapshots.rb` script generates the various
+`output_snapshot_examples/*.yml` files, which
+are used as fixtures to drive the [snapshot testing](#markdown-snapshot-testing).
 
 After the entire GLFM implementation is complete for both backend (Ruby) and
 frontend (JavaScript), all of these YAML files can be automatically generated.
@@ -1131,9 +1166,47 @@ key in `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.ym
 can be used to disable automatic generation of some examples. They can instead
 be manually edited as necessary to help drive the implementations.
 
-#### `glfm_specification/example_snapshots/examples_index.yml`
+##### `snapshot_spec.md`
 
-[`glfm_specification/example_snapshots/examples_index.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/examples_index.yml)
+[`glfm_specification/output_example_snapshots/snapshot_spec.md`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/snapshot_spec.md)
+is a Markdown file, containing standard Markdown + canonical HTML examples like [`spec.txt`](#spectxt).
+
+It is generated or updated by the `update-specification.rb` script, using the
+[input specification files](#input-specification-files) as input.
+See the [`update-specification.rb` script section](#update-specificationrb-script)
+for a diagram and more description on this process. It also serves as input for other
+scripts such as `update-example-snapshots.rb`.
+
+It is similar to [`spec.txt`](#spectxt), with the following differences:
+
+1. [`spec.txt`](#spectxt) contains only examples for GitLab Flavored Markdown, but
+   `snapshot_spec.md` also contains the full superset of examples from the
+   "GitHub Flavored Markdown" (<abbr title="GitHub Flavored Markdown">GFM</abbr>)[specification](https://github.github.com/gfm/)
+   and the [CommonMark specification](https://spec.commonmark.org/0.30/) specifications.
+1. [`spec.txt`](#spectxt) represents the full GLFM specification, including additional header sections
+   containing only explanatory prose and no examples, but `snapshot_spec.md` consists of only
+   header sections which contain examples. This is because its purpose is to serve as input for
+   the other [`output example snapshot files`](#output-example-snapshot-files) - it is not intended
+   to serve as an actual [specification file](#output-specification-files)
+   like [`spec.txt`](#spectxt) or [`spec.html`](#spechtml).
+
+##### `snapshot_spec.html`
+
+[`glfm_specification/output_snapshot_examples/snapshot_spec.html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_snapshot_examples/snapshot_spec.html)
+is an HTML file, rendered based on `snapshot_spec.md`. It is
+generated (or updated) by the `update-specification.rb` script at the same time as
+`snapshot_spec.md`.
+
+NOTE:
+The formatting of this HTML is currently not identical to the GFM and CommonMark
+HTML-rendered specification. It is only the raw output of running `snapshot_spec.md` through
+the GitLab Markdown renderer. Properly formatting the HTML will require
+duplicating or reusing the Lua script and template from the CommonMark project:
+[CommonMark Makefile](https://github.com/commonmark/commonmark-spec/blob/master/Makefile#L11)
+
+##### `examples_index.yml`
+
+[`glfm_specification/output_example_snapshots/examples_index.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/examples_index.yml)
 is the main list of all
 CommonMark, GFM, and GLFM example names, each with a uniquely identifying name.
 
@@ -1142,9 +1215,9 @@ CommonMark, GFM, and GLFM example names, each with a uniquely identifying name.
 - For CommonMark and GFM examples,
   these sections originally came from the GFM `spec.txt`.
 - For GLFM examples, it is generated from
-  [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) and [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd).
+  [`glfm_official_specification.md`](#glfm_official_specificationmd) and [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd).
 - It also contains extra metadata about each example, such as:
-  1. `spec_txt_example_position` - The position of the example in the generated GLFM `spec.txt` file.
+  1. `spec_example_position` - The position of the example in the generated GLFM `spec.txt` file.
      - This value is the index order of each individual Markdown + HTML5 example in the file. It is _not_
        the line number in the file.
      - This value can be used to locate the example in the rendered `spec.html` file, because the standard
@@ -1159,49 +1232,49 @@ CommonMark, GFM, and GLFM example names, each with a uniquely identifying name.
     examples where multiple examples exist for the same Section 7 subsection are
     added to the end of the sub-section.
 
-`glfm_specification/example_snapshots/examples_index.yml` sample entries:
+`examples_index.yml` sample entries:
 
 ```yaml
 02_01_00_preliminaries_characters_and_lines_1:
-  spec_txt_example_position: 1
+  spec_example_position: 1
   source_specification: commonmark
 03_01_00_blocks_and_inlines_precedence_1:
-  spec_txt_example_position: 12
+  spec_example_position: 12
   source_specification: commonmark
 05_03_00_container_blocks_task_list_items_1:
-  spec_txt_example_position: 279
+  spec_example_position: 279
   source_specification: github
 06_04_00_inlines_emphasis_and_strong_emphasis_1:
-  spec_txt_example_position: 360
+  spec_example_position: 360
   source_specification: github
 07_01_00_audio_link_1:
-  spec_txt_example_position: 301
+  spec_example_position: 301
   source_specification: gitlab
 ```
 
-#### `glfm_specification/example_snapshots/markdown.yml`
+##### `markdown.yml`
 
-[`glfm_specification/example_snapshots/markdown.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/markdown.yml) contains the original Markdown
-for each entry in `glfm_specification/example_snapshots/examples_index.yml`
+[`glfm_specification/output_example_snapshots/markdown.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/markdown.yml) contains the original Markdown
+for each entry in `glfm_specification/output_example_snapshots/examples_index.yml`:
 
 - For CommonMark and GFM Markdown,
   it is generated (or updated) from the standard GFM
   `spec.txt` using the `update-example-snapshots.rb` script.
 - For GLFM, it is generated (or updated) from the
-  [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) and [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd)
+  [`glfm_official_specification.md`](#glfm_official_specificationmd) and [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd)
   input specification files.
 
-`glfm_specification/example_snapshots/markdown.yml` sample entry:
+`glfm_specification/output_example_snapshots/markdown.yml` sample entry:
 
 ```yaml
 06_04_00_inlines_emphasis_and_strong_emphasis_1: |
   *foo bar*
 ```
 
-#### `glfm_specification/example_snapshots/html.yml`
+##### `html.yml`
 
-[`glfm_specification/example_snapshots/html.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/html.yml)
-contains the HTML for each entry in `glfm_specification/example_snapshots/examples_index.yml`
+[`glfm_specification/output_example_snapshots/html.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/html.yml)
+contains the HTML for each entry in `glfm_specification/output_example_snapshots/examples_index.yml`:
 
 Three types of entries exist, with different HTML for each:
 
@@ -1209,16 +1282,16 @@ Three types of entries exist, with different HTML for each:
   - The ["Canonical"](#canonicalization-of-html) HTML.
   - For CommonMark and GFM examples, the HTML comes from the examples in `spec.txt`.
   - For [GLFM official specification](#official-specifications) examples, it is generated/updated from
-    [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd).
+    [`glfm_official_specification.md`](#glfm_official_specificationmd).
 - **Static**
   - This is the static (backend (Ruby)-generated) HTML for each entry in
-    `glfm_specification/example_snapshots/examples_index.yml`.
+    `glfm_specification/output_example_snapshots/examples_index.yml`.
   - It is generated/updated from backend [Markdown API](../../../api/markdown.md)
     (or the underlying internal classes) via the `update-example-snapshots.rb` script,
     but can be manually updated for static examples with incomplete implementations.
 - **WYSIWYG**
   - The WYSIWYG (frontend, JavaScript-generated) HTML for each entry in
-    `glfm_specification/example_snapshots/examples_index.yml`.
+    `glfm_specification/output_example_snapshots/examples_index.yml`.
   - It is generated (or updated) from the frontend Content Editor implementation via the
     `update-example-snapshots.rb` script. It can be manually updated for WYSIWYG
     examples with incomplete implementations.
@@ -1226,7 +1299,7 @@ Three types of entries exist, with different HTML for each:
 Any exceptions or failures which occur when generating HTML are replaced with an
 `Error - check implementation` value.
 
-`glfm_specification/example_snapshots/html.yml` sample entry:
+`glfm_specification/output_example_snapshots/html.yml` sample entry:
 
 ```yaml
 06_04_00_inlines_emphasis_and_strong_emphasis_1:
@@ -1242,16 +1315,16 @@ NOTE:
 The actual `static` or `WYSIWYG` entries may differ from the example `html.yml`,
 depending on how the implementations evolve.
 
-#### `glfm_specification/example_snapshots/prosemirror_json.yml`
+##### `prosemirror_json.yml`
 
-[`glfm_specification/example_snapshots/prosemirror_json.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/example_snapshots/prosemirror_json.yml)
-contains the ProseMirror JSON for each entry in `glfm_specification/example_snapshots/examples_index.yml`
+[`glfm_specification/output_example_snapshots/prosemirror_json.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/prosemirror_json.yml)
+contains the ProseMirror JSON for each entry in `glfm_specification/output_example_snapshots/examples_index.yml`
 
 - It is generated (or updated) from the frontend code via the `update-example-snapshots.rb`
   script, but can be manually updated for examples with incomplete implementations.
 - Any exceptions or failures when generating are replaced with a `Error - check implementation` value.
 
-`glfm_specification/example_snapshots/prosemirror_json.yml` sample entry:
+`glfm_specification/output_example_snapshots/prosemirror_json.yml` sample entry:
 
 ```yaml
 06_04_00_inlines_emphasis_and_strong_emphasis_1: |-
@@ -1291,13 +1364,13 @@ This section describes how the scripts can be used to manage the GLFM specificat
 
 1. If you are working on an in-progress feature or bug, make any necessary manual updates to the [input specification files](#input-specification-files). This may include:
    1. Updating the canonical Markdown or HTML examples in
-   [`glfm_official_specification_examples.md`](#glfm_official_specification_examplesmd) or [`glfm_internal_extension_examples.md`](#glfm_internal_extension_examplesmd).
+   [`glfm_official_specification.md`](#glfm_official_specificationmd) or [`glfm_internal_extensions.md`](#glfm_internal_extensionsmd).
    1. Updating `glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml` to reflect the current status of the examples or tests.
 1. Run [`update-specification.rb`](#update-specificationrb-script) to update the `spec.txt` to reflect any changes which were made to the [input specification files](#input-specification-files).
 1. Visually inspect and confirm any resulting changes to the [output specification files](#output-specification-files).
-1. Run [`update-example-snapshots.rb`](#update-example-snapshotsrb-script) to update the [example snapshot files](#example-snapshot-files).
-1. Visually inspect and confirm any resulting changes to the [example snapshot files](#example-snapshot-files).
+1. Run [`update-example-snapshots.rb`](#update-example-snapshotsrb-script) to update the [example snapshot files](#output-example-snapshot-files).
+1. Visually inspect and confirm any resulting changes to the [example snapshot files](#output-example-snapshot-files).
 1. Run [`run-snapshot-tests.sh`](#run-snapshot-testssh-script) as a convenience script to run all relevant frontend (RSpec) and backend (Jest) tests which use the example snapshots.
    1. Any frontend or backend snapshot test may also be run individually.
    1. All frontend and backend tests are also run as part of the continuous integration suite, as they normally are.
-1. Commit any changes to the [input specification files](#input-specification-files), [output specification files](#output-specification-files), or [example snapshot files](#example-snapshot-files).
+1. Commit any changes to the [input specification files](#input-specification-files), [output specification files](#output-specification-files), or [example snapshot files](#output-example-snapshot-files).

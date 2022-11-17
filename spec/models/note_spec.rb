@@ -23,6 +23,10 @@ RSpec.describe Note do
     it { is_expected.to include_module(Sortable) }
   end
 
+  describe 'default values' do
+    it { expect(described_class.new).not_to be_system }
+  end
+
   describe 'validation' do
     it { is_expected.to validate_length_of(:note).is_at_most(1_000_000) }
     it { is_expected.to validate_presence_of(:note) }
@@ -1616,70 +1620,6 @@ RSpec.describe Note do
         expect(described_class.with_suggestions).to include(note_with_suggestion)
         expect(described_class.with_suggestions).not_to include(note_without_suggestion)
       end
-    end
-  end
-
-  describe '#noteable_assignee_or_author?' do
-    let(:user) { create(:user) }
-    let(:noteable) { create(:issue) }
-    let(:note) { create(:note, project: noteable.project, noteable: noteable) }
-
-    subject { note.noteable_assignee_or_author?(user) }
-
-    shared_examples 'assignee check' do
-      context 'when the provided user is one of the assignees' do
-        before do
-          note.noteable.update!(assignees: [user, create(:user)])
-        end
-
-        it 'returns true' do
-          expect(subject).to be_truthy
-        end
-      end
-    end
-
-    shared_examples 'author check' do
-      context 'when the provided user is the author' do
-        before do
-          note.noteable.update!(author: user)
-        end
-
-        it 'returns true' do
-          expect(subject).to be_truthy
-        end
-      end
-
-      context 'when the provided user is neither author nor assignee' do
-        it 'returns true' do
-          expect(subject).to be_falsey
-        end
-      end
-    end
-
-    context 'when user is nil' do
-      let(:user) { nil }
-
-      it 'returns false' do
-        expect(subject).to be_falsey
-      end
-    end
-
-    context 'when noteable is an issue' do
-      it_behaves_like 'author check'
-      it_behaves_like 'assignee check'
-    end
-
-    context 'when noteable is a merge request' do
-      let(:noteable) { create(:merge_request) }
-
-      it_behaves_like 'author check'
-      it_behaves_like 'assignee check'
-    end
-
-    context 'when noteable is a snippet' do
-      let(:noteable) { create(:personal_snippet) }
-
-      it_behaves_like 'author check'
     end
   end
 

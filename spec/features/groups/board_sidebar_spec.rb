@@ -6,7 +6,7 @@ RSpec.describe 'Group Issue Boards', :js do
   include BoardHelpers
 
   let(:group)            { create(:group) }
-  let(:user)             { create(:group_member, user: create(:user), group: group ).user }
+  let(:user)             { create(:group_member, user: create(:user), group: group).user }
   let!(:project_1)       { create(:project, :public, group: group) }
   let!(:project_2)       { create(:project, :public, group: group) }
   let!(:project_1_label) { create(:label, project: project_1, name: 'Development 1') }
@@ -19,6 +19,7 @@ RSpec.describe 'Group Issue Boards', :js do
   let(:card)             { find('.board:nth-child(1)').first('.board-card') }
 
   before do
+    stub_feature_flags(apollo_boards: false)
     sign_in(user)
 
     visit group_board_path(group, board)

@@ -58,6 +58,12 @@ describe('registry_header', () => {
 
     describe('sub header parts', () => {
       describe('images count', () => {
+        it('does not exist', async () => {
+          await mountComponent({ imagesCount: 0 });
+
+          expect(findImagesCountSubHeader().exists()).toBe(false);
+        });
+
         it('exists', async () => {
           await mountComponent({ imagesCount: 1 });
 

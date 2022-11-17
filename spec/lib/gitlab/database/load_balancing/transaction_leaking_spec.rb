@@ -4,18 +4,18 @@ require 'spec_helper'
 
 RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis, :delete do
   include StubENV
-  let(:model) { ApplicationRecord }
+  let(:model) { ActiveRecord::Base }
   let(:db_host) { model.connection_pool.db_config.host }
 
   let(:test_table_name) { '_test_foo' }
 
   before do
     # Patch in our load balancer config, simply pointing at the test database twice
-    allow(Gitlab::Database::LoadBalancing::Configuration).to receive(:for_model) do |base_model|
+    allow(Gitlab::Database::LoadBalancing::Configuration).to receive(:for_model).with(model) do |base_model|
       Gitlab::Database::LoadBalancing::Configuration.new(base_model, [db_host, db_host])
     end
 
-    Gitlab::Database::LoadBalancing::Setup.new(ApplicationRecord).setup
+    Gitlab::Database::LoadBalancing::Setup.new(model).setup
 
     model.connection.execute(<<~SQL)
       CREATE TABLE IF NOT EXISTS #{test_table_name} (id SERIAL PRIMARY KEY, value INTEGER)
@@ -30,6 +30,10 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
     model.connection.execute(<<~SQL)
       DROP TABLE IF EXISTS #{test_table_name}
     SQL
+
+    # reset load balancing to original state
+    allow(Gitlab::Database::LoadBalancing::Configuration).to receive(:for_model).and_call_original
+    Gitlab::Database::LoadBalancing::Setup.new(model).setup
   end
 
   def execute(conn)
@@ -56,6 +60,7 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
       conn = model.connection
 
       expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger).to receive(:warn).with(hash_including(event: :read_write_retry))
 
       conn.transaction do
         expect(conn).to be_transaction_open
@@ -74,6 +79,8 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
 
       expect(::Gitlab::Database::LoadBalancing::Logger)
         .not_to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .to receive(:warn).with(hash_including(event: :read_write_retry))
 
       expect(conn).not_to be_transaction_open
 
@@ -105,6 +112,8 @@ RSpec.describe 'Load balancer behavior with errors inside a transaction', :redis
     it 'retries when not in a transaction' do
       expect(::Gitlab::Database::LoadBalancing::Logger)
         .not_to receive(:warn).with(hash_including(event: :transaction_leak))
+      expect(::Gitlab::Database::LoadBalancing::Logger)
+        .to receive(:warn).with(hash_including(event: :read_write_retry))
 
       expect { execute(model.connection) }.not_to raise_error
     end

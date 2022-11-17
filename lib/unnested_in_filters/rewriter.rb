@@ -120,15 +120,47 @@ module UnnestedInFilters
     #     "vulnerability_reads"."vulnerability_id" DESC
     #   LIMIT 20
     #
+    # If one of the columns being used for filtering or ordering is the primary key,
+    # then the query will be further optimized to use an index-only scan for initial filtering
+    # before selecting all columns using the primary key.
+    #
+    # Using the prior query as an example, where `vulnerability_id` is the primary key,
+    # This will be rewritten to:
+    #
+    #   SELECT
+    #     "vulnerability_reads".*
+    #   FROM
+    #     "vulnerability_reads"
+    #   WHERE
+    #     "vulnerability_reads"."vulnerability_id"
+    #   IN (
+    #     SELECT
+    #       "vulnerability_reads"."vulnerability_id"
+    #     FROM
+    #       unnest('{1, 4}'::smallint[]) AS "states" ("state"),
+    #       LATERAL (
+    #         SELECT
+    #           "vulnerability_reads"."vulnerability_id"
+    #         FROM
+    #           "vulnerability_reads"
+    #         WHERE
+    #           (vulnerability_reads."state" = "states"."state")
+    #         ORDER BY
+    #           "vulnerability_reads"."severity" DESC,
+    #           "vulnerability_reads"."vulnerability_id" DESC
+    #           LIMIT 20
+    #         ) AS vulnerability_reads
+    #      )
+    #   ORDER BY
+    #     "vulnerability_reads"."severity" DESC,
+    #     "vulnerability_reads"."vulnerability_id" DESC
+    #   LIMIT 20
     def rewrite
       log_rewrite
 
-      model.from(from)
-           .limit(limit_value)
-           .order(order_values)
-           .includes(relation.includes_values)
-           .preload(relation.preload_values)
-           .eager_load(relation.eager_load_values)
+      return filter_query unless primary_key_present?
+
+      index_only_filter_query
     end
 
     def rewrite?
@@ -147,6 +179,23 @@ module UnnestedInFilters
       ::Gitlab::AppLogger.info(message: 'Query is being rewritten by `UnnestedInFilters`', model: model.name)
     end
 
+    def filter_query
+      model.from(from).then { add_relation_defaults(_1) }
+    end
+
+    def index_only_filter_query
+      model.where(model.primary_key => filter_query.select(model.primary_key))
+           .then { add_relation_defaults(_1) }
+    end
+
+    def add_relation_defaults(new_relation)
+      new_relation.limit(limit_value)
+                  .order(order_values)
+                  .includes(relation.includes_values)
+                  .preload(relation.preload_values)
+                  .eager_load(relation.eager_load_values)
+    end
+
     def from
       [value_tables.map(&:to_sql) + [lateral]].join(', ')
     end
@@ -156,9 +205,13 @@ module UnnestedInFilters
     end
 
     def join_relation
-      value_tables.reduce(unscoped_relation) do |memo, tmp_table|
+      join_relation = value_tables.reduce(unscoped_relation) do |memo, tmp_table|
         memo.where(tmp_table.as_predicate)
       end
+
+      join_relation = join_relation.select(combined_attributes) if primary_key_present?
+
+      join_relation
     end
 
     def unscoped_relation
@@ -169,8 +222,14 @@ module UnnestedInFilters
       @in_filters ||= arel_in_nodes.each_with_object({}) { |node, memo| memo[node.left.name] = node.right }
     end
 
+    def model_column_names
+      @model_column_names ||= model.columns.map(&:name)
+    end
+
+    # Actively filter any nodes that don't belong to the primary queried table to prevent sql type resolution issues
+    # Context: https://gitlab.com/gitlab-org/gitlab/-/issues/370271#note_1151019824
     def arel_in_nodes
-      where_clause_arel_nodes.select(&method(:in_predicate?))
+      where_clause_arel_nodes.select(&method(:in_predicate?)).select { model_column_names.include?(_1.left.name) }
     end
 
     # `ActiveRecord::WhereClause#ast` is returning a single node when there is only one
@@ -194,12 +253,20 @@ module UnnestedInFilters
       indices.any? do |index|
         (filter_attributes - Array(index.columns)).empty? && # all the filter attributes are indexed
           index.columns.last(order_attributes.length) == order_attributes && # index can be used in sorting
-          (index.columns - (filter_attributes + order_attributes)).empty? # there is no other columns in the index
+          (index.columns - combined_attributes).empty? # there is no other columns in the index
       end
     end
 
+    def primary_key_present?
+      combined_attributes.include?(model.primary_key)
+    end
+
+    def combined_attributes
+      filter_attributes + order_attributes
+    end
+
     def filter_attributes
-      @filter_attributes ||= where_values_hash.keys
+      @filter_attributes ||= where_clause.to_h.keys
     end
 
     def order_attributes

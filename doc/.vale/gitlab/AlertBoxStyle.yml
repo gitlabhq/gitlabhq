@@ -3,13 +3,13 @@
 #
 # Makes sure alert boxes are used with block quotes. Checks for 3 formatting issues:
 #
-# - Alert boxes inside a block quote (">")
+# - Alert boxes inside a block quote ('>')
 # - Alert boxes with the note text on the same line
-# - Alert boxes using words other than "NOTE" or "WARNING"
+# - Alert boxes using words other than 'NOTE' or 'WARNING'
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Alert box "%s" must use the formatting in the style guide.'
+message: "Update the format of the '%s' alert box. View the style guide for details."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#alert-boxes
 level: error
 nonword: true

@@ -258,7 +258,7 @@ For more information, see [the relevant issue](https://gitlab.com/gitlab-org/git
 
 We bumped the Markdown cache version and found a bug when a user edited a description or comment which was generated from a different Markdown
 cache version. The cached HTML wasn't generated properly after saving. In most cases, this wouldn't have happened because users would have
-viewed the Markdown before clicking **Edit** and that would mean the Markdown cache is refreshed. But because we run mixed versions, this is
+viewed the Markdown before selecting **Edit** and that would mean the Markdown cache is refreshed. But because we run mixed versions, this is
 more likely to happen. Another user on a different version could view the same page and refresh the cache to the other version behind the scenes.
 
 For more information, see [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/208255).

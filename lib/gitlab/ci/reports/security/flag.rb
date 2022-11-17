@@ -27,6 +27,10 @@ module Gitlab
               description: description
             }.compact
           end
+
+          def false_positive?
+            flag_type == :false_positive
+          end
         end
       end
     end

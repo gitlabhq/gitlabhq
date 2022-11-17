@@ -129,6 +129,7 @@ RSpec.shared_examples_for 'collection cache helper' do
     before do
       allow(::Gitlab::Metrics::WebTransaction).to receive(:current).and_return(transaction)
       allow(transaction).to receive(:increment)
+      allow(Gitlab::ApplicationContext).to receive(:current_context_attribute).with(any_args).and_call_original
       allow(Gitlab::ApplicationContext).to receive(:current_context_attribute).with(:caller_id).and_return(caller_id)
     end
 

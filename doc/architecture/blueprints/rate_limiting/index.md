@@ -1,8 +1,11 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'Next Rate Limiting Architecture'
+status: ready
+creation-date: "2022-09-08"
+authors: [ "@grzesiek", "@marshall007", "@fabiopitino", "@hswimelar" ]
+coach: "@andrewn"
+approvers: [ "@sgoldstein" ]
+owning-stage:
+participating-stages: []
 ---
 
 # Next Rate Limiting Architecture
@@ -34,18 +37,6 @@ stack.
 
 This blueprint has been written to consolidate our limits and to describe the
 vision of our next rate limiting and policies enforcement architecture.
-
-_Disclaimer: The following contains information related to upcoming products,
-features, and functionality._
-
-_It is important to note that the information presented is for informational
-purposes only. Please do not rely on this information for purchasing or
-planning purposes._
-
-_As with all projects, the items mentioned in this document and linked pages are
-subject to change or delay. The development, release and timing of any
-products, features, or functionality remain at the sole discretion of GitLab
-Inc._
 
 ## Goals
 
@@ -361,6 +352,31 @@ hierarchy. Choosing a proper solution will require a thoughtful research.
 1. Maintain consistent features and behavior across SaaS and self-managed codebase.
 1. Be mindful about a cognitive load added by the hierarchical limits, aim to reduce it.
 
+## Phases and iterations
+
+**Phase 1**: Compile examples of current most important application limits — Owning Team
+    a. Owning Team (in collaboration with Stage Groups) compiles a list of the
+    most important application limits used in Rails today.
+**Phase 2**: Implement Rate Limiting Framework in Rails - Owning Team
+    a. Triangulate rate limiting abstractions based on the data gathered in Phase 1
+    b. Develop YAML model for limits.
+    c. Build Rails SDK.
+    d. Create examples showcasing usage of the new rate limits SDK.
+**Phase 3**: Team Fanout of Rails SDK - Stage Groups
+    a. Individual stage groups begin using the SDK built in Phase 2 for new limit and policies.
+    b. Stage groups begin replacing historical adhoc limit implementations with the SDK.
+    c. Provides means to monitor and observe the progress of the replacement effort. Ideally this is broken down to the `feature_category` level to drive group-level buy-in -- Owning Team.
+**Phase 4**: Enable Satellite Services to Use the Rate Limiting Framework - Owning Team
+    a. Determine if the goals of Phase 4 are best met by either
+        1. Extracting the Rails rate limiting service into a decoupled service OR
+        2. Implementing a separate Go library which uses the same backend (eg, Redis) for rate limiting.
+**Phase 5**: SDK for Satellite Services - Owning Team
+    a. Build Golang SDK.
+    c. Create examples showcasing usage of the new rate limits SDK.
+**Phase 6**: Team Fanout for Satellite Services - Stage Groups
+    a. Individual stage groups being using the SDK built in Phase 5 for new limit and policies.
+    b. Stage groups begin replacing historical adhoc limit implementations with the SDK.
+
 ## Status
 
 Request For Comments.
@@ -373,39 +389,3 @@ Request For Comments.
 - 2022-07-06: A fourth, [consolidated proposal](https://gitlab.com/gitlab-org/gitlab/-/issues/364524#note_1017640650), has been submitted.
 - 2022-07-12: Started working on the design document following [Architecture Evolution Workflow](https://about.gitlab.com/handbook/engineering/architecture/workflow/).
 - 2022-09-08: The initial version of the blueprint has been merged.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Grzegorz Bizon          |
-| Author                       | Fabio Pitino            |
-| Author                       | Marshall Cottrell       |
-| Author                       | Hayley Swimelar         |
-| Engineering Leader           | Sam Goldstein           |
-| Product Manager              |                         |
-| Architecture Evolution Coach | Andrew Newdigate        |
-| Recommender                  |                         |
-| Recommender                  |                         |
-| Recommender                  |                         |
-| Recommender                  |                         |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   |                        |
-| Product                      |                        |
-| Engineering                  |                        |
-
-Domain experts:
-
-| Area                         | Who
-|------------------------------|------------------------|
-|                              |                        |
-
-<!-- vale gitlab.Spelling = YES -->

@@ -101,6 +101,15 @@ RSpec.describe Groups::UpdateService do
                 expect(public_group.reload.name).to eq('new-name')
               end
             end
+
+            context 'when the path does not change' do
+              let(:params) { { name: 'new-name', path: public_group.path } }
+
+              it 'allows the update' do
+                expect(subject).to be true
+                expect(public_group.reload.name).to eq('new-name')
+              end
+            end
           end
 
           context 'within subgroup' do

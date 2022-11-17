@@ -830,32 +830,225 @@ RSpec.describe Gitlab::GitalyClient::OperationService do
         'master', repository)
     end
 
-    before do
-      expect_any_instance_of(Gitaly::OperationService::Stub)
-        .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
-        .and_return(response)
-    end
+    context 'with unstructured errors' do
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+          .and_return(response)
+      end
 
-    context 'when a pre_receive_error is present' do
-      let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "GitLab: something failed") }
+      context 'when a pre_receive_error is present' do
+        let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "GitLab: something failed") }
 
-      it 'raises a PreReceiveError' do
-        expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
+        end
+      end
+
+      context 'when an index_error is present' do
+        let(:response) { Gitaly::UserCommitFilesResponse.new(index_error: "something failed") }
+
+        it 'raises an IndexError' do
+          expect { subject }.to raise_error(Gitlab::Git::Index::IndexError, "something failed")
+        end
+      end
+
+      context 'when branch_update is nil' do
+        let(:response) { Gitaly::UserCommitFilesResponse.new }
+
+        it { expect(subject).to be_nil }
       end
     end
 
-    context 'when an index_error is present' do
-      let(:response) { Gitaly::UserCommitFilesResponse.new(index_error: "something failed") }
+    context 'with structured errors' do
+      context 'with AccessCheckError' do
+        before do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+            .and_raise(raised_error)
+        end
 
-      it 'raises a PreReceiveError' do
-        expect { subject }.to raise_error(Gitlab::Git::Index::IndexError, "something failed")
+        let(:raised_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            "error updating file",
+            Gitaly::UserCommitFilesError.new(
+              access_check: Gitaly::AccessCheckError.new(
+                error_message: "something went wrong"
+              )))
+        end
+
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq("something went wrong")
+          end
+        end
       end
-    end
 
-    context 'when branch_update is nil' do
-      let(:response) { Gitaly::UserCommitFilesResponse.new }
+      context 'with IndexError' do
+        let(:status_code) { nil }
+        let(:expected_error) { nil }
 
-      it { expect(subject).to be_nil }
+        let(:structured_error) do
+          new_detailed_error(
+            status_code,
+            "unused error message",
+            expected_error)
+        end
+
+        shared_examples '#user_commit_files failure' do
+          it 'raises a PreReceiveError' do
+            expect_any_instance_of(Gitaly::OperationService::Stub)
+              .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+              .and_raise(structured_error)
+
+            expect { subject }.to raise_error do |error|
+              expect(error).to be_a(Gitlab::Git::Index::IndexError)
+              expect(error.message).to eq(expected_message)
+            end
+          end
+        end
+
+        context 'with missing file' do
+          let(:status_code) { GRPC::Core::StatusCodes::NOT_FOUND }
+          let(:expected_message) { "File not found: README.md" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "README.md",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_FILE_NOT_FOUND
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with existing directory' do
+          let(:status_code) { GRPC::Core::StatusCodes::ALREADY_EXISTS }
+          let(:expected_message) { "Directory already exists: dir1" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "dir1",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_DIRECTORY_EXISTS
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with existing file' do
+          let(:status_code) { GRPC::Core::StatusCodes::ALREADY_EXISTS }
+          let(:expected_message) { "File already exists: README.md" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "README.md",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_FILE_EXISTS
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with invalid path' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Invalid path: invalid://file/name" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "invalid://file/name",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_INVALID_PATH
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with directory traversal' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Directory traversal in path escapes repository: ../../../../etc/shadow" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "../../../../etc/shadow",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_DIRECTORY_TRAVERSAL
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with empty path' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Received empty path" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_EMPTY_PATH
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with unspecified error' do
+          let(:status_code) { GRPC::Core::StatusCodes::INVALID_ARGUMENT }
+          let(:expected_message) { "Unknown error performing git operation" }
+          let(:expected_error) do
+            Gitaly::UserCommitFilesError.new(
+              index_update: Gitaly::IndexError.new(
+                path: "",
+                error_type: Gitaly::IndexError::ErrorType::ERROR_TYPE_UNSPECIFIED
+              ))
+          end
+
+          it_behaves_like '#user_commit_files failure'
+        end
+
+        context 'with an exception without the detailed error' do
+          let(:permission_error) do
+            GRPC::PermissionDenied.new
+          end
+
+          it 'raises PermissionDenied' do
+            expect_any_instance_of(Gitaly::OperationService::Stub)
+              .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+              .and_raise(permission_error)
+
+            expect { subject }.to raise_error(GRPC::PermissionDenied)
+          end
+        end
+      end
+
+      context 'with CustomHookError' do
+        before do
+          expect_any_instance_of(Gitaly::OperationService::Stub)
+            .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+            .and_raise(raised_error)
+        end
+
+        let(:raised_error) do
+          new_detailed_error(
+            GRPC::Core::StatusCodes::PERMISSION_DENIED,
+            "error updating file",
+            Gitaly::UserCommitFilesError.new(
+              custom_hook: Gitaly::CustomHookError.new(
+                stdout: "some stdout",
+                stderr: "GitLab: some custom hook error message",
+                hook_type: Gitaly::CustomHookError::HookType::HOOK_TYPE_PRERECEIVE
+              )))
+        end
+
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error do |error|
+            expect(error).to be_a(Gitlab::Git::PreReceiveError)
+            expect(error.message).to eq("some custom hook error message")
+          end
+        end
+      end
     end
   end
 

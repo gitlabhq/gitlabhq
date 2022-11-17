@@ -64,6 +64,8 @@ module QA
         end
 
         def add_description(description)
+          return unless has_element?(:project_description, wait: 1)
+
           fill_in 'project_description', with: description
         end
 

@@ -4,7 +4,7 @@ class CreateDastSiteProfilesBuilds < ActiveRecord::Migration[6.1]
   def up
     table_comment = { owner: 'group::dynamic analysis', description: 'Join table between DAST Site Profiles and CI Builds' }
 
-    create_table :dast_site_profiles_builds, primary_key: [:dast_site_profile_id, :ci_build_id], comment: table_comment.to_json do |t|
+    create_table :dast_site_profiles_builds, primary_key: [:dast_site_profile_id, :ci_build_id], comment: Gitlab::Json.dump(table_comment) do |t|
       t.bigint :dast_site_profile_id, null: false
       t.bigint :ci_build_id, null: false
 

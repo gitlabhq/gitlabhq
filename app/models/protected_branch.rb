@@ -4,6 +4,10 @@ class ProtectedBranch < ApplicationRecord
   include ProtectedRef
   include Gitlab::SQL::Pattern
 
+  belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
+
+  validate :validate_either_project_or_top_group
+
   scope :requiring_code_owner_approval,
         -> { where(code_owner_approval_required: true) }
 
@@ -98,6 +102,18 @@ class ProtectedBranch < ApplicationRecord
 
   def default_branch?
     name == project.default_branch
+  end
+
+  private
+
+  def validate_either_project_or_top_group
+    if !project && !group
+      errors.add(:base, _('must be associated with a Group or a Project'))
+    elsif project && group
+      errors.add(:base, _('cannot be associated with both a Group and a Project'))
+    elsif group && group.root_ancestor != group
+      errors.add(:base, _('cannot be associated with a subgroup'))
+    end
   end
 end
 

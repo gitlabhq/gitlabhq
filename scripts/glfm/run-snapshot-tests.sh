@@ -24,6 +24,9 @@ printf "\nStarting GLFM snapshot example tests. See https://docs.gitlab.com/ee/d
 printf "Set 'FOCUSED_MARKDOWN_EXAMPLES=example_name_1[,...]' for focused examples, with example name(s) from https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#glfm_specificationexample_snapshotsexamples_indexyml.\n"
 printf "${Color_Off}"
 
+# NOTE: Unlike the backend markdown_snapshot_spec.rb which has a CE and EE version, there is only
+# one version of this spec. This is because the frontend markdown rendering does not require EE-only
+# backend features.
 printf "\n${BBlue}Running frontend 'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js'...${Color_Off}\n\n"
 yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js
 printf "\n${BBlue}'yarn jest spec/frontend/content_editor/markdown_snapshot_spec.js' passed!${Color_Off}\n\n"

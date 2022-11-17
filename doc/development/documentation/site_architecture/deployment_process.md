@@ -6,6 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Documentation deployments
 
+## Deployment environments
+
+The [GitLab documentation site](https://docs.gitlab.com/) is a static site hosted by [GitLab Pages](../../../user/project/pages/index.md). The deployment is done by the [Pages deploy job](#pages-deploy-job).
+
+The website hosts documentation only for the [currently supported](../../../policy/maintenance.md) GitLab versions. Documentation for older versions is built and uploaded as Docker images to be downloaded from [GitLab Docs archives](https://docs.gitlab.com/archives/).
+
+## Parts of release process
+
 The documentation [release process](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/releases.md)
 involves:
 
@@ -24,10 +32,8 @@ For general information on using Docker with CI/CD pipelines, see [Docker integr
 
 ## Stable branches
 
-Stable branches for documentation include the relevant stable branches of all the projects required to publish the entire
-documentation suite. For example, the stable version of documentation for version `14.4` includes:
+Pipelines for stable branches in the documentation project pull the relevant stable branches of included projects. For example, the documentation for stable version `14.4` is built from the [`14.4`](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/14.4) branch of the `gitlab-docs` project, which then includes:
 
-- The [`14.4`](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/14.4) branch of the `gitlab-docs` project.
 - The [`14-4-stable-ee`](https://gitlab.com/gitlab-org/gitlab/-/tree/14-4-stable-ee) branch of the `gitlab` project.
 - The [`14-4-stable`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/14-4-stable) branch of the `gitlab-runner` project.
 - The [`14-4-stable`](https://gitlab.com/gitlab-org/omnibus-gitlab/-/tree/14-4-stable) branch of the `omnibus-gitlab` project.
@@ -117,7 +123,7 @@ graph TD
   G--"Latest `gitlab-docs:latest` image<br>pushed up"-->H
 ```
 
-## Documentation Pages deployment
+## Pages deploy job
 
 [GitLab Docs](https://docs.gitlab.com) is a [Pages site](../../../user/project/pages/index.md) and documentation updates
 for it must be deployed to become available.
@@ -176,7 +182,7 @@ Dockerfiles to build and deploy <https://docs.gitlab.com>. It is heavily inspire
 
 Although build images are built automatically via GitLab CI/CD, you can build and tag all tooling images locally:
 
-1. Make sure you have [Docker installed](https://docs.docker.com/install/).
+1. Make sure you have [Docker installed](https://docs.docker.com/get-docker/).
 1. Make sure you're in the `dockerfiles/` directory of the `gitlab-docs` repository.
 1. Build the images:
 

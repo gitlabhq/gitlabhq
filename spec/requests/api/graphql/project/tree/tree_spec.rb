@@ -4,7 +4,8 @@ require 'spec_helper'
 RSpec.describe 'getting a tree in a project' do
   include GraphqlHelpers
 
-  let(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:current_user) { project.first_owner }
   let(:path) { "" }
   let(:ref) { "master" }
@@ -79,6 +80,89 @@ RSpec.describe 'getting a tree in a project' do
       post_graphql(query, current_user: current_user)
 
       expect(graphql_data['project']['repository']['tree']['lastCommit']).to be_present
+    end
+  end
+
+  context 'when the ref points to a gpg-signed commit with a user' do
+    let_it_be(:name) { GpgHelpers::User1.names.first }
+    let_it_be(:email) { GpgHelpers::User1.emails.first }
+    let_it_be(:current_user) { create(:user, name: name, email: email).tap { |user| project.add_owner(user) } }
+    let_it_be(:gpg_key) { create(:gpg_key, user: current_user, key: GpgHelpers::User1.public_key) }
+
+    let(:ref) { GpgHelpers::SIGNED_AND_AUTHORED_SHA }
+    let(:fields) do
+      <<~QUERY
+        tree(path:"#{path}", ref:"#{ref}") {
+          lastCommit {
+            signature {
+              ... on GpgSignature {
+                #{all_graphql_fields_for('GpgSignature'.classify, max_depth: 2)}
+              }
+            }
+          }
+        }
+      QUERY
+    end
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the expected signature data' do
+      signature = graphql_data['project']['repository']['tree']['lastCommit']['signature']
+      expect(signature['commitSha']).to eq(ref)
+      expect(signature['user']['id']).to eq("gid://gitlab/User/#{current_user.id}")
+      expect(signature['gpgKeyUserName']).to eq(name)
+      expect(signature['gpgKeyUserEmail']).to eq(email)
+      expect(signature['verificationStatus']).to eq('VERIFIED')
+      expect(signature['project']['id']).to eq("gid://gitlab/Project/#{project.id}")
+    end
+  end
+
+  context 'when the ref points to a X.509-signed commit' do
+    let_it_be(:email) { X509Helpers::User1.certificate_email }
+    let_it_be(:current_user) { create(:user, email: email).tap { |user| project.add_owner(user) } }
+
+    let(:ref) { X509Helpers::User1.commit }
+    let(:fields) do
+      <<~QUERY
+        tree(path:"#{path}", ref:"#{ref}") {
+          lastCommit {
+            signature {
+              ... on X509Signature {
+                #{all_graphql_fields_for('X509Signature'.classify, max_depth: 2)}
+              }
+            }
+          }
+        }
+      QUERY
+    end
+
+    before do
+      store = OpenSSL::X509::Store.new
+      store.add_cert(OpenSSL::X509::Certificate.new(X509Helpers::User1.trust_cert))
+      allow(OpenSSL::X509::Store).to receive(:new).and_return(store)
+      post_graphql(query, current_user: current_user)
+    end
+
+    it 'returns the expected signature data' do
+      signature = graphql_data['project']['repository']['tree']['lastCommit']['signature']
+      expect(signature['commitSha']).to eq(ref)
+      expect(signature['verificationStatus']).to eq('VERIFIED')
+      expect(signature['project']['id']).to eq("gid://gitlab/Project/#{project.id}")
+    end
+
+    it 'returns expected certificate data' do
+      signature = graphql_data['project']['repository']['tree']['lastCommit']['signature']
+      certificate = signature['x509Certificate']
+      expect(certificate['certificateStatus']).to eq('good')
+      expect(certificate['email']).to eq(X509Helpers::User1.certificate_email)
+      expect(certificate['id']).to be_present
+      expect(certificate['serialNumber']).to eq(X509Helpers::User1.certificate_serial.to_s)
+      expect(certificate['subject']).to eq(X509Helpers::User1.certificate_subject)
+      expect(certificate['subjectKeyIdentifier']).to eq(X509Helpers::User1.certificate_subject_key_identifier)
+      expect(certificate['createdAt']).to be_present
+      expect(certificate['updatedAt']).to be_present
     end
   end
 

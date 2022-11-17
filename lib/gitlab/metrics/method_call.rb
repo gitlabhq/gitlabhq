@@ -39,7 +39,6 @@ module Gitlab
             docstring 'Method calls real duration'
             label_keys label_keys
             buckets [0.01, 0.05, 0.1, 0.5, 1]
-            with_feature :prometheus_metrics_method_instrumentation
           end
         end
 

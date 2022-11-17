@@ -22,7 +22,7 @@ RSpec.describe API::ProtectedTags do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
+        expect(response).to match_response_schema('protected_tags')
 
         protected_tag_names = json_response.map { |x| x['name'] }
         expected_tags_names = project.protected_tags.map { |x| x['name'] }
@@ -57,6 +57,7 @@ RSpec.describe API::ProtectedTags do
         get api(route, user)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('protected_tag')
         expect(json_response['name']).to eq(tag_name)
         expect(json_response['create_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
       end
@@ -108,6 +109,7 @@ RSpec.describe API::ProtectedTags do
         post api("/projects/#{project.id}/protected_tags", user), params: { name: tag_name }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_tag')
         expect(json_response['name']).to eq(tag_name)
         expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
@@ -117,6 +119,7 @@ RSpec.describe API::ProtectedTags do
             params: { name: tag_name, create_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_tag')
         expect(json_response['name']).to eq(tag_name)
         expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
       end
@@ -126,6 +129,7 @@ RSpec.describe API::ProtectedTags do
             params: { name: tag_name, create_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_tag')
         expect(json_response['name']).to eq(tag_name)
         expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
       end
@@ -142,6 +146,7 @@ RSpec.describe API::ProtectedTags do
         post api("/projects/#{project2.id}/protected_tags", user), params: { name: protected_name }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_tag')
         expect(json_response['name']).to eq(protected_name)
       end
 
@@ -152,6 +157,7 @@ RSpec.describe API::ProtectedTags do
           post api("/projects/#{project.id}/protected_tags", user), params: { name: tag_name }
 
           expect(response).to have_gitlab_http_status(:created)
+          expect(response).to match_response_schema('protected_tag')
           expect(json_response['name']).to eq(tag_name)
           expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         end

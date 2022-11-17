@@ -14,7 +14,7 @@
   - [Documentation guidelines](https://docs.gitlab.com/ee/development/documentation/).
   - [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
 - [ ] If you're adding or changing the main heading of the page (H1), ensure that the [product tier badge](https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#product-tier-badges) is added.
-- [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-attention-request-feature) based on:
+- [ ] If you are a GitLab team member, [request a review](https://docs.gitlab.com/ee/development/code_review.html#dogfooding-the-reviewers-feature) based on:
     - The documentation page's [metadata](https://docs.gitlab.com/ee/development/documentation/#metadata).
     - The [associated Technical Writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments).
 
@@ -30,6 +30,8 @@ These labels cause the MR to be added to code verification QA issues.
 ## Reviewer's checklist
 
 Documentation-related MRs should be reviewed by a Technical Writer for a non-blocking review, based on [Documentation Guidelines](https://docs.gitlab.com/ee/development/documentation/) and the [Style Guide](https://docs.gitlab.com/ee/development/documentation/styleguide/).
+
+If you aren't sure which tech writer to ask, use [roulette](https://gitlab-org.gitlab.io/gitlab-roulette/?sortKey=stats.avg30&order=-1&hourFormat24=true&visible=maintainer%7Cdocs) or ask in the [#docs](https://gitlab.slack.com/archives/C16HYA2P5) Slack channel.
 
 - [ ] If the content requires it, ensure the information is reviewed by a subject matter expert.
 - Technical writer review items:

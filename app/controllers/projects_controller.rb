@@ -46,7 +46,6 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, @project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:package_registry_access_level)
-    push_frontend_feature_flag(:work_items_hierarchy, @project)
   end
 
   before_action only: :edit do
@@ -343,7 +342,7 @@ class ProjectsController < Projects::ApplicationController
       options['Commits'] = [ref]
     end
 
-    render json: options.to_json
+    render json: Gitlab::Json.dump(options)
   rescue Gitlab::Git::CommandError
     render json: { error: _('Unable to load refs') }, status: :service_unavailable
   end
@@ -440,7 +439,7 @@ class ProjectsController < Projects::ApplicationController
   def operations_feature_attributes
     if Feature.enabled?(:split_operations_visibility_permissions, project)
       %i[
-        environments_access_level feature_flags_access_level monitor_access_level
+        environments_access_level feature_flags_access_level monitor_access_level infrastructure_access_level
       ]
     else
       %i[operations_access_level]
@@ -465,7 +464,6 @@ class ProjectsController < Projects::ApplicationController
       :build_timeout_human_readable,
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
-      :default_branch,
       :description,
       :emails_disabled,
       :external_authorization_classification_label,
@@ -491,7 +489,6 @@ class ProjectsController < Projects::ApplicationController
       :merge_method,
       :initialize_with_sast,
       :initialize_with_readme,
-      :autoclose_referenced_issues,
       :ci_separated_caches,
       :suggestion_commit_message,
       :packages_enabled,

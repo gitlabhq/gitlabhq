@@ -1,3 +1,11 @@
+function problemsClone() {
+  return {
+    brokenSymlink: false,
+    brokenLineCode: false,
+    fileOnlyMoved: false,
+  };
+}
+
 export const getDiffFileMock = () => ({
   submodule: false,
   submodule_link: null,
@@ -61,6 +69,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
       rich_text: '<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
@@ -71,6 +80,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC2" class="line" lang="plaintext"></span>\n',
       rich_text: '<span id="LC2" class="line" lang="plaintext"></span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_3',
@@ -81,6 +91,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC3" class="line" lang="plaintext">v6.8.0</span>\n',
       rich_text: '<span id="LC3" class="line" lang="plaintext">v6.8.0</span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_2_4',
@@ -91,6 +102,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC4" class="line" lang="plaintext"></span>\n',
       rich_text: '<span id="LC4" class="line" lang="plaintext"></span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_3_5',
@@ -101,6 +113,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC5" class="line" lang="plaintext">v6.7.0</span>\n',
       rich_text: '<span id="LC5" class="line" lang="plaintext">v6.7.0</span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_6',
@@ -111,6 +124,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC6" class="line" lang="plaintext"></span>\n',
       rich_text: '<span id="LC6" class="line" lang="plaintext"></span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_7',
@@ -121,6 +135,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
       rich_text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_9',
@@ -131,6 +146,7 @@ export const getDiffFileMock = () => ({
       text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
       rich_text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
       meta_data: null,
+      problems: problemsClone(),
     },
     {
       line_code: null,
@@ -144,6 +160,7 @@ export const getDiffFileMock = () => ({
         old_pos: 3,
         new_pos: 5,
       },
+      problems: problemsClone(),
     },
   ],
   parallel_diff_lines: [
@@ -158,6 +175,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
         rich_text: '<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -171,6 +189,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC2" class="line" lang="plaintext"></span>\n',
         rich_text: '<span id="LC2" class="line" lang="plaintext"></span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -183,6 +202,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC3" class="line" lang="plaintext">v6.8.0</span>\n',
         rich_text: '<span id="LC3" class="line" lang="plaintext">v6.8.0</span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
       right: {
         line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_3',
@@ -193,6 +213,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC3" class="line" lang="plaintext">v6.8.0</span>\n',
         rich_text: '<span id="LC3" class="line" lang="plaintext">v6.8.0</span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -205,6 +226,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC4" class="line" lang="plaintext"></span>\n',
         rich_text: '<span id="LC4" class="line" lang="plaintext"></span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
       right: {
         line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_2_4',
@@ -215,6 +237,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC4" class="line" lang="plaintext"></span>\n',
         rich_text: '<span id="LC4" class="line" lang="plaintext"></span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -227,6 +250,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC5" class="line" lang="plaintext">v6.7.0</span>\n',
         rich_text: '<span id="LC5" class="line" lang="plaintext">v6.7.0</span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
       right: {
         line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_3_5',
@@ -237,6 +261,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC5" class="line" lang="plaintext">v6.7.0</span>\n',
         rich_text: '<span id="LC5" class="line" lang="plaintext">v6.7.0</span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -249,6 +274,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC6" class="line" lang="plaintext"></span>\n',
         rich_text: '<span id="LC6" class="line" lang="plaintext"></span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
       right: {
         line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_7',
@@ -259,6 +285,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
         rich_text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -272,6 +299,7 @@ export const getDiffFileMock = () => ({
         text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
         rich_text: '<span id="LC7" class="line" lang="plaintext"></span>\n',
         meta_data: null,
+        problems: problemsClone(),
       },
     },
     {
@@ -287,6 +315,7 @@ export const getDiffFileMock = () => ({
           old_pos: 3,
           new_pos: 5,
         },
+        problems: problemsClone(),
       },
       right: {
         line_code: null,
@@ -300,6 +329,7 @@ export const getDiffFileMock = () => ({
           old_pos: 3,
           new_pos: 5,
         },
+        problems: problemsClone(),
       },
     },
   ],

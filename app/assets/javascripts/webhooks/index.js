@@ -17,7 +17,7 @@ export default () => {
       return createElement(FormUrlApp, {
         props: {
           initialUrl,
-          initialUrlVariables: urlVariables ? JSON.parse(urlVariables) : undefined,
+          initialUrlVariables: JSON.parse(urlVariables),
         },
       });
     },

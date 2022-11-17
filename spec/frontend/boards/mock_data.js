@@ -1,7 +1,22 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
-import { __ } from '~/locale';
+import {
+  OPERATOR_IS_AND_IS_NOT,
+  OPERATOR_IS_ONLY,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TITLE_TYPE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
@@ -433,8 +448,11 @@ export const mockList = {
   label: null,
   assignee: null,
   milestone: null,
+  iteration: null,
   loading: false,
   issuesCount: 1,
+  maxIssueCount: 0,
+  __typename: 'BoardList',
 };
 
 export const mockLabelList = {
@@ -449,11 +467,15 @@ export const mockLabelList = {
     color: '#F0AD4E',
     textColor: '#FFFFFF',
     description: null,
+    descriptionHtml: null,
   },
   assignee: null,
   milestone: null,
+  iteration: null,
   loading: false,
   issuesCount: 0,
+  maxIssueCount: 0,
+  __typename: 'BoardList',
 };
 
 export const mockMilestoneList = {
@@ -725,7 +747,7 @@ export const mockConfidentialToken = {
   title: 'Confidential',
   unique: true,
   token: GlFilteredSearchToken,
-  operators: [{ value: '=', description: 'is' }],
+  operators: OPERATOR_IS_ONLY,
   options: [
     { icon: 'eye-slash', value: 'yes', title: 'Yes' },
     { icon: 'eye', value: 'no', title: 'No' },
@@ -735,12 +757,9 @@ export const mockConfidentialToken = {
 export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedIn) => [
   {
     icon: 'user',
-    title: __('Assignee'),
-    type: 'assignee',
-    operators: [
-      { value: '=', description: 'is' },
-      { value: '!=', description: 'is not' },
-    ],
+    title: TOKEN_TITLE_ASSIGNEE,
+    type: TOKEN_TYPE_ASSIGNEE,
+    operators: OPERATOR_IS_AND_IS_NOT,
     token: AuthorToken,
     unique: true,
     fetchAuthors,
@@ -748,12 +767,9 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     icon: 'pencil',
-    title: __('Author'),
-    type: 'author',
-    operators: [
-      { value: '=', description: 'is' },
-      { value: '!=', description: 'is not' },
-    ],
+    title: TOKEN_TITLE_AUTHOR,
+    type: TOKEN_TYPE_AUTHOR,
+    operators: OPERATOR_IS_AND_IS_NOT,
     symbol: '@',
     token: AuthorToken,
     unique: true,
@@ -762,12 +778,9 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     icon: 'labels',
-    title: __('Label'),
-    type: 'label',
-    operators: [
-      { value: '=', description: 'is' },
-      { value: '!=', description: 'is not' },
-    ],
+    title: TOKEN_TITLE_LABEL,
+    type: TOKEN_TYPE_LABEL,
+    operators: OPERATOR_IS_AND_IS_NOT,
     token: LabelToken,
     unique: false,
     symbol: '~',
@@ -776,9 +789,9 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   ...(isSignedIn ? [mockEmojiToken, mockConfidentialToken] : []),
   {
     icon: 'clock',
-    title: __('Milestone'),
+    title: TOKEN_TITLE_MILESTONE,
     symbol: '%',
-    type: 'milestone',
+    type: TOKEN_TYPE_MILESTONE,
     shouldSkipSort: true,
     token: MilestoneToken,
     unique: true,
@@ -786,8 +799,8 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
   },
   {
     icon: 'issues',
-    title: __('Type'),
-    type: 'type',
+    title: TOKEN_TITLE_TYPE,
+    type: TOKEN_TYPE_TYPE,
     token: GlFilteredSearchToken,
     unique: true,
     options: [
@@ -796,8 +809,8 @@ export const mockTokens = (fetchLabels, fetchAuthors, fetchMilestones, isSignedI
     ],
   },
   {
-    type: 'release',
-    title: __('Release'),
+    type: TOKEN_TYPE_RELEASE,
+    title: TOKEN_TITLE_RELEASE,
     icon: 'rocket',
     token: ReleaseToken,
     fetchReleases: expect.any(Function),
@@ -838,6 +851,22 @@ export const mockGroupLabelsResponse = {
       id: 'gid://gitlab/Group/1',
       labels: {
         nodes: [mockLabel1, mockLabel2],
+      },
+      __typename: 'Group',
+    },
+  },
+};
+
+export const boardListsQueryResponse = {
+  data: {
+    group: {
+      id: 'gid://gitlab/Group/1',
+      board: {
+        id: 'gid://gitlab/Board/1',
+        hideBacklogList: false,
+        lists: {
+          nodes: mockLists,
+        },
       },
       __typename: 'Group',
     },

@@ -1,12 +1,13 @@
 <script>
 import { GlBadge, GlTabs, GlTab } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { failedJobsTabName, jobsTabName, needsTabName, testReportTabName } from '../constants';
-import PipelineGraphWrapper from './graph/graph_component_wrapper.vue';
-import Dag from './dag/dag.vue';
-import FailedJobsApp from './jobs/failed_jobs_app.vue';
-import JobsApp from './jobs/jobs_app.vue';
-import TestReports from './test_reports/test_reports.vue';
+import {
+  failedJobsTabName,
+  jobsTabName,
+  needsTabName,
+  pipelineTabName,
+  testReportTabName,
+} from '../constants';
 
 export default {
   i18n: {
@@ -19,20 +20,16 @@ export default {
     },
   },
   tabNames: {
+    pipeline: pipelineTabName,
     needs: needsTabName,
     jobs: jobsTabName,
     failures: failedJobsTabName,
     tests: testReportTabName,
   },
   components: {
-    Dag,
     GlBadge,
     GlTab,
     GlTabs,
-    JobsApp,
-    FailedJobsApp,
-    PipelineGraphWrapper,
-    TestReports,
   },
   inject: [
     'defaultTabValue',
@@ -41,14 +38,27 @@ export default {
     'totalJobCount',
     'testsCount',
   ],
+  data() {
+    return {
+      activeTab: this.defaultTabValue,
+    };
+  },
   computed: {
     showFailedJobsTab() {
       return this.failedJobsCount > 0;
     },
   },
+  watch: {
+    $route(to) {
+      this.activeTab = to.name;
+    },
+  },
   methods: {
     isActive(tabName) {
-      return tabName === this.defaultTabValue;
+      return tabName === this.activeTab;
+    },
+    navigateTo(tabName) {
+      this.$router.push({ name: tabName });
     },
   },
 };
@@ -59,10 +69,12 @@ export default {
     <gl-tab
       ref="pipelineTab"
       :title="$options.i18n.tabs.pipelineTitle"
+      :active="isActive($options.tabNames.pipeline)"
       data-testid="pipeline-tab"
       lazy
+      @click="navigateTo($options.tabNames.pipeline)"
     >
-      <pipeline-graph-wrapper />
+      <router-view />
     </gl-tab>
     <gl-tab
       ref="dagTab"
@@ -70,15 +82,21 @@ export default {
       :active="isActive($options.tabNames.needs)"
       data-testid="dag-tab"
       lazy
+      @click="navigateTo($options.tabNames.needs)"
     >
-      <dag />
+      <router-view />
     </gl-tab>
-    <gl-tab :active="isActive($options.tabNames.jobs)" data-testid="jobs-tab" lazy>
+    <gl-tab
+      :active="isActive($options.tabNames.jobs)"
+      data-testid="jobs-tab"
+      lazy
+      @click="navigateTo($options.tabNames.jobs)"
+    >
       <template #title>
         <span class="gl-mr-2">{{ $options.i18n.tabs.jobsTitle }}</span>
         <gl-badge size="sm" data-testid="builds-counter">{{ totalJobCount }}</gl-badge>
       </template>
-      <jobs-app />
+      <router-view />
     </gl-tab>
     <gl-tab
       v-if="showFailedJobsTab"
@@ -86,19 +104,25 @@ export default {
       :active="isActive($options.tabNames.failures)"
       data-testid="failed-jobs-tab"
       lazy
+      @click="navigateTo($options.tabNames.failures)"
     >
       <template #title>
         <span class="gl-mr-2">{{ $options.i18n.tabs.failedJobsTitle }}</span>
         <gl-badge size="sm" data-testid="failed-builds-counter">{{ failedJobsCount }}</gl-badge>
       </template>
-      <failed-jobs-app :failed-jobs-summary="failedJobsSummary" />
+      <router-view :failed-jobs-summary="failedJobsSummary" />
     </gl-tab>
-    <gl-tab :active="isActive($options.tabNames.tests)" data-testid="tests-tab" lazy>
+    <gl-tab
+      :active="isActive($options.tabNames.tests)"
+      data-testid="tests-tab"
+      lazy
+      @click="navigateTo($options.tabNames.tests)"
+    >
       <template #title>
         <span class="gl-mr-2">{{ $options.i18n.tabs.testsTitle }}</span>
         <gl-badge size="sm" data-testid="tests-counter">{{ testsCount }}</gl-badge>
       </template>
-      <test-reports />
+      <router-view />
     </gl-tab>
     <slot></slot>
   </gl-tabs>

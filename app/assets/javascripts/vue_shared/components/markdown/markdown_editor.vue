@@ -72,7 +72,7 @@ export default {
       required: false,
       default: '',
     },
-    initOnAutofocus: {
+    autofocus: {
       type: Boolean,
       required: false,
       default: false,
@@ -87,20 +87,20 @@ export default {
     return {
       editingMode: EDITING_MODE_MARKDOWN_FIELD,
       switchEditingControlEnabled: true,
-      autofocus: this.initOnAutofocus,
+      autofocused: false,
     };
   },
   computed: {
     isContentEditorActive() {
       return this.enableContentEditor && this.editingMode === EDITING_MODE_CONTENT_EDITOR;
     },
-    contentEditorAutofocus() {
+    contentEditorAutofocused() {
       // Match textarea focus behavior
-      return this.autofocus ? 'end' : false;
+      return this.autofocus && !this.autofocused ? 'end' : false;
     },
   },
   mounted() {
-    this.autofocusTextarea(this.editingMode);
+    this.autofocusTextarea();
   },
   methods: {
     updateMarkdownFromContentEditor({ markdown }) {
@@ -120,7 +120,6 @@ export default {
     },
     onEditingModeChange(editingMode) {
       this.notifyEditingModeChange(editingMode);
-      this.enableAutofocus(editingMode);
     },
     onEditingModeRestored(editingMode) {
       this.notifyEditingModeChange(editingMode);
@@ -128,14 +127,14 @@ export default {
     notifyEditingModeChange(editingMode) {
       this.$emit(editingMode);
     },
-    enableAutofocus(editingMode) {
-      this.autofocus = true;
-      this.autofocusTextarea(editingMode);
-    },
-    autofocusTextarea(editingMode) {
-      if (this.autofocus && editingMode === EDITING_MODE_MARKDOWN_FIELD) {
+    autofocusTextarea() {
+      if (this.autofocus && this.editingMode === EDITING_MODE_MARKDOWN_FIELD) {
         this.$refs.textarea.focus();
+        this.setEditorAsAutofocused();
       }
+    },
+    setEditorAsAutofocused() {
+      this.autofocused = true;
     },
   },
   switchEditingControlOptions: [
@@ -197,7 +196,8 @@ export default {
         :render-markdown="renderMarkdown"
         :uploads-path="uploadsPath"
         :markdown="value"
-        :autofocus="contentEditorAutofocus"
+        :autofocus="contentEditorAutofocused"
+        @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @loading="disableSwitchEditingControl"
         @loadingSuccess="enableSwitchEditingControl"

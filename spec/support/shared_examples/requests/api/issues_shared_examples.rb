@@ -37,7 +37,7 @@ RSpec.shared_examples 'labeled issues with labels and label_name params' do
 
   context 'negation' do
     context 'array of labeled issues when all labels match with negation' do
-      let(:params) { { labels: "#{label.title},#{label_b.title}", not: { labels: "#{label_c.title}" } } }
+      let(:params) { { labels: "#{label.title},#{label_b.title}", not: { labels: label_c.title.to_s } } }
 
       it_behaves_like 'returns negated label names'
     end

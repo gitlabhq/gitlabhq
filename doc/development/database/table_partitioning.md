@@ -173,7 +173,7 @@ An example migration of partitioning the `audit_events` table by its
 `created_at` column would look like:
 
 ```ruby
-class PartitionAuditEvents < Gitlab::Database::Migration[1.0]
+class PartitionAuditEvents < Gitlab::Database::Migration[2.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -200,7 +200,7 @@ into the partitioned copy.
 Continuing the above example, the migration would look like:
 
 ```ruby
-class BackfillPartitionAuditEvents < Gitlab::Database::Migration[1.0]
+class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -233,7 +233,7 @@ failed jobs.
 Once again, continuing the example, this migration would look like:
 
 ```ruby
-class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[1.0]
+class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.0]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -447,6 +447,7 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   TABLE_NAME = :table_name
+  TABLE_FK = :table_references_by_fk
   PARENT_TABLE_NAME = :p_table_name
   FIRST_PARTITION = 100
   PARTITION_COLUMN = :partition_id
@@ -457,6 +458,7 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
       partitioning_column: PARTITION_COLUMN,
       parent_table_name: PARENT_TABLE_NAME,
       initial_partitioning_value: FIRST_PARTITION
+      lock_tables: [TABLE_FK, TABLE_NAME]
     )
   end
 
@@ -468,5 +470,16 @@ class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
       initial_partitioning_value: FIRST_PARTITION
     )
   end
+end
+```
+
+NOTE:
+Do not forget to set the sequence name explicitly in your model because it will
+be owned by the routing table and `ActiveRecord` can't determine it. This can
+be cleaned up after the `table_name` is changed to the routing table.
+
+```ruby
+class Model < ApplicationRecord
+  self.sequence_name = 'model_id_seq'
 end
 ```

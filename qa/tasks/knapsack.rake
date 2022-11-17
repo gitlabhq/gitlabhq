@@ -18,20 +18,20 @@ namespace :knapsack do
   desc "Download latest knapsack reports for parallel jobs"
   task :download, [:stage_name] do |_, args|
     test_stage_name = args[:stage_name]
+    knapsack_reports = ENV["QA_KNAPSACK_REPORTS"]&.split(",")
+    ci_token = ENV["QA_GITLAB_CI_TOKEN"]
 
-    # QA_KNAPSACK_REPORTS remains for changes to be backwards compatible
-    # TODO: remove and only use automated detection once changes are merged
-    unless ENV["QA_KNAPSACK_REPORTS"] || test_stage_name
-      QA::Runtime::Logger.warn("Missing QA_KNAPSACK_REPORTS environment variable or test stage name for autodetection")
-      next
-    end
-
-    reports = if test_stage_name
-                QA::Support::ParallelPipelineJobs
-                  .fetch(stage_name: test_stage_name, access_token: ENV["QA_GITLAB_CI_TOKEN"])
-                  .map { |job| job.tr(":", "-") }
+    reports = if knapsack_reports
+                knapsack_reports
               else
-                ENV["QA_KNAPSACK_REPORTS"].split(",")
+                unless ci_token
+                  QA::Runtime::Logger.error("Missing QA_GITLAB_CI_TOKEN for automatically detecting parallel jobs")
+                  next
+                end
+
+                QA::Support::ParallelPipelineJobs
+                  .fetch(stage_name: test_stage_name, access_token: ci_token)
+                  .map { |job| job.tr(":", "-") }
               end
 
     reports.each do |report_name|

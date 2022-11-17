@@ -45,7 +45,7 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      attr_reader :storage, :gl_repository, :gl_project_path
+      attr_reader :storage, :gl_repository, :gl_project_path, :container
 
       # This remote name has to be stable for all types of repositories that
       # can join an object pool. If it's structure ever changes, a migration
@@ -56,17 +56,23 @@ module Gitlab
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
-      def initialize(storage, relative_path, gl_repository, gl_project_path)
+      def initialize(storage, relative_path, gl_repository, gl_project_path, container: nil)
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
         @gl_project_path = gl_project_path
+        @container = container
 
         @name = @relative_path.split("/").last
       end
 
       def to_s
         "<#{self.class.name}: #{self.gl_project_path}>"
+      end
+
+      # Support Feature Flag Repository actor
+      def flipper_id
+        "Repository:#{@relative_path}"
       end
 
       def ==(other)
@@ -534,9 +540,9 @@ module Gitlab
       # Returns matching refs for OID
       #
       # Limit of 0 means there is no limit.
-      def refs_by_oid(oid:, limit: 0)
+      def refs_by_oid(oid:, limit: 0, ref_patterns: nil)
         wrapped_gitaly_errors do
-          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit)
+          gitaly_ref_client.find_refs_by_oid(oid: oid, limit: limit, ref_patterns: ref_patterns)
         end
       rescue CommandError, TypeError, NoRepository
         nil
@@ -1054,19 +1060,19 @@ module Gitlab
         end
       end
 
-      def search_files_by_name(query, ref)
+      def search_files_by_name(query, ref, limit: 0, offset: 0)
         safe_query = query.sub(%r{^/*}, "")
         ref ||= root_ref
 
         return [] if empty? || safe_query.blank?
 
-        gitaly_repository_client.search_files_by_name(ref, safe_query).map do |file|
+        gitaly_repository_client.search_files_by_name(ref, safe_query, limit: limit, offset: offset).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
       end
 
-      def search_files_by_regexp(filter, ref = 'HEAD')
-        gitaly_repository_client.search_files_by_regexp(ref, filter).map do |file|
+      def search_files_by_regexp(filter, ref = 'HEAD', limit: 0, offset: 0)
+        gitaly_repository_client.search_files_by_regexp(ref, filter, limit: limit, offset: offset).map do |file|
           Gitlab::EncodingHelper.encode_utf8(file)
         end
       end

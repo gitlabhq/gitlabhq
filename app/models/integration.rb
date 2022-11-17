@@ -71,20 +71,20 @@ class Integration < ApplicationRecord
 
   alias_attribute :type, :type_new
 
-  default_value_for :active, false
-  default_value_for :alert_events, true
-  default_value_for :category, 'common'
-  default_value_for :commit_events, true
-  default_value_for :confidential_issues_events, true
-  default_value_for :confidential_note_events, true
-  default_value_for :issues_events, true
-  default_value_for :job_events, true
-  default_value_for :merge_requests_events, true
-  default_value_for :note_events, true
-  default_value_for :pipeline_events, true
-  default_value_for :push_events, true
-  default_value_for :tag_push_events, true
-  default_value_for :wiki_page_events, true
+  attribute :active, default: false
+  attribute :alert_events, default: true
+  attribute :category, default: 'common'
+  attribute :commit_events, default: true
+  attribute :confidential_issues_events, default: true
+  attribute :confidential_note_events, default: true
+  attribute :issues_events, default: true
+  attribute :job_events, default: true
+  attribute :merge_requests_events, default: true
+  attribute :note_events, default: true
+  attribute :pipeline_events, default: true
+  attribute :push_events, default: true
+  attribute :tag_push_events, default: true
+  attribute :wiki_page_events, default: true
 
   after_initialize :initialize_properties
 
@@ -587,6 +587,10 @@ class Integration < ApplicationRecord
   # override if needed
   def supports_data_fields?
     false
+  end
+
+  def chat?
+    category == :chat
   end
 
   private

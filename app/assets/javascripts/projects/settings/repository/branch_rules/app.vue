@@ -50,7 +50,15 @@ export default {
 
 <template>
   <div class="settings-content">
-    <branch-rule v-for="rule in branchRules" :key="rule.name" :name="rule.name" />
+    <branch-rule
+      v-for="rule in branchRules"
+      :key="rule.name"
+      :name="rule.name"
+      :is-default="rule.isDefault"
+      :branch-protection="rule.branchProtection"
+      :status-checks-total="rule.externalStatusChecks.nodes.length"
+      :approval-rules-total="rule.approvalRules.nodes.length"
+    />
 
     <span v-if="!branchRules.length" data-testid="empty">{{ $options.i18n.emptyState }}</span>
   </div>

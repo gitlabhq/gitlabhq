@@ -1,14 +1,14 @@
 ---
-stage: enablement
-group: pods
-comments: false
-description: 'Pods'
+status: accepted
+creation-date: "2022-09-07"
+authors: [ "@fzimmer", "@DylanGriffith" ]
+coach: "@kamil"
+approvers: [ "@fzimmer" ]
+owning-stage: "~devops::enablement"
+participating-stages: []
 ---
 
 # Pods
-
-DISCLAIMER:
-This page may contain information related to upcoming products, features and functionality. It is important to note that the information presented is for informational purposes only, so please do not rely on the information for purchasing or planning purposes. Just like with all projects, the items mentioned on the page are subject to change or delay, and the development, release, and timing of any products, features, or functionality remain at the sole discretion of GitLab Inc.
 
 This document is a work-in-progress and represents a very early state of the Pods design. Significant aspects are not documented, though we expect to add them in the future.
 
@@ -24,7 +24,7 @@ We use the following terms to describe components and properties of the Pods arc
 
 A Pod is a set of infrastructure components that contains multiple top-level namespaces that belong to different organizations. The components include both datastores (PostgreSQL, Redis etc.) and stateless services (web etc.). The infrastructure components provided within a Pod are shared among organizations and their top-level namespaces but not shared with other Pods. This isolation of infrastructure components means that Pods are independent from each other.
 
-![Term Pod](term-pod.png)
+![Term Pod](images/term-pod.png)
 
 #### Pod properties
 
@@ -42,7 +42,7 @@ Discouraged synonyms: GitLab instance, cluster, shard
 
 A cluster is a collection of Pods.
 
-![Term Cluster](term-cluster.png)
+![Term Cluster](images/term-cluster.png)
 
 #### Cluster properties
 
@@ -66,7 +66,7 @@ Organizations work under the following assumptions:
 1. Users understand that the majority of pages they view are only scoped to a single organization at a time.
 1. Organizations are located on a single pod.
 
-![Term Organization](term-organization.png)
+![Term Organization](images/term-organization.png)
 
 #### Organization properties
 
@@ -94,7 +94,7 @@ Top-level namespaces may [be replaced by workspaces](https://gitlab.com/gitlab-o
 
 Discouraged synonyms: Root-level namespace
 
-![Term Top-level Namespace](term-top-level-namespace.png)
+![Term Top-level Namespace](images/term-top-level-namespace.png)
 
 #### Top-level namespace properties
 
@@ -111,8 +111,8 @@ Users are available globally and not restricted to a single Pod. Users can be me
 - Users can create multiple top-level namespaces
 - Users can be a member of multiple top-level namespaces
 - Users can be a member of multiple organizations
-- Users can administrate organizations
-- User activity is aggregated within an organization
+- Users can administer organizations
+- User activity is aggregated in an organization
 - Every user has one personal namespace
 
 ## Goals
@@ -160,6 +160,59 @@ A number of technical issues need to be resolved to implement Pods (in no partic
 1. How are Pods provisioned?
 1. How can Pods implement disaster recovery capabilities?
 
+## Cross-section impact
+
+Pods is a fundamental architecture change that impacts other sections and stages. This section summarizes and links to other groups that may be impacted and highlights potential conflicts that need to be resolved. The Pods group is not responsible for achieving the goals of other groups but we want to ensure that dependencies are resolved.
+
+### Summary
+
+Based on discussions with other groups the net impact of introducing Pods and a new entity called organizations is mostly neutral. It may slow down development in some areas. We did not discover major blockers for other teams.
+
+1. We need to resolve naming conflicts (proposal is TBD)
+1. Pods requires introducing Organizations. Organizations are a new entity **above** top-level groups. Because this is a new entity, it may impact the ability to consolidate settings for Group Workspace and influence their decision on [how to approach introducing a workspace](https://gitlab.com/gitlab-org/gitlab/-/issues/376285#approach-2-workspace-is-built-on-top-of-top-level-groups)
+1. Organizations may make it slightly easier for Fulfillment to realize their billing plans.
+
+### Impact on Group Manage Workspace
+
+We synced with the Workspace PM and Designer ([recording](https://youtu.be/b5Opn9cFWFk)) and discussed the similarities and differences between the Pods and Workspace proposal ([presentation](https://docs.google.com/presentation/d/1FsUi22Up15b_tu6p2m-yLML3hCZ3rgrZrmzJAxUsNmU/edit?usp=sharing)).
+
+#### Goals of Group Manage Workspace
+
+As defined in the [workspace documentation](../../../user/workspace/index.md):
+
+1. Create an entity to manage everything you do as a GitLab administrator, including:
+   1. Defining and applying settings to all of your groups, subgroups, and projects.
+   1. Aggregating data from all your groups, subgroups, and projects.
+1. Reach feature parity between SaaS and self-managed installations, with all Admin Area settings moving to groups (?). Hardware controls remain on the instance level.
+
+The [workspace roadmap outlines](https://gitlab.com/gitlab-org/gitlab/-/issues/368237#high-level-goals) the current goals in detail.
+
+#### Potential conflicts with Pods
+
+- Workspace and Organization are different terms for the same entity. Both define a new entity as the primary organizational object for groups and projects. This is mainly a semantic difference and **we need to decide on a name** following [user research to decide if workspace](https://gitlab.com/gitlab-org/ux-research/-/issues/2147). This is also driven by the fact that the Remote Development team is looking at better names and [are considering the term Workspace as well](https://gitlab.com/gitlab-com/Product/-/issues/4812).
+- We will only introduce one entity
+- Group workspace highlighted the need to further validate the key assumption that users only care about what happens within their organization.
+
+### Impact on Fulfillment
+
+We synced with Fulfillment ([recording](https://youtu.be/FkQF3uF7vTY)) to discuss how Pods would impact them. Fulfillment is supportive of an entity above top-level namespaces. Their perspective is outline in [!5639](https://gitlab.com/gitlab-org/customers-gitlab-com/-/merge_requests/5639/diffs).
+
+#### Goals of Fulfillment
+
+- Fulfillment has a longstanding plan to move billing from the top-level namespace to a level above. This would mean that a license applies for an organization and all its top-level namespaces.
+- Fulfillment uses Zuora for billing and would like to have a 1-to-1 relationship between an organization and their Zuora entity called BillingAccount. They want to move away from tying a license to a single user.
+- If a customer needs multiple organizations, the corresponding BillingAccounts can be rolled up into a consolidated billing account (similar to [AWS consolidated billing](https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/consolidated-billing.html))
+- Ideally, a self-managed instance has a single Organization by default, which should be enough for most customers.
+- Fulfillment prefers only one additional entity.
+
+A rough representation of this is:
+
+![Pods and Fulfillment](images/pods-and-fulfillment.png)
+
+#### Potential conflicts with Pods
+
+- There are no known conflicts between Fulfillment's plans and Pods
+
 ## Iteration plan
 
 We can't ship the entire Pods architecture in one go - it is too large. Instead, we are adopting an iteration plan that provides value along the way.
@@ -189,7 +242,7 @@ Organizations solve the following problems:
 1. Self-managed instances would set a default organization.
 1. Organizations can control user-profiles in a central way. This could be achieved by having an organization specific user-profile. Such a profile makes it possible for the organization administrators to control the user role in a company, enforce user emails, or show a graphical indicator of a user being part of the organization. An example would be a "GitLab Employee stamp" on comments.
 
-![Move to Organizations](iteration0-organizations-introduction.png)
+![Move to Organizations](images/iteration0-organizations-introduction.png)
 
 #### Why would customers opt-in to Organizations?
 
@@ -251,28 +304,31 @@ Based on user research, we may want to change certain features to work across or
 
 - Specific features allow for cross-organization interactions, for example forking, search.
 
-### Links
+## Technical Proposals
+
+The Pods architecture do have long lasting implications to data processing, location, scalability and the GitLab architecture.
+This section links all different technical proposals that are being evaluated.
+
+- [Stateless Router That Uses a Cache to Pick Pod and Is Redirected When Wrong Pod Is Reached](proposal-stateless-router-with-buffering-requests.md)
+
+- [Stateless Router That Uses a Cache to Pick Pod and pre-flight `/api/v4/pods/learn`](proposal-stateless-router-with-routes-learning.md)
+
+## Impacted features
+
+The Pods architecture will impact many features requiring some of them to be rewritten, or changed significantly.
+This is the list of known affected features with the proposed solutions.
+
+- [Pods: Git Access](pods-feature-git-access.md)
+- [Pods: Data Migration](pods-feature-data-migration.md)
+- [Pods: Database Sequences](pods-feature-database-sequences.md)
+- [Pods: GraphQL](pods-feature-graphql.md)
+- [Pods: Organizations](pods-feature-organizations.md)
+- [Pods: Router Endpoints Classification](pods-feature-router-endpoints-classification.md)
+
+## Links
 
 - [Internal Pods presentation](https://docs.google.com/presentation/d/1x1uIiN8FR9fhL7pzFh9juHOVcSxEY7d2_q4uiKKGD44/edit#slide=id.ge7acbdc97a_0_155)
 - [Pods Epic](https://gitlab.com/groups/gitlab-org/-/epics/7582)
 - [Database Group investigation](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/doc/root-namespace-sharding.html)
 - [Shopify Pods architecture](https://shopify.engineering/a-pods-architecture-to-allow-shopify-to-scale)
 - [Opstrace architecture](https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/docs/architecture/overview.md)
-
-### Who
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Fabian Zimmer           |
-| Architecture Evolution Coach | Kamil Trzciński         |
-| Engineering Leader           | TBD                     |
-| Product Manager              | Fabian Zimmer           |
-| Domain Expert / Database     | TBD                     |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | TBD                    |
-| Product                      | Fabian Zimmer          |
-| Engineering                  | Thong Kuah |

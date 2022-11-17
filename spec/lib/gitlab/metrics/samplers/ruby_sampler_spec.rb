@@ -35,10 +35,26 @@ RSpec.describe Gitlab::Metrics::Samplers::RubySampler do
   end
 
   describe '#sample' do
-    it 'adds a metric containing the process resident memory bytes' do
-      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).and_return(9000)
+    it 'adds a metric containing the process total resident memory bytes' do
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).and_return({ total: 9000 })
 
       expect(sampler.metrics[:process_resident_memory_bytes]).to receive(:set).with({}, 9000)
+
+      sampler.sample
+    end
+
+    it 'adds a metric containing the process anonymous resident memory bytes' do
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).and_return({ anon: 9000 })
+
+      expect(sampler.metrics[:process_resident_anon_memory_bytes]).to receive(:set).with({}, 9000)
+
+      sampler.sample
+    end
+
+    it 'adds a metric containing the process file backed resident memory bytes' do
+      expect(Gitlab::Metrics::System).to receive(:memory_usage_rss).and_return({ file: 9000 })
+
+      expect(sampler.metrics[:process_resident_file_memory_bytes]).to receive(:set).with({}, 9000)
 
       sampler.sample
     end

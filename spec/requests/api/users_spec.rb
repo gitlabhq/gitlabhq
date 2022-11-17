@@ -1291,6 +1291,20 @@ RSpec.describe API::Users do
         .to eq([Gitlab::PathRegex.namespace_format_message])
     end
 
+    it 'tracks weak password errors' do
+      attributes = attributes_for(:user).merge({ password: "password" })
+      post api('/users', admin), params: attributes
+
+      expect(json_response['message']['password'])
+        .to eq(['must not contain commonly used combinations of words and letters'])
+      expect_snowplow_event(
+        category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+        action: 'track_weak_password_error',
+        controller: 'API::Users',
+        method: 'create'
+      )
+    end
+
     it "is not available for non admin users" do
       post api("/users", user), params: attributes_for(:user)
       expect(response).to have_gitlab_http_status(:forbidden)
@@ -1490,6 +1504,21 @@ RSpec.describe API::Users do
         it 'does not enqueue the `password changed` email' do
           expect { update_password(user, admin) }
             .not_to have_enqueued_mail(DeviseMailer, :password_change)
+        end
+      end
+
+      context 'with a weak password' do
+        it 'tracks weak password errors' do
+          update_password(user, admin, "password")
+
+          expect(json_response['message']['password'])
+            .to eq(['must not contain commonly used combinations of words and letters'])
+          expect_snowplow_event(
+            category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+            action: 'track_weak_password_error',
+            controller: 'API::Users',
+            method: 'update'
+          )
         end
       end
     end
@@ -2535,32 +2564,12 @@ RSpec.describe API::Users do
   describe "DELETE /users/:id" do
     let_it_be(:issue) { create(:issue, author: user) }
 
-    context 'user deletion' do
-      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-        it "deletes user", :sidekiq_inline do
-          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+    it "deletes user", :sidekiq_inline do
+      perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
-          expect(response).to have_gitlab_http_status(:no_content)
-          expect(Users::GhostUserMigration.where(user: user,
-                                                 initiator_user: admin)).to be_exists
-        end
-      end
-
-      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-        before do
-          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-        end
-
-        it "deletes user", :sidekiq_inline do
-          namespace_id = user.namespace.id
-
-          perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
-
-          expect(response).to have_gitlab_http_status(:no_content)
-          expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
-          expect { Namespace.find(namespace_id) }.to raise_error ActiveRecord::RecordNotFound
-        end
-      end
+      expect(response).to have_gitlab_http_status(:no_content)
+      expect(Users::GhostUserMigration.where(user: user,
+                                             initiator_user: admin)).to be_exists
     end
 
     context "sole owner of a group" do
@@ -2624,55 +2633,26 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:not_found)
     end
 
-    context 'hard delete' do
-      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-        context "hard delete disabled" do
-          it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
-            perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
+    context "hard delete disabled" do
+      it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
+        perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(issue.reload).to be_persisted
-            expect(Users::GhostUserMigration.where(user: user,
-                                                   initiator_user: admin,
-                                                   hard_delete: false)).to be_exists
-          end
-        end
-
-        context "hard delete enabled" do
-          it "removes contributions", :sidekiq_might_not_need_inline do
-            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
-
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(Users::GhostUserMigration.where(user: user,
-                                                   initiator_user: admin,
-                                                   hard_delete: true)).to be_exists
-          end
-        end
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(issue.reload).to be_persisted
+        expect(Users::GhostUserMigration.where(user: user,
+                                               initiator_user: admin,
+                                               hard_delete: false)).to be_exists
       end
+    end
 
-      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-        before do
-          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-        end
+    context "hard delete enabled" do
+      it "removes contributions", :sidekiq_might_not_need_inline do
+        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
 
-        context "hard delete disabled" do
-          it "moves contributions to the ghost user", :sidekiq_might_not_need_inline do
-            perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
-
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(issue.reload).to be_persisted
-            expect(issue.author.ghost?).to be_truthy
-          end
-        end
-
-        context "hard delete enabled" do
-          it "removes contributions", :sidekiq_might_not_need_inline do
-            perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
-
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(Issue.exists?(issue.id)).to be_falsy
-          end
-        end
+        expect(response).to have_gitlab_http_status(:no_content)
+        expect(Users::GhostUserMigration.where(user: user,
+                                               initiator_user: admin,
+                                               hard_delete: true)).to be_exists
       end
     end
   end
@@ -4392,6 +4372,74 @@ RSpec.describe API::Users do
       expect(response).to have_gitlab_http_status(:no_content)
       expect(impersonation_token.revoked).to be_falsey
       expect(impersonation_token.reload.revoked).to be_truthy
+    end
+  end
+
+  describe 'GET /users/:id/associations_count' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, :public, group: group) }
+    let(:associations) do
+      {
+        groups_count: 1,
+        projects_count: 1,
+        issues_count: 2,
+        merge_requests_count: 1
+      }.as_json
+    end
+
+    before :all do
+      group.add_member(user, Gitlab::Access::OWNER)
+      project.add_member(user, Gitlab::Access::OWNER)
+      create(:merge_request, source_project: project, source_branch: "my-personal-branch-1", author: user)
+      create_list(:issue, 2, project: project, author: user)
+    end
+
+    context 'as an unauthorized user' do
+      it 'returns 401 unauthorized' do
+        get api("/users/#{user.id}/associations_count", nil)
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'as a non-admin user' do
+      context 'with a different user id' do
+        it 'returns 403 Forbidden' do
+          get api("/users/#{omniauth_user.id}/associations_count", user)
+
+          expect(response).to have_gitlab_http_status(:forbidden)
+        end
+      end
+
+      context 'with the current user id' do
+        it 'returns valid JSON response' do
+          get api("/users/#{user.id}/associations_count", user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_a Hash
+          expect(json_response).to match(associations)
+        end
+      end
+    end
+
+    context 'as an admin user' do
+      context 'with invalid user id' do
+        it 'returns 404 User Not Found' do
+          get api("/users/#{non_existing_record_id}/associations_count", admin)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+
+      context 'with valid user id' do
+        it 'returns valid JSON response' do
+          get api("/users/#{user.id}/associations_count", admin)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_a Hash
+          expect(json_response).to match(associations)
+        end
+      end
     end
   end
 

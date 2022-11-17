@@ -606,6 +606,32 @@ RSpec.describe API::Ci::Jobs do
         end
       end
     end
+
+    context 'when ci_debug_services is set to true' do
+      before_all do
+        create(:ci_instance_variable, key: 'CI_DEBUG_SERVICES', value: true)
+      end
+
+      where(:public_builds, :user_project_role, :expected_status) do
+        true         | 'developer'     | :ok
+        true         | 'guest'         | :forbidden
+        false        | 'developer'     | :ok
+        false        | 'guest'         | :forbidden
+      end
+
+      with_them do
+        before do
+          project.update!(public_builds: public_builds)
+          project.add_role(user, user_project_role)
+
+          get api("/projects/#{project.id}/jobs/#{job.id}/trace", api_user)
+        end
+
+        it 'renders successfully to authorized users' do
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
+    end
   end
 
   describe 'POST /projects/:id/jobs/:job_id/cancel' do

@@ -11,6 +11,7 @@ RSpec.describe GitlabSchema.types['Subscription'] do
       issuable_description_updated
       issuable_labels_updated
       issuable_dates_updated
+      issuable_milestone_updated
       merge_request_reviewers_updated
       merge_request_merge_status_updated
     ]

@@ -91,7 +91,7 @@ To see the needs visualization, select **Needs** when viewing a pipeline that us
 
 ![Needs visualization example](img/dag_graph_example_v13_1.png)
 
-Clicking a node highlights all the job paths it depends on.
+Selecting a node highlights all the job paths it depends on.
 
 ![Needs visualization with path highlight](img/dag_graph_example_clicked_v13_1.png)
 

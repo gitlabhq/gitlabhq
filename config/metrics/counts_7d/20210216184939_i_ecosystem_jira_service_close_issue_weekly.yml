@@ -3,7 +3,7 @@ data_category: optional
 key_path: redis_hll_counters.ecosystem.i_ecosystem_jira_service_close_issue_weekly
 description: Number of users closing Jira issues by week
 product_section: dev
-product_stage: ecosystem
+product_stage: manage
 product_group: integrations
 product_category: integrations
 value_type: number

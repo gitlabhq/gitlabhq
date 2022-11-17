@@ -23,17 +23,42 @@ module Glfm
     def process(skip_spec_html_generation: false)
       output('Updating specification...')
 
+      # read and optionally update `input/github_flavored_markdown/ghfm_spec_v_x.yy.md`
       ghfm_spec_lines = load_ghfm_spec
-      glfm_spec_txt_string = build_glfm_spec_txt(ghfm_spec_lines)
+
+      # create `output_spec/spec.txt`
+      glfm_spec_txt_header_lines = GLFM_SPEC_TXT_HEADER.split("\n").map { |line| "#{line}\n" }
+      official_spec_lines = readlines_from_path!(GLFM_OFFICIAL_SPECIFICATION_MD_PATH)
+
+      glfm_spec_txt_string = (glfm_spec_txt_header_lines + official_spec_lines).join('')
       write_glfm_spec_txt(glfm_spec_txt_string)
 
+      # create `output_example_snapshots/snapshot_spec.md`
+      ghfm_spec_example_lines = extract_ghfm_spec_example_lines(ghfm_spec_lines)
+      official_spec_example_lines =
+        extract_glfm_spec_example_lines(official_spec_lines, GLFM_OFFICIAL_SPECIFICATION_MD_PATH)
+      internal_extension_lines = readlines_from_path!(GLFM_INTERNAL_EXTENSIONS_MD_PATH)
+      internal_extension_example_lines =
+        extract_glfm_spec_example_lines(internal_extension_lines, GLFM_INTERNAL_EXTENSIONS_MD_PATH)
+      snapshot_spec_md_string = (
+        glfm_spec_txt_header_lines +
+          ghfm_spec_example_lines +
+          official_spec_example_lines +
+          ["\n"] +
+          internal_extension_example_lines
+      ).join('')
+      write_snapshot_spec_md(snapshot_spec_md_string)
+
       if skip_spec_html_generation
-        output("Skipping GLFM spec.html generation...")
+        output("Skipping GLFM spec.html and snapshot_spec.html generation...")
         return
       end
 
-      glfm_spec_html_string = generate_glfm_spec_html(glfm_spec_txt_string)
-      write_glfm_spec_html(glfm_spec_html_string)
+      # create `output_spec/spec.html` and `output_snapshot_examples/snapshot_spec.html`
+      spec_html_string, snapshot_spec_html_string =
+        generate_spec_html_files(glfm_spec_txt_string, snapshot_spec_md_string)
+      write_spec_html(spec_html_string)
+      write_snapshot_spec_html(snapshot_spec_html_string)
     end
 
     private
@@ -68,9 +93,7 @@ module Glfm
       ghfm_spec_txt_uri_parsed = URI.parse(GHFM_SPEC_TXT_URI)
       ghfm_spec_txt_uri_io = ghfm_spec_txt_uri_parsed.open
 
-      # Read IO stream into an array of lines for easy processing later
-      ghfm_spec_lines = ghfm_spec_txt_uri_io.readlines
-      raise "Unable to read lines from #{GHFM_SPEC_TXT_URI}" if ghfm_spec_lines.empty?
+      ghfm_spec_lines = readlines_from_io!(ghfm_spec_txt_uri_io, GHFM_SPEC_TXT_URI)
 
       # Make sure the GHFM spec version has not changed
       validate_expected_spec_version!(ghfm_spec_lines[2])
@@ -95,59 +118,42 @@ module Glfm
           "Expected 'version: #{GHFM_SPEC_VERSION}', got '#{version_line}'"
     end
 
-    def build_glfm_spec_txt(ghfm_spec_txt_lines)
-      glfm_spec_txt_lines = ghfm_spec_txt_lines.dup
-      replace_header(glfm_spec_txt_lines)
-      replace_intro_section(glfm_spec_txt_lines)
-      insert_examples(glfm_spec_txt_lines)
-      glfm_spec_txt_lines.join('')
+    def extract_ghfm_spec_example_lines(spec_lines)
+      # In the GHFM spec.txt format, all we have to identify the headers containing examples
+      # is the presence of a single initial H1 named "Introduction" before the first
+      # header containing examples, and the <!-- END TESTS --> comment after the last header
+      # containing examples.
+      path = GHFM_SPEC_MD_PATH
+      first_examples_header_index = spec_lines.index do |line|
+        line.start_with?('# ') && !line.start_with?(INTRODUCTION_HEADER_LINE_TEXT)
+      end
+      raise "Unable to find first examples header in #{path}" unless first_examples_header_index
+
+      end_tests_comment_index = spec_lines.index do |line|
+        line.start_with?(END_TESTS_COMMENT_LINE_TEXT)
+      end
+      raise "Unable to locate 'END TESTS' comment line in #{path}" if end_tests_comment_index.nil?
+
+      spec_lines[first_examples_header_index..(end_tests_comment_index - 1)]
     end
 
-    def replace_header(spec_txt_lines)
-      spec_txt_lines[0, spec_txt_lines.index("...\n") + 1] = GLFM_SPEC_TXT_HEADER
-    end
-
-    def replace_intro_section(spec_txt_lines)
-      glfm_intro_md_lines = File.open(GLFM_INTRO_MD_PATH).readlines
-      raise "Unable to read lines from #{GLFM_INTRO_MD_PATH}" if glfm_intro_md_lines.empty?
-
-      ghfm_intro_header_begin_index = spec_txt_lines.index do |line|
-        line =~ INTRODUCTION_HEADER_LINE_TEXT
+    def extract_glfm_spec_example_lines(spec_lines, path)
+      # In the GLFM input markdown files (unlike the GLFM spec.txt format), we have control over
+      # the contents, so we can use explicit <!-- BEGIN TESTS --> and <!-- END TESTS -->
+      # is the presence of a single initial H1 named "Introduction" before the first
+      # header containing examples, and the <!-- END TESTS --> comment after the last header
+      # containing examples.
+      begin_tests_comment_line_index = spec_lines.index do |line|
+        line.start_with?(BEGIN_TESTS_COMMENT_LINE_TEXT)
       end
-      raise "Unable to locate introduction header line in #{GHFM_SPEC_MD_PATH}" if ghfm_intro_header_begin_index.nil?
+      raise "Unable to locate 'BEGIN TESTS' comment line in #{path}" unless begin_tests_comment_line_index
 
-      # Find the index of the next header after the introduction header, starting from the index
-      # of the introduction header this is the length of the intro section
-      ghfm_intro_section_length = spec_txt_lines[ghfm_intro_header_begin_index + 1..].index do |line|
-        line.start_with?('# ')
+      end_tests_comment_index = spec_lines.index do |line|
+        line.start_with?(END_TESTS_COMMENT_LINE_TEXT)
       end
+      raise "Unable to locate 'END TESTS' comment line in #{path}" if end_tests_comment_index.nil?
 
-      # Replace the intro section with the GitLab flavored Markdown intro section
-      spec_txt_lines[ghfm_intro_header_begin_index, ghfm_intro_section_length] = glfm_intro_md_lines
-    end
-
-    def insert_examples(spec_txt_lines)
-      official_spec_lines = File.open(GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH).readlines
-      raise "Unable to read lines from #{GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH}" if official_spec_lines.empty?
-
-      internal_extension_lines = File.open(GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH).readlines
-      raise "Unable to read lines from #{GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH}" if internal_extension_lines.empty?
-
-      ghfm_end_tests_comment_index = spec_txt_lines.index do |line|
-        line =~ END_TESTS_COMMENT_LINE_TEXT
-      end
-      raise "Unable to locate 'END TESTS' comment line in #{GHFM_SPEC_MD_PATH}" if ghfm_end_tests_comment_index.nil?
-
-      # Insert the GLFM examples before the 'END TESTS' comment line
-      spec_txt_lines[ghfm_end_tests_comment_index - 1] = [
-        "\n",
-        official_spec_lines,
-        "\n",
-        internal_extension_lines,
-        "\n"
-      ].flatten
-
-      spec_txt_lines
+      spec_lines[(begin_tests_comment_line_index + 1)..(end_tests_comment_index - 1)]
     end
 
     def write_glfm_spec_txt(glfm_spec_txt_string)
@@ -156,13 +162,24 @@ module Glfm
       write_file(GLFM_SPEC_TXT_PATH, glfm_spec_txt_string)
     end
 
-    def generate_glfm_spec_html(glfm_spec_txt_string)
-      output("Generating spec.html from spec.txt markdown...")
+    def write_snapshot_spec_md(snapshot_spec_md_string)
+      output("Writing #{ES_SNAPSHOT_SPEC_MD_PATH}...")
+      FileUtils.mkdir_p(Pathname.new(ES_SNAPSHOT_SPEC_MD_PATH).dirname)
+      write_file(ES_SNAPSHOT_SPEC_MD_PATH, snapshot_spec_md_string)
+    end
+
+    def generate_spec_html_files(spec_txt_string, snapshot_spec_md_string)
+      output("Generating spec.html and snapshot_spec.html from spec.txt and snapshot_spec.md markdown...")
+
+      spec_txt_string_split_examples = split_examples_into_html_and_md(spec_txt_string)
+      snapshot_spec_md_string_split_examples = split_examples_into_html_and_md(snapshot_spec_md_string)
 
       input_markdown_yml_string = <<~MARKDOWN
         ---
         spec_txt: |
-        #{glfm_spec_txt_string.gsub(/^/, '  ')}
+        #{spec_txt_string_split_examples.gsub(/^/, '  ')}
+        snapshot_spec_md: |
+        #{snapshot_spec_md_string_split_examples.gsub(/^/, '  ')}
       MARKDOWN
 
       # NOTE: We must copy the input YAML file used by the `render_static_html.rb`
@@ -190,14 +207,40 @@ module Glfm
       cmd = %(bin/rspec #{__dir__}/render_static_html.rb)
       run_external_cmd(cmd)
 
-      output("Reading generated spec.html from tempfile #{static_html_tempfile_path}...")
-      YAML.safe_load(File.open(static_html_tempfile_path), symbolize_names: true).fetch(:spec_txt)
+      output("Reading generated html from tempfile #{static_html_tempfile_path}...")
+      rendered_html_hash = YAML.safe_load(File.open(static_html_tempfile_path), symbolize_names: true)
+      [rendered_html_hash.fetch(:spec_txt), rendered_html_hash.fetch(:snapshot_spec_md)]
     end
 
-    def write_glfm_spec_html(glfm_spec_html_string)
+    def split_examples_into_html_and_md(spec_md_string)
+      spec_md_string.gsub(
+        /(^#{EXAMPLE_BEGIN_STRING}.*?$(?:.|\n)*?)^\.$(\n(?:.|\n)*?^#{EXAMPLE_END_STRING}$)/mo,
+        "\\1#{EXAMPLE_BACKTICKS_STRING}\n\n#{EXAMPLE_BACKTICKS_STRING}\\2"
+      )
+    end
+
+    def write_spec_html(spec_html_string)
       output("Writing #{GLFM_SPEC_TXT_PATH}...")
       FileUtils.mkdir_p(Pathname.new(GLFM_SPEC_HTML_PATH).dirname)
-      write_file(GLFM_SPEC_HTML_PATH, "#{glfm_spec_html_string}\n")
+      write_file(GLFM_SPEC_HTML_PATH, "#{spec_html_string}\n")
+    end
+
+    def write_snapshot_spec_html(snapshot_spec_html_string)
+      output("Writing #{ES_SNAPSHOT_SPEC_HTML_PATH}...")
+      FileUtils.mkdir_p(Pathname.new(ES_SNAPSHOT_SPEC_HTML_PATH).dirname)
+      write_file(ES_SNAPSHOT_SPEC_HTML_PATH, "#{snapshot_spec_html_string}\n")
+    end
+
+    def readlines_from_path!(path)
+      io = File.open(path)
+      readlines_from_io!(io, path)
+    end
+
+    def readlines_from_io!(io, uri_or_path)
+      lines = io.readlines
+      raise "Unable to read lines from #{uri_or_path}" if lines.empty?
+
+      lines
     end
   end
 end

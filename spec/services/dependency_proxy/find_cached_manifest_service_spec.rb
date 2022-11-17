@@ -39,6 +39,14 @@ RSpec.describe DependencyProxy::FindCachedManifestService do
       end
     end
 
+    shared_examples 'returning an error' do
+      it 'returns an error', :aggregate_failures do
+        expect(subject[:status]).to eq(:error)
+        expect(subject[:http_status]).to eq(503)
+        expect(subject[:message]).to eq('Failed to download the manifest from the external registry')
+      end
+    end
+
     context 'when no manifest exists' do
       let_it_be(:image) { 'new-image' }
 
@@ -101,7 +109,7 @@ RSpec.describe DependencyProxy::FindCachedManifestService do
         it_behaves_like 'returning no manifest'
       end
 
-      context 'failed connection' do
+      context 'when the connection fails' do
         before do
           expect(DependencyProxy::HeadManifestService).to receive(:new).and_raise(Net::OpenTimeout)
         end
@@ -111,11 +119,23 @@ RSpec.describe DependencyProxy::FindCachedManifestService do
         context 'and no manifest is cached' do
           let_it_be(:image) { 'new-image' }
 
-          it 'returns an error', :aggregate_failures do
-            expect(subject[:status]).to eq(:error)
-            expect(subject[:http_status]).to eq(503)
-            expect(subject[:message]).to eq('Failed to download the manifest from the external registry')
+          it_behaves_like 'returning an error'
+        end
+      end
+
+      context 'when the connection is successful but with error in result' do
+        before do
+          allow_next_instance_of(DependencyProxy::HeadManifestService) do |service|
+            allow(service).to receive(:execute).and_return(status: :error, http_status: 401, message: "Not found")
           end
+        end
+
+        it_behaves_like 'using the cached manifest'
+
+        context 'and no manifest is cached' do
+          let_it_be(:image) { 'new-image' }
+
+          it_behaves_like 'returning no manifest'
         end
       end
     end

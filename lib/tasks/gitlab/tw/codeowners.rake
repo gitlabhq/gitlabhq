@@ -28,6 +28,7 @@ namespace :tw do
       CodeOwnerRule.new('Compliance', '@eread'),
       CodeOwnerRule.new('Composition Analysis', '@rdickenson'),
       CodeOwnerRule.new('Configure', '@phillipwells'),
+      CodeOwnerRule.new('Container Registry', '@claytoncornell'),
       CodeOwnerRule.new('Contributor Experience', '@eread'),
       CodeOwnerRule.new('Conversion', '@kpaizee'),
       CodeOwnerRule.new('Database', '@aqualls'),
@@ -37,7 +38,6 @@ namespace :tw do
       CodeOwnerRule.new('Distribution (Omnibus)', '@axil'),
       CodeOwnerRule.new('Documentation Guidelines', '@sselhorn'),
       CodeOwnerRule.new('Dynamic Analysis', '@rdickenson'),
-      CodeOwnerRule.new('Ecosystem', '@kpaizee'),
       CodeOwnerRule.new('Editor', '@ashrafkhamis'),
       CodeOwnerRule.new('Foundations', '@rdickenson'),
       CodeOwnerRule.new('Fuzz Testing', '@rdickenson'),
@@ -48,11 +48,11 @@ namespace :tw do
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
       CodeOwnerRule.new('Integrations', '@ashrafkhamis'),
       CodeOwnerRule.new('Knowledge', '@aqualls'),
-      CodeOwnerRule.new('Application Performance', '@sselhorn'),
+      CodeOwnerRule.new('Application Performance', '@jglassman1'),
       CodeOwnerRule.new('Monitor', '@msedlakjakubowski'),
-      CodeOwnerRule.new('Observability', 'msedlakjakubowski'),
-      CodeOwnerRule.new('Optimize', '@fneill'),
-      CodeOwnerRule.new('Package', '@claytoncornell'),
+      CodeOwnerRule.new('Observability', '@msedlakjakubowski'),
+      CodeOwnerRule.new('Optimize', '@lciutacu'),
+      CodeOwnerRule.new('Package Registry', '@claytoncornell'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Execution', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Insights', '@marcel.amirault'),
@@ -66,18 +66,23 @@ namespace :tw do
       CodeOwnerRule.new('Redirect', 'Redirect'),
       CodeOwnerRule.new('Release', '@rdickenson'),
       CodeOwnerRule.new('Respond', '@msedlakjakubowski'),
-      CodeOwnerRule.new('Runner', '@sselhorn'),
-      CodeOwnerRule.new('Pods', '@sselhorn'),
+      CodeOwnerRule.new('Runner', '@fneill'),
+      CodeOwnerRule.new('Runner SaaS', '@fneill'),
+      CodeOwnerRule.new('Pods', '@jglassman1'),
       CodeOwnerRule.new('Security Policies', '@claytoncornell'),
       CodeOwnerRule.new('Source Code', '@aqualls'),
       CodeOwnerRule.new('Static Analysis', '@rdickenson'),
       CodeOwnerRule.new('Style Guide', '@sselhorn'),
       CodeOwnerRule.new('Testing', '@eread'),
       CodeOwnerRule.new('Threat Insights', '@claytoncornell'),
+      CodeOwnerRule.new('Tutorials', '@kpaizee'),
       CodeOwnerRule.new('Utilization', '@fneill'),
       CodeOwnerRule.new('Vulnerability Research', '@claytoncornell'),
-      CodeOwnerRule.new('Workspace', '@fneill')
+      CodeOwnerRule.new('Workspace', '@lciutacu')
     ].freeze
+
+    CODEOWNERS_BLOCK_BEGIN = "# Begin rake-managed-docs-block"
+    CODEOWNERS_BLOCK_END = "# End rake-managed-docs-block"
 
     Document = Struct.new(:group, :redirect) do
       def has_a_valid_group?
@@ -122,7 +127,17 @@ namespace :tw do
       end
     end
 
-    deduplicated_mappings.sort.each { |mapping| puts mapping }
+    new_docs_owners = deduplicated_mappings.sort.join("\n")
+
+    codeowners_path = Rails.root.join('.gitlab/CODEOWNERS')
+    current_codeowners_content = File.read(codeowners_path)
+
+    docs_replace_regex = Regexp.new("#{CODEOWNERS_BLOCK_BEGIN}\n[\\s\\S]*?\n#{CODEOWNERS_BLOCK_END}")
+
+    new_codeowners_content = current_codeowners_content
+        .gsub(docs_replace_regex, "#{CODEOWNERS_BLOCK_BEGIN}\n#{new_docs_owners}\n#{CODEOWNERS_BLOCK_END}")
+
+    File.write(codeowners_path, new_codeowners_content)
 
     if errors.present?
       puts "-----"

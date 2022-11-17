@@ -6,6 +6,10 @@ module Gitlab
       include Migrations::ReestablishedConnectionStack
       include Migrations::BackgroundMigrationHelpers
       include Migrations::BatchedBackgroundMigrationHelpers
+      include Migrations::LockRetriesHelpers
+      include Migrations::TimeoutHelpers
+      include Migrations::ConstraintsHelpers
+      include Migrations::ExtensionHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
@@ -22,8 +26,6 @@ module Gitlab
         super(table_name, connection: connection, **kwargs)
       end
 
-      # https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
-      MAX_IDENTIFIER_NAME_LENGTH = 63
       DEFAULT_TIMESTAMP_COLUMNS = %i[created_at updated_at].freeze
 
       # Adds `created_at` and `updated_at` columns with timezone information.
@@ -146,6 +148,12 @@ module Gitlab
             'in the body of your migration class'
         end
 
+        if !options.delete(:allow_partition) && partition?(table_name)
+          raise ArgumentError, 'add_concurrent_index can not be used on a partitioned '  \
+            'table. Please use add_concurrent_partitioned_index on the partitioned table ' \
+            'as we need to create indexes on each partition and an index on the parent table'
+        end
+
         options = options.merge({ algorithm: :concurrently })
 
         if index_exists?(table_name, column_name, **options)
@@ -202,6 +210,12 @@ module Gitlab
             'in the body of your migration class'
         end
 
+        if partition?(table_name)
+          raise ArgumentError, 'remove_concurrent_index can not be used on a partitioned '  \
+            'table. Please use remove_concurrent_partitioned_index_by_name on the partitioned table ' \
+            'as we need to remove the index on the parent table'
+        end
+
         options = options.merge({ algorithm: :concurrently })
 
         unless index_exists?(table_name, column_name, **options)
@@ -229,6 +243,12 @@ module Gitlab
           raise 'remove_concurrent_index_by_name can not be run inside a transaction, ' \
             'you can disable transactions by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
+        end
+
+        if partition?(table_name)
+          raise ArgumentError, 'remove_concurrent_index_by_name can not be used on a partitioned '  \
+            'table. Please use remove_concurrent_partitioned_index_by_name on the partitioned table ' \
+            'as we need to remove the index on the parent table'
         end
 
         index_name = index_name[:name] if index_name.is_a?(Hash)
@@ -358,97 +378,6 @@ module Gitlab
         hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
 
         "#{prefix}#{hashed_identifier}"
-      end
-
-      # Long-running migrations may take more than the timeout allowed by
-      # the database. Disable the session's statement timeout to ensure
-      # migrations don't get killed prematurely.
-      #
-      # There are two possible ways to disable the statement timeout:
-      #
-      # - Per transaction (this is the preferred and default mode)
-      # - Per connection (requires a cleanup after the execution)
-      #
-      # When using a per connection disable statement, code must be inside
-      # a block so we can automatically execute `RESET statement_timeout` after block finishes
-      # otherwise the statement will still be disabled until connection is dropped
-      # or `RESET statement_timeout` is executed
-      def disable_statement_timeout
-        if block_given?
-          if statement_timeout_disabled?
-            # Don't do anything if the statement_timeout is already disabled
-            # Allows for nested calls of disable_statement_timeout without
-            # resetting the timeout too early (before the outer call ends)
-            yield
-          else
-            begin
-              execute('SET statement_timeout TO 0')
-
-              yield
-            ensure
-              execute('RESET statement_timeout')
-            end
-          end
-        else
-          unless transaction_open?
-            raise <<~ERROR
-              Cannot call disable_statement_timeout() without a transaction open or outside of a transaction block.
-              If you don't want to use a transaction wrap your code in a block call:
-
-              disable_statement_timeout { # code that requires disabled statement here }
-
-              This will make sure statement_timeout is disabled before and reset after the block execution is finished.
-            ERROR
-          end
-
-          execute('SET LOCAL statement_timeout TO 0')
-        end
-      end
-
-      # Executes the block with a retry mechanism that alters the +lock_timeout+ and +sleep_time+ between attempts.
-      # The timings can be controlled via the +timing_configuration+ parameter.
-      # If the lock was not acquired within the retry period, a last attempt is made without using +lock_timeout+.
-      #
-      # Note this helper uses subtransactions when run inside an already open transaction.
-      #
-      # ==== Examples
-      #   # Invoking without parameters
-      #   with_lock_retries do
-      #     drop_table :my_table
-      #   end
-      #
-      #   # Invoking with custom +timing_configuration+
-      #   t = [
-      #     [1.second, 1.second],
-      #     [2.seconds, 2.seconds]
-      #   ]
-      #
-      #   with_lock_retries(timing_configuration: t) do
-      #     drop_table :my_table # this will be retried twice
-      #   end
-      #
-      #   # Disabling the retries using an environment variable
-      #   > export DISABLE_LOCK_RETRIES=true
-      #
-      #   with_lock_retries do
-      #     drop_table :my_table # one invocation, it will not retry at all
-      #   end
-      #
-      # ==== Parameters
-      # * +timing_configuration+ - [[ActiveSupport::Duration, ActiveSupport::Duration], ...] lock timeout for the block, sleep time before the next iteration, defaults to `Gitlab::Database::WithLockRetries::DEFAULT_TIMING_CONFIGURATION`
-      # * +logger+ - [Gitlab::JsonLogger]
-      # * +env+ - [Hash] custom environment hash, see the example with `DISABLE_LOCK_RETRIES`
-      def with_lock_retries(*args, **kwargs, &block)
-        raise_on_exhaustion = !!kwargs.delete(:raise_on_exhaustion)
-        merged_args = {
-          connection: connection,
-          klass: self.class,
-          logger: Gitlab::BackgroundMigration::Logger,
-          allow_savepoints: true
-        }.merge(kwargs)
-
-        Gitlab::Database::WithLockRetries.new(**merged_args)
-          .run(raise_on_exhaustion: raise_on_exhaustion, &block)
       end
 
       def true_value
@@ -796,6 +725,10 @@ module Gitlab
         install_rename_triggers(table, old, new)
       end
 
+      def convert_to_type_column(column, from_type, to_type)
+        "#{column}_convert_#{from_type}_to_#{to_type}"
+      end
+
       def convert_to_bigint_column(column)
         "#{column}_convert_to_bigint"
       end
@@ -826,7 +759,22 @@ module Gitlab
       # columns - The name, or array of names, of the column(s) that we want to convert to bigint.
       # primary_key - The name of the primary key column (most often :id)
       def initialize_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :bigint)
+        mappings = Array(columns).map do |c|
+          {
+            c => {
+              from_type: :int,
+              to_type: :bigint,
+              default_value: 0
+            }
+          }
+        end.reduce(&:merge)
+
+        create_temporary_columns_and_triggers(
+          table,
+          mappings,
+          primary_key: primary_key,
+          old_bigint_column_naming: true
+        )
       end
 
       # Reverts `initialize_conversion_of_integer_to_bigint`
@@ -849,9 +797,23 @@ module Gitlab
       # table - The name of the database table containing the columns
       # columns - The name, or array of names, of the column(s) that we have converted to bigint.
       # primary_key - The name of the primary key column (most often :id)
-
       def restore_conversion_of_integer_to_bigint(table, columns, primary_key: :id)
-        create_temporary_columns_and_triggers(table, columns, primary_key: primary_key, data_type: :int)
+        mappings = Array(columns).map do |c|
+          {
+            c => {
+              from_type: :bigint,
+              to_type: :int,
+              default_value: 0
+            }
+          }
+        end.reduce(&:merge)
+
+        create_temporary_columns_and_triggers(
+          table,
+          mappings,
+          primary_key: primary_key,
+          old_bigint_column_naming: true
+        )
       end
 
       # Backfills the new columns used in an integer-to-bigint conversion using background migrations.
@@ -945,43 +907,6 @@ module Gitlab
           ])
 
         execute("DELETE FROM batched_background_migrations WHERE #{conditions}")
-      end
-
-      def ensure_batched_background_migration_is_finished(job_class_name:, table_name:, column_name:, job_arguments:, finalize: true)
-        Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.require_dml_mode!
-
-        Gitlab::Database::BackgroundMigration::BatchedMigration.reset_column_information
-        migration = Gitlab::Database::BackgroundMigration::BatchedMigration.find_for_configuration(
-          Gitlab::Database.gitlab_schemas_for_connection(connection),
-          job_class_name, table_name, column_name, job_arguments
-        )
-
-        configuration = {
-          job_class_name: job_class_name,
-          table_name: table_name,
-          column_name: column_name,
-          job_arguments: job_arguments
-        }
-
-        return Gitlab::AppLogger.warn "Could not find batched background migration for the given configuration: #{configuration}" if migration.nil?
-
-        return if migration.finished?
-
-        finalize_batched_background_migration(job_class_name: job_class_name, table_name: table_name, column_name: column_name, job_arguments: job_arguments) if finalize
-
-        unless migration.reload.finished? # rubocop:disable Cop/ActiveRecordAssociationReload
-          raise "Expected batched background migration for the given configuration to be marked as 'finished', " \
-            "but it is '#{migration.status_name}':" \
-            "\t#{configuration}" \
-            "\n\n" \
-            "Finalize it manually by running the following command in a `bash` or `sh` shell:" \
-            "\n\n" \
-            "\tsudo gitlab-rake gitlab:background_migrations:finalize[#{job_class_name},#{table_name},#{column_name},'#{job_arguments.to_json.gsub(',', '\,')}']" \
-            "\n\n" \
-            "For more information, check the documentation" \
-            "\n\n" \
-            "\thttps://docs.gitlab.com/ee/user/admin_area/monitoring/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
-        end
       end
 
       # Returns an Array containing the indexes for the given column
@@ -1102,6 +1027,24 @@ module Gitlab
       rescue ArgumentError
       end
 
+      # Remove any instances of deprecated job classes lingering in queues.
+      #
+      # rubocop:disable Cop/SidekiqApiUsage
+      def sidekiq_remove_jobs(job_klass:)
+        Sidekiq::Queue.new(job_klass.queue).each do |job|
+          job.delete if job.klass == job_klass.to_s
+        end
+
+        Sidekiq::RetrySet.new.each do |retri|
+          retri.delete if retri.klass == job_klass.to_s
+        end
+
+        Sidekiq::ScheduledSet.new.each do |scheduled|
+          scheduled.delete if scheduled.klass == job_klass.to_s
+        end
+      end
+      # rubocop:enable Cop/SidekiqApiUsage
+
       def sidekiq_queue_migrate(queue_from, to:)
         while sidekiq_queue_length(queue_from) > 0
           Sidekiq.redis do |conn|
@@ -1194,320 +1137,6 @@ into similar problems in the future (e.g. when new tables are created).
         execute(sql)
       end
 
-      # Returns the name for a check constraint
-      #
-      # type:
-      # - Any value, as long as it is unique
-      # - Constraint names are unique per table in Postgres, and, additionally,
-      #   we can have multiple check constraints over a column
-      #   So we use the (table, column, type) triplet as a unique name
-      # - e.g. we use 'max_length' when adding checks for text limits
-      #        or 'not_null' when adding a NOT NULL constraint
-      #
-      def check_constraint_name(table, column, type)
-        identifier = "#{table}_#{column}_check_#{type}"
-        # Check concurrent_foreign_key_name() for info on why we use a hash
-        hashed_identifier = Digest::SHA256.hexdigest(identifier).first(10)
-
-        "check_#{hashed_identifier}"
-      end
-
-      def check_constraint_exists?(table, constraint_name)
-        # Constraint names are unique per table in Postgres, not per schema
-        # Two tables can have constraints with the same name, so we filter by
-        # the table name in addition to using the constraint_name
-        check_sql = <<~SQL
-          SELECT COUNT(*)
-          FROM pg_catalog.pg_constraint con
-            INNER JOIN pg_catalog.pg_class rel
-              ON rel.oid = con.conrelid
-            INNER JOIN pg_catalog.pg_namespace nsp
-              ON nsp.oid = con.connamespace
-          WHERE con.contype = 'c'
-          AND con.conname = #{connection.quote(constraint_name)}
-          AND nsp.nspname = #{connection.quote(current_schema)}
-          AND rel.relname = #{connection.quote(table)}
-        SQL
-
-        connection.select_value(check_sql) > 0
-      end
-
-      # Adds a check constraint to a table
-      #
-      # This method is the generic helper for adding any check constraint
-      # More specialized helpers may use it (e.g. add_text_limit or add_not_null)
-      #
-      # This method only requires minimal locking:
-      # - The constraint is added using NOT VALID
-      #   This allows us to add the check constraint without validating it
-      # - The check will be enforced for new data (inserts) coming in
-      # - If `validate: true` the constraint is also validated
-      #   Otherwise, validate_check_constraint() can be used at a later stage
-      # - Check comments on add_concurrent_foreign_key for more info
-      #
-      # table  - The table the constraint will be added to
-      # check  - The check clause to add
-      #          e.g. 'char_length(name) <= 5' or 'store IS NOT NULL'
-      # constraint_name - The name of the check constraint (otherwise auto-generated)
-      #                   Should be unique per table (not per column)
-      # validate - Whether to validate the constraint in this call
-      #
-      def add_check_constraint(table, check, constraint_name, validate: true)
-        # Transactions would result in ALTER TABLE locks being held for the
-        # duration of the transaction, defeating the purpose of this method.
-        validate_not_in_transaction!(:add_check_constraint)
-
-        validate_check_constraint_name!(constraint_name)
-
-        if check_constraint_exists?(table, constraint_name)
-          warning_message = <<~MESSAGE
-            Check constraint was not created because it exists already
-            (this may be due to an aborted migration or similar)
-            table: #{table}, check: #{check}, constraint name: #{constraint_name}
-          MESSAGE
-
-          Gitlab::AppLogger.warn warning_message
-        else
-          # Only add the constraint without validating it
-          # Even though it is fast, ADD CONSTRAINT requires an EXCLUSIVE lock
-          # Use with_lock_retries to make sure that this operation
-          # will not timeout on tables accessed by many processes
-          with_lock_retries do
-            execute <<-EOF.strip_heredoc
-            ALTER TABLE #{table}
-            ADD CONSTRAINT #{constraint_name}
-            CHECK ( #{check} )
-            NOT VALID;
-            EOF
-          end
-        end
-
-        if validate
-          validate_check_constraint(table, constraint_name)
-        end
-      end
-
-      def validate_check_constraint(table, constraint_name)
-        validate_check_constraint_name!(constraint_name)
-
-        unless check_constraint_exists?(table, constraint_name)
-          raise missing_schema_object_message(table, "check constraint", constraint_name)
-        end
-
-        disable_statement_timeout do
-          # VALIDATE CONSTRAINT only requires a SHARE UPDATE EXCLUSIVE LOCK
-          # It only conflicts with other validations and creating indexes
-          execute("ALTER TABLE #{table} VALIDATE CONSTRAINT #{constraint_name};")
-        end
-      end
-
-      def remove_check_constraint(table, constraint_name)
-        # This is technically not necessary, but aligned with add_check_constraint
-        # and allows us to continue use with_lock_retries here
-        validate_not_in_transaction!(:remove_check_constraint)
-
-        validate_check_constraint_name!(constraint_name)
-
-        # DROP CONSTRAINT requires an EXCLUSIVE lock
-        # Use with_lock_retries to make sure that this will not timeout
-        with_lock_retries do
-          execute <<-EOF.strip_heredoc
-          ALTER TABLE #{table}
-          DROP CONSTRAINT IF EXISTS #{constraint_name}
-          EOF
-        end
-      end
-
-      # Copies all check constraints for the old column to the new column.
-      #
-      # table - The table containing the columns.
-      # old - The old column.
-      # new - The new column.
-      # schema - The schema the table is defined for
-      #          If it is not provided, then the current_schema is used
-      def copy_check_constraints(table, old, new, schema: nil)
-        if transaction_open?
-          raise 'copy_check_constraints can not be run inside a transaction'
-        end
-
-        unless column_exists?(table, old)
-          raise "Column #{old} does not exist on #{table}"
-        end
-
-        unless column_exists?(table, new)
-          raise "Column #{new} does not exist on #{table}"
-        end
-
-        table_with_schema = schema.present? ? "#{schema}.#{table}" : table
-
-        check_constraints_for(table, old, schema: schema).each do |check_c|
-          validate = !(check_c["constraint_def"].end_with? "NOT VALID")
-
-          # Normalize:
-          # - Old constraint definitions:
-          #    '(char_length(entity_path) <= 5500)'
-          # - Definitionss from pg_get_constraintdef(oid):
-          #    'CHECK ((char_length(entity_path) <= 5500))'
-          # - Definitions from pg_get_constraintdef(oid, pretty_bool):
-          #    'CHECK (char_length(entity_path) <= 5500)'
-          # - Not valid constraints: 'CHECK (...) NOT VALID'
-          # to a single format that we can use:
-          #    '(char_length(entity_path) <= 5500)'
-          check_definition = check_c["constraint_def"]
-                              .sub(/^\s*(CHECK)?\s*\({0,2}/, '(')
-                              .sub(/\){0,2}\s*(NOT VALID)?\s*$/, ')')
-
-          constraint_name = begin
-            if check_definition == "(#{old} IS NOT NULL)"
-              not_null_constraint_name(table_with_schema, new)
-            elsif check_definition.start_with? "(char_length(#{old}) <="
-              text_limit_name(table_with_schema, new)
-            else
-              check_constraint_name(table_with_schema, new, 'copy_check_constraint')
-            end
-          end
-
-          add_check_constraint(
-            table_with_schema,
-            check_definition.gsub(old.to_s, new.to_s),
-            constraint_name,
-            validate: validate
-          )
-        end
-      end
-
-      # Migration Helpers for adding limit to text columns
-      def add_text_limit(table, column, limit, constraint_name: nil, validate: true)
-        add_check_constraint(
-          table,
-          "char_length(#{column}) <= #{limit}",
-          text_limit_name(table, column, name: constraint_name),
-          validate: validate
-        )
-      end
-
-      def validate_text_limit(table, column, constraint_name: nil)
-        validate_check_constraint(table, text_limit_name(table, column, name: constraint_name))
-      end
-
-      def remove_text_limit(table, column, constraint_name: nil)
-        remove_check_constraint(table, text_limit_name(table, column, name: constraint_name))
-      end
-
-      def check_text_limit_exists?(table, column, constraint_name: nil)
-        check_constraint_exists?(table, text_limit_name(table, column, name: constraint_name))
-      end
-
-      # Migration Helpers for managing not null constraints
-      def add_not_null_constraint(table, column, constraint_name: nil, validate: true)
-        if column_is_nullable?(table, column)
-          add_check_constraint(
-            table,
-            "#{column} IS NOT NULL",
-            not_null_constraint_name(table, column, name: constraint_name),
-            validate: validate
-          )
-        else
-          warning_message = <<~MESSAGE
-            NOT NULL check constraint was not created:
-            column #{table}.#{column} is already defined as `NOT NULL`
-          MESSAGE
-
-          Gitlab::AppLogger.warn warning_message
-        end
-      end
-
-      def validate_not_null_constraint(table, column, constraint_name: nil)
-        validate_check_constraint(
-          table,
-          not_null_constraint_name(table, column, name: constraint_name)
-        )
-      end
-
-      def remove_not_null_constraint(table, column, constraint_name: nil)
-        remove_check_constraint(
-          table,
-          not_null_constraint_name(table, column, name: constraint_name)
-        )
-      end
-
-      def check_not_null_constraint_exists?(table, column, constraint_name: nil)
-        check_constraint_exists?(
-          table,
-          not_null_constraint_name(table, column, name: constraint_name)
-        )
-      end
-
-      def create_extension(extension)
-        execute('CREATE EXTENSION IF NOT EXISTS %s' % extension)
-      rescue ActiveRecord::StatementInvalid => e
-        dbname = ApplicationRecord.database.database_name
-        user = ApplicationRecord.database.username
-
-        warn(<<~MSG) if e.to_s =~ /permission denied/
-          GitLab requires the PostgreSQL extension '#{extension}' installed in database '#{dbname}', but
-          the database user is not allowed to install the extension.
-
-          You can either install the extension manually using a database superuser:
-
-            CREATE EXTENSION IF NOT EXISTS #{extension}
-
-          Or, you can solve this by logging in to the GitLab
-          database (#{dbname}) using a superuser and running:
-
-              ALTER #{user} WITH SUPERUSER
-
-          This query will grant the user superuser permissions, ensuring any database extensions
-          can be installed through migrations.
-
-          For more information, refer to https://docs.gitlab.com/ee/install/postgresql_extensions.html.
-        MSG
-
-        raise
-      end
-
-      def drop_extension(extension)
-        execute('DROP EXTENSION IF EXISTS %s' % extension)
-      rescue ActiveRecord::StatementInvalid => e
-        dbname = ApplicationRecord.database.database_name
-        user = ApplicationRecord.database.username
-
-        warn(<<~MSG) if e.to_s =~ /permission denied/
-          This migration attempts to drop the PostgreSQL extension '#{extension}'
-          installed in database '#{dbname}', but the database user is not allowed
-          to drop the extension.
-
-          You can either drop the extension manually using a database superuser:
-
-            DROP EXTENSION IF EXISTS #{extension}
-
-          Or, you can solve this by logging in to the GitLab
-          database (#{dbname}) using a superuser and running:
-
-              ALTER #{user} WITH SUPERUSER
-
-          This query will grant the user superuser permissions, ensuring any database extensions
-          can be dropped through migrations.
-
-          For more information, refer to https://docs.gitlab.com/ee/install/postgresql_extensions.html.
-        MSG
-
-        raise
-      end
-
-      def rename_constraint(table_name, old_name, new_name)
-        execute <<~SQL
-          ALTER TABLE #{quote_table_name(table_name)}
-          RENAME CONSTRAINT #{quote_column_name(old_name)} TO #{quote_column_name(new_name)}
-        SQL
-      end
-
-      def drop_constraint(table_name, constraint_name, cascade: false)
-        execute <<~SQL
-          ALTER TABLE #{quote_table_name(table_name)} DROP CONSTRAINT #{quote_column_name(constraint_name)} #{cascade_statement(cascade)}
-        SQL
-      end
-
       def add_primary_key_using_index(table_name, pk_name, index_to_use)
         execute <<~SQL
           ALTER TABLE #{quote_table_name(table_name)} ADD CONSTRAINT #{quote_table_name(pk_name)} PRIMARY KEY USING INDEX #{quote_table_name(index_to_use)}
@@ -1536,6 +1165,95 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
       end
 
+      # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      def create_temporary_columns_and_triggers(table, mappings, primary_key: :id, old_bigint_column_naming: false)
+        raise ArgumentError, "No mappings for column conversion provided" if mappings.blank?
+
+        unless mappings.values.all? { |values| mapping_has_required_columns?(values) }
+          raise ArgumentError, "Some mappings don't have required keys provided"
+        end
+
+        neutral_values_for_type = {
+          int: 0,
+          bigint: 0,
+          uuid: '00000000-0000-0000-0000-000000000000'
+        }
+
+        unless table_exists?(table)
+          raise "Table #{table} does not exist"
+        end
+
+        unless column_exists?(table, primary_key)
+          raise "Column #{primary_key} does not exist on #{table}"
+        end
+
+        columns = mappings.keys
+        columns.each do |column|
+          next if column_exists?(table, column)
+
+          raise ArgumentError, "Column #{column} does not exist on #{table}"
+        end
+
+        check_trigger_permissions!(table)
+
+        if old_bigint_column_naming
+          mappings.each do |column, params|
+            params.merge!(
+              temporary_column_name: convert_to_bigint_column(column)
+            )
+          end
+        else
+          mappings.each do |column, params|
+            params.merge!(
+              temporary_column_name: convert_to_type_column(column, params[:from_type], params[:to_type])
+            )
+          end
+        end
+
+        with_lock_retries do
+          mappings.each do |(column_name, params)|
+            column = column_for(table, column_name)
+            temporary_name = params[:temporary_column_name]
+            data_type = params[:to_type]
+            default_value = params[:default_value]
+
+            if (column.name.to_s == primary_key.to_s) || !column.null
+              # If the column to be converted is either a PK or is defined as NOT NULL,
+              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
+              # That way, we skip the expensive validation step required to add
+              #  a NOT NULL constraint at the end of the process
+              add_column(
+                table,
+                temporary_name,
+                data_type,
+                default: column.default || default_value || neutral_values_for_type.fetch(data_type),
+                null: false
+              )
+            else
+              add_column(
+                table,
+                temporary_name,
+                data_type,
+                default: column.default
+              )
+            end
+          end
+
+          old_column_names = mappings.keys
+          temporary_column_names = mappings.values.map { |v| v[:temporary_column_name] }
+          install_rename_triggers(table, old_column_names, temporary_column_names)
+        end
+      end
+      # rubocop:enable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+
+      def partition?(table_name)
+        if view_exists?(:postgres_partitions)
+          Gitlab::Database::PostgresPartition.partition_exists?(table_name)
+        else
+          Gitlab::Database::PostgresPartition.legacy_partition_exists?(table_name)
+        end
+      end
+
       private
 
       def multiple_columns(columns, separator: ', ')
@@ -1546,85 +1264,20 @@ into similar problems in the future (e.g. when new tables are created).
         cascade ? 'CASCADE' : ''
       end
 
-      def create_temporary_columns_and_triggers(table, columns, primary_key: :id, data_type: :bigint)
-        unless table_exists?(table)
-          raise "Table #{table} does not exist"
-        end
-
-        unless column_exists?(table, primary_key)
-          raise "Column #{primary_key} does not exist on #{table}"
-        end
-
-        columns = Array.wrap(columns)
-        columns.each do |column|
-          next if column_exists?(table, column)
-
-          raise ArgumentError, "Column #{column} does not exist on #{table}"
-        end
-
-        check_trigger_permissions!(table)
-
-        conversions = columns.to_h { |column| [column, convert_to_bigint_column(column)] }
-
-        with_lock_retries do
-          conversions.each do |(source_column, temporary_name)|
-            column = column_for(table, source_column)
-
-            if (column.name.to_s == primary_key.to_s) || !column.null
-              # If the column to be converted is either a PK or is defined as NOT NULL,
-              # set it to `NOT NULL DEFAULT 0` and we'll copy paste the correct values bellow
-              # That way, we skip the expensive validation step required to add
-              #  a NOT NULL constraint at the end of the process
-              add_column(table, temporary_name, data_type, default: column.default || 0, null: false)
-            else
-              add_column(table, temporary_name, data_type, default: column.default)
-            end
-          end
-
-          install_rename_triggers(table, conversions.keys, conversions.values)
-        end
-      end
-
       def validate_check_constraint_name!(constraint_name)
         if constraint_name.to_s.length > MAX_IDENTIFIER_NAME_LENGTH
           raise "The maximum allowed constraint name is #{MAX_IDENTIFIER_NAME_LENGTH} characters"
         end
       end
 
-      # Returns an ActiveRecord::Result containing the check constraints
-      # defined for the given column.
-      #
-      # If the schema is not provided, then the current_schema is used
-      def check_constraints_for(table, column, schema: nil)
-        check_sql = <<~SQL
-          SELECT
-            ccu.table_schema as schema_name,
-            ccu.table_name as table_name,
-            ccu.column_name as column_name,
-            con.conname as constraint_name,
-            pg_get_constraintdef(con.oid) as constraint_def
-          FROM pg_catalog.pg_constraint con
-            INNER JOIN pg_catalog.pg_class rel
-              ON rel.oid = con.conrelid
-            INNER JOIN pg_catalog.pg_namespace nsp
-              ON nsp.oid = con.connamespace
-            INNER JOIN information_schema.constraint_column_usage ccu
-              ON con.conname = ccu.constraint_name
-                     AND nsp.nspname = ccu.constraint_schema
-                     AND rel.relname = ccu.table_name
-          WHERE  nsp.nspname = #{connection.quote(schema.presence || current_schema)}
-            AND rel.relname = #{connection.quote(table)}
-            AND ccu.column_name = #{connection.quote(column)}
-            AND con.contype = 'c'
-          ORDER BY constraint_name
-        SQL
-
-        connection.exec_query(check_sql)
-      end
-
-      def statement_timeout_disabled?
-        # This is a string of the form "100ms" or "0" when disabled
-        connection.select_value('SHOW statement_timeout') == "0"
+      # mappings => {} where keys are column names and values are hashes with the following keys:
+      # from_type - from which type we're migrating
+      # to_type - to which type we're migrating
+      # default_value - custom default value, if not provided will be taken from neutral_values_for_type
+      def mapping_has_required_columns?(mapping)
+        %i[from_type to_type].map do |required_key|
+          mapping.has_key?(required_key)
+        end.all?
       end
 
       def column_is_nullable?(table, column)
@@ -1638,14 +1291,6 @@ into similar problems in the future (e.g. when new tables are created).
         SQL
 
         connection.select_value(check_sql) == 'YES'
-      end
-
-      def text_limit_name(table, column, name: nil)
-        name.presence || check_constraint_name(table, column, 'max_length')
-      end
-
-      def not_null_constraint_name(table, column, name: nil)
-        name.presence || check_constraint_name(table, column, 'not_null')
       end
 
       def missing_schema_object_message(table, type, name)
@@ -1716,17 +1361,6 @@ into similar problems in the future (e.g. when new tables are created).
           Illegal timestamp column name! Got #{column_name}.
           Must end with `_at`}
         MESSAGE
-      end
-
-      def validate_not_in_transaction!(method_name, modifier = nil)
-        return unless transaction_open?
-
-        raise <<~ERROR
-          #{["`#{method_name}`", modifier].compact.join(' ')} cannot be run inside a transaction.
-
-          You can disable transactions by calling `disable_ddl_transaction!` in the body of
-          your migration class
-        ERROR
       end
     end
   end

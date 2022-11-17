@@ -6,7 +6,7 @@ import * as actions from '~/self_monitor/store/actions';
 import * as types from '~/self_monitor/store/mutation_types';
 import createState from '~/self_monitor/store/state';
 
-describe('self monitor actions', () => {
+describe('self-monitor actions', () => {
   let state;
   let mock;
 
@@ -129,7 +129,7 @@ describe('self monitor actions', () => {
               payload: {
                 actionName: 'viewSelfMonitorProject',
                 actionText: 'View project',
-                message: 'Self monitoring project successfully created.',
+                message: 'Self-monitoring project successfully created.',
               },
             },
             { type: types.SET_SHOW_ALERT, payload: true },
@@ -236,7 +236,7 @@ describe('self monitor actions', () => {
               payload: {
                 actionName: 'createProject',
                 actionText: 'Undo',
-                message: 'Self monitoring project successfully deleted.',
+                message: 'Self-monitoring project successfully deleted.',
               },
             },
             { type: types.SET_SHOW_ALERT, payload: true },

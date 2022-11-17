@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import PackagesSettings from '~/packages_and_registries/settings/group/components/packages_settings.vue';
 import DependencyProxySettings from '~/packages_and_registries/settings/group/components/dependency_proxy_settings.vue';
+import PackagesForwardingSettings from '~/packages_and_registries/settings/group/components/packages_forwarding_settings.vue';
 
 import component from '~/packages_and_registries/settings/group/components/group_settings_app.vue';
 
@@ -60,6 +61,7 @@ describe('Group Settings App', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findPackageSettings = () => wrapper.findComponent(PackagesSettings);
+  const findPackageForwardingSettings = () => wrapper.findComponent(PackagesForwardingSettings);
   const findDependencyProxySettings = () => wrapper.findComponent(DependencyProxySettings);
 
   const waitForApolloQueryAndRender = async () => {
@@ -67,16 +69,18 @@ describe('Group Settings App', () => {
     await nextTick();
   };
 
-  const packageSettingsProps = { packageSettings: packageSettings() };
+  const packageSettingsProps = { packageSettings };
+  const packageForwardingSettingsProps = { forwardSettings: { ...packageSettings } };
   const dependencyProxyProps = {
     dependencyProxySettings: dependencyProxySettings(),
     dependencyProxyImageTtlPolicy: dependencyProxyImageTtlPolicy(),
   };
 
   describe.each`
-    finder                         | entitySpecificProps     | successMessage                   | errorMessage
-    ${findPackageSettings}         | ${packageSettingsProps} | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
-    ${findDependencyProxySettings} | ${dependencyProxyProps} | ${'Setting saved successfully'}  | ${'An error occurred while saving the setting'}
+    finder                           | entitySpecificProps               | successMessage                   | errorMessage
+    ${findPackageSettings}           | ${packageSettingsProps}           | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
+    ${findPackageForwardingSettings} | ${packageForwardingSettingsProps} | ${'Settings saved successfully'} | ${'An error occurred while saving the settings'}
+    ${findDependencyProxySettings}   | ${dependencyProxyProps}           | ${'Setting saved successfully'}  | ${'An error occurred while saving the setting'}
   `('settings blocks', ({ finder, entitySpecificProps, successMessage, errorMessage }) => {
     beforeEach(() => {
       mountComponent();
@@ -88,10 +92,7 @@ describe('Group Settings App', () => {
     });
 
     it('binds the correctProps', () => {
-      expect(finder().props()).toMatchObject({
-        isLoading: false,
-        ...entitySpecificProps,
-      });
+      expect(finder().props()).toMatchObject(entitySpecificProps);
     });
 
     describe('success event', () => {

@@ -1,8 +1,13 @@
 import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import Component from '~/groups/components/transfer_group_form.vue';
+import TransferLocationsForm, { i18n } from '~/groups/components/transfer_group_form.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
-import NamespaceSelect from '~/vue_shared/components/namespace_select/namespace_select_deprecated.vue';
+import TransferLocations from '~/groups_projects/components/transfer_locations.vue';
+import { getGroupTransferLocations } from '~/api/groups_api';
+
+jest.mock('~/api/groups_api', () => ({
+  getGroupTransferLocations: jest.fn(),
+}));
 
 describe('Transfer group form', () => {
   let wrapper;
@@ -22,25 +27,25 @@ describe('Transfer group form', () => {
   ];
 
   const defaultProps = {
-    groupNamespaces,
     paidGroupHelpLink,
     isPaidGroup: false,
     confirmationPhrase,
     confirmButtonText,
   };
 
-  const createComponent = (propsData = {}) =>
-    shallowMountExtended(Component, {
+  const createComponent = (propsData = {}) => {
+    wrapper = shallowMountExtended(TransferLocationsForm, {
       propsData: {
         ...defaultProps,
         ...propsData,
       },
       stubs: { GlSprintf },
     });
+  };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findConfirmDanger = () => wrapper.findComponent(ConfirmDanger);
-  const findNamespaceSelect = () => wrapper.findComponent(NamespaceSelect);
+  const findTransferLocations = () => wrapper.findComponent(TransferLocations);
   const findHiddenInput = () => wrapper.find('[name="new_parent_group_id"]');
 
   afterEach(() => {
@@ -49,21 +54,17 @@ describe('Transfer group form', () => {
 
   describe('default', () => {
     beforeEach(() => {
-      wrapper = createComponent();
+      createComponent();
     });
 
-    it('renders the namespace select component', () => {
-      expect(findNamespaceSelect().exists()).toBe(true);
-    });
+    it('renders the transfer locations dropdown and passes correct props', () => {
+      findTransferLocations().props('groupTransferLocationsApiMethod')();
 
-    it('sets the namespace select properties', () => {
-      expect(findNamespaceSelect().props()).toMatchObject({
-        defaultText: 'Select parent group',
-        fullWidth: false,
-        includeHeaders: false,
-        emptyNamespaceTitle: 'No parent group',
-        includeEmptyNamespace: true,
-        groupNamespaces,
+      expect(getGroupTransferLocations).toHaveBeenCalled();
+      expect(findTransferLocations().props()).toMatchObject({
+        value: null,
+        label: i18n.dropdownLabel,
+        additionalDropdownItems: TransferLocationsForm.additionalDropdownItems,
       });
     });
 
@@ -90,10 +91,15 @@ describe('Transfer group form', () => {
   });
 
   describe('with a selected project', () => {
-    const [firstGroup] = groupNamespaces;
+    const [selectedItem] = groupNamespaces;
+
     beforeEach(() => {
-      wrapper = createComponent();
-      findNamespaceSelect().vm.$emit('select', firstGroup);
+      createComponent();
+      findTransferLocations().vm.$emit('input', selectedItem);
+    });
+
+    it('sets `value` prop on `TransferLocations` component', () => {
+      expect(findTransferLocations().props('value')).toEqual(selectedItem);
     });
 
     it('sets the confirm danger disabled property to false', () => {
@@ -102,7 +108,7 @@ describe('Transfer group form', () => {
 
     it('sets the hidden input field', () => {
       expect(findHiddenInput().exists()).toBe(true);
-      expect(parseInt(findHiddenInput().attributes('value'), 10)).toBe(firstGroup.id);
+      expect(findHiddenInput().attributes('value')).toBe(String(selectedItem.id));
     });
 
     it('emits "confirm" event when the danger modal is confirmed', () => {
@@ -116,15 +122,15 @@ describe('Transfer group form', () => {
 
   describe('isPaidGroup = true', () => {
     beforeEach(() => {
-      wrapper = createComponent({ isPaidGroup: true });
+      createComponent({ isPaidGroup: true });
     });
 
     it('disables the transfer button', () => {
       expect(findConfirmDanger().props()).toMatchObject({ disabled: true });
     });
 
-    it('hides the namespace selector button', () => {
-      expect(findNamespaceSelect().exists()).toBe(false);
+    it('hides the transfer locations dropdown', () => {
+      expect(findTransferLocations().exists()).toBe(false);
     });
   });
 });

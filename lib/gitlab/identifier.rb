@@ -5,10 +5,11 @@
 module Gitlab
   module Identifier
     def identify(identifier)
-      if identifier =~ /\Auser-\d+\Z/
+      case identifier
+      when /\Auser-\d+\Z/
         # git push over http
         identify_using_user(identifier)
-      elsif identifier =~ /\Akey-\d+\Z/
+      when /\Akey-\d+\Z/
         # git push over ssh
         identify_using_ssh_key(identifier)
       end

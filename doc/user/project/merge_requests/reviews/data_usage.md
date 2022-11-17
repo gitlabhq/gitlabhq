@@ -19,7 +19,7 @@ This data extraction job can take a few hours to complete (possibly up to a day)
 
 ### Generating suggestions
 
-Once Suggested Reviewers is enabled and the data extraction is complete, new merge requests or new commits to existing merge requests will automatically trigger a Suggested Reviewers ML model inference and generate up to 5 suggested reviewers. These suggestions are contextual to the changes in the merge request. Additional commits to merge requests may change the reviewer suggestions which will automatically update in the reviewer dropdown.
+Once Suggested Reviewers is enabled and the data extraction is complete, new merge requests or new commits to existing merge requests will automatically trigger a Suggested Reviewers ML model inference and generate up to 5 suggested reviewers. These suggestions are contextual to the changes in the merge request. Additional commits to merge requests may change the reviewer suggestions which will automatically update in the reviewer dropdown list.
 
 ## Progressive enhancement
 

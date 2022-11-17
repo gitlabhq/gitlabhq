@@ -4,7 +4,6 @@ require 'spec_helper'
 
 RSpec.describe Repository do
   include RepoHelpers
-  include GitHelpers
 
   TestBlob = Struct.new(:path)
 
@@ -463,7 +462,7 @@ RSpec.describe Repository do
         repository.delete_branch(branch)
 
         expect(subject).not_to be_empty
-        expect(subject).to all( be_a(::Commit) )
+        expect(subject).to all(be_a(::Commit))
         expect(subject.size).to eq(1)
       end
     end
@@ -482,7 +481,7 @@ RSpec.describe Repository do
     end
 
     it 'returns only Commit instances' do
-      expect(subject).to all( be_a(Commit) )
+      expect(subject).to all(be_a(Commit))
     end
 
     context 'when some commits are not found ' do
@@ -2978,7 +2977,7 @@ RSpec.describe Repository do
 
     it 'returns false for invalid commit IDs' do
       expect(repository.ancestor?(commit.id, Gitlab::Git::BLANK_SHA)).to eq(false)
-      expect(repository.ancestor?( Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
+      expect(repository.ancestor?(Gitlab::Git::BLANK_SHA, commit.id)).to eq(false)
     end
   end
 

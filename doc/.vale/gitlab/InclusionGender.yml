@@ -3,10 +3,10 @@
 #
 # Suggests alternatives for words that are gender-specific.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
-message: 'Use inclusive language. Consider "%s" instead of "%s".'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#inclusive-language
+message: "Use inclusive language. Consider '%s' instead of '%s'."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: suggestion
 ignorecase: true
 swap:

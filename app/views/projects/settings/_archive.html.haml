@@ -1,6 +1,6 @@
 - return unless can?(current_user, :archive_project, @project)
 
-.sub-section{ data: { qa_selector: 'archive_project_content' } }
+.sub-section
   %h4.warning-title
     - if @project.archived?
       = _('Unarchive project')

@@ -23,11 +23,7 @@ module Projects
         token = extract_alert_manager_token(request)
         result = notify_service.execute(token)
 
-        if result.success?
-          render json: AlertManagement::AlertSerializer.new.represent(result.payload[:alerts]), code: result.http_status
-        else
-          head result.http_status
-        end
+        head result.http_status
       end
 
       private
@@ -35,19 +31,6 @@ module Projects
       def notify_service
         Projects::Prometheus::Alerts::NotifyService
           .new(project, params.permit!)
-      end
-
-      def serialize_as_json(alert_obj)
-        serializer.represent(alert_obj)
-      end
-
-      def serializer
-        PrometheusAlertSerializer
-          .new(project: project, current_user: current_user)
-      end
-
-      def alerts
-        alerts_finder.execute
       end
 
       def alert

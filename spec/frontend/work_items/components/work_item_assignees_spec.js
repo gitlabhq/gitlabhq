@@ -8,7 +8,7 @@ import { mockTracking } from 'helpers/tracking_helper';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
-import { temporaryConfig } from '~/graphql_shared/issuable_client';
+import { config } from '~/graphql_shared/issuable_client';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -86,7 +86,7 @@ describe('WorkItemAssignees component', () => {
       ],
       {},
       {
-        typePolicies: temporaryConfig.cacheConfig.typePolicies,
+        typePolicies: config.cacheConfig.typePolicies,
       },
     );
 

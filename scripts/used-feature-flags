@@ -97,7 +97,7 @@ puts
 
 if additional_flags.count > 0
   puts "==================================================".green.bold
-  puts "There are feature flags that appears to be unknown".yellow
+  puts "There are feature flags that appear to be unknown".yellow
   puts
   puts "They appear to be used by CI, but we do lack their YAML definition".yellow
   puts "This is likely expected, so feel free to ignore that list:".yellow
@@ -110,7 +110,7 @@ end
 
 if unused_flags.count > 0
   puts "========================================".green.bold
-  puts "These feature flags appears to be UNUSED".red.bold
+  puts "These feature flags appear to be UNUSED".red.bold
   puts
   puts "If they are really no longer needed REMOVE their .yml definition".red
   puts "If they are needed you need to ENSURE that their usage is covered with specs to continue.".red

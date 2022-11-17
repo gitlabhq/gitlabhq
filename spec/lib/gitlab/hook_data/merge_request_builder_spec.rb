@@ -78,6 +78,7 @@ RSpec.describe Gitlab::HookData::MergeRequestBuilder do
         state
         blocking_discussions_resolved
         first_contribution
+        detailed_merge_status
       ].freeze
 
       expect(data).to include(*expected_additional_attributes)

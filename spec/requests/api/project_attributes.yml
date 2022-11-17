@@ -162,6 +162,7 @@ project_setting:
     - show_diff_preview_in_email
     - suggested_reviewers_enabled
     - jitsu_key
+    - mirror_branch_regex
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

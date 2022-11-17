@@ -921,6 +921,7 @@ RSpec.describe ProjectsController do
           feature_flags_access_level
           releases_access_level
           monitor_access_level
+          infrastructure_access_level
         ]
       end
 

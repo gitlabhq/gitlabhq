@@ -70,44 +70,45 @@ is **not** `19.03.0`. See [troubleshooting information](#error-response-from-dae
 
 ## Supported languages and frameworks
 
-GitLab SAST supports a variety of languages, package managers, and frameworks. Our SAST security scanners also feature automatic language detection which works even for mixed-language projects. If any supported language is detected in project source code we automatically run the appropriate SAST analyzers.
+GitLab SAST supports scanning a variety of programming languages and frameworks.
+Once you [enable SAST](#configuration), the right set of analyzers runs automatically even if your project uses more than one language.
 
-You can also [view our language roadmap](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support) and [request other language support by opening an issue](https://gitlab.com/groups/gitlab-org/-/epics/297).
+Check the [SAST direction page](https://about.gitlab.com/direction/secure/static-analysis/sast/#language-support) to learn more about our plans for language support in SAST.
 
-| Language (package managers) / framework        | Scan tool                                                                                                 | Introduced in GitLab Version                                                            |
-|------------------------------------------------|-----------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
-| .NET Core                                      | [Security Code Scan](https://security-code-scan.github.io)                                                | 11.0                                                                                    |
-| .NET Framework<sup>1</sup>                     | [Security Code Scan](https://security-code-scan.github.io)                                                | 13.0                                                                                    |
-| .NET (all versions, C# only)                   | [Semgrep](https://semgrep.dev)                                                                            | 15.4                                                                                    |
-| Apex (Salesforce)                              | [PMD](https://pmd.github.io/pmd/index.html)                                                               | 12.1                                                                                    |
-| C                                              | [Semgrep](https://semgrep.dev)                                                                            | 14.2                                                                                    |
-| C/C++                                          | [Flawfinder](https://github.com/david-a-wheeler/flawfinder)                                               | 10.7                                                                                    |
-| Elixir (Phoenix)                               | [Sobelow](https://github.com/nccgroup/sobelow)                                                            | 11.1                                                                                    |
-| Go<sup>3</sup>                                 | [Gosec](https://github.com/securego/gosec)                                                                | 10.7                                                                                    |
-| Go                                             | [Semgrep](https://semgrep.dev)                                                                            | 14.4                                                                                    |
-| Groovy<sup>2</sup>                             | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.3 (Gradle) & 11.9 (Maven, SBT)                                                  |
-| Helm Charts                                    | [Kubesec](https://github.com/controlplaneio/kubesec)                                                      | 13.1                                                                                    |
-| Java (any build system)                        | [Semgrep](https://semgrep.dev)                                                                            | 14.10                                                                                   |
-| Java<sup>2, 3</sup>                            | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT)                                           |
-| Java (Android)                                 | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
-| JavaScript<sup>3</sup>                         | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.8                                                                                    |
-| JavaScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
-| Kotlin (Android)                               | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
-| Kotlin (General)<sup>2</sup>                   | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 13.11                                                                                   |
-| Kubernetes manifests                           | [Kubesec](https://github.com/controlplaneio/kubesec)                                                      | 12.6                                                                                    |
-| Node.js                                        | [NodeJsScan](https://github.com/ajinabraham/NodeJsScan)                                                   | 11.1                                                                                    |
-| Objective-C (iOS)                              | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
-| PHP                                            | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit)                    | 10.8                                                                                    |
-| Python<sup>3</sup>                             | [bandit](https://github.com/PyCQA/bandit)                                                                 | 10.3                                                                                    |
-| Python                                         | [Semgrep](https://semgrep.dev)                                                                            | 13.9                                                                                    |
-| React<sup>3</sup>                              | [ESLint react plugin](https://github.com/yannickcr/eslint-plugin-react)                                   | 12.5                                                                                    |
-| React                                          | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
-| Ruby                                           | [brakeman](https://brakemanscanner.org)                                                                   | 13.9                                                                                    |
-| Ruby on Rails                                  | [brakeman](https://brakemanscanner.org)                                                                   | 10.3                                                                                    |
-| Scala<sup>2</sup>                              | [SpotBugs](https://spotbugs.github.io/) with the [find-sec-bugs](https://find-sec-bugs.github.io/) plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                  |
-| Swift (iOS)                                    | [MobSF (beta)](https://github.com/MobSF/Mobile-Security-Framework-MobSF)                                  | 13.5                                                                                    |
-| TypeScript<sup>3</sup>                         | [ESLint security plugin](https://github.com/nodesecurity/eslint-plugin-security)                          | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
-| TypeScript                                     | [Semgrep](https://semgrep.dev)                                                                            | 13.10                                                                                   |
+| Language / framework         | [Analyzer](analyzers.md) used for scanning                                                                   | Minimum supported GitLab version                                                        |
+|------------------------------|--------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------|
+| .NET Core                    | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 11.0                                                                                    |
+| .NET Framework<sup>1</sup>   | [Security Code Scan](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)           | 13.0                                                                                    |
+| .NET (all versions, C# only) | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 15.4                                                                                    |
+| Apex (Salesforce)            | [PMD](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                                    | 12.1                                                                                    |
+| C                            | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 14.2                                                                                    |
+| C/C++                        | [Flawfinder](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                           | 10.7                                                                                    |
+| Elixir (Phoenix)             | [Sobelow](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                                 | 11.1                                                                                    |
+| Go<sup>3</sup>               | [Gosec](https://gitlab.com/gitlab-org/security-products/analyzers/gosec)                                     | 10.7                                                                                    |
+| Go                           | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 14.4                                                                                    |
+| Groovy<sup>2</sup>           | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.3 (Gradle) & 11.9 (Maven, SBT)                                                       |
+| Helm Charts                  | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                 | 13.1                                                                                    |
+| Java (any build system)      | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 14.10                                                                                   |
+| Java<sup>2, 3</sup>          | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 10.6 (Maven), 10.8 (Gradle) & 11.9 (SBT)                                                |
+| Java (Android)               | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
+| JavaScript<sup>3</sup>       | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.8                                                                                    |
+| JavaScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 13.10                                                                                   |
+| Kotlin (Android)             | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
+| Kotlin (General)<sup>2</sup> | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 13.11                                                                                   |
+| Kubernetes manifests         | [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                                 | 12.6                                                                                    |
+| Node.js                      | [NodeJsScan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                          | 11.1                                                                                    |
+| Objective-C (iOS)            | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
+| PHP                          | [phpcs-security-audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit)       | 10.8                                                                                    |
+| Python<sup>3</sup>           | [bandit](https://gitlab.com/gitlab-org/security-products/analyzers/bandit)                                   | 10.3                                                                                    |
+| Python                       | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 13.9                                                                                    |
+| React<sup>3</sup>            | [ESLint react plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                      | 12.5                                                                                    |
+| React                        | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 13.10                                                                                   |
+| Ruby                         | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 13.9                                                                                    |
+| Ruby on Rails                | [brakeman](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                               | 10.3                                                                                    |
+| Scala<sup>2</sup>            | [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) with the find-sec-bugs plugin | 11.0 (SBT) & 11.9 (Gradle, Maven)                                                       |
+| Swift (iOS)                  | [MobSF (beta)](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf)                              | 13.5                                                                                    |
+| TypeScript<sup>3</sup>       | [ESLint security plugin](https://gitlab.com/gitlab-org/security-products/analyzers/eslint)                   | 11.9, [merged](https://gitlab.com/gitlab-org/gitlab/-/issues/36059) with ESLint in 13.2 |
+| TypeScript                   | [Semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with GitLab-managed rules       | 13.10                                                                                   |
 
 1. .NET 4 support is limited. The analyzer runs in a Linux container and does not have access to Windows-specific libraries or features. Use the Semgrep-based scanner if you need .NET 4 support.
 1. The SpotBugs-based analyzer supports [Gradle](https://gradle.org/), [Maven](https://maven.apache.org/), and [SBT](https://www.scala-sbt.org/). It can also be used with variants like the
@@ -116,7 +117,7 @@ You can also [view our language roadmap](https://about.gitlab.com/direction/secu
 and the [Maven wrapper](https://github.com/takari/maven-wrapper). However, SpotBugs has [limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/350801) when used against [Ant](https://ant.apache.org/)-based projects. We recommend using the Semgrep-based analyzer for Ant-based Java projects.
 1. These analyzers reached [End of Support](https://about.gitlab.com/handbook/product/gitlab-the-product/#end-of-support) status [in GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/352554).
 
-### Multi-project support
+## Multi-project support
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4895) in GitLab 13.7.
 
@@ -136,16 +137,52 @@ The following analyzers have multi-project support:
 - SpotBugs
 - Sobelow
 
-#### Enable multi-project support for Security Code Scan
+### Enable multi-project support for Security Code Scan
 
 Multi-project support in the Security Code Scan requires a Solution (`.sln`) file in the root of
 the repository. For details on the Solution format, see the Microsoft reference [Solution (`.sln`) file](https://learn.microsoft.com/en-us/visualstudio/extensibility/internals/solution-dot-sln-file?view=vs-2019).
 
-### Supported distributions
+## False positive detection **(ULTIMATE)**
+
+> Introduced in GitLab 14.2.
+
+Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
+
+False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- Ruby, in the Brakeman-based analyzer
+
+![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
+
+## Advanced vulnerability tracking **(ULTIMATE)**
+
+> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
+
+Source code is volatile; as developers make changes, source code may move within files or between files.
+Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/index.md).
+These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
+If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
+
+GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the same vulnerability has moved within a file due to refactoring or unrelated changes.
+
+Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
+
+- C, in the Semgrep-based analyzer only
+- Go, in the Gosec- and Semgrep-based analyzers
+- Java, in the Semgrep-based analyzer only
+- JavaScript, in the Semgrep-based analyzer only
+- Python, in the Semgrep-based analyzer only
+- Ruby, in the Brakeman-based analyzer
+
+Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
+
+For more information, see the confidential project `https://gitlab.com/gitlab-org/security-products/post-analyzers/tracking-calculator`. The content of this project is available only to GitLab team members.
+
+## Supported distributions
 
 The default scanner images are build off a base Alpine image for size and maintainability.
 
-#### FIPS-enabled images
+### FIPS-enabled images
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/6479) in GitLab 14.10.
 
@@ -169,17 +206,14 @@ A FIPS-compliant image is only available for the Semgrep-based analyzer.
 
 To use SAST in a FIPS-compliant manner, you must [exclude other analyzers from running](analyzers.md#customize-analyzers).
 
-### Making SAST analyzers available to all GitLab tiers
-
-All open source (OSS) analyzers have been moved to the GitLab Free tier as of GitLab 13.3.
-
-#### Summary of features per tier
+## Summary of features per tier
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/),
 as shown in the following table:
 
 | Capability                                                        | In Free & Premium   | In Ultimate        |
 |:---------------------------------------------------------------- -|:--------------------|:-------------------|
+| Automatically scan code with [appropriate analyzers](#supported-languages-and-frameworks) | **{check-circle}**  | **{check-circle}** |
 | [Configure SAST scanners](#configuration)                         | **{check-circle}**  | **{check-circle}** |
 | [Customize SAST settings](#available-cicd-variables)              | **{check-circle}**  | **{check-circle}** |
 | Download [JSON Report](#reports-json-format)                      | **{check-circle}**  | **{check-circle}** |
@@ -207,14 +241,14 @@ To configure SAST for a project you can:
 ### Configure SAST manually
 
 To enable SAST you must [include](../../../ci/yaml/index.md#includetemplate)
-the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml)
+the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml)
 provided as a part of your GitLab installation.
 
 Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/SAST.gitlab-ci.yml
+  - template: Jobs/SAST.gitlab-ci.yml
 ```
 
 The included template creates SAST jobs in your CI/CD pipeline and scans
@@ -300,14 +334,26 @@ spotbugs-sast:
     FAIL_NEVER: 1
 ```
 
-#### Pinning to minor image version
+### Pinning to minor image version
 
-While our templates use `MAJOR` version pinning to always ensure the latest analyzer
-versions are pulled, there are certain cases where it can be beneficial to pin
-an analyzer to a specific release. To do so, override the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
-in the job template directly.
+The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
 
-In the example below, we pin to a minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
+In some cases, you may need to use a specific version.
+For example, you might need to avoid a regression in a later release.
+
+To override the automatic update behavior, set the `SAST_ANALYZER_IMAGE_TAG` CI/CD variable
+in your CI/CD configuration file after you include the [`SAST.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml).
+
+Only set this variable within a specific job.
+If you set it [at the top level](../../../ci/variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file), the version you set will be used for other SAST analyzers.
+
+You can set the tag to:
+
+- A major version, like `3`. Your pipelines will use any minor or patch updates that are released within this major version.
+- A minor version, like `3.7`. Your pipelines will use any patch updates that are released within this minor version.
+- A patch version, like `3.7.0`. Your pipelines won't receive any updates.
+
+This example uses a specific minor version of the `semgrep` analyzer and a specific patch version of the `brakeman` analyzer:
 
 ```yaml
 include:
@@ -315,46 +361,12 @@ include:
 
 semgrep-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.16"
+    SAST_ANALYZER_IMAGE_TAG: "3.7"
 
 brakeman-sast:
   variables:
-    SAST_ANALYZER_IMAGE_TAG: "2.21.1"
+    SAST_ANALYZER_IMAGE_TAG: "3.1.1"
 ```
-
-### False Positive Detection **(ULTIMATE)**
-
-> Introduced in GitLab 14.2.
-
-Vulnerabilities that have been detected and are false positives will be flagged as false positives in the security dashboard.
-
-False positive detection is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
-
-- Ruby, in the Brakeman-based analyzer
-
-![SAST false-positives show in Vulnerability Pages](img/sast_vulnerability_page_fp_detection_v15_2.png)
-
-### Advanced vulnerability tracking **(ULTIMATE)**
-
-> [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/5144) in GitLab 14.2.
-
-Source code is volatile; as developers make changes, source code may move within files or between files.
-Security analyzers may have already reported vulnerabilities that are being tracked in the [Vulnerability Report](../vulnerability_report/index.md).
-These vulnerabilities are linked to specific problematic code fragments so that they can be found and fixed.
-If the code fragments are not tracked reliably as they move, vulnerability management is harder because the same vulnerability could be reported again.
-
-GitLab SAST uses an advanced vulnerability tracking algorithm to more accurately identify when the same vulnerability has moved within a file due to refactoring or unrelated changes.
-
-Advanced vulnerability tracking is available in a subset of the [supported languages](#supported-languages-and-frameworks) and [analyzers](analyzers.md):
-
-- C, in the Semgrep-based analyzer only
-- Go, in the Gosec- and Semgrep-based analyzers
-- Java, in the Semgrep-based analyzer only
-- JavaScript, in the Semgrep-based analyzer only
-- Python, in the Semgrep-based analyzer only
-- Ruby, in the Brakeman-based analyzer
-
-Support for more languages and analyzers is tracked in [this epic](https://gitlab.com/groups/gitlab-org/-/epics/5144).
 
 ### Using CI/CD variables to pass credentials for private repositories
 
@@ -665,16 +677,16 @@ import the following default SAST analyzer images from `registry.gitlab.com` int
 [local Docker container registry](../../packages/container_registry/index.md):
 
 ```plaintext
-registry.gitlab.com/security-products/brakeman:2
-registry.gitlab.com/security-products/flawfinder:2
-registry.gitlab.com/security-products/kubesec:2
-registry.gitlab.com/security-products/nodejs-scan:2
-registry.gitlab.com/security-products/phpcs-security-audit:2
-registry.gitlab.com/security-products/pmd-apex:2
-registry.gitlab.com/security-products/security-code-scan:2
-registry.gitlab.com/security-products/semgrep:2
-registry.gitlab.com/security-products/sobelow:2
-registry.gitlab.com/security-products/spotbugs:2
+registry.gitlab.com/security-products/brakeman:3
+registry.gitlab.com/security-products/flawfinder:3
+registry.gitlab.com/security-products/kubesec:3
+registry.gitlab.com/security-products/nodejs-scan:3
+registry.gitlab.com/security-products/phpcs-security-audit:3
+registry.gitlab.com/security-products/pmd-apex:3
+registry.gitlab.com/security-products/security-code-scan:3
+registry.gitlab.com/security-products/semgrep:3
+registry.gitlab.com/security-products/sobelow:3
+registry.gitlab.com/security-products/spotbugs:3
 ```
 
 The process for importing Docker images into a local offline Docker registry depends on

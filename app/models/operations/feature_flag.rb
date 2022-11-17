@@ -16,8 +16,8 @@ module Operations
 
     has_internal_id :iid, scope: :project
 
-    default_value_for :active, true
-    default_value_for :version, :new_version_flag
+    attribute :active, default: true
+    attribute :version, default: :new_version_flag
 
     # strategies exists only for the second version
     has_many :strategies, class_name: 'Operations::FeatureFlags::Strategy'

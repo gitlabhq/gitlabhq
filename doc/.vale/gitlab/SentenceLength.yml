@@ -3,9 +3,9 @@
 #
 # Counts words in a sentence and alerts if a sentence exceeds 25 words.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: occurrence
-message: 'Shorter sentences improve readability (max 25 words).'
+message: "Improve readability by using fewer than 25 words in this sentence."
 scope: sentence
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
 level: warning

@@ -6,7 +6,7 @@ module Sidebars
       class InfrastructureMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false unless context.project.feature_available?(:operations, context.current_user)
+          return false unless feature_enabled?
 
           add_item(kubernetes_menu_item)
           add_item(terraform_menu_item)
@@ -33,6 +33,14 @@ module Sidebars
         end
 
         private
+
+        def feature_enabled?
+          if ::Feature.enabled?(:split_operations_visibility_permissions, context.project)
+            context.project.feature_available?(:infrastructure, context.current_user)
+          else
+            context.project.feature_available?(:operations, context.current_user)
+          end
+        end
 
         def kubernetes_menu_item
           unless can?(context.current_user, :read_cluster, context.project)

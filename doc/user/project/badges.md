@@ -128,7 +128,7 @@ To add a new badge to a group or project with a custom image:
 1. Select **Add badge**.
 
 To learn how to use custom images generated via a pipeline, see our documentation on
-[accessing the latest job artifacts by URL](../../ci/pipelines/job_artifacts.md#access-the-latest-job-artifacts-by-url).
+[accessing the latest job artifacts by URL](../../ci/pipelines/job_artifacts.md#access-the-latest-job-artifacts).
 
 ## API
 

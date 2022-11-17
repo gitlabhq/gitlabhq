@@ -21,6 +21,7 @@ module Projects::AlertManagementHelper
       'project-path' => project.full_path,
       'project-id' => project.id,
       'project-issues-path' => project_issues_path(project),
+      'project-alert-management-details-path' => details_project_alert_management_path(project, alert_id),
       'page' => 'OPERATIONS',
       'can-update' => can?(current_user, :update_alert_management_alert, project).to_s
     }

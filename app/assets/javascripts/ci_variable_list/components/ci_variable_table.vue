@@ -1,71 +1,49 @@
 <script>
-import {
-  GlButton,
-  GlIcon,
-  GlLoadingIcon,
-  GlModalDirective,
-  GlTable,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlModalDirective, GlTable, GlTooltipDirective } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import { ADD_CI_VARIABLE_MODAL_ID, variableText } from '../constants';
 import { convertEnvironmentScope } from '../utils';
-import CiVariablePopover from './ci_variable_popover.vue';
 
 export default {
   modalId: ADD_CI_VARIABLE_MODAL_ID,
-  trueIcon: 'mobile-issue-close',
-  falseIcon: 'close',
-  iconSize: 16,
   fields: [
     {
       key: 'variableType',
       label: s__('CiVariables|Type'),
-      customStyle: { width: '70px' },
+      thClass: 'gl-w-10p',
     },
     {
       key: 'key',
       label: s__('CiVariables|Key'),
       tdClass: 'text-plain',
       sortable: true,
-      customStyle: { width: '40%' },
     },
     {
       key: 'value',
       label: s__('CiVariables|Value'),
-      customStyle: { width: '40%' },
+      thClass: 'gl-w-15p',
     },
     {
-      key: 'protected',
-      label: s__('CiVariables|Protected'),
-      customStyle: { width: '100px' },
-    },
-    {
-      key: 'masked',
-      label: s__('CiVariables|Masked'),
-      customStyle: { width: '100px' },
+      key: 'options',
+      label: s__('CiVariables|Options'),
+      thClass: 'gl-w-10p',
     },
     {
       key: 'environmentScope',
       label: s__('CiVariables|Environments'),
-      customStyle: { width: '20%' },
     },
     {
       key: 'actions',
       label: '',
       tdClass: 'text-right',
-      customStyle: { width: '35px' },
+      thClass: 'gl-w-5p',
     },
   ],
   components: {
-    CiVariablePopover,
     GlButton,
-    GlIcon,
     GlLoadingIcon,
     GlTable,
-    TooltipOnTruncate,
   },
   directives: {
     GlModalDirective,
@@ -97,6 +75,13 @@ export default {
     fields() {
       return this.$options.fields;
     },
+    variablesWithOptions() {
+      return this.variables?.map((item, index) => ({
+        ...item,
+        options: this.getOptions(item),
+        index,
+      }));
+    },
   },
   methods: {
     convertEnvironmentScopeValue(env) {
@@ -108,8 +93,18 @@ export default {
     toggleHiddenState() {
       this.areValuesHidden = !this.areValuesHidden;
     },
-    setSelectedVariable(variable = null) {
-      this.$emit('set-selected-variable', variable);
+    setSelectedVariable(index = -1) {
+      this.$emit('set-selected-variable', this.variables[index] ?? null);
+    },
+    getOptions(item) {
+      const options = [];
+      if (item.protected) {
+        options.push(s__('CiVariables|Protected'));
+      }
+      if (item.masked) {
+        options.push(s__('CiVariables|Masked'));
+      }
+      return options.join(', ');
     },
   },
 };
@@ -121,7 +116,7 @@ export default {
     <gl-table
       v-else
       :fields="fields"
-      :items="variables"
+      :items="variablesWithOptions"
       tbody-tr-class="js-ci-variable-row"
       data-qa-selector="ci_variable_table_content"
       sort-by="key"
@@ -137,23 +132,22 @@ export default {
         <col v-for="field in scope.fields" :key="field.key" :style="field.customStyle" />
       </template>
       <template #cell(variableType)="{ item }">
-        <div class="gl-pt-2">
-          {{ generateTypeText(item) }}
-        </div>
+        {{ generateTypeText(item) }}
       </template>
       <template #cell(key)="{ item }">
-        <div class="gl-display-flex gl-align-items-center">
-          <tooltip-on-truncate :title="item.key" truncate-target="child">
-            <span
-              :id="`ci-variable-key-${item.id}`"
-              class="gl-display-inline-block gl-max-w-full gl-text-truncate"
-              >{{ item.key }}</span
-            >
-          </tooltip-on-truncate>
+        <div
+          class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+        >
+          <span
+            :id="`ci-variable-key-${item.id}`"
+            class="gl-display-inline-block gl-max-w-full gl-word-break-word"
+            >{{ item.key }}</span
+          >
           <gl-button
             v-gl-tooltip
             category="tertiary"
             icon="copy-to-clipboard"
+            class="gl-my-n3 gl-ml-2"
             :title="__('Copy key')"
             :data-clipboard-text="item.key"
             :aria-label="__('Copy to clipboard')"
@@ -161,8 +155,10 @@ export default {
         </div>
       </template>
       <template #cell(value)="{ item }">
-        <div class="gl-display-flex gl-align-items-center">
-          <span v-if="areValuesHidden" data-testid="hiddenValue">*********************</span>
+        <div
+          class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+        >
+          <span v-if="areValuesHidden" data-testid="hiddenValue">*****</span>
           <span
             v-else
             :id="`ci-variable-value-${item.id}`"
@@ -174,31 +170,33 @@ export default {
             v-gl-tooltip
             category="tertiary"
             icon="copy-to-clipboard"
+            class="gl-my-n3 gl-ml-2"
             :title="__('Copy value')"
             :data-clipboard-text="item.value"
             :aria-label="__('Copy to clipboard')"
           />
         </div>
       </template>
-      <template #cell(protected)="{ item }">
-        <gl-icon v-if="item.protected" :size="$options.iconSize" :name="$options.trueIcon" />
-        <gl-icon v-else :size="$options.iconSize" :name="$options.falseIcon" />
-      </template>
-      <template #cell(masked)="{ item }">
-        <gl-icon v-if="item.masked" :size="$options.iconSize" :name="$options.trueIcon" />
-        <gl-icon v-else :size="$options.iconSize" :name="$options.falseIcon" />
+      <template #cell(options)="{ item }">
+        <span>{{ item.options }}</span>
       </template>
       <template #cell(environmentScope)="{ item }">
-        <div class="gl-display-flex">
+        <div
+          class="gl-display-flex gl-align-items-flex-start gl-justify-content-end gl-lg-justify-content-start gl-mr-n3"
+        >
           <span
             :id="`ci-variable-env-${item.id}`"
-            class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+            class="gl-display-inline-block gl-max-w-full gl-word-break-word"
             >{{ convertEnvironmentScopeValue(item.environmentScope) }}</span
           >
-          <ci-variable-popover
-            :target="`ci-variable-env-${item.id}`"
-            :value="convertEnvironmentScopeValue(item.environmentScope)"
-            :tooltip-text="__('Copy environment')"
+          <gl-button
+            v-gl-tooltip
+            category="tertiary"
+            icon="copy-to-clipboard"
+            class="gl-my-n3 gl-ml-2"
+            :title="__('Copy environment')"
+            :data-clipboard-text="convertEnvironmentScopeValue(item.environmentScope)"
+            :aria-label="__('Copy to clipboard')"
           />
         </div>
       </template>
@@ -208,7 +206,7 @@ export default {
           icon="pencil"
           :aria-label="__('Edit')"
           data-qa-selector="edit_ci_variable_button"
-          @click="setSelectedVariable(item)"
+          @click="setSelectedVariable(item.index)"
         />
       </template>
       <template #empty>

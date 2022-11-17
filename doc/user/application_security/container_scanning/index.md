@@ -173,7 +173,7 @@ container_scanning:
   before_script:
     - ruby -r open-uri -e "IO.copy_stream(URI.open('https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'), 'awscliv2.zip')"
     - unzip awscliv2.zip
-    - ./aws/install
+    - sudo ./aws/install
     - aws --version
     - export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region region)
 
@@ -259,7 +259,7 @@ including a large number of false positives.
 | `CS_IMAGE_SUFFIX`              | `""`          | Suffix added to `CS_ANALYZER_IMAGE`. If set to `-fips`, `FIPS-enabled` image is used for scan. See [FIPS-enabled images](#fips-enabled-images) for more details. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7630) in GitLab 14.10. | All |
 | `CS_IGNORE_UNFIXED`            | `"false"`     | Ignore vulnerabilities that are not fixed. | All |
 | `CS_REGISTRY_INSECURE`         | `"false"`     | Allow access to insecure registries (HTTP only). Should only be set to `true` when testing the image locally. Works with all scanners, but the registry must listen on port `80/tcp` for Trivy to work. | All |
-| `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are Unknown, Low, Medium, High, and Critical. | Trivy |
+| `CS_SEVERITY_THRESHOLD`        | `UNKNOWN`     | Severity level threshold. The scanner outputs vulnerabilities with severity level higher than or equal to this threshold. Supported levels are `UNKNOWN`, `LOW`, `MEDIUM`, `HIGH`, and `CRITICAL`. | Trivy |
 | <!-- start_remove The following content will be removed on remove_date: '2023-08-22' --> `DOCKER_IMAGE`                 | `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_IMAGE`. The Docker image to be scanned. If set, this variable overrides the `$CI_APPLICATION_REPOSITORY` and `$CI_APPLICATION_TAG` variables. | All |
 | `DOCKER_PASSWORD`              | `$CI_REGISTRY_PASSWORD` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_REGISTRY_PASSWORD`. Password for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
 | `DOCKER_USER`                  | `$CI_REGISTRY_USER` | **Deprecated** will be removed in GitLab 16.0. Replaced by `CS_REGISTRY_USER`. Username for accessing a Docker registry requiring authentication. The default is only set if `$DOCKER_IMAGE` resides at [`$CI_REGISTRY`](../../../ci/variables/predefined_variables.md). Not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode) is enabled. | All |
@@ -359,45 +359,11 @@ The container-scanning analyzer can use different scanners, depending on the val
 
 The following options are available:
 
-| Scanner name | `CS_ANALYZER_IMAGE` |
-| ------------ | ------------------- |
-| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5` |
+| Scanner name                                             | `CS_ANALYZER_IMAGE`                                                |
+|----------------------------------------------------------|--------------------------------------------------------------------|
+| Default ([Trivy](https://github.com/aquasecurity/trivy)) | `registry.gitlab.com/security-products/container-scanning:5`       |
 | [Grype](https://github.com/anchore/grype)                | `registry.gitlab.com/security-products/container-scanning/grype:5` |
 | Trivy                                                    | `registry.gitlab.com/security-products/container-scanning/trivy:5` |
-
-If you're migrating from a GitLab 13.x release to a GitLab 14.x release and have customized the
-`container_scanning` job or its CI variables, you might need to perform these migration steps in
-your CI file:
-
-1. Remove these variables:
-
-   - `CS_MAJOR_VERSION`
-   - `CS_PROJECT`
-   - `SECURE_ANALYZERS_PREFIX`
-
-1. Review the `CS_ANALYZER_IMAGE` variable. It no longer depends on the variables above and its new
-   default value is `registry.gitlab.com/security-products/container-scanning:5`. If you have an
-   offline environment, see
-   [Running container scanning in an offline environment](#running-container-scanning-in-an-offline-environment).
-
-1. If present, remove the `.cs_common` and `container_scanning_new` configuration sections.
-
-1. If the `container_scanning` section is present, it's safer to create one from scratch based on
-   the new version of the [`Container-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Container-Scanning.gitlab-ci.yml).
-   Once finished, it should not have any variables that are only applicable to Klar or Clair. For a
-   complete list of supported variables, see [available variables](#available-cicd-variables).
-
-1. Make any [necessary customizations](#customizing-the-container-scanning-settings)
-   to the chosen scanner. We recommend that you minimize such customizations, as they might require
-   changes in future GitLab major releases.
-
-1. Trigger a new run of a pipeline that includes the `container_scanning` job. Inspect the job
-   output and ensure that the log messages do not mention Clair.
-
-NOTE:
-Prior to the GitLab 14.0 release, any variable defined under the scope `container_scanning` is not
-considered for scanners other than Clair. In GitLab 14.0 and later, all variables can be defined
-either as a global variable or under `container_scanning`.
 
 ### Setting the default branch image
 

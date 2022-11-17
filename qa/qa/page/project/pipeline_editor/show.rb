@@ -91,6 +91,8 @@ module QA
 
           def write_to_editor(text)
             find_element(:source_editor_container).fill_in(with: text)
+
+            wait_for_requests
           end
 
           def submit_changes
@@ -140,6 +142,10 @@ module QA
             all_elements(:job_container, minimum: 1).any? { |item| item.text.match(/#{name}/i) }
           end
 
+          def has_no_alert?
+            has_no_css?('.gl-alert-body')
+          end
+
           def tab_alert_message
             within_element(:file_editor_container) do
               find('.gl-alert-body').text
@@ -174,9 +180,13 @@ module QA
             within_element(:file_editor_container) do
               find('.nav-item', text: name).click
             end
+
+            wait_for_requests
           end
         end
       end
     end
   end
 end
+
+QA::Page::Project::PipelineEditor::Show.prepend_mod_with('Page::Project::PipelineEditor::Show', namespace: QA)

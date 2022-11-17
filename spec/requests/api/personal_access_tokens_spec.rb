@@ -18,9 +18,10 @@ RSpec.describe API::PersonalAccessTokens do
       it "status, count and result as expected" do
         subject
 
-        if status == :bad_request
+        case status
+        when :bad_request
           expect(json_response).to eq(result)
-        elsif status == :ok
+        when :ok
           expect(map_id(json_response)).to a_collection_containing_exactly(*result)
         end
 
@@ -87,7 +88,7 @@ RSpec.describe API::PersonalAccessTokens do
       end
 
       context 'filter with created parameter' do
-        let_it_be(:token1) { create(:personal_access_token, created_at: DateTime.new(2022, 01, 01, 12, 30, 25) ) }
+        let_it_be(:token1) { create(:personal_access_token, created_at: DateTime.new(2022, 01, 01, 12, 30, 25)) }
 
         context 'test created_before' do
           where(:created_at, :status, :result_count, :result) do
@@ -121,7 +122,7 @@ RSpec.describe API::PersonalAccessTokens do
       end
 
       context 'filter with last_used parameter' do
-        let_it_be(:token1) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25) ) }
+        let_it_be(:token1) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25)) }
         let_it_be(:never_used_token) { create(:personal_access_token) }
 
         context 'test last_used_before' do
@@ -209,13 +210,13 @@ RSpec.describe API::PersonalAccessTokens do
 
             expect(response).to have_gitlab_http_status(status)
 
-            expect(json_response.map { |pat| pat['id'] } ).to include(*result) if status == :ok
+            expect(json_response.map { |pat| pat['id'] }).to include(*result) if status == :ok
           end
         end
       end
 
       context 'filter last_used_before and last_used_after combined is valid' do
-        let_it_be(:token1) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 02) ) }
+        let_it_be(:token1) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 02)) }
 
         where(:last_used_before, :last_used_after, :status, :result) do
           '2022-01-02' | '2022-01-02' | :ok | lazy { [token1.id] }
@@ -232,7 +233,7 @@ RSpec.describe API::PersonalAccessTokens do
 
             expect(response).to have_gitlab_http_status(status)
 
-            expect(json_response.map { |pat| pat['id'] } ).to include(*result) if status == :ok
+            expect(json_response.map { |pat| pat['id'] }).to include(*result) if status == :ok
           end
         end
       end
@@ -304,7 +305,7 @@ RSpec.describe API::PersonalAccessTokens do
       # Here it is only tested whether PATs to which the user has no access right are excluded from the filter function.
       context 'filter with created parameter' do
         let_it_be(:token1) do
-          create(:personal_access_token, created_at: DateTime.new(2022, 01, 02, 12, 30, 25), user: current_user )
+          create(:personal_access_token, created_at: DateTime.new(2022, 01, 02, 12, 30, 25), user: current_user)
         end
 
         let_it_be(:token2) { create(:personal_access_token, created_at: DateTime.new(2022, 01, 02, 12, 30, 25)) }
@@ -332,7 +333,7 @@ RSpec.describe API::PersonalAccessTokens do
           create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25), user: current_user)
         end
 
-        let_it_be(:token2) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25) ) }
+        let_it_be(:token2) { create(:personal_access_token, last_used_at: DateTime.new(2022, 01, 01, 12, 30, 25)) }
         let_it_be(:never_used_token) { create(:personal_access_token) }
         let_it_be(:status) { :ok }
 

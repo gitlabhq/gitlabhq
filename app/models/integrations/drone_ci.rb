@@ -6,7 +6,6 @@ module Integrations
     include PushDataValidations
     include ReactivelyCached
     prepend EnableSslVerification
-    extend Gitlab::Utils::Override
 
     DRONE_SAAS_HOSTNAME = 'cloud.drone.io'
 

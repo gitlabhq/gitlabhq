@@ -24,10 +24,11 @@ module Gitlab
         end
 
         def initialize(image)
-          if image.is_a?(String)
+          case image
+          when String
             @name = image
             @ports = []
-          elsif image.is_a?(Hash)
+          when Hash
             @alias = image[:alias]
             @command = image[:command]
             @entrypoint = image[:entrypoint]

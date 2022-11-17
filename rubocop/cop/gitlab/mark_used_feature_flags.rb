@@ -59,7 +59,7 @@ module RuboCop
         def on_casgn(node)
           _, lhs_name, rhs = *node
 
-          save_used_feature_flag(rhs.value) if lhs_name == :FEATURE_FLAG
+          save_used_feature_flag(rhs.value) if lhs_name.to_s.end_with?('FEATURE_FLAG')
         end
 
         def on_send(node)

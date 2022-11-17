@@ -212,8 +212,8 @@ More [complex Elasticsearch API calls](https://www.elastic.co/guide/en/elasticse
 
 If the results:
 
-- Sync up, please check that you are using [supported syntax](../../user/search/global_search/advanced_search_syntax.md). Note that Advanced Search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
-- Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project)
+- Sync up, check that you are using [supported syntax](../../user/search/advanced_search.md#syntax). Advanced Search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
+- Do not match up, this indicates a problem with the documents generated from the project. It is best to [re-index that project](../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
 
 NOTE:
 The above instructions are not to be used for scenarios that only index a [subset of namespaces](elasticsearch.md#limit-the-number-of-namespaces-and-projects-that-can-be-indexed).

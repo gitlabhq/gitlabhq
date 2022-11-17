@@ -11,7 +11,9 @@ module API
       success Entities::Projects::Topic
     end
     params do
-      optional :search, type: String, desc: 'Return list of topics matching the search criteria'
+      optional :search, type: String,
+                        desc: 'Return list of topics matching the search criteria',
+                        documentation: { example: 'search' }
       optional :without_projects, type: Boolean, desc: 'Return list of topics without assigned projects'
       use :pagination
     end
@@ -42,7 +44,8 @@ module API
       requires :name, type: String, desc: 'Slug (name)'
       requires :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
-      optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic'
+      optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
+                        documentation: { type: 'file' }
     end
     post 'topics' do
       authenticated_as_admin!
@@ -65,7 +68,8 @@ module API
       optional :name, type: String, desc: 'Slug (name)'
       optional :title, type: String, desc: 'Title'
       optional :description, type: String, desc: 'Description'
-      optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic'
+      optional :avatar, type: ::API::Validations::Types::WorkhorseFile, desc: 'Avatar image for topic',
+                        documentation: { type: 'file' }
     end
     put 'topics/:id' do
       authenticated_as_admin!

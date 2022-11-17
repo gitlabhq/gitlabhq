@@ -18,8 +18,16 @@ module Gitlab
       gon.markdown_automatic_lists = current_user&.markdown_automatic_lists
 
       if Gitlab.config.sentry.enabled
-        gon.sentry_dsn           = Gitlab.config.sentry.clientside_dsn
-        gon.sentry_environment   = Gitlab.config.sentry.environment
+        gon.sentry_dsn         = Gitlab.config.sentry.clientside_dsn
+        gon.sentry_environment = Gitlab.config.sentry.environment
+      end
+
+      # Support for Sentry setup via configuration files will be removed in 16.0
+      # in favor of Gitlab::CurrentSettings.
+      if Feature.enabled?(:enable_new_sentry_clientside_integration,
+                          current_user) && Gitlab::CurrentSettings.sentry_enabled
+        gon.sentry_dsn           = Gitlab::CurrentSettings.sentry_clientside_dsn
+        gon.sentry_environment   = Gitlab::CurrentSettings.sentry_environment
       end
 
       gon.recaptcha_api_server_url = ::Recaptcha.configuration.api_server_url
@@ -58,6 +66,7 @@ module Gitlab
       push_frontend_feature_flag(:new_header_search)
       push_frontend_feature_flag(:source_editor_toolbar)
       push_frontend_feature_flag(:integration_slack_app_notifications)
+      push_frontend_feature_flag(:vue_group_select)
     end
 
     # Exposes the state of a feature flag to the frontend code.

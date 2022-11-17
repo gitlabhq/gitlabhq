@@ -17,10 +17,9 @@ module Ci
       # +pick_up_at+:: When to pick up for deletion of files
       # Returns:
       # +Hash+:: A hash with status and destroyed_artifacts_count keys
-      def initialize(job_artifacts, pick_up_at: nil, fix_expire_at: fix_expire_at?, skip_projects_on_refresh: false)
+      def initialize(job_artifacts, pick_up_at: nil, skip_projects_on_refresh: false)
         @job_artifacts = job_artifacts.with_destroy_preloads.to_a
         @pick_up_at = pick_up_at
-        @fix_expire_at = fix_expire_at
         @skip_projects_on_refresh = skip_projects_on_refresh
       end
 
@@ -32,9 +31,7 @@ module Ci
           track_artifacts_undergoing_stats_refresh
         end
 
-        # Detect and fix artifacts that had `expire_at` wrongly backfilled by migration
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47723
-        detect_and_fix_wrongly_expired_artifacts
+        exclude_trace_artifacts
 
         return success(destroyed_artifacts_count: 0, statistics_updates: {}) if @job_artifacts.empty?
 
@@ -113,55 +110,9 @@ module Ci
         end
       end
 
-      # This detects and fixes job artifacts that have `expire_at` wrongly backfilled by the migration
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47723.
-      # These job artifacts will not be deleted and will have their `expire_at` removed.
-      #
-      # The migration would have backfilled `expire_at`
-      # to midnight on the 22nd of the month of the local timezone,
-      # storing it as UTC time in the database.
-      #
-      # If the timezone setting has changed since the migration,
-      # the `expire_at` stored in the database could have changed to a different local time other than midnight.
-      # For example:
-      # - changing timezone from UTC+02:00 to UTC+02:30 would change the `expire_at` in local time 00:00:00 to 00:30:00.
-      # - changing timezone from UTC+00:00 to UTC-01:00 would change the `expire_at` in local time 00:00:00 to 23:00:00 on the previous day (21st).
-      #
-      # Therefore job artifacts that have `expire_at` exactly on the 00, 30 or 45 minute mark
-      # on the dates 21, 22, 23 of the month will not be deleted.
-      # https://en.wikipedia.org/wiki/List_of_UTC_time_offsets
-      def detect_and_fix_wrongly_expired_artifacts
-        return unless @fix_expire_at
-
-        wrongly_expired_artifacts, @job_artifacts = @job_artifacts.partition { |artifact| wrongly_expired?(artifact) }
-
-        remove_expire_at(wrongly_expired_artifacts) if wrongly_expired_artifacts.any?
-      end
-
-      def fix_expire_at?
-        Feature.enabled?(:ci_detect_wrongly_expired_artifacts)
-      end
-
-      def wrongly_expired?(artifact)
-        return false unless artifact.expire_at.present?
-
-        # Although traces should never have expiration dates that don't match time & date here.
-        # we can explicitly exclude them by type since they should never be destroyed.
-        artifact.trace? || (match_date?(artifact.expire_at) && match_time?(artifact.expire_at))
-      end
-
-      def match_date?(expire_at)
-        [21, 22, 23].include?(expire_at.day)
-      end
-
-      def match_time?(expire_at)
-        %w[00:00.000 30:00.000 45:00.000].include?(expire_at.strftime('%M:%S.%L'))
-      end
-
-      def remove_expire_at(artifacts)
-        Ci::JobArtifact.id_in(artifacts).update_all(expire_at: nil)
-
-        Gitlab::AppLogger.info(message: "Fixed expire_at from artifacts.", fixed_artifacts_expire_at_count: artifacts.count)
+      # Traces should never be destroyed.
+      def exclude_trace_artifacts
+        _trace_artifacts, @job_artifacts = @job_artifacts.partition(&:trace?)
       end
 
       def track_artifacts_undergoing_stats_refresh

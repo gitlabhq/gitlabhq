@@ -26,7 +26,7 @@ content changes.
 ### Snippets size limit configuration
 
 This setting is not available through the [Admin Area settings](../../user/admin_area/settings/index.md).
-In order to configure this setting, use either the Rails console
+To configure this setting, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
 NOTE:

@@ -41,6 +41,7 @@ Example response:
     "name": "release-1-0",
     "create_access_levels": [
       {
+        "id":1,
         "access_level": 40,
         "access_level_description": "Maintainers"
       }
@@ -75,6 +76,7 @@ Example response:
   "name": "release-1-0",
   "create_access_levels": [
     {
+      "id": 1,
       "access_level": 40,
       "access_level_description": "Maintainers"
     }
@@ -109,6 +111,7 @@ Example response:
   "name": "*-stable",
   "create_access_levels": [
     {
+      "id": 1,
       "access_level": 30,
       "access_level_description": "Developers + Maintainers"
     }

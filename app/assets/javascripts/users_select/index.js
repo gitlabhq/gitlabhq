@@ -1,21 +1,17 @@
-/* eslint-disable func-names, prefer-rest-params, consistent-return, no-shadow, no-self-compare, no-unused-expressions, yoda, prefer-spread, camelcase, no-param-reassign */
+/* eslint-disable func-names, consistent-return, no-shadow, no-self-compare, no-unused-expressions, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
 import $ from 'jquery';
 import { escape, template, uniqBy } from 'lodash';
-import {
-  AJAX_USERS_SELECT_OPTIONS_MAP,
-  AJAX_USERS_SELECT_PARAMS_MAP,
-} from 'ee_else_ce/users_select/constants';
+import { AJAX_USERS_SELECT_PARAMS_MAP } from 'ee_else_ce/users_select/constants';
 import initDeprecatedJQueryDropdown from '~/deprecated_jquery_dropdown';
 import { isUserBusy } from '~/set_status_modal/utils';
 import { fixTitle, dispose } from '~/tooltips';
 import axios from '~/lib/utils/axios_utils';
 import { parseBoolean, spriteIcon } from '~/lib/utils/common_utils';
-import { loadCSSFile } from '~/lib/utils/css_utils';
 import { s__, __, sprintf } from '~/locale';
-import { getAjaxUsersSelectOptions, getAjaxUsersSelectParams } from './utils';
+import { getAjaxUsersSelectParams } from './utils';
 
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
@@ -24,9 +20,7 @@ function UsersSelect(currentUser, els, options = {}) {
   const elsClassName = els?.toString().match('.(.+$)')[1];
   const $els = $(els || '.js-user-search');
   this.users = this.users.bind(this);
-  this.user = this.user.bind(this);
   this.usersPath = '/-/autocomplete/users.json';
-  this.userPath = '/-/autocomplete/users/:id.json';
   if (currentUser != null) {
     if (typeof currentUser === 'object') {
       this.currentUser = currentUser;
@@ -35,28 +29,29 @@ function UsersSelect(currentUser, els, options = {}) {
     }
   }
 
-  const { handleClick } = options;
-  const userSelect = this;
+  const { handleClick, states } = options;
 
   $els.each((i, dropdown) => {
     const userSelect = this;
-    const options = {};
     const $dropdown = $(dropdown);
-    options.projectId = $dropdown.data('projectId');
-    options.groupId = $dropdown.data('groupId');
-    options.showCurrentUser = $dropdown.data('currentUser');
-    options.todoFilter = $dropdown.data('todoFilter');
-    options.todoStateFilter = $dropdown.data('todoStateFilter');
-    options.iid = $dropdown.data('iid');
-    options.issuableType = $dropdown.data('issuableType');
-    options.targetBranch = $dropdown.data('targetBranch');
-    options.showSuggested = $dropdown.data('showSuggested');
+    const options = {
+      states,
+      projectId: $dropdown.data('projectId'),
+      groupId: $dropdown.data('groupId'),
+      showCurrentUser: $dropdown.data('currentUser'),
+      todoFilter: $dropdown.data('todoFilter'),
+      todoStateFilter: $dropdown.data('todoStateFilter'),
+      iid: $dropdown.data('iid'),
+      issuableType: $dropdown.data('issuableType'),
+      targetBranch: $dropdown.data('targetBranch'),
+      authorId: $dropdown.data('authorId'),
+      showSuggested: $dropdown.data('showSuggested'),
+    };
     const showNullUser = $dropdown.data('nullUser');
     const defaultNullUser = $dropdown.data('nullUserDefault');
     const showMenuAbove = $dropdown.data('showMenuAbove');
     const showAnyUser = $dropdown.data('anyUser');
     const firstUser = $dropdown.data('firstUser');
-    options.authorId = $dropdown.data('authorId');
     const defaultLabel = $dropdown.data('defaultLabel');
     const issueURL = $dropdown.data('issueUpdate');
     const $selectbox = $dropdown.closest('.selectbox');
@@ -71,6 +66,22 @@ function UsersSelect(currentUser, els, options = {}) {
     let assignTo;
     let assigneeTemplate;
     let collapsedAssigneeTemplate;
+
+    const suggestedReviewersHelpPath = $dropdown.data('suggestedReviewersHelpPath');
+    const suggestedReviewersHeaderTemplate = template(
+      `<div class="gl-display-flex gl-align-items-center">
+         <%- header %>
+         <a
+           title="${s__('SuggestedReviewers|Learn about suggested reviewers')}"
+           href="${suggestedReviewersHelpPath}"
+           rel="noopener"
+           target="_blank"
+           aria-label="${s__('SuggestedReviewers|Suggested reviewers help link')}"
+           class="gl-hover-bg-transparent! gl-p-0! has-tooltip">
+           ${spriteIcon('question-o', 'gl-ml-3 gl-icon s16')}
+         </a>
+       </div>`,
+    );
 
     if (selectedId === undefined) {
       selectedId = selectedIdDefault;
@@ -388,7 +399,12 @@ function UsersSelect(currentUser, els, options = {}) {
         if (!suggestedUsers.length) return [];
 
         const items = [
-          { type: 'header', content: $dropdown.data('suggestedReviewersHeader') },
+          {
+            type: 'header',
+            content: suggestedReviewersHeaderTemplate({
+              header: $dropdown.data('suggestedReviewersHeader'),
+            }),
+          },
           ...suggestedUsers,
           { type: 'header', content: $dropdown.data('allMembersHeader') },
         ];
@@ -431,6 +447,10 @@ function UsersSelect(currentUser, els, options = {}) {
       hidden() {
         if ($dropdown.hasClass('js-multiselect')) {
           if ($dropdown.hasClass(elsClassName)) {
+            if (window.gon?.features?.realtimeReviewers) {
+              $dropdown.data('deprecatedJQueryDropdown').clearMenu();
+              $dropdown.closest('.selectbox').children('input[type="hidden"]').remove();
+            }
             emitSidebarEvent('sidebar.saveReviewers');
           } else {
             emitSidebarEvent('sidebar.saveAssignees');
@@ -615,155 +635,7 @@ function UsersSelect(currentUser, els, options = {}) {
       },
     });
   });
-
-  if ($('.ajax-users-select').length) {
-    import(/* webpackChunkName: 'select2' */ 'select2/select2')
-      .then(() => {
-        // eslint-disable-next-line promise/no-nesting
-        loadCSSFile(gon.select2_css_path)
-          .then(() => {
-            $('.ajax-users-select').each((i, select) => {
-              const options = getAjaxUsersSelectOptions($(select), AJAX_USERS_SELECT_OPTIONS_MAP);
-              options.skipLdap = $(select).hasClass('skip_ldap');
-              const showNullUser = $(select).data('nullUser');
-              const showAnyUser = $(select).data('anyUser');
-              const showEmailUser = $(select).data('emailUser');
-              const firstUser = $(select).data('firstUser');
-              return $(select).select2({
-                placeholder: __('Search for a user'),
-                multiple: $(select).hasClass('multiselect'),
-                minimumInputLength: 0,
-                query(query) {
-                  return userSelect.users(query.term, options, (users) => {
-                    let name;
-                    const data = {
-                      results: users,
-                    };
-                    if (query.term.length === 0) {
-                      if (firstUser) {
-                        // Move current user to the front of the list
-                        const ref = data.results;
-
-                        for (let index = 0, len = ref.length; index < len; index += 1) {
-                          const obj = ref[index];
-                          if (obj.username === firstUser) {
-                            data.results.splice(index, 1);
-                            data.results.unshift(obj);
-                            break;
-                          }
-                        }
-                      }
-                      if (showNullUser) {
-                        const nullUser = {
-                          name: s__('UsersSelect|Unassigned'),
-                          id: 0,
-                        };
-                        data.results.unshift(nullUser);
-                      }
-                      if (showAnyUser) {
-                        name = showAnyUser;
-                        if (name === true) {
-                          name = s__('UsersSelect|Any User');
-                        }
-                        const anyUser = {
-                          name,
-                          id: null,
-                        };
-                        data.results.unshift(anyUser);
-                      }
-                    }
-                    if (
-                      showEmailUser &&
-                      data.results.length === 0 &&
-                      query.term.match(/^[^@]+@[^@]+$/)
-                    ) {
-                      const trimmed = query.term.trim();
-                      const emailUser = {
-                        name: sprintf(__('Invite "%{trimmed}" by email'), { trimmed }),
-                        username: trimmed,
-                        id: trimmed,
-                        invite: true,
-                      };
-                      data.results.unshift(emailUser);
-                    }
-                    return query.callback(data);
-                  });
-                },
-                initSelection() {
-                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-                  return userSelect.initSelection.apply(userSelect, args);
-                },
-                formatResult() {
-                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-                  return userSelect.formatResult.apply(userSelect, args);
-                },
-                formatSelection() {
-                  const args = 1 <= arguments.length ? [].slice.call(arguments, 0) : [];
-                  return userSelect.formatSelection.apply(userSelect, args);
-                },
-                dropdownCssClass: 'ajax-users-dropdown',
-                // we do not want to escape markup since we are displaying html in results
-                escapeMarkup(m) {
-                  return m;
-                },
-              });
-            });
-          })
-          .catch(() => {});
-      })
-      .catch(() => {});
-  }
 }
-
-UsersSelect.prototype.initSelection = function (element, callback) {
-  const id = $(element).val();
-  if (id === '0') {
-    const nullUser = {
-      name: s__('UsersSelect|Unassigned'),
-    };
-    return callback(nullUser);
-  } else if (id !== '') {
-    return this.user(id, callback);
-  }
-};
-
-UsersSelect.prototype.formatResult = function (user) {
-  let avatar = gon.default_avatar_url;
-  if (user.avatar_url) {
-    avatar = user.avatar_url;
-  }
-  return `
-    <div class='user-result'>
-      <div class='user-image'>
-        <img class='avatar avatar-inline s32' src='${avatar}'>
-      </div>
-      <div class='user-info'>
-        <div class='user-name dropdown-menu-user-full-name'>
-          ${escape(user.name)}
-        </div>
-        <div class='user-username dropdown-menu-user-username text-secondary'>
-          ${!user.invite ? `@${escape(user.username)}` : ''}
-        </div>
-      </div>
-    </div>
-  `;
-};
-
-UsersSelect.prototype.formatSelection = function (user) {
-  return escape(user.name);
-};
-
-UsersSelect.prototype.user = function (user_id, callback) {
-  if (!/^\d+$/.test(user_id)) {
-    return false;
-  }
-
-  let url = this.buildUrl(this.userPath);
-  url = url.replace(':id', user_id);
-  return axios.get(url).then(({ data }) => {
-    callback(data);
-  });
-};
 
 // Return users list. Filtered by query
 // Only active users retrieved

@@ -11,7 +11,7 @@ class CreateSecurityOrchestrationPolicyRuleSchedule < ActiveRecord::Migration[6.
   def up
     table_comment = { owner: 'group::container security', description: 'Schedules used to store relationship between project and security policy repository' }
 
-    create_table_with_constraints :security_orchestration_policy_rule_schedules, comment: table_comment.to_json do |t|
+    create_table_with_constraints :security_orchestration_policy_rule_schedules, comment: Gitlab::Json.dump(table_comment) do |t|
       t.timestamps_with_timezone
       t.datetime_with_timezone :next_run_at, null: true
 

@@ -55,7 +55,7 @@ You can configure the following security controls:
 - [Dynamic Application Security Testing](../dast/index.md) (DAST)
   - Select **Enable DAST** to configure DAST for the current project.
   - Select **Manage scans** to manage the saved DAST scans, site profiles, and scanner profiles.
-    For more details, read [DAST on-demand scans](../dast/index.md#on-demand-scans).
+    For more details, read [DAST on-demand scans](../dast/proxy-based.md#on-demand-scans).
 - [Dependency Scanning](../dependency_scanning/index.md)
   - Select **Configure with a merge request** to create a merge request with the changes required to
     enable Dependency Scanning. For more details, see [Enable Dependency Scanning via an automatic merge request](../dependency_scanning/index.md#enable-dependency-scanning-via-an-automatic-merge-request).

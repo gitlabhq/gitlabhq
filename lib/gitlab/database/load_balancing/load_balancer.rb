@@ -119,6 +119,13 @@ module Gitlab
             connection = pool.connection
             transaction_open = connection.transaction_open?
 
+            if attempt && attempt > 1
+              ::Gitlab::Database::LoadBalancing::Logger.warn(
+                event: :read_write_retry,
+                message: 'A read_write block was retried because of connection error'
+              )
+            end
+
             yield connection
           rescue StandardError => e
             # No leaking will happen on the final attempt. Leaks are caused by subsequent retries

@@ -2,6 +2,7 @@
 import { GlModal, GlButton, GlFormInput, GlSprintf } from '@gitlab/ui';
 import { s__, sprintf } from '~/locale';
 import UserDeletionObstaclesList from '~/vue_shared/components/user_deletion_obstacles/user_deletion_obstacles_list.vue';
+import AssociationsList from '../associations/associations_list.vue';
 import eventHub, { EVENT_OPEN_DELETE_USER_MODAL } from './delete_user_modal_event_hub';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     GlFormInput,
     GlSprintf,
     UserDeletionObstaclesList,
+    AssociationsList,
   },
   props: {
     csrfToken: {
@@ -25,6 +27,7 @@ export default {
       blockPath: '',
       deletePath: '',
       userDeletionObstacles: [],
+      associationsCount: {},
       i18n: {
         title: '',
         primaryButtonLabel: '',
@@ -53,11 +56,19 @@ export default {
     eventHub.$off(EVENT_OPEN_DELETE_USER_MODAL, this.onOpenEvent);
   },
   methods: {
-    onOpenEvent({ username, blockPath, deletePath, userDeletionObstacles, i18n }) {
+    onOpenEvent({
+      username,
+      blockPath,
+      deletePath,
+      userDeletionObstacles,
+      associationsCount = {},
+      i18n,
+    }) {
       this.username = username;
       this.blockPath = blockPath;
       this.deletePath = deletePath;
       this.userDeletionObstacles = userDeletionObstacles;
+      this.associationsCount = associationsCount;
       this.i18n = i18n;
       this.openModal();
     },
@@ -100,8 +111,10 @@ export default {
       :user-name="trimmedUsername"
     />
 
+    <associations-list :associations-count="associationsCount" />
+
     <p>
-      <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}')">
+      <gl-sprintf :message="s__('AdminUsers|To confirm, type %{username}.')">
         <template #username>
           <code data-testid="confirm-username" class="gl-white-space-pre-wrap">{{
             trimmedUsername

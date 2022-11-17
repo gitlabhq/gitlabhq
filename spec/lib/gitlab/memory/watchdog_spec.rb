@@ -60,14 +60,16 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
     describe '#call' do
       before do
         stub_prometheus_metrics
-        allow(Gitlab::Metrics::System).to receive(:memory_usage_rss).at_least(:once).and_return(1024)
+        allow(Gitlab::Metrics::System).to receive(:memory_usage_rss).at_least(:once).and_return(
+          total: 1024
+        )
         allow(::Prometheus::PidProvider).to receive(:worker_id).and_return('worker_1')
 
         watchdog.configure do |config|
           config.handler = handler
           config.logger = logger
           config.sleep_time_seconds = sleep_time_seconds
-          config.monitors.use monitor_class, threshold_violated, payload, max_strikes: max_strikes
+          config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
         end
 
         allow(handler).to receive(:call).and_return(true)
@@ -203,8 +205,8 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
                 config.handler = handler
                 config.logger = logger
                 config.sleep_time_seconds = sleep_time_seconds
-                config.monitors.use monitor_class, threshold_violated, payload, max_strikes: max_strikes
-                config.monitors.use monitor_class, threshold_violated, payload, max_strikes: max_strikes
+                config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
+                config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
               end
             end
 

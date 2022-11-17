@@ -12,7 +12,6 @@ module Sidebars
           add_item(error_tracking_menu_item)
           add_item(alert_management_menu_item)
           add_item(incidents_menu_item)
-          add_item(product_analytics_menu_item)
 
           true
         end
@@ -99,20 +98,6 @@ module Sidebars
             link: project_incidents_path(context.project),
             active_routes: { controller: [:incidents, :incident_management] },
             item_id: :incidents
-          )
-        end
-
-        def product_analytics_menu_item
-          if Feature.disabled?(:product_analytics, context.project) ||
-            !can?(context.current_user, :read_product_analytics, context.project)
-            return ::Sidebars::NilMenuItem.new(item_id: :product_analytics)
-          end
-
-          ::Sidebars::MenuItem.new(
-            title: _('Product Analytics'),
-            link: project_product_analytics_path(context.project),
-            active_routes: { controller: :product_analytics },
-            item_id: :product_analytics
           )
         end
       end

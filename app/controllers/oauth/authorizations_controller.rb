@@ -4,7 +4,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   include InitializesCurrentUserMode
   include Gitlab::Utils::StrongMemoize
 
-  before_action :verify_confirmed_email!
+  before_action :verify_confirmed_email!, :verify_admin_allowed!
 
   layout 'profile'
 
@@ -96,5 +96,20 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
 
     pre_auth.error = :unconfirmed_email
     render "doorkeeper/authorizations/error"
+  end
+
+  def verify_admin_allowed!
+    render "doorkeeper/authorizations/forbidden" if disallow_connect?
+  end
+
+  def disallow_connect?
+    # we're disabling Cop/UserAdmin as OAuth tokens don't seem to respect admin mode
+    current_user&.admin? && Gitlab::CurrentSettings.disable_admin_oauth_scopes && dangerous_scopes? # rubocop:disable Cop/UserAdmin
+  end
+
+  def dangerous_scopes?
+    doorkeeper_application&.includes_scope?(*::Gitlab::Auth::API_SCOPE, *::Gitlab::Auth::READ_API_SCOPE,
+                                             *::Gitlab::Auth::ADMIN_SCOPES, *::Gitlab::Auth::REPOSITORY_SCOPES,
+                                             *::Gitlab::Auth::REGISTRY_SCOPES) && !doorkeeper_application&.trusted?
   end
 end

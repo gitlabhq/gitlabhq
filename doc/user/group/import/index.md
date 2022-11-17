@@ -4,7 +4,7 @@ group: Import
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Migrating groups **(FREE)**
+# Migrating groups with GitLab Migration **(FREE)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
@@ -18,15 +18,15 @@ this feature, ask an administrator to [enable the feature flag](../../../adminis
 `bulk_import_projects`. On GitLab.com, migrating group resources is available but migrating project resources is not
 available.
 
-Users with the Owner role on a top-level group can migrate it to:
+Users with the Owner role on a top-level group can use GitLab Migration to migrate the group to:
 
 - Another top-level group.
 - The subgroup of any existing top-level group.
 - Another GitLab instance, including GitLab.com.
 
-Migrating groups using the method documented here is not the same as [migrating groups using file exports](../settings/import_export.md).
+Migrating groups using GitLab Migration is not the same as [migrating groups using file exports](../settings/import_export.md).
 Importing and exporting groups using file exports requires you to export a group to a file and then import that file in
-another GitLab instance. Migrating groups using the method documented here automates this step.
+another GitLab instance. Migrating groups using GitLab Migration automates this step.
 
 ## Import your groups into GitLab
 
@@ -139,6 +139,7 @@ Migrating projects with file exports uses the same export and import mechanisms 
     - Issue resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Issue resource iteration events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+    - Merge request URL references ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) in GitLab 15.6)
   - Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339419) in GitLab 14.4)
   - LFS Objects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339405) in GitLab 14.8)
   - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341886) in GitLab 14.8)
@@ -148,6 +149,7 @@ Migrating projects with file exports uses the same export and import mechanisms 
     - Merge request approvers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
     - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Merge request resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
+    - Issue URL references ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) in GitLab 15.6)
   - Migrate Push Rules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.6)
   - Pull Requests (including external pull requests) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339409) in GitLab 14.5)
   - Pipeline History ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339412) in GitLab 14.6)

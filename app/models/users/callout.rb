@@ -62,7 +62,8 @@ module Users
       namespace_storage_limit_banner_error_threshold: 58, # EE-only
       project_quality_summary_feedback: 59,       # EE-only
       merge_request_settings_moved_callout: 60,
-      new_top_level_group_alert: 61
+      new_top_level_group_alert: 61,
+      artifacts_management_page_feedback_banner: 62
     }
 
     validates :feature_name,

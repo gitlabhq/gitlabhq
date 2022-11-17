@@ -104,7 +104,8 @@ RSpec.describe 'Query.runner(id)' do
         'userPermissions' => {
           'readRunner' => true,
           'updateRunner' => true,
-          'deleteRunner' => true
+          'deleteRunner' => true,
+          'assignRunner' => true
         }
       )
       expect(runner_data['tagList']).to match_array runner.tag_list

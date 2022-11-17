@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage do
+  RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage, product_group: :package_registry do
     describe 'Helm Registry' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures

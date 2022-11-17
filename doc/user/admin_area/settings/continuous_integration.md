@@ -20,10 +20,10 @@ for all projects:
 1. Check (or uncheck to disable) the box that says **Default to Auto DevOps pipeline for all projects**.
 1. Optionally, set up the [Auto DevOps base domain](../../../topics/autodevops/requirements.md#auto-devops-base-domain)
    which is used for Auto Deploy and Auto Review Apps.
-1. Hit **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 From now on, every existing project and newly created ones that don't have a
-`.gitlab-ci.yml`, uses the Auto DevOps pipelines.
+`.gitlab-ci.yml` use the Auto DevOps pipelines.
 
 If you want to disable it for a specific project, you can do so in
 [its settings](../../../topics/autodevops/index.md#enable-or-disable-auto-devops).
@@ -71,7 +71,7 @@ runner settings:
 To view the rendered details:
 
 1. On the top bar, select **Main menu**, and:
-   - For a project, select ***Projects** and find your project.
+   - For a project, select **Projects** and find your project.
    - For a group, select **Groups** and find your group.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand **Runners**.
@@ -132,7 +132,7 @@ NOTE:
 Any changes to this setting applies to new artifacts only. The expiration time is not
 be updated for artifacts created before this setting was changed.
 The administrator may need to manually search for and expire previously-created
-artifacts, as described in the [troubleshooting documentation](../../../administration/troubleshooting/gitlab_rails_cheat_sheet.md#remove-artifacts-more-than-a-week-old).
+artifacts, as described in the [troubleshooting documentation](../../../administration/job_artifacts.md#delete-job-artifacts-from-jobs-completed-before-a-specific-date).
 
 ## Keep the latest artifacts for all jobs in the latest successful pipelines
 
@@ -174,7 +174,7 @@ To set the duration for which the jobs are considered as old and expired:
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Continuous Integration and Deployment** section.
 1. Set the value of **Archive jobs**.
-1. Hit **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 After that time passes, the jobs are archived in the background and no longer able to be
 retried. Make it empty to never expire jobs. It has to be no less than 1 day,
@@ -201,7 +201,7 @@ of your GitLab instance (`.gitlab-ci.yml` if not set):
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Input the new file and path in the **Default CI/CD configuration file** field.
-1. Hit **Save changes** for the changes to take effect.
+1. Select **Save changes** for the changes to take effect.
 
 It is also possible to specify a [custom CI/CD configuration file for a specific project](../../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file).
 
@@ -244,7 +244,7 @@ To enable or disable the banner:
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/352316) from GitLab Premium to GitLab Ultimate in 15.0.
 
 NOTE:
-An alternative [compliance solution](../../group/manage.md#configure-a-compliance-pipeline)
+An alternative [compliance solution](../../group/compliance_frameworks.md#configure-a-compliance-pipeline)
 is available. We recommend this alternative solution because it provides greater flexibility,
 allowing required pipelines to be assigned to specific compliance framework labels.
 
@@ -272,7 +272,7 @@ To select a CI/CD template for the required pipeline configuration:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
 1. Expand the **Required pipeline configuration** section.
-1. Select a CI/CD template from the dropdown.
+1. Select a CI/CD template from the dropdown list.
 1. Select **Save changes**.
 
 ## Package Registry configuration

@@ -34,7 +34,7 @@ describe('Discussion navigation mixin', () => {
 
   beforeEach(() => {
     setHTMLFixture(
-      `<div class="notes">
+      `<div class="tab-pane notes">
       ${[...'abcde']
         .map(
           (id) =>

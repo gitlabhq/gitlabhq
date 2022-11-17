@@ -29,7 +29,7 @@ export default {
     dagDocPath: {
       default: null,
     },
-    emptySvgPath: {
+    emptyDagSvgPath: {
       default: '',
     },
     pipelineIid: {
@@ -213,7 +213,7 @@ export default {
       />
       <gl-empty-state
         v-else-if="hasNoDependentJobs"
-        :svg-path="emptySvgPath"
+        :svg-path="emptyDagSvgPath"
         :title="$options.emptyStateTexts.title"
       >
         <template #description>

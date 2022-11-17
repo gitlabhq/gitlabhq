@@ -61,7 +61,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Url do
           'url' => url,
           'namespace' => 'namespace1',
           'project' => 'project1',
-          'environment' => "#{environment_id}",
+          'environment' => environment_id.to_s,
           'query' => "?dashboard=config%2Fprometheus%2Fcommon_metrics.yml&environment=#{environment_id}&group=awesome+group&start=2019-08-02T05%3A43%3A09.000Z",
           'anchor' => '#title'
         }

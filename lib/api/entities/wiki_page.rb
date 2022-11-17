@@ -5,7 +5,9 @@ module API
     class WikiPage < WikiPageBasic
       include ::MarkupHelper
 
-      expose :content do |wiki_page, options|
+      expose :content, documentation: {
+        type: 'string', example: 'Here is an instruction how to deploy this project.'
+      } do |wiki_page, options|
         if options[:render_html]
           render_wiki_content(
             wiki_page,
@@ -17,7 +19,7 @@ module API
         end
       end
 
-      expose :encoding do |wiki_page|
+      expose :encoding, documentation: { type: 'string', example: 'UTF-8' } do |wiki_page|
         wiki_page.content.encoding.name
       end
     end

@@ -1,11 +1,3 @@
-export const AJAX_USERS_SELECT_OPTIONS_MAP = {
-  projectId: 'projectId',
-  groupId: 'groupId',
-  showCurrentUser: 'currentUser',
-  authorId: 'authorId',
-  skipUsers: 'skipUsers',
-};
-
 export const AJAX_USERS_SELECT_PARAMS_MAP = {
   project_id: 'projectId',
   group_id: 'groupId',
@@ -15,4 +7,7 @@ export const AJAX_USERS_SELECT_PARAMS_MAP = {
   current_user: 'showCurrentUser',
   author_id: 'authorId',
   skip_users: 'skipUsers',
+  states: 'states',
 };
+
+export const ACTIVE_AND_BLOCKED_USER_STATES = ['active', 'blocked'];

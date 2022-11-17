@@ -53,7 +53,7 @@ module Ci
       }.freeze
     end
 
-    def name
+    def event_type_name
       # Currently, `merge_request_event_type` is the only source to name pipelines
       # but this could be extended with the other types in the future.
       localized_names.fetch(pipeline.merge_request_event_type, s_('Pipeline|Pipeline'))

@@ -69,13 +69,14 @@ This workflow has a weaker security model and is not recommended for production 
 GitLab supports the following Kubernetes versions. You can upgrade your
 Kubernetes version to a supported version at any time:
 
-- 1.24 (support ends on September 22, 2023 or when 1.27 becomes supported)
+- 1.25 (support ends on October 22, 2023 or when 1.28 becomes supported)
+- 1.24 (support ends on July 22, 2023 or when 1.27 becomes supported)
 - 1.23 (support ends on February 22, 2023 or when 1.26 becomes supported)
-- 1.22 (support ends on October 22, 2022)
-- 1.21 (support ends on August 22, 2022)
 
 GitLab aims to support a new minor Kubernetes version three months after its initial release. GitLab supports at least three production-ready Kubernetes minor
 versions at any given time.
+
+When installing the agent, use a Helm version compatible with your Kubernetes version. Other versions of Helm might not work. For a list of compatible versions, see the [Helm version support policy](https://helm.sh/docs/topics/version_skew/).
 
 Support for deprecated APIs can be removed from the GitLab codebase when we drop support for the Kubernetes version that only supports the deprecated API.
 

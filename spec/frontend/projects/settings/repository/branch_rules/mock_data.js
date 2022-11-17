@@ -8,10 +8,36 @@ export const branchRulesMockResponse = {
         nodes: [
           {
             name: 'main',
+            isDefault: true,
+            branchProtection: {
+              allowForcePush: true,
+              codeOwnerApprovalRequired: true,
+            },
+            approvalRules: {
+              nodes: [{ id: 1 }],
+              __typename: 'ApprovalProjectRuleConnection',
+            },
+            externalStatusChecks: {
+              nodes: [{ id: 1 }, { id: 2 }],
+              __typename: 'BranchRule',
+            },
             __typename: 'BranchRule',
           },
           {
             name: 'test-*',
+            isDefault: false,
+            branchProtection: {
+              allowForcePush: false,
+              codeOwnerApprovalRequired: false,
+            },
+            approvalRules: {
+              nodes: [],
+              __typename: 'ApprovalProjectRuleConnection',
+            },
+            externalStatusChecks: {
+              nodes: [],
+              __typename: 'BranchRule',
+            },
             __typename: 'BranchRule',
           },
         ],
@@ -31,6 +57,21 @@ export const branchRuleProvideMock = {
 export const branchRulePropsMock = {
   name: 'main',
   isDefault: true,
-  isProtected: true,
-  approvalDetails: ['requires approval from TEST', '2 status checks'],
+  branchProtection: {
+    allowForcePush: true,
+    codeOwnerApprovalRequired: true,
+  },
+  approvalRulesTotal: 1,
+  statusChecksTotal: 2,
+};
+
+export const branchRuleWithoutDetailsPropsMock = {
+  name: 'main',
+  isDefault: false,
+  branchProtection: {
+    allowForcePush: false,
+    codeOwnerApprovalRequired: false,
+  },
+  approvalRulesTotal: 0,
+  statusChecksTotal: 0,
 };

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::PipelinesController, '(JavaScript fixtures)', type: :controller do
   include JavaScriptFixturesHelpers
 
-  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let_it_be(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let_it_be(:project) { create(:project, :repository, namespace: namespace, path: 'pipelines-project') }
 
   let_it_be(:commit_without_author) { RepoHelpers.another_sample_commit }

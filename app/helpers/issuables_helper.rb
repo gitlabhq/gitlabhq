@@ -135,17 +135,6 @@ module IssuablesHelper
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
-  def milestone_dropdown_label(milestone_title, default_label = _('Milestone'))
-    title =
-      case milestone_title
-      when Milestone::Upcoming.name then Milestone::Upcoming.title
-      when Milestone::Started.name then Milestone::Started.title
-      else milestone_title.presence
-      end
-
-    h(title || default_label)
-  end
-
   def issuable_meta_author_status(author)
     return "" unless author&.status&.customized? && status = user_status(author)
 
@@ -157,9 +146,9 @@ module IssuablesHelper
 
     if issuable.respond_to?(:work_item_type) && WorkItems::Type::WI_TYPES_WITH_CREATED_HEADER.include?(issuable.work_item_type.base_type)
       output << content_tag(:span, sprite_icon("#{issuable.work_item_type.icon_name}", css_class: 'gl-icon gl-vertical-align-middle gl-text-gray-500'), class: 'gl-mr-2', aria: { hidden: 'true' })
-      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: issuable.issue_type.capitalize, created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2' )
+      output << content_tag(:span, s_('IssuableStatus|%{wi_type} created %{created_at} by ').html_safe % { wi_type: issuable.issue_type.capitalize, created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     else
-      output << content_tag(:span, s_('IssuableStatus|Created %{created_at} by').html_safe % { created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2' )
+      output << content_tag(:span, s_('IssuableStatus|Created %{created_at} by').html_safe % { created_at: time_ago_with_tooltip(issuable.created_at) }, class: 'gl-mr-2')
     end
 
     if issuable.is_a?(Issue) && issuable.service_desk_reply_to

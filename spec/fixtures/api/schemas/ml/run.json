@@ -27,15 +27,43 @@
             "end_time"
           ],
           "properties": {
-            "run_id": { "type": "string" },
-            "run_uuid": { "type": "string" },
-            "experiment_id": { "type": "string" },
-            "artifact_location": { "type": "string" },
-            "start_time": { "type": "integer" },
-            "end_time": { "type": "integer" },
+            "run_id": {
+              "type": "string"
+            },
+            "run_uuid": {
+              "type": "string"
+            },
+            "experiment_id": {
+              "type": "string"
+            },
+            "artifact_uri": {
+              "type": "string"
+            },
+            "start_time": {
+              "type": "integer"
+            },
+            "end_time": {
+              "type": "integer"
+            },
             "user_id": "",
-            "status": { "type": { "enum" : ["RUNNING", "SCHEDULED", "FINISHED", "FAILED", "KILLED"] } },
-            "lifecycle_stage": { "type": { "enum" : ["active"] } }
+            "status": {
+              "type": {
+                "enum": [
+                  "RUNNING",
+                  "SCHEDULED",
+                  "FINISHED",
+                  "FAILED",
+                  "KILLED"
+                ]
+              }
+            },
+            "lifecycle_stage": {
+              "type": {
+                "enum": [
+                  "active"
+                ]
+              }
+            }
           }
         },
         "data": {

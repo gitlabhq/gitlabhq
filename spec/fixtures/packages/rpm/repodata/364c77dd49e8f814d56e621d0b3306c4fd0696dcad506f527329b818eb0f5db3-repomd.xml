@@ -1,0 +1,30 @@
+<repomd
+  xmlns="http://gitlab.com/api/v4/projects/1/packages/rpm/repodata/364c77dd49e8f814d56e621d0b3306c4fd0696dcad506f527329b818eb0f5db3-repomd.xml"
+  xmlns:rpm="http://gitlab.com/api/v4/projects/1/packages/rpm/repodata/364c77dd49e8f814d56e621d0b3306c4fd0696dcad506f527329b818eb0f5db3-repomd.xml"
+>
+  <revision>1644602779</revision>
+  <data type="filelists">
+    <checksum type="sha256">6503673de76312406ff8ecb06d9733c32b546a65abae4d4170d9b51fb75bf253</checksum>
+    <open-checksum type="sha256">7652c7496daa2507f08675a5b4f59a5428aaba72997400ae3d5e7bab8e3d9cc1</open-checksum>
+    <location href="repodata/6503673de76312406ff8ecb06d9733c32b546a65abae4d4170d9b51fb75bf253-filelists.xml"/>
+    <timestamp>1644602784</timestamp>
+    <size>1144067</size>
+    <open-size>25734004</open-size>
+  </data>
+  <data type="primary">
+    <checksum type="sha256">80279a863b6236e60c3e63036b8a9a25e3764dfb3121292b91e9f583af9e7b7e</checksum>
+    <open-checksum type="sha256">f852f3bb39f89520434d97f6913716dc448077ad49f2e5200327367f98a89d55</open-checksum>
+    <location href="repodata/80279a863b6236e60c3e63036b8a9a25e3764dfb3121292b91e9f583af9e7b7e-primary.xml"/>
+    <timestamp>1644602784</timestamp>
+    <size>66996</size>
+    <open-size>1008586</open-size>
+  </data>
+  <data type="other">
+    <checksum type="sha256">34408890500ec72c0f181542a91f7ff9320d2ef32c8e613540a5b9e1b8763e02</checksum>
+    <open-checksum type="sha256">acac5033036264cd26100713b014242471ade45487c28c7793466a84af512624</open-checksum>
+    <location href="repodata/34408890500ec72c0f181542a91f7ff9320d2ef32c8e613540a5b9e1b8763e02-other.xml"/>
+    <timestamp>1644602784</timestamp>
+    <size>43329</size>
+    <open-size>730393</open-size>
+  </data>
+</repomd>

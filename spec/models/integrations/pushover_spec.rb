@@ -29,8 +29,8 @@ RSpec.describe Integrations::Pushover do
 
   describe 'Execute' do
     let(:pushover) { described_class.new }
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository) }
+    let(:user) { build_stubbed(:user) }
+    let(:project) { build_stubbed(:project, :repository) }
     let(:sample_data) do
       Gitlab::DataBuilder::Push.build_sample(project, user)
     end

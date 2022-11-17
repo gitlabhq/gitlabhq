@@ -81,7 +81,16 @@ describe('Markdown Live Preview Extension for Source Editor', () => {
       },
       path: previewMarkdownPath,
       actionShowPreviewCondition: expect.any(Object),
+      eventEmitter: expect.any(Object),
     });
+  });
+
+  it('support external preview trigger via emitter event', () => {
+    expect(panelSpy).not.toHaveBeenCalled();
+
+    instance.markdownPreview.eventEmitter.fire();
+
+    expect(panelSpy).toHaveBeenCalled();
   });
 
   describe('onDidLayoutChange', () => {

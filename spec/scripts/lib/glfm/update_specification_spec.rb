@@ -37,17 +37,43 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
   let(:ghfm_spec_md_path) { described_class::GHFM_SPEC_MD_PATH }
   let(:ghfm_spec_txt_local_io) { StringIO.new(ghfm_spec_txt_contents) }
 
-  let(:glfm_intro_md_path) { described_class::GLFM_INTRO_MD_PATH }
-  let(:glfm_intro_md_io) { StringIO.new(glfm_intro_md_contents) }
-  let(:glfm_official_specification_examples_md_path) { described_class::GLFM_OFFICIAL_SPECIFICATION_EXAMPLES_MD_PATH }
-  let(:glfm_official_specification_examples_md_io) { StringIO.new(glfm_official_specification_examples_md_contents) }
-  let(:glfm_internal_extension_examples_md_path) { described_class::GLFM_INTERNAL_EXTENSION_EXAMPLES_MD_PATH }
-  let(:glfm_internal_extension_examples_md_io) { StringIO.new(glfm_internal_extension_examples_md_contents) }
+  let(:glfm_official_specification_md_path) { described_class::GLFM_OFFICIAL_SPECIFICATION_MD_PATH }
+  let(:glfm_official_specification_md_io) { StringIO.new(glfm_official_specification_md_contents) }
+  let(:glfm_internal_extensions_md_path) { described_class::GLFM_INTERNAL_EXTENSIONS_MD_PATH }
+  let(:glfm_internal_extensions_md_io) { StringIO.new(glfm_internal_extensions_md_contents) }
   let(:glfm_spec_txt_path) { described_class::GLFM_SPEC_TXT_PATH }
   let(:glfm_spec_txt_io) { StringIO.new }
   let(:glfm_spec_html_path) { described_class::GLFM_SPEC_HTML_PATH }
   let(:glfm_spec_html_io) { StringIO.new }
+  let(:es_snapshot_spec_md_path) { described_class::ES_SNAPSHOT_SPEC_MD_PATH }
+  let(:es_snapshot_spec_md_io) { StringIO.new }
+  let(:es_snapshot_spec_html_path) { described_class::ES_SNAPSHOT_SPEC_HTML_PATH }
+  let(:es_snapshot_spec_html_io) { StringIO.new }
   let(:markdown_tempfile_io) { StringIO.new }
+
+  let(:ghfm_spec_txt_examples) do
+    <<~MARKDOWN
+      # Section with Examples
+
+      ## Emphasis and Strong
+
+      ```````````````````````````````` example
+      _EMPHASIS LINE 1_
+      _EMPHASIS LINE 2_
+      .
+      <p><em>EMPHASIS LINE 1</em>
+      <em>EMPHASIS LINE 2</em></p>
+      ````````````````````````````````
+
+      ```````````````````````````````` example
+      __STRONG!__
+      .
+      <p><strong>STRONG!</strong></p>
+      ````````````````````````````````
+
+      End of last GitHub examples section.
+    MARKDOWN
+  end
 
   let(:ghfm_spec_txt_contents) do
     <<~MARKDOWN
@@ -60,22 +86,9 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
 
       # Introduction
 
-      ## What is GitHub Flavored Markdown?
+      GHFM Intro.
 
-      It's like GLFM, but with an H.
-
-      # Section with Examples
-
-      ## Strong
-
-      ```````````````````````````````` example
-      __bold__
-      .
-      <p><strong>bold</strong></p>
-      ````````````````````````````````
-
-      End of last GitHub examples section.
-
+      #{ghfm_spec_txt_examples}
       <!-- END TESTS -->
 
       # Appendix
@@ -84,18 +97,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     MARKDOWN
   end
 
-  let(:glfm_intro_md_contents) do
-    # language=Markdown
-    <<~MARKDOWN
-      # Introduction
-
-      ## What is GitLab Flavored Markdown?
-
-      Intro text about GitLab Flavored Markdown.
-    MARKDOWN
-  end
-
-  let(:glfm_official_specification_examples_md_contents) do
+  let(:glfm_official_specification_md_examples) do
     <<~MARKDOWN
       # Official Specification Section with Examples
 
@@ -103,7 +105,20 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     MARKDOWN
   end
 
-  let(:glfm_internal_extension_examples_md_contents) do
+  let(:glfm_official_specification_md_contents) do
+    <<~MARKDOWN
+      # GLFM Introduction
+
+      GLFM intro text.
+
+      <!-- BEGIN TESTS -->
+      #{glfm_official_specification_md_examples}
+      <!-- END TESTS -->
+      # Non-example official content
+    MARKDOWN
+  end
+
+  let(:glfm_internal_extensions_md_examples) do
     <<~MARKDOWN
       # Internal Extension Section with Examples
 
@@ -111,10 +126,19 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     MARKDOWN
   end
 
+  let(:glfm_internal_extensions_md_contents) do
+    <<~MARKDOWN
+      # Non-example internal content
+      <!-- BEGIN TESTS -->
+      #{glfm_internal_extensions_md_examples}
+      <!-- END TESTS -->
+      # More non-example internal content
+    MARKDOWN
+  end
+
   before do
     # Mock default ENV var values
-    allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_MD').and_return(nil)
-    allow(ENV).to receive(:[]).and_call_original
+    stub_env('UPDATE_GHFM_SPEC_MD')
 
     # We mock out the URI and local file IO objects with real StringIO, instead of just mock
     # objects. This gives better and more realistic coverage, while still avoiding
@@ -124,17 +148,18 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     allow(URI).to receive(:parse).with(ghfm_spec_txt_uri).and_return(ghfm_spec_txt_uri_parsed)
     allow(ghfm_spec_txt_uri_parsed).to receive(:open).and_return(ghfm_spec_txt_uri_io)
     allow(File).to receive(:open).with(ghfm_spec_md_path) { ghfm_spec_txt_local_io }
-    allow(File).to receive(:open).with(glfm_intro_md_path) { glfm_intro_md_io }
-    allow(File).to receive(:open).with(glfm_official_specification_examples_md_path) do
-      glfm_official_specification_examples_md_io
+    allow(File).to receive(:open).with(glfm_official_specification_md_path) do
+      glfm_official_specification_md_io
     end
-    allow(File).to receive(:open).with(glfm_internal_extension_examples_md_path) do
-      glfm_internal_extension_examples_md_io
+    allow(File).to receive(:open).with(glfm_internal_extensions_md_path) do
+      glfm_internal_extensions_md_io
     end
 
     # output files
     allow(File).to receive(:open).with(glfm_spec_txt_path, 'w') { glfm_spec_txt_io }
     allow(File).to receive(:open).with(glfm_spec_html_path, 'w') { glfm_spec_html_io }
+    allow(File).to receive(:open).with(es_snapshot_spec_md_path, 'w') { es_snapshot_spec_md_io }
+    allow(File).to receive(:open).with(es_snapshot_spec_html_path, 'w') { es_snapshot_spec_html_io }
 
     # Allow normal opening of Tempfile files created during script execution.
     tempfile_basenames = [
@@ -166,7 +191,7 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
       let(:ghfm_spec_txt_local_io) { StringIO.new }
 
       before do
-        allow(ENV).to receive(:[]).with('UPDATE_GHFM_SPEC_MD').and_return('true')
+        stub_env('UPDATE_GHFM_SPEC_MD', 'true')
         allow(File).to receive(:open).with(ghfm_spec_md_path, 'w') { ghfm_spec_txt_local_io }
       end
 
@@ -217,90 +242,121 @@ RSpec.describe Glfm::UpdateSpecification, '#process' do
     end
   end
 
-  describe 'writing GLFM spec.txt' do
-    let(:glfm_contents) { reread_io(glfm_spec_txt_io) }
+  describe 'writing output_spec/spec.txt' do
+    let(:glfm_spec_txt_contents) { reread_io(glfm_spec_txt_io) }
+
+    before do
+      subject.process(skip_spec_html_generation: true)
+    end
+
+    it 'includes only the header and official examples' do
+      expected = described_class::GLFM_SPEC_TXT_HEADER + glfm_official_specification_md_contents
+      expect(glfm_spec_txt_contents).to eq(expected)
+    end
+  end
+
+  describe 'writing output_example_snapshots/snapshot_spec.md' do
+    let(:es_snapshot_spec_md_contents) { reread_io(es_snapshot_spec_md_io) }
 
     before do
       subject.process(skip_spec_html_generation: true)
     end
 
     it 'replaces the header text with the GitLab version' do
-      expect(glfm_contents).not_to match(/GitHub Flavored Markdown Spec/m)
-      expect(glfm_contents).not_to match(/^version: \d\.\d/m)
-      expect(glfm_contents).not_to match(/^date: /m)
-      expect(glfm_contents).not_to match(/^license: /m)
-      expect(glfm_contents).to match(/#{Regexp.escape(described_class::GLFM_SPEC_TXT_HEADER)}\n/mo)
+      expect(es_snapshot_spec_md_contents).not_to match(/GitHub Flavored Markdown Spec/m)
+      expect(es_snapshot_spec_md_contents).not_to match(/^version: \d\.\d/m)
+      expect(es_snapshot_spec_md_contents).not_to match(/^date: /m)
+
+      expect(es_snapshot_spec_md_contents).to match(/#{Regexp.escape(described_class::GLFM_SPEC_TXT_HEADER)}/mo)
     end
 
-    it 'replaces the intro section with the GitLab version' do
-      expect(glfm_contents).not_to match(/What is GitHub Flavored Markdown/m)
-      expect(glfm_contents).to match(/#{Regexp.escape(glfm_intro_md_contents)}/m)
-    end
-
-    it 'inserts the GitLab official spec and internal extension examples sections before the appendix section' do
-      expected = <<~MARKDOWN
-        End of last GitHub examples section.
-
-        # Official Specification Section with Examples
-
-        Some examples.
-
-        # Internal Extension Section with Examples
-
-        Some examples.
-
-        <!-- END TESTS -->
-
-        # Appendix
-      MARKDOWN
-      expect(glfm_contents).to match(/#{Regexp.escape(expected)}/m)
+    it 'includes header and all examples', :unlimited_max_formatted_output_length do
+      # rubocop:disable Style/StringConcatenation (string contatenation is more readable)
+      expected = described_class::GLFM_SPEC_TXT_HEADER +
+        ghfm_spec_txt_examples +
+        "\n" +
+        glfm_official_specification_md_examples +
+        "\n\n" + # NOTE: We want a blank line between the official and internal examples
+        glfm_internal_extensions_md_examples +
+        "\n"
+      # rubocop:enable Style/StringConcatenation
+      expect(es_snapshot_spec_md_contents).to eq(expected)
     end
   end
 
-  describe 'writing GLFM spec.html' do
-    let(:glfm_contents) { reread_io(glfm_spec_html_io) }
+  # rubocop:disable RSpec/MultipleMemoizedHelpers
+  describe 'writing output html files' do
+    let(:spec_html_contents) { reread_io(glfm_spec_html_io) }
+    let(:snapshot_spec_html_contents) { reread_io(es_snapshot_spec_html_io) }
 
     before do
       subject.process
     end
 
-    it 'renders HTML from spec.txt', :unlimited_max_formatted_output_length do
-      expected = <<~HTML
+    it 'renders expected HTML', :unlimited_max_formatted_output_length do
+      # NOTE: We do assertions for both output HTML files in this same `it` example block,
+      #       because calling a full `subject.process` without `skip_spec_html_generation: true`
+      #       is very slow, and want to avoid doing it twice.
+
+      expected_spec_html = <<~RENDERED_HTML
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="1:1-4:3" class="code highlight js-syntax-highlight language-yaml" lang="yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
         <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
         <copy-code></copy-code>
         </div>
-        <h1 data-sourcepos="6:1-6:14" dir="auto">
-        <a id="user-content-introduction" class="anchor" href="#introduction" aria-hidden="true"></a>Introduction</h1>
-        <h2 data-sourcepos="8:1-8:36" dir="auto">
-        <a id="user-content-what-is-gitlab-flavored-markdown" class="anchor" href="#what-is-gitlab-flavored-markdown" aria-hidden="true"></a>What is GitLab Flavored Markdown?</h2>
-        <p data-sourcepos="10:1-10:42" dir="auto">Intro text about GitLab Flavored Markdown.</p>
-        <h1 data-sourcepos="12:1-12:23" dir="auto">
-        <a id="user-content-section-with-examples" class="anchor" href="#section-with-examples" aria-hidden="true"></a>Section with Examples</h1>
-        <h2 data-sourcepos="14:1-14:9" dir="auto">
-        <a id="user-content-strong" class="anchor" href="#strong" aria-hidden="true"></a>Strong</h2>
+        <h1 data-sourcepos="5:1-5:19" dir="auto">
+        <a id="user-content-glfm-introduction" class="anchor" href="#glfm-introduction" aria-hidden="true"></a>GLFM Introduction</h1>
+        <p data-sourcepos="7:1-7:16" dir="auto">GLFM intro text.</p>
+
+        <h1 data-sourcepos="10:1-10:46" dir="auto">
+        <a id="user-content-official-specification-section-with-examples" class="anchor" href="#official-specification-section-with-examples" aria-hidden="true"></a>Official Specification Section with Examples</h1>
+        <p data-sourcepos="12:1-12:14" dir="auto">Some examples.</p>
+
+        <h1 data-sourcepos="15:1-15:30" dir="auto">
+        <a id="user-content-non-example-official-content" class="anchor" href="#non-example-official-content" aria-hidden="true"></a>Non-example official content</h1>
+      RENDERED_HTML
+      expect(spec_html_contents).to be == expected_spec_html
+
+      expected_snapshot_spec_html = <<~RENDERED_HTML
         <div class="gl-relative markdown-code-block js-markdown-code">
-        <pre data-sourcepos="16:1-20:32" class="code highlight js-syntax-highlight language-plaintext" lang="plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__bold__</span>
-        <span id="LC2" class="line" lang="plaintext">.</span>
-        <span id="LC3" class="line" lang="plaintext">&lt;p&gt;&lt;strong&gt;bold&lt;/strong&gt;&lt;/p&gt;</span></code></pre>
+        <pre data-sourcepos="1:1-4:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">GitLab Flavored Markdown (GLFM) Spec</span></span>
+        <span id="LC2" class="line" lang="yaml"><span class="na">version</span><span class="pi">:</span> <span class="s">alpha</span></span></code></pre>
         <copy-code></copy-code>
         </div>
-        <p data-sourcepos="22:1-22:36" dir="auto">End of last GitHub examples section.</p>
-        <h1 data-sourcepos="24:1-24:46" dir="auto">
+        <h1 data-sourcepos="5:1-5:23" dir="auto">
+        <a id="user-content-section-with-examples" class="anchor" href="#section-with-examples" aria-hidden="true"></a>Section with Examples</h1>
+        <h2 data-sourcepos="7:1-7:22" dir="auto">
+        <a id="user-content-emphasis-and-strong" class="anchor" href="#emphasis-and-strong" aria-hidden="true"></a>Emphasis and Strong</h2>
+        <div class="gl-relative markdown-code-block js-markdown-code">
+        <pre data-sourcepos="9:1-12:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">_EMPHASIS LINE 1_</span>
+        <span id="LC2" class="line" lang="plaintext">_EMPHASIS LINE 2_</span></code></pre>
+        <copy-code></copy-code>
+        </div>
+        <div class="gl-relative markdown-code-block js-markdown-code">
+        <pre data-sourcepos="14:1-17:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;em&gt;EMPHASIS LINE 1&lt;/em&gt;</span>
+        <span id="LC2" class="line" lang="plaintext">&lt;em&gt;EMPHASIS LINE 2&lt;/em&gt;&lt;/p&gt;</span></code></pre>
+        <copy-code></copy-code>
+        </div>
+        <div class="gl-relative markdown-code-block js-markdown-code">
+        <pre data-sourcepos="19:1-21:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">__STRONG!__</span></code></pre>
+        <copy-code></copy-code>
+        </div>
+        <div class="gl-relative markdown-code-block js-markdown-code">
+        <pre data-sourcepos="23:1-25:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;strong&gt;STRONG!&lt;/strong&gt;&lt;/p&gt;</span></code></pre>
+        <copy-code></copy-code>
+        </div>
+        <p data-sourcepos="27:1-27:36" dir="auto">End of last GitHub examples section.</p>
+        <h1 data-sourcepos="29:1-29:46" dir="auto">
         <a id="user-content-official-specification-section-with-examples" class="anchor" href="#official-specification-section-with-examples" aria-hidden="true"></a>Official Specification Section with Examples</h1>
-        <p data-sourcepos="26:1-26:14" dir="auto">Some examples.</p>
-        <h1 data-sourcepos="28:1-28:42" dir="auto">
+        <p data-sourcepos="31:1-31:14" dir="auto">Some examples.</p>
+        <h1 data-sourcepos="34:1-34:42" dir="auto">
         <a id="user-content-internal-extension-section-with-examples" class="anchor" href="#internal-extension-section-with-examples" aria-hidden="true"></a>Internal Extension Section with Examples</h1>
-        <p data-sourcepos="30:1-30:14" dir="auto">Some examples.</p>
-
-        <h1 data-sourcepos="34:1-34:10" dir="auto">
-        <a id="user-content-appendix" class="anchor" href="#appendix" aria-hidden="true"></a>Appendix</h1>
-        <p data-sourcepos="36:1-36:14" dir="auto">Appendix text.</p>
-      HTML
-      expect(glfm_contents).to be == expected
+        <p data-sourcepos="36:1-36:14" dir="auto">Some examples.</p>
+      RENDERED_HTML
+      expect(snapshot_spec_html_contents).to be == expected_snapshot_spec_html
     end
   end
+  # rubocop:enable RSpec/MultipleMemoizedHelpers
 
   def reread_io(io)
     # Reset the io StringIO to the beginning position of the buffer

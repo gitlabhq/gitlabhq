@@ -1,6 +1,5 @@
 ---
 RSpec/FilePath:
-  Details: grace period
   Exclude:
     - 'ee/spec/frontend/fixtures/analytics/charts.rb'
     - 'ee/spec/frontend/fixtures/analytics/devops_reports/devops_adoption/enabled_namespaces.rb'
@@ -65,3 +64,4 @@ RSpec/FilePath:
     - 'spec/services/ci/create_pipeline_service/rate_limit_spec.rb'
     - 'spec/services/ci/create_pipeline_service/rules_spec.rb'
     - 'spec/services/ci/create_pipeline_service/tags_spec.rb'
+    - 'spec/services/ci/create_pipeline_service/variables_spec.rb'

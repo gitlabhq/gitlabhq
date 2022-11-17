@@ -189,13 +189,13 @@ RSpec.describe Notes::BuildService do
         context 'issuable author' do
           let(:user) { noteable_author }
 
-          it_behaves_like 'user allowed to set comment as confidential'
+          it_behaves_like 'user not allowed to set comment as confidential'
         end
 
         context 'issuable assignee' do
           let(:user) { issuable_assignee }
 
-          it_behaves_like 'user allowed to set comment as confidential'
+          it_behaves_like 'user not allowed to set comment as confidential'
         end
 
         context 'admin' do
@@ -265,13 +265,13 @@ RSpec.describe Notes::BuildService do
         context 'with noteable author' do
           let(:user) { note.noteable.author }
 
-          it_behaves_like 'confidential set to `true`'
+          it_behaves_like 'returns `Discussion to reply to cannot be found` error'
         end
 
         context 'with noteable assignee' do
           let(:user) { issuable_assignee }
 
-          it_behaves_like 'confidential set to `true`'
+          it_behaves_like 'returns `Discussion to reply to cannot be found` error'
         end
 
         context 'with guest access' do

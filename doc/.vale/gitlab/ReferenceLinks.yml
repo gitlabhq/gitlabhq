@@ -3,10 +3,10 @@
 #
 # Checks for reference-style links that should be converted to inline links.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Link "%s" must be inline.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#basic-link-criteria
+message: "Put this link inline with the rest of the text."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
 level: error
 scope: raw
 raw:

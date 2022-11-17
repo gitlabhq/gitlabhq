@@ -77,6 +77,8 @@ With the [Customers Portal](https://customers.gitlab.com/) you can:
 - [Change the namespace the subscription is linked to](#change-the-linked-namespace)
 - [Change customers portal account password](#change-customers-portal-account-password)
 
+The Customers Portal is available only to customers who purchased their subscription from GitLab. If you made your purchase through a partner or reseller, you must contact them directly for assistance with your subscription.
+
 ### Change account owner information
 
 Account owner personal details are used on invoices. The account owner email
@@ -151,10 +153,14 @@ To change the namespace linked to a subscription:
    [linked](#change-the-linked-account) GitLab SaaS account.
 1. Navigate to the **Manage Purchases** page.
 1. Select **Change linked namespace**.
-1. Select the desired group from the **This subscription is for** dropdown. For a group to appear
-   here, you must have the Owner role
-   for that group.
+1. Select the desired group from the **Select user or group** dropdown list. For a group to appear
+   here, you must have the Owner role for that group.
 1. Select **Proceed to checkout**.
+
+If the group you want to link does not appear in the dropdown list, check:
+
+- You have [linked your Customers Portal account with your GitLab.com account](#change-the-linked-account).
+- That the linked account is a member of the group you want to select, and you are assigned the Owner role.
 
 Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](gitlab_com/index.md#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace.
 
@@ -177,7 +183,7 @@ For qualifying non-profit educational institutions, the [GitLab for Education Pr
 
 ### GitLab for Open Source
 
-For qualifying open source projects, the [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/) provides GitLab Ultimate, plus 50,000 CI/CD minutes per month. For more information—including instructions for applying to the program and renewing program membership—see the [GitLab for Open Source Program page](https://about.gitlab.com/solutions/open-source/) and the [GitLab handbook](https://about.gitlab.com/handbook/marketing/community-relations/opensource-program/).
+For qualifying open source projects, the [GitLab for Open Source Program](https://about.gitlab.com/solutions/open-source/) provides GitLab Ultimate, plus 50,000 CI/CD minutes per month. For more information—including instructions for applying to the program and renewing program membership—see the [GitLab for Open Source Program page](https://about.gitlab.com/solutions/open-source/) and the [GitLab handbook](https://about.gitlab.com/handbook/marketing/community-relations/community-programs/opensource-program/).
 
 #### Meeting GitLab for Open Source Program requirements
 
@@ -238,7 +244,7 @@ Exceptions to this public visibility requirement apply in select circumstances (
 
 ### GitLab for Startups
 
-For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides GitLab Ultimate, plus 50,000 CI/CD minutes per month for 12 months. For more information—including instructions for applying to the program and renewing program membership—see the [GitLab for Startups Program page](https://about.gitlab.com/solutions/startups/) and the [GitLab handbook](https://about.gitlab.com/handbook/marketing/community-relations/startups-program/).
+For qualifying startups, the [GitLab for Startups](https://about.gitlab.com/solutions/startups/) program provides GitLab Ultimate, plus 50,000 CI/CD minutes per month for 12 months. For more information—including instructions for applying to the program and renewing program membership—see the [GitLab for Startups Program page](https://about.gitlab.com/solutions/startups/) and the [GitLab handbook](https://about.gitlab.com/handbook/marketing/community-relations/community-programs/startups-program/).
 
 ## Contact Support
 
@@ -259,6 +265,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

@@ -64,14 +64,6 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         let!(:project_authorization) { create(:agent_project_authorization, agent: non_ancestor_agent, project: requesting_project) }
 
         it { is_expected.to match_array([project_authorization]) }
-
-        context 'agent_authorization_include_descendants feature flag is disabled' do
-          before do
-            stub_feature_flags(agent_authorization_include_descendants: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       context 'with project authorizations present' do
@@ -138,14 +130,6 @@ RSpec.describe Clusters::AgentAuthorizationsFinder do
         let!(:group_authorization) { create(:agent_group_authorization, agent: non_ancestor_agent, group: bottom_level_group) }
 
         it { is_expected.to match_array([group_authorization]) }
-
-        context 'agent_authorization_include_descendants feature flag is disabled' do
-          before do
-            stub_feature_flags(agent_authorization_include_descendants: false)
-          end
-
-          it { is_expected.to be_empty }
-        end
       end
 
       it_behaves_like 'access_as' do

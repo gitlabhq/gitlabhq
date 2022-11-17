@@ -64,7 +64,7 @@ The following table lists project permissions available for each role:
 | [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md)                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
 | [Analytics](analytics/index.md):<br>View [repository analytics](analytics/repository_analytics.md)                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>View licenses in [dependency list](application_security/dependency_list/index.md)                                          |          |          | ✓         | ✓          | ✓        |
-| [Application security](application_security/index.md):<br>Create and run [on-demand DAST scans](application_security/dast/index.md#on-demand-scans)                                  |          |          | ✓         | ✓          | ✓        |
+| [Application security](application_security/index.md):<br>Create and run [on-demand DAST scans](application_security/dast/proxy-based.md#on-demand-scans)                                  |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Manage [security policy](application_security/policies/index.md)                                                           |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>View [dependency list](application_security/dependency_list/index.md)                                                      |          |          | ✓         | ✓          | ✓        |
 | [Application security](application_security/index.md):<br>Create a [CVE ID Request](application_security/cve_id_request.md)                                                          |          |          |           | ✓          | ✓        |
@@ -73,16 +73,17 @@ The following table lists project permissions available for each role:
 | [Clusters](infrastructure/clusters/index.md):<br>Manage clusters                                                                                                                     |          |          |           | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/index.md#delete-images-by-using-a-cleanup-policy) |          |          |          | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Push an image to the Container Registry                                                                               |          |          | ✓         | ✓          | ✓        |
-| [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                             | ✓ (*20*) | ✓ (*20*) | ✓         | ✓          | ✓        |
+| [Container Registry](packages/container_registry/index.md):<br>Pull an image from the Container Registry                                                                             | ✓ (*19*) | ✓ (*19*) | ✓         | ✓          | ✓        |
 | [Container Registry](packages/container_registry/index.md):<br>Remove a Container Registry image                                                                                     |          |          | ✓         | ✓          | ✓        |
-| [GitLab Pages](project/pages/index.md):<br>View Pages protected by [access control](project/pages/introduction.md#gitlab-pages-access-control)                                       | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [GitLab Pages](project/pages/index.md):<br>View Pages protected by [access control](project/pages/pages_access_control.md)                                       | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Manage                                                                                                                                    |          |          |           | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Manage GitLab Pages domains and certificates                                                                                              |          |          |           | ✓          | ✓        |
 | [GitLab Pages](project/pages/index.md):<br>Remove GitLab Pages                                                                                                                       |          |          |           | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>View [alerts](../operations/incident_management/alerts.md)                                                     |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Assign an alert                                                                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>[Change an alert status](../operations/incident_management/alerts.md#change-an-alerts-status)                                                                                               |         | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>View [incident](../operations/incident_management/incidents.md)                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
-| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                                              | (*16*)   | ✓        | ✓         | ✓          | ✓        |
+| [Incident Management](../operations/incident_management/index.md):<br>Create [incident](../operations/incident_management/incidents.md)                                              |    | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>View [on-call schedules](../operations/incident_management/oncall_schedules.md)                                |          | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>Participate in on-call rotation                                                                                | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Incident Management](../operations/incident_management/index.md):<br>View [escalation policies](../operations/incident_management/escalation_policies.md)                           |          | ✓        | ✓         | ✓          | ✓        |
@@ -91,16 +92,16 @@ The following table lists project permissions available for each role:
 | [Issue boards](project/issue_board.md):<br>Create or delete lists                                                                                                                    |          | ✓        | ✓         | ✓          | ✓        |
 | [Issue boards](project/issue_board.md):<br>Move issues between lists                                                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Add Labels                                                                                                                                     | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
-| [Issues](project/issues/index.md):<br>Add to epic                                                                                                                                    |           | ✓ (*23*) | ✓ (*23*)  | ✓ (*23*)   | ✓ (*23*) |
+| [Issues](project/issues/index.md):<br>Add to epic                                                                                                                                    |           | ✓ (*22*) | ✓ (*22*)  | ✓ (*22*)   | ✓ (*22*) |
 | [Issues](project/issues/index.md):<br>Assign                                                                                                                                         | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
-| [Issues](project/issues/index.md):<br>Create (*18*)                                                                                                                                  | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Issues](project/issues/index.md):<br>Create (*17*)                                                                                                                                  | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Create [confidential issues](project/issues/confidential_issues.md)                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [Design Management](project/issues/design_management.md) pages                                                                            | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [related issues](project/issues/related_issues.md)                                                                                        | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Set [weight](project/issues/issue_weight.md)                                                                                                   | ✓ (*15*) | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Set [parent epic](group/epics/manage_epics.md#add-an-existing-issue-to-an-epic) |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>View [confidential issues](project/issues/confidential_issues.md)                                                                              | (*2*)    | ✓        | ✓         | ✓          | ✓        |
-| [Issues](project/issues/index.md):<br>Close / reopen (*19*)                                                                                                                          |          | ✓        | ✓         | ✓          | ✓        |
+| [Issues](project/issues/index.md):<br>Close / reopen (*18*)                                                                                                                          |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Lock threads                                                                                                                                   |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Manage [related issues](project/issues/related_issues.md)                                                                                      |          | ✓        | ✓         | ✓          | ✓        |
 | [Issues](project/issues/index.md):<br>Manage tracker                                                                                                                                 |          | ✓        | ✓         | ✓          | ✓        |
@@ -118,7 +119,7 @@ The following table lists project permissions available for each role:
 | [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Approve (*8*)                                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Assign                                                                                                                         |          |          | ✓         | ✓          | ✓        |
-| [Merge requests](project/merge_requests/index.md):<br>Create (*17*)                                                                                                                  |          |          | ✓         | ✓          | ✓        |
+| [Merge requests](project/merge_requests/index.md):<br>Create (*16*)                                                                                                                  |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Add labels                                                                                                                     |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Lock threads                                                                                                                   |          |          | ✓         | ✓          | ✓        |
 | [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                                                                               |          |          | ✓         | ✓          | ✓        |
@@ -153,7 +154,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>View project [Audit Events](../administration/audit_events.md)                                                                                      |          |          | ✓ (*10*)  | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add [deploy keys](project/deploy_keys/index.md)                                                                                                     |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Add new [team members](project/members/index.md)                                                                                                    |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Manage [team members](project/members/index.md)                                                                                                     |          |          |           | ✓ (*21*)   | ✓        |
+| [Projects](project/index.md):<br>Manage [team members](project/members/index.md)                                                                                                     |          |          |           | ✓ (*20*)   | ✓        |
 | [Projects](project/index.md):<br>Change [project features visibility](public_access.md) level                                                                                        |          |          |           | ✓ (*13*)   | ✓        |
 | [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                                                              |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Delete [wiki](project/wiki/index.md) pages                                                                                                          |          |          | ✓         | ✓          | ✓        |
@@ -161,7 +162,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Edit project badges                                                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit project settings                                                                                                                               |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Export project                                                                                                                                      |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) (*11*)                                                                    |          |          |           | ✓ (*21*)   | ✓        |
+| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) (*11*)                                                                    |          |          |           | ✓ (*20*)   | ✓        |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Rename project                                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Share (invite) projects with groups                                                                                                                 |          |          |           | ✓ (*7*)    | ✓ (*7*)  |
@@ -203,10 +204,10 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard                                                                                    |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md)           |          |          | ✓         | ✓          | ✓        |
-| [Tasks](tasks.md):<br>Create (*18*)     | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Create (*17*)     | ✓        | ✓        | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Edit              |          | ✓         | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Remove from issue |          | ✓         | ✓         | ✓          | ✓        |
-| [Tasks](tasks.md):<br>Delete (*22*)     |          |           |            |            | ✓        |
+| [Tasks](tasks.md):<br>Delete (*21*)     |          |           |            |            | ✓        |
 | [Terraform](infrastructure/index.md):<br>Read Terraform state                                                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Terraform](infrastructure/index.md):<br>Manage Terraform state                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Test cases](../ci/test_cases/index.md):<br>Archive                                                                                                                                  |          | ✓        | ✓         | ✓          | ✓        |
@@ -239,15 +240,13 @@ The following table lists project permissions available for each role:
     Developer role.
 15. Guest users can only set metadata (for example, labels, assignees, or milestones)
     when creating an issue. They cannot change the metadata on existing issues.
-16. In GitLab 14.5 or later, Guests are not allowed to [create incidents](../operations/incident_management/incidents.md#incident-creation).
-    In GitLab 15.1 and later, a Guest who created an issue that was promoted to an incident cannot edit, close, or reopen their incident.
-17. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
-18. Authors and assignees can modify the title and description even if they don't have the Reporter role.
-19. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
-20. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
-21. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
-22. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
-23. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
+16. In projects that accept contributions from external members, users can create, edit, and close their own merge requests.
+17. Authors and assignees can modify the title and description even if they don't have the Reporter role.
+18. Authors and assignees can close and reopen issues even if they don't have the Reporter role.
+19. The ability to view the Container Registry and pull images is controlled by the [Container Registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions).
+20. Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests.
+21. Authors of tasks can delete them even if they don't have the Owner role, but they have to have at least the Guest role for the project.
+22. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic).
 
 <!-- markdownlint-enable MD029 -->
 
@@ -470,7 +469,7 @@ project and should only have access to that project.
 
 External users:
 
-- Cannot create project, groups, and snippets within their personal namespaces.
+- Cannot create project, groups, and snippets in their personal namespaces.
 - Can only create projects (including forks), subgroups, and snippets within top-level groups to which they are explicitly granted access.
 - Can only access public projects and projects to which they are explicitly granted access,
   thus hiding all other internal or private ones from them (like being

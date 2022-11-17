@@ -103,13 +103,17 @@ RSpec.describe SearchController, type: :request do
         expect(response).not_to redirect_to(project_commit_path(project, sha))
       end
 
-      it 'does not redirect if user cannot download_code from project' do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?).with(user, :download_code, project).and_return(false)
+      context 'when user cannot read_code' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :read_code, project).and_return(false)
+        end
 
-        send_search_request({ search: sha, project_id: project.id })
+        it 'does not redirect' do
+          send_search_request({ search: sha, project_id: project.id })
 
-        expect(response).not_to redirect_to(project_commit_path(project, sha))
+          expect(response).not_to redirect_to(project_commit_path(project, sha))
+        end
       end
 
       it 'does not redirect if commit sha not found in project' do

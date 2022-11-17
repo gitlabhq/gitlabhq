@@ -3,6 +3,8 @@
 module Gitlab
   module GitalyClient
     class CleanupService
+      include WithFeatureFlagActors
+
       attr_reader :repository, :gitaly_repo, :storage
 
       # 'repository' is a Gitlab::Git::Repository
@@ -10,10 +12,12 @@ module Gitlab
         @repository = repository
         @gitaly_repo = repository.gitaly_repository
         @storage = repository.storage
+
+        self.repository_actor = repository
       end
 
       def apply_bfg_object_map_stream(io, &blk)
-        response = GitalyClient.call(
+        response = gitaly_client_call(
           storage,
           :cleanup_service,
           :apply_bfg_object_map_stream,

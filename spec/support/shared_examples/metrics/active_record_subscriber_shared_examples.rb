@@ -37,7 +37,8 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
       Gitlab::WithRequestStore.with_request_store do
         subscriber.sql(event)
 
-        expected = if db_role == :primary
+        expected = case db_role
+                   when :primary
                      transform_hash(expected_payload_defaults, {
                        db_count: record_query ? 1 : 0,
                        db_write_count: record_write_query ? 1 : 0,
@@ -53,7 +54,7 @@ RSpec.shared_examples 'store ActiveRecord info in RequestStore' do |db_role|
                        db_primary_wal_cached_count: record_wal_query && record_cached_query ? 1 : 0,
                        "db_#{db_config_name}_wal_cached_count": record_wal_query && record_cached_query ? 1 : 0
                      })
-                   elsif db_role == :replica
+                   when :replica
                      transform_hash(expected_payload_defaults, {
                        db_count: record_query ? 1 : 0,
                        db_write_count: record_write_query ? 1 : 0,

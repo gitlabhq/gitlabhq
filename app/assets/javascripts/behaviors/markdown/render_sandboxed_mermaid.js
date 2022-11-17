@@ -1,5 +1,4 @@
-import $ from 'jquery';
-import { once, countBy } from 'lodash';
+import { countBy } from 'lodash';
 import { __ } from '~/locale';
 import {
   getBaseURL,
@@ -8,7 +7,8 @@ import {
   joinPaths,
 } from '~/lib/utils/url_utility';
 import { darkModeEnabled } from '~/lib/utils/color_utils';
-import { setAttributes } from '~/lib/utils/dom_utils';
+import { setAttributes, isElementVisible } from '~/lib/utils/dom_utils';
+import { createAlert, VARIANT_WARNING } from '~/flash';
 import { unrestrictedPages } from './constants';
 
 // Renders diagrams and flowcharts from text using Mermaid in any element with the
@@ -27,16 +27,29 @@ import { unrestrictedPages } from './constants';
 
 const SANDBOX_FRAME_PATH = '/-/sandbox/mermaid';
 // This is an arbitrary number; Can be iterated upon when suitable.
-const MAX_CHAR_LIMIT = 2000;
+export const MAX_CHAR_LIMIT = 2000;
 // Max # of mermaid blocks that can be rendered in a page.
-const MAX_MERMAID_BLOCK_LIMIT = 50;
+export const MAX_MERMAID_BLOCK_LIMIT = 50;
 // Max # of `&` allowed in Chaining of links syntax
 const MAX_CHAINING_OF_LINKS_LIMIT = 30;
+
 export const BUFFER_IFRAME_HEIGHT = 10;
 export const SANDBOX_ATTRIBUTES = 'allow-scripts allow-popups';
+
+const ALERT_CONTAINER_CLASS = 'mermaid-alert-container';
+export const LAZY_ALERT_SHOWN_CLASS = 'lazy-alert-shown';
+
 // Keep a map of mermaid blocks we've already rendered.
 const elsProcessingMap = new WeakMap();
 let renderedMermaidBlocks = 0;
+
+/**
+ * Determines whether a given Mermaid diagram is visible.
+ *
+ * @param {Element} el The Mermaid DOM node
+ * @returns
+ */
+const isVisibleMermaid = (el) => el.closest('details') === null && isElementVisible(el);
 
 function shouldLazyLoadMermaidBlock(source) {
   /**
@@ -104,8 +117,8 @@ function renderMermaidEl(el, source) {
   );
 }
 
-function renderMermaids($els) {
-  if (!$els.length) return;
+function renderMermaids(els) {
+  if (!els.length) return;
 
   const pageName = document.querySelector('body').dataset.page;
 
@@ -114,7 +127,7 @@ function renderMermaids($els) {
 
   let renderedChars = 0;
 
-  $els.each((i, el) => {
+  els.forEach((el) => {
     // Skipping all the elements which we've already queued in requestIdleCallback
     if (elsProcessingMap.has(el)) {
       return;
@@ -133,33 +146,29 @@ function renderMermaids($els) {
         renderedMermaidBlocks >= MAX_MERMAID_BLOCK_LIMIT ||
         shouldLazyLoadMermaidBlock(source))
     ) {
-      const html = `
-          <div class="alert gl-alert gl-alert-warning alert-dismissible lazy-render-mermaid-container js-lazy-render-mermaid-container fade show" role="alert">
-            <div>
-              <div>
-                <div class="js-warning-text"></div>
-                <div class="gl-alert-actions">
-                  <button type="button" class="js-lazy-render-mermaid btn gl-alert-action btn-confirm btn-md gl-button">Display</button>
-                </div>
-              </div>
-              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-          </div>
-          `;
+      const parent = el.parentNode;
 
-      const $parent = $(el).parent();
-
-      if (!$parent.hasClass('lazy-alert-shown')) {
-        $parent.after(html);
-        $parent
-          .siblings()
-          .find('.js-warning-text')
-          .text(
-            __('Warning: Displaying this diagram might cause performance issues on this page.'),
-          );
-        $parent.addClass('lazy-alert-shown');
+      if (!parent.classList.contains(LAZY_ALERT_SHOWN_CLASS)) {
+        const alertContainer = document.createElement('div');
+        alertContainer.classList.add(ALERT_CONTAINER_CLASS);
+        alertContainer.classList.add('gl-mb-5');
+        parent.after(alertContainer);
+        createAlert({
+          message: __(
+            'Warning: Displaying this diagram might cause performance issues on this page.',
+          ),
+          variant: VARIANT_WARNING,
+          parent: parent.parentNode,
+          containerSelector: `.${ALERT_CONTAINER_CLASS}`,
+          primaryButton: {
+            text: __('Display'),
+            clickHandler: () => {
+              alertContainer.remove();
+              renderMermaidEl(el, source);
+            },
+          },
+        });
+        parent.classList.add(LAZY_ALERT_SHOWN_CLASS);
       }
 
       return;
@@ -176,37 +185,33 @@ function renderMermaids($els) {
   });
 }
 
-const hookLazyRenderMermaidEvent = once(() => {
-  $(document.body).on('click', '.js-lazy-render-mermaid', function eventHandler() {
-    const parent = $(this).closest('.js-lazy-render-mermaid-container');
-    const pre = parent.prev();
+export default function renderMermaid(els) {
+  if (!els.length) return;
 
-    const el = pre.find('.js-render-mermaid');
+  const visibleMermaids = [];
+  const hiddenMermaids = [];
 
-    parent.remove();
-
-    // sandbox update
-    const element = el.get(0);
-    const { source } = fixElementSource(element);
-
-    renderMermaidEl(element, source);
-  });
-});
-
-export default function renderMermaid($els) {
-  if (!$els.length) return;
-
-  const visibleMermaids = $els.filter(function filter() {
-    return $(this).closest('details').length === 0 && $(this).is(':visible');
-  });
+  for (const el of els) {
+    if (isVisibleMermaid(el)) {
+      visibleMermaids.push(el);
+    } else {
+      hiddenMermaids.push(el);
+    }
+  }
 
   renderMermaids(visibleMermaids);
 
-  $els.closest('details').one('toggle', function toggle() {
-    if (this.open) {
-      renderMermaids($(this).find('.js-render-mermaid'));
-    }
+  hiddenMermaids.forEach((el) => {
+    el.closest('details')?.addEventListener(
+      'toggle',
+      ({ target: details }) => {
+        if (details.open) {
+          renderMermaids([...details.querySelectorAll('.js-render-mermaid')]);
+        }
+      },
+      {
+        once: true,
+      },
+    );
   });
-
-  hookLazyRenderMermaidEvent();
 }

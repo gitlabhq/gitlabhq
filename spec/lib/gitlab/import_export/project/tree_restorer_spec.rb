@@ -160,7 +160,7 @@ RSpec.describe Gitlab::ImportExport::Project::TreeRestorer do
           pipeline = Ci::Pipeline.find_by_sha('sha-notes')
           pipeline_metadata = pipeline.pipeline_metadata
 
-          expect(pipeline_metadata.title).to eq('Build pipeline')
+          expect(pipeline_metadata.name).to eq('Build pipeline')
           expect(pipeline_metadata.pipeline_id).to eq(pipeline.id)
           expect(pipeline_metadata.project_id).to eq(pipeline.project_id)
         end

@@ -90,6 +90,9 @@ export default {
     items() {
       this.selectedIndex = 0;
     },
+    selectedIndex() {
+      this.scrollIntoView();
+    },
   },
 
   methods: {
@@ -182,6 +185,10 @@ export default {
       this.selectItem(this.selectedIndex);
     },
 
+    scrollIntoView() {
+      this.$refs.dropdownItems[this.selectedIndex].$el.scrollIntoView({ block: 'nearest' });
+    },
+
     selectItem(index) {
       const item = this.items[index];
 
@@ -209,6 +216,7 @@ export default {
     <div class="gl-new-dropdown-inner gl-overflow-y-auto">
       <gl-dropdown-item
         v-for="(item, index) in items"
+        ref="dropdownItems"
         :key="index"
         :class="{ 'gl-bg-gray-50': index === selectedIndex }"
         @click="selectItem(index)"

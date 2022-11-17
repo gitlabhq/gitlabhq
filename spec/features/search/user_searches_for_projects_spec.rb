@@ -2,15 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for projects', :js do
+RSpec.describe 'User searches for projects', :js, :disable_rate_limiter do
   let!(:project) { create(:project, :public, name: 'Shop') }
 
   context 'when signed out' do
     context 'when block_anonymous_global_searches is disabled' do
       before do
-        stub_feature_flags(search_page_vertical_nav: false)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit).and_return(1000)
-        allow(Gitlab::ApplicationRateLimiter).to receive(:threshold).with(:search_rate_limit_unauthenticated).and_return(1000)
         stub_feature_flags(block_anonymous_global_searches: false)
       end
 

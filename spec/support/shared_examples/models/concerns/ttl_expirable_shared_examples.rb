@@ -7,6 +7,11 @@ RSpec.shared_examples 'ttl_expirable' do
 
   it_behaves_like 'having unique enum values'
 
+  describe 'default values', :freeze_time do
+    it { expect(described_class.new.read_at).to be_like_time(Time.zone.now) }
+    it { expect(described_class.new(read_at: 1.day.ago).read_at).to be_like_time(1.day.ago) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:status) }
   end
@@ -38,7 +43,7 @@ RSpec.shared_examples 'ttl_expirable' do
     end
   end
 
-  describe '#read', :freeze_time do
+  describe '#read!', :freeze_time do
     let_it_be(:old_read_at) { 1.day.ago }
     let_it_be(:item1) { create(class_symbol, read_at: old_read_at) }
 

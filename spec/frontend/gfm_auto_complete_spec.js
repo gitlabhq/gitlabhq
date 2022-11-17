@@ -3,14 +3,23 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import GfmAutoComplete, { membersBeforeSave, highlighter } from 'ee_else_ce/gfm_auto_complete';
+import GfmAutoComplete, {
+  membersBeforeSave,
+  highlighter,
+  CONTACT_STATE_ACTIVE,
+  CONTACTS_ADD_COMMAND,
+  CONTACTS_REMOVE_COMMAND,
+} from 'ee_else_ce/gfm_auto_complete';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import '~/lib/utils/jquery_at_who';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import axios from '~/lib/utils/axios_utils';
-import { eventlistenersMockDefaultMap } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
+import {
+  eventlistenersMockDefaultMap,
+  crmContactsMock,
+} from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
 
 describe('GfmAutoComplete', () => {
   const fetchDataMock = { fetchData: jest.fn() };
@@ -871,7 +880,87 @@ describe('GfmAutoComplete', () => {
     });
   });
 
-  describe('Contacts', () => {
+  describe('CRM Contacts', () => {
+    const dataSources = {
+      contacts: `${TEST_HOST}/autocomplete_sources/contacts`,
+    };
+
+    const allContacts = crmContactsMock;
+    const assignedContacts = allContacts.filter((contact) => contact.set);
+    const unassignedContacts = allContacts.filter(
+      (contact) => contact.state === CONTACT_STATE_ACTIVE && !contact.set,
+    );
+
+    let autocomplete;
+    let $textarea;
+
+    beforeEach(() => {
+      setHTMLFixture('<textarea></textarea>');
+      autocomplete = new GfmAutoComplete(dataSources);
+      $textarea = $('textarea');
+      autocomplete.setup($textarea, { contacts: true });
+    });
+
+    afterEach(() => {
+      autocomplete.destroy();
+      resetHTMLFixture();
+    });
+
+    const triggerDropdown = (text) => {
+      $textarea.trigger('focus').val(text).caret('pos', -1);
+      $textarea.trigger('keyup');
+
+      jest.runOnlyPendingTimers();
+    };
+
+    const getDropdownItems = () => {
+      const dropdown = document.getElementById('at-view-contacts');
+      const items = dropdown.getElementsByTagName('li');
+      return [].map.call(items, (item) => item.textContent.trim());
+    };
+
+    const expectContacts = ({ input, output }) => {
+      triggerDropdown(input);
+
+      expect(getDropdownItems()).toEqual(output.map((contact) => contact.email));
+    };
+
+    describe('with no contacts assigned', () => {
+      beforeEach(() => {
+        autocomplete.cachedData['[contact:'] = [...unassignedContacts];
+      });
+
+      it.each`
+        input                                     | output
+        ${`${CONTACTS_ADD_COMMAND} [contact:`}    | ${unassignedContacts}
+        ${`${CONTACTS_REMOVE_COMMAND} [contact:`} | ${[]}
+      `('$input shows $output.length contacts', expectContacts);
+    });
+
+    describe('with some contacts assigned', () => {
+      beforeEach(() => {
+        autocomplete.cachedData['[contact:'] = allContacts;
+      });
+
+      it.each`
+        input                                     | output
+        ${`${CONTACTS_ADD_COMMAND} [contact:`}    | ${unassignedContacts}
+        ${`${CONTACTS_REMOVE_COMMAND} [contact:`} | ${assignedContacts}
+      `('$input shows $output.length contacts', expectContacts);
+    });
+
+    describe('with all contacts assigned', () => {
+      beforeEach(() => {
+        autocomplete.cachedData['[contact:'] = [...assignedContacts];
+      });
+
+      it.each`
+        input                                     | output
+        ${`${CONTACTS_ADD_COMMAND} [contact:`}    | ${[]}
+        ${`${CONTACTS_REMOVE_COMMAND} [contact:`} | ${assignedContacts}
+      `('$input shows $output.length contacts', expectContacts);
+    });
+
     it('escapes name and email correct', () => {
       const xssPayload = '<script>alert(1)</script>';
       const escapedPayload = '&lt;script&gt;alert(1)&lt;/script&gt;';

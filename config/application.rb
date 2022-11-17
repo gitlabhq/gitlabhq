@@ -262,12 +262,15 @@ module Gitlab
     config.assets.precompile << "page_bundles/alert_management_settings.css"
     config.assets.precompile << "page_bundles/billings.css"
     config.assets.precompile << "page_bundles/boards.css"
+    config.assets.precompile << "page_bundles/branches.css"
     config.assets.precompile << "page_bundles/build.css"
     config.assets.precompile << "page_bundles/ci_status.css"
     config.assets.precompile << "page_bundles/cluster_agents.css"
     config.assets.precompile << "page_bundles/clusters.css"
     config.assets.precompile << "page_bundles/cycle_analytics.css"
+    config.assets.precompile << "page_bundles/dashboard.css"
     config.assets.precompile << "page_bundles/dashboard_projects.css"
+    config.assets.precompile << "page_bundles/design_management.css"
     config.assets.precompile << "page_bundles/dev_ops_reports.css"
     config.assets.precompile << "page_bundles/editor.css"
     config.assets.precompile << "page_bundles/environments.css"
@@ -293,6 +296,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/merge_requests.css"
     config.assets.precompile << "page_bundles/milestone.css"
     config.assets.precompile << "page_bundles/new_namespace.css"
+    config.assets.precompile << "page_bundles/notifications.css"
     config.assets.precompile << "page_bundles/oncall_schedules.css"
     config.assets.precompile << "page_bundles/operations.css"
     config.assets.precompile << "page_bundles/escalation_policies.css"
@@ -418,20 +422,13 @@ module Gitlab
         allow do
           origins '*'
           resource oauth_path,
-            headers: %w(Authorization),
+            # These headers are added as defaults to axios.
+            # See: https://gitlab.com/gitlab-org/gitlab/-/blob/dd1e70d3676891025534dc4a1e89ca9383178fe7/app/assets/javascripts/lib/utils/axios_utils.js#L8)
+            # It's added to declare that this is a XHR request and add the CSRF token without which Rails may reject the request from the frontend.
+            headers: %w(Authorization X-CSRF-Token X-Requested-With),
             credentials: false,
             methods: %i(post options)
         end
-      end
-
-      # Cross-origin requests must be enabled to fetch the self-managed application oauth application ID
-      # for the GitLab for Jira app.
-      allow do
-        origins '*'
-        resource '/-/jira_connect/oauth_application_id',
-          headers: :any,
-          methods: %i(get options),
-          credentials: false
       end
 
       # These are routes from doorkeeper-openid_connect:
@@ -470,6 +467,11 @@ module Gitlab
 
     config.generators do |g|
       g.factory_bot false
+    end
+
+    if defined?(FactoryBotRails)
+      config.factory_bot.definition_file_paths << 'ee/spec/factories' if Gitlab.ee?
+      config.factory_bot.definition_file_paths << 'jh/spec/factories' if Gitlab.jh?
     end
 
     # sprocket-rails adds some precompile assets we actually do not need.

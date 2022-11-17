@@ -159,7 +159,7 @@ module.exports = (path, options = {}) => {
   return {
     clearMocks: true,
     testMatch,
-    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml'],
+    moduleFileExtensions: ['js', 'json', 'vue', 'gql', 'graphql', 'yaml', 'yml'],
     moduleNameMapper,
     collectCoverageFrom,
     coverageDirectory: coverageDirectory(),
@@ -180,7 +180,7 @@ module.exports = (path, options = {}) => {
       '^.+\\.vue$': '@vue/vue2-jest',
       'spec/frontend/editor/schema/ci/yaml_tests/.+\\.(yml|yaml)$':
         './spec/frontend/__helpers__/yaml_transformer.js',
-      '^.+\\.(md|zip|png|yml|yaml)$': 'jest-raw-loader',
+      '^.+\\.(md|zip|png|yml|yaml)$': './spec/frontend/__helpers__/raw_transformer.js',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
     timers: 'legacy',

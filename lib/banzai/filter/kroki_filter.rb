@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
-require "nokogiri"
-require "asciidoctor/extensions/asciidoctor_kroki/extension"
+require 'nokogiri'
+require 'asciidoctor/extensions/asciidoctor_kroki/version'
+require 'asciidoctor/extensions/asciidoctor_kroki/extension'
 
 module Banzai
   module Filter
@@ -31,16 +32,16 @@ module Banzai
           img_tag = Nokogiri::HTML::DocumentFragment.parse(%(<img src="#{image_src}" />))
           img_tag = img_tag.children.first
 
-          unless img_tag.nil?
-            lazy_load = diagram_src.length > MAX_CHARACTER_LIMIT
-            img_tag.set_attribute('hidden', '') if lazy_load
-            img_tag.set_attribute('class', 'js-render-kroki')
+          next if img_tag.nil?
 
-            img_tag.set_attribute('data-diagram', diagram_type)
-            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(diagram_src)}")
+          lazy_load = diagram_src.length > MAX_CHARACTER_LIMIT
+          img_tag.set_attribute('hidden', '') if lazy_load
+          img_tag.set_attribute('class', 'js-render-kroki')
 
-            node.parent.replace(img_tag)
-          end
+          img_tag.set_attribute('data-diagram', diagram_type)
+          img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(diagram_src)}")
+
+          node.parent.replace(img_tag)
         end
 
         doc

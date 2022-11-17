@@ -98,6 +98,10 @@ class Repository
 
   alias_method :raw, :raw_repository
 
+  def flipper_id
+    raw_repository.flipper_id
+  end
+
   # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=
@@ -1232,7 +1236,8 @@ class Repository
     Gitlab::Git::Repository.new(shard,
                                 disk_path + '.git',
                                 repo_type.identifier_for_container(container),
-                                container.full_path)
+                                container.full_path,
+                                container: container)
   end
 end
 

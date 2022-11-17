@@ -10,12 +10,12 @@ import InviteMembersModal from '~/invite_members/components/invite_members_modal
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
 import ModalConfetti from '~/invite_members/components/confetti.vue';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
+import UserLimitNotification from '~/invite_members/components/user_limit_notification.vue';
 import {
   INVITE_MEMBERS_FOR_TASK,
   MEMBERS_MODAL_CELEBRATE_INTRO,
   MEMBERS_MODAL_CELEBRATE_TITLE,
   MEMBERS_PLACEHOLDER,
-  MEMBERS_PLACEHOLDER_DISABLED,
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   LEARN_GITLAB,
   EXPANDED_ERRORS,
@@ -31,8 +31,6 @@ import {
   propsData,
   inviteSource,
   newProjectPath,
-  freeUsersLimit,
-  membersCount,
   user1,
   user2,
   user3,
@@ -99,6 +97,7 @@ describe('InviteMembersModal', () => {
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
   const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
+  const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
   const findAccordion = () => wrapper.findComponent(GlCollapse);
   const findErrorsIcon = () => wrapper.findComponent(GlIcon);
   const findMemberErrorMessage = (element) =>
@@ -112,7 +111,7 @@ describe('InviteMembersModal', () => {
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
     findMembersFormGroup().attributes('invalid-feedback');
-  const membersFormGroupText = () => findMembersFormGroup().text();
+  const membersFormGroupDescription = () => findMembersFormGroup().attributes('description');
   const findMembersSelect = () => wrapper.findComponent(MembersTokenSelect);
   const findTasksToBeDone = () => wrapper.findByTestId('invite-members-modal-tasks-to-be-done');
   const findTasks = () => wrapper.findByTestId('invite-members-modal-tasks');
@@ -299,19 +298,8 @@ describe('InviteMembersModal', () => {
 
         describe('members form group description', () => {
           it('renders correct description', () => {
-            createInviteMembersToProjectWrapper({ freeUsersLimit, membersCount }, { GlFormGroup });
-            expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER);
-          });
-
-          describe('when reached user limit', () => {
-            it('renders correct description', () => {
-              createInviteMembersToProjectWrapper(
-                { freeUsersLimit, membersCount: 5 },
-                { GlFormGroup },
-              );
-
-              expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER_DISABLED);
-            });
+            createInviteMembersToProjectWrapper({ GlFormGroup });
+            expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
           });
         });
       });
@@ -339,23 +327,10 @@ describe('InviteMembersModal', () => {
 
         describe('members form group description', () => {
           it('renders correct description', async () => {
-            createInviteMembersToProjectWrapper({ freeUsersLimit, membersCount }, { GlFormGroup });
+            createInviteMembersToProjectWrapper({ GlFormGroup });
             await triggerOpenModal({ mode: 'celebrate' });
 
-            expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER);
-          });
-
-          describe('when reached user limit', () => {
-            it('renders correct description', async () => {
-              createInviteMembersToProjectWrapper(
-                { freeUsersLimit, membersCount: 5 },
-                { GlFormGroup },
-              );
-
-              await triggerOpenModal({ mode: 'celebrate' });
-
-              expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER_DISABLED);
-            });
+            expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
           });
         });
       });
@@ -370,17 +345,36 @@ describe('InviteMembersModal', () => {
 
       describe('members form group description', () => {
         it('renders correct description', () => {
-          createInviteMembersToGroupWrapper({ freeUsersLimit, membersCount }, { GlFormGroup });
-          expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER);
-        });
-
-        describe('when reached user limit', () => {
-          it('renders correct description', () => {
-            createInviteMembersToGroupWrapper({ freeUsersLimit, membersCount: 5 }, { GlFormGroup });
-            expect(membersFormGroupText()).toContain(MEMBERS_PLACEHOLDER_DISABLED);
-          });
+          createInviteMembersToGroupWrapper({ GlFormGroup });
+          expect(membersFormGroupDescription()).toContain(MEMBERS_PLACEHOLDER);
         });
       });
+    });
+  });
+
+  describe('rendering the user limit notification', () => {
+    it('shows the user limit notification alert when reached limit', () => {
+      const usersLimitDataset = { reachedLimit: true };
+
+      createInviteMembersToProjectWrapper(usersLimitDataset);
+
+      expect(findUserLimitAlert().exists()).toBe(true);
+    });
+
+    it('shows the user limit notification alert when close to dashboard limit', () => {
+      const usersLimitDataset = { closeToDashboardLimit: true };
+
+      createInviteMembersToProjectWrapper(usersLimitDataset);
+
+      expect(findUserLimitAlert().exists()).toBe(true);
+    });
+
+    it('does not show the user limit notification alert', () => {
+      const usersLimitDataset = {};
+
+      createInviteMembersToProjectWrapper(usersLimitDataset);
+
+      expect(findUserLimitAlert().exists()).toBe(false);
     });
   });
 

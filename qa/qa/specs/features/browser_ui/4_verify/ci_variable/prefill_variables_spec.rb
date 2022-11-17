@@ -2,7 +2,10 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline with prefill variables' do
+    describe 'Pipeline with prefill variables', feature_flag: {
+      name: :run_pipeline_graphql,
+      scope: :project
+    } do
       let(:prefill_variable_description1) { Faker::Lorem.sentence }
       let(:prefill_variable_value1) { Faker::Lorem.word }
       let(:prefill_variable_description2) { Faker::Lorem.sentence }
@@ -40,32 +43,62 @@ module QA
         end
       end
 
-      before do
-        Flow::Login.sign_in
-        project.visit!
+      shared_examples 'pre-filled variables form' do
+        before do
+          Flow::Login.sign_in
 
-        # Navigate to Run Pipeline page
-        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-        Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
-      end
+          project.visit!
+          # Navigate to Run Pipeline page
+          Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+          Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
 
-      it(
-        'shows only variables with description as prefill variables on the run pipeline page',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371204'
-      ) do
-        Page::Project::Pipeline::New.perform do |new|
-          aggregate_failures do
-            expect(new).to have_field('Input variable key', with: 'TEST1')
-            expect(new).to have_field('Input variable value', with: prefill_variable_value1)
-            expect(new).to have_content(prefill_variable_description1)
+          # Sometimes the variables will not be prefilled because of reactive cache so we revisit the page again.
+          # TODO: Investigate alternatives to deal with cache implementation
+          # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/381233
+          page.refresh
+        end
 
-            expect(new).to have_field('Input variable key', with: 'TEST2')
-            expect(new).to have_content(prefill_variable_description2)
+        it 'shows only variables with description as prefill variables on the run pipeline page' do
+          Page::Project::Pipeline::New.perform do |new|
+            aggregate_failures do
+              expect(new).to have_field('Input variable key', with: 'TEST1')
+              expect(new).to have_field('Input variable value', with: prefill_variable_value1)
+              expect(new).to have_content(prefill_variable_description1)
 
-            expect(new).not_to have_field('Input variable key', with: 'TEST3')
-            expect(new).not_to have_field('Input variable key', with: 'TEST4')
+              expect(new).to have_field('Input variable key', with: 'TEST2')
+              expect(new).to have_content(prefill_variable_description2)
+
+              expect(new).not_to have_field('Input variable key', with: 'TEST3')
+              expect(new).not_to have_field('Input variable key', with: 'TEST4')
+            end
           end
         end
+      end
+
+      # TODO: Clean up tests when run_pipeline_graphql is enabled
+      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/372310
+      context(
+        'with feature flag disabled',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/371204'
+      ) do
+        before do
+          Runtime::Feature.disable(:run_pipeline_graphql, project: project)
+        end
+
+        it_behaves_like 'pre-filled variables form'
+      end
+
+      context 'with feature flag enabled',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378977' do
+        before do
+          Runtime::Feature.enable(:run_pipeline_graphql, project: project)
+        end
+
+        after do
+          Runtime::Feature.disable(:run_pipeline_graphql, project: project)
+        end
+
+        it_behaves_like 'pre-filled variables form'
       end
     end
   end

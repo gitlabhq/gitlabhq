@@ -463,7 +463,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         context 'when variables are stored in trigger_request' do
           before do
-            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
 
             visit project_job_path(project, job)
           end
@@ -508,7 +508,7 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
 
         context 'when variables are stored in trigger_request' do
           before do
-            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' } )
+            trigger_request.update_attribute(:variables, { 'TRIGGER_KEY_1' => 'TRIGGER_VALUE_1' })
 
             visit project_job_path(project, job)
           end

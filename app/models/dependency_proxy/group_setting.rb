@@ -3,7 +3,7 @@
 class DependencyProxy::GroupSetting < ApplicationRecord
   belongs_to :group
 
-  validates :group, presence: true
+  attribute :enabled, default: true
 
-  default_value_for :enabled, true
+  validates :group, presence: true
 end

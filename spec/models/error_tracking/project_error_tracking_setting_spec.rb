@@ -187,39 +187,11 @@ RSpec.describe ErrorTracking::ProjectErrorTrackingSetting do
     end
   end
 
-  describe '#reactive_cache_limit_enabled?' do
-    subject { setting.reactive_cache_limit_enabled? }
-
-    it { is_expected.to eq(true) }
-
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(error_tracking_sentry_limit: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#sentry_client' do
     subject { setting.sentry_client }
 
     it { is_expected.to be_a(ErrorTracking::SentryClient) }
     it { is_expected.to have_attributes(url: setting.api_url, token: setting.token) }
-
-    describe '#validate_size_guarded_by_feature_flag?' do
-      subject { setting.sentry_client.validate_size_guarded_by_feature_flag? }
-
-      it { is_expected.to eq(true) }
-
-      context 'when feature flag disabled' do
-        before do
-          stub_feature_flags(error_tracking_sentry_limit: false)
-        end
-
-        it { is_expected.to eq(false) }
-      end
-    end
   end
 
   describe '#list_sentry_issues' do

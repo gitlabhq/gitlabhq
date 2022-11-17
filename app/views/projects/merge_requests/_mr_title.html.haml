@@ -25,9 +25,9 @@
           - display_class = moved_mr_sidebar_enabled? ? 'gl-md-display-none!' : 'gl-sm-display-none!'
           = render Pajamas::ButtonComponent.new(icon: "chevron-double-lg-left", button_options: { class: "btn-icon float-right gl-display-block gutter-toggle issuable-gutter-toggle js-sidebar-toggle #{display_class}" })
 
-    .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions
+    .detail-page-header-actions.gl-align-self-start.is-merge-request.js-issuable-actions.gl-display-flex
       - if can_update_merge_request
-        = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default btn-grouped js-issuable-edit", data: { qa_selector: "edit_button" }
+        = link_to _('Edit'), edit_project_merge_request_path(@project, @merge_request), class: "gl-display-none gl-md-display-block btn gl-button btn-default js-issuable-edit", data: { qa_selector: "edit_button" }
 
       - if @merge_request.source_project
         = render 'projects/merge_requests/code_dropdown'

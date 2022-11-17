@@ -126,6 +126,9 @@ export default {
     slotKeys() {
       return this.sortDirDesc ? ['form', 'comments'] : ['comments', 'form'];
     },
+    isAppReady() {
+      return !this.isLoading && !this.renderSkeleton && this.shouldShow;
+    },
   },
   watch: {
     async isFetching() {
@@ -148,6 +151,15 @@ export default {
       if (this.discussionsCount) {
         this.discussionsCount.textContent = val;
       }
+    },
+    isAppReady: {
+      handler(isReady) {
+        if (!isReady) return;
+        this.$nextTick(() => {
+          window.mrTabs?.eventHub.$emit('NotesAppReady');
+        });
+      },
+      immediate: true,
     },
   },
   created() {

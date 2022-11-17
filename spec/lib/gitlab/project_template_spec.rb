@@ -12,6 +12,20 @@ RSpec.describe Gitlab::ProjectTemplate do
     end
   end
 
+  describe '#project_host' do
+    context "when `preview` is valid" do
+      subject { described_class.new('name', 'title', 'description', 'https://gitlab.com/some/project/path').project_host }
+
+      it { is_expected.to eq 'https://gitlab.com' }
+    end
+
+    context "when `preview` is `nil`" do
+      subject { described_class.new('name', 'title', 'description', nil).project_host }
+
+      it { is_expected.to eq nil }
+    end
+  end
+
   describe '#project_path' do
     subject { described_class.new('name', 'title', 'description', 'https://gitlab.com/some/project/path').project_path }
 

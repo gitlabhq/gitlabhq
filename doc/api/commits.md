@@ -58,7 +58,7 @@ Example response:
     "parent_ids": [
       "6104942438c14ec7bd21c6cd5bd995272b3faff6"
     ],
-    "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -73,7 +73,7 @@ Example response:
     "parent_ids": [
       "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
     ],
-    "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+    "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
   }
 ]
 ```
@@ -173,7 +173,7 @@ Example response:
     "total": 4
   },
   "status": null,
-  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
+  "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
 }
 ```
 
@@ -253,7 +253,7 @@ Example response:
     "total": 25
   },
   "status": "running",
-  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/6104942438c14ec7bd21c6cd5bd995272b3faff6"
+  "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/6104942438c14ec7bd21c6cd5bd995272b3faff6"
 }
 ```
 
@@ -331,7 +331,7 @@ Example response:
   "parent_ids": [
     "a738f717824ff53aebad8b090c1b79a14f2bd9e8"
   ],
-  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
+  "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
 }
 ```
 
@@ -401,7 +401,7 @@ Example response:
   "committer_name":"Administrator",
   "committer_email":"admin@example.com",
   "committed_date":"2018-11-08T15:55:26.000Z",
-  "web_url": "https://gitlab.example.com/thedude/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
+  "web_url": "https://gitlab.example.com/janedoe/gitlab-foss/-/commit/8b090c1b79a14f2bd9e8a738f717824ff53aebad"
 }
 ```
 
@@ -536,7 +536,7 @@ POST /projects/:id/repository/commits/:sha/comments
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
-     --form "note=Nice picture man\!" --form "path=dudeism.md" --form "line=11" --form "line_type=new" \
+     --form "note=Nice picture\!" --form "path=README.md" --form "line=11" --form "line_type=new" \
      "https://gitlab.example.com/api/v4/projects/17/repository/commits/18f3e63d05582537db6d183d9d557be09e1f90c8/comments"
 ```
 
@@ -545,18 +545,18 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/thedude",
-      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
-      "username" : "thedude",
+      "web_url" : "https://gitlab.example.com/janedoe",
+      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+      "username" : "janedoe",
       "state" : "active",
-      "name" : "Jeff Lebowski",
+      "name" : "Jane Doe",
       "id" : 28
    },
    "created_at" : "2016-01-19T09:44:55.600Z",
    "line_type" : "new",
-   "path" : "dudeism.md",
+   "path" : "README.md",
    "line" : 11,
-   "note" : "Nice picture man!"
+   "note" : "Nice picture!"
 }
 ```
 
@@ -590,15 +590,15 @@ Example response:
       {
         "id": 334686748,
         "type": null,
-        "body": "I'm the Dude, so that's what you call me.",
+        "body": "Nice piece of code!",
         "attachment": null,
         "author" : {
           "id" : 28,
-          "name" : "Jeff Lebowski",
-          "username" : "thedude",
-          "web_url" : "https://gitlab.example.com/thedude",
+          "name" : "Jane Doe",
+          "username" : "janedoe",
+          "web_url" : "https://gitlab.example.com/janedoe",
           "state" : "active",
-          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
+          "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png"
         },
         "created_at": "2020-04-30T18:48:11.432Z",
         "updated_at": "2020-04-30T18:48:11.432Z",
@@ -655,16 +655,16 @@ Example response:
       "name" : "bundler:audit",
       "allow_failure" : true,
       "author" : {
-         "username" : "thedude",
+         "username" : "janedoe",
          "state" : "active",
-         "web_url" : "https://gitlab.example.com/thedude",
-         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
+         "web_url" : "https://gitlab.example.com/janedoe",
+         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
          "id" : 28,
-         "name" : "Jeff Lebowski"
+         "name" : "Jane Doe"
       },
       "description" : null,
       "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
-      "target_url" : "https://gitlab.example.com/thedude/gitlab-foss/builds/91",
+      "target_url" : "https://gitlab.example.com/janedoe/gitlab-foss/builds/91",
       "finished_at" : null,
       "id" : 91,
       "ref" : "master"
@@ -675,18 +675,18 @@ Example response:
       "allow_failure" : false,
       "status" : "pending",
       "created_at" : "2016-01-19T08:40:25.832Z",
-      "target_url" : "https://gitlab.example.com/thedude/gitlab-foss/builds/90",
+      "target_url" : "https://gitlab.example.com/janedoe/gitlab-foss/builds/90",
       "id" : 90,
       "finished_at" : null,
       "ref" : "master",
       "sha" : "18f3e63d05582537db6d183d9d557be09e1f90c8",
       "author" : {
          "id" : 28,
-         "name" : "Jeff Lebowski",
-         "username" : "thedude",
-         "web_url" : "https://gitlab.example.com/thedude",
+         "name" : "Jane Doe",
+         "username" : "janedoe",
+         "web_url" : "https://gitlab.example.com/janedoe",
          "state" : "active",
-         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png"
+         "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png"
       },
       "description" : null
    },
@@ -724,10 +724,10 @@ Example response:
 ```json
 {
    "author" : {
-      "web_url" : "https://gitlab.example.com/thedude",
-      "name" : "Jeff Lebowski",
-      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
-      "username" : "thedude",
+      "web_url" : "https://gitlab.example.com/janedoe",
+      "name" : "Jane Doe",
+      "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+      "username" : "janedoe",
       "state" : "active",
       "id" : 28
    },
@@ -781,10 +781,10 @@ Example response:
       "upvotes":0,
       "downvotes":0,
       "author" : {
-        "web_url" : "https://gitlab.example.com/thedude",
-        "name" : "Jeff Lebowski",
-        "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/The-Big-Lebowski-400-400.png",
-        "username" : "thedude",
+        "web_url" : "https://gitlab.example.com/janedoe",
+        "name" : "Jane Doe",
+        "avatar_url" : "https://gitlab.example.com/uploads/user/avatar/28/jane-doe-400-400.png",
+        "username" : "janedoe",
         "state" : "active",
         "id" : 28
       },

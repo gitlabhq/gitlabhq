@@ -336,7 +336,7 @@ Ci::PipelineMetadata:
 - id
 - project_id
 - pipeline_id
-- title
+- name
 Ci::Stage:
 - id
 - name
@@ -568,6 +568,7 @@ Project:
 - suggestion_commit_message
 - merge_commit_template
 - squash_commit_template
+- issue_branch_template
 Author:
 - name
 ProjectFeature:
@@ -592,6 +593,7 @@ ProjectFeature:
 - feature_flags_access_level
 - releases_access_level
 - monitor_access_level
+- infrastructure_access_level
 - created_at
 - updated_at
 ProtectedBranch::MergeAccessLevel:

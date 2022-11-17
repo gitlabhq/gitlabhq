@@ -47,10 +47,8 @@ RSpec.describe 'forked project import' do
 
   after do
     FileUtils.rm_rf(export_path)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      FileUtils.rm_rf(project_with_repo.repository.path_to_repo)
-      FileUtils.rm_rf(project.repository.path_to_repo)
-    end
+    project_with_repo.repository.remove
+    project.repository.remove
   end
 
   it 'can access the MR', :sidekiq_might_not_need_inline do

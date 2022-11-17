@@ -91,11 +91,8 @@ RSpec.describe API::Groups do
           .to satisfy_one { |group| group['name'] == group1.name }
       end
 
-      it 'avoids N+1 queries' do
-        # Establish baseline
-        get api("/groups", admin)
-
-        control = ActiveRecord::QueryRecorder.new do
+      it 'avoids N+1 queries', :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api("/groups", admin)
         end
 
@@ -103,7 +100,7 @@ RSpec.describe API::Groups do
 
         expect do
           get api("/groups", admin)
-        end.not_to exceed_query_limit(control)
+        end.not_to exceed_all_query_limit(control)
       end
 
       context 'when statistics are requested' do
@@ -1230,16 +1227,25 @@ RSpec.describe API::Groups do
           group1.reload
         end
 
-        it "only looks up root ancestor once and returns projects including those in subgroups" do
-          expect(Namespace).to receive(:find_by).with(id: group1.id.to_s).once.and_call_original # For the group sent in the API call
-          expect(Namespace).to receive(:joins).with(start_with('INNER JOIN (SELECT id, traversal_ids[1]')).once.and_call_original # All-in-one root_ancestor query
-
+        it "returns projects including those in subgroups" do
           get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an(Array)
           expect(json_response.length).to eq(6)
+        end
+
+        it 'avoids N+1 queries', :use_sql_query_cache do
+          control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+            get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
+          end
+
+          create_list(:project, 2, :public, namespace: group1)
+
+          expect do
+            get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
+          end.not_to exceed_all_query_limit(control.count)
         end
       end
 

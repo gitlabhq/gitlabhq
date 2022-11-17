@@ -1,3 +1,4 @@
+import MockAdapter from 'axios-mock-adapter';
 import { Emitter } from 'monaco-editor';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -8,6 +9,7 @@ import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markd
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
 import { ToolbarExtension } from '~/editor/extensions/source_editor_toolbar_ext';
 import SourceEditor from '~/editor/source_editor';
+import axios from '~/lib/utils/axios_utils';
 
 jest.mock('~/editor/source_editor');
 jest.mock('~/editor/extensions/source_editor_extension_base');
@@ -32,6 +34,7 @@ const markdownExtensions = [
 
 describe('Blob Editing', () => {
   let blobInstance;
+  let mock;
   const useMock = jest.fn(() => markdownExtensions);
   const unuseMock = jest.fn();
   const emitter = new Emitter();
@@ -44,7 +47,10 @@ describe('Blob Editing', () => {
     onDidChangeModelLanguage: emitter.event,
   };
   beforeEach(() => {
+    mock = new MockAdapter(axios);
     setHTMLFixture(`
+      <div class="js-edit-mode-pane"></div>
+      <div class="js-edit-mode"><a href="#write">Write</a><a href="#preview">Preview</a></div>
       <form class="js-edit-blob-form">
         <div id="file_path"></div>
         <div id="editor"></div>
@@ -54,6 +60,7 @@ describe('Blob Editing', () => {
     jest.spyOn(SourceEditor.prototype, 'createInstance').mockReturnValue(mockInstance);
   });
   afterEach(() => {
+    mock.restore();
     jest.clearAllMocks();
     unuseMock.mockClear();
     useMock.mockClear();
@@ -106,6 +113,47 @@ describe('Blob Editing', () => {
       await emitter.fire({ newLanguage: 'markdown', oldLanguage: 'plaintext' });
       expect(mdSpy).toHaveBeenCalled();
     });
+  });
+
+  describe('correctly handles toggling the live-preview panel for different file types', () => {
+    it.each`
+      desc                                  | isMarkdown | isPreviewOpened | tabToClick    | shouldOpenPreview | shouldClosePreview | expectedDesc
+      ${'not markdown with preview closed'} | ${false}   | ${false}        | ${'#write'}   | ${false}          | ${false}           | ${'not toggle preview'}
+      ${'not markdown with preview closed'} | ${false}   | ${false}        | ${'#preview'} | ${false}          | ${false}           | ${'not toggle preview'}
+      ${'markdown with preview closed'}     | ${true}    | ${false}        | ${'#write'}   | ${false}          | ${false}           | ${'not toggle preview'}
+      ${'markdown with preview closed'}     | ${true}    | ${false}        | ${'#preview'} | ${true}           | ${false}           | ${'open preview'}
+      ${'markdown with preview opened'}     | ${true}    | ${true}         | ${'#write'}   | ${false}          | ${true}            | ${'close preview'}
+      ${'markdown with preview opened'}     | ${true}    | ${true}         | ${'#preview'} | ${false}          | ${false}           | ${'not toggle preview'}
+    `(
+      'when $desc, clicking $tabToClick should $expectedDesc',
+      async ({
+        isMarkdown,
+        isPreviewOpened,
+        tabToClick,
+        shouldOpenPreview,
+        shouldClosePreview,
+      }) => {
+        const fire = jest.fn();
+        SourceEditor.prototype.createInstance = jest.fn().mockReturnValue({
+          ...mockInstance,
+          markdownPreview: {
+            eventEmitter: {
+              fire,
+            },
+          },
+        });
+        await initEditor(isMarkdown);
+        blobInstance.markdownLivePreviewOpened = isPreviewOpened;
+        const elToClick = document.querySelector(`a[href='${tabToClick}']`);
+        elToClick.dispatchEvent(new Event('click'));
+
+        if (shouldOpenPreview || shouldClosePreview) {
+          expect(fire).toHaveBeenCalled();
+        } else {
+          expect(fire).not.toHaveBeenCalled();
+        }
+      },
+    );
   });
 
   it('adds trailing newline to the blob content on submit', async () => {

@@ -6,10 +6,6 @@ import WorkItemLinks from './work_item_links.vue';
 Vue.use(GlToast);
 
 export default function initWorkItemLinks() {
-  if (!window.gon.features.workItemsHierarchy) {
-    return;
-  }
-
   const workItemLinksRoot = document.querySelector('.js-work-item-links-root');
 
   if (!workItemLinksRoot) {
@@ -21,7 +17,6 @@ export default function initWorkItemLinks() {
     wiHasIssueWeightsFeature,
     iid,
     wiHasIterationsFeature,
-    projectNamespace,
   } = workItemLinksRoot.dataset;
 
   // eslint-disable-next-line no-new
@@ -38,7 +33,6 @@ export default function initWorkItemLinks() {
       fullPath: projectPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
       hasIterationsFeature: wiHasIterationsFeature,
-      projectNamespace,
     },
     render: (createElement) =>
       createElement('work-item-links', {

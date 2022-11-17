@@ -4,12 +4,15 @@ module Gitlab
   module GitalyClient
     class OperationService
       include Gitlab::EncodingHelper
+      include WithFeatureFlagActors
 
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
+
+        self.repository_actor = repository
       end
 
       def rm_tag(tag_name, user)
@@ -19,7 +22,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.long_timeout)
+        response = gitaly_client_call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.long_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -36,7 +39,7 @@ module Gitlab
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.long_timeout)
+        response = gitaly_client_call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.long_timeout)
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         elsif response.exists
@@ -73,7 +76,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           start_point: encode_binary(start_point)
         )
-        response = GitalyClient.call(@repository.storage, :operation_service,
+        response = gitaly_client_call(@repository.storage, :operation_service,
                                      :user_create_branch, request, timeout: GitalyClient.long_timeout)
 
         if response.pre_receive_error.present?
@@ -110,7 +113,7 @@ module Gitlab
           oldrev: encode_binary(oldrev)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
+        response = gitaly_client_call(@repository.storage, :operation_service,
                                      :user_update_branch, request, timeout: GitalyClient.long_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
@@ -125,7 +128,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
+        response = gitaly_client_call(@repository.storage, :operation_service,
                                      :user_delete_branch, request, timeout: GitalyClient.long_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
@@ -156,7 +159,7 @@ module Gitlab
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
+        response = gitaly_client_call(@repository.storage, :operation_service,
                                      :user_merge_to_ref, request, timeout: GitalyClient.long_timeout)
 
         response.commit_id
@@ -164,7 +167,7 @@ module Gitlab
 
       def user_merge_branch(user, source_sha, target_branch, message)
         request_enum = QueueEnumerator.new
-        response_enum = GitalyClient.call(
+        response_enum = gitaly_client_call(
           @repository.storage,
           :operation_service,
           :user_merge_branch,
@@ -225,7 +228,7 @@ module Gitlab
           branch: encode_binary(target_branch)
         )
 
-        response = GitalyClient.call(
+        response = gitaly_client_call(
           @repository.storage,
           :operation_service,
           :user_ff_branch,
@@ -268,7 +271,7 @@ module Gitlab
         request_enum = QueueEnumerator.new
         rebase_sha = nil
 
-        response_enum = GitalyClient.call(
+        response_enum = gitaly_client_call(
           @repository.storage,
           :operation_service,
           :user_rebase_confirmable,
@@ -334,7 +337,7 @@ module Gitlab
           timestamp: Google::Protobuf::Timestamp.new(seconds: time.to_i)
         )
 
-        response = GitalyClient.call(
+        response = gitaly_client_call(
           @repository.storage,
           :operation_service,
           :user_squash,
@@ -376,7 +379,7 @@ module Gitlab
           timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
         )
 
-        response = GitalyClient.call(
+        response = gitaly_client_call(
           @repository.storage,
           :operation_service,
           :user_update_submodule,
@@ -422,7 +425,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(
+        response = gitaly_client_call(
           @repository.storage, :operation_service, :user_commit_files, req_enum,
           timeout: GitalyClient.long_timeout, remote_storage: start_repository&.storage)
 
@@ -435,9 +438,25 @@ module Gitlab
         end
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
-      end
-      # rubocop:enable Metrics/ParameterLists
+      rescue GRPC::BadStatus => e
+        detailed_error = GitalyClient.decode_detailed_error(e)
 
+        case detailed_error&.error
+        when :access_check
+          access_check_error = detailed_error.access_check
+          # These messages were returned from internal/allowed API calls
+          raise Gitlab::Git::PreReceiveError.new(fallback_message: access_check_error.error_message)
+        when :custom_hook
+          raise Gitlab::Git::PreReceiveError.new(custom_hook_error_message(detailed_error.custom_hook),
+                                                 fallback_message: e.details)
+        when :index_update
+          raise Gitlab::Git::Index::IndexError, index_error_message(detailed_error.index_update)
+        else
+          raise e
+        end
+      end
+
+      # rubocop:enable Metrics/ParameterLists
       def user_commit_patches(user, branch_name, patches)
         header = Gitaly::UserApplyPatchRequest::Header.new(
           repository: @gitaly_repo,
@@ -457,7 +476,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :operation_service,
+        response = gitaly_client_call(@repository.storage, :operation_service,
                                      :user_apply_patch, chunks, timeout: GitalyClient.long_timeout)
 
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
@@ -493,7 +512,7 @@ module Gitlab
           dry_run: dry_run
         )
 
-        response = GitalyClient.call(
+        response = gitaly_client_call(
           @repository.storage,
           :operation_service,
           :"user_#{rpc}",
@@ -574,6 +593,27 @@ module Gitlab
         # Gitaly error as a fallback.
         custom_hook_output = custom_hook_error.stderr.presence || custom_hook_error.stdout
         EncodingHelper.encode!(custom_hook_output)
+      end
+
+      def index_error_message(index_error)
+        encoded_path = EncodingHelper.encode!(index_error.path)
+
+        case index_error.error_type
+        when :ERROR_TYPE_EMPTY_PATH
+          "Received empty path"
+        when :ERROR_TYPE_INVALID_PATH
+          "Invalid path: #{encoded_path}"
+        when :ERROR_TYPE_DIRECTORY_EXISTS
+          "Directory already exists: #{encoded_path}"
+        when :ERROR_TYPE_DIRECTORY_TRAVERSAL
+          "Directory traversal in path escapes repository: #{encoded_path}"
+        when :ERROR_TYPE_FILE_EXISTS
+          "File already exists: #{encoded_path}"
+        when :ERROR_TYPE_FILE_NOT_FOUND
+          "File not found: #{encoded_path}"
+        else
+          "Unknown error performing git operation"
+        end
       end
     end
   end

@@ -1,5 +1,14 @@
 %head
-  = stylesheet_link_tag "application"
-  = stylesheet_link_tag "application_utilities"
-%body{ style: "background-color: #{params.dig(:lookbook, :display, :bg_color) || 'white'}" }
-  .container.gl-mt-6= yield
+  - if params[:lookbook][:display][:theme] == 'light'
+    = stylesheet_link_tag "application"
+    = stylesheet_link_tag "application_utilities"
+  - else
+    = stylesheet_link_tag "application_dark"
+    = stylesheet_link_tag "application_utilities_dark"
+%body
+  .container.gl-mt-6
+    - if params[:lookbook][:display][:bg_dark]
+      .bg-dark.rounded.shadow.p-4
+        = yield
+    - else
+      = yield

@@ -1,0 +1,122 @@
+zh-CN:
+  activerecord:
+    errors:
+      models:
+        application:
+          attributes:
+            redirect_uri:
+              fragment_present: '不能包含片段。'
+              invalid_uri: '必须是一个有效的 URI。'
+              relative_uri: '必须是一个绝对 URI。'
+  mongoid:
+    errors:
+      models:
+        application:
+          attributes:
+            redirect_uri:
+              fragment_present: '不能包含片段。'
+              invalid_uri: '必须是一个有效的 URI。'
+              relative_uri: '必须是一个绝对 URI。'
+  mongo_mapper:
+    errors:
+      models:
+        application:
+          attributes:
+            redirect_uri:
+              fragment_present: '不能包含片段。'
+              invalid_uri: '必须是一个有效的 URI。'
+              relative_uri: '必须是一个绝对 URI。'
+  doorkeeper:
+    errors:
+      messages:
+        # Common error messages
+        invalid_redirect_uri: '包含的重定向 URI 无效。'
+        unauthorized_client: '客户端无权使用此方法执行此请求。'
+        access_denied: '资源所有者或授权服务器拒绝了该请求。'
+        invalid_scope: '请求的范围无效、未知或格式不正确。'
+        server_error: '授权服务器遇到了意外情况，导致无法完成请求。'
+        unconfirmed_email: '在您登录之前，验证您的帐户配置文件中的电子邮件地址。'
+        temporarily_unavailable: '由于服务器临时超载或维护，授权服务器目前无法处理请求。'
+
+        #configuration error messages
+        credential_flow_not_configured: '由于 Doorkeeper.configure.resource_owner_from_credentials 未配置，资源所有者密码凭证授予工作流失败。'
+        resource_owner_authenticator_not_configured: '由于 Doorkeeper.configure.resource_owner_authenticator 未配置，资源所有者查找失败。'
+
+        # Access grant errors
+        unsupported_response_type: '授权服务器不支持此响应类型。'
+
+        # Access token errors
+        invalid_client: '由于未知客户端、不包括客户端身份验证或不支持的身份验证方法，客户端身份验证失败。'
+        invalid_grant: '所提供的授权无效、过期、被撤销、与授权请求中使用的重定向 URI 不匹配，或者已向另一个客户端发出。'
+        unsupported_grant_type: '授权服务器不支持授权授予类型。'
+
+        # Password Access token errors
+        invalid_resource_owner: '所提供的资源所有者凭证无效，或找不到资源所有者。'
+
+        invalid_request:
+          unknown: '该请求缺少一个必需的参数，包括一个不支持的参数值，或在其他方面是错误的。'
+          missing_param: '缺少所需的参数：%{value}。'
+          not_support_pkce: '无效的 code_verifier 参数。服务器不支持 pkce。'
+          request_not_authorized: '请求需要授权。授权请求所需的参数缺失或无效。'
+
+        invalid_token:
+          revoked: "访问令牌被撤销"
+          expired: "访问令牌过期"
+          unknown: "访问令牌无效"
+    scopes:
+      api: 访问经过验证的用户的 API
+      read_user: 读取已验证用户的个人信息
+      read_repository: 允许对仓库进行只读访问
+      write_repository: 允许对仓库进行读写访问
+      read_registry: 授予读取容器镜像库镜像的权限
+      openid: 使用 OpenID Connect 进行身份验证
+      sudo: 作为系统中的任何用户执行 API 操作
+      profile: 允许使用 OpenID Connect 只读访问用户的个人信息
+      email: 允许使用 OpenID Connect 只读访问用户的主要电子邮件地址
+    scope_desc:
+      api:
+        授予对 API 的完全读/写访问权，包括所有群组和项目、容器镜像库和软件包库。
+      read_api:
+        授予对 API 的读访问权，包括所有群组和项目、容器镜像库和软件包库。
+      read_user:
+        通过 /user API端点授予对通过身份验证的用户概要的只读访问权，该端点包括用户名、公共电子邮件和全名。还授予对 /users 下的只读 API 端点的访问权。
+      read_repository:
+        使用 Git-over-HTTP 或 Repository Files API 授予对私有项目仓库的只读访问权。
+      write_repository:
+        使用 Git-over-HTTP (不使用 API)授予对私有项目上的仓库的读写访问权。
+      read_registry:
+        授予对私有项目上的容器镜像库镜像的只读访问权。
+      write_registry:
+        授予对私有项目上的容器镜像库镜像的写访问权。
+      openid:
+        授予使用 OpenID Connect 与 GitLab 进行身份验证的权限。还提供对用户配置文件和组成员关系的只读访问权限。
+      sudo:
+        当以管理员用户身份进行身份验证时，授予作为系统中任何用户执行 API 操作的权限。
+      profile:
+        使用 OpenID Connect 授予对用户配置文件数据的只读访问权。
+      email:
+        使用 OpenID Connect 授予对用户主电子邮件地址的只读访问权。
+    project_access_token_scope_desc:
+      api:
+        授予对限定范围的项目 API 的完全读写访问权。
+      read_api:
+        授予对限定范围的项目 API 的读访问权。
+      read_repository:
+        允许只读访问（拉取）到仓库。
+      write_repository:
+        允许对仓库的读写访问（拉取、推送）。
+      read_registry:
+        如果项目是私有的且需要授权，则允许读取（拉取）容器镜像库镜像。
+      write_registry:
+        允许写访问（推送）到容器镜像库。
+    flash:
+      applications:
+        create:
+          notice: '创建应用成功。'
+        destroy:
+          notice: '删除应用成功。'
+        update:
+          notice: '更新应用成功。'
+      authorized_applications:
+        destroy:
+          notice: '应用被撤销访问权限。'

@@ -4,14 +4,16 @@ module API
   class Unleash < ::API::Base
     include PaginationParams
 
+    unleash_tags = %w[unleash_api]
+
     feature_category :feature_flags
 
     namespace :feature_flags do
       resource :unleash, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
           requires :project_id, type: String, desc: 'The ID of a project'
-          optional :instance_id, type: String, desc: 'The Instance ID of Unleash Client'
-          optional :app_name, type: String, desc: 'The Application Name of Unleash Client'
+          optional :instance_id, type: String, desc: 'The instance ID of Unleash Client'
+          optional :app_name, type: String, desc: 'The application name of Unleash Client'
         end
         route_param :project_id do
           before do
@@ -23,26 +25,22 @@ module API
             status :ok
           end
 
-          desc 'Get a list of features (deprecated, v2 client support)'
-          get 'features' do
-            if ::Feature.enabled?(:cache_unleash_client_api, project)
-              present_feature_flags
-            else
-              present :version, 1
-              present :features, feature_flags, with: ::API::Entities::UnleashFeature
-            end
+          desc 'Get a list of features (deprecated, v2 client support)' do
+            is_array true
+            tags unleash_tags
+          end
+          get 'features', urgency: :low do
+            present_feature_flags
           end
 
           # We decrease the urgency of this endpoint until the maxmemory issue of redis-cache has been resolved.
           # See https://gitlab.com/gitlab-org/gitlab/-/issues/365575#note_1033611872 for more information.
-          desc 'Get a list of features'
+          desc 'Get a list of features' do
+            is_array true
+            tags unleash_tags
+          end
           get 'client/features', urgency: :low do
-            if ::Feature.enabled?(:cache_unleash_client_api, project)
-              present_feature_flags
-            else
-              present :version, 1
-              present :features, feature_flags, with: ::API::Entities::UnleashFeature
-            end
+            present_feature_flags
           end
 
           post 'client/register' do
@@ -50,7 +48,7 @@ module API
             status :ok
           end
 
-          post 'client/metrics' do
+          post 'client/metrics', urgency: :low do
             # not supported yet
             status :ok
           end

@@ -205,6 +205,22 @@ RSpec.describe 'Admin updates settings' do
             expect(page).to have_content "Application settings saved successfully"
           end
         end
+
+        context 'Email confirmation settings' do
+          it "is set to 'hard' by default" do
+            expect(current_settings.email_confirmation_setting).to eq('off')
+          end
+
+          it 'changes the setting', :js do
+            page.within('.as-signup') do
+              choose 'Hard'
+              click_button 'Save changes'
+            end
+
+            expect(current_settings.email_confirmation_setting).to eq('hard')
+            expect(page).to have_content "Application settings saved successfully"
+          end
+        end
       end
 
       it 'change Sign-in restrictions' do
@@ -304,10 +320,12 @@ RSpec.describe 'Admin updates settings' do
         it 'changes the setting' do
           page.within('#js-jira_connect-settings') do
             fill_in 'Jira Connect Application ID', with: '1234'
+            fill_in 'Jira Connect Proxy URL', with: 'https://example.com'
             click_button 'Save changes'
           end
 
           expect(current_settings.jira_connect_application_key).to eq('1234')
+          expect(current_settings.jira_connect_proxy_url).to eq('https://example.com')
           expect(page).to have_content "Application settings saved successfully"
         end
       end

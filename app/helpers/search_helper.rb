@@ -181,20 +181,51 @@ module SearchHelper
     options
   end
 
-  # search_context exposes a bit too much data to the frontend, this controls what data we share and when.
+  def search_group
+    # group gets derived from the Project in the project's scope
+    @group || @project&.group
+  end
+
+  def search_has_group?
+    search_group&.present? && search_group&.persisted?
+  end
+
+  def search_has_project?
+    @project&.present? && @project&.persisted?
+  end
+
   def header_search_context
     {}.tap do |hash|
-      hash[:group] = { id: search_context.group.id, name: search_context.group.name, full_name: search_context.group.full_name } if search_context.for_group?
-      hash[:group_metadata] = search_context.group_metadata if search_context.for_group?
+      if search_has_group?
+        hash[:group] = { id: search_group.id, name: search_group.name, full_name: search_group.full_name }
+        hash[:group_metadata] = { issues_path: issues_group_path(search_group), mr_path: merge_requests_group_path(search_group) }
+      end
 
-      hash[:project] = { id: search_context.project.id, name: search_context.project.name } if search_context.for_project?
-      hash[:project_metadata] = search_context.project_metadata if search_context.for_project?
+      if search_has_project?
+        hash[:project] = { id: @project.id, name: @project.name }
+        hash[:project_metadata] = { issues_path: project_issues_path(@project), mr_path: project_merge_requests_path(@project) }
+        hash[:code_search] = search_scope.nil?
+        hash[:ref] = @ref if @ref && can?(current_user, :read_code, @project)
+      end
 
-      hash[:scope] = search_context.scope if search_context.for_project? || search_context.for_group?
-      hash[:code_search] = search_context.code_search? if search_context.for_project? || search_context.for_group?
+      hash[:scope] = search_scope if search_has_project? || search_has_group?
+      hash[:for_snippets] = @snippet&.present? || @snippets&.any?
+    end
+  end
 
-      hash[:ref] = search_context.ref if can?(current_user, :download_code, search_context.project)
-      hash[:for_snippets] = search_context.for_snippets?
+  def search_scope
+    if current_controller?(:issues)
+      'issues'
+    elsif current_controller?(:merge_requests)
+      'merge_requests'
+    elsif current_controller?(:wikis)
+      'wiki_blobs'
+    elsif current_controller?(:commits)
+      'commits'
+    elsif current_controller?(:groups)
+      if %w(issues merge_requests).include?(controller.action_name)
+        controller.action_name
+      end
     end
   end
 
@@ -237,7 +268,7 @@ module SearchHelper
 
       result = []
 
-      if can?(current_user, :download_code, @project)
+      if can?(current_user, :read_code, @project)
         result.concat([
                         { category: "In this project", label: _("Files"),          url: project_tree_path(@project, ref) },
                         { category: "In this project", label: _("Commits"),        url: project_commits_path(@project, ref) }
@@ -386,7 +417,11 @@ module SearchHelper
     active_scope = @scope == scope_name
 
     result = { label: label, scope: scope_name, data: data, link: search_path(search_params), active: active_scope }
-    result[:count] =  @search_results.formatted_count(scope_name) if active_scope && !@timeout
+
+    if active_scope
+      result[:count] = !@timeout ? @search_results.formatted_count(scope_name) : "0"
+    end
+
     result[:count_link] = search_count_path(search_params) unless active_scope
 
     result
@@ -395,21 +430,24 @@ module SearchHelper
   # search page scope navigation
   def search_navigation
     {
-      projects: {       label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
-      blobs: {          label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: project_search_tabs?(:blobs) || search_service.show_elasticsearch_tabs? || feature_flag_tab_enabled?(:global_search_code_tab) },
-      issues: {         label: _("Issues"),                   condition: project_search_tabs?(:issues) || feature_flag_tab_enabled?(:global_search_issues_tab) },
-      merge_requests: { label: _("Merge requests"),           condition: project_search_tabs?(:merge_requests) || feature_flag_tab_enabled?(:global_search_merge_requests_tab) },
-      wiki_blobs: {     label: _("Wiki"),                     condition: project_search_tabs?(:wiki) || search_service.show_elasticsearch_tabs? },
-      commits: {        label: _("Commits"),                  condition: project_search_tabs?(:commits) || (search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)) },
-      notes: {          label: _("Comments"),                 condition: project_search_tabs?(:notes) || search_service.show_elasticsearch_tabs? },
-      milestones: {     label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
-      users: {          label: _("Users"),                    condition: show_user_search_tab? },
-      snippet_titles: { label: _("Titles and Descriptions"),  search: { snippets: true, group_id: nil, project_id: nil }, condition: @show_snippets.present? && @project.nil? }
+      projects: {       sort: 1, label: _("Projects"),                 data: { qa_selector: 'projects_tab' }, condition: @project.nil? },
+      blobs: {          sort: 2, label: _("Code"),                     data: { qa_selector: 'code_tab' }, condition: project_search_tabs?(:blobs) || (search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_code_tab)) },
+      #  sort: 3 is reserved for EE items
+      issues: {         sort: 4, label: _("Issues"),                   condition: project_search_tabs?(:issues) || feature_flag_tab_enabled?(:global_search_issues_tab) },
+      merge_requests: { sort: 5, label: _("Merge requests"),           condition: project_search_tabs?(:merge_requests) || feature_flag_tab_enabled?(:global_search_merge_requests_tab) },
+      wiki_blobs: {     sort: 6, label: _("Wiki"),                     condition: project_search_tabs?(:wiki) || search_service.show_elasticsearch_tabs? },
+      commits: {        sort: 7, label: _("Commits"),                  condition: project_search_tabs?(:commits) || (search_service.show_elasticsearch_tabs? && feature_flag_tab_enabled?(:global_search_commits_tab)) },
+      notes: {          sort: 8, label: _("Comments"),                 condition: project_search_tabs?(:notes) || search_service.show_elasticsearch_tabs? },
+      milestones: {     sort: 9, label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
+      users: {          sort: 10, label: _("Users"),                    condition: show_user_search_tab? },
+      snippet_titles: { sort: 11, label: _("Titles and Descriptions"),  search: { snippets: true, group_id: nil, project_id: nil }, condition: @show_snippets.present? && @project.nil? }
     }
   end
 
   def search_navigation_json
-    search_navigation.each_with_object({}) do |(key, value), hash|
+    sorted_navigation = search_navigation.sort_by { |_, h| h[:sort] }
+
+    sorted_navigation.each_with_object({}) do |(key, value), hash|
       hash[key] = search_filter_link_json(key, value[:label], value[:data], value[:search]) if value[:condition]
     end.to_json
   end

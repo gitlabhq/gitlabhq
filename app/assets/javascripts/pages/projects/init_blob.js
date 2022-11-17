@@ -3,7 +3,6 @@ import ShortcutsNavigation from '~/behaviors/shortcuts/shortcuts_navigation';
 import BlobForkSuggestion from '~/blob/blob_fork_suggestion';
 import BlobLinePermalinkUpdater from '~/blob/blob_line_permalink_updater';
 import LineHighlighter from '~/blob/line_highlighter';
-import initBlobBundle from '~/blob_edit/blob_bundle';
 
 export default () => {
   new LineHighlighter(); // eslint-disable-line no-new
@@ -35,6 +34,4 @@ export default () => {
     suggestionSections: document.querySelectorAll('.js-file-fork-suggestion-section'),
     actionTextPieces: document.querySelectorAll('.js-file-fork-suggestion-section-action'),
   }).init();
-
-  initBlobBundle();
 };

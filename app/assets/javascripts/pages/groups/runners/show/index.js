@@ -1,3 +1,3 @@
-import { initGroupRunnerShow } from '~/runner/group_runner_show';
+import { initGroupRunnerShow } from '~/ci/runner/group_runner_show';
 
 initGroupRunnerShow();

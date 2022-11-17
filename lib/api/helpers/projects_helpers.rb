@@ -65,6 +65,7 @@ module API
         optional :suggestion_commit_message, type: String, desc: 'The commit message used to apply merge request suggestions'
         optional :merge_commit_template, type: String, desc: 'Template used to create merge commit message'
         optional :squash_commit_template, type: String, desc: 'Template used to create squash commit message'
+        optional :issue_branch_template, type: String, desc: 'Template used to create a branch from an issue'
         optional :initialize_with_readme, type: Boolean, desc: "Initialize a project with a README.md"
         optional :ci_default_git_depth, type: Integer, desc: 'Default number of revisions for shallow cloning'
         optional :auto_devops_enabled, type: Boolean, desc: 'Flag indication if Auto DevOps is enabled'
@@ -96,7 +97,7 @@ module API
       end
 
       params :optional_update_params_ce do
-        optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Skip older deployment jobs that are still pending'
+        optional :ci_forward_deployment_enabled, type: Boolean, desc: 'Prevent older deployment jobs that are still pending'
         optional :ci_allow_fork_pipelines_to_run_in_parent_project, type: Boolean, desc: 'Allow fork merge request pipelines to run in parent project'
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
@@ -174,6 +175,7 @@ module API
           :suggestion_commit_message,
           :merge_commit_template,
           :squash_commit_template,
+          :issue_branch_template,
           :repository_storage,
           :packages_enabled,
           :service_desk_enabled,

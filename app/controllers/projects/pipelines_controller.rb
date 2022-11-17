@@ -140,21 +140,13 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def builds
-    if Feature.enabled?(:pipeline_tabs_vue, project)
-      redirect_to pipeline_path(@pipeline, tab: 'builds')
-    else
-      render_show
-    end
+    render_show
   end
 
   def dag
     respond_to do |format|
       format.html do
-        if Feature.enabled?(:pipeline_tabs_vue, project)
-          redirect_to pipeline_path(@pipeline, tab: 'dag')
-        else
-          render_show
-        end
+        render_show
       end
       format.json do
         render json: Ci::DagPipelineSerializer
@@ -165,9 +157,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if Feature.enabled?(:pipeline_tabs_vue, project)
-      redirect_to pipeline_path(@pipeline, tab: 'failures')
-    elsif @pipeline.failed_builds.present?
+    if @pipeline.failed_builds.present?
       render_show
     else
       redirect_to pipeline_path(@pipeline)
@@ -222,11 +212,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def test_report
     respond_to do |format|
       format.html do
-        if Feature.enabled?(:pipeline_tabs_vue, project)
-          redirect_to pipeline_path(@pipeline, tab: 'test_report')
-        else
-          render_show
-        end
+        render_show
       end
       format.json do
         render json: TestReportSerializer
@@ -352,7 +338,6 @@ class Projects::PipelinesController < Projects::ApplicationController
 
     experiment(:runners_availability_section, namespace: project.root_ancestor) do |e|
       e.candidate {}
-      e.publish_to_database
     end
   end
 

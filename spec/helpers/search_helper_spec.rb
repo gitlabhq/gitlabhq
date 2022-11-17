@@ -195,7 +195,7 @@ RSpec.describe SearchHelper do
           expect(search_autocomplete_opts("Network").size).to eq(1)
           expect(search_autocomplete_opts("Graph").size).to eq(1)
 
-          allow(self).to receive(:can?).with(user, :download_code, @project).and_return(false)
+          allow(self).to receive(:can?).with(user, :read_code, @project).and_return(false)
 
           expect(search_autocomplete_opts("Files").size).to eq(0)
           expect(search_autocomplete_opts("Commits").size).to eq(0)
@@ -597,6 +597,7 @@ RSpec.describe SearchHelper do
         '<script type="text/javascript">alert(\'Another XSS\');</script> test' | ' <span class="gl-text-gray-900 gl-font-weight-bold">test</span>'
         'Lorem test ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec.' | 'Lorem <span class="gl-text-gray-900 gl-font-weight-bold">test</span> ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Don...'
         '<img src="https://random.foo.com/test.png" width="128" height="128" />some image' | 'some image'
+        '<h2 data-sourcepos="11:1-11:26" dir="auto"><a id="user-content-additional-information" class="anchor" href="#additional-information" aria-hidden="true"></a>Additional information test:</h2><textarea data-update-url="/freepascal.org/fpc/source/-/issues/6163.json" dir="auto" data-testid="textarea" class="hidden js-task-list-field"></textarea>' | '<a class="anchor" href="#additional-information"></a>Additional information <span class="gl-text-gray-900 gl-font-weight-bold">test</span>:'
       end
 
       with_them do
@@ -705,112 +706,94 @@ RSpec.describe SearchHelper do
     let(:user) { create(:user) }
     let(:can_download) { false }
 
-    let(:for_group) { false }
-    let(:group) { nil }
-    let(:group_metadata) { nil }
-
-    let(:for_project) { false }
-    let(:project) { nil }
-    let(:project_metadata) { nil }
+    let_it_be(:group) { nil }
+    let_it_be(:project) { nil }
 
     let(:scope) { nil }
-    let(:code_search) { false }
-    let(:ref) { nil }
-    let(:for_snippets) { false }
 
-    let(:search_context) do
-      instance_double(Gitlab::SearchContext,
-        group: group,
-        group_metadata: group_metadata,
-        project: project,
-        project_metadata: project_metadata,
-        scope: scope,
-        ref: ref)
-    end
+    let(:ref) { nil }
+    let(:snippet) { nil }
 
     before do
-      allow(self).to receive(:search_context).and_return(search_context)
+      @project = project
+      @group = group
+      @ref = ref
+      @snippet = snippet
+
       allow(self).to receive(:current_user).and_return(user)
+      allow(self).to receive(:search_scope).and_return(scope)
       allow(self).to receive(:can?).and_return(can_download)
+    end
 
-      allow(search_context).to receive(:for_group?).and_return(for_group)
-      allow(search_context).to receive(:for_project?).and_return(for_project)
+    context 'no group or project data' do
+      it 'does not add :group, :group_metadata, or :scope to hash' do
+        expect(header_search_context[:group]).to eq(nil)
+        expect(header_search_context[:group_metadata]).to eq(nil)
+        expect(header_search_context[:scope]).to eq(nil)
+      end
 
-      allow(search_context).to receive(:code_search?).and_return(code_search)
-      allow(search_context).to receive(:for_snippets?).and_return(for_snippets)
+      it 'does not add :project, :project_metadata, :code_search, or :ref' do
+        expect(header_search_context[:project]).to eq(nil)
+        expect(header_search_context[:project_metadata]).to eq(nil)
+        expect(header_search_context[:code_search]).to eq(nil)
+        expect(header_search_context[:ref]).to eq(nil)
+      end
     end
 
     context 'group data' do
-      let(:group) { create(:group) }
-      let(:group_metadata) { { group_path: group.path, issues_path: "/issues" } }
+      let_it_be(:group) { create(:group) }
+      let(:group_metadata) { { issues_path: issues_group_path(group), mr_path: merge_requests_group_path(group) } }
       let(:scope) { 'issues' }
-      let(:code_search) { true }
 
-      context 'when for_group? is true' do
-        let(:for_group) { true }
-
-        it 'adds the :group and :group_metadata correctly to hash' do
-          expect(header_search_context[:group]).to eq({ id: group.id, name: group.name, full_name: group.full_name })
-          expect(header_search_context[:group_metadata]).to eq(group_metadata)
-        end
-
-        it 'adds scope and code_search? correctly to hash' do
-          expect(header_search_context[:scope]).to eq(scope)
-          expect(header_search_context[:code_search]).to eq(code_search)
-        end
+      it 'adds the :group, :group_metadata, and :scope correctly to hash' do
+        expect(header_search_context[:group]).to eq({ id: group.id, name: group.name, full_name: group.full_name })
+        expect(header_search_context[:group_metadata]).to eq(group_metadata)
+        expect(header_search_context[:scope]).to eq(scope)
       end
 
-      context 'when for_group? is false' do
-        let(:for_group) { false }
-
-        it 'does not add the :group and :group_metadata to hash' do
-          expect(header_search_context[:group]).to eq(nil)
-          expect(header_search_context[:group_metadata]).to eq(nil)
-        end
-
-        it 'does not add scope and code_search? to hash' do
-          expect(header_search_context[:scope]).to eq(nil)
-          expect(header_search_context[:code_search]).to eq(nil)
-        end
+      it 'does not add :project, :project_metadata, :code_search, or :ref' do
+        expect(header_search_context[:project]).to eq(nil)
+        expect(header_search_context[:project_metadata]).to eq(nil)
+        expect(header_search_context[:code_search]).to eq(nil)
+        expect(header_search_context[:ref]).to eq(nil)
       end
     end
 
     context 'project data' do
-      let_it_be(:project) { create(:project) }
-      let(:project_metadata) { { project_path: project.path, issues_path: "/issues" } }
-      let(:scope) { 'issues' }
-      let(:code_search) { true }
+      let_it_be(:project_group) { create(:group) }
+      let_it_be(:project) { create(:project, group: project_group) }
+      let(:project_metadata) { { issues_path: project_issues_path(project), mr_path: project_merge_requests_path(project) } }
+      let(:group_metadata) { { issues_path: issues_group_path(project_group), mr_path: merge_requests_group_path(project_group) } }
 
-      context 'when for_project? is true' do
-        let(:for_project) { true }
+      it 'adds the :group and :group-metadata from the project correctly to hash' do
+        expect(header_search_context[:group]).to eq({ id: project_group.id, name: project_group.name, full_name: project_group.full_name })
+        expect(header_search_context[:group_metadata]).to eq(group_metadata)
+      end
 
-        it 'adds the :project and :project_metadata correctly to hash' do
-          expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
-          expect(header_search_context[:project_metadata]).to eq(project_metadata)
-        end
+      it 'adds the :project and :project-metadata correctly to hash' do
+        expect(header_search_context[:project]).to eq({ id: project.id, name: project.name })
+        expect(header_search_context[:project_metadata]).to eq(project_metadata)
+      end
 
-        it 'adds scope and code_search? correctly to hash' do
+      context 'with scope' do
+        let(:scope) { 'issues' }
+
+        it 'adds :scope and false :code_search to hash' do
           expect(header_search_context[:scope]).to eq(scope)
-          expect(header_search_context[:code_search]).to eq(code_search)
+          expect(header_search_context[:code_search]).to eq(false)
         end
       end
 
-      context 'when for_project? is false' do
-        let(:for_project) { false }
-
-        it 'does not add the :project and :project_metadata to hash' do
-          expect(header_search_context[:project]).to eq(nil)
-          expect(header_search_context[:project_metadata]).to eq(nil)
-        end
-
-        it 'does not add scope and code_search? to hash' do
+      context 'without scope' do
+        it 'adds code_search true to hash and not :scope' do
           expect(header_search_context[:scope]).to eq(nil)
-          expect(header_search_context[:code_search]).to eq(nil)
+          expect(header_search_context[:code_search]).to eq(true)
         end
       end
     end
 
     context 'ref data' do
+      let_it_be(:project) { create(:project) }
       let(:ref) { 'test-branch' }
 
       context 'when user can? download project data' do
@@ -830,20 +813,18 @@ RSpec.describe SearchHelper do
       end
     end
 
-    context 'snippets' do
-      context 'when for_snippets? is true' do
-        let(:for_snippets) { true }
+    context 'snippet' do
+      context 'when searching from snippets' do
+        let(:snippet) { create(:snippet) }
 
-        it 'adds :for_snippets correctly to hash' do
-          expect(header_search_context[:for_snippets]).to eq(for_snippets)
+        it 'adds :for_snippets true correctly to hash' do
+          expect(header_search_context[:for_snippets]).to eq(true)
         end
       end
 
-      context 'when for_snippets? is false' do
-        let(:for_snippets) { false }
-
-        it 'adds :for_snippets correctly to hash' do
-          expect(header_search_context[:for_snippets]).to eq(for_snippets)
+      context 'when not searching from snippets' do
+        it 'adds :for_snippets nil correctly to hash' do
+          expect(header_search_context[:for_snippets]).to eq(nil)
         end
       end
     end
@@ -880,8 +861,8 @@ RSpec.describe SearchHelper do
       where(:feature_flag_tab_enabled, :show_elasticsearch_tabs, :project_search_tabs, :condition) do
         false                           | false                   | false                  | false
         true                            | true                    | true                   | true
-        true                            | false                   | false                  | true
-        false                           | true                    | false                  | true
+        true                            | false                   | false                  | false
+        false                           | true                    | false                  | false
         false                           | false                   | true                   | true
         true                            | false                   | true                   | true
       end
@@ -1042,6 +1023,7 @@ RSpec.describe SearchHelper do
 
   describe '.search_navigation_json' do
     using RSpec::Parameterized::TableSyntax
+
     context 'with data' do
       example_data_1 = {
         projects: { label: _("Projects"), condition: true },
@@ -1060,18 +1042,35 @@ RSpec.describe SearchHelper do
       }
 
       where(:data, :matcher) do
-        example_data_1                  | -> { include("projects") }
-        example_data_2                  | -> { eq("{}") }
-        example_data_3                  | -> { include("projects", "blobs", "epics") }
+        example_data_1 | -> { include("projects") }
+        example_data_2 | -> { eq("{}") }
+        example_data_3 | -> { include("projects", "blobs", "epics") }
       end
 
       with_them do
-        it 'converts correctly' do
+        it 'renders data correctly' do
           allow(self).to receive(:search_navigation).with(no_args).and_return(data)
 
           expect(search_navigation_json).to instance_exec(&matcher)
         end
       end
+    end
+  end
+
+  describe '.search_navigation_json with .search_navigation' do
+    before do
+      allow(self).to receive(:current_user).and_return(build(:user))
+      allow(self).to receive(:can?).and_return(true)
+      allow(self).to receive(:project_search_tabs?).and_return(true)
+      allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
+      allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(true)
+      allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
+      @show_snippets = true
+      @project = nil
+    end
+
+    it 'test search navigation item order for CE all options enabled' do
+      expect(Gitlab::Json.parse(search_navigation_json).keys).to eq(%w[projects blobs issues merge_requests wiki_blobs commits notes milestones users snippet_titles])
     end
   end
 

@@ -2,26 +2,65 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_record_base do
-  include Database::MultipleDatabases
-
   let(:base_result_dir) { Pathname.new(Dir.mktmpdir) }
 
   let(:migration_runs) { [] } # This list gets populated as the runner tries to run migrations
 
   # Tests depend on all of these lists being sorted in the order migrations would be applied
-  let(:applied_migrations_other_branches) { [double(ActiveRecord::Migration, version: 1, name: 'migration_complete_other_branch')] }
+  let(:applied_migrations_other_branches) do
+    [
+      double(
+        ActiveRecord::Migration,
+        version: 1,
+        name: 'migration_complete_other_branch',
+        filename: 'db/migrate/1_migration_complete_other_branch.rb'
+      )
+    ]
+  end
 
   let(:applied_migrations_this_branch) do
     [
-      double(ActiveRecord::Migration, version: 2, name: 'older_migration_complete_this_branch'),
-      double(ActiveRecord::Migration, version: 3, name: 'newer_migration_complete_this_branch')
+      double(
+        ActiveRecord::Migration,
+        version: 2,
+        name: 'older_migration_complete_this_branch',
+        filename: 'db/migrate/2_older_migration_complete_this_branch.rb'
+      ),
+      double(
+        ActiveRecord::Migration,
+        version: 3,
+        name: 'post_migration_complete_this_branch',
+        filename: 'db/post_migrate/3_post_migration_complete_this_branch.rb'
+      ),
+      double(
+        ActiveRecord::Migration,
+        version: 4,
+        name: 'newer_migration_complete_this_branch',
+        filename: 'db/migrate/4_newer_migration_complete_this_branch.rb'
+      )
     ].sort_by(&:version)
   end
 
   let(:pending_migrations) do
     [
-      double(ActiveRecord::Migration, version: 4, name: 'older_migration_pending'),
-      double(ActiveRecord::Migration, version: 5, name: 'newer_migration_pending')
+      double(
+        ActiveRecord::Migration,
+        version: 5,
+        name: 'older_migration_pending',
+        filename: 'db/migrate/5_older_migration_pending.rb'
+      ),
+      double(
+        ActiveRecord::Migration,
+        version: 6,
+        name: 'post_migration_pending',
+        filename: 'db/post_migrate/6_post_migration_pending.rb'
+      ),
+      double(
+        ActiveRecord::Migration,
+        version: 7,
+        name: 'newer_migration_pending',
+        filename: 'db/migrate/7_newer_migration_pending.rb'
+      )
     ].sort_by(&:version)
   end
 
@@ -87,11 +126,11 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
       context 'running migrations' do
         subject(:up) { described_class.up(database: database, legacy_mode: legacy_mode) }
 
-        it 'runs the unapplied migrations in version order', :aggregate_failures do
+        it 'runs the unapplied migrations in regular/post order, then version order', :aggregate_failures do
           up.run
 
-          expect(migration_runs.map(&:dir)).to match_array([:up, :up])
-          expect(migration_runs.map(&:version_to_migrate)).to eq(pending_migrations.map(&:version))
+          expect(migration_runs.map(&:dir)).to match_array([:up, :up, :up])
+          expect(migration_runs.map(&:version_to_migrate)).to eq([5, 7, 6])
         end
 
         it 'writes a metadata file with the current schema version and database name' do
@@ -130,8 +169,8 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
         it 'runs the applied migrations for the current branch in reverse order', :aggregate_failures do
           down.run
 
-          expect(migration_runs.map(&:dir)).to match_array([:down, :down])
-          expect(migration_runs.map(&:version_to_migrate)).to eq(applied_migrations_this_branch.reverse.map(&:version))
+          expect(migration_runs.map(&:dir)).to match_array([:down, :down, :down])
+          expect(migration_runs.map(&:version_to_migrate)).to eq([3, 4, 2])
         end
       end
 

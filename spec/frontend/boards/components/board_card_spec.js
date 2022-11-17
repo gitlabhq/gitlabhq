@@ -30,7 +30,6 @@ describe('Board card', () => {
       },
       actions: mockActions,
       getters: {
-        isEpicBoard: () => false,
         isProjectBoard: () => false,
       },
     });
@@ -61,6 +60,7 @@ describe('Board card', () => {
         groupId: null,
         rootPath: '/',
         scopedLabelsAvailable: false,
+        isEpicBoard: false,
         ...provide,
       },
     });

@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -264,8 +264,10 @@ PUT projects/:id/packages/pypi
 | `requires_python` | string | no | The PyPI required version. |
 
 ```shell
-curl --request PUT \
-     --upload-file path/to/my.pypi.package-0.0.1.tar.gz \
+curl --request POST \
+     --form 'content=@path/to/my.pypi.package-0.0.1.tar.gz' \
+     --form 'name=my.pypi.package'
+     --form 'version=1.3.7'
      --user <username>:<personal_access_token> \
      "https://gitlab.example.com/api/v4/projects/1/packages/pypi"
 ```

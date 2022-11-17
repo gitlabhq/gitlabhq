@@ -46,9 +46,17 @@ module SearchArguments
   def prepare_search_params(args)
     return args unless args[:search].present?
 
+    args[:in] = args[:in].join(',') if args[:in].present?
+    set_search_optimization_param(args)
+
+    args
+  end
+
+  def set_search_optimization_param(args)
+    return args unless respond_to?(:resource_parent, true) && resource_parent.present?
+
     parent_type = resource_parent.is_a?(Project) ? :project : :group
     args[:"attempt_#{parent_type}_search_optimizations"] = true
-    args[:in] = args[:in].join(',') if args[:in].present?
 
     args
   end

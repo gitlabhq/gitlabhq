@@ -168,7 +168,7 @@ RSpec.describe Groups::RunnersController do
         new_desc = runner.description.swapcase
 
         expect do
-          post :update, params: params.merge(runner: { description: new_desc } )
+          post :update, params: params.merge(runner: { description: new_desc })
         end.to change { runner.ensure_runner_queue_value }
 
         expect(response).to have_gitlab_http_status(:found)
@@ -179,7 +179,7 @@ RSpec.describe Groups::RunnersController do
         new_desc = instance_runner.description.swapcase
 
         expect do
-          post :update, params: params_runner_instance.merge(runner: { description: new_desc } )
+          post :update, params: params_runner_instance.merge(runner: { description: new_desc })
         end.to not_change { instance_runner.ensure_runner_queue_value }
            .and not_change { instance_runner.description }
 
@@ -190,7 +190,7 @@ RSpec.describe Groups::RunnersController do
         new_desc = project_runner.description.swapcase
 
         expect do
-          post :update, params: params_runner_project.merge(runner: { description: new_desc } )
+          post :update, params: params_runner_project.merge(runner: { description: new_desc })
         end.to change { project_runner.ensure_runner_queue_value }
 
         expect(response).to have_gitlab_http_status(:found)
@@ -207,7 +207,7 @@ RSpec.describe Groups::RunnersController do
         old_desc = runner.description
 
         expect do
-          post :update, params: params.merge(runner: { description: old_desc.swapcase } )
+          post :update, params: params.merge(runner: { description: old_desc.swapcase })
         end.not_to change { runner.ensure_runner_queue_value }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -218,7 +218,7 @@ RSpec.describe Groups::RunnersController do
         old_desc = instance_runner.description
 
         expect do
-          post :update, params: params_runner_instance.merge(runner: { description: old_desc.swapcase } )
+          post :update, params: params_runner_instance.merge(runner: { description: old_desc.swapcase })
         end.not_to change { instance_runner.ensure_runner_queue_value }
 
         expect(response).to have_gitlab_http_status(:not_found)
@@ -229,7 +229,7 @@ RSpec.describe Groups::RunnersController do
         old_desc = project_runner.description
 
         expect do
-          post :update, params: params_runner_project.merge(runner: { description: old_desc.swapcase } )
+          post :update, params: params_runner_project.merge(runner: { description: old_desc.swapcase })
         end.not_to change { project_runner.ensure_runner_queue_value }
 
         expect(response).to have_gitlab_http_status(:not_found)

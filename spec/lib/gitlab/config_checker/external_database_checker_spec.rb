@@ -36,7 +36,7 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
         end
 
         it 'reports deprecated database notice' do
-          is_expected.to contain_exactly(notice_deprecated_database(old_database_version))
+          is_expected.to contain_exactly(notice_deprecated_database('main', old_database_version))
         end
       end
     end
@@ -59,13 +59,13 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
         it 'reports deprecated database notice if the main database is using an old version' do
           allow(Gitlab::Database::Reflection).to receive(:new).with(ActiveRecord::Base).and_return(old_database)
           allow(Gitlab::Database::Reflection).to receive(:new).with(Ci::ApplicationRecord).and_return(new_database)
-          is_expected.to contain_exactly(notice_deprecated_database(old_database_version))
+          is_expected.to contain_exactly(notice_deprecated_database('main', old_database_version))
         end
 
         it 'reports deprecated database notice if the ci database is using an old version' do
           allow(Gitlab::Database::Reflection).to receive(:new).with(ActiveRecord::Base).and_return(new_database)
           allow(Gitlab::Database::Reflection).to receive(:new).with(Ci::ApplicationRecord).and_return(old_database)
-          is_expected.to contain_exactly(notice_deprecated_database(old_database_version))
+          is_expected.to contain_exactly(notice_deprecated_database('ci', old_database_version))
         end
       end
 
@@ -77,22 +77,23 @@ RSpec.describe Gitlab::ConfigChecker::ExternalDatabaseChecker do
 
         it 'reports deprecated database notice' do
           is_expected.to match_array [
-            notice_deprecated_database(old_database_version),
-            notice_deprecated_database(old_database_version)
+            notice_deprecated_database('main', old_database_version),
+            notice_deprecated_database('ci', old_database_version)
           ]
         end
       end
     end
   end
 
-  def notice_deprecated_database(database_version)
+  def notice_deprecated_database(database_name, database_version)
     {
       type: 'warning',
-      message: _('You are using PostgreSQL %{pg_version_current}, but PostgreSQL ' \
-                     '%{pg_version_minimum} is required for this version of GitLab. ' \
-                     'Please upgrade your environment to a supported PostgreSQL version, ' \
-                     'see %{pg_requirements_url} for details.') % \
+      message: _('Database \'%{database_name}\' is using PostgreSQL %{pg_version_current}, ' \
+                 'but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. ' \
+                 'Please upgrade your environment to a supported PostgreSQL version, ' \
+                 'see %{pg_requirements_url} for details.') % \
         {
+          database_name: database_name,
           pg_version_current: database_version,
           pg_version_minimum: Gitlab::Database::MINIMUM_POSTGRES_VERSION,
           pg_requirements_url: Gitlab::ConfigChecker::ExternalDatabaseChecker::PG_REQUIREMENTS_LINK

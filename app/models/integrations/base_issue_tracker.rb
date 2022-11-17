@@ -4,7 +4,7 @@ module Integrations
   class BaseIssueTracker < Integration
     validate :one_issue_tracker, if: :activated?, on: :manual_change
 
-    default_value_for :category, 'issue_tracker'
+    attribute :category, default: 'issue_tracker'
 
     before_validation :handle_properties
     before_validation :set_default_data, on: :create

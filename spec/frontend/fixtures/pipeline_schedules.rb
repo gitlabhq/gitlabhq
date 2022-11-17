@@ -7,7 +7,7 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.first_owner }
   let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project, owner: user) }
@@ -54,7 +54,7 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
     get_pipeline_schedules_query = 'get_pipeline_schedules.query.graphql'
 
     let_it_be(:query) do
-      get_graphql_query_as_string("pipeline_schedules/graphql/queries/#{get_pipeline_schedules_query}")
+      get_graphql_query_as_string("ci/pipeline_schedules/graphql/queries/#{get_pipeline_schedules_query}")
     end
 
     it "#{fixtures_path}#{get_pipeline_schedules_query}.json" do
@@ -68,6 +68,15 @@ RSpec.describe 'Pipeline schedules (JavaScript fixtures)' do
       project.add_guest(user)
 
       post_graphql(query, current_user: guest, variables: { projectPath: project.full_path })
+
+      expect_graphql_errors_to_be_empty
+    end
+
+    it "#{fixtures_path}#{get_pipeline_schedules_query}.take_ownership.json" do
+      maintainer = create(:user)
+      project.add_maintainer(maintainer)
+
+      post_graphql(query, current_user: maintainer, variables: { projectPath: project.full_path })
 
       expect_graphql_errors_to_be_empty
     end

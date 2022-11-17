@@ -1413,7 +1413,7 @@ Parameters:
 
 ## Group members
 
-Please consult the [Group Members](members.md) documentation.
+See the [Group Members](members.md) documentation.
 
 ## LDAP Group Links
 
@@ -1605,7 +1605,7 @@ If successful, returns [`201`](index.md#status-codes) and the following response
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" --header "Content-Type: application/json" --data '{ "saml_group_name": "<your_saml_group_name`>", "access_level": <chosen_access_level> }' --url  "https://gitlab.example.com/api/v4/groups/1/saml_group_links"
 ```
 
 Example response:

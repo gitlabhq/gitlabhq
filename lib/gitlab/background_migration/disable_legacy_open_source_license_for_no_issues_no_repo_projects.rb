@@ -6,6 +6,8 @@ module Gitlab
     class DisableLegacyOpenSourceLicenseForNoIssuesNoRepoProjects < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       PUBLIC = 20
 
+      operation_name :disable_legacy_open_source_license_for_no_issues_no_repo_projects
+
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord
         self.table_name = 'project_settings'
@@ -13,7 +15,6 @@ module Gitlab
 
       def perform
         each_sub_batch(
-          operation_name: :disable_legacy_open_source_license_for_no_issues_no_repo_projects,
           batching_scope: ->(relation) { relation.where(visibility_level: PUBLIC) }
         ) do |sub_batch|
           no_issues_no_repo_projects =

@@ -611,7 +611,8 @@ Payload example:
       "name": "User1",
       "username": "user1",
       "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
-    }
+    },
+    "detailed_merge_status": "checking"
   }
 }
 ```
@@ -947,7 +948,8 @@ Payload example:
       "type": "ProjectLabel",
       "group_id": 41
     }],
-    "action": "open"
+    "action": "open",
+    "detailed_merge_status": "mergeable"
   },
   "labels": [{
     "id": 206,
@@ -1017,7 +1019,7 @@ Payload example:
 ```
 
 NOTE:
-The fields `assignee_id`, and `state` are deprecated.
+The fields `assignee_id`, `state`, `merge_status` are deprecated.
 
 ## Wiki page events
 
@@ -1132,6 +1134,7 @@ Payload example:
       "target_project_id": 1,
       "state": "opened",
       "merge_status": "can_be_merged",
+      "detailed_merge_status": "mergeable",
       "url": "http://192.168.64.1:3005/gitlab-org/gitlab-test/merge_requests/1"
    },
    "user":{
@@ -1359,6 +1362,15 @@ Payload example:
 
 ## Job events
 
+- Number of retries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/382046) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md)
+  named `job_webhook_retries_count`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
+`job_webhook_retries_count`.
+On GitLab.com, this feature is not available.
+
 Job events are triggered when the status of a job changes.
 
 The `commit.id` in the payload is the ID of the pipeline, not the ID of the commit.
@@ -1391,6 +1403,7 @@ Payload example:
   "build_duration": null,
   "build_allow_failure": false,
   "build_failure_reason": "script_failure",
+  "retries_count": 2,        // 2 indicates this is the 2nd retry of this job
   "pipeline_id": 2366,
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",

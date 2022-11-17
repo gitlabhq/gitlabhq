@@ -1,14 +1,14 @@
 ---
 # Warning: gitlab.DefaultBranch
 #
-# Do not refer to the default branch as the "master" branch, if possible.
+# Do not refer to the default branch as the 'master' branch, if possible.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Use "default branch" or `main` instead of `master`, when possible.'
+message: "Use 'default branch' or `main` instead of `master`, when possible."
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#default-branch
 scope: raw
 raw:
   - '\`master\`'

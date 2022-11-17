@@ -1,0 +1,8 @@
+---
+name: workhorse_google_client
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96891
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/372596
+milestone: '15.6'
+type: development
+group: 'group::package registry'
+default_enabled: false

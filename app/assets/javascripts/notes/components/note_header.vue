@@ -198,7 +198,7 @@ export default {
       <gl-badge
         v-if="isInternalNote"
         v-gl-tooltip:tooltipcontainer.bottom
-        data-testid="internalNoteIndicator"
+        data-testid="internal-note-indicator"
         variant="warning"
         size="sm"
         class="gl-ml-2"

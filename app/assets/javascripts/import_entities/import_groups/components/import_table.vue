@@ -10,6 +10,7 @@ import {
   GlSprintf,
   GlTable,
   GlFormCheckbox,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { debounce } from 'lodash';
 import { createAlert } from '~/flash';
@@ -60,7 +61,9 @@ export default {
     PaginationBar,
     HelpPopover,
   },
-
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     sourceUrl: {
       type: String,
@@ -118,14 +121,14 @@ export default {
     },
     {
       key: 'webUrl',
-      label: s__('BulkImport|From source group'),
+      label: s__('BulkImport|Source group'),
       thClass: `${DEFAULT_TH_CLASSES} gl-pl-0! import-jobs-from-col`,
       // eslint-disable-next-line @gitlab/require-i18n-strings
       tdClass: `${DEFAULT_TD_CLASSES} gl-pl-0!`,
     },
     {
       key: 'importTarget',
-      label: s__('BulkImport|To new group'),
+      label: s__('BulkImport|New group'),
       thClass: `${DEFAULT_TH_CLASSES} import-jobs-to-col`,
       tdClass: DEFAULT_TD_CLASSES,
     },
@@ -664,6 +667,16 @@ export default {
               :indeterminate="hasSelectedGroups && !hasAllAvailableGroupsSelected"
               @change="hasAllAvailableGroupsSelected ? clearSelected() : selectAllRows()"
             />
+          </template>
+          <template #head(importTarget)="data">
+            <span data-test-id="new-path-col">
+              <span class="gl-mr-2">{{ data.label }}</span
+              ><gl-icon
+                v-gl-tooltip="s__('BulkImport|Path of the new group.')"
+                name="information"
+                :size="12"
+              />
+            </span>
           </template>
           <template #cell(selected)="{ rowSelected, selectRow, unselectRow, item: group }">
             <gl-form-checkbox

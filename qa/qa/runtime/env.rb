@@ -443,7 +443,11 @@ module QA
       end
 
       def export_metrics?
-        running_in_ci? && enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: true)
+        enabled?(ENV['QA_EXPORT_TEST_METRICS'], default: false)
+      end
+
+      def save_metrics_json?
+        enabled?(ENV['QA_SAVE_TEST_METRICS'], default: false)
       end
 
       def ee_activation_code

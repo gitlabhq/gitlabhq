@@ -11,7 +11,7 @@ module API
           expose(:start_time) { |candidate| candidate.start_time || 0 }
           expose :end_time, expose_nil: false
           expose(:status) { |candidate| candidate.status.to_s.upcase }
-          expose(:artifact_uri) { |candidate| 'not_implemented' }
+          expose(:artifact_uri) { |candidate, options| "#{options[:packages_url]}#{candidate.artifact_root}" }
           expose(:lifecycle_stage) { |candidate| 'active' }
           expose(:user_id) { |candidate| candidate.user_id.to_s }
 

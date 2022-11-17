@@ -60,7 +60,7 @@ gc_stat_keys = ENV['GC_STAT_KEYS'].to_s.split(',').map(&:to_sym)
 values = []
 values << ENV['SETTING_CSV']
 values += gc_stat_keys.map { |k| gc_stats[k] }
-values << ::Gitlab::Metrics::System.memory_usage_rss
+values << ::Gitlab::Metrics::System.memory_usage_rss[:total]
 values << gc_total_time
 values << tms.utime + tms.cutime
 values << tms.stime + tms.cstime

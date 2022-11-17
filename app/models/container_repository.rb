@@ -6,6 +6,7 @@ class ContainerRepository < ApplicationRecord
   include EachBatch
   include Sortable
   include AfterCommitQueue
+  include Packages::Destructible
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze
@@ -34,7 +35,7 @@ class ContainerRepository < ApplicationRecord
                                       numericality: { greater_than_or_equal_to: 0 },
                                       allow_nil: false
 
-  enum status: { delete_scheduled: 0, delete_failed: 1 }
+  enum status: { delete_scheduled: 0, delete_failed: 1, delete_ongoing: 2 }
   enum expiration_policy_cleanup_status: { cleanup_unscheduled: 0, cleanup_scheduled: 1, cleanup_unfinished: 2, cleanup_ongoing: 3 }
 
   enum migration_skipped_reason: {
@@ -69,6 +70,7 @@ class ContainerRepository < ApplicationRecord
   scope :with_migration_pre_import_started_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_started_at, '01-01-1970') < ?", timestamp) }
   scope :with_migration_pre_import_done_at_nil_or_before, ->(timestamp) { where("COALESCE(migration_pre_import_done_at, '01-01-1970') < ?", timestamp) }
   scope :with_stale_ongoing_cleanup, ->(threshold) { cleanup_ongoing.where('expiration_policy_started_at < ?', threshold) }
+  scope :with_stale_delete_at, ->(threshold) { where('delete_started_at < ?', threshold) }
   scope :import_in_process, -> { where(migration_state: %w[pre_importing pre_import_done importing]) }
 
   scope :recently_done_migration_step, -> do
@@ -224,6 +226,13 @@ class ContainerRepository < ApplicationRecord
     end
   end
 
+  # Container Repository model and the code that makes API calls
+  # are tied. Sometimes (mainly in Geo) we need to work with Registry
+  # when Container Repository record doesn't even exist.
+  # The ability to create a not-persisted record with a certain "path" parameter
+  # is very useful
+  attr_writer :path
+
   def self.exists_by_path?(path)
     where(
       project: path.repository_project,
@@ -276,6 +285,10 @@ class ContainerRepository < ApplicationRecord
     # Repositories are being migrated by tier on Saas, so we need to
     # filter by plan/subscription which is not available in FOSS
     all
+  end
+
+  class << self
+    alias_method :pending_destruction, :delete_scheduled # needed by Packages::Destructible
   end
 
   def skip_import(reason:)
@@ -505,6 +518,14 @@ class ContainerRepository < ApplicationRecord
 
       gitlab_api_client.repository_details(self.path, sizing: :self)['size_bytes']
     end
+  end
+
+  def set_delete_ongoing_status
+    update_columns(status: :delete_ongoing, delete_started_at: Time.zone.now)
+  end
+
+  def set_delete_scheduled_status
+    update_columns(status: :delete_scheduled, delete_started_at: nil)
   end
 
   def migration_in_active_state?

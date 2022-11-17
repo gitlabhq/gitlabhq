@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Profiles::PasswordsController < Profiles::ApplicationController
+  include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
+
   skip_before_action :check_password_expiration, only: [:new, :create]
   skip_before_action :check_two_factor_requirement, only: [:new, :create]
 
@@ -27,6 +29,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
 
       redirect_to root_path, notice: _('Password successfully changed')
     else
+      track_weak_password_error(@user, self.class.name, 'create')
       render :new
     end
   end
@@ -48,6 +51,7 @@ class Profiles::PasswordsController < Profiles::ApplicationController
       flash[:notice] = _('Password was successfully updated. Please sign in again.')
       redirect_to new_user_session_path
     else
+      track_weak_password_error(@user, self.class.name, 'update')
       @user.reset
       render 'edit'
     end
@@ -94,3 +98,5 @@ class Profiles::PasswordsController < Profiles::ApplicationController
     }
   end
 end
+
+Profiles::PasswordsController.prepend_mod

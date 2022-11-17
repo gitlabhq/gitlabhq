@@ -8,6 +8,12 @@ FactoryBot.define do
       source { association :ci_reports_sbom_source }
     end
 
+    trait :invalid do
+      after(:build) do |report, options|
+        report.add_error('This report is invalid because it contains errors.')
+      end
+    end
+
     after(:build) do |report, options|
       options.components.each { |component| report.add_component(component) }
       report.set_source(options.source)

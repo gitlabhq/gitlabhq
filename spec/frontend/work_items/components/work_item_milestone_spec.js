@@ -9,7 +9,7 @@ import {
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
-import { resolvers, temporaryConfig } from '~/graphql_shared/issuable_client';
+import { resolvers, config } from '~/graphql_shared/issuable_client';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -22,8 +22,14 @@ import {
   mockMilestoneWidgetResponse,
   workItemResponseFactory,
   updateWorkItemMutationErrorResponse,
+  workItemMilestoneSubscriptionResponse,
+  projectWorkItemResponse,
+  updateWorkItemMutationResponse,
 } from 'jest/work_items/mock_data';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
+import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 
 describe('WorkItemMilestone component', () => {
   Vue.use(VueApollo);
@@ -47,6 +53,8 @@ describe('WorkItemMilestone component', () => {
   const findInputGroup = () => wrapper.findComponent(GlFormGroup);
 
   const workItemQueryResponse = workItemResponseFactory({ canUpdate: true, canDelete: true });
+  const workItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
 
   const networkResolvedValue = new Error();
 
@@ -54,6 +62,12 @@ describe('WorkItemMilestone component', () => {
   const successSearchWithNoMatchingMilestones = jest
     .fn()
     .mockResolvedValue(projectMilestonesResponseWithNoMilestones);
+  const milestoneSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemMilestoneSubscriptionResponse);
+  const successUpdateWorkItemMutationHandler = jest
+    .fn()
+    .mockResolvedValue(updateWorkItemMutationResponse);
 
   const showDropdown = () => {
     findDropdown().vm.$emit('shown');
@@ -67,12 +81,20 @@ describe('WorkItemMilestone component', () => {
     canUpdate = true,
     milestone = mockMilestoneWidgetResponse,
     searchQueryHandler = successSearchQueryHandler,
+    fetchByIid = false,
+    mutationHandler = successUpdateWorkItemMutationHandler,
   } = {}) => {
     const apolloProvider = createMockApollo(
-      [[projectMilestonesQuery, searchQueryHandler]],
+      [
+        [workItemQuery, workItemQueryHandler],
+        [workItemMilestoneSubscription, milestoneSubscriptionHandler],
+        [projectMilestonesQuery, searchQueryHandler],
+        [updateWorkItemMutation, mutationHandler],
+        [workItemByIidQuery, workItemByIidResponseHandler],
+      ],
       resolvers,
       {
-        typePolicies: temporaryConfig.cacheConfig.typePolicies,
+        typePolicies: config.cacheConfig.typePolicies,
       },
     );
 
@@ -92,6 +114,10 @@ describe('WorkItemMilestone component', () => {
         workItemId,
         workItemType,
         fullPath,
+        queryVariables: {
+          id: workItemId,
+        },
+        fetchByIid,
       },
       stubs: {
         GlDropdown,

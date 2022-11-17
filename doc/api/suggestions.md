@@ -11,7 +11,7 @@ This page describes the API for [suggesting changes](../user/project/merge_reque
 
 Every API call to suggestions must be authenticated.
 
-## Applying suggestions
+## Applying a suggestion
 
 Applies a suggested patch in a merge request. Users must have
 at least the Developer role to perform such action.
@@ -22,7 +22,7 @@ PUT /suggestions/:id/apply
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID of a suggestion |
+| `id` | integer | yes | The ID of a suggestion |
 | `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
 
 ```shell
@@ -32,13 +32,53 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 Example response:
 
 ```json
+{
+  "id": 5,
+  "from_line": 10,
+  "to_line": 10,
+  "applicable": true,
+  "applied": false,
+  "from_content": "This is an eaxmple\n",
+  "to_content": "This is an example\n"
+}
+```
+
+## Applying multiple suggestions
+
+```plaintext
+PUT /suggestions/batch_apply
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `ids` | integer | yes | The IDs of suggestions |
+| `commit_message` | string | no | A custom commit message to use instead of the default generated message or the project's default message |
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" --header 'Content-Type: application/json' --data '{"ids": [5, 6]}' "https://gitlab.example.com/api/v4/suggestions/batch_apply"
+```
+
+Example response:
+
+```json
+[
   {
-    "id": 36,
+    "id": 5,
     "from_line": 10,
     "to_line": 10,
-    "applicable": false,
-    "applied": true,
-    "from_content": "        \"--talk-name=org.freedesktop.\",\n",
-    "to_content": "        \"--talk-name=org.free.\",\n        \"--talk-name=org.desktop.\",\n"
+    "applicable": true,
+    "applied": false,
+    "from_content": "This is an eaxmple\n",
+    "to_content": "This is an example\n"
   }
+  {
+    "id": 6,
+    "from_line": 19
+    "to_line": 19,
+    "applicable": true,
+    "applied": false,
+    "from_content": "This is another eaxmple\n",
+    "to_content": "This is another example\n"
+  }
+ ]
 ```

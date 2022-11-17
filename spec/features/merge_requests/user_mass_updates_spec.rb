@@ -130,7 +130,7 @@ RSpec.describe 'Merge requests > User mass updates', :js do
     click_button 'Edit merge requests'
     check 'Select all'
     click_button 'Select milestone'
-    click_link text
+    click_button text
     click_update_merge_requests_button
   end
 

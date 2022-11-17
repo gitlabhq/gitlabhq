@@ -104,10 +104,33 @@ RSpec.describe Issues::UpdateService, :mailer do
         expect(issue.issue_customer_relations_contacts.last.contact).to eq contact
       end
 
-      it 'updates issue milestone when passing `milestone` param' do
-        update_issue(milestone: milestone)
+      context 'when updating milestone' do
+        before do
+          update_issue({ milestone: nil })
+        end
 
-        expect(issue.milestone).to eq milestone
+        it 'updates issue milestone when passing `milestone` param' do
+          expect { update_issue({ milestone: milestone }) }
+            .to change(issue, :milestone).to(milestone).from(nil)
+        end
+
+        it "triggers 'issuableMilestoneUpdated'" do
+          expect(GraphqlTriggers).to receive(:issuable_milestone_updated).with(issue).and_call_original
+
+          update_issue({ milestone: milestone })
+        end
+
+        context 'when milestone remains unchanged' do
+          before do
+            update_issue({ title: 'abc', milestone: milestone })
+          end
+
+          it "does not trigger 'issuableMilestoneUpdated'" do
+            expect(GraphqlTriggers).not_to receive(:issuable_milestone_updated)
+
+            update_issue({ milestone: milestone })
+          end
+        end
       end
 
       context 'when sentry identifier is given' do
@@ -520,7 +543,7 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
-    context 'when decription is not changed' do
+    context 'when description is not changed' do
       it 'does not trigger GraphQL description updated subscription' do
         expect(GraphqlTriggers).not_to receive(:issuable_description_updated)
 
@@ -1379,7 +1402,7 @@ RSpec.describe Issues::UpdateService, :mailer do
       end
     end
 
-    include_examples 'issuable update service' do
+    it_behaves_like 'issuable update service' do
       let(:open_issuable) { issue }
       let(:closed_issuable) { create(:closed_issue, project: project) }
     end

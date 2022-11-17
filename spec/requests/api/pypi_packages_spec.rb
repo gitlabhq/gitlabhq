@@ -69,6 +69,7 @@ RSpec.describe API::PypiPackages do
       it_behaves_like 'rejects PyPI access with unknown project id'
       it_behaves_like 'deploy token for package GET requests'
       it_behaves_like 'job token for package GET requests'
+      it_behaves_like 'allow access for everyone with public package_registry_access_level'
 
       context 'with project path as id' do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple" }
@@ -130,6 +131,7 @@ RSpec.describe API::PypiPackages do
       it_behaves_like 'rejects PyPI access with unknown project id'
       it_behaves_like 'deploy token for package GET requests'
       it_behaves_like 'job token for package GET requests'
+      it_behaves_like 'allow access for everyone with public package_registry_access_level'
 
       context 'with project path as id' do
         let(:url) { "/projects/#{CGI.escape(project.full_path)}/packages/pypi/simple/#{package.name}" }
@@ -377,6 +379,7 @@ RSpec.describe API::PypiPackages do
 
       it_behaves_like 'pypi file download endpoint'
       it_behaves_like 'rejects PyPI access with unknown project id'
+      it_behaves_like 'allow access for everyone with public package_registry_access_level'
     end
   end
 end

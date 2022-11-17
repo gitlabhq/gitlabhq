@@ -13,9 +13,9 @@ links. For manipulating other Release assets, see [Release API](index.md).
 
 GitLab supports links to `http`, `https`, and `ftp` assets.
 
-## Get links
+## List links of a release
 
-Get assets as links from a Release.
+Get assets as links from a release.
 
 ```plaintext
 GET /projects/:id/releases/:tag_name/assets/links
@@ -53,9 +53,9 @@ Example response:
 ]
 ```
 
-## Get a link
+## Get a release link
 
-Get an asset as a link from a Release.
+Get an asset as a link from a release.
 
 ```plaintext
 GET /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -85,9 +85,9 @@ Example response:
 }
 ```
 
-## Create a link
+## Create a release link
 
-Create an asset as a link from a Release.
+Creates an asset as a link from a release.
 
 ```plaintext
 POST /projects/:id/releases/:tag_name/assets/links
@@ -126,9 +126,9 @@ Example response:
 }
 ```
 
-## Update a link
+## Update a release link
 
-Update an asset as a link from a Release.
+Updates an asset as a link from a release.
 
 ```plaintext
 PUT /projects/:id/releases/:tag_name/assets/links/:link_id
@@ -167,9 +167,9 @@ Example response:
 }
 ```
 
-## Delete a link
+## Delete a release link
 
-Delete an asset as a link from a Release.
+Deletes an asset as a link from a release.
 
 ```plaintext
 DELETE /projects/:id/releases/:tag_name/assets/links/:link_id

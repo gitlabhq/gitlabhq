@@ -1,0 +1,8 @@
+---
+name: projects_preloader_fix
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96108
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378858
+milestone: '15.6'
+type: development
+group: group::workspace
+default_enabled: false

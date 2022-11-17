@@ -210,7 +210,7 @@ class NotifyPreview < ActionMailer::Preview
   end
 
   def verification_instructions_email
-    Notify.verification_instructions_email(user.id, token: '123456', expires_in: 60).message
+    Notify.verification_instructions_email(user.email, token: '123456').message
   end
 
   def project_was_exported_email

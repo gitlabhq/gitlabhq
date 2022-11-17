@@ -110,7 +110,7 @@ If the specs fail the check they must be fixed before than can run in random ord
 
 ### Test speed
 
-GitLab has a massive test suite that, without [parallelization](../pipelines.md#test-suite-parallelization), can take hours
+GitLab has a massive test suite that, without [parallelization](../pipelines/index.md#test-suite-parallelization), can take hours
 to run. It's important that we make an effort to write tests that are accurate
 and effective _as well as_ fast.
 
@@ -282,7 +282,7 @@ end
 
 #### Stubbing methods within factories
 
-You should avoid using `allow(object).to receive(:method)` in factories, as this makes the factory unable to be used with `let_it_be`.
+You should avoid using `allow(object).to receive(:method)` in factories, as this makes the factory unable to be used with `let_it_be`, as described in [common test setup](#common-test-setup).
 
 Instead, you can use `stub_method` to stub the method:
 
@@ -425,6 +425,11 @@ results are available, and not just the first failure.
   when you need an ID/IID/access level that doesn't actually exists. Using 123, 1234,
   or even 999 is brittle as these IDs could actually exist in the database in the
   context of a CI run.
+- All top-level `RSpec.describe` blocks should have [`feature_category`](https://about.gitlab.com/categories.json) metadata set.
+  Consider splitting the file in the case there are identified multiple feature categories in same file.
+  If no `feature_category` is identified then use `not_owned`. This information is used in flaky test
+  issues created in order to identify the group owning the feature.
+  Eg: `RSpec.describe Admin::Geo::SettingsController, :geo, feature_category: :geo_replication do`.
 
 ### Coverage
 
@@ -921,7 +926,8 @@ them unspecified, and look up the value after the row is created.
 #### Redis
 
 GitLab stores two main categories of data in Redis: cached items, and Sidekiq
-jobs.
+jobs. [View the full list of `Gitlab::Redis::Wrapper` descendants](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/redis.rb) that are backed by
+a separate Redis instance.
 
 In most specs, the Rails cache is actually an in-memory store. This is replaced
 between specs, so calls to `Rails.cache.read` and `Rails.cache.write` are safe.
@@ -960,6 +966,14 @@ it "really connects to Prometheus", :permit_dns do
 
 And if you need more specific control, the DNS blocking is implemented in
 `spec/support/helpers/dns_helpers.rb` and these methods can be called elsewhere.
+
+#### Rate Limiting
+
+[Rate limiting](../../security/rate_limits.md) is enabled in the test suite. Rate limits
+may be triggered in feature specs that use the `:js` trait. In most cases, triggering rate
+limiting can be avoided by marking the spec with the `:clean_gitlab_redis_rate_limiting`
+trait. This trait clears the rate limiting data stored in Redis cache between specs. If
+a single test triggers the rate limit, the `:disable_rate_limit` can be used instead.
 
 #### Stubbing File methods
 
@@ -1437,9 +1451,10 @@ GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test f
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't
   required by the test.
-- Prefer [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition)
-  or [explicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#explicit-definition)
-  association definitions instead of using `create` / `build` for association setup.
+- Prefer [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition),
+  [explicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#explicit-definition), or
+  [inline](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#inline-definition) associations
+  over `create` / `build` for association setup in callbacks.
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).

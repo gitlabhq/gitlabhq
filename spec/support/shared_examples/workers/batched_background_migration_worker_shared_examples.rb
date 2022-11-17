@@ -137,8 +137,12 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
           let(:lease_timeout) { 15.minutes }
           let(:lease_key) { described_class.name.demodulize.underscore }
           let(:interval_variance) { described_class::INTERVAL_VARIANCE }
+          let(:migration_id) { 123 }
           let(:migration) do
-            build(:batched_background_migration, :active, interval: job_interval, table_name: table_name)
+            build(
+              :batched_background_migration, :active,
+              id: migration_id, interval: job_interval, table_name: table_name
+            )
           end
 
           before do
@@ -150,45 +154,6 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             allow(migration).to receive(:reload)
           end
 
-          context 'when the reloaded migration is no longer active' do
-            it 'does not run the migration' do
-              expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
-
-              expect(migration).to receive(:reload)
-              expect(migration).to receive(:active?).and_return(false)
-
-              expect(worker).not_to receive(:run_active_migration)
-
-              worker.perform
-            end
-          end
-
-          context 'when the interval has not elapsed' do
-            it 'does not run the migration' do
-              expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
-
-              expect(migration).to receive(:interval_elapsed?).with(variance: interval_variance).and_return(false)
-
-              expect(worker).not_to receive(:run_active_migration)
-
-              worker.perform
-            end
-          end
-
-          context 'when the reloaded migration is still active and the interval has elapsed' do
-            it 'runs the migration' do
-              expect_to_obtain_exclusive_lease(lease_key, timeout: lease_timeout)
-
-              expect_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |instance|
-                expect(instance).to receive(:run_migration_job).with(migration)
-              end
-
-              expect(worker).to receive(:run_active_migration).and_call_original
-
-              worker.perform
-            end
-          end
-
           context 'when the calculated timeout is less than the minimum allowed' do
             let(:minimum_timeout) { described_class::MINIMUM_LEASE_TIMEOUT }
             let(:job_interval) { 2.minutes }
@@ -196,8 +161,8 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             it 'sets the lease timeout to the minimum value' do
               expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
 
-              expect_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |instance|
-                expect(instance).to receive(:run_migration_job).with(migration)
+              expect_next_instance_of(Database::BatchedBackgroundMigration::ExecutionWorker) do |worker|
+                expect(worker).to receive(:perform).with(tracking_database, migration_id)
               end
 
               expect(worker).to receive(:run_active_migration).and_call_original
@@ -217,10 +182,13 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             expect { worker.perform }.to raise_error(RuntimeError, 'I broke')
           end
 
-          it 'receives the correct connection' do
+          it 'delegetes the execution to ExecutionWorker' do
             base_model = Gitlab::Database.database_base_models[tracking_database]
 
             expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(base_model.connection).and_yield
+            expect_next_instance_of(Database::BatchedBackgroundMigration::ExecutionWorker) do |worker|
+              expect(worker).to receive(:perform).with(tracking_database, migration_id)
+            end
 
             worker.perform
           end
@@ -236,10 +204,10 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
     let(:migration_class) do
       Class.new(Gitlab::BackgroundMigration::BatchedMigrationJob) do
         job_arguments :matching_status
+        operation_name :update_all
 
         def perform
           each_sub_batch(
-            operation_name: :update_all,
             batching_scope: -> (relation) { relation.where(status: matching_status) }
           ) do |sub_batch|
             sub_batch.update_all(some_column: 0)

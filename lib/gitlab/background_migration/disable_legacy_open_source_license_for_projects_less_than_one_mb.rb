@@ -5,9 +5,10 @@ module Gitlab
     # Set `project_settings.legacy_open_source_license_available` to false for projects less than 1 MB
     class DisableLegacyOpenSourceLicenseForProjectsLessThanOneMb < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       scope_to ->(relation) { relation.where(legacy_open_source_license_available: true) }
+      operation_name :disable_legacy_open_source_license_for_projects_less_than_one_mb
 
       def perform
-        each_sub_batch(operation_name: :disable_legacy_open_source_license_for_projects_less_than_one_mb) do |sub_batch|
+        each_sub_batch do |sub_batch|
           updates = { legacy_open_source_license_available: false, updated_at: Time.current }
 
           sub_batch

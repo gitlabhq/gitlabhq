@@ -69,7 +69,7 @@ RSpec.describe 'Group issues page' do
   context 'issues list', :js do
     let(:subgroup) { create(:group, parent: group) }
     let(:subgroup_project) { create(:project, :public, group: subgroup) }
-    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
     let!(:issue) { create(:issue, project: project, title: 'root group issue') }
     let!(:subgroup_issue) { create(:issue, project: subgroup_project, title: 'subgroup issue') }
 
@@ -111,7 +111,7 @@ RSpec.describe 'Group issues page' do
 
   context 'projects with issues disabled' do
     describe 'issue dropdown' do
-      let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+      let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
       before do
         [project, project_with_issues_disabled].each { |project| project.add_maintainer(user_in_group) }
@@ -129,7 +129,7 @@ RSpec.describe 'Group issues page' do
   end
 
   context 'manual ordering', :js do
-    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
     let!(:issue1) { create(:issue, project: project, title: 'Issue #1', relative_position: 1) }
     let!(:issue2) { create(:issue, project: project, title: 'Issue #2', relative_position: 2) }
@@ -161,6 +161,8 @@ RSpec.describe 'Group issues page' do
       visit issues_group_path(group)
       select_manual_sort
 
+      wait_for_requests
+
       drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
 
       expect_issue_order
@@ -175,6 +177,8 @@ RSpec.describe 'Group issues page' do
       wait_for_requests
       visit issues_group_path(group)
       select_manual_sort
+
+      wait_for_requests
 
       drag_to(selector: '.manual-ordering', from_index: 0, to_index: 2)
 
@@ -195,7 +199,7 @@ RSpec.describe 'Group issues page' do
   end
 
   context 'issues pagination', :js do
-    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
+    let(:user_in_group) { create(:group_member, :maintainer, user: create(:user), group: group).user }
 
     let!(:issues) do
       (1..25).to_a.map { |index| create(:issue, project: project, title: "Issue #{index}") }

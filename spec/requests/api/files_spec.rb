@@ -11,7 +11,7 @@ RSpec.describe API::Files do
   let_it_be(:inherited_reporter) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }
 
-  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:file_path) { 'files%2Fruby%2Fpopen%2Erb' }
   let(:file_name) { 'popen.rb' }
@@ -935,7 +935,7 @@ RSpec.describe API::Files do
           end
 
           context 'and the repo is empty' do
-            let!(:project) { create(:project_empty_repo, namespace: user.namespace ) }
+            let!(:project) { create(:project_empty_repo, namespace: user.namespace) }
 
             it_behaves_like 'creates a new file in the project repo' do
               let(:current_user) { user }
@@ -1251,6 +1251,37 @@ RSpec.describe API::Files do
       expect(json_response['file_path']).to eq(CGI.unescape(file_path))
       expect(json_response['file_name']).to eq(CGI.unescape(file_path))
       expect(json_response['content']).to eq(put_params[:content])
+    end
+  end
+
+  describe 'POST /projects/:id/repository/files with text encoding' do
+    let(:file_path) { 'test%2Etext' }
+    let(:put_params) do
+      {
+        branch: 'master',
+        content: 'test',
+        commit_message: 'Text file',
+        encoding: 'text'
+      }
+    end
+
+    let(:get_params) do
+      {
+        ref: 'master'
+      }
+    end
+
+    before do
+      post api(route(file_path), user), params: put_params
+    end
+
+    it 'returns base64-encoded text file' do
+      get api(route(file_path), user), params: get_params
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response['file_path']).to eq(CGI.unescape(file_path))
+      expect(json_response['file_name']).to eq(CGI.unescape(file_path))
+      expect(Base64.decode64(json_response['content'])).to eq("test")
     end
   end
 end

@@ -46,26 +46,19 @@ RSpec.describe API::Terraform::State, :snowplow do
         let(:expected_value) { instance_of(Integer) }
       end
 
-      it 'tracks Snowplow event' do
-        request
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        subject(:api_request) { request }
 
-        expect_snowplow_event(
-          category: described_class.to_s,
-          action: 'p_terraform_state_api_unique_users',
-          namespace: project.namespace.reload,
-          user: current_user
-        )
-      end
-
-      context 'when route_hll_to_snowplow_phase2 FF is disabled' do
-        before do
-          stub_feature_flags(route_hll_to_snowplow_phase2: false)
-        end
-
-        it 'does not track Snowplow event' do
-          request
-
-          expect_no_snowplow_event
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { described_class.name }
+        let(:action) { 'terraform_state_api_request' }
+        let(:label) { 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly' }
+        let(:namespace) { project.namespace.reload }
+        let(:user) { current_user }
+        let(:context) do
+          payload = Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                             event: 'p_terraform_state_api_unique_users').to_context
+          [Gitlab::Json.dump(payload)]
         end
       end
     end
@@ -318,7 +311,7 @@ RSpec.describe API::Terraform::State, :snowplow do
         Version: '0.1',
         Operation: 'OperationTypePlan',
         Info: '',
-        Who: "#{current_user.username}",
+        Who: current_user.username.to_s,
         Created: Time.now.utc.iso8601(6),
         Path: ''
       }
@@ -365,7 +358,7 @@ RSpec.describe API::Terraform::State, :snowplow do
         Version: '0.1',
         Operation: 'OperationTypePlan',
         Info: '',
-        Who: "#{current_user.username}",
+        Who: current_user.username.to_s,
         Created: Time.now.utc.iso8601(6),
         Path: ''
       }

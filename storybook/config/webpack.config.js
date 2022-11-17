@@ -9,6 +9,12 @@ const IS_EE = require('../../config/helpers/is_ee_env');
 const IS_JH = require('../../config/helpers/is_jh_env');
 const gitlabWebpackConfig = require('../../config/webpack.config');
 
+const ROOT_PATH = path.resolve(__dirname, '..', '..');
+const EMPTY_VUE_COMPONENT_PATH = path.join(
+  ROOT_PATH,
+  'app/assets/javascripts/vue_shared/components/empty_component.js',
+);
+
 const buildIncludePaths = (nodeSassIncludePaths, previouslyResolvedPath) => {
   const includePaths = [];
   if (path.isAbsolute(previouslyResolvedPath)) {
@@ -143,6 +149,22 @@ module.exports = function storybookWebpackConfig({ config }) {
 
   // Silence webpack warnings about moment/pikaday not being able to resolve.
   config.plugins.push(new webpack.IgnorePlugin(/moment/, /pikaday/));
+
+  if (!IS_EE) {
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^ee_component\/(.*)\.vue/, (resource) => {
+        resource.request = EMPTY_VUE_COMPONENT_PATH;
+      }),
+    );
+  }
+
+  if (!IS_JH) {
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^jh_component\/(.*)\.vue/, (resource) => {
+        resource.request = EMPTY_VUE_COMPONENT_PATH;
+      }),
+    );
+  }
 
   const baseIntegrationTestHelpersPath = 'spec/frontend_integration/test_helpers';
 

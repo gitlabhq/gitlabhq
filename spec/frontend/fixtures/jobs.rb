@@ -7,7 +7,7 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
   include JavaScriptFixturesHelpers
   include GraphqlHelpers
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project, :repository, namespace: namespace, path: 'builds-project') }
   let(:user) { project.first_owner }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, sha: project.commit.id) }

@@ -119,6 +119,8 @@ class Group < Namespace
 
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
+  has_many :protected_branches, inverse_of: :group
+
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 
   delegate :prevent_sharing_groups_outside_hierarchy, :new_user_signups_cap, :setup_for_company, :jobs_to_be_done, to: :namespace_settings
@@ -465,9 +467,10 @@ class Group < Namespace
   end
 
   # Check if user is a last owner of the group.
+  # Excludes non-direct owners for top-level group
   # Excludes project_bots
   def last_owner?(user)
-    has_owner?(user) && all_owners_excluding_project_bots.size == 1
+    has_owner?(user) && member_owners_excluding_project_bots.size == 1
   end
 
   def member_last_owner?(member)
@@ -476,8 +479,14 @@ class Group < Namespace
     last_owner?(member.user)
   end
 
-  def all_owners_excluding_project_bots
-    members_with_parents.owners.merge(User.without_project_bot)
+  # Excludes non-direct owners for top-level group
+  # Excludes project_bots
+  def member_owners_excluding_project_bots
+    if root?
+      members
+    else
+      members_with_parents
+    end.owners.merge(User.without_project_bot)
   end
 
   def single_blocked_owner?
@@ -487,7 +496,7 @@ class Group < Namespace
   def member_last_blocked_owner?(member)
     return member.last_blocked_owner unless member.last_blocked_owner.nil?
 
-    return false if members_with_parents.owners.any?
+    return false if member_owners_excluding_project_bots.any?
 
     single_blocked_owner? && blocked_owners.exists?(user_id: member.user)
   end
@@ -1008,10 +1017,6 @@ class Group < Namespace
     Arel::Nodes::As.new(
       Arel::Nodes::NamedFunction.new('LEAST', args),
       Arel::Nodes::SqlLiteral.new(column_alias))
-  end
-
-  def self.groups_including_descendants_by(group_ids)
-    Group.where(id: group_ids).self_and_descendants
   end
 
   def disable_shared_runners!

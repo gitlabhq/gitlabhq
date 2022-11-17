@@ -221,6 +221,27 @@ RSpec.shared_examples 'rejects PyPI access with unknown group id' do
   end
 end
 
+RSpec.shared_examples 'allow access for everyone with public package_registry_access_level' do
+  context 'with private project but public access to package registry' do
+    before do
+      project.update_column(:visibility_level, Gitlab::VisibilityLevel::PRIVATE)
+      project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+    end
+
+    context 'as non-member user' do
+      let(:headers) { basic_auth_header(user.username, personal_access_token.token) }
+
+      it_behaves_like 'returning response status', :success
+    end
+
+    context 'as anonymous' do
+      let(:headers) { {} }
+
+      it_behaves_like 'returning response status', :success
+    end
+  end
+end
+
 RSpec.shared_examples 'pypi simple API endpoint' do
   using RSpec::Parameterized::TableSyntax
 

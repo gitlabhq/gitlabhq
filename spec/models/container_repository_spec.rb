@@ -871,6 +871,28 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     end
   end
 
+  describe '#set_delete_ongoing_status', :freeze_time do
+    let_it_be(:repository) { create(:container_repository) }
+
+    subject { repository.set_delete_ongoing_status }
+
+    it 'updates deletion status attributes' do
+      expect { subject }.to change(repository, :status).from(nil).to('delete_ongoing')
+                              .and change(repository, :delete_started_at).from(nil).to(Time.zone.now)
+    end
+  end
+
+  describe '#set_delete_scheduled_status' do
+    let_it_be(:repository) { create(:container_repository, :status_delete_ongoing, delete_started_at: 3.minutes.ago) }
+
+    subject { repository.set_delete_scheduled_status }
+
+    it 'updates delete attributes' do
+      expect { subject }.to change(repository, :status).from('delete_ongoing').to('delete_scheduled')
+                              .and change(repository, :delete_started_at).to(nil)
+    end
+  end
+
   context 'registry migration' do
     before do
       allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
@@ -1270,6 +1292,16 @@ RSpec.describe ContainerRepository, :aggregate_failures do
     let_it_be(:repository4) { create(:container_repository, :cleanup_unscheduled, expiration_policy_started_at: 25.minutes.ago) }
 
     subject { described_class.with_stale_ongoing_cleanup(27.minutes.ago) }
+
+    it { is_expected.to contain_exactly(repository1, repository3) }
+  end
+
+  describe '.with_stale_delete_at' do
+    let_it_be(:repository1) { create(:container_repository, delete_started_at: 1.day.ago) }
+    let_it_be(:repository2) { create(:container_repository, delete_started_at: 25.minutes.ago) }
+    let_it_be(:repository3) { create(:container_repository, delete_started_at: 1.week.ago) }
+
+    subject { described_class.with_stale_delete_at(27.minutes.ago) }
 
     it { is_expected.to contain_exactly(repository1, repository3) }
   end

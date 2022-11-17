@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
+  include Ci::TemplateHelpers
+
   subject(:template) do
     <<~YAML
       stages:
@@ -26,6 +28,17 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
     YAML
   end
 
+  describe 'AUTO_DEPLOY_IMAGE_VERSION' do
+    it 'corresponds to a published image in the registry' do
+      template = Gitlab::Template::GitlabCiYmlTemplate.find('Jobs/Deploy')
+      registry = "https://#{template_registry_host}"
+      repository = "gitlab-org/cluster-integration/auto-deploy-image"
+      reference = YAML.safe_load(template.content, aliases: true).dig('variables', 'AUTO_DEPLOY_IMAGE_VERSION')
+
+      expect(public_image_exist?(registry, repository, reference)).to be true
+    end
+  end
+
   describe 'the created pipeline' do
     let_it_be(:project, refind: true) { create(:project, :repository) }
 
@@ -33,7 +46,7 @@ RSpec.describe 'Jobs/Deploy.gitlab-ci.yml' do
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do

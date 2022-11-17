@@ -4,6 +4,6 @@ classes:
 - CommitSignatures::X509CommitSignature
 feature_categories:
 - source_code_management
-description: TODO
+description: Stores X.509 verification status of the commit
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17773
 milestone: '12.8'

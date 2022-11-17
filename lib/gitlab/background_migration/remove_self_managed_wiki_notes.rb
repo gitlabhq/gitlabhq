@@ -4,10 +4,10 @@ module Gitlab
   module BackgroundMigration
     # Removes obsolete wiki notes
     class RemoveSelfManagedWikiNotes < BatchedMigrationJob
+      operation_name :delete_all
+
       def perform
-        each_sub_batch(
-          operation_name: :delete_all
-        ) do |sub_batch|
+        each_sub_batch do |sub_batch|
           sub_batch.where(noteable_type: 'Wiki').delete_all
         end
       end

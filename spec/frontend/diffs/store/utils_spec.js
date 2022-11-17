@@ -311,9 +311,14 @@ describe('DiffsStoreUtils', () => {
   describe('prepareLineForRenamedFile', () => {
     const diffFile = {
       file_hash: 'file-hash',
+      brokenSymlink: false,
+      renamed_file: false,
+      added_lines: 1,
+      removed_lines: 1,
     };
     const lineIndex = 4;
     const sourceLine = {
+      line_code: 'abc',
       foo: 'test',
       rich_text: ' <p>rich</p>', // Note the leading space
     };
@@ -328,6 +333,12 @@ describe('DiffsStoreUtils', () => {
       hasForm: false,
       text: undefined,
       alreadyPrepared: true,
+      commentsDisabled: false,
+      problems: {
+        brokenLineCode: false,
+        brokenSymlink: false,
+        fileOnlyMoved: false,
+      },
     };
     let preppedLine;
 
@@ -360,24 +371,35 @@ describe('DiffsStoreUtils', () => {
     });
 
     it.each`
-      brokenSymlink
-      ${false}
-      ${{}}
-      ${'anything except `false`'}
+      brokenSymlink | renamed  | added | removed | lineCode | commentsDisabled
+      ${false}      | ${false} | ${0}  | ${0}    | ${'a'}   | ${false}
+      ${{}}         | ${false} | ${1}  | ${1}    | ${'a'}   | ${true}
+      ${'truthy'}   | ${false} | ${1}  | ${1}    | ${'a'}   | ${true}
+      ${false}      | ${true}  | ${1}  | ${1}    | ${'a'}   | ${false}
+      ${false}      | ${true}  | ${1}  | ${0}    | ${'a'}   | ${false}
+      ${false}      | ${true}  | ${0}  | ${1}    | ${'a'}   | ${false}
+      ${false}      | ${true}  | ${0}  | ${0}    | ${'a'}   | ${true}
     `(
-      "properly assigns each line's `commentsDisabled` as the same value as the parent file's `brokenSymlink` value (`$brokenSymlink`)",
-      ({ brokenSymlink }) => {
-        preppedLine = utils.prepareLineForRenamedFile({
-          diffViewType: INLINE_DIFF_VIEW_TYPE,
-          line: sourceLine,
+      "properly sets a line's `commentsDisabled` to '$commentsDisabled' for file and line settings { brokenSymlink: $brokenSymlink, renamed: $renamed, added: $added, removed: $removed, line_code: $lineCode }",
+      ({ brokenSymlink, renamed, added, removed, lineCode, commentsDisabled }) => {
+        const line = {
+          ...sourceLine,
+          line_code: lineCode,
+        };
+        const file = {
+          ...diffFile,
+          brokenSymlink,
+          renamed_file: renamed,
+          added_lines: added,
+          removed_lines: removed,
+        };
+        const preparedLine = utils.prepareLineForRenamedFile({
           index: lineIndex,
-          diffFile: {
-            ...diffFile,
-            brokenSymlink,
-          },
+          diffFile: file,
+          line,
         });
 
-        expect(preppedLine.commentsDisabled).toStrictEqual(brokenSymlink);
+        expect(preparedLine.commentsDisabled).toBe(commentsDisabled);
       },
     );
   });
@@ -477,7 +499,7 @@ describe('DiffsStoreUtils', () => {
 
       it('adds the `.brokenSymlink` property to each diff file', () => {
         preparedDiff.diff_files.forEach((file) => {
-          expect(file).toEqual(expect.objectContaining({ brokenSymlink: false }));
+          expect(file).toHaveProperty('brokenSymlink', false);
         });
       });
 
@@ -490,7 +512,7 @@ describe('DiffsStoreUtils', () => {
         ].flatMap((file) => [...file[INLINE_DIFF_LINES_KEY]]);
 
         lines.forEach((line) => {
-          expect(line.commentsDisabled).toBe(false);
+          expect(line.problems.brokenSymlink).toBe(false);
         });
       });
     });

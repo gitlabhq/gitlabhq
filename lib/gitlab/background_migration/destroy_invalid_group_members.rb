@@ -9,8 +9,10 @@ module Gitlab
                 .where(namespaces: { id: nil })
       end
 
+      operation_name :delete_all
+
       def perform
-        each_sub_batch(operation_name: :delete_all) do |sub_batch|
+        each_sub_batch do |sub_batch|
           invalid_ids = sub_batch.map(&:id)
           Gitlab::AppLogger.info({ message: 'Removing invalid group member records',
                                    deleted_count: invalid_ids.size, ids: invalid_ids })

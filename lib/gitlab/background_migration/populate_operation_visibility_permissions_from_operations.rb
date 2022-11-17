@@ -6,8 +6,10 @@ module Gitlab
     # monitor_access_level, deployments_access_level, infrastructure_access_level.
     # The operations_access_level setting is being split into three seperate toggles.
     class PopulateOperationVisibilityPermissionsFromOperations < BatchedMigrationJob
+      operation_name :populate_operations_visibility
+
       def perform
-        each_sub_batch(operation_name: :populate_operations_visibility) do |batch|
+        each_sub_batch do |batch|
           batch.update_all('monitor_access_level=operations_access_level,' \
             'infrastructure_access_level=operations_access_level,' \
             ' feature_flags_access_level=operations_access_level,'\

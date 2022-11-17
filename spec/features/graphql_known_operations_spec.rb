@@ -24,6 +24,6 @@ RSpec.describe 'Graphql known operations', :js do
 
     expect(known_operations).to include("searchProjects")
     expect(known_operations.length).to be > 20
-    expect(known_operations).to all( match(%r{^[a-z]+}i) )
+    expect(known_operations).to all(match(%r{^[a-z]+}i))
   end
 end

@@ -400,26 +400,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
         end
 
         describe 'parsing tracking' do
-          let(:tracking_data) do
-            {
-            'type' => 'source',
-            'items' => [
-              'signatures' => [
-                { 'algorithm' => 'hash', 'value' => 'hash_value' },
-                { 'algorithm' => 'location', 'value' => 'location_value' },
-                { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
-              ]
-            ]
-            }
-          end
-
-          context 'with valid tracking information' do
-            it 'creates signatures for each algorithm' do
-              finding = report.findings.first
-              expect(finding.signatures.size).to eq(3)
-              expect(finding.signatures.map(&:algorithm_type).to_set).to eq(Set['hash', 'location', 'scope_offset'])
-            end
-          end
+          let(:finding) { report.findings.first }
 
           context 'with invalid tracking information' do
             let(:tracking_data) do
@@ -436,15 +417,26 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             end
 
             it 'ignores invalid algorithm types' do
-              finding = report.findings.first
               expect(finding.signatures.size).to eq(2)
               expect(finding.signatures.map(&:algorithm_type).to_set).to eq(Set['hash', 'location'])
             end
           end
 
           context 'with valid tracking information' do
+            let(:tracking_data) do
+              {
+              'type' => 'source',
+              'items' => [
+                'signatures' => [
+                  { 'algorithm' => 'hash', 'value' => 'hash_value' },
+                  { 'algorithm' => 'location', 'value' => 'location_value' },
+                  { 'algorithm' => 'scope_offset', 'value' => 'scope_offset_value' }
+                ]
+              ]
+              }
+            end
+
             it 'creates signatures for each signature algorithm' do
-              finding = report.findings.first
               expect(finding.signatures.size).to eq(3)
               expect(finding.signatures.map(&:algorithm_type)).to eq(%w[hash location scope_offset])
 
@@ -456,7 +448,6 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common do
             end
 
             it 'sets the uuid according to the higest priority signature' do
-              finding = report.findings.first
               highest_signature = finding.signatures.max_by(&:priority)
 
               identifiers = if signatures_enabled

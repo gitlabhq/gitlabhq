@@ -5,6 +5,7 @@ module Gitlab
     module Type
       class Definition
         include ActiveModel::Validations
+        include ::Gitlab::Audit::Type::Shared
 
         attr_reader :path
         attr_reader :attributes
@@ -16,18 +17,6 @@ module Gitlab
 
         AUDIT_EVENT_TYPE_SCHEMA_PATH = Rails.root.join('config', 'audit_events', 'types', 'type_schema.json')
         AUDIT_EVENT_TYPE_SCHEMA = JSONSchemer.schema(AUDIT_EVENT_TYPE_SCHEMA_PATH)
-
-        # The PARAMS in config/audit_events/types/type_schema.json
-        PARAMS = %i[
-          name
-          description
-          introduced_by_issue
-          introduced_by_mr
-          group
-          milestone
-          saved_to_database
-          streamed
-        ].freeze
 
         PARAMS.each do |param|
           define_method(param) do

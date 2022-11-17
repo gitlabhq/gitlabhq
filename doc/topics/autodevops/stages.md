@@ -316,7 +316,7 @@ To use a custom target instead of the auto-deployed review apps,
 set a `DAST_WEBSITE` CI/CD variable to the URL for DAST to scan.
 
 WARNING:
-If [DAST Full Scan](../../user/application_security/dast/index.md#full-scan) is
+If [DAST Full Scan](../../user/application_security/dast/proxy-based.md#full-scan) is
 enabled, GitLab strongly advises **not**
 to set `DAST_WEBSITE` to any staging or production environment. DAST Full Scan
 actively attacks the target, which can take down your application and lead to

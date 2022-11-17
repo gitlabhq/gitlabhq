@@ -89,7 +89,7 @@ RSpec.describe API::ProjectSnippets do
         expect(json_response['title']).to eq(snippet.title)
         expect(json_response['description']).to eq(snippet.description)
         expect(json_response['file_name']).to eq(snippet.file_name_on_repo)
-        expect(json_response['files']).to eq(snippet.blobs.map { |blob| snippet_blob_file(blob) } )
+        expect(json_response['files']).to eq(snippet.blobs.map { |blob| snippet_blob_file(blob) })
         expect(json_response['ssh_url_to_repo']).to eq(snippet.ssh_url_to_repo)
         expect(json_response['http_url_to_repo']).to eq(snippet.http_url_to_repo)
       end

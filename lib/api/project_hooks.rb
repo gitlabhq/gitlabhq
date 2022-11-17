@@ -4,6 +4,8 @@ module API
   class ProjectHooks < ::API::Base
     include PaginationParams
 
+    project_hooks_tags = %w[project_hooks]
+
     before { authenticate! }
     before { authorize_admin_project }
 
@@ -37,15 +39,18 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/hooks' do
         mount ::API::Hooks::UrlVariables
       end
 
-      desc 'Get project hooks' do
+      desc 'List project hooks' do
+        detail 'Get a list of project hooks'
         success Entities::ProjectHook
+        is_array true
+        tags project_hooks_tags
       end
       params do
         use :pagination
@@ -54,8 +59,13 @@ module API
         present paginate(user_project.hooks), with: Entities::ProjectHook
       end
 
-      desc 'Get a project hook' do
+      desc 'Get project hook' do
+        detail 'Get a specific hook for a project'
         success Entities::ProjectHook
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags project_hooks_tags
       end
       params do
         requires :hook_id, type: Integer, desc: 'The ID of a project hook'
@@ -65,8 +75,15 @@ module API
         present hook, with: Entities::ProjectHook
       end
 
-      desc 'Add hook to project' do
+      desc 'Add project hook' do
+        detail 'Adds a hook to a specified project'
         success Entities::ProjectHook
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags project_hooks_tags
       end
       params do
         use :requires_url
@@ -79,11 +96,18 @@ module API
         save_hook(hook, Entities::ProjectHook)
       end
 
-      desc 'Update an existing hook' do
+      desc 'Edit project hook' do
+        detail 'Edits a hook for a specified project.'
         success Entities::ProjectHook
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags project_hooks_tags
       end
       params do
-        requires :hook_id, type: Integer, desc: "The ID of the hook to update"
+        requires :hook_id, type: Integer, desc: 'The ID of the project hook'
         use :optional_url
         use :common_hook_parameters
       end
@@ -91,11 +115,16 @@ module API
         update_hook(entity: Entities::ProjectHook)
       end
 
-      desc 'Deletes project hook' do
+      desc 'Delete a project hook' do
+        detail 'Removes a hook from a project. This is an idempotent method and can be called multiple times. Either the hook is available or not.'
         success Entities::ProjectHook
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags project_hooks_tags
       end
       params do
-        requires :hook_id, type: Integer, desc: 'The ID of the hook to delete'
+        requires :hook_id, type: Integer, desc: 'The ID of the project hook'
       end
       delete ":id/hooks/:hook_id" do
         hook = find_hook

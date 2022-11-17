@@ -89,12 +89,13 @@ RSpec.describe Gitlab::Auth::AuthFinders do
       context 'with a running job' do
         let(:token) { job.token }
 
-        if without_job_token_allowed == :error
+        case without_job_token_allowed
+        when :error
           it 'returns an Unauthorized exception' do
             expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
             expect(@current_authenticated_job).to be_nil
           end
-        elsif without_job_token_allowed == :user
+        when :user
           it 'returns the user' do
             expect(subject).to eq(user)
             expect(@current_authenticated_job).to eq job

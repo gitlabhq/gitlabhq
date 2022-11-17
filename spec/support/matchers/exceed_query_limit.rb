@@ -333,7 +333,7 @@ RSpec::Matchers.define :issue_same_number_of_queries_as do
     or_fewer_msg = "or fewer" if @or_fewer
     threshold_msg = "(+/- #{threshold})" unless threshold == 0
 
-    ["#{expected_count}", or_fewer_msg, threshold_msg].compact.join(' ')
+    [expected_count.to_s, or_fewer_msg, threshold_msg].compact.join(' ')
   end
 
   def skip_cached

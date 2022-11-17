@@ -34,10 +34,10 @@ module Gitlab
               @metric_finish = block
             end
 
-            def relation(&block)
-              return @metric_relation&.call unless block
+            def relation(relation_proc = nil, &block)
+              return unless relation_proc || block
 
-              @metric_relation = block
+              @metric_relation = (relation_proc || block)
             end
 
             def metric_options(&block)
@@ -106,7 +106,11 @@ module Gitlab
           end
 
           def relation
-            self.class.metric_relation.call.where(time_constraints)
+            if self.class.metric_relation.arity == 1
+              self.class.metric_relation.call(options)
+            else
+              self.class.metric_relation.call
+            end.where(time_constraints)
           end
 
           def time_constraints

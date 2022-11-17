@@ -20,8 +20,8 @@ RSpec.describe 'Runner (JavaScript fixtures)' do
 
   let_it_be(:build) { create(:ci_build, runner: runner) }
 
-  query_path = 'runner/graphql/'
-  fixtures_path = 'graphql/runner/'
+  query_path = 'ci/runner/graphql/'
+  fixtures_path = 'graphql/ci/runner/'
 
   after(:all) do
     remove_repository(project)

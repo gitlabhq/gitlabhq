@@ -8,7 +8,7 @@ RSpec.describe 'Projects (JavaScript fixtures)', type: :controller do
 
   runners_token = 'runnerstoken:intabulasreferre'
 
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project, namespace: namespace, path: 'builds-project', runners_token: runners_token, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
   let(:project_with_repo) { create(:project, :repository, description: 'Code and stuff', avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
   let(:project_variable_populated) { create(:project, namespace: namespace, path: 'builds-project2', runners_token: runners_token) }

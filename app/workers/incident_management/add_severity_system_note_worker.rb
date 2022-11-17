@@ -21,7 +21,10 @@ module IncidentManagement
       user = User.find_by_id(user_id)
       return unless user
 
-      SystemNoteService.change_incident_severity(incident, user)
+      incident.transaction do
+        SystemNoteService.change_incident_severity(incident, user)
+        TimelineEvents::CreateService.change_severity(incident, user)
+      end
     end
   end
 end

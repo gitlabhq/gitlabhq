@@ -55,14 +55,21 @@ RSpec.describe BulkImports::Pipeline::Runner do
       expect_next_instance_of(Gitlab::Import::Logger) do |logger|
         expect(logger).to receive(:error)
           .with(
-            log_params(
-              context,
-              pipeline_step: :extractor,
-              pipeline_class: 'BulkImports::MyPipeline',
-              exception_class: exception_class,
-              exception_message: exception_message,
-              message: "Pipeline failed",
-              importer: 'gitlab_migration'
+            a_hash_including(
+              'bulk_import_entity_id' => entity.id,
+              'bulk_import_id' => entity.bulk_import_id,
+              'bulk_import_entity_type' => entity.source_type,
+              'source_full_path' => entity.source_full_path,
+              'pipeline_step' => :extractor,
+              'pipeline_class' => 'BulkImports::MyPipeline',
+              'exception.class' => exception_class,
+              'exception.message' => exception_message,
+              'correlation_id' => anything,
+              'class' => 'BulkImports::MyPipeline',
+              'message' => "Pipeline failed",
+              'importer' => 'gitlab_migration',
+              'exception.backtrace' => anything,
+              'source_version' => entity.bulk_import.source_version_info.to_s
             )
           )
       end
@@ -296,6 +303,8 @@ RSpec.describe BulkImports::Pipeline::Runner do
         bulk_import_id: context.bulk_import_id,
         bulk_import_entity_id: context.entity.id,
         bulk_import_entity_type: context.entity.source_type,
+        source_full_path: entity.source_full_path,
+        source_version: context.entity.bulk_import.source_version_info.to_s,
         importer: 'gitlab_migration',
         context_extra: context.extra
       }.merge(extra)

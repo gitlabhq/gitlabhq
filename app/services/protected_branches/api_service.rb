@@ -6,17 +6,32 @@ module ProtectedBranches
       ::ProtectedBranches::CreateService.new(@project, @current_user, protected_branch_params).execute
     end
 
-    def protected_branch_params
-      {
-        name: params[:name],
-        allow_force_push: allow_force_push?,
-        push_access_levels_attributes: ::ProtectedRefs::AccessLevelParams.new(:push, params).access_levels,
-        merge_access_levels_attributes: ::ProtectedRefs::AccessLevelParams.new(:merge, params).access_levels
-      }
+    def update(protected_branch)
+      ::ProtectedBranches::UpdateService.new(@project, @current_user,
+protected_branch_params(with_defaults: false)).execute(protected_branch)
     end
 
-    def allow_force_push?
-      params[:allow_force_push] || false
+    private
+
+    def protected_branch_params(with_defaults: true)
+      params.slice(*attributes).merge(
+        {
+          push_access_levels_attributes: access_level_attributes(:push, with_defaults),
+          merge_access_levels_attributes: access_level_attributes(:merge, with_defaults)
+        }
+      )
+    end
+
+    def access_level_attributes(type, with_defaults)
+      ::ProtectedRefs::AccessLevelParams.new(
+        type,
+        params,
+        with_defaults: with_defaults
+      ).access_levels
+    end
+
+    def attributes
+      [:name, :allow_force_push]
     end
   end
 end

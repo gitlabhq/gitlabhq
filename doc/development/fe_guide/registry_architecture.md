@@ -71,7 +71,7 @@ main pieces of the desired UI and UX of a registry page. The most important comp
   secondary content, right primary and secondary content, right action, and details slots.
 - `metadata-item`: represents one piece of metadata, with an icon or a link. Used primarily in the
   title area.
-- `persisted-dropdown-selection`: represents a dropdown menu that stores the user selection in the
+- `persisted-dropdown-selection`: represents a menu that stores the user selection in the
   `localStorage`.
 - `registry-search`: implements `gl-filtered-search` with a sorting section on the right.
 - `title-area`: implements the top title area of the registry. Includes: a main title, an avatar, a

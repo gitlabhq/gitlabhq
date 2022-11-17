@@ -4,6 +4,8 @@ module API
   class FeatureFlags < ::API::Base
     include PaginationParams
 
+    feature_flags_tags = %w[feature_flags]
+
     FEATURE_FLAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
         .merge(name: API::NO_SLASH_URL_PART_REGEX)
 
@@ -15,18 +17,24 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       resource :feature_flags do
-        desc 'Get all feature flags of a project' do
-          detail 'This feature was introduced in GitLab 12.5'
+        desc 'List feature flags for a project' do
+          detail 'Gets all feature flags of the requested project. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
+          tags feature_flags_tags
         end
         params do
           optional :scope,
                    type: String,
-                   desc: 'The scope of feature flags',
+                   desc: 'The scope of feature flags, one of: `enabled`, `disabled`',
                    values: %w[enabled disabled]
           use :pagination
         end
@@ -39,22 +47,23 @@ module API
         end
 
         desc 'Create a new feature flag' do
-          detail 'This feature was introduced in GitLab 12.5'
+          detail 'Creates a new feature flag. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' }
+          ]
+          tags feature_flags_tags
         end
         params do
-          requires :name, type: String, desc: 'The name of feature flag'
+          requires :name, type: String, desc: 'The name of the feature flag'
           optional :description, type: String, desc: 'The description of the feature flag'
-          optional :active, type: Boolean, desc: 'Active/inactive value of the flag'
-          optional :version, type: String, desc: 'The version of the feature flag'
-          optional :scopes, type: Array do
-            requires :environment_scope, type: String, desc: 'The environment scope of the scope'
-            requires :active, type: Boolean, desc: 'Active/inactive of the scope'
-            requires :strategies, type: JSON, desc: 'The strategies of the scope'
-          end
+          optional :active, type: Boolean, desc: 'The active state of the flag. Defaults to `true`. Supported in GitLab 13.3 and later'
+          optional :version, type: String, desc: 'The version of the feature flag. Must be `new_version_flag`. Omit to create a Legacy feature flag.'
           optional :strategies, type: Array do
-            requires :name, type: String, desc: 'The strategy name'
-            requires :parameters, type: JSON, desc: 'The strategy parameters'
+            requires :name, type: String, desc: 'The strategy name. Can be `default`, `gradualRolloutUserId`, `userWithId`, or `gitlabUserList`. In GitLab 13.5 and later, can be `flexibleRollout`'
+            requires :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
             optional :scopes, type: Array do
               requires :environment_scope, type: String, desc: 'The environment scope of the scope'
             end
@@ -87,9 +96,14 @@ module API
         requires :feature_flag_name, type: String, desc: 'The name of the feature flag'
       end
       resource 'feature_flags/:feature_flag_name', requirements: FEATURE_FLAG_ENDPOINT_REQUIREMENTS do
-        desc 'Get a feature flag of a project' do
-          detail 'This feature was introduced in GitLab 12.5'
+        desc 'Get a single feature flag' do
+          detail 'Gets a single feature flag. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_tags
         end
         get do
           authorize_read_feature_flag!
@@ -99,20 +113,27 @@ module API
         end
 
         desc 'Update a feature flag' do
-          detail 'This feature was introduced in GitLab 13.2'
+          detail 'Updates a feature flag. This feature was introduced in GitLab 13.2.'
           success ::API::Entities::FeatureFlag
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 422, message: 'Unprocessable entity' }
+          ]
+          tags feature_flags_tags
         end
         params do
-          optional :name, type: String, desc: 'The name of the feature flag'
+          optional :name, type: String, desc: 'The new name of the feature flag. Supported in GitLab 13.3 and later'
           optional :description, type: String, desc: 'The description of the feature flag'
-          optional :active, type: Boolean, desc: 'Active/inactive value of the flag'
+          optional :active, type: Boolean, desc: 'The active state of the flag. Supported in GitLab 13.3 and later'
           optional :strategies, type: Array do
-            optional :id, type: Integer, desc: 'The strategy id'
-            optional :name, type: String, desc: 'The strategy type'
-            optional :parameters, type: JSON, desc: 'The strategy parameters'
+            optional :id, type: Integer, desc: 'The feature flag strategy ID'
+            optional :name, type: String, desc: 'The strategy name'
+            optional :parameters, type: JSON, desc: 'The strategy parameters as a JSON-formatted string e.g. `{"userIds":"user1"}`', documentation: { type: 'String' }
             optional :_destroy, type: Boolean, desc: 'Delete the strategy when true'
             optional :scopes, type: Array do
-              optional :id, type: Integer, desc: 'The environment scope id'
+              optional :id, type: Integer, desc: 'The scope id'
               optional :environment_scope, type: String, desc: 'The environment scope of the scope'
               optional :_destroy, type: Boolean, desc: 'Delete the scope when true'
             end
@@ -142,8 +163,14 @@ module API
         end
 
         desc 'Delete a feature flag' do
-          detail 'This feature was introduced in GitLab 12.5'
+          detail 'Deletes a feature flag. This feature was introduced in GitLab 12.5.'
           success ::API::Entities::FeatureFlag
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags feature_flags_tags
         end
         delete do
           authorize_destroy_feature_flag!

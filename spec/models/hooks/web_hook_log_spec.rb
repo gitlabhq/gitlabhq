@@ -12,7 +12,7 @@ RSpec.describe WebHookLog do
   it { is_expected.to validate_presence_of(:web_hook) }
 
   describe '.recent' do
-    let(:hook) { create(:project_hook) }
+    let(:hook) { build(:project_hook) }
 
     it 'does not return web hook logs that are too old' do
       create(:web_hook_log, web_hook: hook, created_at: 10.days.ago)
@@ -30,8 +30,10 @@ RSpec.describe WebHookLog do
   end
 
   describe '#save' do
+    let(:hook) { build(:project_hook) }
+
     context 'with basic auth credentials' do
-      let(:web_hook_log) { build(:web_hook_log, url: 'http://test:123@example.com') }
+      let(:web_hook_log) { build(:web_hook_log, web_hook: hook, url: 'http://test:123@example.com') }
 
       subject { web_hook_log.save! }
 
@@ -45,9 +47,9 @@ RSpec.describe WebHookLog do
     end
 
     context "with users' emails" do
-      let(:author) { create(:user) }
-      let(:user) { create(:user) }
-      let(:web_hook_log) { create(:web_hook_log, request_data: data) }
+      let(:author) { build(:user) }
+      let(:user) { build(:user) }
+      let(:web_hook_log) { create(:web_hook_log, web_hook: hook, request_data: data) }
       let(:data) do
         {
           user: {
@@ -93,11 +95,12 @@ RSpec.describe WebHookLog do
   end
 
   describe '.delete_batch_for' do
-    let(:hook) { create(:project_hook) }
+    let_it_be(:hook) { build(:project_hook) }
+    let_it_be(:hook2) { build(:project_hook) }
 
-    before do
+    before_all do
       create_list(:web_hook_log, 3, web_hook: hook)
-      create_list(:web_hook_log, 3)
+      create_list(:web_hook_log, 3, web_hook: hook2)
     end
 
     subject { described_class.delete_batch_for(hook, batch_size: batch_size) }

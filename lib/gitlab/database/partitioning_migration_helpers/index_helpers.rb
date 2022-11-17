@@ -7,6 +7,8 @@ module Gitlab
         include Gitlab::Database::MigrationHelpers
         include Gitlab::Database::SchemaHelpers
 
+        DuplicatedIndexesError = Class.new(StandardError)
+
         ERROR_SCOPE = 'index'
 
         # Concurrently creates a new index on a partitioned table. In concept this works similarly to
@@ -38,7 +40,7 @@ module Gitlab
 
           partitioned_table.postgres_partitions.order(:name).each do |partition|
             partition_index_name = generated_index_name(partition.identifier, options[:name])
-            partition_options = options.merge(name: partition_index_name)
+            partition_options = options.merge(name: partition_index_name, allow_partition: true)
 
             add_concurrent_index(partition.identifier, column_names, partition_options)
           end
@@ -92,6 +94,42 @@ module Gitlab
             .map { |_, indexes| indexes.map { |index| index['index_name'] } }
         end
 
+        # Retrieves a hash of index names for a given table and schema, by index
+        # definition.
+        #
+        # Example:
+        #
+        #     indexes_by_definition_for_table('table_name_goes_here')
+        #
+        # Returns:
+        #
+        #     {
+        #       "CREATE _ btree (created_at)" => "index_on_created_at"
+        #     }
+        def indexes_by_definition_for_table(table_name, schema_name: connection.current_schema)
+          duplicate_indexes = find_duplicate_indexes(table_name, schema_name: schema_name)
+
+          unless duplicate_indexes.empty?
+            raise DuplicatedIndexesError, "#{table_name} has duplicate indexes: #{duplicate_indexes}"
+          end
+
+          find_indexes(table_name, schema_name: schema_name)
+            .each_with_object({}) { |row, hash| hash[row['index_id']] = row['index_name'] }
+        end
+
+        # Renames indexes for a given table and schema, mapping by index
+        # definition, to a hash of new index names.
+        #
+        # Example:
+        #
+        #     index_names = indexes_by_definition_for_table('source_table_name_goes_here')
+        #     drop_table('source_table_name_goes_here')
+        #     rename_indexes_for_table('destination_table_name_goes_here', index_names)
+        def rename_indexes_for_table(table_name, new_index_names, schema_name: connection.current_schema)
+          current_index_names = indexes_by_definition_for_table(table_name, schema_name: schema_name)
+          rename_indexes(current_index_names, new_index_names, schema_name: schema_name)
+        end
+
         private
 
         def find_indexes(table_name, schema_name: connection.current_schema)
@@ -123,6 +161,18 @@ module Gitlab
 
         def generated_index_name(partition_name, index_name)
           object_name("#{partition_name}_#{index_name}", 'index')
+        end
+
+        def rename_indexes(from, to, schema_name: connection.current_schema)
+          indexes_to_rename = from.select { |index_id, _| to.has_key?(index_id) }
+          statements = indexes_to_rename.map do |index_id, index_name|
+            <<~SQL
+              ALTER INDEX #{connection.quote_table_name("#{schema_name}.#{connection.quote_column_name(index_name)}")}
+                          RENAME TO #{connection.quote_column_name(to[index_id])}
+            SQL
+          end
+
+          connection.execute(statements.join(';'))
         end
       end
     end

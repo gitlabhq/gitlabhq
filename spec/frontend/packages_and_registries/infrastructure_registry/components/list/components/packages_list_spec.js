@@ -1,12 +1,13 @@
-import { GlTable, GlPagination, GlModal } from '@gitlab/ui';
+import { GlTable, GlPagination } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import { last } from 'lodash';
 import Vuex from 'vuex';
 import stubChildren from 'helpers/stub_children';
 import PackagesList from '~/packages_and_registries/infrastructure_registry/list/components/packages_list.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
 import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registry/shared/constants';
 import Tracking from '~/tracking';
@@ -22,7 +23,7 @@ describe('packages_list', () => {
 
   const findPackagesListLoader = () => wrapper.findComponent(PackagesListLoader);
   const findPackageListPagination = () => wrapper.findComponent(GlPagination);
-  const findPackageListDeleteModal = () => wrapper.findComponent(GlModal);
+  const findPackageListDeleteModal = () => wrapper.findComponent(DeletePackageModal);
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
 
@@ -65,7 +66,7 @@ describe('packages_list', () => {
       stubs: {
         ...stubChildren(PackagesList),
         GlTable,
-        GlModal,
+        DeletePackageModal,
       },
       ...options,
     });
@@ -109,52 +110,38 @@ describe('packages_list', () => {
       expect(sorting.exists()).toBe(true);
     });
 
-    it('contains a modal component', () => {
-      const sorting = findPackageListDeleteModal();
-      expect(sorting.exists()).toBe(true);
+    it("doesn't contain a modal component", () => {
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
     });
   });
 
   describe('when the user can destroy the package', () => {
-    beforeEach(() => {
+    let itemToBeDeleted;
+
+    beforeEach(async () => {
       mountComponent();
+      itemToBeDeleted = last(packageList);
+      await findPackagesListRow().vm.$emit('packageToDelete', itemToBeDeleted);
     });
 
-    it('setItemToBeDeleted sets itemToBeDeleted and open the modal', async () => {
-      const mockModalShow = jest.spyOn(wrapper.vm.$refs.packageListDeleteModal, 'show');
-      const item = last(wrapper.vm.list);
-
-      findPackagesListRow().vm.$emit('packageToDelete', item);
-
-      await nextTick();
-      expect(wrapper.vm.itemToBeDeleted).toEqual(item);
-      expect(mockModalShow).toHaveBeenCalled();
+    afterEach(() => {
+      itemToBeDeleted = null;
     });
 
-    it('deleteItemConfirmation resets itemToBeDeleted', () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ itemToBeDeleted: 1 });
-      wrapper.vm.deleteItemConfirmation();
-      expect(wrapper.vm.itemToBeDeleted).toEqual(null);
+    it('passes itemToBeDeleted to the modal', () => {
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(itemToBeDeleted);
     });
 
     it('deleteItemConfirmation emit package:delete', async () => {
-      const itemToBeDeleted = { id: 2 };
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ itemToBeDeleted });
-      wrapper.vm.deleteItemConfirmation();
-      await nextTick();
+      await findPackageListDeleteModal().vm.$emit('ok');
+
       expect(wrapper.emitted('package:delete')[0]).toEqual([itemToBeDeleted]);
     });
 
-    it('deleteItemCanceled resets itemToBeDeleted', () => {
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ itemToBeDeleted: 1 });
-      wrapper.vm.deleteItemCanceled();
-      expect(wrapper.vm.itemToBeDeleted).toEqual(null);
+    it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
+      await findPackageListDeleteModal().vm.$emit(event);
+
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
     });
   });
 

@@ -15,6 +15,23 @@ RSpec.describe Integration do
     it { is_expected.to have_one(:jira_tracker_data).autosave(true).inverse_of(:integration).with_foreign_key(:integration_id).class_name('Integrations::JiraTrackerData') }
   end
 
+  describe 'default values' do
+    it { is_expected.to be_alert_events }
+    it { is_expected.to be_commit_events }
+    it { is_expected.to be_confidential_issues_events }
+    it { is_expected.to be_confidential_note_events }
+    it { is_expected.to be_issues_events }
+    it { is_expected.to be_job_events }
+    it { is_expected.to be_merge_requests_events }
+    it { is_expected.to be_note_events }
+    it { is_expected.to be_pipeline_events }
+    it { is_expected.to be_push_events }
+    it { is_expected.to be_tag_push_events }
+    it { is_expected.to be_wiki_page_events }
+    it { is_expected.not_to be_active }
+    it { expect(subject.category).to eq(:common) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:type) }
     it { is_expected.to validate_exclusion_of(:type).in_array(described_class::BASE_CLASSES) }
@@ -60,10 +77,10 @@ RSpec.describe Integration do
 
   describe 'Scopes' do
     describe '.third_party_wikis' do
-      let!(:integration1) { create(:jira_integration) }
-      let!(:integration2) { create(:redmine_integration) }
-      let!(:integration3) { create(:confluence_integration) }
-      let!(:integration4) { create(:shimo_integration) }
+      let!(:integration1) { create(:jira_integration, project: project) }
+      let!(:integration2) { create(:redmine_integration, project: project) }
+      let!(:integration3) { create(:confluence_integration, project: project) }
+      let!(:integration4) { create(:shimo_integration, project: project) }
 
       it 'returns the right group integration' do
         expect(described_class.third_party_wikis).to contain_exactly(integration3, integration4)
@@ -89,7 +106,7 @@ RSpec.describe Integration do
     end
 
     describe '.by_type' do
-      let!(:integration1) { create(:jira_integration) }
+      let!(:integration1) { create(:jira_integration, project: project) }
       let!(:integration2) { create(:jira_integration) }
       let!(:integration3) { create(:redmine_integration) }
 
@@ -110,7 +127,7 @@ RSpec.describe Integration do
 
     describe '.for_group' do
       let!(:integration1) { create(:jira_integration, project_id: nil, group_id: group.id) }
-      let!(:integration2) { create(:jira_integration) }
+      let!(:integration2) { create(:jira_integration, project: project) }
 
       it 'returns the right group integration' do
         expect(described_class.for_group(group)).to contain_exactly(integration1)
@@ -217,9 +234,19 @@ RSpec.describe Integration do
     end
   end
 
+  describe '#chat?' do
+    it 'is true when integration is chat integration' do
+      expect(build(:mattermost_integration).chat?).to eq(true)
+    end
+
+    it 'is false when integration is not chat integration' do
+      expect(build(:integration).chat?).to eq(false)
+    end
+  end
+
   describe '.find_or_initialize_non_project_specific_integration' do
     let!(:integration_1) { create(:jira_integration, project_id: nil, group_id: group.id) }
-    let!(:integration_2) { create(:jira_integration) }
+    let!(:integration_2) { create(:jira_integration, project: project) }
 
     it 'returns the right integration' do
       expect(Integration.find_or_initialize_non_project_specific_integration('jira', group_id: group))
@@ -374,7 +401,7 @@ RSpec.describe Integration do
       context 'when data is stored in properties' do
         let(:properties) { data_params }
         let!(:integration) do
-          create(:jira_integration, :without_properties_callback, properties: properties.merge(additional: 'something'))
+          create(:jira_integration, :without_properties_callback, project: project, properties: properties.merge(additional: 'something'))
         end
 
         it_behaves_like 'integration creation from an integration'
@@ -382,7 +409,7 @@ RSpec.describe Integration do
 
       context 'when data are stored in separated fields' do
         let(:integration) do
-          create(:jira_integration, data_params.merge(properties: {}))
+          create(:jira_integration, data_params.merge(properties: {}, project: project))
         end
 
         it_behaves_like 'integration creation from an integration'
@@ -391,7 +418,7 @@ RSpec.describe Integration do
       context 'when data are stored in both properties and separated fields' do
         let(:properties) { data_params }
         let(:integration) do
-          create(:jira_integration, :without_properties_callback, active: true, properties: properties).tap do |integration|
+          create(:jira_integration, :without_properties_callback, project: project, active: true, properties: properties).tap do |integration|
             create(:jira_tracker_data, data_params.merge(integration: integration))
           end
         end
@@ -1233,11 +1260,11 @@ RSpec.describe Integration do
 
   describe '#attributes' do
     it 'does not include properties' do
-      expect(create(:integration).attributes).not_to have_key('properties')
+      expect(build(:integration, project: project).attributes).not_to have_key('properties')
     end
 
     it 'can be used in assign_attributes without nullifying properties' do
-      record = create(:integration, :instance, properties: { url: generate(:url) })
+      record = build(:integration, :instance, properties: { url: generate(:url) })
 
       attrs = record.attributes
 
@@ -1246,7 +1273,7 @@ RSpec.describe Integration do
   end
 
   describe '#dup' do
-    let(:original) { create(:integration, properties: { one: 1, two: 2, three: 3 }) }
+    let(:original) { build(:integration, project: project, properties: { one: 1, two: 2, three: 3 }) }
 
     it 'results in distinct ciphertexts, but identical properties' do
       copy = original.dup
@@ -1259,7 +1286,7 @@ RSpec.describe Integration do
     end
 
     context 'when the model supports data-fields' do
-      let(:original) { create(:jira_integration, username: generate(:username), url: generate(:url)) }
+      let(:original) { build(:jira_integration, project: project, username: generate(:username), url: generate(:url)) }
 
       it 'creates distinct but identical data-fields' do
         copy = original.dup

@@ -128,9 +128,7 @@ These additional CI/CD minutes:
 - Are carried over to the next month, if any remain at the end of the month.
 - Are valid for 12 months from date of purchase or until all minutes are consumed, whichever comes first. Expiry of minutes is not currently enforced.
 
-If you use more CI/CD minutes than your monthly quota, when you purchase more,
-those CI/CD minutes are deducted from your quota. For example, with a GitLab SaaS
-Premium license:
+For example, with a GitLab SaaS Premium license:
 
 - You have `10,000` monthly minutes.
 - You purchase an additional `5,000` minutes.
@@ -232,7 +230,7 @@ For this reduced cost factor:
 
 - The merge request source project must be a fork of a GitLab-maintained project,
   such as [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com),
-  [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab), and so on.
+  or [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab).
 - The merge request target project must be the fork's parent project.
 - The pipeline must be a merge request, merged results, or merge train pipeline.
 
@@ -271,9 +269,9 @@ the next month.
 
 For example:
 
-- On **1st April**, you purchase `5,000` CI/CD minutes.
-- During April, you use only `3,000` of the `5,000` minutes.
-- On **1st May**, the remaining `2,000` minutes roll over and are added to your monthly quota.
+- On **1st April**, you purchase `5,000` additional CI/CD minutes.
+- During April, you use only `3,000` of the `5,000` additional minutes.
+- On **1st May**, the unused minute roll over, so you have `2,000` additional minutes available for May.
 
 Additional CI/CD minutes are a one-time purchase and do not renew or refresh each month.
 

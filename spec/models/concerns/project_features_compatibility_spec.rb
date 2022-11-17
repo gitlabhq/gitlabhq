@@ -8,7 +8,7 @@ RSpec.describe ProjectFeaturesCompatibility do
   let(:features) do
     features_enabled + %w(
       repository pages operations container_registry package_registry environments feature_flags releases
-      monitor
+      monitor infrastructure
     )
   end
 

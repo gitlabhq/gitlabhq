@@ -42,7 +42,7 @@ module Gitlab
       end
 
       def sidekiq?
-        !!(defined?(::Sidekiq) && Sidekiq.server?)
+        !!(defined?(::Sidekiq) && Sidekiq.try(:server?))
       end
 
       def rake?
@@ -94,7 +94,7 @@ module Gitlab
           #
           # These threads execute Sidekiq client middleware when jobs
           # are enqueued and those can access DB / Redis.
-          threads += Sidekiq.options[:concurrency] + 2
+          threads += Sidekiq[:concurrency] + 2
         end
 
         if puma?

@@ -126,7 +126,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadService do
       let(:redirect_link) { 'http://external-link' }
 
       before do
-        stub_full_request(download_link).to_return(status: 301, body: 'You are being redirected', headers: { 'Location' => redirect_link } )
+        stub_full_request(download_link).to_return(status: 301, body: 'You are being redirected', headers: { 'Location' => redirect_link })
         stub_full_request(redirect_link).to_return(body: lfs_content)
       end
 

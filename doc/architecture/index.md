@@ -1,9 +1,7 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
+feedback: false
 comments: false
-description: 'Architecture Practice at GitLab'
+toc: false
 ---
 
 # Architecture at GitLab

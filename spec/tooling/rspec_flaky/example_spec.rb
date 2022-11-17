@@ -9,7 +9,8 @@ RSpec.describe RspecFlaky::Example do
       metadata: {
         file_path: 'spec/foo/bar_spec.rb',
         line_number: 2,
-        full_description: 'hello world'
+        full_description: 'hello world',
+        feature_category: :feature_category
       },
       execution_result: double(status: 'passed', exception: 'BOOM!'),
       attempts: 1
@@ -87,6 +88,12 @@ RSpec.describe RspecFlaky::Example do
   describe '#exception' do
     it 'returns the execution_result.exception of the RSpec::Core::Example' do
       expect(subject.exception).to eq(rspec_example.execution_result.exception)
+    end
+  end
+
+  describe '#feature_category' do
+    it 'returns the metadata[:feature_category] of the RSpec::Core::Example' do
+      expect(subject.feature_category).to eq(rspec_example.metadata[:feature_category])
     end
   end
 end

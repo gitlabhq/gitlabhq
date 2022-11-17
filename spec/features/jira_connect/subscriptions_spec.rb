@@ -30,7 +30,7 @@ RSpec.describe 'Subscriptions Content Security Policy' do
         p.style_src :self, 'https://some-cdn.test'
       end
 
-      setup_existing_csp_for_controller(JiraConnect::SubscriptionsController, csp)
+      setup_csp_for_controller(JiraConnect::SubscriptionsController, csp)
     end
 
     it 'appends to CSP directives' do

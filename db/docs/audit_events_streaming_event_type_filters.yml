@@ -1,0 +1,9 @@
+---
+table_name: audit_events_streaming_event_type_filters
+classes:
+  - AuditEvents::Streaming::EventTypeFilter
+feature_categories:
+  - audit_events
+description: Represents a event type filter for audit event streaming
+introduced_by_url:
+milestone: '15.6'

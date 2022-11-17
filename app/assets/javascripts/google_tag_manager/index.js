@@ -40,6 +40,11 @@ const generateProductInfo = (sku, quantity) => {
 };
 
 const isSupported = () => Boolean(window.dataLayer) && gon.features?.gitlabGtmDatalayer;
+// gon.features.gitlabGtmDatalayer is set by writing
+// `push_frontend_feature_flag(:gitlab_gtm_datalayer, type: :ops)`
+// to the appropriate controller
+// window.dataLayer is set by adding partials to the appropriate view found in
+// views/layouts/_google_tag_manager_body.html.haml and _google_tag_manager_head.html.haml
 
 const pushEvent = (event, args = {}) => {
   if (!window.dataLayer) {
@@ -286,4 +291,28 @@ export const trackCompanyForm = (aboutYourCompanyType) => {
   }
 
   pushEvent('aboutYourCompanyFormSubmit', { aboutYourCompanyType });
+};
+
+export const saasTrialWelcome = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const saasTrialWelcomeButton = document.querySelector('.js-trial-welcome-btn');
+
+  saasTrialWelcomeButton?.addEventListener('click', () => {
+    pushEvent('saasTrialWelcome');
+  });
+};
+
+export const saasTrialContinuousOnboarding = () => {
+  if (!isSupported()) {
+    return;
+  }
+
+  const getStartedButton = document.querySelector('.js-get-started-btn');
+
+  getStartedButton?.addEventListener('click', () => {
+    pushEvent('saasTrialContinuousOnboarding');
+  });
 };

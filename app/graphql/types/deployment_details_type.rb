@@ -5,7 +5,7 @@ module Types
     graphql_name 'DeploymentDetails'
     description 'The details of the deployment'
     authorize :read_deployment
-    present_using Deployments::DeploymentPresenter
+    present_using ::Deployments::DeploymentPresenter
 
     field :tags,
           [Types::DeploymentTagType],
@@ -13,3 +13,5 @@ module Types
           calls_gitaly: true
   end
 end
+
+Types::DeploymentDetailsType.prepend_mod_with('Types::DeploymentDetailsType')

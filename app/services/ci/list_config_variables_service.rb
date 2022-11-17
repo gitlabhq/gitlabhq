@@ -30,7 +30,7 @@ module Ci
                                                              user: current_user,
                                                              sha: sha).execute
 
-      result.valid? ? result.variables_with_data : {}
+      result.valid? ? result.root_variables_with_prefill_data : {}
     end
 
     # Required for ReactiveCaching, it is also used in `reactive_cache_worker_finder`

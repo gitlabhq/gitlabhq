@@ -27,7 +27,7 @@ workhorse:test go:
   extends: .workhorse:test
   parallel:
     matrix:
-      - GO_VERSION: ["1.17", "1.18", "1.19"]
+      - GO_VERSION: ["1.18", "1.19"]
   script:
     - make -C workhorse test-coverage
   coverage: '/\d+.\d+%/'

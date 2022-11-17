@@ -27,13 +27,13 @@ export const TABS = [
   {
     namespace: MEMBER_TYPES.invite,
     title: __('Invited'),
-    canManageMembersPermissionsRequired: true,
+    requiredPermissions: ['canManageMembers'],
     queryParamValue: TAB_QUERY_PARAM_VALUES.invite,
   },
   {
     namespace: MEMBER_TYPES.accessRequest,
     title: __('Access requests'),
-    canManageMembersPermissionsRequired: true,
+    requiredPermissions: ['canManageAccessRequests'],
     queryParamValue: TAB_QUERY_PARAM_VALUES.accessRequest,
   },
   ...EE_TABS,
@@ -44,7 +44,7 @@ export default {
   ACTIVE_TAB_QUERY_PARAM_NAME,
   TABS,
   components: { MembersApp, GlTabs, GlTab, GlBadge, GlButton },
-  inject: ['canManageMembers', 'canExportMembers', 'exportCsvPath'],
+  inject: ['canManageMembers', 'canManageAccessRequests', 'canExportMembers', 'exportCsvPath'],
   data() {
     return {
       selectedTabIndex: 0,
@@ -96,15 +96,13 @@ export default {
         return true;
       }
 
-      const { canManageMembersPermissionsRequired = false } = tab;
+      const { requiredPermissions = [] } = tab;
       const tabCanBeShown =
         this.getTabCount(tab) > 0 || this.activeTabIndexCalculatedFromUrlParams === index;
 
-      if (canManageMembersPermissionsRequired) {
-        return this.canManageMembers && tabCanBeShown;
-      }
-
-      return tabCanBeShown;
+      return (
+        tabCanBeShown && requiredPermissions.every((requiredPermission) => this[requiredPermission])
+      );
     },
   },
 };

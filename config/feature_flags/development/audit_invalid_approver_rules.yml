@@ -1,8 +1,0 @@
----
-name: audit_invalid_approver_rules
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98636
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375060
-milestone: '15.5'
-type: development
-group: group::code review
-default_enabled: false

@@ -38,7 +38,7 @@ RSpec.describe Users::UnbanService do
       end
 
       it 'logs unban in application logs' do
-        expect(Gitlab::AppLogger).to receive(:info).with(message: "User unban", user: "#{user.username}", email: "#{user.email}", unban_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
+        expect(Gitlab::AppLogger).to receive(:info).with(message: "User unban", user: user.username.to_s, email: user.email.to_s, unban_by: current_user.username.to_s, ip_address: current_user.current_sign_in_ip.to_s)
 
         unban_user
       end

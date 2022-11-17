@@ -86,4 +86,25 @@ RSpec.shared_examples 'Gitlab-style deprecations' do
       eq("`alpha` and `deprecated` arguments cannot be passed at the same time")
     )
   end
+
+  describe 'visible?' do
+    let(:ctx) { {} }
+
+    it 'defaults to true' do
+      expect(subject).to be_visible(ctx)
+    end
+
+    context 'when subject is deprecated' do
+      let(:arguments) { { deprecated: { milestone: '1.10', reason: :renamed } } }
+
+      it 'defaults to true' do
+        expect(subject(arguments)).to be_visible(ctx)
+      end
+
+      it 'returns false if `remove_deprecated` is true in context' do
+        ctx = { remove_deprecated: true }
+        expect(subject(arguments)).not_to be_visible(ctx)
+      end
+    end
+  end
 end

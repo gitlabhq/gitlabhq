@@ -1294,15 +1294,25 @@ class MyThingResolver < BaseResolver
 end
 ```
 
-The final thing that is needed is that every field that uses this resolver needs
-to advertise the need for lookahead:
+The `LooksAhead` concern also provides basic support for preloading associations based on nested GraphQL field
+definitions. The [WorkItemsResolver](https://gitlab.com/gitlab-org/gitlab/-/blob/e824a7e39e08a83fb162db6851de147cf0bfe14a/app/graphql/resolvers/work_items_resolver.rb#L46)
+is a good example for this. `nested_preloads` is another method you can define to return a hash, but unlike the
+`preloads` method, the value for each hash key is another hash and not the list of associations to preload. So in
+the previous example, you could override `nested_preloads` like this:
 
 ```ruby
-  # in ParentType
-  field :my_things, MyThingType.connection_type, null: true,
-        extras: [:lookahead], # Necessary
-        resolver: MyThingResolver,
-        description: 'My things.'
+class MyThingResolver < BaseResolver
+  # ...
+
+  def nested_preloads
+    {
+      root_field: {
+        nested_field1: :association_to_preload,
+        nested_field2: [:association1, :association2]
+      }
+    }
+  end
+end
 ```
 
 For an example of real world use, please
@@ -1733,15 +1743,18 @@ there are no problems we need to inform the user of.
 
 #### Failure (relevant to the user)
 
-An error that affects the **user** occurred. We refer to these as _mutation errors_. In
-this case there is typically no `thing` to return:
+An error that affects the **user** occurred. We refer to these as _mutation errors_.
+
+In a _create_ mutation there is typically no `thing` to return.
+
+In an _update_ mutation we return the current true state of `thing`. Developers may need to call `#reset` on the `thing` instance to ensure this happens.
 
 ```javascript
 {
   data: {
     doTheThing: {
       errors: ["you cannot touch the thing"],
-      thing: null
+      thing: { .. }
     }
   }
 }
@@ -2165,32 +2178,44 @@ end
 
   ```ruby
   NameError: uninitialized constant Resolvers::GroupIssuesResolver
+
+  or
+
+  GraphQL::Pagination::Connections::ImplementationMissingError
   ```
+
+  though you might see something different.
 
   To fix this, we must create a new file that encapsulates the connection type,
   and then reference it using double quotes. This gives a delayed resolution,
   and the proper connection type. For example:
 
-  ```ruby
-  module Types
-    # rubocop: disable Graphql/AuthorizeTypes
-    class IssueConnectionType < CountableConnectionType
-    end
-  end
+  [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+  originally contained the line
 
-  Types::IssueConnectionType.prepend_mod_with('Types::IssueConnectionType')
+  ```ruby
+  type Types::IssueType.connection_type, null: true
   ```
 
-  in [types/issue_connection_type.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/issue_connection_type.rb)
-  defines a new `Types::IssueConnectionType`, and is then referenced in
-  [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+  Running the specs locally for this file caused the
+  `NameError: uninitialized constant Resolvers::GroupIssuesResolver` error.
+
+  The fix was to create a new file, [app/graphql/types/issue_connection.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/types/issue_connection.rb) with the
+  line:
+
+  ```ruby
+  Types::IssueConnection = Types::IssueType.connection_type
+  ```
+
+  and in [app/graphql/resolvers/base_issues_resolver.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/graphql/resolvers/base_issues_resolver.rb)
+  we use the line
 
   ```ruby
   type "Types::IssueConnection", null: true
   ```
 
   Only use this style if you are having spec failures. This is not intended to be a new
-  pattern that we use. This issue may disappear after we've upgraded to `2.x`.
+  pattern that we use. This issue should disappear after we've upgraded to `2.x`.
 
 - There can be instances where a spec fails because the class is not loaded correctly.
   It relates to the

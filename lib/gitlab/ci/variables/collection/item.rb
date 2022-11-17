@@ -21,9 +21,10 @@ module Gitlab
             @variable.fetch(:value)
           end
 
-          def raw
+          def raw?
             @variable.fetch(:raw)
           end
+          alias_method :raw, :raw?
 
           def file?
             @variable.fetch(:file)
@@ -39,7 +40,7 @@ module Gitlab
 
           def depends_on
             strong_memoize(:depends_on) do
-              next if raw
+              next if raw?
 
               next unless self.class.possible_var_reference?(value)
 
@@ -48,9 +49,8 @@ module Gitlab
           end
 
           ##
-          # If `file: true` has been provided we expose it, otherwise we
-          # don't expose `file` attribute at all (stems from what the runner
-          # expects).
+          # If `file: true` or `raw: true` has been provided we expose it, otherwise we
+          # don't expose `file` and `raw` attributes at all (stems from what the runner expects).
           #
           def to_runner_variable
             @variable.reject do |hash_key, hash_value|

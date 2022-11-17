@@ -14,7 +14,8 @@
     "versions",
     "status",
     "canDestroy",
-    "lastDownloadedAt"
+    "lastDownloadedAt",
+    "_links"
   ],
   "properties": {
     "id": {
@@ -177,6 +178,15 @@
     },
     "lastDownloadedAt": {
       "type": ["string", "null"]
+    },
+    "_links": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "webPath": {
+          "type": ["string", "null"]
+        }
+      }
     }
   }
 }

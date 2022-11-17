@@ -40,6 +40,7 @@ RSpec.describe Group do
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
     it { is_expected.to have_many(:contacts).class_name('CustomerRelations::Contact') }
     it { is_expected.to have_many(:organizations).class_name('CustomerRelations::Organization') }
+    it { is_expected.to have_many(:protected_branches) }
     it { is_expected.to have_one(:crm_settings) }
     it { is_expected.to have_one(:group_feature) }
     it { is_expected.to have_one(:harbor_integration) }
@@ -97,6 +98,15 @@ RSpec.describe Group do
           group = build(:group, parent: build(:group))
 
           expect(group).to be_valid
+        end
+
+        it 'does not allow a subgroup to have the same name as an existing subgroup' do
+          sub_group1 = create(:group, parent: group, name: "SG", path: 'api')
+          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2')
+
+          expect(sub_group1).to be_valid
+          expect(sub_group2).not_to be_valid
+          expect(sub_group2.errors.full_messages.to_sentence).to eq('Name has already been taken')
         end
       end
     end
@@ -1058,28 +1068,45 @@ RSpec.describe Group do
     end
 
     context 'with owners from a parent' do
-      before do
-        parent_group = create(:group)
-        create(:group_member, :owner, group: parent_group)
-        group.update!(parent: parent_group)
+      context 'when top-level group' do
+        it { expect(group.last_owner?(@members[:owner])).to be_truthy }
+
+        context 'with group sharing' do
+          let!(:subgroup) { create(:group, parent: group) }
+
+          before do
+            create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+            create(:group_member, :owner, group: subgroup)
+          end
+
+          it { expect(group.last_owner?(@members[:owner])).to be_truthy }
+        end
       end
 
-      it { expect(group.last_owner?(@members[:owner])).to be_falsy }
+      context 'when subgroup' do
+        let!(:subgroup) { create(:group, parent: group) }
+
+        it { expect(subgroup.last_owner?(@members[:owner])).to be_truthy }
+
+        context 'with two owners' do
+          before do
+            create(:group_member, :owner, group: group)
+          end
+
+          it { expect(subgroup.last_owner?(@members[:owner])).to be_falsey }
+        end
+      end
     end
   end
 
   describe '#member_last_blocked_owner?' do
-    let_it_be(:blocked_user) { create(:user, :blocked) }
+    let!(:blocked_user) { create(:user, :blocked) }
 
-    let(:member) { blocked_user.group_members.last }
-
-    before do
-      group.add_member(blocked_user, GroupMember::OWNER)
-    end
+    let!(:member) { group.add_member(blocked_user, GroupMember::OWNER) }
 
     context 'when last_blocked_owner is set' do
       before do
-        expect(group).not_to receive(:members_with_parents)
+        expect(group).not_to receive(:member_owners_excluding_project_bots)
       end
 
       it 'returns true' do
@@ -1106,6 +1133,14 @@ RSpec.describe Group do
         it { expect(group.member_last_blocked_owner?(member)).to be(false) }
       end
 
+      context 'with another active project_bot owner' do
+        before do
+          group.add_member(create(:user, :project_bot), GroupMember::OWNER)
+        end
+
+        it { expect(group.member_last_blocked_owner?(member)).to be(true) }
+      end
+
       context 'with 2 blocked owners' do
         before do
           group.add_member(create(:user, :blocked), GroupMember::OWNER)
@@ -1115,13 +1150,36 @@ RSpec.describe Group do
       end
 
       context 'with owners from a parent' do
-        before do
-          parent_group = create(:group)
-          create(:group_member, :owner, group: parent_group)
-          group.update!(parent: parent_group)
+        context 'when top-level group' do
+          it { expect(group.member_last_blocked_owner?(member)).to be(true) }
+
+          context 'with group sharing' do
+            let!(:subgroup) { create(:group, parent: group) }
+
+            before do
+              create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+              create(:group_member, :owner, group: subgroup)
+            end
+
+            it { expect(group.member_last_blocked_owner?(member)).to be(true) }
+          end
         end
 
-        it { expect(group.member_last_blocked_owner?(member)).to be(false) }
+        context 'when subgroup' do
+          let!(:subgroup) { create(:group, :nested) }
+
+          let!(:member) { subgroup.add_member(blocked_user, GroupMember::OWNER) }
+
+          it { expect(subgroup.member_last_blocked_owner?(member)).to be(true) }
+
+          context 'with two owners' do
+            before do
+              create(:group_member, :owner, group: subgroup.parent)
+            end
+
+            it { expect(subgroup.member_last_blocked_owner?(member)).to be(false) }
+          end
+        end
       end
     end
   end
@@ -1174,58 +1232,63 @@ RSpec.describe Group do
     end
   end
 
-  describe '#all_owners_excluding_project_bots' do
+  describe '#member_owners_excluding_project_bots' do
     let_it_be(:user) { create(:user) }
 
-    context 'when there is only one owner' do
-      let!(:owner) do
-        group.add_member(user, GroupMember::OWNER)
+    let!(:member_owner) do
+      group.add_member(user, GroupMember::OWNER)
+    end
+
+    it 'returns the member-owners' do
+      expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+    end
+
+    context 'there is also a project_bot owner' do
+      before do
+        group.add_member(create(:user, :project_bot), GroupMember::OWNER)
       end
 
-      it 'returns the owner' do
-        expect(group.all_owners_excluding_project_bots).to contain_exactly(owner)
-      end
-
-      context 'and there is also a project_bot owner' do
-        before do
-          group.add_member(create(:user, :project_bot), GroupMember::OWNER)
-        end
-
-        it 'returns only the human owner' do
-          expect(group.all_owners_excluding_project_bots).to contain_exactly(owner)
-        end
+      it 'returns only the human member-owners' do
+        expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
       end
     end
 
-    context 'when there are multiple owners' do
-      let_it_be(:user_2) { create(:user) }
+    context 'with owners from a parent' do
+      context 'when top-level group' do
+        context 'with group sharing' do
+          let!(:subgroup) { create(:group, parent: group) }
 
-      let!(:owner) do
-        group.add_member(user, GroupMember::OWNER)
+          before do
+            create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+            subgroup.add_member(user, GroupMember::OWNER)
+          end
+
+          it 'returns only direct member-owners' do
+            expect(group.member_owners_excluding_project_bots).to contain_exactly(member_owner)
+          end
+        end
       end
 
-      let!(:owner2) do
-        group.add_member(user_2, GroupMember::OWNER)
-      end
+      context 'when subgroup' do
+        let!(:subgroup) { create(:group, parent: group) }
 
-      it 'returns both owners' do
-        expect(group.all_owners_excluding_project_bots).to contain_exactly(owner, owner2)
-      end
+        let_it_be(:user_2) { create(:user) }
 
-      context 'and there is also a project_bot owner' do
-        before do
-          group.add_member(create(:user, :project_bot), GroupMember::OWNER)
+        let!(:member_owner_2) do
+          subgroup.add_member(user_2, GroupMember::OWNER)
         end
 
-        it 'returns only the human owners' do
-          expect(group.all_owners_excluding_project_bots).to contain_exactly(owner, owner2)
+        it 'returns member-owners including parents' do
+          expect(subgroup.member_owners_excluding_project_bots).to contain_exactly(member_owner, member_owner_2)
         end
       end
     end
 
     context 'when there are no owners' do
-      it 'returns false' do
-        expect(group.all_owners_excluding_project_bots).to be_empty
+      let_it_be(:empty_group) { create(:group) }
+
+      it 'returns an empty result' do
+        expect(empty_group.member_owners_excluding_project_bots).to be_empty
       end
     end
   end
@@ -2405,23 +2468,6 @@ RSpec.describe Group do
     end
   end
 
-  describe '.groups_including_descendants_by' do
-    let_it_be(:parent_group1) { create(:group) }
-    let_it_be(:parent_group2) { create(:group) }
-    let_it_be(:extra_group)   { create(:group) }
-    let_it_be(:child_group1)  { create(:group, parent: parent_group1) }
-    let_it_be(:child_group2)  { create(:group, parent: parent_group1) }
-    let_it_be(:child_group3)  { create(:group, parent: parent_group2) }
-
-    subject { described_class.groups_including_descendants_by([parent_group2.id, parent_group1.id]) }
-
-    shared_examples 'returns the expected groups for a group and its descendants' do
-      specify { is_expected.to contain_exactly(parent_group1, parent_group2, child_group1, child_group2, child_group3) }
-    end
-
-    it_behaves_like 'returns the expected groups for a group and its descendants'
-  end
-
   describe '.preset_root_ancestor_for' do
     let_it_be(:rootgroup, reload: true) { create(:group) }
     let_it_be(:subgroup, reload: true) { create(:group, parent: rootgroup) }
@@ -2555,7 +2601,7 @@ RSpec.describe Group do
       end
 
       context 'when parent does not allow' do
-        let_it_be(:parent, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false ) }
+        let_it_be(:parent, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false) }
         let_it_be(:group, reload: true) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent: parent) }
 
         it 'raises exception' do

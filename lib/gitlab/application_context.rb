@@ -11,6 +11,7 @@ module Gitlab
     LOG_KEY = Labkit::Context::LOG_KEY
     KNOWN_KEYS = [
       :user,
+      :user_id,
       :project,
       :root_namespace,
       :client_id,
@@ -98,6 +99,7 @@ module Gitlab
         assign_hash_if_value(hash, :artifacts_dependencies_count)
 
         hash[:user] = -> { username } if include_user?
+        hash[:user_id] = -> { user_id } if include_user?
         hash[:project] = -> { project_path } if include_project?
         hash[:root_namespace] = -> { root_namespace_path } if include_namespace?
         hash[:client_id] = -> { client } if include_client?
@@ -145,6 +147,11 @@ module Gitlab
     def username
       associated_user = user || job_user
       associated_user&.username
+    end
+
+    def user_id
+      associated_user = user || job_user
+      associated_user&.id
     end
 
     def root_namespace_path

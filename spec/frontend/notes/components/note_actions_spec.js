@@ -5,6 +5,8 @@ import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import noteActions from '~/notes/components/note_actions.vue';
+import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
+import TimelineEventButton from '~/notes/components/note_actions/timeline_event_button.vue';
 import createStore from '~/notes/stores';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { userDataMock } from '../mock_data';
@@ -18,6 +20,23 @@ describe('noteActions', () => {
 
   const findUserAccessRoleBadge = (idx) => wrapper.findAllComponents(UserAccessRoleBadge).at(idx);
   const findUserAccessRoleBadgeText = (idx) => findUserAccessRoleBadge(idx).text().trim();
+  const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
+
+  const setupStoreForIncidentTimelineEvents = ({
+    userCanAdd,
+    noteableType,
+    isPromotionInProgress = true,
+  }) => {
+    store.dispatch('setUserData', {
+      ...userDataMock,
+      can_add_timeline_events: userCanAdd,
+    });
+    store.state.noteableData = {
+      ...store.state.noteableData,
+      type: noteableType,
+    };
+    store.state.isPromoteCommentToTimelineEventInProgress = isPromotionInProgress;
+  };
 
   const mountNoteActions = (propsData, computed) => {
     return mount(noteActions, {
@@ -238,7 +257,8 @@ describe('noteActions', () => {
 
   describe('user is not logged in', () => {
     beforeEach(() => {
-      store.dispatch('setUserData', {});
+      // userData can be null https://gitlab.com/gitlab-org/gitlab/-/issues/379375
+      store.dispatch('setUserData', null);
       wrapper = mountNoteActions({
         ...props,
         canDelete: false,
@@ -299,6 +319,58 @@ describe('noteActions', () => {
 
       expect(resolveButton.exists()).toBe(true);
       expect(resolveButton.attributes('title')).toBe('Thread stays unresolved');
+    });
+  });
+
+  describe('timeline event button', () => {
+    // why: We are working with an integrated store, so let's imply the getter is used
+    describe.each`
+      desc                                         | userCanAdd | noteableType                          | exists
+      ${'default'}                                 | ${true}    | ${NOTEABLE_TYPE_MAPPING.Incident}     | ${true}
+      ${'when cannot add incident timeline event'} | ${false}   | ${NOTEABLE_TYPE_MAPPING.Incident}     | ${false}
+      ${'when is not incident'}                    | ${true}    | ${NOTEABLE_TYPE_MAPPING.MergeRequest} | ${false}
+    `('$desc', ({ userCanAdd, noteableType, exists }) => {
+      beforeEach(() => {
+        setupStoreForIncidentTimelineEvents({
+          userCanAdd,
+          noteableType,
+        });
+
+        wrapper = mountNoteActions({ ...props });
+      });
+
+      it(`handles rendering of timeline button (exists=${exists})`, () => {
+        expect(findTimelineButton().exists()).toBe(exists);
+      });
+    });
+
+    describe('default', () => {
+      beforeEach(() => {
+        setupStoreForIncidentTimelineEvents({
+          userCanAdd: true,
+          noteableType: NOTEABLE_TYPE_MAPPING.Incident,
+        });
+
+        wrapper = mountNoteActions({ ...props });
+      });
+
+      it('should render timeline-event-button', () => {
+        expect(findTimelineButton().props()).toEqual({
+          noteId: props.noteId,
+          isPromotionInProgress: true,
+        });
+      });
+
+      it('when timeline-event-button emits click-promote-comment-to-event, dispatches action', () => {
+        jest.spyOn(store, 'dispatch').mockImplementation();
+
+        expect(store.dispatch).not.toHaveBeenCalled();
+
+        findTimelineButton().vm.$emit('click-promote-comment-to-event');
+
+        expect(store.dispatch).toHaveBeenCalledTimes(1);
+        expect(store.dispatch).toHaveBeenCalledWith('promoteCommentToTimelineEvent');
+      });
     });
   });
 });

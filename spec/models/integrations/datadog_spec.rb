@@ -73,7 +73,15 @@ RSpec.describe Integrations::Datadog do
 
         it { is_expected.to validate_presence_of(:datadog_site) }
         it { is_expected.not_to validate_presence_of(:api_url) }
+        it { is_expected.to allow_value('data-dog-hq.com').for(:datadog_site) }
+        it { is_expected.to allow_value('dataDOG.com').for(:datadog_site) }
         it { is_expected.not_to allow_value('datadog hq.com').for(:datadog_site) }
+        it { is_expected.not_to allow_value('-datadoghq.com').for(:datadog_site) }
+        it { is_expected.not_to allow_value('.datadoghq.com').for(:datadog_site) }
+        it { is_expected.not_to allow_value('datadoghq.com_').for(:datadog_site) }
+        it { is_expected.not_to allow_value('data-dog').for(:datadog_site) }
+        it { is_expected.not_to allow_value('datadoghq.com-').for(:datadog_site) }
+        it { is_expected.not_to allow_value('datadoghq.com.').for(:datadog_site) }
       end
 
       context 'with custom api_url' do

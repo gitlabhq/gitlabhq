@@ -65,8 +65,11 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
       end
 
       def expect_add_concurrent_index_and_call_original(table, column, index)
-        expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, { name: index })
-          .and_wrap_original { |_, table, column, options| connection.add_index(table, column, **options) }
+        expect(migration).to receive(:add_concurrent_index).ordered.with(table, column, { name: index, allow_partition: true })
+          .and_wrap_original do |_, table, column, options|
+            options.delete(:allow_partition)
+            connection.add_index(table, column, **options)
+          end
       end
     end
 
@@ -91,7 +94,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
       it 'forwards them to the index helper methods', :aggregate_failures do
         expect(migration).to receive(:add_concurrent_index)
-          .with(partition1_identifier, column_name, { name: partition1_index, where: 'x > 0', unique: true })
+          .with(partition1_identifier, column_name, { name: partition1_index, where: 'x > 0', unique: true, allow_partition: true })
 
         expect(migration).to receive(:add_index)
           .with(table_name, column_name, { name: index_name, where: 'x > 0', unique: true })
@@ -228,6 +231,167 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::IndexHelpers do
 
       it 'finds the duplicate index' do
         expect(subject).to match_array([match_array([duplicate_index_name1, duplicate_index_name2])])
+      end
+    end
+  end
+
+  describe '#indexes_by_definition_for_table' do
+    context 'when a partitioned table has indexes' do
+      subject do
+        migration.indexes_by_definition_for_table(table_name)
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE INDEX #{index_name} ON #{table_name} (#{column_name});
+        SQL
+      end
+
+      it 'captures partitioned index names by index definition' do
+        expect(subject).to match(a_hash_including({ "CREATE _ btree (#{column_name})" => index_name }))
+      end
+    end
+
+    context 'when a non-partitioned table has indexes' do
+      let(:regular_table_name) { '_test_regular_table' }
+      let(:regular_index_name) { '_test_regular_index_name' }
+
+      subject do
+        migration.indexes_by_definition_for_table(regular_table_name)
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE #{regular_table_name} (
+            #{column_name} timestamptz NOT NULL
+          );
+
+          CREATE INDEX #{regular_index_name} ON #{regular_table_name} (#{column_name});
+        SQL
+      end
+
+      it 'captures index names by index definition' do
+        expect(subject).to match(a_hash_including({ "CREATE _ btree (#{column_name})" => regular_index_name }))
+      end
+    end
+
+    context 'when a non-partitioned table has duplicate indexes' do
+      let(:regular_table_name) { '_test_regular_table' }
+      let(:regular_index_name) { '_test_regular_index_name' }
+      let(:duplicate_index_name) { '_test_duplicate_index_name' }
+
+      subject do
+        migration.indexes_by_definition_for_table(regular_table_name)
+      end
+
+      before do
+        connection.execute(<<~SQL)
+          CREATE TABLE #{regular_table_name} (
+            #{column_name} timestamptz NOT NULL
+          );
+
+          CREATE INDEX #{regular_index_name} ON #{regular_table_name} (#{column_name});
+          CREATE INDEX #{duplicate_index_name} ON #{regular_table_name} (#{column_name});
+        SQL
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error { described_class::DuplicatedIndexesError }
+      end
+    end
+  end
+
+  describe '#rename_indexes_for_table' do
+    let(:original_table_name) { '_test_rename_indexes_table' }
+    let(:first_partition_name) { '_test_rename_indexes_table_1' }
+    let(:transient_table_name) { '_test_rename_indexes_table_child' }
+    let(:custom_column_name) { 'created_at' }
+    let(:generated_column_name) { 'updated_at' }
+    let(:custom_index_name) { 'index_test_rename_indexes_table_on_created_at' }
+    let(:custom_index_name_regenerated) { '_test_rename_indexes_table_created_at_idx' }
+    let(:generated_index_name) { '_test_rename_indexes_table_updated_at_idx' }
+    let(:generated_index_name_collided) { '_test_rename_indexes_table_updated_at_idx1' }
+
+    before do
+      connection.execute(<<~SQL)
+        CREATE TABLE #{original_table_name} (
+          #{custom_column_name} timestamptz NOT NULL,
+          #{generated_column_name} timestamptz NOT NULL
+        );
+
+        CREATE INDEX #{custom_index_name} ON #{original_table_name} (#{custom_column_name});
+        CREATE INDEX ON #{original_table_name} (#{generated_column_name});
+      SQL
+    end
+
+    context 'when changing a table within the current schema' do
+      let!(:identifiers) { migration.indexes_by_definition_for_table(original_table_name) }
+
+      before do
+        connection.execute(<<~SQL)
+          ALTER TABLE #{original_table_name} RENAME TO #{first_partition_name};
+          CREATE TABLE #{original_table_name} (LIKE #{first_partition_name} INCLUDING ALL);
+          DROP TABLE #{first_partition_name};
+        SQL
+      end
+
+      it 'maps index names after they are changed' do
+        migration.rename_indexes_for_table(original_table_name, identifiers)
+
+        expect_index_to_exist(custom_index_name)
+        expect_index_to_exist(generated_index_name)
+      end
+
+      it 'does not rename an index which does not exist in the to_hash' do
+        partial_identifiers = identifiers.reject { |_, name| name == custom_index_name }
+
+        migration.rename_indexes_for_table(original_table_name, partial_identifiers)
+
+        expect_index_not_to_exist(custom_index_name)
+        expect_index_to_exist(generated_index_name)
+      end
+    end
+
+    context 'when partitioning an existing table' do
+      before do
+        connection.execute(<<~SQL)
+          /* Create new parent table */
+          CREATE TABLE #{first_partition_name} (LIKE #{original_table_name} INCLUDING ALL);
+        SQL
+      end
+
+      it 'renames indexes across schemas' do
+        # Capture index names generated by postgres
+        generated_index_names = migration.indexes_by_definition_for_table(first_partition_name)
+
+        # Capture index names from original table
+        original_index_names = migration.indexes_by_definition_for_table(original_table_name)
+
+        connection.execute(<<~SQL)
+          /* Rename original table out of the way */
+          ALTER TABLE #{original_table_name} RENAME TO #{transient_table_name};
+
+          /* Rename new parent table to original name */
+          ALTER TABLE #{first_partition_name} RENAME TO #{original_table_name};
+
+          /* Move original table to gitlab_partitions_dynamic schema */
+          ALTER TABLE #{transient_table_name} SET SCHEMA #{partition_schema};
+
+          /* Rename original table to be the first partition */
+          ALTER TABLE #{partition_schema}.#{transient_table_name} RENAME TO #{first_partition_name};
+        SQL
+
+        # Apply index names generated by postgres to first partition
+        migration.rename_indexes_for_table(first_partition_name, generated_index_names, schema_name: partition_schema)
+
+        expect_index_to_exist('_test_rename_indexes_table_1_created_at_idx')
+        expect_index_to_exist('_test_rename_indexes_table_1_updated_at_idx')
+
+        # Apply index names from original table to new parent table
+        migration.rename_indexes_for_table(original_table_name, original_index_names)
+
+        expect_index_to_exist(custom_index_name)
+        expect_index_to_exist(generated_index_name)
       end
     end
   end

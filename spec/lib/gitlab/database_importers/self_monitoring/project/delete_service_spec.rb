@@ -11,13 +11,13 @@ RSpec.describe Gitlab::DatabaseImporters::SelfMonitoring::Project::DeleteService
       it 'returns error' do
         expect(result).to eq(
           status: :error,
-          message: 'Self monitoring project does not exist',
+          message: 'Self-monitoring project does not exist',
           last_step: :validate_self_monitoring_project_exists
         )
       end
     end
 
-    context 'when self monitoring project exists' do
+    context 'when self-monitoring project exists' do
       let(:group) { create(:group) }
       let(:project) { create(:project, namespace: group) }
 

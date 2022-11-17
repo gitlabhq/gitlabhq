@@ -3,5 +3,5 @@
 class BlobPolicy < BasePolicy
   delegate { @subject.project }
 
-  rule { can?(:download_code) }.enable :read_blob
+  rule { can?(:read_code) }.enable :read_blob
 end

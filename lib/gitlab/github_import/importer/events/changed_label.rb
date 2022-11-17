@@ -13,6 +13,7 @@ module Gitlab
 
           def create_event(issue_event)
             attrs = {
+              importing: true,
               user_id: author_id(issue_event),
               label_id: label_finder.id_for(issue_event.label_title),
               action: action(issue_event.event),

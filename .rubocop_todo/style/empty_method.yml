@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/EmptyMethod:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings/appearances_controller.rb'
     - 'app/controllers/admin/applications_controller.rb'

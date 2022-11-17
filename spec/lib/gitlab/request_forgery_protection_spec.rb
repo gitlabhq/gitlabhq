@@ -13,6 +13,12 @@ RSpec.describe Gitlab::RequestForgeryProtection, :allow_forgery_protection do
     }
   end
 
+  it 'logs to /dev/null' do
+    expect(ActiveSupport::Logger).to receive(:new).with(File::NULL)
+
+    described_class::Controller.new.logger
+  end
+
   describe '.call' do
     context 'when the request method is GET' do
       before do

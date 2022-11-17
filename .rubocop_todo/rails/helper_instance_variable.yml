@@ -1,6 +1,5 @@
 ---
 Rails/HelperInstanceVariable:
-  Details: grace period
   Exclude:
     - 'app/helpers/admin/user_actions_helper.rb'
     - 'app/helpers/application_helper.rb'

@@ -10,6 +10,15 @@ RSpec.describe Terraform::StateVersion do
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:build).class_name('Ci::Build').optional }
 
+  describe 'default attributes' do
+    before do
+      allow(Terraform::StateUploader).to receive(:default_store).and_return(5)
+    end
+
+    it { expect(described_class.new.file_store).to eq(5) }
+    it { expect(described_class.new(file_store: 3).file_store).to eq(3) }
+  end
+
   describe 'scopes' do
     describe '.ordered_by_version_desc' do
       let(:terraform_state) { create(:terraform_state) }

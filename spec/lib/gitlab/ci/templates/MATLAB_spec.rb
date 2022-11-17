@@ -12,7 +12,7 @@ RSpec.describe 'MATLAB.gitlab-ci.yml' do
     let(:default_branch) { 'master' }
     let(:pipeline_branch) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do

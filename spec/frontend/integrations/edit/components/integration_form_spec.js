@@ -1,4 +1,4 @@
-import { GlBadge, GlForm } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import * as Sentry from '@sentry/browser';
@@ -80,6 +80,7 @@ describe('IntegrationForm', () => {
   const findInstanceOrGroupSaveButton = () => wrapper.findByTestId('save-button-instance-group');
   const findTestButton = () => wrapper.findByTestId('test-button');
   const findTriggerFields = () => wrapper.findComponent(TriggerFields);
+  const findAlert = () => wrapper.findComponent(GlAlert);
   const findGlBadge = () => wrapper.findComponent(GlBadge);
   const findGlForm = () => wrapper.findComponent(GlForm);
   const findRedirectToField = () => wrapper.findByTestId('redirect-to-field');
@@ -715,45 +716,72 @@ describe('IntegrationForm', () => {
       });
     });
 
-    describe('Help and sections rendering', () => {
-      const dummyHelp = 'Foo Help';
+    describe('Slack integration', () => {
+      describe('Help and sections rendering', () => {
+        const dummyHelp = 'Foo Help';
+
+        it.each`
+          integration                    | flagIsOn | helpHtml     | sections                   | shouldShowSections | shouldShowHelp
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${undefined} | ${[mockSectionConnection]} | ${false}           | ${false}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${false}           | ${true}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+          ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${true}
+          ${'foo'}                       | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
+          ${'foo'}                       | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+          ${'foo'}                       | ${false} | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+          ${'foo'}                       | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+          ${'foo'}                       | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
+          ${'foo'}                       | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
+          ${'foo'}                       | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
+          ${'foo'}                       | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+        `(
+          '$sections sections, and "$helpHtml" helpHtml when the FF is "$flagIsOn" for "$integration" integration',
+          ({ integration, flagIsOn, helpHtml, sections, shouldShowSections, shouldShowHelp }) => {
+            createComponent({
+              provide: {
+                helpHtml,
+                glFeatures: { integrationSlackAppNotifications: flagIsOn },
+              },
+              customStateProps: {
+                sections,
+                type: integration,
+              },
+            });
+            expect(findAllSections().length > 0).toEqual(shouldShowSections);
+            expect(findHelpHtml().exists()).toBe(shouldShowHelp);
+            if (shouldShowHelp) {
+              expect(findHelpHtml().html()).toContain(helpHtml);
+            }
+          },
+        );
+      });
 
       it.each`
-        integration                    | flagIsOn | helpHtml     | sections                   | shouldShowSections | shouldShowHelp
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${undefined} | ${[mockSectionConnection]} | ${false}           | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${false}           | ${true}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${INTEGRATION_FORM_TYPE_SLACK} | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${true}
-        ${'foo'}                       | ${false} | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${'foo'}                       | ${false} | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${'foo'}                       | ${false} | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${'foo'}                       | ${false} | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${'foo'}                       | ${true}  | ${''}        | ${[]}                      | ${false}           | ${false}
-        ${'foo'}                       | ${true}  | ${dummyHelp} | ${[]}                      | ${false}           | ${true}
-        ${'foo'}                       | ${true}  | ${undefined} | ${[mockSectionConnection]} | ${true}            | ${false}
-        ${'foo'}                       | ${true}  | ${dummyHelp} | ${[mockSectionConnection]} | ${true}            | ${false}
+        prefix        | integration                    | shouldUpgradeSlack | flagIsOn | shouldShowAlert
+        ${'does'}     | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${true}  | ${true}
+        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${false}           | ${true}  | ${false}
+        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${false} | ${false}
+        ${'does not'} | ${'foo'}                       | ${true}            | ${true}  | ${false}
+        ${'does not'} | ${'foo'}                       | ${false}           | ${true}  | ${false}
+        ${'does not'} | ${'foo'}                       | ${true}            | ${false} | ${false}
       `(
-        '$sections sections, and "$helpHtml" helpHtml when the FF is "$flagIsOn" for "$integration" integration',
-        ({ integration, flagIsOn, helpHtml, sections, shouldShowSections, shouldShowHelp }) => {
+        '$prefix render the upgrade warnning when we are in "$integration" integration with the flag "$flagIsOn" and Slack-needs-upgrade is "$shouldUpgradeSlack"',
+        ({ integration, shouldUpgradeSlack, flagIsOn, shouldShowAlert }) => {
           createComponent({
             provide: {
-              helpHtml,
               glFeatures: { integrationSlackAppNotifications: flagIsOn },
             },
             customStateProps: {
-              sections,
+              shouldUpgradeSlack,
               type: integration,
+              sections: [mockSectionConnection],
             },
           });
-          expect(findAllSections().length > 0).toEqual(shouldShowSections);
-          expect(findHelpHtml().exists()).toBe(shouldShowHelp);
-          if (shouldShowHelp) {
-            expect(findHelpHtml().html()).toContain(helpHtml);
-          }
+          expect(findAlert().exists()).toBe(shouldShowAlert);
         },
       );
     });

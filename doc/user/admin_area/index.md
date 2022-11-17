@@ -136,15 +136,15 @@ For each user, the following are listed:
 1. Date of last activity
 
 To edit a user, select the **Edit** button in that user's
-row. To delete the user, or delete the user and their contributions, select the cog dropdown in
+row. To delete the user, or delete the user and their contributions, select the cog dropdown list in
 that user's row, and select the desired option.
 
 To change the sort order:
 
-1. Select the sort dropdown.
+1. Select the sort dropdown list.
 1. Select the desired order.
 
-By default the sort dropdown shows **Name**.
+By default the sort dropdown list shows **Name**.
 
 To search for users, enter your criteria in the search field. The user search is case
 insensitive, and applies partial matching to name and username. To search for an email address,
@@ -260,7 +260,7 @@ number of members, and whether the group is private, internal, or public. To edi
 the **Edit** button in that group's row. To delete the group, select the **Delete** button in
 that group's row.
 
-To change the sort order, select the sort dropdown and select the desired order. The default
+To change the sort order, select the sort dropdown list and select the desired order. The default
 sort order is by **Last created**.
 
 To search for groups by name, enter your criteria in the search field. The group search is case

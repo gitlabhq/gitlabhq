@@ -65,6 +65,9 @@ To do that, you can use the `data` attributes in the HTML element and query them
 You should only do this while initializing the application, because the mounted element is replaced
 with a Vue-generated DOM.
 
+The `data` attributes are [only able to accept String values](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes#javascript_access),
+so you will need to cast or convert other variable types to String.
+
 The advantage of providing data from the DOM to the Vue instance through `props` or
 `provide` in the `render` function, instead of querying the DOM inside the main Vue
 component, is that you avoid creating a fixture or an HTML element in the unit test.

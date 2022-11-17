@@ -7,7 +7,8 @@ type: reference
 
 # System hooks **(FREE SELF)**
 
-Your GitLab instance can perform HTTP POST requests on the following events:
+System hooks (not to be confused with [server hooks](server_hooks.md) or [file hooks](file_hooks.md)) perform HTTP POST
+requests and are triggered on the following events:
 
 - `group_create`
 - `group_destroy`
@@ -31,21 +32,18 @@ Your GitLab instance can perform HTTP POST requests on the following events:
 - `user_update_for_group`
 - `user_update_for_team`
 
-The triggers for most of these are self-explanatory, but `project_update` and
-`project_rename` deserve some clarification: `project_update` is fired any time
-an attribute of a project is changed (including name, description, and tags)
-_unless_ the `path` attribute is also changed. In that case, a `project_rename`
-is triggered instead (so that, for instance, if all you care about is the
-repository URL, you can just listen for `project_rename`).
+The triggers for most of these are self-explanatory, but `project_update` and `project_rename` require clarification:
 
-`user_failed_login` is sent whenever a _blocked_ user attempts to sign in and is
-denied access.
+- `project_update` triggers when an attribute of a project is changed (including name, description, and tags)
+  **except** when the `path` attribute is also changed.
+- `project_rename` triggers when an attribute of a project (including `path`) is changed. If you only care about the
+  repository URL, just listen for `project_rename`.
 
-System hooks can be used, for example, for logging or changing information in an
-LDAP server.
+`user_failed_login` is sent whenever a **blocked** user attempts to sign in and is denied access.
 
-In addition to these default events, you can enable triggers for other events,
-such as push events, and disable the `repository_update` event
+As an example, use system hooks for logging or changing information in an LDAP server.
+
+You can also enable triggers for other events, such as push events, and disable the `repository_update` event
 when you create a system hook.
 
 NOTE:
@@ -136,7 +134,7 @@ X-Gitlab-Event: System Hook
 ```
 
 Note that `project_rename` is not triggered if the namespace changes.
-Please refer to `group_rename` and `user_rename` for that case.
+Refer to `group_rename` and `user_rename` for that case.
 
 **Project transferred:**
 
@@ -766,6 +764,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

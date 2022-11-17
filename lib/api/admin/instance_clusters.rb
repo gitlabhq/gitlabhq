@@ -14,16 +14,28 @@ module API
       end
 
       namespace 'admin' do
-        desc "Get list of all instance clusters" do
-          detail "This feature was introduced in GitLab 13.2."
+        desc 'List instance clusters' do
+          detail 'This feature was introduced in GitLab 13.2. Returns a list of instance clusters.'
+          success Entities::Cluster
+          failure [
+            { code: 403, message: 'Forbidden' }
+          ]
+          is_array true
+          tags %w[clusters]
         end
         get '/clusters' do
           authorize! :read_cluster, clusterable_instance
           present paginate(clusters_for_current_user), with: Entities::Cluster
         end
 
-        desc "Get a single instance cluster" do
-          detail "This feature was introduced in GitLab 13.2."
+        desc 'Get a single instance cluster' do
+          detail 'This feature was introduced in GitLab 13.2. Returns a single instance cluster.'
+          success Entities::Cluster
+          failure [
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[clusters]
         end
         params do
           requires :cluster_id, type: Integer, desc: "The cluster ID"
@@ -34,8 +46,15 @@ module API
           present cluster, with: Entities::Cluster
         end
 
-        desc "Add an instance cluster" do
-          detail "This feature was introduced in GitLab 13.2."
+        desc 'Add existing instance cluster' do
+          detail 'This feature was introduced in GitLab 13.2. Adds an existing Kubernetes instance cluster.'
+          success Entities::Cluster
+          failure [
+            { code: 400, message: 'Validation error' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[clusters]
         end
         params do
           requires :name, type: String, desc: 'Cluster name'
@@ -67,8 +86,15 @@ module API
           end
         end
 
-        desc "Update an instance cluster" do
-          detail "This feature was introduced in GitLab 13.2."
+        desc 'Edit instance cluster' do
+          detail 'This feature was introduced in GitLab 13.2. Updates an existing instance cluster.'
+          success Entities::Cluster
+          failure [
+            { code: 400, message: 'Validation error' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[clusters]
         end
         params do
           requires :cluster_id, type: Integer, desc: 'The cluster ID'
@@ -98,8 +124,14 @@ module API
           end
         end
 
-        desc "Remove a cluster" do
-          detail "This feature was introduced in GitLab 13.2."
+        desc 'Delete instance cluster' do
+          detail 'This feature was introduced in GitLab 13.2. Deletes an existing instance cluster. Does not remove existing resources within the connected Kubernetes cluster.'
+          success Entities::Cluster
+          failure [
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[clusters]
         end
         params do
           requires :cluster_id, type: Integer, desc: "The cluster ID"

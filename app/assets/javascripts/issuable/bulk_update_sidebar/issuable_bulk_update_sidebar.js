@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import issuableEventHub from '~/issues/list/eventhub';
 import LabelsSelect from '~/labels/labels_select';
-import MilestoneSelect from '~/milestones/milestone_select';
+import { mountMilestoneDropdown } from '~/sidebar/mount_sidebar';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 
 const HIDDEN_CLASS = 'hidden';
@@ -46,35 +46,28 @@ export default class IssuableBulkUpdateSidebar {
     // https://gitlab.com/gitlab-org/gitlab/-/issues/325874
     issuableEventHub.$on('issuables:enableBulkEdit', () => this.toggleBulkEdit(null, true));
     issuableEventHub.$on('issuables:updateBulkEdit', () => this.updateFormState());
+
+    // These events are connected to the logic inside `move_issues_button.vue`,
+    // so that only one action can be performed at a time
+    issuableEventHub.$on('issuables:bulkMoveStarted', () => this.toggleSubmitButtonDisabled(true));
+    issuableEventHub.$on('issuables:bulkMoveEnded', () => this.updateFormState());
   }
 
   initDropdowns() {
     new LabelsSelect();
-    new MilestoneSelect();
+    mountMilestoneDropdown();
 
     // Checking IS_EE and using ee_else_ce is odd, but we do it here to satisfy
     // the import/no-unresolved lint rule when FOSS_ONLY=1, even though at
     // runtime this block won't execute.
     if (IS_EE) {
-      import('ee_else_ce/vue_shared/components/sidebar/health_status_select/health_status_bundle')
-        .then(({ default: HealthStatusSelect }) => {
-          HealthStatusSelect();
+      import('ee_else_ce/sidebar/mount_sidebar')
+        .then(({ mountEpicDropdown, mountHealthStatusDropdown, mountIterationDropdown }) => {
+          mountEpicDropdown();
+          mountHealthStatusDropdown();
+          mountIterationDropdown();
         })
         .catch(() => {});
-
-      import('ee_else_ce/vue_shared/components/sidebar/epics_select/epics_select_bundle')
-        .then(({ default: EpicSelect }) => {
-          EpicSelect();
-        })
-        .catch(() => {});
-
-      import('ee_else_ce/vue_shared/components/sidebar/iterations_dropdown_bundle')
-        .then(({ default: iterationsDropdown }) => {
-          iterationsDropdown();
-        })
-        .catch((e) => {
-          throw e;
-        });
     }
   }
 
@@ -89,6 +82,8 @@ export default class IssuableBulkUpdateSidebar {
     this.updateSelectedIssuableIds();
 
     IssuableBulkUpdateActions.setOriginalDropdownData();
+
+    issuableEventHub.$emit('issuables:selectionChanged', !noCheckedIssues);
   }
 
   prepForSubmit() {

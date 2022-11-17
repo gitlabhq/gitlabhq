@@ -20,6 +20,7 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze
         last_flaky_at: Time.now,
         last_flaky_job: nil,
         flaky_reports: 0,
+        feature_category: nil,
         last_attempts_count: nil
       },
       b: {
@@ -28,6 +29,7 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze
         last_flaky_at: Time.now,
         last_flaky_job: nil,
         flaky_reports: 0,
+        feature_category: nil,
         last_attempts_count: nil
       }
     }
@@ -69,6 +71,7 @@ RSpec.describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures, :freeze
           last_flaky_at: Time.now,
           last_flaky_job: nil,
           flaky_reports: 0,
+          feature_category: nil,
           last_attempts_count: nil
         })
     end

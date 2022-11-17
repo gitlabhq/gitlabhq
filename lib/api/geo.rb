@@ -13,6 +13,13 @@ module API
     end
 
     resource :geo do
+      desc 'Returns a Geo proxy response' do
+        summary "Determine if a Geo site should proxy requests"
+        success code: 200
+        failure [{ code: 403, message: 'Forbidden' }]
+        tags %w[geo]
+      end
+
       # Workhorse calls this to determine if it is a Geo site that should proxy
       # requests. Workhorse doesn't know if it's in a FOSS/EE context.
       get '/proxy' do

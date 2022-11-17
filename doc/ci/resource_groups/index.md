@@ -89,7 +89,7 @@ The following modes are supported:
   that are sorted by pipeline ID in descending order.
 
   This mode is efficient when you want to ensure that the jobs are executed from the newest pipeline and
-  cancel all of the old deploy jobs with the [skip outdated deployment jobs](../environments/deployment_safety.md#skip-outdated-deployment-jobs) feature.
+  prevent all of the old deploy jobs with the [prevent outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs) feature.
   This is the most efficient option in terms of the pipeline efficiency, but you must ensure that each deployment job is idempotent.
 
 ### Change the process mode
@@ -171,7 +171,6 @@ deploy:
     include: deploy.gitlab-ci.yml
     strategy: depend
   resource_group: AWS-production
-  environment: production
 ```
 
 ```yaml

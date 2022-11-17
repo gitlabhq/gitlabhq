@@ -68,10 +68,19 @@ module API
         def find_candidate!(iid)
           candidate_repository.by_iid(iid) || resource_not_found!
         end
+
+        def packages_url
+          path = api_v4_projects_packages_generic_package_version_path(
+            id: user_project.id, package_name: '', file_name: ''
+          )
+          path = path.delete_suffix('/package_version')
+
+          "#{request.base_url}#{path}"
+        end
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'API to interface with MLFlow Client, REST API version 1.28.0' do
@@ -130,8 +139,7 @@ module API
           resource :runs do
             desc 'Creates a Run.' do
               success Entities::Ml::Mlflow::Run
-              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#create-run',
-                       'MLFlow Runs map to GitLab Candidates']
+              detail 'MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/1.28.0/rest-api.html#create-run'
             end
             params do
               requires :experiment_id, type: Integer,
@@ -143,7 +151,8 @@ module API
               optional :tags, type: Array, desc: 'This will be ignored'
             end
             post 'create', urgency: :low do
-              present candidate_repository.create!(experiment, params[:start_time]), with: Entities::Ml::Mlflow::Run
+              present candidate_repository.create!(experiment, params[:start_time]),
+                      with: Entities::Ml::Mlflow::Run, packages_url: packages_url
             end
 
             desc 'Gets an MLFlow Run, which maps to GitLab Candidates' do
@@ -155,13 +164,12 @@ module API
               optional :run_uuid, type: String, desc: 'This parameter is ignored'
             end
             get 'get', urgency: :low do
-              present candidate, with: Entities::Ml::Mlflow::Run
+              present candidate, with: Entities::Ml::Mlflow::Run, packages_url: packages_url
             end
 
             desc 'Updates a Run.' do
               success Entities::Ml::Mlflow::UpdateRun
-              detail  ['https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run',
-                       'MLFlow Runs map to GitLab Candidates']
+              detail 'MLFlow Runs map to GitLab Candidates. https://www.mlflow.org/docs/1.28.0/rest-api.html#update-run'
             end
             params do
               requires :run_id, type: String, desc: 'UUID of the candidate.'
@@ -174,7 +182,7 @@ module API
             post 'update', urgency: :low do
               candidate_repository.update(candidate, params[:status], params[:end_time])
 
-              present candidate, with: Entities::Ml::Mlflow::UpdateRun
+              present candidate, with: Entities::Ml::Mlflow::UpdateRun, packages_url: packages_url
             end
 
             desc 'Logs a metric to a run.' do

@@ -45,13 +45,14 @@ workflow:
         RUBY_VERSION: "3.0"
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
-    # For the maintenance scheduled pipelines, we set specific variables.
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+    # For the scheduled pipelines, we set specific variables.
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         CRYSTALBALL: "true"
+        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
     # Run pipelines for ruby3 branch
-    - if: '$CI_COMMIT_BRANCH == "ruby3"'
+    - if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         RUBY_VERSION: "3.0"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "f_ruby3"
@@ -62,9 +63,12 @@ workflow:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'
       variables:
         GITLAB_DEPENDENCY_PROXY_ADDRESS: ""
+        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
+        NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
     # For `$CI_DEFAULT_BRANCH` branch, create a pipeline (this includes on schedules, pushes, merges, etc.).
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       variables:
+        CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
     # For tags, create a pipeline.
     - if: '$CI_COMMIT_TAG'
@@ -95,7 +99,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   DEBIAN_VERSION: "bullseye"
-  CHROME_VERSION: "103"
+  CHROME_VERSION: "106"
   DOCKER_VERSION: "20.10.14"
   RUBY_VERSION: "2.7"
   GO_VERSION: "1.18"
@@ -127,7 +131,7 @@ variables:
   # Run with decomposed databases by default
   DECOMPOSED_DB: "true"
 
-  DOCS_REVIEW_APPS_DOMAIN: "35.193.151.162.nip.io"
+  DOCS_REVIEW_APPS_DOMAIN: "docs.gitlab-review.app"
   DOCS_GITLAB_REPO_SUFFIX: "ee"
 
   REVIEW_APPS_IMAGE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ruby-3.0:gcloud-383-kubectl-1.23-helm-3.5"

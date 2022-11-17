@@ -1,0 +1,13 @@
+#import "ee_else_ce/ci/runner/graphql/list/list_item.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+fragment AllRunnersConnection on CiRunnerConnection {
+  nodes {
+    ...ListItem
+    adminUrl
+    editAdminUrl
+  }
+  pageInfo {
+    ...PageInfo
+  }
+}

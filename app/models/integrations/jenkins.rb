@@ -5,10 +5,10 @@ module Integrations
     include HasWebHook
 
     prepend EnableSslVerification
-    extend Gitlab::Utils::Override
 
     field :jenkins_url,
       title: -> { s_('ProjectService|Jenkins server URL') },
+      exposes_secrets: true,
       required: true,
       placeholder: 'http://jenkins.example.com',
       help: -> { s_('The URL of the Jenkins server.') }
@@ -27,21 +27,13 @@ module Integrations
       non_empty_password_title: -> { s_('ProjectService|Enter new password.') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current password.') }
 
-    before_validation :reset_password
-
     validates :jenkins_url, presence: true, addressable_url: true, if: :activated?
     validates :project_name, presence: true, if: :activated?
     validates :username, presence: true, if: ->(service) { service.activated? && service.password_touched? && service.password.present? }
+    validates :password, presence: true, if: ->(service) { service.activated? && service.username.present? }
 
-    default_value_for :merge_requests_events, false
-    default_value_for :tag_push_events, false
-
-    def reset_password
-      # don't reset the password if a new one is provided
-      if (jenkins_url_changed? || username.blank?) && !password_touched?
-        self.password = nil
-      end
-    end
+    attribute :merge_requests_events, default: false
+    attribute :tag_push_events, default: false
 
     def execute(data)
       return unless supported_events.include?(data[:object_kind])
@@ -52,12 +44,12 @@ module Integrations
     def test(data)
       begin
         result = execute(data)
-        return { success: false, result: result[:message] } if result[:http_status] != 200
+        return { success: false, result: result.message } if result.payload[:http_status] != 200
       rescue StandardError => e
         return { success: false, result: e }
       end
 
-      { success: true, result: result[:message] }
+      { success: true, result: result.message }
     end
 
     override :hook_url

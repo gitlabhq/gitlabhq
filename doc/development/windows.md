@@ -132,7 +132,7 @@ PowerShell has aliases for all of the following commands so you don't have to le
 - `ls` ---> `dir`
 - `rm` ---> `del`
 - `rm -rf nonemptydir` ---> `rmdir /S nonemptydir`
-- `/` ---> `\` (path separator)
+- `/` ---> <code>&#92;</code> (path separator)
 - `cat` ---> `type`
 - `mv` ---> `move`
 - Redirection works the same (for example, `>` and `2>&1`)

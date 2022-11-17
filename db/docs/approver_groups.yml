@@ -3,7 +3,8 @@ table_name: approver_groups
 classes:
 - ApproverGroup
 feature_categories:
+- code_review
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/21d27185191e6204a6645d776c77ae3855cce3e8
+description: Group approvers of given merge request
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/743
 milestone: '8.13'

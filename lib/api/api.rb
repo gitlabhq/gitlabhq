@@ -13,13 +13,14 @@ module API
     USER_REQUIREMENTS = { user_id: NO_SLASH_URL_PART_REGEX }.freeze
     LOG_FILTERS = ::Rails.application.config.filter_parameters + [/^output$/]
     LOG_FORMATTER = Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new
+    LOGGER = Logger.new(LOG_FILENAME)
 
     insert_before Grape::Middleware::Error,
                   GrapeLogging::Middleware::RequestLogger,
-                  logger: Logger.new(LOG_FILENAME),
+                  logger: LOGGER,
                   formatter: LOG_FORMATTER,
                   include: [
-                    GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
+                    Gitlab::GrapeLogging::Loggers::FilterParameters.new(LOG_FILTERS),
                     Gitlab::GrapeLogging::Loggers::ClientEnvLogger.new,
                     Gitlab::GrapeLogging::Loggers::RouteLogger.new,
                     Gitlab::GrapeLogging::Loggers::UserLogger.new,
@@ -168,42 +169,111 @@ module API
 
       # Mount endpoints to include in the OpenAPI V2 documentation here
       namespace do
+        # Keep in alphabetical order
+        mount ::API::AccessRequests
+        mount ::API::Admin::Ci::Variables
+        mount ::API::Admin::InstanceClusters
+        mount ::API::Admin::PlanLimits
+        mount ::API::Appearance
+        mount ::API::Applications
+        mount ::API::Avatar
+        mount ::API::Badges
+        mount ::API::Branches
+        mount ::API::BroadcastMessages
+        mount ::API::BulkImports
+        mount ::API::Ci::Jobs
+        mount ::API::Ci::ResourceGroups
+        mount ::API::Ci::Runner
+        mount ::API::Ci::Runners
+        mount ::API::Ci::Pipelines
+        mount ::API::Ci::PipelineSchedules
+        mount ::API::Ci::Triggers
+        mount ::API::Ci::Variables
+        mount ::API::Clusters::AgentTokens
+        mount ::API::Clusters::Agents
+        mount ::API::Commits
+        mount ::API::CommitStatuses
+        mount ::API::DependencyProxy
+        mount ::API::DeployKeys
+        mount ::API::DeployTokens
+        mount ::API::Deployments
+        mount ::API::Environments
+        mount ::API::ErrorTracking::ClientKeys
+        mount ::API::ErrorTracking::ProjectSettings
+        mount ::API::FeatureFlags
+        mount ::API::FeatureFlagsUserLists
+        mount ::API::Features
+        mount ::API::Files
+        mount ::API::FreezePeriods
+        mount ::API::Geo
+        mount ::API::GoProxy
+        mount ::API::GroupAvatar
+        mount ::API::GroupClusters
+        mount ::API::GroupContainerRepositories
+        mount ::API::GroupExport
+        mount ::API::GroupImport
+        mount ::API::GroupPackages
+        mount ::API::GroupVariables
+        mount ::API::ImportBitbucketServer
+        mount ::API::ImportGithub
+        mount ::API::Integrations
+        mount ::API::Invitations
+        mount ::API::IssueLinks
+        mount ::API::Keys
+        mount ::API::Lint
+        mount ::API::Markdown
+        mount ::API::MergeRequestApprovals
+        mount ::API::MergeRequestDiffs
         mount ::API::Metadata
+        mount ::API::Metrics::Dashboard::Annotations
+        mount ::API::Metrics::UserStarredDashboards
+        mount ::API::PackageFiles
+        mount ::API::PersonalAccessTokens::SelfInformation
+        mount ::API::PersonalAccessTokens
+        mount ::API::ProjectClusters
+        mount ::API::ProjectEvents
+        mount ::API::ProjectExport
+        mount ::API::ProjectHooks
+        mount ::API::ProjectImport
+        mount ::API::ProjectRepositoryStorageMoves
+        mount ::API::ProjectSnippets
+        mount ::API::ProjectSnapshots
+        mount ::API::ProjectStatistics
+        mount ::API::ProjectTemplates
+        mount ::API::ProtectedBranches
+        mount ::API::ProtectedTags
+        mount ::API::Releases
+        mount ::API::Release::Links
+        mount ::API::RemoteMirrors
+        mount ::API::Repositories
+        mount ::API::ResourceAccessTokens
+        mount ::API::ResourceMilestoneEvents
+        mount ::API::Snippets
+        mount ::API::SnippetRepositoryStorageMoves
+        mount ::API::Statistics
+        mount ::API::Submodules
+        mount ::API::Suggestions
+        mount ::API::SystemHooks
+        mount ::API::Tags
+        mount ::API::Terraform::Modules::V1::Packages
+        mount ::API::Terraform::State
+        mount ::API::Terraform::StateVersion
+        mount ::API::Topics
+        mount ::API::Unleash
+        mount ::API::UserCounts
+        mount ::API::Wikis
 
         add_open_api_documentation!
       end
 
       # Keep in alphabetical order
-      mount ::API::AccessRequests
       mount ::API::Admin::BatchedBackgroundMigrations
-      mount ::API::Admin::Ci::Variables
-      mount ::API::Admin::InstanceClusters
-      mount ::API::Admin::PlanLimits
       mount ::API::Admin::Sidekiq
       mount ::API::AlertManagementAlerts
-      mount ::API::Appearance
-      mount ::API::Applications
-      mount ::API::Avatar
       mount ::API::AwardEmoji
-      mount ::API::Badges
       mount ::API::Boards
-      mount ::API::Branches
-      mount ::API::BroadcastMessages
-      mount ::API::BulkImports
       mount ::API::Ci::JobArtifacts
-      mount ::API::Ci::Jobs
-      mount ::API::Ci::PipelineSchedules
-      mount ::API::Ci::Pipelines
-      mount ::API::Ci::ResourceGroups
-      mount ::API::Ci::Runner
-      mount ::API::Ci::Runners
       mount ::API::Ci::SecureFiles
-      mount ::API::Ci::Triggers
-      mount ::API::Ci::Variables
-      mount ::API::Clusters::Agents
-      mount ::API::Clusters::AgentTokens
-      mount ::API::CommitStatuses
-      mount ::API::Commits
       mount ::API::ComposerPackages
       mount ::API::ConanInstancePackages
       mount ::API::ConanProjectPackages
@@ -211,55 +281,22 @@ module API
       mount ::API::ContainerRepositories
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
-      mount ::API::DependencyProxy
-      mount ::API::DeployKeys
-      mount ::API::DeployTokens
-      mount ::API::Deployments
       mount ::API::Discussions
-      mount ::API::Environments
-      mount ::API::ErrorTracking::ClientKeys
       mount ::API::ErrorTracking::Collector
-      mount ::API::ErrorTracking::ProjectSettings
       mount ::API::Events
-      mount ::API::FeatureFlags
-      mount ::API::FeatureFlagsUserLists
-      mount ::API::Features
-      mount ::API::Files
-      mount ::API::FreezePeriods
       mount ::API::GenericPackages
-      mount ::API::Geo
-      mount ::API::GoProxy
-      mount ::API::GroupAvatar
       mount ::API::GroupBoards
-      mount ::API::GroupClusters
-      mount ::API::GroupContainerRepositories
       mount ::API::GroupDebianDistributions
-      mount ::API::GroupExport
-      mount ::API::GroupImport
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
-      mount ::API::GroupPackages
-      mount ::API::GroupVariables
       mount ::API::Groups
       mount ::API::HelmPackages
-      mount ::API::ImportBitbucketServer
-      mount ::API::ImportGithub
-      mount ::API::Integrations
       mount ::API::Integrations::JiraConnect::Subscriptions
-      mount ::API::Invitations
-      mount ::API::IssueLinks
       mount ::API::Issues
-      mount ::API::Keys
       mount ::API::Labels
-      mount ::API::Lint
-      mount ::API::Markdown
       mount ::API::MavenPackages
       mount ::API::Members
-      mount ::API::MergeRequestApprovals
-      mount ::API::MergeRequestDiffs
       mount ::API::MergeRequests
-      mount ::API::Metrics::Dashboard::Annotations
-      mount ::API::Metrics::UserStarredDashboards
       mount ::API::Namespaces
       mount ::API::Notes
       mount ::API::NotificationSettings
@@ -267,63 +304,31 @@ module API
       mount ::API::NpmProjectPackages
       mount ::API::NugetGroupPackages
       mount ::API::NugetProjectPackages
-      mount ::API::PackageFiles
       mount ::API::Pages
       mount ::API::PagesDomains
-      mount ::API::PersonalAccessTokens::SelfInformation
-      mount ::API::PersonalAccessTokens
-      mount ::API::ProjectClusters
       mount ::API::ProjectContainerRepositories
       mount ::API::ProjectDebianDistributions
       mount ::API::ProjectEvents
-      mount ::API::ProjectExport
-      mount ::API::ProjectHooks
-      mount ::API::ProjectImport
       mount ::API::ProjectMilestones
       mount ::API::ProjectPackages
-      mount ::API::ProjectRepositoryStorageMoves
-      mount ::API::ProjectSnapshots
-      mount ::API::ProjectSnippets
-      mount ::API::ProjectStatistics
-      mount ::API::ProjectTemplates
       mount ::API::Projects
-      mount ::API::ProtectedBranches
       mount ::API::ProtectedTags
       mount ::API::PypiPackages
-      mount ::API::Release::Links
-      mount ::API::Releases
-      mount ::API::RemoteMirrors
-      mount ::API::Repositories
-      mount ::API::ResourceAccessTokens
       mount ::API::ResourceLabelEvents
-      mount ::API::ResourceMilestoneEvents
       mount ::API::ResourceStateEvents
       mount ::API::RpmProjectPackages
       mount ::API::RubygemPackages
       mount ::API::Search
       mount ::API::Settings
       mount ::API::SidekiqMetrics
-      mount ::API::SnippetRepositoryStorageMoves
-      mount ::API::Snippets
-      mount ::API::Statistics
-      mount ::API::Submodules
       mount ::API::Subscriptions
-      mount ::API::Suggestions
-      mount ::API::SystemHooks
       mount ::API::Tags
       mount ::API::Templates
-      mount ::API::Terraform::Modules::V1::Packages
-      mount ::API::Terraform::State
-      mount ::API::Terraform::StateVersion
       mount ::API::Todos
-      mount ::API::Topics
-      mount ::API::Unleash
       mount ::API::UsageData
       mount ::API::UsageDataNonSqlMetrics
       mount ::API::UsageDataQueries
-      mount ::API::UserCounts
       mount ::API::Users
-      mount ::API::Wikis
       mount ::API::Ml::Mlflow
     end
 

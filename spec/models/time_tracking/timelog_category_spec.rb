@@ -7,6 +7,10 @@ RSpec.describe TimeTracking::TimelogCategory, type: :model do
     it { is_expected.to belong_to(:namespace).with_foreign_key('namespace_id') }
   end
 
+  describe 'default values' do
+    it { expect(described_class.new.color).to eq(described_class::DEFAULT_COLOR) }
+  end
+
   describe 'validations' do
     subject { create(:timelog_category) }
 

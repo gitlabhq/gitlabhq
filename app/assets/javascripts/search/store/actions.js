@@ -1,6 +1,8 @@
 import Api from '~/api';
 import { createAlert } from '~/flash';
+import axios from '~/lib/utils/axios_utils';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
+import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { GROUPS_LOCAL_STORAGE_KEY, PROJECTS_LOCAL_STORAGE_KEY, SIDEBAR_PARAMS } from './constants';
 import * as types from './mutation_types';
@@ -98,4 +100,20 @@ export const applyQuery = ({ state }) => {
 
 export const resetQuery = ({ state }) => {
   visitUrl(setUrlParams({ ...state.query, page: null, state: null, confidential: null }));
+};
+
+export const fetchSidebarCount = ({ commit, state }) => {
+  const promises = Object.keys(state.navigation).map((scope) => {
+    // active nav item has count already so we skip it
+    if (scope !== state.urlQuery.scope) {
+      return axios
+        .get(state.navigation[scope].count_link)
+        .then(({ data: { count } }) => {
+          commit(types.RECEIVE_NAVIGATION_COUNT, { key: scope, count });
+        })
+        .catch((e) => logError(e));
+    }
+    return Promise.resolve();
+  });
+  return Promise.all(promises);
 };

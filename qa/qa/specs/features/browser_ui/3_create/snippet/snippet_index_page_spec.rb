@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'Snippet index page' do
       let(:personal_snippet_with_single_file) do
         Resource::Snippet.fabricate_via_api! do |snippet|
@@ -47,13 +47,6 @@ module QA
 
       before do
         Flow::Login.sign_in
-      end
-
-      after do
-        personal_snippet_with_single_file.remove_via_api!
-        personal_snippet_with_multiple_files.remove_via_api!
-        project_snippet_with_single_file.remove_via_api!
-        project_snippet_with_multiple_files.remove_via_api!
       end
 
       shared_examples 'displaying details on index page' do |snippet_type, testcase|

@@ -29,6 +29,22 @@ RSpec.describe Projects::HooksController do
       { namespace_id: project.namespace, project_id: project, id: hook.id }
     end
 
+    context 'with an existing token' do
+      hook_params = {
+        token: WebHook::SECRET_MASK,
+        url: "http://example.com"
+      }
+
+      it 'does not change a token' do
+        expect do
+          post :update, params: params.merge({ hook: hook_params })
+        end.not_to change { hook.reload.token }
+
+        expect(response).to have_gitlab_http_status(:found)
+        expect(flash[:alert]).to be_blank
+      end
+    end
+
     it 'adds, updates and deletes URL variables' do
       hook.update!(url_variables: { 'a' => 'bar', 'b' => 'woo' })
 
@@ -106,8 +122,9 @@ RSpec.describe Projects::HooksController do
     it 'sets all parameters' do
       hook_params = {
         enable_ssl_verification: true,
-        token: "TEST TOKEN",
-        url: "http://example.com",
+        token: 'TEST TOKEN',
+        url: 'http://example.com',
+        branch_filter_strategy: 'regex',
 
         push_events: true,
         tag_push_events: true,
@@ -124,13 +141,39 @@ RSpec.describe Projects::HooksController do
         url_variables: [{ key: 'token', value: 'some secret value' }]
       }
 
-      post :create, params: { namespace_id: project.namespace, project_id: project, hook: hook_params }
+      params = { namespace_id: project.namespace, project_id: project, hook: hook_params }
+
+      expect { post :create, params: params }.to change(ProjectHook, :count).by(1)
+
+      project_hook = ProjectHook.order_id_desc.take
+
+      expect(project_hook).to have_attributes(
+        **hook_params.merge(url_variables: { 'token' => 'some secret value' })
+      )
+      expect(response).to have_gitlab_http_status(:found)
+      expect(flash[:alert]).to be_blank
+    end
+
+    it 'ignores branch_filter_strategy when flag is disabled' do
+      stub_feature_flags(enhanced_webhook_support_regex: false)
+      hook_params = {
+        url: 'http://example.com',
+        branch_filter_strategy: 'regex',
+        push_events: true
+      }
+      params = { namespace_id: project.namespace, project_id: project, hook: hook_params }
+
+      expect { post :create, params: params }.to change(ProjectHook, :count).by(1)
+
+      project_hook = ProjectHook.order_id_desc.take
+
+      expect(project_hook).to have_attributes(
+        url: 'http://example.com',
+        branch_filter_strategy: 'wildcard'
+      )
 
       expect(response).to have_gitlab_http_status(:found)
       expect(flash[:alert]).to be_blank
-      expect(ProjectHook.count).to eq(1)
-      expect(ProjectHook.first).to have_attributes(hook_params.except(:url_variables))
-      expect(ProjectHook.first).to have_attributes(url_variables: { 'token' => 'some secret value' })
     end
 
     it 'alerts the user if the new hook is invalid' do
@@ -186,7 +229,7 @@ RSpec.describe Projects::HooksController do
     context 'when the hook fails completely' do
       before do
         allow_next(::TestHooks::ProjectService)
-          .to receive(:execute).and_return({ message: 'All is woe' })
+          .to receive(:execute).and_return(ServiceResponse.error(message: 'All is woe'))
       end
 
       it 'informs the user' do
@@ -204,7 +247,7 @@ RSpec.describe Projects::HooksController do
 
       it 'prevents making test requests' do
         expect_next_instance_of(TestHooks::ProjectService) do |service|
-          expect(service).to receive(:execute).and_return(http_status: 200)
+          expect(service).to receive(:execute).and_return(ServiceResponse.success(payload: { http_status: 200 }))
         end
 
         2.times { post :test, params: { namespace_id: project.namespace, project_id: project, id: hook } }

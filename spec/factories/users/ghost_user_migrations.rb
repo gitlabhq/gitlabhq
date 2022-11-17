@@ -5,5 +5,6 @@ FactoryBot.define do
     association :user
     initiator_user { association(:user) }
     hard_delete { false }
+    consume_after { Time.current }
   end
 end

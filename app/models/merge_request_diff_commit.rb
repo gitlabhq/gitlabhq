@@ -70,7 +70,7 @@ class MergeRequestDiffCommit < ApplicationRecord
         sha: Gitlab::Database::ShaAttribute.serialize(sha), # rubocop:disable Cop/ActiveRecordSerialize
         authored_date: Gitlab::Database.sanitize_timestamp(commit_hash[:authored_date]),
         committed_date: Gitlab::Database.sanitize_timestamp(commit_hash[:committed_date]),
-        trailers: commit_hash.fetch(:trailers, {}).to_json
+        trailers: Gitlab::Json.dump(commit_hash.fetch(:trailers, {}))
       )
     end
 

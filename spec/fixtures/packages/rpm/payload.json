@@ -1,11 +1,23 @@
 {
   "files": [
-    "/usr/bin/hello.sh"
+    "/usr/bin/test",
+    "/usr/bin/test/hello.sh"
+  ],
+  "directories": [
+    "/usr/bin/test/"
   ],
   "changelogs": [
     {
       "changelogtext": "First build",
       "changelogtime": 1662552000
+    },
+    {
+      "changelogtext": "Next build",
+      "changelogtime": 1662552123
+    },
+    {
+      "changelogtext": "Last build",
+      "changelogtime": 1662552321
     }
   ],
   "requirements": [
@@ -43,5 +55,7 @@
   "group": "Unspecified",
   "buildhost": "localhost",
   "packager": null,
-  "vendor": null
+  "vendor": null,
+  "pkgid": "qwe123wer234ert345",
+  "epoch": "1"
 }

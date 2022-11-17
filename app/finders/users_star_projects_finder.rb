@@ -12,7 +12,7 @@ class UsersStarProjectsFinder
   end
 
   def execute
-    stars = UsersStarProject.all
+    stars = UsersStarProject.with_active_user
     stars = by_project(stars)
     stars = by_search(stars)
     filter_visible_profiles(stars)

@@ -12,7 +12,11 @@ module LooseForeignKeys
     idempotent!
 
     def perform
-      in_lock(self.class.name.underscore, ttl: ModificationTracker::MAX_RUNTIME, retries: 0) do
+      # Add small buffer on MAX_RUNTIME to account for single long running
+      # query or extra worker time after the cleanup.
+      lock_ttl = ModificationTracker::MAX_RUNTIME + 20.seconds
+
+      in_lock(self.class.name.underscore, ttl: lock_ttl, retries: 0) do
         stats = {}
 
         connection_name, base_model = current_connection_name_and_base_model

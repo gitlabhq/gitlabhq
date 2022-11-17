@@ -151,7 +151,6 @@ module API
         project_params = project_finder_params
         support_order_by_similarity!(project_params)
         verify_project_filters!(project_params)
-
         ProjectsFinder.new(current_user: current_user, params: project_params).execute
       end
 
@@ -336,7 +335,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a single project' do
@@ -424,7 +423,7 @@ module API
       end
 
       desc 'Check pages access of this project'
-      get ':id/pages_access', feature_category: :pages do
+      get ':id/pages_access', urgency: :low, feature_category: :pages do
         authorize! :read_pages_content, user_project unless user_project.public_pages?
         status 200
       end
@@ -654,7 +653,7 @@ module API
 
       desc 'Upload a file'
       params do
-        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded'
+        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
       end
       post ":id/uploads", feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         log_if_upload_exceed_max_size(user_project, params[:file])

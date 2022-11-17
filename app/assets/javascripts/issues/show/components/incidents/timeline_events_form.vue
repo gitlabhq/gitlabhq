@@ -2,7 +2,7 @@
 import { GlDatepicker, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
-import { timelineFormI18n } from './constants';
+import { MAX_TEXT_LENGTH, timelineFormI18n } from './constants';
 import { getUtcShiftedDate } from './utils';
 
 export default {
@@ -26,6 +26,7 @@ export default {
     GlButton,
   },
   i18n: timelineFormI18n,
+  MAX_TEXT_LENGTH,
   directives: {
     autofocusonshow,
   },
@@ -63,6 +64,9 @@ export default {
     };
   },
   computed: {
+    isTimelineTextValid() {
+      return this.timelineTextCount > 0 && this.timelineTextRemainingCount >= 0;
+    },
     occurredAtString() {
       const year = this.datePickerInput.getFullYear();
       const month = this.datePickerInput.getMonth();
@@ -74,8 +78,11 @@ export default {
 
       return utcDate.toISOString();
     },
-    hasTimelineText() {
-      return this.timelineText.length > 0;
+    timelineTextRemainingCount() {
+      return MAX_TEXT_LENGTH - this.timelineTextCount;
+    },
+    timelineTextCount() {
+      return this.timelineText.length;
     },
   },
   mounted() {
@@ -158,9 +165,21 @@ export default {
               dir="auto"
               data-supports-quick-actions="false"
               :aria-label="$options.i18n.description"
+              aria-describedby="timeline-form-hint"
               :placeholder="$options.i18n.areaPlaceholder"
+              :maxlength="$options.MAX_TEXT_LENGTH"
             >
             </textarea>
+            <div id="timeline-form-hint" class="gl-sr-only">{{ $options.i18n.hint }}</div>
+            <div
+              aria-hidden="true"
+              class="gl-absolute gl-text-gray-500 gl-font-sm gl-line-height-14 gl-right-4 gl-bottom-3"
+            >
+              {{ timelineTextRemainingCount }}
+            </div>
+            <div role="status" class="gl-sr-only">
+              {{ $options.i18n.textRemaining(timelineTextRemainingCount) }}
+            </div>
           </template>
         </markdown-field>
       </gl-form-group>
@@ -171,7 +190,7 @@ export default {
         category="primary"
         class="gl-mr-3"
         data-testid="save-button"
-        :disabled="!hasTimelineText"
+        :disabled="!isTimelineTextValid"
         :loading="isEventProcessed"
         @click="handleSave(false)"
       >
@@ -183,7 +202,7 @@ export default {
         category="secondary"
         class="gl-mr-3 gl-ml-n2"
         data-testid="save-and-add-button"
-        :disabled="!hasTimelineText"
+        :disabled="!isTimelineTextValid"
         :loading="isEventProcessed"
         @click="handleSave(true)"
       >

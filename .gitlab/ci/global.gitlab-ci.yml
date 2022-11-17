@@ -219,23 +219,16 @@
     - *node-modules-cache
     - *assets-tmp-cache
 
-# TODO: Remove this as it's duplicating .assets-compile-cache-push
-.yarn-cache-push:
-  cache:
-    - *node-modules-cache-push
-
 .assets-compile-cache:
   cache:
     - *ruby-gems-cache
     - *node-modules-cache
-    - *assets-cache
     - *assets-tmp-cache
 
 .assets-compile-cache-push:
   cache:
     - *ruby-gems-cache  # We don't push this cache as it's already rebuilt by `update-setup-test-env-cache`
     - *node-modules-cache-push
-    - *assets-cache-push
     - *assets-tmp-cache-push
 
 .storybook-yarn-cache:
@@ -245,7 +238,7 @@
 
 .storybook-yarn-cache-push:
   cache:
-    - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-yarn-cache`
+    - *node-modules-cache  # We don't push this cache as it's already rebuilt by `update-assets-compile-*-cache`
     - *storybook-node-modules-cache-push
 
 .use-pg11:
@@ -275,34 +268,34 @@
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "13"
 
-.use-pg11-ee:
+.use-pg11-es7-ee:
   services:
     - name: postgres:11.6
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:5.0-alpine
-    - name: elasticsearch:7.17.0
+    - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "11"
 
-.use-pg12-ee:
+.use-pg12-es7-ee:
   services:
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
-    - name: elasticsearch:7.17.0
+    - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
 
-.use-pg13-ee:
+.use-pg13-es7-ee:
   services:
     - name: postgres:13
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.2-alpine
-    - name: elasticsearch:7.17.0
+    - name: elasticsearch:7.17.6
       command: ["elasticsearch", "-E", "discovery.type=single-node", "-E", "xpack.security.enabled=false"]
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
@@ -313,7 +306,7 @@
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
-    - name: elasticsearch:8.3.3
+    - name: elasticsearch:8.4.1
   variables:
     POSTGRES_HOST_AUTH_METHOD: trust
     PG_VERSION: "12"
@@ -325,7 +318,19 @@
     - name: postgres:12
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
     - name: redis:6.0-alpine
-    - name: opensearchproject/opensearch:1.2.4
+    - name: opensearchproject/opensearch:1.3.5
+      alias: elasticsearch
+      command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
+  variables:
+    POSTGRES_HOST_AUTH_METHOD: trust
+    PG_VERSION: "12"
+
+.use-pg12-opensearch2-ee:
+  services:
+    - name: postgres:12
+      command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
+    - name: redis:6.0-alpine
+    - name: opensearchproject/opensearch:2.2.1
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true"]
   variables:
@@ -356,3 +361,20 @@
   tags:
     # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7019 for tag descriptions
     - gitlab-org-docker
+
+.use-buildx:
+  extends: .use-docker-in-docker
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-slim:docker-${DOCKER_VERSION}-buildx-0.8
+  variables:
+    QEMU_IMAGE: tonistiigi/binfmt:qemu-v7.0.0
+  before_script:
+    - source scripts/utils.sh
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+    - |
+      if [[ "${ARCH}" =~ arm64 ]]; then
+        echo -e "\033[1;33mInstalling latest qemu emulators\033[0m"
+        docker pull -q ${QEMU_IMAGE};
+        docker run --rm --privileged ${QEMU_IMAGE} --uninstall qemu-*;
+        docker run --rm --privileged ${QEMU_IMAGE} --install all;
+      fi
+    - docker buildx create --use # creates and set's to active buildkit builder

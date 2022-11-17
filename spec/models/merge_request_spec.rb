@@ -232,10 +232,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
     end
 
     context 'for branch' do
-      before do
-        stub_feature_flags(stricter_mr_branch_name: false)
-      end
-
       where(:branch_name, :valid) do
         'foo' | true
         'foo:bar' | false
@@ -278,6 +274,34 @@ RSpec.describe MergeRequest, factory_default: :keep do
   end
 
   describe 'callbacks' do
+    describe '#ensure_merge_request_diff' do
+      let(:merge_request) { build(:merge_request) }
+
+      context 'when async_merge_request_diff_creation is true' do
+        before do
+          merge_request.skip_ensure_merge_request_diff = true
+        end
+
+        it 'does not create a merge_request_diff after create' do
+          merge_request.save!
+
+          expect(merge_request.merge_request_diff).to be_empty
+        end
+      end
+
+      context 'when async_merge_request_diff_creation is false' do
+        before do
+          merge_request.skip_ensure_merge_request_diff = false
+        end
+
+        it 'creates merge_request_diff after create' do
+          merge_request.save!
+
+          expect(merge_request.merge_request_diff).not_to be_empty
+        end
+      end
+    end
+
     describe '#ensure_merge_request_metrics' do
       let(:merge_request) { create(:merge_request) }
 
@@ -3228,14 +3252,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
   describe '#mergeable_state?' do
     it_behaves_like 'for mergeable_state'
-
-    context 'when merge state caching is off' do
-      before do
-        stub_feature_flags(mergeability_caching: false)
-      end
-
-      it_behaves_like 'for mergeable_state'
-    end
   end
 
   describe "#public_merge_status" do
@@ -4213,14 +4229,6 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         transition!
       end
-
-      context 'when trigger_mr_subscription_on_merge_status_change is disabled' do
-        before do
-          stub_feature_flags(trigger_mr_subscription_on_merge_status_change: false)
-        end
-
-        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription'
-      end
     end
 
     shared_examples 'for an invalid state transition' do
@@ -4984,6 +4992,19 @@ RSpec.describe MergeRequest, factory_default: :keep do
           expect(subject.commits.size).to eq(29)
         end
       end
+
+      context 'with a page' do
+        it 'returns a limited number of commits for page' do
+          expect(subject.commits(limit: 1, page: 1).map(&:sha)).to eq(
+            %w[
+              b83d6e391c22777fca1ed3012fce84f633d7fed0
+            ])
+          expect(subject.commits(limit: 1, page: 2).map(&:sha)).to eq(
+            %w[
+              498214de67004b1da3d820901307bed2a68a8ef6
+            ])
+        end
+      end
     end
 
     context 'new merge request' do
@@ -5114,17 +5135,7 @@ RSpec.describe MergeRequest, factory_default: :keep do
           end
 
           it 'returns false' do
-            expect(merge_request.diffable_merge_ref?).to eq(true)
-          end
-
-          context 'display_merge_conflicts_in_diff is disabled' do
-            before do
-              stub_feature_flags(display_merge_conflicts_in_diff: false)
-            end
-
-            it 'returns false' do
-              expect(merge_request.diffable_merge_ref?).to eq(false)
-            end
+            expect(merge_request.diffable_merge_ref?).to eq(false)
           end
         end
       end

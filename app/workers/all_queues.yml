@@ -147,6 +147,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: container_repository_delete:container_registry_delete_container_repository
+  :worker_name: ContainerRegistry::DeleteContainerRepositoryWorker
+  :feature_category: :container_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:admin_email
   :worker_name: AdminEmailWorker
   :feature_category: :source_code_management
@@ -281,6 +290,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: cronjob:container_registry_cleanup
+  :worker_name: ContainerRegistry::CleanupWorker
+  :feature_category: :container_registry
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: cronjob:container_registry_migration_enqueuer
   :worker_name: ContainerRegistry::Migration::EnqueuerWorker
@@ -779,7 +797,7 @@
   :tags: []
 - :name: cronjob:users_deactivate_dormant_users
   :worker_name: Users::DeactivateDormantUsersWorker
-  :feature_category: :utilization
+  :feature_category: :subscription_cost_management
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -1146,6 +1164,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: github_importer:github_import_pull_requests_import_review_request
+  :worker_name: Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: github_importer:github_import_refresh_import_jid
   :worker_name: Gitlab::GithubImport::RefreshImportJidWorker
   :feature_category: :importers
@@ -1238,6 +1265,15 @@
   :tags: []
 - :name: github_importer:github_import_stage_import_pull_requests_merged_by
   :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsMergedByWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: github_importer:github_import_stage_import_pull_requests_review_requests
+  :worker_name: Gitlab::GithubImport::Stage::ImportPullRequestsReviewRequestsWorker
   :feature_category: :importers
   :has_external_dependencies: false
   :urgency: :low
@@ -2694,6 +2730,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: merge_requests_delete_branch
+  :worker_name: MergeRequests::DeleteBranchWorker
+  :feature_category: :source_code_management
+  :has_external_dependencies: false
+  :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: merge_requests_delete_source_branch
   :worker_name: MergeRequests::DeleteSourceBranchWorker
   :feature_category: :source_code_management
@@ -3236,7 +3281,7 @@
   :tags: []
 - :name: update_highest_role
   :worker_name: UpdateHighestRoleWorker
-  :feature_category: :utilization
+  :feature_category: :subscription_usage_reports
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

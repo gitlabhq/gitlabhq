@@ -49,7 +49,7 @@ export default {
     return {
       maxDateRangeTooltip: sprintf(
         __(
-          'Showing data for workflow items created in this date range. Date range limited to %{maxDateRange} days.',
+          'Showing data for workflow items completed in this date range. Date range limited to %{maxDateRange} days.',
         ),
         {
           maxDateRange: this.maxDateRange,
@@ -89,6 +89,8 @@ export default {
       :default-max-date="maxDate"
       :same-day-selection="includeSelectedDate"
       :tooltip="maxDateRangeTooltip"
+      :from-label="__('From')"
+      :to-label="__('To')"
       theme="animate-picker"
       start-picker-class="js-daterange-picker-from gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-lg-align-items-center gl-lg-mr-3 gl-mb-2 gl-lg-mb-0"
       end-picker-class="js-daterange-picker-to gl-display-flex gl-flex-direction-column gl-lg-flex-direction-row gl-lg-align-items-center gl-mb-2 gl-lg-mb-0"

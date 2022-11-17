@@ -1,8 +1,8 @@
 <script>
-import { GlPagination, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlPagination } from '@gitlab/ui';
 import { mapState, mapGetters } from 'vuex';
-import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
+import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackagesListRow from '~/packages_and_registries/infrastructure_registry/shared/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
 import { TRACKING_ACTIONS } from '~/packages_and_registries/shared/constants';
@@ -11,8 +11,7 @@ import { TRACK_CATEGORY } from '~/packages_and_registries/infrastructure_registr
 export default {
   components: {
     GlPagination,
-    GlModal,
-    GlSprintf,
+    DeletePackageModal,
     PackagesListLoader,
     PackagesListRow,
   },
@@ -42,22 +41,6 @@ export default {
     isListEmpty() {
       return !this.list || this.list.length === 0;
     },
-    deletePackageName() {
-      return this.itemToBeDeleted?.name ?? '';
-    },
-    deleteModalActionPrimaryProps() {
-      return {
-        text: this.$options.i18n.modalAction,
-        attributes: {
-          variant: 'danger',
-        },
-      };
-    },
-    deleteModalActionCancelProps() {
-      return {
-        text: __('Cancel'),
-      };
-    },
     tracking() {
       return {
         category: TRACK_CATEGORY,
@@ -68,7 +51,6 @@ export default {
     setItemToBeDeleted(item) {
       this.itemToBeDeleted = { ...item };
       this.track(TRACKING_ACTIONS.REQUEST_DELETE_PACKAGE);
-      this.$refs.packageListDeleteModal.show();
     },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
@@ -79,11 +61,6 @@ export default {
       this.track(TRACKING_ACTIONS.CANCEL_DELETE_PACKAGE);
       this.itemToBeDeleted = null;
     },
-  },
-  i18n: {
-    deleteModalContent: s__('PackageRegistry|You are about to delete %{name}, are you sure?'),
-    modalTitle: s__('PackageRegistry|Delete package'),
-    modalAction: s__('PackageRegistry|Permanently delete'),
   },
 };
 </script>
@@ -116,22 +93,11 @@ export default {
         class="gl-w-full gl-mt-3"
       />
 
-      <gl-modal
-        ref="packageListDeleteModal"
-        size="sm"
-        modal-id="confirm-delete-package"
-        :action-primary="deleteModalActionPrimaryProps"
-        :action-cancel="deleteModalActionCancelProps"
+      <delete-package-modal
+        :item-to-be-deleted="itemToBeDeleted"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
-      >
-        <template #modal-title>{{ $options.i18n.modalTitle }}</template>
-        <gl-sprintf :message="$options.i18n.deleteModalContent">
-          <template #name>
-            <strong>{{ deletePackageName }}</strong>
-          </template>
-        </gl-sprintf>
-      </gl-modal>
+      />
     </template>
   </div>
 </template>

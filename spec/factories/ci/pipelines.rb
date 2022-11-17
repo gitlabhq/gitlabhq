@@ -8,7 +8,7 @@ FactoryBot.define do
     sha { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     status { 'pending' }
     add_attribute(:protected) { false }
-    partition_id { 1234 }
+    partition_id { 100 }
 
     project
 
@@ -19,7 +19,7 @@ FactoryBot.define do
     transient { child_of { nil } }
     transient { upstream_of { nil } }
 
-    transient { title { nil } }
+    transient { name { nil } }
 
     after(:build) do |pipeline, evaluator|
       if evaluator.child_of
@@ -29,8 +29,8 @@ FactoryBot.define do
 
       pipeline.ensure_project_iid!
 
-      if evaluator.title
-        pipeline.pipeline_metadata = build(:ci_pipeline_metadata, title: evaluator.title, project: pipeline.project, pipeline: pipeline)
+      if evaluator.name
+        pipeline.pipeline_metadata = build(:ci_pipeline_metadata, name: evaluator.name, project: pipeline.project, pipeline: pipeline)
       end
     end
 
@@ -54,7 +54,7 @@ FactoryBot.define do
     end
 
     factory :ci_pipeline do
-      partition_id { 1234 }
+      partition_id { 100 }
       transient { ci_ref_presence { true } }
 
       before(:create) do |pipeline, evaluator|

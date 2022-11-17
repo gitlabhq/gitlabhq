@@ -107,6 +107,8 @@ export default {
       isSubmitting: false,
       isFormVisible: false,
       inputValue: '',
+      hasError: false,
+      errorMessage: null,
     };
   },
   computed: {
@@ -170,11 +172,11 @@ export default {
             this.isFormVisible = false;
           })
           .catch(({ response }) => {
-            let errorMessage = addRelatedIssueErrorMap[this.issuableType];
+            this.hasError = true;
+            this.errorMessage = addRelatedIssueErrorMap[this.issuableType];
             if (response && response.data && response.data.message) {
-              errorMessage = response.data.message;
+              this.errorMessage = response.data.message;
             }
-            createAlert({ message: errorMessage });
           })
           .finally(() => {
             this.isSubmitting = false;
@@ -266,6 +268,8 @@ export default {
     :issuable-type="issuableType"
     :path-id-separator="pathIdSeparator"
     :show-categorized-issues="showCategorizedIssues"
+    :has-error="hasError"
+    :item-add-failure-message="errorMessage"
     @saveReorder="saveIssueOrder"
     @toggleAddRelatedIssuesForm="onToggleAddRelatedIssuesForm"
     @addIssuableFormInput="onInput"

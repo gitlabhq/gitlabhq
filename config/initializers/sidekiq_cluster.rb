@@ -19,7 +19,7 @@ if ENV['ENABLE_SIDEKIQ_CLUSTER']
       # Allow sidekiq to cleanly terminate and push any running jobs back
       # into the queue.  We use the configured timeout and add a small
       # grace period
-      sleep(Sidekiq.options[:timeout] + 5)
+      sleep(Sidekiq[:timeout] + 5)
 
       # Signaling the Sidekiq Pgroup as KILL is not forwarded to
       # a possible child process. In Sidekiq Cluster, all child Sidekiq

@@ -153,7 +153,7 @@ contents of the file's [markup language](https://en.wikipedia.org/wiki/Lightweig
 | [reStructuredText](https://docutils.sourceforge.io/rst.html) | `rst` |
 | [AsciiDoc](../../asciidoc.md) | `adoc`, `ad`, `asciidoc` |
 | [Textile](https://textile-lang.com/) | `textile` |
-| [Rdoc](http://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
+| [Rdoc](https://rdoc.sourceforge.net/doc/index.html)  | `rdoc` |
 | [Org mode](https://orgmode.org/) | `org` |
 | [creole](http://www.wikicreole.org/) | `creole` |
 | [MediaWiki](https://www.mediawiki.org/wiki/MediaWiki) | `wiki`, `mediawiki` |

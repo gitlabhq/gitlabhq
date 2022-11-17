@@ -1,5 +1,6 @@
 #import "~/graphql_shared/fragments/label.fragment.graphql"
 #import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/work_items/graphql/milestone.fragment.graphql"
 
 fragment WorkItemWidgets on WorkItemWidget {
   ... on WorkItemWidgetDescription {
@@ -47,6 +48,12 @@ fragment WorkItemWidgets on WorkItemWidget {
       nodes {
         id
       }
+    }
+  }
+  ... on WorkItemWidgetMilestone {
+    type
+    milestone {
+      ...MilestoneFragment
     }
   }
 }

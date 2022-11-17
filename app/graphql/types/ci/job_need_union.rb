@@ -8,9 +8,10 @@ module Types
       possible_types Types::Ci::JobType, Types::Ci::BuildNeedType
 
       def self.resolve_type(object, context)
-        if object.is_a?(::Ci::BuildNeed)
+        case object
+        when ::Ci::BuildNeed
           Types::Ci::BuildNeedType
-        elsif object.is_a?(CommitStatus)
+        when CommitStatus
           Types::Ci::JobType
         else
           raise TypeNotSupportedError

@@ -1,0 +1,14 @@
+- add_to_breadcrumbs _("Experiments"), project_ml_experiments_path(@project)
+- breadcrumb_title @experiment.name
+- page_title @experiment.name
+- items = candidates_table_items(@candidates)
+- metrics = unique_logged_names(@candidates, &:latest_metrics)
+- params = unique_logged_names(@candidates, &:params)
+
+.page-title-holder.d-flex.align-items-center
+  %h1.page-title.gl-font-size-h-display= @experiment.name
+
+#js-show-ml-experiment{ data: {
+  candidates: items,
+  metrics: metrics,
+  params: params } }

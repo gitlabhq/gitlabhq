@@ -388,15 +388,30 @@ RSpec.describe Deployment do
     end
 
     context 'when deployment is behind current deployment' do
+      let_it_be(:commits) { project.repository.commits('master', limit: 2) }
+
+      let!(:deployment) do
+        create(:deployment, :success, project: project, environment: environment,
+                                      finished_at: 1.year.ago, sha: commits[0].sha)
+      end
+
+      let!(:last_deployment) do
+        create(:deployment, :success, project: project, environment: environment, sha: commits[1].sha)
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when deployment is the same sha as the current deployment' do
       let!(:deployment) do
         create(:deployment, :success, project: project, environment: environment, finished_at: 1.year.ago)
       end
 
       let!(:last_deployment) do
-        create(:deployment, :success, project: project, environment: environment)
+        create(:deployment, :success, project: project, environment: environment, sha: deployment.sha)
       end
 
-      it { is_expected.to be_truthy }
+      it { is_expected.to be_falsey }
     end
   end
 
@@ -1323,9 +1338,12 @@ RSpec.describe Deployment do
     subject { deployment.tags }
 
     it 'will return tags related to this deployment' do
-      expect(project.repository).to receive(:tag_names_contains).with(deployment.sha, limit: 100).and_return(['test'])
+      expect(project.repository).to receive(:refs_by_oid).with(oid: deployment.sha,
+                                                               limit: 100,
+                                                               ref_patterns: [Gitlab::Git::TAG_REF_PREFIX])
+                                                         .and_return(["#{Gitlab::Git::TAG_REF_PREFIX}test"])
 
-      is_expected.to match_array(['test'])
+      is_expected.to match_array(['refs/tags/test'])
     end
   end
 

@@ -21,6 +21,15 @@ RSpec.describe Ci::SecureFile do
     subject { build(:ci_secure_file, project: create(:project)) }
   end
 
+  describe 'default attributes' do
+    before do
+      allow(Ci::SecureFileUploader).to receive(:default_store).and_return(5)
+    end
+
+    it { expect(described_class.new.file_store).to eq(5) }
+    it { expect(described_class.new(file_store: 3).file_store).to eq(3) }
+  end
+
   describe 'validations' do
     it { is_expected.to validate_presence_of(:checksum) }
     it { is_expected.to validate_presence_of(:file_store) }
@@ -131,7 +140,7 @@ RSpec.describe Ci::SecureFile do
   describe '#update_metadata!' do
     it 'assigns the expected metadata when a parsable file is supplied' do
       file = create(:ci_secure_file, name: 'file1.cer',
-                                     file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.cer') ))
+                                     file: CarrierWaveStringFile.new(fixture_file('ci_secure_files/sample.cer')))
       file.update_metadata!
 
       expect(file.expires_at).to eq(DateTime.parse('2022-04-26 19:20:40'))

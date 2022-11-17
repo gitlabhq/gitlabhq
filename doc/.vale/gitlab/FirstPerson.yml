@@ -3,12 +3,12 @@
 #
 # Checks for use of first person pronouns.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: '"%s" is a first-person pronoun. Use second- or third-person pronouns (like we, you, us, one) instead.'
+message: "Instead of '%s', speak directly to the reader. Use 'you' or re-write to remove."
 level: warning
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 tokens:
   - '\bI[ ,;:?!"]|\bI\x27.{1,2}'
   - me

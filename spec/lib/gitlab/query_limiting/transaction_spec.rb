@@ -91,6 +91,9 @@ RSpec.describe Gitlab::QueryLimiting::Transaction do
         SELECT a.attname, a.other_column
           FROM pg_attribute a
         SQL
+        transaction.increment(
+          "SELECT a.attnum, a.attname\nFROM pg_attribute a\nWHERE a.attrelid = 10605202\nAND a.attnum IN (3)\n"
+        )
       end.not_to change(transaction, :count)
     end
   end

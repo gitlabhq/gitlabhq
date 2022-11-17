@@ -3,7 +3,7 @@ import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import JobRetryButton from '~/jobs/components/job/sidebar/job_sidebar_retry_button.vue';
 import LegacySidebarHeader from '~/jobs/components/job/sidebar/legacy_sidebar_header.vue';
 import createStore from '~/jobs/store';
-import job from '../../mock_data';
+import job, { failedJobStatus } from '../../mock_data';
 
 describe('Legacy Sidebar Header', () => {
   let store;
@@ -67,6 +67,12 @@ describe('Legacy Sidebar Header', () => {
     it('should render the retry button', () => {
       expect(findRetryButton().props('href')).toBe(job.retry_path);
     });
+
+    it('should have a different label when the job status is passed', () => {
+      expect(findRetryButton().attributes('title')).toBe(
+        LegacySidebarHeader.i18n.runAgainJobButtonLabel,
+      );
+    });
   });
 
   describe('when there is no retry path', () => {
@@ -86,6 +92,18 @@ describe('Legacy Sidebar Header', () => {
     it('should render link to cancel job', () => {
       expect(findCancelButton().props('icon')).toBe('cancel');
       expect(findCancelButton().attributes('href')).toBe(job.cancel_path);
+    });
+  });
+
+  describe('when the job is failed', () => {
+    describe('retry button', () => {
+      it('should have a different label when the job status is failed', () => {
+        createWrapper({ job: { ...job, status: failedJobStatus } });
+
+        expect(findRetryButton().attributes('title')).toBe(
+          LegacySidebarHeader.i18n.retryJobButtonLabel,
+        );
+      });
     });
   });
 });

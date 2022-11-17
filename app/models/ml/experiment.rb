@@ -23,7 +23,7 @@ module Ml
       end
 
       def by_project_id(project_id)
-        where(project_id: project_id)
+        where(project_id: project_id).order(id: :desc)
       end
     end
   end

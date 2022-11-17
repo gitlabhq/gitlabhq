@@ -1,0 +1,9 @@
+---
+table_name: p_ci_builds_metadata
+classes:
+- Ci::BuildMetadata
+feature_categories:
+- continuous_integration
+description: Routing table that holds information for job execution
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100115
+milestone: '15.5'

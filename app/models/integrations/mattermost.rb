@@ -3,7 +3,6 @@
 module Integrations
   class Mattermost < BaseChatNotification
     include SlackMattermostNotifier
-    extend ::Gitlab::Utils::Override
 
     def title
       s_('Mattermost notifications')
@@ -26,7 +25,7 @@ module Integrations
       'my-channel'
     end
 
-    def webhook_placeholder
+    def webhook_help
       'http://mattermost.example.com/hooks/'
     end
 

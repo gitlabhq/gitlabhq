@@ -68,14 +68,14 @@ module Gitlab
 
       GEO_NODES_LOAD = 'SELECT 1 AS one FROM "geo_nodes" LIMIT 1'
       LICENSES_LOAD = 'SELECT "licenses".* FROM "licenses" ORDER BY "licenses"."id"'
-      ATTR_INTROSPECTION = %r/SELECT .*\ba.attname\b.* (FROM|JOIN) pg_attribute a/m.freeze
+      SCHEMA_INTROSPECTION = %r/SELECT.*(FROM|JOIN) (pg_attribute|pg_class)/m.freeze
 
       # queries can be safely ignored if they are amoritized in regular usage
       # (i.e. only requested occasionally and otherwise cached).
       def ignorable?(sql)
         return true if sql&.include?(GEO_NODES_LOAD)
         return true if sql&.include?(LICENSES_LOAD)
-        return true if ATTR_INTROSPECTION =~ sql
+        return true if SCHEMA_INTROSPECTION.match?(sql)
 
         false
       end

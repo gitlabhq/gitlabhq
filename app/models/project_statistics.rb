@@ -7,8 +7,8 @@ class ProjectStatistics < ApplicationRecord
   belongs_to :project
   belongs_to :namespace
 
-  default_value_for :wiki_size, 0
-  default_value_for :snippets_size, 0
+  attribute :wiki_size, default: 0
+  attribute :snippets_size, default: 0
 
   counter_attribute :build_artifacts_size
 
@@ -95,8 +95,7 @@ class ProjectStatistics < ApplicationRecord
   # and the column can be nil.
   # This means that, when the columns were added, all rows had nil
   # values on them.
-  # Therefore, any call to any of those methods will return nil instead
-  # of 0, because `default_value_for` works with new records, not existing ones.
+  # Therefore, any call to any of those methods will return nil instead of 0.
   #
   # These two methods provide consistency and avoid returning nil.
   def wiki_size

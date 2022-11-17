@@ -52,9 +52,18 @@ work it needs to perform and how long it takes to complete:
    of release manager through the [post-deploy migration pipeline](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/post_deploy_migration/readme.md#how-to-determine-if-a-post-deploy-migration-has-been-executed-on-gitlabcom).
    These migrations can be used for schema changes that aren't critical for the application to operate, or data migrations that take at most a few minutes.
    Common examples for schema changes that should run post-deploy include:
+
      - Clean-ups, like removing unused columns.
      - Adding non-critical indices on high-traffic tables.
      - Adding non-critical indices that take a long time to create.
+
+   These migrations should not be used for schema changes that are critical for the application to operate. Making such
+   schema changes in a post-deployment migration have caused issues in the past, for example [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/378582).
+   Changes that should always be a regular schema migration and not be executed in a post-deployment migration include:
+
+     - Creating a new table, example: `create_table`.
+     - Adding a new column to an existing table, example: `add_column`.
+
 1. [**Batched background migrations.**](database/batched_background_migrations.md) These aren't regular Rails migrations, but application code that is
    executed via Sidekiq jobs, although a post-deployment migration is used to schedule them. Use them only for data migrations that
    exceed the timing guidelines for post-deploy migrations. Batched background migrations should _not_ change the schema.
@@ -897,9 +906,14 @@ end
 
 Table **has records** but **no foreign keys**:
 
-- First release: Remove the application code related to the table, such as models,
-controllers and services.
-- Second release: Use the `drop_table` method in your migration.
+- Remove the application code related to the table, such as models,
+  controllers and services.
+- In a post-deployment migration, use `drop_table`.
+
+This can all be in a single migration if you're sure the code is not used.
+If you want to reduce risk slightly, consider putting the migrations into a
+second merge request after the application changes are merged. This approach
+provides an opportunity to roll back.
 
 ```ruby
 def up
@@ -913,12 +927,16 @@ end
 
 Table **has foreign keys**:
 
-- First release: Remove the application code related to the table, such as models,
-controllers, and services.
-- Second release: Remove the foreign keys using the `with_lock_retries`
-helper method. Use `drop_table` in another migration file.
+- Remove the application code related to the table, such as models,
+  controllers, and services.
+- In a post-deployment migration, remove the foreign keys using the
+  `with_lock_retries` helper method. In another subsequent post-deployment
+  migration, use `drop_table`.
 
-**Migrations for the second release:**
+This can all be in a single migration if you're sure the code is not used.
+If you want to reduce risk slightly, consider putting the migrations into a
+second merge request after the application changes are merged. This approach
+provides an opportunity to roll back.
 
 Removing the foreign key on the `projects` table:
 

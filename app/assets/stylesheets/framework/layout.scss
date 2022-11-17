@@ -207,7 +207,7 @@ body {
 }
 
 @include media-breakpoint-up(sm) {
-  .logged-out-marketing-header-candidate {
+  .logged-out-marketing-header {
     --header-height: 72px;
   }
 }

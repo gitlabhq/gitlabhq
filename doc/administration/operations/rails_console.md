@@ -59,6 +59,40 @@ you may run in the console. To turn off logging again, run:
 ActiveRecord::Base.logger = nil
 ```
 
+## Attributes
+
+View available attributes, formatted using pretty print (`pp`).
+
+For example, determine what attributes contain users' names and email addresses:
+
+```ruby
+u = User.find_by_username('someuser')
+pp u.attributes
+```
+
+Partial output:
+
+```plaintext
+{"id"=>1234,
+ "email"=>"someuser@example.com",
+ "sign_in_count"=>99,
+ "name"=>"S User",
+ "username"=>"someuser",
+ "first_name"=>nil,
+ "last_name"=>nil,
+ "bot_type"=>nil}
+```
+
+Then make use of the attributes, [testing SMTP, for example](https://docs.gitlab.com/omnibus/settings/smtp.html#testing-the-smtp-configuration):
+
+```ruby
+e = u.email
+n = u.name
+Notify.test_email(e, "Test email for #{n}", 'Test email').deliver_now
+#
+Notify.test_email(u.email, "Test email for #{u.name}", 'Test email').deliver_now
+```
+
 ## Disable database statement timeout
 
 You can disable the PostgreSQL statement timeout for the current Rails console
@@ -702,7 +736,7 @@ ApplicationSetting.current
 ### Open object in `irb`
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 Sometimes it is easier to go through a method if you are in the context of the object. You can shim into the namespace of `Object` to let you open `irb` in the context of any object:
 

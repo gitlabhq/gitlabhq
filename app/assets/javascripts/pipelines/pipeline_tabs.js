@@ -1,17 +1,17 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import PipelineTabs from 'ee_else_ce/pipelines/components/pipeline_tabs.vue';
-import { removeParams, updateHistory } from '~/lib/utils/url_utility';
-import { TAB_QUERY_PARAM } from '~/pipelines/constants';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import createTestReportsStore from './stores/test_reports';
 import { getPipelineDefaultTab, reportToSentry } from './utils';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 Vue.use(Vuex);
 
-export const createAppOptions = (selector, apolloProvider) => {
+export const createAppOptions = (selector, apolloProvider, router) => {
   const el = document.querySelector(selector);
 
   if (!el) return null;
@@ -40,6 +40,7 @@ export const createAppOptions = (selector, apolloProvider) => {
     suiteEndpoint,
     blobPath,
     hasTestReport,
+    emptyDagSvgPath,
     emptyStateImagePath,
     artifactsExpiredImagePath,
     isFullCodequalityReportAvailable,
@@ -65,6 +66,7 @@ export const createAppOptions = (selector, apolloProvider) => {
         }),
       },
     }),
+    router,
     provide: {
       canGenerateCodequalityReports: parseBoolean(canGenerateCodequalityReports),
       codequalityReportDownloadPath,
@@ -91,6 +93,7 @@ export const createAppOptions = (selector, apolloProvider) => {
       suiteEndpoint,
       blobPath,
       hasTestReport,
+      emptyDagSvgPath,
       emptyStateImagePath,
       artifactsExpiredImagePath,
       testsCount,
@@ -106,12 +109,6 @@ export const createAppOptions = (selector, apolloProvider) => {
 
 export const createPipelineTabs = (options) => {
   if (!options) return;
-
-  updateHistory({
-    url: removeParams([TAB_QUERY_PARAM]),
-    title: document.title,
-    replace: true,
-  });
 
   // eslint-disable-next-line no-new
   new Vue(options);

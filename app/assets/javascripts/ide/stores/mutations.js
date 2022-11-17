@@ -110,6 +110,7 @@ export default {
       committedStateSvgPath,
       pipelinesEmptyStateSvgPath,
       promotionSvgPath,
+      switchEditorSvgPath,
     },
   ) {
     Object.assign(state, {
@@ -118,6 +119,7 @@ export default {
       committedStateSvgPath,
       pipelinesEmptyStateSvgPath,
       promotionSvgPath,
+      switchEditorSvgPath,
     });
   },
   [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {

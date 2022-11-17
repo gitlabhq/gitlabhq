@@ -7,8 +7,8 @@ RSpec.describe 'Issue board filters', :js do
   let_it_be(:user) { create(:user) }
   let_it_be(:board) { create(:board, project: project) }
   let_it_be(:project_label) { create(:label, project: project, title: 'Label') }
-  let_it_be(:milestone_1) { create(:milestone, project: project, due_date: 3.days.from_now ) }
-  let_it_be(:milestone_2) { create(:milestone, project: project, due_date: Date.tomorrow ) }
+  let_it_be(:milestone_1) { create(:milestone, project: project, due_date: 3.days.from_now) }
+  let_it_be(:milestone_2) { create(:milestone, project: project, due_date: Date.tomorrow) }
   let_it_be(:release) { create(:release, tag: 'v1.0', project: project, milestones: [milestone_1]) }
   let_it_be(:release_2) { create(:release, tag: 'v2.0', project: project, milestones: [milestone_2]) }
   let_it_be(:issue_1) { create(:issue, project: project, milestone: milestone_1, author: user) }
@@ -22,6 +22,7 @@ RSpec.describe 'Issue board filters', :js do
   let(:filter_submit) { find('.gl-search-box-by-click-search-button') }
 
   before do
+    stub_feature_flags(apollo_boards: false)
     project.add_maintainer(user)
     sign_in(user)
 

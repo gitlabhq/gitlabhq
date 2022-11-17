@@ -4,6 +4,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
   include SendFileUpload
+  include Gitlab::Ci::Artifacts::Logger
 
   urgency :low, [:browse, :file, :latest_succeeded]
 
@@ -26,12 +27,6 @@ class Projects::ArtifactsController < Projects::ApplicationController
     # It should be removed only after resolving the underlying performance
     # issues: https://gitlab.com/gitlab-org/gitlab/issues/32281
     return head :no_content unless Feature.enabled?(:artifacts_management_page, @project)
-
-    finder = Ci::JobArtifactsFinder.new(@project, artifacts_params)
-    all_artifacts = finder.execute
-
-    @artifacts = all_artifacts.page(params[:page]).per(MAX_PER_PAGE)
-    @total_size = all_artifacts.total_size
   end
 
   def destroy
@@ -47,6 +42,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   def download
     return render_404 unless artifacts_file
 
+    log_artifacts_filesize(artifacts_file.model)
     send_upload(artifacts_file, attachment: artifacts_file.filename, proxy: params[:proxy])
   end
 

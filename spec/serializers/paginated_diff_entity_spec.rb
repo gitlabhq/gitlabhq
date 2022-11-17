@@ -7,13 +7,13 @@ RSpec.describe PaginatedDiffEntity do
   let(:request) { double('request', current_user: user) }
   let(:merge_request) { create(:merge_request) }
   let(:diff_batch) { merge_request.merge_request_diff.diffs_in_batch(2, 3, diff_options: nil) }
-  let(:allow_tree_conflicts) { false }
+  let(:merge_conflicts_in_diff) { false }
   let(:options) do
     {
       request: request,
       merge_request: merge_request,
       pagination_data: diff_batch.pagination_data,
-      allow_tree_conflicts: allow_tree_conflicts
+      merge_conflicts_in_diff: merge_conflicts_in_diff
     }
   end
 
@@ -29,61 +29,39 @@ RSpec.describe PaginatedDiffEntity do
     expect(subject[:pagination]).to eq(total_pages: 20)
   end
 
-  context 'when there are conflicts' do
-    let(:diff_batch) { merge_request.merge_request_diff.diffs_in_batch(7, 3, diff_options: nil) }
-    let(:diff_files) { diff_batch.diff_files.to_a }
-    let(:diff_file_with_conflict) { diff_files.last }
-    let(:diff_file_without_conflict) { diff_files.first }
+  describe 'diff_files' do
+    let(:diff_files) { diff_batch.diff_files(sorted: true) }
 
-    let(:resolvable_conflicts) { true }
-    let(:conflict_file) { double(path: diff_file_with_conflict.new_path, conflict_type: :both_modified) }
-    let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: resolvable_conflicts) }
+    it 'serializes diff files using DiffFileEntity' do
+      expect(DiffFileEntity)
+        .to receive(:represent)
+        .with(
+          diff_files,
+          hash_including(options.merge(conflicts: nil))
+        )
 
-    let(:merge_ref_head_diff) { true }
-    let(:options) { super().merge(merge_ref_head_diff: merge_ref_head_diff) }
-
-    before do
-      allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
-      allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
+      subject[:diff_files]
     end
 
-    it 'conflicts are highlighted' do
-      expect(conflict_file).to receive(:diff_lines_for_serializer)
-      expect(diff_file_with_conflict).not_to receive(:diff_lines_for_serializer)
-      expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
+    context 'when merge_conflicts_in_diff is true' do
+      let(:conflict_file) { double(path: diff_files.first.new_path, conflict_type: :both_modified) }
+      let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
+      let(:merge_conflicts_in_diff) { true }
 
-      subject
-    end
-
-    context 'merge ref head diff is not chosen to be displayed' do
-      let(:merge_ref_head_diff) { false }
-
-      it 'conflicts are not calculated' do
-        expect(MergeRequests::Conflicts::ListService).not_to receive(:new)
-      end
-    end
-
-    context 'when conflicts cannot be resolved' do
-      let(:resolvable_conflicts) { false }
-
-      it 'conflicts are not highlighted' do
-        expect(conflict_file).not_to receive(:diff_lines_for_serializer)
-        expect(diff_file_with_conflict).to receive(:diff_lines_for_serializer).twice  # for highlighted_diff_lines and is_fully_expanded
-        expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
-
-        subject
+      before do
+        allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
+        allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
       end
 
-      context 'when allow_tree_conflicts is set to true' do
-        let(:allow_tree_conflicts) { true }
+      it 'serializes diff files with conflicts' do
+        expect(DiffFileEntity)
+          .to receive(:represent)
+          .with(
+            diff_files,
+            hash_including(options.merge(conflicts: { conflict_file.path => conflict_file }))
+          )
 
-        it 'conflicts are still highlighted' do
-          expect(conflict_file).to receive(:diff_lines_for_serializer)
-          expect(diff_file_with_conflict).not_to receive(:diff_lines_for_serializer)
-          expect(diff_file_without_conflict).to receive(:diff_lines_for_serializer).twice # for highlighted_diff_lines and is_fully_expanded
-
-          subject
-        end
+        subject[:diff_files]
       end
     end
   end

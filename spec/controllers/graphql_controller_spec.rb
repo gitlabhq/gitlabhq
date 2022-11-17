@@ -8,10 +8,6 @@ RSpec.describe GraphqlController do
   # two days is enough to make timezones irrelevant
   let_it_be(:last_activity_on) { 2.days.ago.to_date }
 
-  before do
-    stub_feature_flags(graphql: true)
-  end
-
   describe 'rescue_from' do
     let_it_be(:message) { 'green ideas sleep furiously' }
 
@@ -416,6 +412,116 @@ RSpec.describe GraphqlController do
 
       expect(controller).to have_received(:append_info_to_payload)
       expect(log_payload.dig(:exception_object)).to eq(exception)
+    end
+  end
+
+  describe 'removal of deprecated items' do
+    let(:mock_schema) do
+      Class.new(GraphQL::Schema) do
+        lazy_resolve ::Gitlab::Graphql::Lazy, :force
+
+        query(Class.new(::Types::BaseObject) do
+          graphql_name 'Query'
+
+          field :foo, GraphQL::Types::Boolean,
+                    deprecated: { milestone: '0.1', reason: :renamed }
+
+          field :bar, (Class.new(::Types::BaseEnum) do
+            graphql_name 'BarEnum'
+
+            value 'FOOBAR', value: 'foobar', deprecated: { milestone: '0.1', reason: :renamed }
+          end)
+
+          field :baz, GraphQL::Types::Boolean do
+            argument :arg, String, required: false, deprecated: { milestone: '0.1', reason: :renamed }
+          end
+
+          def foo
+            false
+          end
+
+          def bar
+            'foobar'
+          end
+
+          def baz(arg:)
+            false
+          end
+        end)
+      end
+    end
+
+    before do
+      allow(GitlabSchema).to receive(:execute).and_wrap_original do |method, *args|
+        mock_schema.execute(*args)
+      end
+    end
+
+    context 'without `remove_deprecated` param' do
+      let(:params) { { query: '{ foo bar baz(arg: "test") }' } }
+
+      subject { post :execute, params: params }
+
+      it "sets context's `remove_deprecated` value to false" do
+        subject
+
+        expect(assigns(:context)[:remove_deprecated]).to be false
+      end
+
+      it 'returns deprecated items in response' do
+        subject
+
+        expect(json_response).to include('data' => { 'foo' => false, 'bar' => 'FOOBAR', 'baz' => false })
+      end
+    end
+
+    context 'with `remove_deprecated` param' do
+      let(:params) { { remove_deprecated: 'true' } }
+
+      subject { post :execute, params: params }
+
+      it "sets context's `remove_deprecated` value to true" do
+        subject
+
+        expect(assigns(:context)[:remove_deprecated]).to be true
+      end
+
+      it 'does not allow deprecated field' do
+        params[:query] = '{ foo }'
+
+        subject
+
+        expect(json_response).not_to include('data' => { 'foo' => false })
+        expect(json_response).to include(
+          'errors' => include(a_hash_including('message' => /Field 'foo' doesn't exist on type 'Query'/))
+        )
+      end
+
+      it 'does not allow deprecated enum value' do
+        params[:query] = '{ bar }'
+
+        subject
+
+        expect(json_response).not_to include('data' => { 'bar' => 'FOOBAR' })
+        expect(json_response).to include(
+          'errors' => include(
+            a_hash_including(
+              'message' => /`Query.bar` returned `"foobar"` at `bar`, but this isn't a valid value for `BarEnum`/
+            )
+          )
+        )
+      end
+
+      it 'does not allow deprecated argument' do
+        params[:query] = '{ baz(arg: "test") }'
+
+        subject
+
+        expect(json_response).not_to include('data' => { 'bar' => 'FOOBAR' })
+        expect(json_response).to include(
+          'errors' => include(a_hash_including('message' => /Field 'baz' doesn't accept argument 'arg'/))
+        )
+      end
     end
   end
 end

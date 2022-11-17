@@ -169,10 +169,8 @@ RSpec.describe API::Projects do
     shared_examples_for 'projects response without N + 1 queries' do |threshold|
       let(:additional_project) { create(:project, :public) }
 
-      it 'avoids N + 1 queries' do
-        get api('/projects', current_user)
-
-        control = ActiveRecord::QueryRecorder.new do
+      it 'avoids N + 1 queries', :use_sql_query_cache do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api('/projects', current_user)
         end
 
@@ -180,7 +178,7 @@ RSpec.describe API::Projects do
 
         expect do
           get api('/projects', current_user)
-        end.not_to exceed_query_limit(control).with_threshold(threshold)
+        end.not_to exceed_all_query_limit(control).with_threshold(threshold)
       end
     end
 
@@ -209,16 +207,28 @@ RSpec.describe API::Projects do
         let(:current_user) { user }
       end
 
-      it 'includes container_registry_access_level', :aggregate_failures do
-        project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
+      shared_examples 'includes container_registry_access_level', :aggregate_failures do
+        it do
+          project.project_feature.update!(container_registry_access_level: ProjectFeature::DISABLED)
 
-        get api('/projects', user)
-        project_response = json_response.find { |p| p['id'] == project.id }
+          get api('/projects', user)
+          project_response = json_response.find { |p| p['id'] == project.id }
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_an Array
-        expect(project_response['container_registry_access_level']).to eq('disabled')
-        expect(project_response['container_registry_enabled']).to eq(false)
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_an Array
+          expect(project_response['container_registry_access_level']).to eq('disabled')
+          expect(project_response['container_registry_enabled']).to eq(false)
+        end
+      end
+
+      include_examples 'includes container_registry_access_level'
+
+      context 'when projects_preloader_fix is disabled' do
+        before do
+          stub_feature_flags(projects_preloader_fix: false)
+        end
+
+        include_examples 'includes container_registry_access_level'
       end
 
       it 'includes releases_access_level', :aggregate_failures do
@@ -1055,7 +1065,7 @@ RSpec.describe API::Projects do
 
       let_it_be(:admin) { create(:admin) }
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :use_sql_query_cache do
         get api('/projects', admin)
 
         base_project = create(:project, :public, namespace: admin.namespace)
@@ -1063,7 +1073,7 @@ RSpec.describe API::Projects do
         fork_project1 = fork_project(base_project, admin, namespace: create(:user).namespace)
         fork_project2 = fork_project(fork_project1, admin, namespace: create(:user).namespace)
 
-        control = ActiveRecord::QueryRecorder.new do
+        control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
           get api('/projects', admin)
         end
 
@@ -3428,18 +3438,6 @@ RSpec.describe API::Projects do
     end
 
     context 'when authenticated as project owner' do
-      it 'updates name' do
-        project_param = { name: 'bar' }
-
-        put api("/projects/#{project.id}", user), params: project_param
-
-        expect(response).to have_gitlab_http_status(:ok)
-
-        project_param.each_pair do |k, v|
-          expect(json_response[k.to_s]).to eq(v)
-        end
-      end
-
       it 'updates visibility_level' do
         project_param = { visibility: 'public' }
 
@@ -3797,10 +3795,16 @@ RSpec.describe API::Projects do
         expect(json_response['message']['path']).to eq(['has already been taken'])
       end
 
-      it 'does not update name' do
+      it 'updates name' do
         project_param = { name: 'bar' }
-        put api("/projects/#{project3.id}", user4), params: project_param
-        expect(response).to have_gitlab_http_status(:forbidden)
+
+        put api("/projects/#{project.id}", user), params: project_param
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        project_param.each_pair do |k, v|
+          expect(json_response[k.to_s]).to eq(v)
+        end
       end
 
       it 'does not update visibility_level' do

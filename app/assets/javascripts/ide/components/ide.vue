@@ -47,6 +47,7 @@ export default {
   data() {
     return {
       loadDeferred: false,
+      skipBeforeUnload: false,
     };
   },
   computed: {
@@ -78,8 +79,13 @@ export default {
   mounted() {
     window.onbeforeunload = (e) => this.onBeforeUnload(e);
 
+    eventHub.$on('skip-beforeunload', this.handleSkipBeforeUnload);
+
     if (this.themeName)
       document.querySelector('.navbar-gitlab').classList.add(`theme-${this.themeName}`);
+  },
+  destroyed() {
+    eventHub.$off('skip-beforeunload', this.handleSkipBeforeUnload);
   },
   beforeCreate() {
     performanceMarkAndMeasure({
@@ -94,6 +100,11 @@ export default {
   methods: {
     ...mapActions(['toggleFileFinder']),
     onBeforeUnload(e = {}) {
+      if (this.skipBeforeUnload) {
+        this.skipBeforeUnload = false;
+        return undefined;
+      }
+
       const returnValue = __('Are you sure you want to lose unsaved changes?');
 
       if (!this.someUncommittedChanges) return undefined;
@@ -102,6 +113,9 @@ export default {
         returnValue,
       });
       return returnValue;
+    },
+    handleSkipBeforeUnload() {
+      this.skipBeforeUnload = true;
     },
     openFile(file) {
       this.$router.push(this.getUrlForPath(file.path));

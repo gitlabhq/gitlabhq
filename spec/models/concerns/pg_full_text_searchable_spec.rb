@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe PgFullTextSearchable do
-  let(:project) { create(:project) }
+  let(:project) { build(:project) }
 
   let(:model_class) do
     Class.new(ActiveRecord::Base) do
@@ -76,7 +76,7 @@ RSpec.describe PgFullTextSearchable do
   end
 
   describe '.pg_full_text_search' do
-    let(:english) { model_class.create!(project: project, title: 'title', description: 'something english') }
+    let(:english) { model_class.create!(project: project, title: 'title', description: 'something description english') }
     let(:with_accent) { model_class.create!(project: project, title: 'Jürgen', description: 'Ærøskøbing') }
     let(:japanese) { model_class.create!(project: project, title: '日本語 title', description: 'another english description') }
 
@@ -90,8 +90,19 @@ RSpec.describe PgFullTextSearchable do
       expect(model_class.pg_full_text_search('title english')).to contain_exactly(english, japanese)
     end
 
+    it 'searches specified columns only' do
+      matching_object = model_class.create!(project: project, title: 'english', description: 'some description')
+      matching_object.update_search_data!
+
+      expect(model_class.pg_full_text_search('english', matched_columns: %w(title))).to contain_exactly(matching_object)
+    end
+
+    it 'uses prefix matching' do
+      expect(model_class.pg_full_text_search('tit eng')).to contain_exactly(english, japanese)
+    end
+
     it 'searches for exact term with quotes' do
-      expect(model_class.pg_full_text_search('"something english"')).to contain_exactly(english)
+      expect(model_class.pg_full_text_search('"description english"')).to contain_exactly(english)
     end
 
     it 'ignores accents' do
@@ -111,6 +122,27 @@ RSpec.describe PgFullTextSearchable do
 
         expect(model_class.pg_full_text_search('https://gitlab.com/gitlab-org/gitlab')).to contain_exactly(with_url)
         expect(model_class.pg_full_text_search('gopher://gitlab.com/gitlab-org/gitlab')).to contain_exactly(with_url)
+      end
+    end
+
+    context 'when search term is a path with underscores' do
+      let(:path) { 'browser_ui/5_package/package_registry/maven/maven_group_level_spec.rb' }
+      let(:with_underscore) { model_class.create!(project: project, title: 'issue with path', description: "some #{path} other text") }
+
+      it 'allows searching by the path' do
+        with_underscore.update_search_data!
+
+        expect(model_class.pg_full_text_search(path)).to contain_exactly(with_underscore)
+      end
+    end
+
+    context 'when text has numbers preceded by a dash' do
+      let(:with_dash) { model_class.create!(project: project, title: 'issue with dash', description: 'ABC-123') }
+
+      it 'allows searching by numbers only' do
+        with_dash.update_search_data!
+
+        expect(model_class.pg_full_text_search('123')).to contain_exactly(with_dash)
       end
     end
   end

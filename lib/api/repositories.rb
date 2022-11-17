@@ -15,33 +15,40 @@ module API
         requires :version,
           type: String,
           regexp: Gitlab::Regex.unbounded_semver_regex,
-          desc: 'The version of the release, using the semantic versioning format'
+          desc: 'The version of the release, using the semantic versioning format',
+          documentation: { example: '1.0.0' }
 
         optional :from,
           type: String,
-          desc: 'The first commit in the range of commits to use for the changelog'
+          desc: 'The first commit in the range of commits to use for the changelog',
+          documentation: { example: 'ed899a2f4b50b4370feeea94676502b42383c746' }
 
         optional :to,
           type: String,
-          desc: 'The last commit in the range of commits to use for the changelog'
+          desc: 'The last commit in the range of commits to use for the changelog',
+          documentation: { example: '6104942438c14ec7bd21c6cd5bd995272b3faff6' }
 
         optional :date,
           type: DateTime,
-          desc: 'The date and time of the release'
+          desc: 'The date and time of the release',
+          documentation: { type: 'dateTime', example: '2021-09-20T11:50:22.001+00:00' }
 
         optional :trailer,
           type: String,
           desc: 'The Git trailer to use for determining if commits are to be included in the changelog',
-          default: ::Repositories::ChangelogService::DEFAULT_TRAILER
+          default: ::Repositories::ChangelogService::DEFAULT_TRAILER,
+          documentation: { example: 'Changelog' }
       end
     end
 
-    before { authorize! :download_code, user_project }
+    before { authorize! :read_code, user_project }
 
     feature_category :source_code_management
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer],
+                    desc: 'The ID or URL-encoded path of the project',
+                    documentation: { example: 1 }
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers do
@@ -56,7 +63,7 @@ module API
         end
 
         def assign_blob_vars!(limit:)
-          authorize! :download_code, user_project
+          authorize! :read_code, user_project
 
           @repo = user_project.repository
 
@@ -94,15 +101,19 @@ module API
         success Entities::TreeObject
       end
       params do
-        optional :ref, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :path, type: String, desc: 'The path of the tree'
+        optional :ref, type: String,
+                       desc: 'The name of a repository branch or tag, if not given the default branch is used',
+                       documentation: { example: 'main' }
+        optional :path, type: String, desc: 'The path of the tree', documentation: { example: 'files/html' }
         optional :recursive, type: Boolean, default: false, desc: 'Used to get a recursive tree'
 
         use :pagination
         optional :pagination, type: String, values: %w(legacy keyset none), default: 'legacy', desc: 'Specify the pagination method ("none" is only valid if "recursive" is true)'
 
         given pagination: ->(value) { value == 'keyset' } do
-          optional :page_token, type: String, desc: 'Record from which to start the keyset pagination'
+          optional :page_token, type: String,
+                                desc: 'Record from which to start the keyset pagination',
+                                documentation: { example: 'a1e8f8d745cc87e3a9248358d9352bb7f9a0aeba' }
         end
 
         given pagination: ->(value) { value == 'none' } do
@@ -123,7 +134,8 @@ module API
 
       desc 'Get raw blob contents from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit hash'
+        requires :sha, type: String,
+                       desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha/raw' do
         # Load metadata enough to ask Workhorse to load the whole blob
@@ -136,7 +148,8 @@ module API
 
       desc 'Get a blob from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit hash'
+        requires :sha, type: String,
+                       desc: 'The commit hash', documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
       end
       get ':id/repository/blobs/:sha' do
         assign_blob_vars!(limit: -1)
@@ -151,9 +164,12 @@ module API
 
       desc 'Get an archive of the repository'
       params do
-        optional :sha, type: String, desc: 'The commit sha of the archive to be downloaded'
-        optional :format, type: String, desc: 'The archive format'
-        optional :path, type: String, desc: 'Subfolder of the repository to be downloaded'
+        optional :sha, type: String,
+                       desc: 'The commit sha of the archive to be downloaded',
+                       documentation: { example: '7d70e02340bac451f281cecf0a980907974bd8be' }
+        optional :format, type: String, desc: 'The archive format', documentation: { example: 'tar.gz' }
+        optional :path, type: String,
+                        desc: 'Subfolder of the repository to be downloaded', documentation: { example: 'files/archives' }
       end
       get ':id/repository/archive', requirements: { format: Gitlab::PathRegex.archive_formats_regex } do
         check_archive_rate_limit!(current_user, user_project) do
@@ -171,9 +187,13 @@ module API
         success Entities::Compare
       end
       params do
-        requires :from, type: String, desc: 'The commit, branch name, or tag name to start comparison'
-        requires :to, type: String, desc: 'The commit, branch name, or tag name to stop comparison'
-        optional :from_project_id, type: String, desc: 'The project to compare from'
+        requires :from, type: String,
+                        desc: 'The commit, branch name, or tag name to start comparison',
+                        documentation: { example: 'main' }
+        requires :to, type: String,
+                      desc: 'The commit, branch name, or tag name to stop comparison',
+                      documentation: { example: 'feature' }
+        optional :from_project_id, type: Integer, desc: 'The project to compare from', documentation: { example: 1 }
         optional :straight, type: Boolean, desc: 'Comparison method, `true` for direct comparison between `from` and `to` (`from`..`to`), `false` to compare using merge base (`from`...`to`)', default: false
       end
       get ':id/repository/compare', urgency: :low do
@@ -215,7 +235,10 @@ module API
         success Entities::Commit
       end
       params do
-        requires :refs, type: Array[String], coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce
+        requires :refs, type: Array[String],
+                        coerce_with: ::API::Validations::Types::CommaSeparatedToArray.coerce,
+                        desc: 'The refs to find the common ancestor of, multiple refs can be passed',
+                        documentation: { example: 'main' }
       end
       get ':id/repository/merge_base' do
         refs = params[:refs]
@@ -241,12 +264,14 @@ module API
 
       desc 'Generates a changelog section for a release and returns it' do
         detail 'This feature was introduced in GitLab 14.6'
+        success Entities::Changelog
       end
       params do
         use :release_params
 
         optional :config_file,
           type: String,
+          documentation: { example: '.gitlab/changelog_config.yml' },
           desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
       get ':id/repository/changelog' do
@@ -264,26 +289,31 @@ module API
 
       desc 'Generates a changelog section for a release and commits it in a changelog file' do
         detail 'This feature was introduced in GitLab 13.9'
+        success code: 200
       end
       params do
         use :release_params
 
         optional :branch,
           type: String,
-          desc: 'The branch to commit the changelog changes to'
+          desc: 'The branch to commit the changelog changes to',
+          documentation: { example: 'main' }
 
         optional :config_file,
           type: String,
+          documentation: { example: '.gitlab/changelog_config.yml' },
           desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
 
         optional :file,
           type: String,
           desc: 'The file to commit the changelog changes to',
-          default: ::Repositories::ChangelogService::DEFAULT_FILE
+          default: ::Repositories::ChangelogService::DEFAULT_FILE,
+          documentation: { example: 'CHANGELOG.md' }
 
         optional :message,
           type: String,
-          desc: 'The commit message to use when committing the changelog'
+          desc: 'The commit message to use when committing the changelog',
+          documentation: { example: 'Initial commit' }
       end
       post ':id/repository/changelog' do
         branch = params[:branch] || user_project.default_branch_or_main

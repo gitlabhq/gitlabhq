@@ -67,7 +67,7 @@ WARNING:
 This variable type is an [Alpha](../../../policy/alpha-beta-support.md#alpha-features) feature, and is subject to change at any time
 without prior notice!
 
-Each `custom` variable defined in the dashboard YAML creates a dropdown
+Each `custom` variable defined in the dashboard YAML creates a dropdown list
 selector on the dashboard UI, allowing you to select a value for each variable.
 
 The `custom` variable type supports a simple and a full syntax.
@@ -75,7 +75,7 @@ The `custom` variable type supports a simple and a full syntax.
 ### Simple syntax
 
 This example creates a variable called `variable1`, with a default value of `value1`.
-The dashboard UI displays a dropdown with `value1`, `value2` and `value3`
+The dashboard UI displays a dropdown list with `value1`, `value2` and `value3`
 as the choices.
 
 ```yaml
@@ -88,10 +88,10 @@ templating:
 
 This example creates a variable called `variable1`, with a default value of `value_option_2`.
 The label for the text box on the UI is the value of the `label` key.
-The dashboard UI displays a dropdown with `Option 1` and `Option 2`
+The dashboard UI displays a dropdown list with `Option 1` and `Option 2`
 as the choices.
 
-If you select `Option 1` from the dropdown, the variable is replaced with `value option 1`.
+If you select `Option 1` from the dropdown list, the variable is replaced with `value option 1`.
 Similarly, if you select `Option 2`, the variable is replaced with `value_option_2`:
 
 ```yaml
@@ -117,7 +117,7 @@ without prior notice!
 
 ### Full syntax
 
-This example creates a variable called `variable2`. The values of the dropdown are
+This example creates a variable called `variable2`. The values of the dropdown list are
 all the different values of the `backend` label in the Prometheus series described by
 `up{env="production"}`.
 

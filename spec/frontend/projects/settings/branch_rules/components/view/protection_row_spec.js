@@ -27,6 +27,7 @@ describe('Branch rule protection row', () => {
   const findAccessLevels = () => wrapper.findAllByTestId('access-level');
   const findApprovalsRequired = () =>
     wrapper.findByText(`${protectionRowPropsMock.approvalsRequired} approvals required`);
+  const findStatusChecksUrl = () => wrapper.findByText(protectionRowPropsMock.statusCheckUrl);
 
   it('renders a title', () => {
     expect(findTitle().exists()).toBe(true);
@@ -67,5 +68,9 @@ describe('Branch rule protection row', () => {
 
   it('renders the number of approvals required', () => {
     expect(findApprovalsRequired().exists()).toBe(true);
+  });
+
+  it('renders status checks URL', () => {
+    expect(findStatusChecksUrl().exists()).toBe(true);
   });
 });

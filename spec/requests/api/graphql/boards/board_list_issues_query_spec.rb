@@ -7,7 +7,7 @@ RSpec.describe 'get board lists' do
 
   let_it_be(:user)           { create(:user) }
   let_it_be(:unauth_user)    { create(:user) }
-  let_it_be(:project)        { create(:project, creator_id: user.id, namespace: user.namespace ) }
+  let_it_be(:project)        { create(:project, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:group)          { create(:group, :private) }
   let_it_be(:project_label)  { create(:label, project: project, name: 'Development') }
   let_it_be(:project_label2) { create(:label, project: project, name: 'Testing') }
@@ -21,6 +21,7 @@ RSpec.describe 'get board lists' do
   let(:board_data)        { graphql_data[board_parent_type]['boards']['nodes'][0] }
   let(:lists_data)        { board_data['lists']['nodes'][0] }
   let(:issues_data)       { lists_data['issues']['nodes'] }
+  let(:issue_params)      { { filters: { label_name: label2.title, confidential: confidential }, first: 3 } }
 
   def query(list_params = params)
     graphql_query_for(
@@ -31,7 +32,7 @@ RSpec.describe 'get board lists' do
           nodes {
             lists {
               nodes {
-                issues(filters: {labelName: "#{label2.title}", confidential: #{confidential}}, first: 3) {
+                issues(#{attributes_to_graphql(issue_params)}) {
                   count
                   nodes {
                     #{all_graphql_fields_for('issues'.classify)}
@@ -77,18 +78,23 @@ RSpec.describe 'get board lists' do
     end
 
     context 'when user can read the board' do
-      before do
+      before_all do
         board_parent.add_reporter(user)
-        post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user)
       end
 
+      subject { post_graphql(query("id: \"#{global_id_of(label_list)}\""), current_user: user) }
+
       it 'can access the issues', :aggregate_failures do
+        subject
+
         # ties for relative positions are broken by id in ascending order by default
         expect(issue_titles).to eq([issue2.title, issue1.title, issue3.title])
         expect(issue_relative_positions).not_to include(nil)
       end
 
       it 'does not set the relative positions of the issues not being returned', :aggregate_failures do
+        subject
+
         expect(issue_id).not_to include(issue6.id)
         expect(issue3.relative_position).to be_nil
       end
@@ -97,8 +103,34 @@ RSpec.describe 'get board lists' do
         let(:confidential) { true }
 
         it 'returns matching issue' do
+          subject
+
           expect(issue_titles).to match_array([issue7.title])
           expect(issue_relative_positions).not_to include(nil)
+        end
+      end
+
+      context 'when filtering by a unioned argument' do
+        let(:another_user) { create(:user) }
+        let(:issue_params) { { filters: { or: { assignee_usernames: [user.username, another_user.username] } } } }
+
+        it 'returns correctly filtered issues' do
+          issue1.assignee_ids = user.id
+          issue2.assignee_ids = another_user.id
+
+          subject
+
+          expect(issue_id).to contain_exactly(issue1.to_gid.to_s, issue2.to_gid.to_s)
+        end
+
+        context 'when feature flag is disabled' do
+          it 'returns an error' do
+            stub_feature_flags(or_issuable_queries: false)
+
+            subject
+
+            expect_graphql_errors_to_include("'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled.")
+          end
         end
       end
     end

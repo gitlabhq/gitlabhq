@@ -4,7 +4,7 @@
 # compatible with the old value stream controller actions.
 module CycleAnalytics
   class ProjectLevelStageAdapter
-    ProjectLevelStage = Struct.new(:title, :description, :legend, :name, :project_median, keyword_init: true )
+    ProjectLevelStage = Struct.new(:title, :description, :legend, :name, :project_median, keyword_init: true)
 
     def initialize(stage, options)
       @stage = stage

@@ -5,7 +5,7 @@ import TimeTracker from './components/time_tracking/time_tracker.vue';
 
 export default class SidebarMilestone {
   constructor() {
-    const el = document.getElementById('issuable-time-tracker');
+    const el = document.querySelector('.js-sidebar-time-tracking-root');
 
     if (!el) return;
 

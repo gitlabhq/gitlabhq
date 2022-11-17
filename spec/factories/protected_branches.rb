@@ -13,7 +13,8 @@ FactoryBot.define do
     end
 
     after(:create) do |protected_branch, evaluator|
-      break unless protected_branch.project&.persisted?
+      # Do not use `break` because it will cause `LocalJumpError`
+      next unless protected_branch.project&.persisted?
 
       ProtectedBranches::CacheService.new(protected_branch.project).refresh
     end
@@ -39,33 +40,13 @@ FactoryBot.define do
       end
     end
 
-    trait :maintainers_can_push do
+    trait :no_one_can_merge do
       transient do
-        default_push_level { false }
+        default_merge_level { false }
       end
 
       after(:build) do |protected_branch|
-        protected_branch.push_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
-      end
-    end
-
-    trait :maintainers_can_merge do
-      transient do
-        default_push_level { false }
-      end
-
-      after(:build) do |protected_branch|
-        protected_branch.push_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
-      end
-    end
-
-    trait :developers_can_push do
-      transient do
-        default_push_level { false }
-      end
-
-      after(:build) do |protected_branch|
-        protected_branch.push_access_levels.new(access_level: Gitlab::Access::DEVELOPER)
+        protected_branch.merge_access_levels.new(access_level: Gitlab::Access::NO_ACCESS)
       end
     end
 
@@ -79,6 +60,16 @@ FactoryBot.define do
       end
     end
 
+    trait :maintainers_can_merge do
+      transient do
+        default_merge_level { false }
+      end
+
+      after(:build) do |protected_branch|
+        protected_branch.merge_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
+      end
+    end
+
     trait :no_one_can_push do
       transient do
         default_push_level { false }
@@ -89,13 +80,23 @@ FactoryBot.define do
       end
     end
 
-    trait :no_one_can_merge do
+    trait :developers_can_push do
       transient do
-        default_merge_level { false }
+        default_push_level { false }
       end
 
       after(:build) do |protected_branch|
-        protected_branch.merge_access_levels.new(access_level: Gitlab::Access::NO_ACCESS)
+        protected_branch.push_access_levels.new(access_level: Gitlab::Access::DEVELOPER)
+      end
+    end
+
+    trait :maintainers_can_push do
+      transient do
+        default_push_level { false }
+      end
+
+      after(:build) do |protected_branch|
+        protected_branch.push_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
       end
     end
   end

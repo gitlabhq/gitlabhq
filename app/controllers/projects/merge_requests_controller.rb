@@ -3,7 +3,6 @@
 class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationController
   include ToggleSubscriptionAction
   include IssuableActions
-  include RendersNotes
   include RendersCommits
   include RendersAssignees
   include ToggleAwardEmoji
@@ -32,18 +31,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   before_action only: [:show] do
-    push_frontend_feature_flag(:merge_request_widget_graphql, project)
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
-    push_frontend_feature_flag(:refactor_code_quality_extension, project)
-    push_frontend_feature_flag(:refactor_mr_widget_test_summary, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
-    push_frontend_feature_flag(:realtime_labels, project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
     push_frontend_feature_flag(:refactor_code_quality_inline_findings, project)
     push_frontend_feature_flag(:moved_mr_sidebar, project)
     push_frontend_feature_flag(:paginated_mr_discussions, project)
     push_frontend_feature_flag(:mr_review_submit_comment, project)
     push_frontend_feature_flag(:mr_experience_survey, project)
+    push_frontend_feature_flag(:realtime_reviewers, project)
   end
 
   before_action do
@@ -123,12 +119,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
         @diffs_count = get_diffs_count
         @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
-        @current_user_data = UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity).to_json
+        @current_user_data = Gitlab::Json.dump(UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity))
         @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
         @file_by_file_default = current_user&.view_diffs_file_by_file
         @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
         @update_current_user_path = expose_path(api_v4_user_preferences_path)
         @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
+        @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
 
         set_pipeline_variables
 
@@ -179,15 +176,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @merge_request.recent_context_commits
       )
 
-    # Get commits from repository
-    # or from cache if already merged
-    @commits =
-      set_commits_for_rendering(
-        @merge_request.recent_commits(load_from_gitaly: true).with_latest_pipeline(@merge_request.source_branch).with_markdown_cache,
-        commits_count: @merge_request.commits_count
-      )
+    per_page = [(params[:per_page] || MergeRequestDiff::COMMITS_SAFE_SIZE).to_i, MergeRequestDiff::COMMITS_SAFE_SIZE].min
+    recent_commits = @merge_request.recent_commits(load_from_gitaly: true, limit: per_page, page: params[:page]).with_latest_pipeline(@merge_request.source_branch).with_markdown_cache
+    @next_page = recent_commits.next_page
+    @commits = set_commits_for_rendering(
+      recent_commits,
+      commits_count: @merge_request.commits_count
+    )
 
-    render json: { html: view_to_html_string('projects/merge_requests/_commits') }
+    render json: { html: view_to_html_string('projects/merge_requests/_commits'), next_page: @next_page }
   end
 
   def pipelines
@@ -535,7 +532,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
       render json: '', status: :no_content
     when :parsed
-      render json: report_comparison[:data].to_json, status: :ok
+      render json: Gitlab::Json.dump(report_comparison[:data]), status: :ok
     when :error
       render json: { status_reason: report_comparison[:status_reason] }, status: :bad_request
     else
@@ -553,10 +550,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     return render_404 unless can?(current_user, :read_build, merge_request.actual_head_pipeline)
   end
 
+  def show_whitespace
+    current_user&.show_whitespace_in_diffs ? '0' : '1'
+  end
+
   def endpoint_metadata_url(project, merge_request)
-    params = request.query_parameters.merge(view: 'inline', diff_head: true, w: current_user&.show_whitespace_in_diffs ? '0' : '1')
+    params = request.query_parameters.merge(view: 'inline', diff_head: true, w: show_whitespace)
 
     diffs_metadata_project_json_merge_request_path(project, merge_request, 'json', params)
+  end
+
+  def endpoint_diff_batch_url(project, merge_request)
+    per_page = current_user&.view_diffs_file_by_file ? '1' : '5'
+    params = request.query_parameters.merge(view: 'inline', diff_head: true, w: show_whitespace, page: '0', per_page: per_page)
+
+    diffs_batch_project_json_merge_request_path(project, merge_request, 'json', params)
   end
 
   def convert_date_to_epoch(date)

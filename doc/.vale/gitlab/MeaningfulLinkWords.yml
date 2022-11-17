@@ -3,13 +3,13 @@
 #
 # Checks for the presence of semantically unhelpful words in link text.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Improve SEO and accessibility by rewriting "%s" in the link text.'
+message: "Improve SEO and accessibility by rewriting '%s' in the link text."
 level: warning
 scope: link
 ignorecase: true
-link: https://about.gitlab.com/handbook/communication/#writing-style-guidelines
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#text-for-links
 tokens:
   - here
   - this page

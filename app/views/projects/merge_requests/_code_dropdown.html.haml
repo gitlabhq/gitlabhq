@@ -1,4 +1,4 @@
-.float-left.gl-md-ml-3.dropdown.gl-new-dropdown{ class: "gl-display-none! gl-md-display-flex!" }
+.gl-md-ml-3.dropdown.gl-new-dropdown{ class: "gl-display-none! gl-md-display-flex!" }
   #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
   = button_tag type: 'button', class: "btn dropdown-toggle btn-confirm gl-button gl-dropdown-toggle", data: { toggle: 'dropdown', qa_selector: 'mr_code_dropdown' } do
     %span.gl-new-dropdown-button-text= _('Code')
@@ -16,12 +16,12 @@
                 = _('Check out branch')
           - if current_user
             %li.gl-new-dropdown-item
-              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', data: { qa_selector: 'open_in_web_ide_button' } do
+              = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { qa_selector: 'open_in_web_ide_button' } do
                 .gl-new-dropdown-item-text-wrapper
                   = _('Open in Web IDE')
           - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
             %li.gl-new-dropdown-item
-              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", class: 'dropdown-item' do
+              = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
                 .gl-new-dropdown-item-text-wrapper
                   = _('Open in Gitpod')
           %li.gl-new-dropdown-divider

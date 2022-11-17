@@ -9,7 +9,11 @@ class SearchController < ApplicationController
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
 
-  track_event :show, name: 'i_search_total', destinations: [:redis_hll, :snowplow]
+  track_custom_event :show,
+              name: 'i_search_total',
+              label: 'redis_hll_counters.search.search_total_unique_counts_monthly',
+              action: 'executed',
+              destinations: [:redis_hll, :snowplow]
 
   def self.search_rate_limited_endpoints
     %i[show count autocomplete]
@@ -108,7 +112,7 @@ class SearchController < ApplicationController
     @ref = params[:project_ref] if params[:project_ref].present?
     @filter = params[:filter]
 
-    render json: search_autocomplete_opts(term, filter: @filter).to_json
+    render json: Gitlab::Json.dump(search_autocomplete_opts(term, filter: @filter))
   end
 
   def opensearch
@@ -140,8 +144,7 @@ class SearchController < ApplicationController
   def check_single_commit_result?
     return false if params[:force_search_results]
     return false unless @project.present?
-    # download_code project policy grants user the read_commit ability
-    return false unless Ability.allowed?(current_user, :download_code, @project)
+    return false unless Ability.allowed?(current_user, :read_code, @project)
 
     query = params[:search].strip.downcase
     return false unless Commit.valid_hash?(query)
@@ -241,6 +244,10 @@ class SearchController < ApplicationController
 
   def tracking_namespace_source
     search_service.project&.namespace || search_service.group
+  end
+
+  def tracking_project_source
+    search_service.project
   end
 
   def search_type

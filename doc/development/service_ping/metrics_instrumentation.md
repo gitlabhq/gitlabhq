@@ -41,7 +41,7 @@ We have built a domain-specific language (DSL) to define the metrics instrumenta
 You can use database metrics to track data kept in the database, for example, a count of issues that exist on a given instance.
 
 - `operation`: Operations for the given `relation`, one of `count`, `distinct_count`, `sum`, and `average`.
-- `relation`: `ActiveRecord::Relation` for the objects we want to perform the `operation`.
+- `relation`: Assigns lambda that returns the `ActiveRecord::Relation` for the objects we want to perform the `operation`. The assigned lambda can accept up to one parameter. The parameter is hashed and stored under the `options` key in the metric definition.
 - `start`: Specifies the start value of the batch counting, by default is `relation.minimum(:id)`.
 - `finish`: Specifies the end value of the batch counting, by default is `relation.maximum(:id)`.
 - `cache_start_and_finish_as`: Specifies the cache key for `start` and `finish` values and sets up caching them. Use this call when `start` and `finish` are expensive queries that should be reused between different metric calculations.
@@ -55,10 +55,10 @@ module Gitlab
   module Usage
     module Metrics
       module Instrumentations
-        class CountBoardsMetric < DatabaseMetric
+        class CountIssuesMetric < DatabaseMetric
           operation :count
 
-          relation { Board }
+          relation ->(options) { Issue.where(confidential: options[:confidential]) }
         end
       end
     end
@@ -156,7 +156,7 @@ You can use Redis metrics to track events not kept in the database, for example,
 
 [Example of a merge request that adds a `Redis` metric](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97009).
 
-Please note that `RedisMetric` class can only be used as the `instrumentation_class` for Redis metrics with simple counters classes (classes that only inherit `BaseCounter` and set `PREFIX` and `KNOWN_EVENTS` constants). In case the counter class has additional logic included in it, a new `instrumentation_class`, inheriting from `RedisMetric`, needs to be created. This new class needs to include the additional logic from the counter class.
+The `RedisMetric` class can only be used as the `instrumentation_class` for Redis metrics with simple counters classes (classes that only inherit `BaseCounter` and set `PREFIX` and `KNOWN_EVENTS` constants). In case the counter class has additional logic included in it, a new `instrumentation_class`, inheriting from `RedisMetric`, needs to be created. This new class needs to include the additional logic from the counter class.
 
 Count unique values for `source_code_pushes` event.
 
@@ -255,6 +255,13 @@ options:
 ```
 
 ## Aggregated metrics
+
+<div class="video-fallback">
+  See the video from: <a href="https://www.youtube.com/embed/22LbYqHwtUQ">Product Intelligence Office Hours Oct 6th</a> for an aggregated metrics walk-through.
+</div>
+<figure class="video-container">
+  <iframe src="https://www.youtube.com/embed/22LbYqHwtUQ" frameborder="0" allowfullscreen="true"> </iframe>
+</figure>
 
 The aggregated metrics feature provides insight into the number of data attributes, for example `pseudonymized_user_ids`, that occurred in a collection of events. For example, you can aggregate the number of users who perform multiple actions such as creating a new issue and opening
 a new merge request.

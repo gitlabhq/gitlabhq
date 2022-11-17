@@ -389,6 +389,40 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
         model.add_concurrent_index(:users, :foo)
       end
+
+      context 'when targeting a partition table' do
+        let(:schema) { 'public' }
+        let(:name) { '_test_partition_01' }
+        let(:identifier) { "#{schema}.#{name}" }
+
+        before do
+          model.execute(<<~SQL)
+            CREATE TABLE public._test_partitioned_table (
+              id serial NOT NULL,
+              partition_id serial NOT NULL,
+              PRIMARY KEY (id, partition_id)
+            ) PARTITION BY LIST(partition_id);
+
+            CREATE TABLE #{identifier} PARTITION OF public._test_partitioned_table
+            FOR VALUES IN (1);
+          SQL
+        end
+
+        context 'when allow_partition is true' do
+          it 'creates the index concurrently' do
+            expect(model).to receive(:add_index).with(:_test_partition_01, :foo, algorithm: :concurrently)
+
+            model.add_concurrent_index(:_test_partition_01, :foo, allow_partition: true)
+          end
+        end
+
+        context 'when allow_partition is not provided' do
+          it 'raises ArgumentError' do
+            expect { model.add_concurrent_index(:_test_partition_01, :foo) }
+              .to raise_error(ArgumentError, /use add_concurrent_partitioned_index/)
+          end
+        end
+      end
     end
 
     context 'inside a transaction' do
@@ -435,6 +469,37 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           model.remove_concurrent_index(:users, :foo)
         end
 
+        context 'when targeting a partition table' do
+          let(:schema) { 'public' }
+          let(:partition_table_name) { '_test_partition_01' }
+          let(:identifier) { "#{schema}.#{partition_table_name}" }
+          let(:index_name) { '_test_partitioned_index' }
+          let(:partition_index_name) { '_test_partition_01_partition_id_idx' }
+          let(:column_name) { 'partition_id' }
+
+          before do
+            model.execute(<<~SQL)
+              CREATE TABLE public._test_partitioned_table (
+                id serial NOT NULL,
+                partition_id serial NOT NULL,
+                PRIMARY KEY (id, partition_id)
+              ) PARTITION BY LIST(partition_id);
+
+              CREATE INDEX #{index_name} ON public._test_partitioned_table(#{column_name});
+
+              CREATE TABLE #{identifier} PARTITION OF public._test_partitioned_table
+              FOR VALUES IN (1);
+            SQL
+          end
+
+          context 'when dropping an index on the partition table' do
+            it 'raises ArgumentError' do
+              expect { model.remove_concurrent_index(partition_table_name, column_name) }
+                .to raise_error(ArgumentError, /use remove_concurrent_partitioned_index_by_name/)
+            end
+          end
+        end
+
         describe 'by index name' do
           before do
             allow(model).to receive(:index_exists_by_name?).with(:users, "index_x_by_y").and_return(true)
@@ -475,6 +540,36 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
               .with(:users, "index_x_by_y", { algorithm: :concurrently })
 
             model.remove_concurrent_index_by_name(:users, "index_x_by_y")
+          end
+
+          context 'when targeting a partition table' do
+            let(:schema) { 'public' }
+            let(:partition_table_name) { '_test_partition_01' }
+            let(:identifier) { "#{schema}.#{partition_table_name}" }
+            let(:index_name) { '_test_partitioned_index' }
+            let(:partition_index_name) { '_test_partition_01_partition_id_idx' }
+
+            before do
+              model.execute(<<~SQL)
+                CREATE TABLE public._test_partitioned_table (
+                  id serial NOT NULL,
+                  partition_id serial NOT NULL,
+                  PRIMARY KEY (id, partition_id)
+                ) PARTITION BY LIST(partition_id);
+
+                CREATE INDEX #{index_name} ON public._test_partitioned_table(partition_id);
+
+                CREATE TABLE #{identifier} PARTITION OF public._test_partitioned_table
+                FOR VALUES IN (1);
+              SQL
+            end
+
+            context 'when dropping an index on the partition table' do
+              it 'raises ArgumentError' do
+                expect { model.remove_concurrent_index_by_name(partition_table_name, partition_index_name) }
+                  .to raise_error(ArgumentError, /use remove_concurrent_partitioned_index_by_name/)
+              end
+            end
           end
         end
       end
@@ -1002,88 +1097,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       it 'compares by foreign key name, column and on_delete if given' do
         expect(model.foreign_key_exists?(:projects, :users, name: :fk_projects_users_partition_number_id, column: [:partition_number, :id], on_delete: :nullify)).to be_falsey
-      end
-    end
-  end
-
-  describe '#disable_statement_timeout' do
-    it 'disables statement timeouts to current transaction only' do
-      expect(model).to receive(:execute).with('SET LOCAL statement_timeout TO 0')
-
-      model.disable_statement_timeout
-    end
-
-    # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
-    context 'with real environment', :delete do
-      before do
-        model.execute("SET statement_timeout TO '20000'")
-      end
-
-      after do
-        model.execute('RESET statement_timeout')
-      end
-
-      it 'defines statement to 0 only for current transaction' do
-        expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
-
-        model.connection.transaction do
-          model.disable_statement_timeout
-          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
-        end
-
-        expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
-      end
-
-      context 'when passing a blocks' do
-        it 'disables statement timeouts on session level and executes the block' do
-          expect(model).to receive(:execute).with('SET statement_timeout TO 0')
-          expect(model).to receive(:execute).with('RESET statement_timeout').at_least(:once)
-
-          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
-        end
-
-        # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
-        context 'with real environment', :delete do
-          before do
-            model.execute("SET statement_timeout TO '20000'")
-          end
-
-          after do
-            model.execute('RESET statement_timeout')
-          end
-
-          it 'defines statement to 0 for any code run inside the block' do
-            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
-
-            model.disable_statement_timeout do
-              model.connection.transaction do
-                expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
-              end
-
-              expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
-            end
-          end
-        end
-      end
-    end
-
-    # This spec runs without an enclosing transaction (:delete truncation method for db_cleaner)
-    context 'when the statement_timeout is already disabled', :delete do
-      before do
-        ActiveRecord::Migration.connection.execute('SET statement_timeout TO 0')
-      end
-
-      after do
-        # Use ActiveRecord::Migration.connection instead of model.execute
-        # so that this call is not counted below
-        ActiveRecord::Migration.connection.execute('RESET statement_timeout')
-      end
-
-      it 'yields control without disabling the timeout or resetting' do
-        expect(model).not_to receive(:execute).with('SET statement_timeout TO 0')
-        expect(model).not_to receive(:execute).with('RESET statement_timeout')
-
-        expect { |block| model.disable_statement_timeout(&block) }.to yield_control
       end
     end
   end
@@ -2006,8 +2019,116 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
     end
 
+    let(:same_queue_different_worker) do
+      Class.new do
+        include Sidekiq::Worker
+
+        sidekiq_options queue: 'test'
+
+        def self.name
+          'SameQueueDifferentWorkerClass'
+        end
+      end
+    end
+
+    let(:unrelated_worker) do
+      Class.new do
+        include Sidekiq::Worker
+
+        sidekiq_options queue: 'unrelated'
+
+        def self.name
+          'UnrelatedWorkerClass'
+        end
+      end
+    end
+
     before do
       stub_const(worker.name, worker)
+      stub_const(unrelated_worker.name, unrelated_worker)
+      stub_const(same_queue_different_worker.name, same_queue_different_worker)
+    end
+
+    describe '#sidekiq_remove_jobs', :clean_gitlab_redis_queues do
+      def clear_queues
+        Sidekiq::Queue.new('test').clear
+        Sidekiq::Queue.new('unrelated').clear
+        Sidekiq::RetrySet.new.clear
+        Sidekiq::ScheduledSet.new.clear
+      end
+
+      around do |example|
+        clear_queues
+        Sidekiq::Testing.disable!(&example)
+        clear_queues
+      end
+
+      it "removes all related job instances from the job class's queue" do
+        worker.perform_async
+        same_queue_different_worker.perform_async
+        unrelated_worker.perform_async
+
+        queue_we_care_about = Sidekiq::Queue.new(worker.queue)
+        unrelated_queue = Sidekiq::Queue.new(unrelated_worker.queue)
+
+        expect(queue_we_care_about.size).to eq(2)
+        expect(unrelated_queue.size).to eq(1)
+
+        model.sidekiq_remove_jobs(job_klass: worker)
+
+        expect(queue_we_care_about.size).to eq(1)
+        expect(queue_we_care_about.map(&:klass)).not_to include(worker.name)
+        expect(queue_we_care_about.map(&:klass)).to include(
+          same_queue_different_worker.name
+        )
+        expect(unrelated_queue.size).to eq(1)
+      end
+
+      context 'when job instances are in the scheduled set' do
+        it 'removes all related job instances from the scheduled set' do
+          worker.perform_in(1.hour)
+          unrelated_worker.perform_in(1.hour)
+
+          scheduled = Sidekiq::ScheduledSet.new
+
+          expect(scheduled.size).to eq(2)
+          expect(scheduled.map(&:klass)).to include(
+            worker.name,
+            unrelated_worker.name
+          )
+
+          model.sidekiq_remove_jobs(job_klass: worker)
+
+          expect(scheduled.size).to eq(1)
+          expect(scheduled.map(&:klass)).not_to include(worker.name)
+          expect(scheduled.map(&:klass)).to include(unrelated_worker.name)
+        end
+      end
+
+      context 'when job instances are in the retry set' do
+        include_context 'when handling retried jobs'
+
+        it 'removes all related job instances from the retry set' do
+          retry_in(worker, 1.hour)
+          retry_in(worker, 2.hours)
+          retry_in(worker, 3.hours)
+          retry_in(unrelated_worker, 4.hours)
+
+          retries = Sidekiq::RetrySet.new
+
+          expect(retries.size).to eq(4)
+          expect(retries.map(&:klass)).to include(
+            worker.name,
+            unrelated_worker.name
+          )
+
+          model.sidekiq_remove_jobs(job_klass: worker)
+
+          expect(retries.size).to eq(1)
+          expect(retries.map(&:klass)).not_to include(worker.name)
+          expect(retries.map(&:klass)).to include(unrelated_worker.name)
+        end
+      end
     end
 
     describe '#sidekiq_queue_length' do
@@ -2031,7 +2152,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       end
     end
 
-    describe '#migrate_sidekiq_queue' do
+    describe '#sidekiq_queue_migrate' do
       it 'migrates jobs from one sidekiq queue to another' do
         Sidekiq::Testing.disable! do
           worker.perform_async('Something', [1])
@@ -2068,6 +2189,110 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
   describe '#convert_to_bigint_column' do
     it 'returns the name of the temporary column used to convert to bigint' do
       expect(model.convert_to_bigint_column(:id)).to eq('id_convert_to_bigint')
+    end
+  end
+
+  describe '#convert_to_type_column' do
+    it 'returns the name of the temporary column used to convert to bigint' do
+      expect(model.convert_to_type_column(:id, :int, :bigint)).to eq('id_convert_int_to_bigint')
+    end
+
+    it 'returns the name of the temporary column used to convert to uuid' do
+      expect(model.convert_to_type_column(:uuid, :string, :uuid)).to eq('uuid_convert_string_to_uuid')
+    end
+  end
+
+  describe '#create_temporary_columns_and_triggers' do
+    let(:table) { :test_table }
+    let(:column) { :id }
+    let(:mappings) do
+      {
+        id: {
+          from_type: :int,
+          to_type: :bigint
+        }
+      }
+    end
+
+    let(:old_bigint_column_naming) { false }
+
+    subject do
+      model.create_temporary_columns_and_triggers(
+        table,
+        mappings,
+        old_bigint_column_naming: old_bigint_column_naming
+      )
+    end
+
+    before do
+      model.create_table table, id: false do |t|
+        t.integer :id, primary_key: true
+        t.integer :non_nullable_column, null: false
+        t.integer :nullable_column
+        t.timestamps
+      end
+    end
+
+    context 'when no mappings are provided' do
+      let(:mappings) { nil }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error("No mappings for column conversion provided")
+      end
+    end
+
+    context 'when any of the mappings does not have the required keys' do
+      let(:mappings) do
+        {
+          id: {
+            from_type: :int
+          }
+        }
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error("Some mappings don't have required keys provided")
+      end
+    end
+
+    context 'when the target table does not exist' do
+      it 'raises an error' do
+        expect { model.create_temporary_columns_and_triggers(:non_existent_table, mappings) }.to raise_error("Table non_existent_table does not exist")
+      end
+    end
+
+    context 'when the column to migrate does not exist' do
+      let(:missing_column) { :test }
+      let(:mappings) do
+        {
+          missing_column => {
+            from_type: :int,
+            to_type: :bigint
+          }
+        }
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error("Column #{missing_column} does not exist on #{table}")
+      end
+    end
+
+    context 'when old_bigint_column_naming is true' do
+      let(:old_bigint_column_naming) { true }
+
+      it 'calls convert_to_bigint_column' do
+        expect(model).to receive(:convert_to_bigint_column).with(:id).and_return("id_convert_to_bigint")
+
+        subject
+      end
+    end
+
+    context 'when old_bigint_column_naming is false' do
+      it 'calls convert_to_type_column' do
+        expect(model).to receive(:convert_to_type_column).with(:id, :int, :bigint).and_return("id_convert_to_bigint")
+
+        subject
+      end
     end
   end
 
@@ -2227,7 +2452,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       let(:columns) { :id }
 
       it 'removes column, trigger, and function' do
-        temporary_column = model.convert_to_bigint_column(:id)
+        temporary_column = model.convert_to_bigint_column(columns)
         trigger_name = model.rename_trigger_name(table, :id, temporary_column)
 
         model.revert_initialize_conversion_of_integer_to_bigint(table, columns)
@@ -2420,101 +2645,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#ensure_batched_background_migration_is_finished' do
-    let(:job_class_name) { 'CopyColumnUsingBackgroundMigrationJob' }
-    let(:table) { :events }
-    let(:column_name) { :id }
-    let(:job_arguments) { [["id"], ["id_convert_to_bigint"], nil] }
-
-    let(:configuration) do
-      {
-        job_class_name: job_class_name,
-        table_name: table,
-        column_name: column_name,
-        job_arguments: job_arguments
-      }
-    end
-
-    let(:migration_attributes) do
-      configuration.merge(gitlab_schema: Gitlab::Database.gitlab_schemas_for_connection(model.connection).first)
-    end
-
-    before do
-      allow(model).to receive(:transaction_open?).and_return(false)
-    end
-
-    subject(:ensure_batched_background_migration_is_finished) { model.ensure_batched_background_migration_is_finished(**configuration) }
-
-    it 'raises an error when migration exists and is not marked as finished' do
-      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!).twice
-
-      create(:batched_background_migration, :active, migration_attributes)
-
-      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-        allow(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(false)
-      end
-
-      expect { ensure_batched_background_migration_is_finished }
-        .to raise_error "Expected batched background migration for the given configuration to be marked as 'finished', but it is 'active':" \
-            "\t#{configuration}" \
-            "\n\n" \
-            "Finalize it manually by running the following command in a `bash` or `sh` shell:" \
-            "\n\n" \
-            "\tsudo gitlab-rake gitlab:background_migrations:finalize[CopyColumnUsingBackgroundMigrationJob,events,id,'[[\"id\"]\\,[\"id_convert_to_bigint\"]\\,null]']" \
-            "\n\n" \
-            "For more information, check the documentation" \
-            "\n\n" \
-            "\thttps://docs.gitlab.com/ee/user/admin_area/monitoring/background_migrations.html#database-migrations-failing-because-of-batched-background-migration-not-finished"
-    end
-
-    it 'does not raise error when migration exists and is marked as finished' do
-      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
-
-      create(:batched_background_migration, :finished, migration_attributes)
-
-      expect { ensure_batched_background_migration_is_finished }
-        .not_to raise_error
-    end
-
-    it 'logs a warning when migration does not exist' do
-      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
-
-      create(:batched_background_migration, :active, migration_attributes.merge(gitlab_schema: :gitlab_something_else))
-
-      expect(Gitlab::AppLogger).to receive(:warn)
-        .with("Could not find batched background migration for the given configuration: #{configuration}")
-
-      expect { ensure_batched_background_migration_is_finished }
-        .not_to raise_error
-    end
-
-    it 'finalizes the migration' do
-      expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!).twice
-
-      migration = create(:batched_background_migration, :active, configuration)
-
-      allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-        expect(runner).to receive(:finalize).with(job_class_name, table, column_name, job_arguments).and_return(migration.finish!)
-      end
-
-      ensure_batched_background_migration_is_finished
-    end
-
-    context 'when the flag finalize is false' do
-      it 'does not finalize the migration' do
-        expect(Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas).to receive(:require_dml_mode!)
-
-        create(:batched_background_migration, :active, configuration)
-
-        allow_next_instance_of(Gitlab::Database::BackgroundMigration::BatchedMigrationRunner) do |runner|
-          expect(runner).not_to receive(:finalize).with(job_class_name, table, column_name, job_arguments)
-        end
-
-        expect { model.ensure_batched_background_migration_is_finished(**configuration.merge(finalize: false)) }.to raise_error(RuntimeError)
-      end
-    end
-  end
-
   describe '#index_exists_by_name?' do
     it 'returns true if an index exists' do
       ActiveRecord::Migration.connection.execute(
@@ -2618,48 +2748,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
           expect(plan_limit.reload.project_hooks).to eq(999)
         end
       end
-    end
-  end
-
-  describe '#with_lock_retries' do
-    let(:buffer) { StringIO.new }
-    let(:in_memory_logger) { Gitlab::JsonLogger.new(buffer) }
-    let(:env) { { 'DISABLE_LOCK_RETRIES' => 'true' } }
-
-    it 'sets the migration class name in the logs' do
-      model.with_lock_retries(env: env, logger: in_memory_logger) {}
-
-      buffer.rewind
-      expect(buffer.read).to include("\"class\":\"#{model.class}\"")
-    end
-
-    where(raise_on_exhaustion: [true, false])
-
-    with_them do
-      it 'sets raise_on_exhaustion as requested' do
-        with_lock_retries = double
-        expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
-        expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: raise_on_exhaustion)
-
-        model.with_lock_retries(env: env, logger: in_memory_logger, raise_on_exhaustion: raise_on_exhaustion) {}
-      end
-    end
-
-    it 'does not raise on exhaustion by default' do
-      with_lock_retries = double
-      expect(Gitlab::Database::WithLockRetries).to receive(:new).and_return(with_lock_retries)
-      expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
-
-      model.with_lock_retries(env: env, logger: in_memory_logger) {}
-    end
-
-    it 'defaults to allowing subtransactions' do
-      with_lock_retries = double
-
-      expect(Gitlab::Database::WithLockRetries).to receive(:new).with(hash_including(allow_savepoints: true)).and_return(with_lock_retries)
-      expect(with_lock_retries).to receive(:run).with(raise_on_exhaustion: false)
-
-      model.with_lock_retries(env: env, logger: in_memory_logger) {}
     end
   end
 
@@ -2778,720 +2866,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#check_constraint_name' do
-    it 'returns a valid constraint name' do
-      name = model.check_constraint_name(:this_is_a_very_long_table_name,
-                                         :with_a_very_long_column_name,
-                                         :with_a_very_long_type)
-
-      expect(name).to be_an_instance_of(String)
-      expect(name).to start_with('check_')
-      expect(name.length).to eq(16)
-    end
-  end
-
-  describe '#check_constraint_exists?' do
-    before do
-      ActiveRecord::Migration.connection.execute(
-        'ALTER TABLE projects ADD CONSTRAINT check_1 CHECK (char_length(path) <= 5) NOT VALID'
-      )
-
-      ActiveRecord::Migration.connection.execute(
-        'CREATE SCHEMA new_test_schema'
-      )
-
-      ActiveRecord::Migration.connection.execute(
-        'CREATE TABLE new_test_schema.projects (id integer, name character varying)'
-      )
-
-      ActiveRecord::Migration.connection.execute(
-        'ALTER TABLE new_test_schema.projects ADD CONSTRAINT check_2 CHECK (char_length(name) <= 5)'
-      )
-    end
-
-    it 'returns true if a constraint exists' do
-      expect(model.check_constraint_exists?(:projects, 'check_1'))
-        .to be_truthy
-    end
-
-    it 'returns false if a constraint does not exist' do
-      expect(model.check_constraint_exists?(:projects, 'this_does_not_exist'))
-        .to be_falsy
-    end
-
-    it 'returns false if a constraint with the same name exists in another table' do
-      expect(model.check_constraint_exists?(:users, 'check_1'))
-        .to be_falsy
-    end
-
-    it 'returns false if a constraint with the same name exists for the same table in another schema' do
-      expect(model.check_constraint_exists?(:projects, 'check_2'))
-        .to be_falsy
-    end
-  end
-
-  describe '#add_check_constraint' do
-    before do
-      allow(model).to receive(:check_constraint_exists?).and_return(false)
-    end
-
-    context 'constraint name validation' do
-      it 'raises an error when too long' do
-        expect do
-          model.add_check_constraint(
-            :test_table,
-            'name IS NOT NULL',
-            'a' * (Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH + 1)
-          )
-        end.to raise_error(RuntimeError)
-      end
-
-      it 'does not raise error when the length is acceptable' do
-        constraint_name = 'a' * Gitlab::Database::MigrationHelpers::MAX_IDENTIFIER_NAME_LENGTH
-
-        expect(model).to receive(:transaction_open?).and_return(false)
-        expect(model).to receive(:check_constraint_exists?).and_return(false)
-        expect(model).to receive(:with_lock_retries).and_call_original
-        expect(model).to receive(:execute).with(/ADD CONSTRAINT/)
-
-        model.add_check_constraint(
-          :test_table,
-          'name IS NOT NULL',
-          constraint_name,
-          validate: false
-        )
-      end
-    end
-
-    context 'inside a transaction' do
-      it 'raises an error' do
-        expect(model).to receive(:transaction_open?).and_return(true)
-
-        expect do
-          model.add_check_constraint(
-            :test_table,
-            'name IS NOT NULL',
-            'check_name_not_null'
-          )
-        end.to raise_error(RuntimeError)
-      end
-    end
-
-    context 'outside a transaction' do
-      before do
-        allow(model).to receive(:transaction_open?).and_return(false)
-      end
-
-      context 'when the constraint is already defined in the database' do
-        it 'does not create a constraint' do
-          expect(model).to receive(:check_constraint_exists?)
-                       .with(:test_table, 'check_name_not_null')
-                       .and_return(true)
-
-          expect(model).not_to receive(:execute).with(/ADD CONSTRAINT/)
-
-          # setting validate: false to only focus on the ADD CONSTRAINT command
-          model.add_check_constraint(
-            :test_table,
-            'name IS NOT NULL',
-            'check_name_not_null',
-            validate: false
-          )
-        end
-      end
-
-      context 'when the constraint is not defined in the database' do
-        it 'creates the constraint' do
-          expect(model).to receive(:with_lock_retries).and_call_original
-          expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
-
-          # setting validate: false to only focus on the ADD CONSTRAINT command
-          model.add_check_constraint(
-            :test_table,
-            'char_length(name) <= 255',
-            'check_name_not_null',
-            validate: false
-          )
-        end
-      end
-
-      context 'when validate is not provided' do
-        it 'performs validation' do
-          expect(model).to receive(:check_constraint_exists?)
-                       .with(:test_table, 'check_name_not_null')
-                       .and_return(false).exactly(1)
-
-          expect(model).to receive(:disable_statement_timeout).and_call_original
-          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
-          expect(model).to receive(:with_lock_retries).and_call_original
-          expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
-
-          # we need the check constraint to exist so that the validation proceeds
-          expect(model).to receive(:check_constraint_exists?)
-                       .with(:test_table, 'check_name_not_null')
-                       .and_return(true).exactly(1)
-
-          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
-
-          model.add_check_constraint(
-            :test_table,
-            'char_length(name) <= 255',
-            'check_name_not_null'
-          )
-        end
-      end
-
-      context 'when validate is provided with a falsey value' do
-        it 'skips validation' do
-          expect(model).not_to receive(:disable_statement_timeout)
-          expect(model).to receive(:with_lock_retries).and_call_original
-          expect(model).to receive(:execute).with(/ADD CONSTRAINT/)
-          expect(model).not_to receive(:execute).with(/VALIDATE CONSTRAINT/)
-
-          model.add_check_constraint(
-            :test_table,
-            'char_length(name) <= 255',
-            'check_name_not_null',
-            validate: false
-          )
-        end
-      end
-
-      context 'when validate is provided with a truthy value' do
-        it 'performs validation' do
-          expect(model).to receive(:check_constraint_exists?)
-                       .with(:test_table, 'check_name_not_null')
-                       .and_return(false).exactly(1)
-
-          expect(model).to receive(:disable_statement_timeout).and_call_original
-          expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-          expect(model).to receive(:execute).with(/SET statement_timeout TO/)
-          expect(model).to receive(:with_lock_retries).and_call_original
-          expect(model).to receive(:execute).with(/ADD CONSTRAINT check_name_not_null/)
-
-          expect(model).to receive(:check_constraint_exists?)
-                       .with(:test_table, 'check_name_not_null')
-                       .and_return(true).exactly(1)
-
-          expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
-          expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
-
-          model.add_check_constraint(
-            :test_table,
-            'char_length(name) <= 255',
-            'check_name_not_null',
-            validate: true
-          )
-        end
-      end
-    end
-  end
-
-  describe '#validate_check_constraint' do
-    context 'when the constraint does not exist' do
-      it 'raises an error' do
-        error_message = /Could not find check constraint "check_1" on table "test_table"/
-
-        expect(model).to receive(:check_constraint_exists?).and_return(false)
-
-        expect do
-          model.validate_check_constraint(:test_table, 'check_1')
-        end.to raise_error(RuntimeError, error_message)
-      end
-    end
-
-    context 'when the constraint exists' do
-      it 'performs validation' do
-        validate_sql = /ALTER TABLE test_table VALIDATE CONSTRAINT check_name/
-
-        expect(model).to receive(:check_constraint_exists?).and_return(true)
-        expect(model).to receive(:disable_statement_timeout).and_call_original
-        expect(model).to receive(:statement_timeout_disabled?).and_return(false)
-        expect(model).to receive(:execute).with(/SET statement_timeout TO/)
-        expect(model).to receive(:execute).ordered.with(validate_sql)
-        expect(model).to receive(:execute).ordered.with(/RESET statement_timeout/)
-
-        model.validate_check_constraint(:test_table, 'check_name')
-      end
-    end
-  end
-
-  describe '#remove_check_constraint' do
-    before do
-      allow(model).to receive(:transaction_open?).and_return(false)
-    end
-
-    it 'removes the constraint' do
-      drop_sql = /ALTER TABLE test_table\s+DROP CONSTRAINT IF EXISTS check_name/
-
-      expect(model).to receive(:with_lock_retries).and_call_original
-      expect(model).to receive(:execute).with(drop_sql)
-
-      model.remove_check_constraint(:test_table, 'check_name')
-    end
-  end
-
-  describe '#copy_check_constraints' do
-    context 'inside a transaction' do
-      it 'raises an error' do
-        expect(model).to receive(:transaction_open?).and_return(true)
-
-        expect do
-          model.copy_check_constraints(:test_table, :old_column, :new_column)
-        end.to raise_error(RuntimeError)
-      end
-    end
-
-    context 'outside a transaction' do
-      before do
-        allow(model).to receive(:transaction_open?).and_return(false)
-        allow(model).to receive(:column_exists?).and_return(true)
-      end
-
-      let(:old_column_constraints) do
-        [
-          {
-            'schema_name' => 'public',
-            'table_name' => 'test_table',
-            'column_name' => 'old_column',
-            'constraint_name' => 'check_d7d49d475d',
-            'constraint_def' => 'CHECK ((old_column IS NOT NULL))'
-          },
-          {
-            'schema_name' => 'public',
-            'table_name' => 'test_table',
-            'column_name' => 'old_column',
-            'constraint_name' => 'check_48560e521e',
-            'constraint_def' => 'CHECK ((char_length(old_column) <= 255))'
-          },
-          {
-            'schema_name' => 'public',
-            'table_name' => 'test_table',
-            'column_name' => 'old_column',
-            'constraint_name' => 'custom_check_constraint',
-            'constraint_def' => 'CHECK (((old_column IS NOT NULL) AND (another_column IS NULL)))'
-          },
-          {
-            'schema_name' => 'public',
-            'table_name' => 'test_table',
-            'column_name' => 'old_column',
-            'constraint_name' => 'not_valid_check_constraint',
-            'constraint_def' => 'CHECK ((old_column IS NOT NULL)) NOT VALID'
-          }
-        ]
-      end
-
-      it 'copies check constraints from one column to another' do
-        allow(model).to receive(:check_constraints_for)
-        .with(:test_table, :old_column, schema: nil)
-          .and_return(old_column_constraints)
-
-        allow(model).to receive(:not_null_constraint_name).with(:test_table, :new_column)
-          .and_return('check_1')
-
-        allow(model).to receive(:text_limit_name).with(:test_table, :new_column)
-          .and_return('check_2')
-
-        allow(model).to receive(:check_constraint_name)
-          .with(:test_table, :new_column, 'copy_check_constraint')
-          .and_return('check_3')
-
-        expect(model).to receive(:add_check_constraint)
-          .with(
-            :test_table,
-            '(new_column IS NOT NULL)',
-            'check_1',
-            validate: true
-          ).once
-
-        expect(model).to receive(:add_check_constraint)
-          .with(
-            :test_table,
-            '(char_length(new_column) <= 255)',
-            'check_2',
-            validate: true
-          ).once
-
-        expect(model).to receive(:add_check_constraint)
-          .with(
-            :test_table,
-            '((new_column IS NOT NULL) AND (another_column IS NULL))',
-            'check_3',
-            validate: true
-          ).once
-
-        expect(model).to receive(:add_check_constraint)
-          .with(
-            :test_table,
-            '(new_column IS NOT NULL)',
-            'check_1',
-            validate: false
-          ).once
-
-        model.copy_check_constraints(:test_table, :old_column, :new_column)
-      end
-
-      it 'does nothing if there are no constraints defined for the old column' do
-        allow(model).to receive(:check_constraints_for)
-        .with(:test_table, :old_column, schema: nil)
-          .and_return([])
-
-        expect(model).not_to receive(:add_check_constraint)
-
-        model.copy_check_constraints(:test_table, :old_column, :new_column)
-      end
-
-      it 'raises an error when the orginating column does not exist' do
-        allow(model).to receive(:column_exists?).with(:test_table, :old_column).and_return(false)
-
-        error_message = /Column old_column does not exist on test_table/
-
-        expect do
-          model.copy_check_constraints(:test_table, :old_column, :new_column)
-        end.to raise_error(RuntimeError, error_message)
-      end
-
-      it 'raises an error when the target column does not exist' do
-        allow(model).to receive(:column_exists?).with(:test_table, :new_column).and_return(false)
-
-        error_message = /Column new_column does not exist on test_table/
-
-        expect do
-          model.copy_check_constraints(:test_table, :old_column, :new_column)
-        end.to raise_error(RuntimeError, error_message)
-      end
-    end
-  end
-
-  describe '#add_text_limit' do
-    context 'when it is called with the default options' do
-      it 'calls add_check_constraint with an infered constraint name and validate: true' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
-        check = "char_length(name) <= 255"
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:add_check_constraint)
-                     .with(:test_table, check, constraint_name, validate: true)
-
-        model.add_text_limit(:test_table, :name, 255)
-      end
-    end
-
-    context 'when all parameters are provided' do
-      it 'calls add_check_constraint with the correct parameters' do
-        constraint_name = 'check_name_limit'
-        check = "char_length(name) <= 255"
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:add_check_constraint)
-                     .with(:test_table, check, constraint_name, validate: false)
-
-        model.add_text_limit(
-          :test_table,
-          :name,
-          255,
-          constraint_name: constraint_name,
-          validate: false
-        )
-      end
-    end
-  end
-
-  describe '#validate_text_limit' do
-    context 'when constraint_name is not provided' do
-      it 'calls validate_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:validate_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.validate_text_limit(:test_table, :name)
-      end
-    end
-
-    context 'when constraint_name is provided' do
-      it 'calls validate_check_constraint with the correct parameters' do
-        constraint_name = 'check_name_limit'
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:validate_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.validate_text_limit(:test_table, :name, constraint_name: constraint_name)
-      end
-    end
-  end
-
-  describe '#remove_text_limit' do
-    context 'when constraint_name is not provided' do
-      it 'calls remove_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:remove_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.remove_text_limit(:test_table, :name)
-      end
-    end
-
-    context 'when constraint_name is provided' do
-      it 'calls remove_check_constraint with the correct parameters' do
-        constraint_name = 'check_name_limit'
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:remove_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.remove_text_limit(:test_table, :name, constraint_name: constraint_name)
-      end
-    end
-  end
-
-  describe '#check_text_limit_exists?' do
-    context 'when constraint_name is not provided' do
-      it 'calls check_constraint_exists? with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'max_length')
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:check_constraint_exists?)
-                     .with(:test_table, constraint_name)
-
-        model.check_text_limit_exists?(:test_table, :name)
-      end
-    end
-
-    context 'when constraint_name is provided' do
-      it 'calls check_constraint_exists? with the correct parameters' do
-        constraint_name = 'check_name_limit'
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:check_constraint_exists?)
-                     .with(:test_table, constraint_name)
-
-        model.check_text_limit_exists?(:test_table, :name, constraint_name: constraint_name)
-      end
-    end
-  end
-
-  describe '#add_not_null_constraint' do
-    context 'when it is called with the default options' do
-      it 'calls add_check_constraint with an infered constraint name and validate: true' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
-        check = "name IS NOT NULL"
-
-        expect(model).to receive(:column_is_nullable?).and_return(true)
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:add_check_constraint)
-                     .with(:test_table, check, constraint_name, validate: true)
-
-        model.add_not_null_constraint(:test_table, :name)
-      end
-    end
-
-    context 'when all parameters are provided' do
-      it 'calls add_check_constraint with the correct parameters' do
-        constraint_name = 'check_name_not_null'
-        check = "name IS NOT NULL"
-
-        expect(model).to receive(:column_is_nullable?).and_return(true)
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:add_check_constraint)
-                     .with(:test_table, check, constraint_name, validate: false)
-
-        model.add_not_null_constraint(
-          :test_table,
-          :name,
-          constraint_name: constraint_name,
-          validate: false
-        )
-      end
-    end
-
-    context 'when the column is defined as NOT NULL' do
-      it 'does not add a check constraint' do
-        expect(model).to receive(:column_is_nullable?).and_return(false)
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).not_to receive(:add_check_constraint)
-
-        model.add_not_null_constraint(:test_table, :name)
-      end
-    end
-  end
-
-  describe '#validate_not_null_constraint' do
-    context 'when constraint_name is not provided' do
-      it 'calls validate_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:validate_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.validate_not_null_constraint(:test_table, :name)
-      end
-    end
-
-    context 'when constraint_name is provided' do
-      it 'calls validate_check_constraint with the correct parameters' do
-        constraint_name = 'check_name_not_null'
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:validate_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.validate_not_null_constraint(:test_table, :name, constraint_name: constraint_name)
-      end
-    end
-  end
-
-  describe '#remove_not_null_constraint' do
-    context 'when constraint_name is not provided' do
-      it 'calls remove_check_constraint with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:remove_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.remove_not_null_constraint(:test_table, :name)
-      end
-    end
-
-    context 'when constraint_name is provided' do
-      it 'calls remove_check_constraint with the correct parameters' do
-        constraint_name = 'check_name_not_null'
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:remove_check_constraint)
-                     .with(:test_table, constraint_name)
-
-        model.remove_not_null_constraint(:test_table, :name, constraint_name: constraint_name)
-      end
-    end
-  end
-
-  describe '#check_not_null_constraint_exists?' do
-    context 'when constraint_name is not provided' do
-      it 'calls check_constraint_exists? with an infered constraint name' do
-        constraint_name = model.check_constraint_name(:test_table,
-                                                      :name,
-                                                      'not_null')
-
-        expect(model).to receive(:check_constraint_name).and_call_original
-        expect(model).to receive(:check_constraint_exists?)
-                     .with(:test_table, constraint_name)
-
-        model.check_not_null_constraint_exists?(:test_table, :name)
-      end
-    end
-
-    context 'when constraint_name is provided' do
-      it 'calls check_constraint_exists? with the correct parameters' do
-        constraint_name = 'check_name_not_null'
-
-        expect(model).not_to receive(:check_constraint_name)
-        expect(model).to receive(:check_constraint_exists?)
-                     .with(:test_table, constraint_name)
-
-        model.check_not_null_constraint_exists?(:test_table, :name, constraint_name: constraint_name)
-      end
-    end
-  end
-
-  describe '#create_extension' do
-    subject { model.create_extension(extension) }
-
-    let(:extension) { :btree_gist }
-
-    it 'executes CREATE EXTENSION statement' do
-      expect(model).to receive(:execute).with(/CREATE EXTENSION IF NOT EXISTS #{extension}/)
-
-      subject
-    end
-
-    context 'without proper permissions' do
-      before do
-        allow(model).to receive(:execute)
-          .with(/CREATE EXTENSION IF NOT EXISTS #{extension}/)
-          .and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
-      end
-
-      it 'raises an exception and prints an error message' do
-        expect { subject }
-          .to output(/user is not allowed/).to_stderr
-          .and raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
-      end
-    end
-  end
-
-  describe '#drop_extension' do
-    subject { model.drop_extension(extension) }
-
-    let(:extension) { 'btree_gist' }
-
-    it 'executes CREATE EXTENSION statement' do
-      expect(model).to receive(:execute).with(/DROP EXTENSION IF EXISTS #{extension}/)
-
-      subject
-    end
-
-    context 'without proper permissions' do
-      before do
-        allow(model).to receive(:execute)
-          .with(/DROP EXTENSION IF EXISTS #{extension}/)
-          .and_raise(ActiveRecord::StatementInvalid, 'InsufficientPrivilege: permission denied')
-      end
-
-      it 'raises an exception and prints an error message' do
-        expect { subject }
-          .to output(/user is not allowed/).to_stderr
-          .and raise_error(ActiveRecord::StatementInvalid, /InsufficientPrivilege/)
-      end
-    end
-  end
-
-  describe '#rename_constraint' do
-    it "executes the statement to rename constraint" do
-      expect(model).to receive(:execute).with /ALTER TABLE "test_table"\nRENAME CONSTRAINT "fk_old_name" TO "fk_new_name"/
-
-      model.rename_constraint(:test_table, :fk_old_name, :fk_new_name)
-    end
-  end
-
-  describe '#drop_constraint' do
-    it "executes the statement to drop the constraint" do
-      expect(model).to receive(:execute).with("ALTER TABLE \"test_table\" DROP CONSTRAINT \"constraint_name\" CASCADE\n")
-
-      model.drop_constraint(:test_table, :constraint_name, cascade: true)
-    end
-
-    context 'when cascade option is false' do
-      it "executes the statement to drop the constraint without cascade" do
-        expect(model).to receive(:execute).with("ALTER TABLE \"test_table\" DROP CONSTRAINT \"constraint_name\" \n")
-
-        model.drop_constraint(:test_table, :constraint_name, cascade: false)
-      end
-    end
-  end
-
   describe '#add_primary_key_using_index' do
     it "executes the statement to add the primary key" do
       expect(model).to receive(:execute).with /ALTER TABLE "test_table" ADD CONSTRAINT "old_name" PRIMARY KEY USING INDEX "new_name"/
@@ -3556,6 +2930,38 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       expect(model).to receive(:execute).with "CREATE SEQUENCE \"test_table_id_seq\" START 1;\nALTER TABLE \"test_table\" ALTER COLUMN \"test_column\" SET DEFAULT nextval(\'test_table_id_seq\')\n"
 
       model.add_sequence(:test_table, :test_column, :test_table_id_seq, 1)
+    end
+  end
+
+  describe "#partition?" do
+    subject { model.partition?(table_name) }
+
+    let(:table_name) { 'ci_builds_metadata' }
+
+    context "when a partition table exist" do
+      context 'when the view postgres_partitions exists' do
+        it 'calls the view', :aggregate_failures do
+          expect(Gitlab::Database::PostgresPartition).to receive(:partition_exists?).with(table_name).and_call_original
+          expect(subject).to be_truthy
+        end
+      end
+
+      context 'when the view postgres_partitions does not exist' do
+        before do
+          allow(model).to receive(:view_exists?).and_return(false)
+        end
+
+        it 'does not call the view', :aggregate_failures do
+          expect(Gitlab::Database::PostgresPartition).to receive(:legacy_partition_exists?).with(table_name).and_call_original
+          expect(subject).to be_truthy
+        end
+      end
+    end
+
+    context "when a partition table does not exist" do
+      let(:table_name) { 'partition_does_not_exist' }
+
+      it { is_expected.to be_falsey }
     end
   end
 end

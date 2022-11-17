@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 RSpec.describe 'Import/Export - project import integration test', :js do
-  include GitHelpers
-
   let(:user) { create(:user) }
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }

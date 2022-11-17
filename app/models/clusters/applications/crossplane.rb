@@ -14,11 +14,8 @@ module Clusters
       include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
-      default_value_for :version, VERSION
-
-      default_value_for :stack do |crossplane|
-        ''
-      end
+      attribute :version, default: VERSION
+      attribute :stack, default: ""
 
       validates :stack, presence: true
 

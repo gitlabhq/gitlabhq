@@ -87,6 +87,16 @@ module Ci
       ensure_metadata.id_tokens = value
     end
 
+    def enqueue_immediately?
+      !!options[:enqueue_immediately]
+    end
+
+    def set_enqueue_immediately!
+      # ensures that even if `config_options: nil` in the database we set the
+      # new value correctly.
+      self.options = options.merge(enqueue_immediately: true)
+    end
+
     private
 
     def read_metadata_attribute(legacy_key, metadata_key, default_value = nil)

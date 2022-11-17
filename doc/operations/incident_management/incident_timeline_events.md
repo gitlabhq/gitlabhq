@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344059) in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `incident_timeline`. Enabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.3.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.5. [Feature flag 'incident_timeline'](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/353426) in GitLab 15.5. [Feature flag `incident_timeline`](https://gitlab.com/gitlab-org/gitlab/-/issues/343386) removed.
 
 Incident timelines are an important part of record keeping for incidents.
 Timelines can show executives and external viewers what happened during an incident,
@@ -73,6 +73,15 @@ To create a timeline event from a comment on the incident:
 1. On the comment you want to add, select **Add comment to incident timeline** (**{clock}**).
 
 The comment is shown on the incident timeline as a timeline event.
+
+### When incident severity changes
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6.
+
+A new timeline event is created when someone [changes the severity](incidents.md#change-severity)
+of an incident.
+
+![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)
 
 ## Delete an event
 

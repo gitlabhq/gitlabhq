@@ -22,8 +22,8 @@ RSpec.describe Gitlab::UrlBuilder do
       :group_board       | ->(board)         { "/groups/#{board.group.full_path}/-/boards/#{board.id}" }
       :commit            | ->(commit)        { "/#{commit.project.full_path}/-/commit/#{commit.id}" }
       :issue             | ->(issue)         { "/#{issue.project.full_path}/-/issues/#{issue.iid}" }
-      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.id}" }
-      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.id}" }
+      [:issue, :task]    | ->(issue)         { "/#{issue.project.full_path}/-/work_items/#{issue.iid}?iid_path=true" }
+      :work_item         | ->(work_item)     { "/#{work_item.project.full_path}/-/work_items/#{work_item.iid}?iid_path=true" }
       :merge_request     | ->(merge_request) { "/#{merge_request.project.full_path}/-/merge_requests/#{merge_request.iid}" }
       :project_milestone | ->(milestone)     { "/#{milestone.project.full_path}/-/milestones/#{milestone.iid}" }
       :project_snippet   | ->(snippet)       { "/#{snippet.project.full_path}/-/snippets/#{snippet.id}" }
@@ -56,6 +56,7 @@ RSpec.describe Gitlab::UrlBuilder do
       :discussion_note_on_project_snippet  | ->(note) { "/#{note.project.full_path}/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :discussion_note_on_personal_snippet | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
       :note_on_personal_snippet            | ->(note) { "/-/snippets/#{note.noteable_id}#note_#{note.id}" }
+      :package                             | ->(package) { "/#{package.project.full_path}/-/packages/#{package.id}" }
     end
 
     with_them do
@@ -68,18 +69,6 @@ RSpec.describe Gitlab::UrlBuilder do
 
       it 'returns only the path if only_path is given' do
         expect(subject.build(object, only_path: true)).to eq(path)
-      end
-    end
-
-    context 'when work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it 'returns an issue path for an issue of type task' do
-        task = create(:issue, :task)
-
-        expect(subject.build(task, only_path: true)).to eq("/#{task.project.full_path}/-/issues/#{task.iid}")
       end
     end
 
@@ -196,6 +185,18 @@ RSpec.describe Gitlab::UrlBuilder do
       end
     end
 
+    context 'when passing Packages::Package' do
+      let(:package) { build_stubbed(:terraform_module_package) }
+
+      context 'with infrastructure package' do
+        it 'returns the url for infrastucture registry' do
+          url = subject.build(package)
+
+          expect(url).to eq "#{Gitlab.config.gitlab.url}/#{package.project.full_path}/-/infrastructure_registry/#{package.id}"
+        end
+      end
+    end
+
     context 'when passing a DesignManagement::Design' do
       let(:design) { build_stubbed(:design) }
 
@@ -224,6 +225,28 @@ RSpec.describe Gitlab::UrlBuilder do
 
       it 'returns the URL for the real object' do
         expect(subject.build(object, only_path: true)).to eq("/#{project.full_path}")
+      end
+    end
+
+    context 'when use_iid_in_work_items_path feature flag is disabled' do
+      before do
+        stub_feature_flags(use_iid_in_work_items_path: false)
+      end
+
+      context 'when a task issue is passed' do
+        it 'returns a path using the work item\'s ID and no query params' do
+          task = create(:issue, :task)
+
+          expect(subject.build(task, only_path: true)).to eq("/#{task.project.full_path}/-/work_items/#{task.id}")
+        end
+      end
+
+      context 'when a work item is passed' do
+        it 'returns a path using the work item\'s ID and no query params' do
+          work_item = create(:work_item)
+
+          expect(subject.build(work_item, only_path: true)).to eq("/#{work_item.project.full_path}/-/work_items/#{work_item.id}")
+        end
       end
     end
   end

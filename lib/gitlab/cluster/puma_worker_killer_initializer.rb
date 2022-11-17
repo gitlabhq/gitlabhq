@@ -9,6 +9,10 @@ module Gitlab
         puma_master_max_memory_mb: 950,
         additional_puma_dev_max_memory_mb: 200)
 
+        # We are replacing PWK with Watchdog by using backward compatible RssMemoryLimit monitor by default.
+        # https://gitlab.com/groups/gitlab-org/-/epics/9119
+        return if Gitlab::Utils.to_boolean(ENV.fetch('GITLAB_MEMORY_WATCHDOG_ENABLED', true))
+
         require 'puma_worker_killer'
 
         PumaWorkerKiller.config do |config|

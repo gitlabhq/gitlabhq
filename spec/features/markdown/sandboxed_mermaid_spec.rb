@@ -3,30 +3,54 @@
 require 'spec_helper'
 
 RSpec.describe 'Sandboxed Mermaid rendering', :js do
-  let_it_be(:project) { create(:project, :public) }
-
-  before do
-    stub_feature_flags(sandboxed_mermaid: true)
+  let_it_be(:project) { create(:project, :public, :repository) }
+  let_it_be(:description) do
+    <<~MERMAID
+    ```mermaid
+    graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+    ```
+    MERMAID
   end
 
-  it 'includes mermaid frame correctly' do
-    description = <<~MERMAID
-      ```mermaid
-      graph TD;
-        A-->B;
-        A-->C;
-        B-->D;
-        C-->D;
-      ```
-    MERMAID
+  let_it_be(:expected) do
+    %(<iframe src="/-/sandbox/mermaid" sandbox="allow-scripts allow-popups" frameborder="0" scrolling="no")
+  end
 
-    issue = create(:issue, project: project, description: description)
+  context 'in an issue' do
+    let(:issue) { create(:issue, project: project, description: description) }
 
-    visit project_issue_path(project, issue)
+    it 'includes mermaid frame correctly' do
+      visit project_issue_path(project, issue)
 
-    wait_for_requests
+      wait_for_requests
 
-    expected = %(<iframe src="/-/sandbox/mermaid" sandbox="allow-scripts allow-popups" frameborder="0" scrolling="no")
-    expect(page.html).to include(expected)
+      expect(page.html).to include(expected)
+    end
+  end
+
+  context 'in a merge request' do
+    let(:merge_request) { create(:merge_request_with_diffs, source_project: project, description: description) }
+
+    it 'renders diffs and includes mermaid frame correctly' do
+      visit(diffs_project_merge_request_path(project, merge_request))
+
+      wait_for_requests
+
+      page.within('.tab-content') do
+        expect(page).to have_selector('.diffs')
+      end
+
+      visit(project_merge_request_path(project, merge_request))
+
+      wait_for_requests
+
+      page.within('.merge-request') do
+        expect(page.html).to include(expected)
+      end
+    end
   end
 end

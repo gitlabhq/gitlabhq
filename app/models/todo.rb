@@ -94,7 +94,7 @@ class Todo < ApplicationRecord
     #
     # Returns an `ActiveRecord::Relation`.
     def for_group_ids_and_descendants(group_ids)
-      groups = Group.groups_including_descendants_by(group_ids)
+      groups = Group.where(id: group_ids).self_and_descendants
 
       from_union(
         [

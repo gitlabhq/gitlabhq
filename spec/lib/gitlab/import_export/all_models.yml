@@ -52,6 +52,7 @@ issues:
 - user_mentions
 - system_note_metadata
 - alert_management_alert
+- alert_management_alerts
 - status_page_published_incident
 - namespace
 - note_authors
@@ -361,10 +362,12 @@ hooks:
 - web_hook_logs
 protected_branches:
 - project
+- group
 - merge_access_levels
 - push_access_levels
 - unprotect_access_levels
 - approval_project_rules
+- external_status_checks
 - required_code_owners_sections
 protected_tags:
 - project
@@ -538,6 +541,7 @@ project:
 - jenkins_integration
 - index_status
 - feature_usage
+- regular_or_any_approver_approval_rules
 - approval_rules
 - approval_merge_request_rules
 - approval_merge_request_rule_sources
@@ -548,6 +552,7 @@ project:
 - path_locks
 - approver_groups
 - repository_state
+- wiki_repository
 - wiki_repository_state
 - source_pipelines
 - sourced_pipelines
@@ -643,6 +648,7 @@ project:
 - build_artifacts_size_refresh
 - project_callouts
 - pipeline_metadata
+- disable_download_button
 award_emoji:
 - awardable
 - user

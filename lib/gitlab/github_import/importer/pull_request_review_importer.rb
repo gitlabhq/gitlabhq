@@ -18,6 +18,7 @@ module Gitlab
           if gitlab_user_id
             add_review_note!(gitlab_user_id)
             add_approval!(gitlab_user_id)
+            add_reviewer!(gitlab_user_id)
           else
             add_complementary_review_note!(project.creator_id)
           end
@@ -94,6 +95,24 @@ module Gitlab
             add_approval_system_note!(user_id)
           end
         end
+
+        def add_reviewer!(user_id)
+          return if review_re_requested?(user_id)
+
+          ::MergeRequestReviewer.create!(
+            merge_request_id: merge_request.id,
+            user_id: user_id,
+            state: ::MergeRequestReviewer.states['reviewed'],
+            created_at: submitted_at
+          )
+        end
+
+        # rubocop:disable CodeReuse/ActiveRecord
+        def review_re_requested?(user_id)
+          # records that were imported on previous stage with "unreviewed" status
+          MergeRequestReviewer.where(merge_request_id: merge_request.id, user_id: user_id).exists?
+        end
+        # rubocop:enable CodeReuse/ActiveRecord
 
         def add_approval_system_note!(user_id)
           attributes = note_attributes(

@@ -184,22 +184,6 @@ RSpec.describe MergeRequestPollCachedWidgetEntity do
     end
   end
 
-  describe 'auto merge' do
-    context 'when auto merge is enabled' do
-      let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
-
-      it 'returns auto merge related information' do
-        expect(subject[:auto_merge_enabled]).to be_truthy
-      end
-    end
-
-    context 'when auto merge is not enabled' do
-      it 'returns auto merge related information' do
-        expect(subject[:auto_merge_enabled]).to be_falsy
-      end
-    end
-  end
-
   describe 'squash defaults for projects' do
     where(:squash_option, :value, :default, :readonly) do
       'always'      | true  | true  | true

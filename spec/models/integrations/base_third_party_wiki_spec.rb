@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Integrations::BaseThirdPartyWiki do
+  describe 'default values' do
+    it { expect(subject.category).to eq(:third_party_wiki) }
+  end
+
   describe 'Validations' do
     let_it_be_with_reload(:project) { create(:project) }
 

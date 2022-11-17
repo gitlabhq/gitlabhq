@@ -1623,7 +1623,7 @@ RSpec.describe Namespace do
 
   describe '#share_with_group_lock with subgroups' do
     context 'when creating a subgroup' do
-      let(:subgroup) { create(:group, parent: root_group ) }
+      let(:subgroup) { create(:group, parent: root_group) }
 
       context 'under a parent with "Share with group lock" enabled' do
         let(:root_group) { create(:group, share_with_group_lock: true) }
@@ -1644,7 +1644,7 @@ RSpec.describe Namespace do
 
     context 'when enabling the parent group "Share with group lock"' do
       let(:root_group) { create(:group) }
-      let!(:subgroup) { create(:group, parent: root_group ) }
+      let!(:subgroup) { create(:group, parent: root_group) }
 
       it 'the subgroup "Share with group lock" becomes enabled' do
         root_group.update!(share_with_group_lock: true)
@@ -1657,7 +1657,7 @@ RSpec.describe Namespace do
       let(:root_group) { create(:group, share_with_group_lock: true) }
 
       context 'and the subgroup "Share with group lock" is enabled' do
-        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true ) }
+        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true) }
 
         it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
@@ -1667,7 +1667,7 @@ RSpec.describe Namespace do
       end
 
       context 'but the subgroup "Share with group lock" is disabled' do
-        let(:subgroup) { create(:group, parent: root_group ) }
+        let(:subgroup) { create(:group, parent: root_group) }
 
         it 'the subgroup "Share with group lock" does not change' do
           root_group.update!(share_with_group_lock: false)
@@ -1682,7 +1682,7 @@ RSpec.describe Namespace do
         let(:root_group) { create(:group, share_with_group_lock: true) }
 
         context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true ) }
+          let(:subgroup) { create(:group, share_with_group_lock: true) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -1708,7 +1708,7 @@ RSpec.describe Namespace do
         let(:root_group) { create(:group) }
 
         context 'when the subgroup "Share with group lock" is enabled' do
-          let(:subgroup) { create(:group, share_with_group_lock: true ) }
+          let(:subgroup) { create(:group, share_with_group_lock: true) }
 
           it 'the subgroup "Share with group lock" does not change' do
             subgroup.parent = root_group
@@ -1826,7 +1826,7 @@ RSpec.describe Namespace do
 
         group.update!(parent: parent)
 
-        expect(group.full_path_before_last_save).to eq("#{group.path_before_last_save}")
+        expect(group.full_path_before_last_save).to eq(group.path_before_last_save.to_s)
       end
     end
 
@@ -2356,7 +2356,7 @@ RSpec.describe Namespace do
     end
   end
 
-  describe 'storage_enforcement_date' do
+  describe 'storage_enforcement_date', :freeze_time do
     let_it_be(:namespace) { create(:group) }
 
     before do
@@ -2364,7 +2364,7 @@ RSpec.describe Namespace do
     end
 
     it 'returns correct date' do
-      expect(namespace.storage_enforcement_date).to eql(Date.new(2022, 10, 19))
+      expect(namespace.storage_enforcement_date).to eql(3.months.from_now.to_date)
     end
 
     context 'when :storage_banner_bypass_date_check is enabled' do
@@ -2372,7 +2372,7 @@ RSpec.describe Namespace do
         stub_feature_flags(namespace_storage_limit_bypass_date_check: true)
       end
 
-      it 'returns the current date', :freeze_time do
+      it 'returns the current date' do
         expect(namespace.storage_enforcement_date).to eq(Date.current)
       end
     end

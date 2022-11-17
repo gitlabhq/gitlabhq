@@ -4,7 +4,7 @@ require "spec_helper"
 
 RSpec.describe SystemHook do
   context 'default attributes' do
-    let(:system_hook) { build(:system_hook) }
+    let(:system_hook) { described_class.new }
 
     it 'sets defined default parameters' do
       attrs = {
@@ -32,10 +32,10 @@ RSpec.describe SystemHook do
   end
 
   describe "execute", :sidekiq_might_not_need_inline do
-    let(:system_hook) { create(:system_hook) }
-    let(:user)        { create(:user) }
-    let(:project)     { create(:project, namespace: user.namespace) }
-    let(:group)       { create(:group) }
+    let_it_be(:system_hook) { create(:system_hook) }
+    let_it_be(:user) { create(:user) }
+    let(:project) { build(:project, namespace: user.namespace) }
+    let(:group) { build(:group) }
     let(:params) do
       { name: 'John Doe', username: 'jduser', email: 'jg@example.com', password: User.random_password }
     end
@@ -145,6 +145,7 @@ RSpec.describe SystemHook do
     end
 
     it 'group member update hook' do
+      group = create(:group)
       group.add_guest(user)
       group.add_maintainer(user)
 

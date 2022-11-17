@@ -11,10 +11,10 @@ RSpec.describe 'search/show' do
     stub_template "search/_results.html.haml" => 'Results Partial'
   end
 
-  context 'feature flag enabled' do
+  context 'search_page_vertical_nav feature flag enabled' do
     before do
-      allow(self).to receive(:current_user).and_return(user)
-      @search_term = search_term
+      allow(view).to receive(:current_user) { user }
+      assign(:search_term, search_term)
 
       render
     end
@@ -29,11 +29,11 @@ RSpec.describe 'search/show' do
     end
   end
 
-  context 'feature flag disabled' do
+  context 'search_page_vertical_nav feature flag disabled' do
     before do
       stub_feature_flags(search_page_vertical_nav: false)
 
-      @search_term = search_term
+      assign(:search_term, search_term)
 
       render
     end

@@ -3,9 +3,9 @@
 #
 # Checks for words that need a noun for clarity.
 #
-# For a list of all options, see https://docs.errata.ai/vale/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: "'%s' is not precise. Try rewriting with a specific subject and verb."
+message: "Instead of '%s', try starting this sentence with a specific subject and verb."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#this-these-that-those
 level: warning
 ignorecase: false

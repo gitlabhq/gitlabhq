@@ -1450,6 +1450,11 @@ RSpec.describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'estimate command' do
+      let(:content) { '/estimate_time 1h' }
+      let(:issuable) { issue }
+    end
+
     it_behaves_like 'failed command' do
       let(:content) { '/estimate' }
       let(:issuable) { issue }
@@ -1467,6 +1472,11 @@ RSpec.describe QuickActions::InterpretService do
 
     it_behaves_like 'spend command' do
       let(:content) { '/spent 1h' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command' do
+      let(:content) { '/spend_time 1h' }
       let(:issuable) { issue }
     end
 
@@ -1534,6 +1544,11 @@ RSpec.describe QuickActions::InterpretService do
 
     it_behaves_like 'remove_estimate command' do
       let(:content) { '/remove_estimate' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'remove_estimate command' do
+      let(:content) { '/remove_time_estimate' }
       let(:issuable) { issue }
     end
 

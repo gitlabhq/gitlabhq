@@ -144,6 +144,7 @@ RSpec.describe User do
     it { is_expected.to have_many(:callouts).class_name('Users::Callout') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout') }
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
+    it { is_expected.to have_many(:created_projects).dependent(:nullify).class_name('Project') }
 
     describe '#user_detail' do
       it 'does not persist `user_detail` by default' do
@@ -2481,6 +2482,30 @@ RSpec.describe User do
     end
   end
 
+  describe 'starred_projects' do
+    let_it_be(:project) { create(:project) }
+
+    before do
+      user.toggle_star(project)
+    end
+
+    context 'when blocking a user' do
+      let_it_be(:user) { create(:user) }
+
+      it 'decrements star count of project' do
+        expect { user.block }.to change { project.reload.star_count }.by(-1)
+      end
+    end
+
+    context 'when activating a user' do
+      let_it_be(:user) { create(:user, :blocked) }
+
+      it 'increments star count of project' do
+        expect { user.activate }.to change { project.reload.star_count }.by(1)
+      end
+    end
+  end
+
   describe '.instance_access_request_approvers_to_be_notified' do
     let_it_be(:admin_issue_board_list) { create_list(:user, 12, :admin, :with_sign_ins) }
 
@@ -3030,6 +3055,10 @@ RSpec.describe User do
 
     it 'returns no matches for nil' do
       expect(described_class.search(nil)).to be_empty
+    end
+
+    it 'returns no matches for an array' do
+      expect(described_class.search(%w[the test])).to be_empty
     end
   end
 
@@ -6157,172 +6186,28 @@ RSpec.describe User do
     end
   end
 
-  describe '#authenticatable_salt' do
-    let(:user) { create(:user) }
-
-    subject(:authenticatable_salt) { user.authenticatable_salt }
-
-    it 'uses password_salt' do
-      expect(authenticatable_salt).to eq(user.password_salt)
-    end
-
-    context 'when the encrypted_password is an unknown type' do
-      let(:encrypted_password) { '$argon2i$v=19$m=512,t=4,p=2$eM+ZMyYkpDRGaI3xXmuNcQ$c5DeJg3eb5dskVt1mDdxfw' }
-
-      before do
-        user.update_attribute(:encrypted_password, encrypted_password)
-      end
-
-      it 'returns the first 30 characters of the encrypted_password' do
-        expect(authenticatable_salt).to eq(encrypted_password[0, 29])
-      end
-    end
-
-    context 'when pbkdf2_password_encryption is disabled' do
-      before do
-        stub_feature_flags(pbkdf2_password_encryption: false)
-      end
-
-      it 'returns the first 30 characters of the encrypted_password' do
-        expect(authenticatable_salt).to eq(user.encrypted_password[0, 29])
-      end
-    end
-  end
-
-  def compare_pbkdf2_password(user, password)
-    Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.compare(user.encrypted_password, password)
-  end
-
   describe '#valid_password?' do
     subject(:validate_password) { user.valid_password?(password) }
-
-    context 'user with password not in disallowed list' do
-      let(:user) { create(:user) }
-      let(:password) { user.password }
-
-      it { is_expected.to be_truthy }
-
-      context 'using a wrong password' do
-        let(:password) { 'WRONG PASSWORD' }
-
-        it { is_expected.to be_falsey }
-      end
-
-      context 'when pbkdf2_sha512_encryption is disabled and the user password is pbkdf2+sha512' do
-        it 'does not validate correctly' do
-          user # Create the user while the feature is enabled
-          stub_feature_flags(pbkdf2_password_encryption: false)
-
-          expect(validate_password).to be_falsey
-        end
-      end
-    end
 
     context 'user with disallowed password' do
       let(:user) { create(:user, :disallowed_password) }
       let(:password) { user.password }
 
-      it { is_expected.to be_falsey }
-
-      context 'using a wrong password' do
-        let(:password) { 'WRONG PASSWORD' }
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to eq(false) }
     end
 
-    context 'user with a bcrypt password hash' do
-      # Manually set a 'known' encrypted password
-      let(:password) { User.random_password }
-      let(:encrypted_password) { Devise::Encryptor.digest(User, password) }
-      let(:user) { create(:user, encrypted_password: encrypted_password) }
+    context 'using a wrong password' do
+      let(:user) { create(:user) }
+      let(:password) { 'WRONG PASSWORD' }
 
-      shared_examples 'not re-encrypting with PBKDF2' do
-        it 'does not re-encrypt with PBKDF2' do
-          validate_password
-
-          expect(user.reload.encrypted_password).to eq(encrypted_password)
-        end
-      end
-
-      context 'using the wrong password' do
-        # password 'WRONG PASSWORD' will not match the bcrypt hash
-        let(:password) { 'WRONG PASSWORD' }
-        let(:encrypted_password) { Devise::Encryptor.digest(User, User.random_password) }
-
-        it { is_expected.to be_falsey }
-
-        it_behaves_like 'not re-encrypting with PBKDF2'
-
-        context 'when pbkdf2_password_encryption is disabled' do
-          before do
-            stub_feature_flags(pbkdf2_password_encryption: false)
-          end
-
-          it { is_expected.to be_falsey }
-
-          it_behaves_like 'not re-encrypting with PBKDF2'
-        end
-      end
-
-      context 'using the correct password' do
-        it { is_expected.to be_truthy }
-
-        it 'validates the password and re-encrypts with PBKDF2' do
-          validate_password
-
-          current_encrypted_password = user.reload.encrypted_password
-
-          expect(compare_pbkdf2_password(user, password)).to eq(true)
-          expect { ::BCrypt::Password.new(current_encrypted_password) }
-            .to raise_error(::BCrypt::Errors::InvalidHash)
-        end
-
-        context 'when pbkdf2_password_encryption is disabled' do
-          before do
-            stub_feature_flags(pbkdf2_password_encryption: false)
-          end
-
-          it { is_expected.to be_truthy }
-
-          it_behaves_like 'not re-encrypting with PBKDF2'
-        end
-
-        context 'when pbkdf2_password_encryption_write is disabled' do
-          before do
-            stub_feature_flags(pbkdf2_password_encryption_write: false)
-          end
-
-          it { is_expected.to be_truthy }
-
-          it_behaves_like 'not re-encrypting with PBKDF2'
-        end
-      end
-    end
-
-    context 'user with password hash that is neither PBKDF2 nor BCrypt' do
-      # Manually calculated User.random_password
-      let(:password) { "gg_w215TmVXGWSt7RJKXwYTVz886f6SDM3zvzztaJf2mX9ttUE8gRkNJSbWyWRLqxz4LFzxBekPe75ydDcGauE9wqg-acKMRT-WpSYjTm1Rdx-tnssE7CQByJcnxwWNH" }
-      # Created with https://argon2.online/ using 'aaaaaaaa' as the salt
-      let(:encrypted_password) { "$argon2i$v=19$m=512,t=4,p=2$YWFhYWFhYWE$PvJscKO5XRlevcgRReUg6w" }
-      let(:user) { create(:user, encrypted_password: encrypted_password) }
-
-      it { is_expected.to be_falsey }
-
-      context 'when pbkdf2_password_encryption is disabled' do
-        before do
-          stub_feature_flags(pbkdf2_password_encryption: false)
-        end
-
-        it { is_expected.to be_falsey }
-      end
+      it { is_expected.to eq(false) }
     end
 
     context 'user with autogenerated_password' do
       let(:user) { build_stubbed(:user, password_automatically_set: true) }
       let(:password) { user.password }
 
-      it { is_expected.to be_falsey }
+      it { is_expected.to eq(false) }
     end
   end
 
@@ -6373,95 +6258,6 @@ RSpec.describe User do
         expect(user).not_to receive(:invalidate_otp_backup_code_pdkdf2!)
 
         user.invalidate_otp_backup_code!(user.password)
-      end
-    end
-  end
-
-  # These entire test section can be removed once the :pbkdf2_password_encryption feature flag is removed.
-  describe '#password=' do
-    let(:user) { create(:user) }
-    let(:password) { User.random_password }
-
-    def compare_bcrypt_password(user, password)
-      Devise::Encryptor.compare(User, user.encrypted_password, password)
-    end
-
-    context 'when pbkdf2_password_encryption is enabled' do
-      it 'calls PBKDF2 digest and not the default Devise encryptor' do
-        expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).to receive(:digest).at_least(:once).and_call_original
-        expect(Devise::Encryptor).not_to receive(:digest)
-
-        user.password = password
-      end
-
-      it 'saves the password in PBKDF2 format' do
-        user.password = password
-        user.save!
-
-        expect(compare_pbkdf2_password(user, password)).to eq(true)
-        expect { compare_bcrypt_password(user, password) }.to raise_error(::BCrypt::Errors::InvalidHash)
-      end
-
-      context 'when pbkdf2_password_encryption_write is disabled' do
-        before do
-          stub_feature_flags(pbkdf2_password_encryption_write: false)
-        end
-
-        it 'calls default Devise encryptor and not the PBKDF2 encryptor' do
-          expect(Devise::Encryptor).to receive(:digest).at_least(:once).and_call_original
-          expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).not_to receive(:digest)
-
-          user.password = password
-        end
-      end
-    end
-
-    context 'when pbkdf2_password_encryption is disabled' do
-      before do
-        stub_feature_flags(pbkdf2_password_encryption: false)
-      end
-
-      it 'calls default Devise encryptor and not the PBKDF2 encryptor' do
-        expect(Devise::Encryptor).to receive(:digest).at_least(:once).and_call_original
-        expect(Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512).not_to receive(:digest)
-
-        user.password = password
-      end
-
-      it 'saves the password in BCrypt format' do
-        user.password = password
-        user.save!
-
-        expect { compare_pbkdf2_password(user, password) }.to raise_error Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-        expect(compare_bcrypt_password(user, password)).to eq(true)
-      end
-    end
-  end
-
-  describe '#password_strategy' do
-    let(:user) { create(:user, encrypted_password: encrypted_password) }
-
-    context 'with a PBKDF2+SHA512 encrypted password' do
-      let(:encrypted_password) { '$pbkdf2-sha512$20000$boHGAw0hEyI$DBA67J7zNZebyzLtLk2X9wRDbmj1LNKVGnZLYyz6PGrIDGIl45fl/BPH0y1TPZnV90A20i.fD9C3G9Bp8jzzOA' }
-
-      it 'extracts the correct strategy', :aggregate_failures do
-        expect(user.password_strategy).to eq(:pbkdf2_sha512)
-      end
-    end
-
-    context 'with a BCrypt encrypted password' do
-      let(:encrypted_password) { '$2a$10$xLTxCKOa75IU4RQGqqOrTuZOgZdJEzfSzjG6ZSEi/C31TB/yLZYpi' }
-
-      it 'extracts the correct strategy', :aggregate_failures do
-        expect(user.password_strategy).to eq(:bcrypt)
-      end
-    end
-
-    context 'with an unknown encrypted password' do
-      let(:encrypted_password) { '$pbkdf2-sha256$6400$.6UI/S.nXIk8jcbdHx3Fhg$98jZicV16ODfEsEZeYPGHU3kbrUrvUEXOPimVSQDD44' }
-
-      it 'returns unknown strategy' do
-        expect(user.password_strategy).to eq(:unknown)
       end
     end
   end

@@ -4,7 +4,7 @@ module Types
   class CommitType < BaseObject
     graphql_name 'Commit'
 
-    authorize :download_code
+    authorize :read_code
 
     present_using CommitPresenter
 
@@ -39,6 +39,11 @@ module Types
 
     field :web_path, type: GraphQL::Types::String, null: false,
                      description: 'Web path of the commit.'
+
+    field :signature, type: Types::CommitSignatureInterface,
+                      null: true,
+                      calls_gitaly: true,
+                      description: 'Signature of the commit.'
 
     field :signature_html, type: GraphQL::Types::String, null: true, calls_gitaly: true,
                            description: 'Rendered HTML of the commit signature.'

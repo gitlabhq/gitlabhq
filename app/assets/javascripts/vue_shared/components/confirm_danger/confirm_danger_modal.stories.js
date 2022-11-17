@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
 import ConfirmDanger from './confirm_danger.vue';
 
 export default {

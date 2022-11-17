@@ -8,6 +8,8 @@ module Gitlab
 
       class << self
         def increment_event_counts(events)
+          return unless events.present?
+
           validate!(events)
 
           events.each do |event, incr|

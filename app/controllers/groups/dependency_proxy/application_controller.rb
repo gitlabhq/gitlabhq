@@ -21,10 +21,11 @@ module Groups
 
           user_or_deploy_token = ::DependencyProxy::AuthTokenService.user_or_deploy_token_from_jwt(token)
 
-          if user_or_deploy_token.is_a?(User)
+          case user_or_deploy_token
+          when User
             @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :user, [])
             sign_in(user_or_deploy_token)
-          elsif user_or_deploy_token.is_a?(DeployToken)
+          when DeployToken
             @authentication_result = Gitlab::Auth::Result.new(user_or_deploy_token, nil, :deploy_token, [])
           end
         end

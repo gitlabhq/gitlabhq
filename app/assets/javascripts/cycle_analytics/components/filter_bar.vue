@@ -1,9 +1,12 @@
 <script>
 import { mapActions, mapState } from 'vuex';
-import { __ } from '~/locale';
 import {
   OPERATOR_IS_ONLY,
   DEFAULT_NONE_ANY,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
@@ -43,7 +46,7 @@ export default {
       return [
         {
           icon: 'clock',
-          title: __('Milestone'),
+          title: TOKEN_TITLE_MILESTONE,
           type: 'milestone',
           token: MilestoneToken,
           initialMilestones: this.milestonesData,
@@ -54,7 +57,7 @@ export default {
         },
         {
           icon: 'labels',
-          title: __('Label'),
+          title: TOKEN_TITLE_LABEL,
           type: 'labels',
           token: LabelToken,
           defaultLabels: DEFAULT_NONE_ANY,
@@ -66,7 +69,7 @@ export default {
         },
         {
           icon: 'pencil',
-          title: __('Author'),
+          title: TOKEN_TITLE_AUTHOR,
           type: 'author',
           token: AuthorToken,
           initialAuthors: this.authorsData,
@@ -76,7 +79,7 @@ export default {
         },
         {
           icon: 'user',
-          title: __('Assignees'),
+          title: TOKEN_TITLE_ASSIGNEE,
           type: 'assignees',
           token: AuthorToken,
           initialAuthors: this.assigneesData,

@@ -154,17 +154,65 @@ RSpec.describe 'Create a work item' do
       end
     end
 
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
+    context 'with milestone widget input' do
+      let(:widgets_response) { mutation_response['workItem']['widgets'] }
+      let(:fields) do
+        <<~FIELDS
+        workItem {
+          widgets {
+            type
+            ... on WorkItemWidgetMilestone {
+              milestone {
+                id
+              }
+            }
+          }
+        }
+        errors
+        FIELDS
       end
 
-      it 'does not create the work item and returns an error' do
-        expect do
-          post_graphql_mutation(mutation, current_user: current_user)
-        end.to not_change(WorkItem, :count)
+      let(:mutation) { graphql_mutation(:workItemCreate, input.merge('projectPath' => project.full_path), fields) }
 
-        expect(mutation_response['errors']).to contain_exactly('`work_items` feature flag disabled for this project')
+      context 'when setting milestone on work item creation' do
+        let_it_be(:project_milestone) { create(:milestone, project: project) }
+        let_it_be(:group_milestone) { create(:milestone, project: project) }
+
+        let(:input) do
+          {
+            title: 'some WI',
+            workItemTypeId: WorkItems::Type.default_by_type(:task).to_global_id.to_s,
+            milestoneWidget: { 'milestoneId' => milestone.to_global_id.to_s }
+          }
+        end
+
+        shared_examples "work item's milestone is set" do
+          it "sets the work item's milestone" do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+            end.to change(WorkItem, :count).by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(widgets_response).to include(
+              {
+                'type' => 'MILESTONE',
+                'milestone' => { 'id' => milestone.to_global_id.to_s }
+              }
+            )
+          end
+        end
+
+        context 'when assigning a project milestone' do
+          it_behaves_like "work item's milestone is set" do
+            let(:milestone) { project_milestone }
+          end
+        end
+
+        context 'when assigning a group milestone' do
+          it_behaves_like "work item's milestone is set" do
+            let(:milestone) { group_milestone }
+          end
+        end
       end
     end
   end

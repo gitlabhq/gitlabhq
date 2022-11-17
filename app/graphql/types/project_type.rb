@@ -37,6 +37,10 @@ module Types
           null: false,
           description: 'Path of the project.'
 
+    field :incident_management_timeline_event_tags, [Types::IncidentManagement::TimelineEventTagType],
+          null: true,
+          description: 'Timeline event tags for the project.'
+
     field :sast_ci_configuration, Types::CiConfiguration::Sast::Type,
           null: true,
           calls_gitaly: true,
@@ -226,8 +230,7 @@ module Types
           Types::IssueType.connection_type,
           null: true,
           description: 'Issues of the project.',
-          extras: [:lookahead],
-          resolver: Resolvers::IssuesResolver
+          resolver: Resolvers::ProjectIssuesResolver
 
     field :work_items,
           Types::WorkItemType.connection_type,
@@ -241,7 +244,6 @@ module Types
           Types::IssueStatusCountsType,
           null: true,
           description: 'Counts of issues by status for the project.',
-          extras: [:lookahead],
           resolver: Resolvers::IssueStatusCountsResolver
 
     field :milestones, Types::MilestoneType.connection_type,
@@ -275,7 +277,7 @@ module Types
           Types::IssueType,
           null: true,
           description: 'A single issue of the project.',
-          resolver: Resolvers::IssuesResolver.single
+          resolver: Resolvers::ProjectIssuesResolver.single
 
     field :packages,
           description: 'Packages of the project.',
@@ -513,9 +515,7 @@ module Types
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
           resolver: Resolvers::WorkItems::TypesResolver,
-          description: 'Work item types available to the project.' \
-                       ' Returns `null` if `work_items` feature flag is disabled.' \
-                       ' This flag is disabled by default, because the feature is experimental and is subject to change without notice.'
+          description: 'Work item types available to the project.'
 
     field :timelog_categories, Types::TimeTracking::TimelogCategoryType.connection_type,
           null: true,
@@ -531,6 +531,11 @@ module Types
           null: true,
           description: "Branch rules configured for the project.",
           resolver: Resolvers::Projects::BranchRulesResolver
+
+    field :languages, [Types::Projects::RepositoryLanguageType],
+          null: true,
+          description: "Programming languages used in the project.",
+          calls_gitaly: true
 
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
@@ -598,7 +603,7 @@ module Types
     end
 
     def sast_ci_configuration
-      return unless Ability.allowed?(current_user, :download_code, object)
+      return unless Ability.allowed?(current_user, :read_code, object)
 
       ::Security::CiConfiguration::SastParserService.new(object).configuration
     end
@@ -607,6 +612,10 @@ module Types
       return unless Ability.allowed?(current_user, :admin_issue, project)
 
       object.service_desk_address
+    end
+
+    def languages
+      ::Projects::RepositoryLanguagesService.new(project, current_user).execute
     end
 
     private

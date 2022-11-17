@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Multiple file snippet', :reliable do
+    describe 'Multiple file snippet', :reliable, product_group: :editor do
       let(:snippet) do
         Resource::Snippet.fabricate_via_browser_ui! do |snippet|
           snippet.title = 'Personal snippet with multiple files'
@@ -20,10 +20,6 @@ module QA
 
       before do
         Flow::Login.sign_in
-      end
-
-      after do
-        snippet.remove_via_api!
       end
 
       it 'creates a personal snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347723' do

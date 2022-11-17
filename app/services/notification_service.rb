@@ -16,6 +16,16 @@
 #   NotificationService.new.async.new_issue(issue, current_user)
 #
 class NotificationService
+  # These should not be called by the MailScheduler::NotificationServiceWorker -
+  # what would it even mean?
+  EXCLUDED_ACTIONS = %i[async].freeze
+
+  def self.permitted_actions
+    @permitted_actions ||= gitlab_extensions.flat_map do |klass|
+      klass.public_instance_methods(false) - EXCLUDED_ACTIONS
+    end.to_set
+  end
+
   class Async
     attr_reader :parent
 

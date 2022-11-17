@@ -1,15 +1,16 @@
 <script>
-import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
-import { formatDate, getTimeago, durationTimeFormatted } from '~/lib/utils/datetime_utility';
+import { GlIcon } from '@gitlab/ui';
+import { durationTimeFormatted } from '~/lib/utils/datetime_utility';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
 
 export default {
   iconSize: 12,
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   components: {
     GlIcon,
+    TimeAgoTooltip,
   },
+  mixins: [timeagoMixin],
   props: {
     job: {
       type: Object,
@@ -22,12 +23,6 @@ export default {
     },
     duration() {
       return this.job?.duration;
-    },
-    timeFormatted() {
-      return getTimeago().format(this.finishedTime);
-    },
-    tooltipTitle() {
-      return formatDate(this.finishedTime);
     },
     durationFormatted() {
       return durationTimeFormatted(this.duration);
@@ -44,15 +39,7 @@ export default {
     </div>
     <div v-if="finishedTime" data-testid="job-finished-time">
       <gl-icon name="calendar" :size="$options.iconSize" data-testid="finished-time-icon" />
-      <time
-        v-gl-tooltip
-        :title="tooltipTitle"
-        :datetime="finishedTime"
-        data-placement="top"
-        data-container="body"
-      >
-        {{ timeFormatted }}
-      </time>
+      <time-ago-tooltip :time="finishedTime" />
     </div>
   </div>
 </template>

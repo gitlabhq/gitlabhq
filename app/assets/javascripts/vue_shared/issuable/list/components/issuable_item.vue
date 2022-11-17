@@ -3,7 +3,7 @@ import { GlLink, GlIcon, GlLabel, GlFormCheckbox, GlSprintf, GlTooltipDirective 
 
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isScopedLabel } from '~/lib/utils/common_utils';
-import { differenceInSeconds, getTimeago, SECONDS_IN_DAY } from '~/lib/utils/datetime_utility';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 import { isExternal, setUrlFragment } from '~/lib/utils/url_utility';
 import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
@@ -62,9 +62,8 @@ export default {
     issuableId() {
       return getIdFromGraphQLId(this.issuable.id);
     },
-    createdInPastDay() {
-      const createdSecondsAgo = differenceInSeconds(new Date(this.issuable.createdAt), new Date());
-      return createdSecondsAgo < SECONDS_IN_DAY;
+    issuableIid() {
+      return this.issuable.iid;
     },
     author() {
       return this.issuable.author || {};
@@ -184,7 +183,7 @@ export default {
   <li
     :id="`issuable_${issuableId}`"
     class="issue gl-display-flex! gl-px-5!"
-    :class="{ closed: issuable.closedAt, today: createdInPastDay }"
+    :class="{ closed: issuable.closedAt }"
     :data-labels="labelIdsString"
     :data-qa-issue-id="issuableId"
   >
@@ -193,6 +192,8 @@ export default {
       class="issue-check gl-mr-0"
       :checked="checked"
       :data-id="issuableId"
+      :data-iid="issuableIid"
+      :data-type="issuable.type"
       @input="$emit('checked-input', $event)"
     >
       <span class="gl-sr-only">{{ issuable.title }}</span>

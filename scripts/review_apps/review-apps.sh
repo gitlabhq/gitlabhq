@@ -62,7 +62,7 @@ function previous_deploy_failed() {
   return $status
 }
 
-function delete_release() {
+function delete_helm_release() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
   local release="${CI_ENVIRONMENT_SLUG}"
 
@@ -74,32 +74,6 @@ function delete_release() {
   if deploy_exists "${namespace}" "${release}"; then
     helm uninstall --namespace="${namespace}" "${release}"
   fi
-}
-
-function delete_failed_release() {
-  local namespace="${CI_ENVIRONMENT_SLUG}"
-  local release="${CI_ENVIRONMENT_SLUG}"
-
-  if [ -z "${release}" ]; then
-    echoerr "No release given, aborting the delete!"
-    return
-  fi
-
-  if ! deploy_exists "${namespace}" "${release}"; then
-    echoinfo "No Review App with ${release} is currently deployed."
-  else
-    # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-    if previous_deploy_failed "${namespace}" "${release}" ; then
-      echoinfo "Review App deployment in bad state, cleaning up namespace ${release}"
-      delete_namespace
-    else
-      echoinfo "Review App deployment in good state"
-    fi
-  fi
-}
-
-function delete_namespace() {
-  local namespace="${CI_ENVIRONMENT_SLUG}"
 
   if namespace_exists "${namespace}"; then
     echoinfo "Deleting namespace ${namespace}..." true
@@ -143,7 +117,7 @@ function run_task() {
   local ruby_cmd="${1}"
   local toolbox_pod=$(get_pod "toolbox")
 
-  kubectl exec --namespace "${namespace}" "${toolbox_pod}" -- gitlab-rails runner "${ruby_cmd}"
+  run_timed_command "kubectl exec --namespace \"${namespace}\" \"${toolbox_pod}\" -- gitlab-rails runner \"${ruby_cmd}\""
 }
 
 function disable_sign_ups() {
@@ -346,47 +320,44 @@ EOF
 if [ -n "${REVIEW_APPS_EE_LICENSE_FILE}" ]; then
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
-  --set global.gitlab.license.secret="shared-gitlab-license"
+    --set global.gitlab.license.secret="shared-gitlab-license"
 EOF
 )
 fi
 
 HELM_CMD=$(cat << EOF
   ${HELM_CMD} \
-  --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
-  -f "${base_config_file}" \
-  -v "${HELM_LOG_VERBOSITY:-1}" \
-  "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
+    --version="${CI_PIPELINE_ID}-${CI_JOB_ID}" \
+    -f "${base_config_file}" \
+    -v "${HELM_LOG_VERBOSITY:-1}" \
+    "${release}" "gitlab-${GITLAB_HELM_CHART_REF}"
 EOF
 )
 
+  # Pretty-print the command for display
   echoinfo "Deploying with:"
-  echoinfo "${HELM_CMD}"
+  echo "${HELM_CMD}" | sed 's/    /\n\t/g'
 
-  eval "${HELM_CMD}"
+  run_timed_command "eval \"${HELM_CMD}\""
 }
 
 function verify_deploy() {
-  echoinfo "Verifying deployment at ${CI_ENVIRONMENT_URL}"
+  local namespace="${CI_ENVIRONMENT_SLUG}"
+
+  echoinfo "[$(date '+%H:%M:%S')] Verifying deployment at ${CI_ENVIRONMENT_URL}"
 
   if retry "test_url \"${CI_ENVIRONMENT_URL}\""; then
-    echoinfo "Review app is deployed to ${CI_ENVIRONMENT_URL}"
+    echoinfo "[$(date '+%H:%M:%S')] Review app is deployed to ${CI_ENVIRONMENT_URL}"
     return 0
   else
-    echoerr "Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
+    echoerr "[$(date '+%H:%M:%S')] Review app is not available at ${CI_ENVIRONMENT_URL}: see the logs from cURL above for more details"
     return 1
   fi
 }
 
 function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
-  local release="${CI_ENVIRONMENT_SLUG}"
 
-  # Get all pods for this release
-  echoinfo "Pods for release ${release}"
-  kubectl get pods --namespace "${namespace}" -lrelease=${release}
-
-  # Get all non-completed jobs
-  echoinfo "Unsuccessful Jobs for release ${release}"
-  kubectl get jobs --namespace "${namespace}" -lrelease=${release} --field-selector=status.successful!=1
+  echoinfo "Environment debugging data:"
+  kubectl get svc,pods,jobs --namespace "${namespace}"
 }

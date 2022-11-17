@@ -13,6 +13,7 @@ class SessionsController < Devise::SessionsController
   include BizibleCSP
   include VerifiesWithEmail
   include GoogleAnalyticsCSP
+  include PreferredLanguageSwitcher
 
   skip_before_action :check_two_factor_requirement, only: [:destroy]
   skip_before_action :check_password_expiration, only: [:destroy]
@@ -30,6 +31,7 @@ class SessionsController < Devise::SessionsController
   prepend_before_action :ensure_password_authentication_enabled!, if: -> { action_name == 'create' && password_based_login? }
 
   before_action :auto_sign_in_with_provider, only: [:new]
+  before_action :init_preferred_language, only: :new
   before_action :store_unauthenticated_sessions, only: [:new]
   before_action :save_failed_login, if: :action_new_and_failed_login?
   before_action :load_recaptcha

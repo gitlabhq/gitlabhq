@@ -20,6 +20,10 @@ module Sidebars
             # Push Rules are the only group setting that can also be edited by maintainers.
             # Create an empty sub-menu here and EE adds Repository menu item (with only Push Rules).
             return true
+          elsif Gitlab.ee? && can?(context.current_user, :read_billing, context.group)
+            # Billing is the only group setting that is visible to auditors.
+            # Create an empty sub-menu here and EE adds Settings menu item (with only Billing).
+            return true
           end
 
           false

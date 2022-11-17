@@ -1,6 +1,6 @@
 include:
   - project: gitlab-org/quality/pipeline-common
-    ref: 1.3.0
+    ref: 1.7.0
     file:
       - /ci/base.gitlab-ci.yml
       - /ci/allure-report.yml
@@ -25,7 +25,7 @@ include:
     - cd qa && bundle install
 
 .review-qa-base:
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.33-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-ruby-${RUBY_VERSION}:bundler-2.3-git-2.36-lfs-2.9-chrome-${CHROME_VERSION}-docker-${DOCKER_VERSION}-gcloud-383-kubectl-1.23
   extends:
     - .use-docker-in-docker
     - .bundle-base
@@ -140,13 +140,13 @@ e2e-test-report:
   variables:
     ALLURE_JOB_NAME: e2e-review-qa
     ALLURE_PROJECT_PATH: $CI_PROJECT_PATH
-    ALLURE_RESULTS_GLOB: qa/tmp/allure-results/*
+    ALLURE_RESULTS_GLOB: qa/tmp/allure-results
     ALLURE_MERGE_REQUEST_IID: $CI_MERGE_REQUEST_IID
     GITLAB_AUTH_TOKEN: $GITLAB_QA_MR_ALLURE_REPORT_TOKEN
     GIT_STRATEGY: none
   allow_failure: true
   when: always
-  artifacts: # re-save rspec results for displaying in parent pipeline
+  artifacts:  # re-save rspec results for displaying in parent pipeline
     expire_in: 1 day
     when: always
     paths:
@@ -178,7 +178,7 @@ notify-slack:
   extends:
     - .notify-slack-qa
     - .qa-cache
-    - .rules:notify-slack
+    - .rules:main-run
   stage: post-qa
   variables:
     RUN_WITH_BUNDLE: "true"
@@ -188,6 +188,16 @@ notify-slack:
     STATUS_SYM: ☠️
     STATUS: failed
     TYPE: "(review-app) "
+  when: on_failure
   script:
-    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml" # generate summary
+    - bundle exec gitlab-qa-report --prepare-stage-reports "$CI_PROJECT_DIR/qa/tmp/rspec-*.xml"  # generate summary
     - !reference [.notify-slack-qa, script]
+
+export-test-metrics:
+  extends:
+    - .bundle-base
+    - .rules:main-run
+  stage: post-qa
+  when: always
+  script:
+    - bundle exec rake "ci:export_test_metrics[tmp/test-metrics-*.json]"

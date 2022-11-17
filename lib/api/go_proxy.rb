@@ -4,6 +4,8 @@ module API
     helpers Gitlab::Golang
     helpers ::API::Helpers::PackagesHelpers
 
+    GO_PROXY_TAGS = %w[go_proxy].freeze
+
     feature_category :package_registry
     urgency :low
 
@@ -17,6 +19,10 @@ module API
     before { require_packages_enabled! }
 
     helpers do
+      def project
+        user_project(action: :read_package)
+      end
+
       def case_decode(str)
         # Converts "github.com/!azure" to "github.com/Azure"
         #
@@ -32,12 +38,12 @@ module API
       end
 
       def find_module
-        not_found! unless Feature.enabled?(:go_proxy, user_project)
+        not_found! unless Feature.enabled?(:go_proxy, project)
 
         module_name = case_decode params[:module_name]
         bad_request_missing_attribute!('Module Name') if module_name.blank?
 
-        mod = ::Packages::Go::ModuleFinder.new(user_project, module_name).execute
+        mod = ::Packages::Go::ModuleFinder.new(project, module_name).execute
 
         not_found! unless mod
 
@@ -58,18 +64,21 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
-      requires :module_name, type: String, desc: 'Module name', coerce_with: ->(val) { CGI.unescape(val) }
+      requires :id, types: [String, Integer], desc: 'The project ID or full path of a project'
+      requires :module_name, type: String, desc: 'The name of the Go module', coerce_with: ->(val) { CGI.unescape(val) }
     end
-    route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, authenticate_non_public: true
+    route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true,
+                                   authenticate_non_public: true
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       before do
-        authorize_read_package!
+        authorize_read_package!(project)
       end
 
       namespace ':id/packages/go/*module_name/@v' do
-        desc 'Get all tagged versions for a given Go module' do
-          detail 'See `go help goproxy`, GET $GOPROXY/<module>/@v/list. This feature was introduced in GitLab 13.1.'
+        desc 'List' do
+          detail 'Get all tagged versions for a given Go module.'\
+            'See `go help goproxy`, GET $GOPROXY/<module>/@v/list. This feature was introduced in GitLab 13.1.'
+          tags GO_PROXY_TAGS
         end
         get 'list' do
           mod = find_module
@@ -78,12 +87,14 @@ module API
           mod.versions.map { |t| t.name }.join("\n")
         end
 
-        desc 'Get information about the given module version' do
-          detail 'See `go help goproxy`, GET $GOPROXY/<module>/@v/<version>.info. This feature was introduced in GitLab 13.1.'
+        desc 'Version metadata' do
+          detail 'Get all tagged versions for a given Go module.'\
+            'See `go help goproxy`, GET $GOPROXY/<module>/@v/<version>.info. This feature was introduced in GitLab 13.1'
           success ::API::Entities::GoModuleVersion
+          tags GO_PROXY_TAGS
         end
         params do
-          requires :module_version, type: String, desc: 'Module version'
+          requires :module_version, type: String, desc: 'The version of the Go module'
         end
         get ':module_version.info', requirements: MODULE_VERSION_REQUIREMENTS do
           ver = find_version
@@ -91,11 +102,13 @@ module API
           present ::Packages::Go::ModuleVersionPresenter.new(ver), with: ::API::Entities::GoModuleVersion
         end
 
-        desc 'Get the module file of the given module version' do
-          detail 'See `go help goproxy`, GET $GOPROXY/<module>/@v/<version>.mod. This feature was introduced in GitLab 13.1.'
+        desc 'Download module file' do
+          detail 'Get the module file of a given module version.'\
+            'See `go help goproxy`, GET $GOPROXY/<module>/@v/<version>.mod. This feature was introduced in GitLab 13.1.'
+          tags GO_PROXY_TAGS
         end
         params do
-          requires :module_version, type: String, desc: 'Module version'
+          requires :module_version, type: String, desc: 'The version of the Go module'
         end
         get ':module_version.mod', requirements: MODULE_VERSION_REQUIREMENTS do
           ver = find_version
@@ -104,18 +117,21 @@ module API
           ver.gomod
         end
 
-        desc 'Get a zip of the source of the given module version' do
-          detail 'See `go help goproxy`, GET $GOPROXY/<module>/@v/<version>.zip. This feature was introduced in GitLab 13.1.'
+        desc 'Download module source' do
+          detail 'Get a zip of the source of the given module version.'\
+            'See `go help goproxy`, GET $GOPROXY/<module>/@v/<version>.zip. This feature was introduced in GitLab 13.1.'
+          tags GO_PROXY_TAGS
         end
         params do
-          requires :module_version, type: String, desc: 'Module version'
+          requires :module_version, type: String, desc: 'The version of the Go module'
         end
         get ':module_version.zip', requirements: MODULE_VERSION_REQUIREMENTS do
           ver = find_version
 
           content_type 'application/zip'
           env['api.format'] = :binary
-          header['Content-Disposition'] = ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: ver.name + '.zip')
+          header['Content-Disposition'] =
+            ActionDispatch::Http::ContentDisposition.format(disposition: 'attachment', filename: "#{ver.name}.zip")
           header['Content-Transfer-Encoding'] = 'binary'
           status :ok
           body ver.archive.string

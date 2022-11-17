@@ -31,7 +31,7 @@ You do not need to add version information on the pages in the `/development` di
 
 ### Add a **Version history** item
 
-If all content in a topic is related, add a version history item after the topic heading.
+If all content in a topic is related, add a version history item after the topic title.
 For example:
 
 ```markdown

@@ -53,6 +53,7 @@ import updateIssueAssigneesMutation from '~/vue_shared/components/sidebar/querie
 import updateMergeRequestAssigneesMutation from '~/vue_shared/components/sidebar/queries/update_mr_assignees.mutation.graphql';
 import getEscalationStatusQuery from '~/sidebar/queries/escalation_status.query.graphql';
 import updateEscalationStatusMutation from '~/sidebar/queries/update_escalation_status.mutation.graphql';
+import groupMilestonesQuery from './queries/group_milestones.query.graphql';
 import projectIssueMilestoneMutation from './queries/project_issue_milestone.mutation.graphql';
 import projectIssueMilestoneQuery from './queries/project_issue_milestone.query.graphql';
 import projectMilestonesQuery from './queries/project_milestones.query.graphql';
@@ -241,10 +242,16 @@ export const issuableMilestoneQueries = {
 
 export const milestonesQueries = {
   [IssuableType.Issue]: {
-    query: projectMilestonesQuery,
+    query: {
+      [WorkspaceType.group]: groupMilestonesQuery,
+      [WorkspaceType.project]: projectMilestonesQuery,
+    },
   },
   [IssuableType.MergeRequest]: {
-    query: projectMilestonesQuery,
+    query: {
+      [WorkspaceType.group]: groupMilestonesQuery,
+      [WorkspaceType.project]: projectMilestonesQuery,
+    },
   },
 };
 

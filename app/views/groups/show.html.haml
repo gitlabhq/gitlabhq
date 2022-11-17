@@ -4,7 +4,6 @@
 - add_page_specific_style 'page_bundles/group'
 
 = render_if_exists 'shared/qrtly_reconciliation_alert', group: @group
-= render_if_exists 'shared/free_user_cap_alert', source: @group
 
 - if show_invite_banner?(@group)
   = content_for :group_invite_members_banner do
@@ -30,36 +29,4 @@
 
 = render_if_exists 'groups/group_activity_analytics', group: @group
 
-- if Feature.enabled?(:group_overview_tabs_vue, @group)
-  #js-group-overview-tabs{ data: group_overview_tabs_app_data(@group) }
-- else
-  .groups-listing{ data: { endpoints: { default: group_children_path(@group, format: :json), shared: group_shared_projects_path(@group, format: :json) } } }
-    .top-area.group-nav-container.justify-content-between
-      .scrolling-tabs-container.inner-page-scroll-tabs
-        .fade-left= sprite_icon('chevron-lg-left', size: 12)
-        .fade-right= sprite_icon('chevron-lg-right', size: 12)
-        -# `item_active` is set to `false` as the active state is set by `app/assets/javascripts/pages/groups/shared/group_details.js`
-        -# TODO: Replace this approach in https://gitlab.com/gitlab-org/gitlab/-/issues/23466
-        = gl_tabs_nav({ class: 'nav-links scrolling-tabs gl-display-flex gl-flex-grow-1 gl-flex-nowrap gl-border-0' }) do
-          = gl_tab_link_to group_path, item_active: false, tab_class: 'js-subgroups_and_projects-tab', data: { target: 'div#subgroups_and_projects', action: 'subgroups_and_projects', toggle: 'tab' } do
-            = _("Subgroups and projects")
-          = gl_tab_link_to group_shared_path, item_active: false, tab_class: 'js-shared-tab', data: { target: 'div#shared', action: 'shared', toggle: 'tab' } do
-            = _("Shared projects")
-          = gl_tab_link_to group_archived_path, item_active: false, tab_class: 'js-archived-tab', data: { target: 'div#archived', action: 'archived', toggle: 'tab' } do
-            = _("Archived projects")
-
-      .nav-controls.d-block.d-md-flex
-        .group-search
-          = render "shared/groups/search_form"
-
-        = render "shared/groups/dropdown", options_hash: subgroups_sort_options_hash
-
-    .tab-content
-      #subgroups_and_projects.tab-pane
-        = render "subgroups_and_projects", group: @group
-
-      #shared.tab-pane
-        = render "shared_projects", group: @group
-
-      #archived.tab-pane
-        = render "archived_projects", group: @group
+#js-group-overview-tabs{ data: group_overview_tabs_app_data(@group) }

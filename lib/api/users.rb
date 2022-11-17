@@ -8,9 +8,18 @@ module API
 
     allow_access_with_scope :read_user, if: -> (request) { request.get? || request.head? }
 
-    feature_category :users, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+    feature_category :users,
+                     %w[
+                       /users/:id/custom_attributes
+                       /users/:id/custom_attributes/:key
+                       /users/:id/associations_count
+                     ]
 
-    urgency :medium, ['/users/:id/custom_attributes', '/users/:id/custom_attributes/:key']
+    urgency :medium,
+            %w[
+              /users/:id/custom_attributes
+              /users/:id/custom_attributes/:key
+            ]
 
     resource :users, requirements: { uid: /[0-9]*/, id: /[0-9]*/ } do
       include CustomAttributesEndpoints
@@ -20,15 +29,9 @@ module API
       end
 
       helpers Helpers::UsersHelpers
+      helpers Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
       helpers do
-        # rubocop: disable CodeReuse/ActiveRecord
-        def find_user_by_id(params)
-          id = params[:user_id] || params[:id]
-          User.find_by(id: id) || not_found!('User')
-        end
-        # rubocop: enable CodeReuse/ActiveRecord
-
         # rubocop: disable CodeReuse/ActiveRecord
         def reorder_users(users)
           if params[:order_by] && params[:sort]
@@ -72,6 +75,31 @@ module API
                               default: 'id', desc: 'Return users ordered by a field'
           optional :sort, type: String, values: %w[asc desc], default: 'desc',
                           desc: 'Return users sorted in ascending and descending order'
+        end
+      end
+
+      resources ':id/associations_count' do
+        helpers do
+          def present_entity(result)
+            present result,
+                    with: ::API::Entities::UserAssociationsCount
+          end
+        end
+
+        desc "Returns a list of a specified user's count of projects, groups, issues and merge requests."
+        params do
+          requires :id,
+                   type: Integer,
+                   desc: 'ID of the user to query.'
+        end
+        get do
+          authenticate!
+
+          user = find_user_by_id(params)
+          forbidden! unless can?(current_user, :get_user_associations_count, user)
+          not_found!('User') unless user
+
+          present_entity(user)
         end
       end
 
@@ -279,6 +307,8 @@ module API
             .by_username(user.username)
             .any?
 
+          track_weak_password_error(user, 'API::Users', 'create')
+
           render_validation_error!(user)
         end
       end
@@ -324,6 +354,7 @@ module API
         if result[:status] == :success
           present user, with: Entities::UserWithAdmin, current_user: current_user
         else
+          track_weak_password_error(user, 'API::Users', 'update')
           render_validation_error!(user)
         end
       end
@@ -402,16 +433,16 @@ module API
         success Entities::SSHKey
       end
       params do
-        requires :id, type: Integer, desc: 'The ID of the user'
+        requires :user_id, type: Integer, desc: 'The ID of the user'
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
       end
       # rubocop: disable CodeReuse/ActiveRecord
-      post ":id/keys", feature_category: :authentication_and_authorization do
+      post ":user_id/keys", feature_category: :authentication_and_authorization do
         authenticated_as_admin!
 
-        user = User.find_by(id: params.delete(:id))
+        user = User.find_by(id: params.delete(:user_id))
         not_found!('User') unless user
 
         key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false).merge(user: user)).execute

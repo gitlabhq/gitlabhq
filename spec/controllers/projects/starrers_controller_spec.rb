@@ -6,6 +6,7 @@ RSpec.describe Projects::StarrersController do
   let(:user_1) { create(:user, name: 'John') }
   let(:user_2) { create(:user, name: 'Michael') }
   let(:private_user) { create(:user, name: 'Michael Douglas', private_profile: true) }
+  let(:blocked_user) { create(:user, state: 'blocked') }
   let(:admin) { create(:user, admin: true) }
   let(:project) { create(:project, :public) }
 
@@ -13,6 +14,7 @@ RSpec.describe Projects::StarrersController do
     user_1.toggle_star(project)
     user_2.toggle_star(project)
     private_user.toggle_star(project)
+    blocked_user.toggle_star(project)
   end
 
   describe 'GET index' do
@@ -59,6 +61,10 @@ RSpec.describe Projects::StarrersController do
 
           it 'only users with public profiles are visible' do
             expect(user_ids).to contain_exactly(user_1.id, user_2.id)
+          end
+
+          it 'non-active users are not visible' do
+            expect(user_ids).not_to include(blocked_user.id)
           end
 
           include_examples 'starrers counts'

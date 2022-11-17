@@ -12,7 +12,7 @@ Static Application Security Testing (SAST) uses analyzers
 to detect vulnerabilities in source code. Each analyzer is a wrapper around a [scanner](../terminology/index.md#scanner), a third-party code analysis tool.
 
 The analyzers are published as Docker images that SAST uses to launch dedicated containers for each
-analysis.
+analysis. We recommend a minimum of 4GB RAM to ensure consistent performance of the analyzers.
 
 SAST default images are maintained by GitLab, but you can also integrate your own custom image.
 
@@ -134,6 +134,14 @@ In GitLab 15.4, we [removed the deprecated analyzers](https://gitlab.com/gitlab-
 To preview the upcoming changes to the CI/CD configuration in GitLab 15.3 or earlier:
 
 1. Open an MR to switch from the Stable CI/CD template, `SAST.gitlab-ci.yaml`, to [the Latest template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml), `SAST.latest.gitlab-ci.yaml`.
+    - On GitLab.com, use the latest template directly:
+
+      ```yaml
+      include:
+        template: 'Jobs/SAST.latest.gitlab-ci.yaml'
+      ```
+
+    - On a Self-Managed instance, download the template from GitLab.com:
 
       ```yaml
       include:

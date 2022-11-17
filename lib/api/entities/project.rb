@@ -5,147 +5,148 @@ module API
     class Project < BasicProjectDetails
       include ::API::Helpers::RelatedResourcesHelpers
 
-      expose :container_registry_url, as: :container_registry_image_prefix, if: -> (_, _) { Gitlab.config.registry.enabled }
+      expose :container_registry_url, as: :container_registry_image_prefix, documentation: { type: 'string', example: 'registry.gitlab.example.com/gitlab/gitlab-client' }, if: -> (_, _) { Gitlab.config.registry.enabled }
 
       expose :_links do
-        expose :self do |project|
+        expose :self, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4' } do |project|
           expose_url(api_v4_projects_path(id: project.id))
         end
 
-        expose :issues, if: -> (project, options) { issues_available?(project, options) } do |project|
+        expose :issues, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/issues' }, if: -> (project, options) { issues_available?(project, options) } do |project|
           expose_url(api_v4_projects_issues_path(id: project.id))
         end
 
-        expose :merge_requests, if: -> (project, options) { mrs_available?(project, options) } do |project|
+        expose :merge_requests, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/merge_requests' }, if: -> (project, options) { mrs_available?(project, options) } do |project|
           expose_url(api_v4_projects_merge_requests_path(id: project.id))
         end
 
-        expose :repo_branches do |project|
+        expose :repo_branches, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/repository/branches' } do |project|
           expose_url(api_v4_projects_repository_branches_path(id: project.id))
         end
 
-        expose :labels do |project|
+        expose :labels, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/labels' } do |project|
           expose_url(api_v4_projects_labels_path(id: project.id))
         end
 
-        expose :events do |project|
+        expose :events, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/events' } do |project|
           expose_url(api_v4_projects_events_path(id: project.id))
         end
 
-        expose :members do |project|
+        expose :members, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/members' } do |project|
           expose_url(api_v4_projects_members_path(id: project.id))
         end
 
-        expose :cluster_agents do |project|
+        expose :cluster_agents, documentation: { type: 'string', example: 'https://gitlab.example.com/api/v4/projects/4/cluster_agents' } do |project|
           expose_url(api_v4_projects_cluster_agents_path(id: project.id))
         end
       end
 
-      expose :packages_enabled
-      expose :empty_repo?, as: :empty_repo
-      expose :archived?, as: :archived
-      expose :visibility
+      expose :packages_enabled, documentation: { type: 'boolean' }
+      expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
+      expose :archived?, as: :archived, documentation: { type: 'boolean' }
+      expose :visibility, documentation: { type: 'string', example: 'public' }
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
-      expose :resolve_outdated_diff_discussions
+      expose :resolve_outdated_diff_discussions, documentation: { type: 'boolean' }
       expose :container_expiration_policy,
              using: Entities::ContainerExpirationPolicy,
              if: -> (project, _) { project.container_expiration_policy }
 
       # Expose old field names with the new permissions methods to keep API compatible
       # TODO: remove in API v5, replaced by *_access_level
-      expose(:issues_enabled) { |project, options| project.feature_available?(:issues, options[:current_user]) }
-      expose(:merge_requests_enabled) { |project, options| project.feature_available?(:merge_requests, options[:current_user]) }
-      expose(:wiki_enabled) { |project, options| project.feature_available?(:wiki, options[:current_user]) }
-      expose(:jobs_enabled) { |project, options| project.feature_available?(:builds, options[:current_user]) }
-      expose(:snippets_enabled) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
-      expose(:container_registry_enabled) { |project, options| project.feature_available?(:container_registry, options[:current_user]) }
-      expose :service_desk_enabled
-      expose :service_desk_address, if: -> (project, options) do
+      expose(:issues_enabled, documentation: { type: 'boolean' }) { |project, options| project.feature_available?(:issues, options[:current_user]) }
+      expose(:merge_requests_enabled, documentation: { type: 'boolean' }) { |project, options| project.feature_available?(:merge_requests, options[:current_user]) }
+      expose(:wiki_enabled, documentation: { type: 'boolean' }) { |project, options| project.feature_available?(:wiki, options[:current_user]) }
+      expose(:jobs_enabled, documentation: { type: 'boolean' }) { |project, options| project.feature_available?(:builds, options[:current_user]) }
+      expose(:snippets_enabled, documentation: { type: 'boolean' }) { |project, options| project.feature_available?(:snippets, options[:current_user]) }
+      expose(:container_registry_enabled, documentation: { type: 'boolean' }) { |project, options| project.feature_available?(:container_registry, options[:current_user]) }
+      expose :service_desk_enabled, documentation: { type: 'boolean' }
+      expose :service_desk_address, documentation: { type: 'string', example: 'address@example.com' }, if: -> (project, options) do
         Ability.allowed?(options[:current_user], :admin_issue, project)
       end
 
-      expose(:can_create_merge_request_in) do |project, options|
+      expose(:can_create_merge_request_in, documentation: { type: 'boolean' }) do |project, options|
         Ability.allowed?(options[:current_user], :create_merge_request_in, project)
       end
 
-      expose(:issues_access_level) { |project, options| project_feature_string_access_level(project, :issues) }
-      expose(:repository_access_level) { |project, options| project_feature_string_access_level(project, :repository) }
-      expose(:merge_requests_access_level) { |project, options| project_feature_string_access_level(project, :merge_requests) }
-      expose(:forking_access_level) { |project, options| project_feature_string_access_level(project, :forking) }
-      expose(:wiki_access_level) { |project, options| project_feature_string_access_level(project, :wiki) }
-      expose(:builds_access_level) { |project, options| project_feature_string_access_level(project, :builds) }
-      expose(:snippets_access_level) { |project, options| project_feature_string_access_level(project, :snippets) }
-      expose(:pages_access_level) { |project, options| project_feature_string_access_level(project, :pages) }
-      expose(:operations_access_level) { |project, options| project_feature_string_access_level(project, :operations) }
-      expose(:analytics_access_level) { |project, options| project_feature_string_access_level(project, :analytics) }
-      expose(:container_registry_access_level) { |project, options| project_feature_string_access_level(project, :container_registry) }
-      expose(:security_and_compliance_access_level) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
-      expose(:releases_access_level) { |project, options| project_feature_string_access_level(project, :releases) }
+      expose(:issues_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :issues) }
+      expose(:repository_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :repository) }
+      expose(:merge_requests_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :merge_requests) }
+      expose(:forking_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :forking) }
+      expose(:wiki_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :wiki) }
+      expose(:builds_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :builds) }
+      expose(:snippets_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :snippets) }
+      expose(:pages_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :pages) }
+      expose(:operations_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :operations) }
+      expose(:analytics_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :analytics) }
+      expose(:container_registry_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :container_registry) }
+      expose(:security_and_compliance_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :security_and_compliance) }
+      expose(:releases_access_level, documentation: { type: 'string', example: 'enabled' }) { |project, options| project_feature_string_access_level(project, :releases) }
 
-      expose :emails_disabled
-      expose :shared_runners_enabled
-      expose :lfs_enabled?, as: :lfs_enabled
-      expose :creator_id
+      expose :emails_disabled, documentation: { type: 'boolean' }
+      expose :shared_runners_enabled, documentation: { type: 'boolean' }
+      expose :lfs_enabled?, as: :lfs_enabled, documentation: { type: 'boolean' }
+      expose :creator_id, documentation: { type: 'integer', example: 1 }
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: ->(project, options) do
         project.forked? && Ability.allowed?(options[:current_user], :read_project, project.forked_from_project)
       end
-      expose :mr_default_target_self, if: -> (project) { project.forked? }
+      expose :mr_default_target_self, if: -> (project) { project.forked? }, documentation: { type: 'boolean' }
 
-      expose :import_url, if: -> (project, options) { Ability.allowed?(options[:current_user], :admin_project, project) } do |project|
+      expose :import_url, documentation: { type: 'string', example: 'https://gitlab.com/gitlab/gitlab.git' }, if: -> (project, options) { Ability.allowed?(options[:current_user], :admin_project, project) } do |project|
         project[:import_url]
       end
-      expose :import_type, if: -> (project, options) { Ability.allowed?(options[:current_user], :admin_project, project) }
-      expose :import_status
-      expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
+      expose :import_type, documentation: { type: 'string', example: 'git' }, if: -> (project, options) { Ability.allowed?(options[:current_user], :admin_project, project) }
+      expose :import_status, documentation: { type: 'string', example: 'none' }
+      expose :import_error, documentation: { type: 'string', example: 'Import error' }, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
         project.import_state&.last_error
       end
 
-      expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
-      expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :ci_default_git_depth
-      expose :ci_forward_deployment_enabled
-      expose(:ci_job_token_scope_enabled) { |p, _| p.ci_outbound_job_token_scope_enabled? }
-      expose :ci_separated_caches
-      expose :ci_opt_in_jwt
-      expose :ci_allow_fork_pipelines_to_run_in_parent_project
-      expose :public_builds, as: :public_jobs
-      expose :build_git_strategy, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
+      expose :open_issues_count, documentation: { type: 'integer', example: 1 }, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
+      expose :runners_token, documentation: { type: 'string', example: 'b8547b1dc37721d05889db52fa2f02' }, if: lambda { |_project, options| options[:user_can_admin_project] }
+      expose :ci_default_git_depth, documentation: { type: 'integer', example: 20 }
+      expose :ci_forward_deployment_enabled, documentation: { type: 'boolean' }
+      expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
+      expose :ci_separated_caches, documentation: { type: 'boolean' }
+      expose :ci_opt_in_jwt, documentation: { type: 'boolean' }
+      expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }
+      expose :public_builds, as: :public_jobs, documentation: { type: 'boolean' }
+      expose :build_git_strategy, documentation: { type: 'string', example: 'fetch' }, if: lambda { |project, options| options[:user_can_admin_project] } do |project, options|
         project.build_allow_git_fetch ? 'fetch' : 'clone'
       end
-      expose :build_timeout
-      expose :auto_cancel_pending_pipelines
-      expose :ci_config_path, if: -> (project, options) { Ability.allowed?(options[:current_user], :download_code, project) }
-      expose :shared_with_groups do |project, options|
+      expose :build_timeout, documentation: { type: 'integer', example: 3600 }
+      expose :auto_cancel_pending_pipelines, documentation: { type: 'string', example: 'enabled' }
+      expose :ci_config_path, documentation: { type: 'string', example: '' }, if: -> (project, options) { Ability.allowed?(options[:current_user], :read_code, project) }
+      expose :shared_with_groups, documentation: { is_array: true } do |project, options|
         user = options[:current_user]
 
         SharedGroupWithProject.represent(project.visible_group_links(for_user: user), options)
       end
-      expose :only_allow_merge_if_pipeline_succeeds
-      expose :allow_merge_on_skipped_pipeline
-      expose :restrict_user_defined_variables
-      expose :request_access_enabled
-      expose :only_allow_merge_if_all_discussions_are_resolved
-      expose :remove_source_branch_after_merge
-      expose :printing_merge_request_link_enabled
-      expose :merge_method
-      expose :squash_option
-      expose :enforce_auth_checks_on_uploads
-      expose :suggestion_commit_message
-      expose :merge_commit_template
-      expose :squash_commit_template
+      expose :only_allow_merge_if_pipeline_succeeds, documentation: { type: 'boolean' }
+      expose :allow_merge_on_skipped_pipeline, documentation: { type: 'boolean' }
+      expose :restrict_user_defined_variables, documentation: { type: 'boolean' }
+      expose :request_access_enabled, documentation: { type: 'boolean' }
+      expose :only_allow_merge_if_all_discussions_are_resolved, documentation: { type: 'boolean' }
+      expose :remove_source_branch_after_merge, documentation: { type: 'boolean' }
+      expose :printing_merge_request_link_enabled, documentation: { type: 'boolean' }
+      expose :merge_method, documentation: { type: 'string', example: 'merge' }
+      expose :squash_option, documentation: { type: 'string', example: 'default_off' }
+      expose :enforce_auth_checks_on_uploads, documentation: { type: 'boolean' }
+      expose :suggestion_commit_message, documentation: { type: 'string', example: 'Suggestion message' }
+      expose :merge_commit_template, documentation: { type: 'string', example: '%(title)' }
+      expose :squash_commit_template, documentation: { type: 'string', example: '%(source_branch)' }
+      expose :issue_branch_template, documentation: { type: 'string', example: '%(title)' }
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: -> (project, options) {
         options[:statistics] && Ability.allowed?(options[:current_user], :read_statistics, project)
       }
-      expose :auto_devops_enabled?, as: :auto_devops_enabled
-      expose :auto_devops_deploy_strategy do |project, options|
+      expose :auto_devops_enabled?, as: :auto_devops_enabled, documentation: { type: 'boolean' }
+      expose :auto_devops_deploy_strategy, documentation: { type: 'string', example: 'continuous' } do |project, options|
         project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
       end
-      expose :autoclose_referenced_issues
-      expose :repository_storage, if: ->(project, options) {
+      expose :autoclose_referenced_issues, documentation: { type: 'boolean' }
+      expose :repository_storage, documentation: { type: 'string', example: 'default' }, if: ->(project, options) {
         Ability.allowed?(options[:current_user], :change_repository_storage, project)
       }
-      expose :keep_latest_artifacts_available?, as: :keep_latest_artifact
-      expose :runner_token_expiration_interval
+      expose :keep_latest_artifacts_available?, as: :keep_latest_artifact, documentation: { type: 'boolean' }
+      expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
 
       # rubocop: disable CodeReuse/ActiveRecord
       def self.preload_resource(project)

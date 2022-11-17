@@ -39,7 +39,7 @@ Project Maintainers or Owners can enable suggested reviewers by visiting the [pr
 
 Enabling suggested reviewers will trigger GitLab to create an ML model for your project that will be used to generate reviewers. The larger your project, the longer this can take, but usually, the model will be ready to generate suggestions within a few hours.
 
-No action is required once the feature is enabled. Once the model is ready, recommendations will populate the Reviewer dropdown in the right-hand sidebar of a merge request with new commits.
+No action is required once the feature is enabled. Once the model is ready, recommendations will populate the Reviewer dropdown list in the right-hand sidebar of a merge request with new commits.
 
 ## Review a merge request
 

@@ -15,8 +15,8 @@ import InstallationCommands from '~/packages_and_registries/package_registry/com
 import PackageFiles from '~/packages_and_registries/package_registry/components/details/package_files.vue';
 import PackageHistory from '~/packages_and_registries/package_registry/components/details/package_history.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/details/package_title.vue';
-import VersionRow from '~/packages_and_registries/package_registry/components/details/version_row.vue';
 import DeletePackage from '~/packages_and_registries/package_registry/components/functional/delete_package.vue';
+import PackageVersionsList from '~/packages_and_registries/package_registry/components/details/package_versions_list.vue';
 import {
   FETCH_PACKAGE_DETAILS_ERROR_MESSAGE,
   PACKAGE_TYPE_COMPOSER,
@@ -99,6 +99,7 @@ describe('PackagesApp', () => {
         GlSprintf,
         GlTabs,
         GlTab,
+        PackageVersionsList,
       },
       mocks: {
         $route: {
@@ -120,8 +121,7 @@ describe('PackagesApp', () => {
   const findPackageFiles = () => wrapper.findComponent(PackageFiles);
   const findDeleteFileModal = () => wrapper.findByTestId('delete-file-modal');
   const findDeleteFilesModal = () => wrapper.findByTestId('delete-files-modal');
-  const findVersionRows = () => wrapper.findAllComponents(VersionRow);
-  const noVersionsMessage = () => wrapper.findByTestId('no-versions-message');
+  const findVersionsList = () => wrapper.findComponent(PackageVersionsList);
   const findDependenciesCountBadge = () => wrapper.findComponent(GlBadge);
   const findNoDependenciesMessage = () => wrapper.findByTestId('no-dependencies-message');
   const findDependencyRows = () => wrapper.findAllComponents(DependencyRow);
@@ -558,37 +558,22 @@ describe('PackagesApp', () => {
   });
 
   describe('versions', () => {
-    it('displays the correct version count when the package has versions', async () => {
+    it('displays versions list when the package has versions', async () => {
       createComponent();
 
       await waitForPromises();
 
-      expect(findVersionRows()).toHaveLength(packageVersions().length);
+      expect(findVersionsList()).toBeDefined();
     });
 
     it('binds the correct props', async () => {
-      const [versionPackage] = packageVersions();
-      // eslint-disable-next-line no-underscore-dangle
-      delete versionPackage.__typename;
-      delete versionPackage.tags;
-
-      createComponent();
-
+      const versionNodes = packageVersions();
+      createComponent({ packageEntity: { versions: { nodes: versionNodes } } });
       await waitForPromises();
 
-      expect(findVersionRows().at(0).props()).toMatchObject({
-        packageEntity: expect.objectContaining(versionPackage),
+      expect(findVersionsList().props()).toMatchObject({
+        versions: expect.arrayContaining(versionNodes),
       });
-    });
-
-    it('displays the no versions message when there are none', async () => {
-      createComponent({
-        resolver: jest.fn().mockResolvedValue(packageDetailsQuery({ versions: { nodes: [] } })),
-      });
-
-      await waitForPromises();
-
-      expect(noVersionsMessage().exists()).toBe(true);
     });
   });
   describe('dependency links', () => {

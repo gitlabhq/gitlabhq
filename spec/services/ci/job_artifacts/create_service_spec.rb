@@ -181,8 +181,8 @@ RSpec.describe Ci::JobArtifacts::CreateService do
       end
     end
 
-    context 'with job partitioning' do
-      let(:pipeline) { create(:ci_pipeline, project: project, partition_id: 123) }
+    context 'with job partitioning', :ci_partitionable do
+      let(:pipeline) { create(:ci_pipeline, project: project, partition_id: ci_testing_partition_id) }
       let(:job) { create(:ci_build, pipeline: pipeline) }
 
       it 'sets partition_id on artifacts' do
@@ -190,7 +190,7 @@ RSpec.describe Ci::JobArtifacts::CreateService do
 
         artifacts_partitions = job.job_artifacts.map(&:partition_id).uniq
 
-        expect(artifacts_partitions).to eq([123])
+        expect(artifacts_partitions).to eq([ci_testing_partition_id])
       end
     end
 

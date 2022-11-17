@@ -1,6 +1,12 @@
 {
   "type": "object",
-  "required": ["status", "summary", "new_errors", "resolved_errors", "existing_errors"],
+  "required": [
+    "status",
+    "summary",
+    "new_errors",
+    "resolved_errors",
+    "existing_errors"
+  ],
   "properties": {
     "status": {
       "type": "string"
@@ -18,7 +24,11 @@
           "type": "integer"
         }
       },
-      "required": ["total", "resolved", "errored"]
+      "required": [
+        "total",
+        "resolved",
+        "errored"
+      ]
     },
     "new_errors": {
       "type": "array",

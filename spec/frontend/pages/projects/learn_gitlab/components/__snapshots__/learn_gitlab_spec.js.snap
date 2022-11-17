@@ -147,6 +147,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="set_up_your_first_project_s_ci_cd"
@@ -171,6 +172,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="start_a_free_trial_of_gitlab_ultimate"
@@ -196,6 +198,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="add_code_owners"
@@ -228,6 +231,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="enable_require_merge_approvals"
@@ -294,6 +298,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="create_an_issue"
@@ -318,6 +323,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="submit_a_merge_request_mr"
@@ -376,6 +382,7 @@ exports[`Learn GitLab renders correctly 1`] = `
               <div>
                 <a
                   class="gl-link"
+                  data-qa-selector="uncompleted_learn_gitlab_link"
                   data-testid="uncompleted-learn-gitlab-link"
                   data-track-action="click_link"
                   data-track-label="run_a_security_scan_using_ci_cd"

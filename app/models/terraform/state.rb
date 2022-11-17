@@ -28,7 +28,7 @@ module Terraform
     validates :uuid, presence: true, uniqueness: true, length: { is: UUID_LENGTH },
                      format: { with: HEX_REGEXP, message: 'only allows hex characters' }
 
-    default_value_for(:uuid, allows_nil: false) { SecureRandom.hex(UUID_LENGTH / 2) }
+    attribute :uuid, default: -> { SecureRandom.hex(UUID_LENGTH / 2) }
 
     def latest_file
       latest_version&.file

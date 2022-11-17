@@ -9,7 +9,7 @@ module Pajamas
     # @param button_link text
     # @param content textarea
     # @param embedded toggle
-    # @param variant select [introduction, promotion]
+    # @param variant select {{ Pajamas::BannerComponent::VARIANT_OPTIONS }}
     def default(
       button_text: "Learn more",
       button_link: "https://about.gitlab.com/",

@@ -8,7 +8,7 @@ RSpec.describe Deployments::DeploymentPresenter do
 
   describe '#tags' do
     it do
-      expect(deployment).to receive(:tags).and_return(['test'])
+      expect(deployment).to receive(:tags).and_return(['refs/tags/test'])
       expect(presenter.tags).to eq([{ name: 'test', path: 'tags/test' }])
     end
   end

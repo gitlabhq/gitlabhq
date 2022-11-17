@@ -87,7 +87,7 @@ RSpec.describe 'RunnersRegistrationTokenReset' do
     include_context('when unauthorized', 'group')
 
     include_context 'when authorized', 'group' do
-      let_it_be(:user) { create_default(:group_member, :owner, user: create(:user), group: group ).user }
+      let_it_be(:user) { create_default(:group_member, :owner, user: create(:user), group: group).user }
 
       def get_token
         group.reload.runners_token

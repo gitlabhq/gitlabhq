@@ -6,7 +6,7 @@ class DiffsMetadataEntity < DiffsEntity
     DiffFileMetadataEntity.represent(
       diffs.raw_diff_files(sorted: true),
       options.merge(
-        conflicts: conflicts(allow_tree_conflicts: options[:allow_tree_conflicts])
+        conflicts: (conflicts(allow_tree_conflicts: true) if options[:merge_conflicts_in_diff])
       )
     )
   end

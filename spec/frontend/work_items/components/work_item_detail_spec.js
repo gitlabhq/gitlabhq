@@ -24,12 +24,13 @@ import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDatesSubscription from '~/work_items/graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '~/work_items/graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assignees.subscription.graphql';
+import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
-import { temporaryConfig } from '~/graphql_shared/issuable_client';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockParent,
@@ -37,6 +38,8 @@ import {
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
   workItemAssigneesSubscriptionResponse,
+  workItemMilestoneSubscriptionResponse,
+  projectWorkItemResponse,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -52,8 +55,12 @@ describe('WorkItemDetail component', () => {
     canDelete: true,
   });
   const successHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const successByIidHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
+  const milestoneSubscriptionHandler = jest
+    .fn()
+    .mockResolvedValue(workItemMilestoneSubscriptionResponse);
   const assigneesSubscriptionHandler = jest
     .fn()
     .mockResolvedValue(workItemAssigneesSubscriptionResponse);
@@ -85,26 +92,23 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
-    includeWidgets = false,
     workItemsMvc2Enabled = false,
+    fetchByIid = false,
+    iidPathQueryParam = undefined,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
       [workItemTitleSubscription, subscriptionHandler],
       [workItemDatesSubscription, datesSubscriptionHandler],
       [workItemAssigneesSubscription, assigneesSubscriptionHandler],
+      [workItemMilestoneSubscription, milestoneSubscriptionHandler],
+      [workItemByIidQuery, successByIidHandler],
       confidentialityMock,
     ];
 
     wrapper = shallowMount(WorkItemDetail, {
-      apolloProvider: createMockApollo(
-        handlers,
-        {},
-        {
-          typePolicies: includeWidgets ? temporaryConfig.cacheConfig.typePolicies : {},
-        },
-      ),
-      propsData: { isModal, workItemId },
+      apolloProvider: createMockApollo(handlers),
+      propsData: { isModal, workItemId, iid: '1' },
       data() {
         return {
           updateInProgress,
@@ -114,14 +118,23 @@ describe('WorkItemDetail component', () => {
       provide: {
         glFeatures: {
           workItemsMvc2: workItemsMvc2Enabled,
+          useIidInWorkItemsPath: fetchByIid,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         projectNamespace: 'namespace',
+        fullPath: 'group/project',
       },
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
+      },
+      mocks: {
+        $route: {
+          query: {
+            iid_path: iidPathQueryParam,
+          },
+        },
       },
     });
   };
@@ -421,8 +434,9 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('subscriptions', () => {
-    it('calls the title subscription', () => {
+    it('calls the title subscription', async () => {
       createComponent();
+      await waitForPromises();
 
       expect(titleSubscriptionHandler).toHaveBeenCalledWith({
         issuableId: workItemQueryResponse.data.workItem.id,
@@ -543,14 +557,40 @@ describe('WorkItemDetail component', () => {
 
   describe('milestone widget', () => {
     it.each`
-      description                                               | includeWidgets | exists
-      ${'renders when widget is returned from API'}             | ${true}        | ${true}
-      ${'does not render when widget is not returned from API'} | ${false}       | ${false}
-    `('$description', async ({ includeWidgets, exists }) => {
-      createComponent({ includeWidgets, workItemsMvc2Enabled: true });
+      description                                               | milestoneWidgetPresent | exists
+      ${'renders when widget is returned from API'}             | ${true}                | ${true}
+      ${'does not render when widget is not returned from API'} | ${false}               | ${false}
+    `('$description', async ({ milestoneWidgetPresent, exists }) => {
+      const response = workItemResponseFactory({ milestoneWidgetPresent });
+      const handler = jest.fn().mockResolvedValue(response);
+      createComponent({ handler, workItemsMvc2Enabled: true });
       await waitForPromises();
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
+    });
+
+    describe('milestone subscription', () => {
+      describe('when the milestone widget exists', () => {
+        it('calls the milestone subscription', async () => {
+          createComponent();
+          await waitForPromises();
+
+          expect(milestoneSubscriptionHandler).toHaveBeenCalledWith({
+            issuableId: workItemQueryResponse.data.workItem.id,
+          });
+        });
+      });
+
+      describe('when the assignees widget does not exist', () => {
+        it('does not call the milestone subscription', async () => {
+          const response = workItemResponseFactory({ milestoneWidgetPresent: false });
+          const handler = jest.fn().mockResolvedValue(response);
+          createComponent({ handler });
+          await waitForPromises();
+
+          expect(milestoneSubscriptionHandler).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 
@@ -569,6 +609,37 @@ describe('WorkItemDetail component', () => {
     it('is not visible after reading local storage input', async () => {
       await findLocalStorageSync().vm.$emit('input', false);
       expect(findWorkItemInformationAlert().exists()).toBe(false);
+    });
+  });
+
+  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is false', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(successHandler).toHaveBeenCalledWith({
+      id: workItemQueryResponse.data.workItem.id,
+    });
+    expect(successByIidHandler).not.toHaveBeenCalled();
+  });
+
+  it('calls the global ID work item query when `useIidInWorkItemsPath` feature flag is true but there is no `iid_path` parameter in URL', async () => {
+    createComponent({ fetchByIid: true });
+    await waitForPromises();
+
+    expect(successHandler).toHaveBeenCalledWith({
+      id: workItemQueryResponse.data.workItem.id,
+    });
+    expect(successByIidHandler).not.toHaveBeenCalled();
+  });
+
+  it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present', async () => {
+    createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
+    await waitForPromises();
+
+    expect(successHandler).not.toHaveBeenCalled();
+    expect(successByIidHandler).toHaveBeenCalledWith({
+      fullPath: 'group/project',
+      iid: '1',
     });
   });
 });

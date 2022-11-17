@@ -40,20 +40,19 @@ If you are using [GitLab Pages on GitLab.com](#gitlab-pages-on-gitlabcom) to hos
 
 Visit the [GitLab Pages group](https://gitlab.com/groups/pages) for a complete list of example projects. Contributions are very welcome.
 
-## Custom error codes Pages
+## Custom error codes pages
 
-You can provide your own 403 and 404 error pages by creating the `403.html` and
-`404.html` files respectively in the root directory of the `public/` directory
-that are included in the artifacts. Usually this is the root directory of
-your project, but that may differ depending on your static generator
-configuration.
+You can provide your own `403` and `404` error pages by creating `403.html` and
+`404.html` files in the root of the `public/` directory. Usually this is
+the root directory of your project, but that may differ
+depending on your static generator configuration.
 
 If the case of `404.html`, there are different scenarios. For example:
 
 - If you use project Pages (served under `/projectname/`) and try to access
   `/projectname/non/existing_file`, GitLab Pages tries to serve first
   `/projectname/404.html`, and then `/404.html`.
-- If you use user/group Pages (served under `/`) and try to access
+- If you use user or group Pages (served under `/`) and try to access
   `/non/existing_file` GitLab Pages tries to serve `/404.html`.
 - If you use a custom domain and try to access `/non/existing_file`, GitLab
   Pages tries to serve only `/404.html`.
@@ -63,34 +62,34 @@ If the case of `404.html`, there are different scenarios. For example:
 You can configure redirects for your site using a `_redirects` file. To learn more, read
 the [redirects documentation](redirects.md).
 
-## GitLab Pages Access Control
+## Remove your pages
 
-To restrict access to your website, enable [GitLab Pages Access Control](pages_access_control.md).
+To remove your pages:
 
-## Unpublishing your Pages
-
-If you ever feel the need to purge your Pages content, you can do so by going
-to your project's settings through the gear icon in the top right, and then
-navigating to **Pages**. Select the **Remove pages** button to delete your Pages
-website.
-
-![Remove pages](img/remove_pages_v15_3.png)
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Pages**.
+1. Select **Remove pages**.
 
 ## Subdomains of subdomains
 
 When using Pages under the top-level domain of a GitLab instance (`*.example.io`), you can't use HTTPS with subdomains
 of subdomains. If your namespace or group name contains a dot (for example, `foo.bar`) the domain
-`https://foo.bar.example.io` does _not_ work.
+`https://foo.bar.example.io` does **not** work.
 
 This limitation is because of the [HTTP Over TLS protocol](https://www.rfc-editor.org/rfc/rfc2818#section-3.1). HTTP pages
 work as long as you don't redirect HTTP to HTTPS.
 
-## GitLab Pages and subgroups
+## GitLab Pages in projects and groups
 
-You must host your GitLab Pages website in a project. This project can belong to a [group](../../group/index.md) or
-[subgroup](../../group/subgroups/index.md). For
-[group websites](../../project/pages/getting_started_part_one.md#gitlab-pages-default-domain-names), the group must be
-at the top level and not a subgroup.
+You must host your GitLab Pages website in a project. This project can be
+[private, internal, or public](../../../user/public_access.md) and belong
+to a [group](../../group/index.md) or [subgroup](../../group/subgroups/index.md).
+
+For [group websites](../../project/pages/getting_started_part_one.md#user-and-group-website-examples),
+the group must be at the top level and not a subgroup.
+
+For [project websites](../../project/pages/getting_started_part_one.md#project-website-examples),
+you can create your project first and access it under `http(s)://namespace.example.io/projectname`.
 
 ## Specific configuration options for Pages
 
@@ -129,7 +128,7 @@ pages:
 
 See this document for a [step-by-step guide](getting_started/pages_from_scratch.md).
 
-### `.gitlab-ci.yml` for a repository where there's also actual code
+### `.gitlab-ci.yml` for a repository with code
 
 Remember that GitLab Pages are by default branch/tag agnostic and their
 deployment relies solely on what you specify in `.gitlab-ci.yml`. You can limit
@@ -256,26 +255,6 @@ instead. Here are some examples of what happens given the above Pages site:
 
 Note that when `public/data/index.html` exists, it takes priority over the `public/data.html` file
 for both the `/data` and `/data/` URL paths.
-
-## Frequently Asked Questions
-
-### Can you download your generated pages?
-
-Sure. All you need to do is download the artifacts archive from the job page.
-
-### Can you use GitLab Pages if your project is private?
-
-Yes. GitLab Pages doesn't care whether you set your project's visibility level
-to private, internal or public.
-
-### Can you create a personal or a group website?
-
-Yes. See the documentation about [GitLab Pages domain names, URLs, and base URLs](getting_started_part_one.md).
-
-### Do you need to create a user/group website before creating a project website?
-
-No, you don't. You can create your project first and access it under
-`http(s)://namespace.example.io/projectname`.
 
 ## Known issues
 

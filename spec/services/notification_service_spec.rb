@@ -211,6 +211,23 @@ RSpec.describe NotificationService, :mailer do
     it_behaves_like 'participating by assignee notification'
   end
 
+  describe '.permitted_actions' do
+    it 'includes public methods' do
+      expect(described_class.permitted_actions).to include(:access_token_created)
+    end
+
+    it 'excludes EXCLUDED_ACTIONS' do
+      described_class::EXCLUDED_ACTIONS.each do |action|
+        expect(described_class.permitted_actions).not_to include(action)
+      end
+    end
+
+    it 'excludes protected and private methods' do
+      expect(described_class.permitted_actions).not_to include(:new_resource_email)
+      expect(described_class.permitted_actions).not_to include(:approve_mr_email)
+    end
+  end
+
   describe '#async' do
     let(:async) { notification.async }
 

@@ -56,7 +56,7 @@ GitLab marketing-related entries are occasionally shown on the Help page. To hid
 
 You can specify a custom URL to which users are directed when they:
 
-- Select **Support** from the Help dropdown.
+- Select **Support** from the Help dropdown list.
 - Select **See our website for help** on the Help page.
 
 1. On the top bar, select **Main menu > Admin**.
@@ -106,6 +106,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

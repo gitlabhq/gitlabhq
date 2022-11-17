@@ -5,6 +5,21 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Reports::Sbom::Report do
   subject(:report) { described_class.new }
 
+  describe '#valid?' do
+    context 'when there are no errors' do
+      it { is_expected.to be_valid }
+    end
+
+    context 'when report contains errors' do
+      before do
+        report.add_error('error1')
+        report.add_error('error2')
+      end
+
+      it { is_expected.not_to be_valid }
+    end
+  end
+
   describe '#add_error' do
     it 'appends errors to a list' do
       report.add_error('error1')

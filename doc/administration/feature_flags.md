@@ -118,10 +118,10 @@ Some feature flags can be enabled or disabled on a per project basis:
 Feature.enable(:<feature flag>, Project.find(<project id>))
 ```
 
-For example, to enable the [`:product_analytics`](../operations/product_analytics.md) feature flag for project `1234`:
+For example, to enable the `:my_awesome_feature` feature flag for project `1234`:
 
 ```ruby
-Feature.enable(:product_analytics, Project.find(1234))
+Feature.enable(:my_awesome_feature, Project.find(1234))
 ```
 
 `Feature.enable` and `Feature.disable` always return `true`, even if the application doesn't use the flag:

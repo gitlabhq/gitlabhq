@@ -102,5 +102,16 @@ describe IpynbDiff::Transformer do
         end
       end
     end
+
+    context 'when notebook can not be parsed' do
+      it 'raises error' do
+        notebook = '{"cells":[]}'
+        allow(Oj::Parser.usual).to receive(:parse).and_return(nil)
+
+        expect do
+          IpynbDiff::Transformer.new.transform(notebook)
+        end.to raise_error(IpynbDiff::InvalidNotebookError)
+      end
+    end
   end
 end

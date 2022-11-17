@@ -150,4 +150,54 @@ RSpec.describe IntegrationsHelper do
       end
     end
   end
+
+  describe '#integration_issue_type' do
+    using RSpec::Parameterized::TableSyntax
+    let_it_be(:issue) { create(:issue) }
+
+    where(:issue_type, :expected_i18n_issue_type) do
+      "issue"           | _('Issue')
+      "incident"        | _('Incident')
+      "test_case"       | _('Test case')
+      "requirement"     | _('Requirement')
+      "task"            | _('Task')
+    end
+
+    with_them do
+      before do
+        issue.update!(issue_type: issue_type)
+      end
+
+      it "return the correct i18n issue type" do
+        expect(described_class.integration_issue_type(issue.issue_type)).to eq(expected_i18n_issue_type)
+      end
+    end
+
+    it "only consider these enumeration values are valid" do
+      expected_valid_types = %w[issue incident test_case requirement task objective key_result]
+      expect(Issue.issue_types.keys).to contain_exactly(*expected_valid_types)
+    end
+  end
+
+  describe '#integration_todo_target_type' do
+    using RSpec::Parameterized::TableSyntax
+    let!(:todo) { create(:todo, commit_id: '123') }
+
+    where(:target_type, :expected_i18n_target_type) do
+      "Commit"                      | _("Commit")
+      "Issue"                       | _("Issue")
+      "MergeRequest"                | _("Merge Request")
+      'Epic'                        | _('Epic')
+      DesignManagement::Design.name | _('design')
+      AlertManagement::Alert.name   | _('alert')
+    end
+
+    with_them do
+      before do
+        todo.update!(target_type: target_type)
+      end
+
+      it { expect(described_class.integration_todo_target_type(todo.target_type)).to eq(expected_i18n_target_type) }
+    end
+  end
 end

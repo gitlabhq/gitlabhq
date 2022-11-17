@@ -3,11 +3,9 @@
 class MergeRequestPollCachedWidgetEntity < IssuableEntity
   include MergeRequestMetricsHelper
 
-  expose :auto_merge_enabled
   expose :state
   expose :merged_commit_sha
   expose :short_merged_commit_sha
-  expose :merge_error
   expose :merge_user_id
   expose :source_branch
   expose :source_project_id
@@ -16,15 +14,10 @@ class MergeRequestPollCachedWidgetEntity < IssuableEntity
   expose :target_project_id
   expose :squash
   expose :rebase_in_progress?, as: :rebase_in_progress
-  expose :commits_count
+  expose :default_squash_commit_message
   expose :merge_ongoing?, as: :merge_ongoing
-  expose :draft?, as: :draft
-  expose :draft?, as: :work_in_progress
-  expose :cannot_be_merged?, as: :has_conflicts
-  expose :can_be_merged?, as: :can_be_merged
   expose :remove_source_branch?, as: :remove_source_branch
   expose :source_branch_exists?, as: :source_branch_exists
-  expose :branch_missing?, as: :branch_missing
 
   expose :merge_status do |merge_request|
     merge_request.check_mergeability(async: true)

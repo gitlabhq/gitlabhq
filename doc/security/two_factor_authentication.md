@@ -99,10 +99,12 @@ This is a permanent and irreversible action. Users must reactivate 2FA to use it
 
 ### For a single user
 
-To disable 2FA for non-administrator users, we recommend using the [API endpoint](../api/users.md#disable-two-factor-authentication)
+To disable 2FA for non-administrator users, you should use the [API endpoint](../api/users.md#disable-two-factor-authentication)
 instead of the Rails console.
 Using the [Rails console](../administration/operations/rails_console.md), 2FA for a single user can be disabled.
 Connect to the Rails console and run:
+
+**In GitLab 13.5 and later:**
 
 ```ruby
 admin = User.find_by_username('<USERNAME>')
@@ -110,6 +112,8 @@ user_to_disable = User.find_by_username('<USERNAME>')
 
 TwoFactor::DestroyService.new(admin, user: user_to_disable).execute
 ```
+
+The target user is notified that 2FA has been disabled.
 
 ### For all users
 
@@ -167,6 +171,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

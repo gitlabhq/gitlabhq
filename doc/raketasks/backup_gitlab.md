@@ -139,7 +139,7 @@ For installation from source:
 - `/home/git/gitlab/config/secrets.yml`
 - `/home/git/gitlab/config/gitlab.yml`
 
-For [Docker installations](https://docs.gitlab.com/omnibus/docker/), you must
+For [Docker installations](../install/docker.md), you must
 back up the volume where the configuration files are stored. If you created
 the GitLab container according to the documentation, it should be in the
 `/srv/gitlab/config` directory.

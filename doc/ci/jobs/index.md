@@ -37,7 +37,7 @@ independently from each other.
 
 When you access a pipeline, you can see the related jobs for that pipeline.
 
-Clicking an individual job shows you its job log, and allows you to:
+Selecting an individual job shows you its job log, and allows you to:
 
 - Cancel the job.
 - Retry the job.
@@ -389,5 +389,5 @@ deploy me:
 
 The behavior of deployment jobs can be controlled with
 [deployment safety](../environments/deployment_safety.md) settings like
-[skipping outdated deployment jobs](../environments/deployment_safety.md#skip-outdated-deployment-jobs)
+[preventing outdated deployment jobs](../environments/deployment_safety.md#prevent-outdated-deployment-jobs)
 and [ensuring only one deployment job runs at a time](../environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).

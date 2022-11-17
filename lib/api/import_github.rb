@@ -2,6 +2,8 @@
 
 module API
   class ImportGithub < ::API::Base
+    before { authenticate! }
+
     feature_category :importers
     urgency :low
 
@@ -35,7 +37,15 @@ module API
 
     desc 'Import a GitHub project' do
       detail 'This feature was introduced in GitLab 11.3.4.'
-      success ::ProjectEntity
+      success code: 201, model: ::ProjectEntity
+      failure [
+        { code: 400, message: 'Bad request' },
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' },
+        { code: 422, message: 'Unprocessable entity' },
+        { code: 503, message: 'Service unavailable' }
+      ]
+      tags ['project_import_github']
     end
     params do
       requires :personal_access_token, type: String, desc: 'GitHub personal access token'
@@ -56,6 +66,18 @@ module API
       end
     end
 
+    desc 'Cancel GitHub project import' do
+      detail 'This feature was introduced in GitLab 15.5'
+      success code: 200, model: ProjectImportEntity
+      failure [
+        { code: 400, message: 'Bad request' },
+        { code: 401, message: 'Unauthorized' },
+        { code: 403, message: 'Forbidden' },
+        { code: 404, message: 'Not found' },
+        { code: 503, message: 'Service unavailable' }
+      ]
+      tags ['project_import_github']
+    end
     params do
       requires :project_id, type: Integer, desc: 'ID of importing project to be canceled'
     end

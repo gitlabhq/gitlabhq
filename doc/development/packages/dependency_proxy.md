@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -130,7 +130,7 @@ graph TD
     A[Receive manifest request] --> | We have the manifest cached.| B{Docker manifest HEAD request}
     A --> | We do not have manifest cached.| C{Docker manifest GET request}
     B --> | Digest matches the one in the DB | D[Fetch manifest from cache]
-    B --> | Network failure, cannot reach DockerHub | D[Fetch manifest from cache]
+    B --> | HEAD request error, network failure, cannot reach DockerHub | D[Fetch manifest from cache]
     B --> | Digest does not match the one in DB | C
     C --> E[Save manifest to cache, save digest to database]
     D --> F

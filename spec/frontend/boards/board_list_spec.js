@@ -6,6 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createComponent from 'jest/boards/board_list_helper';
 import BoardCard from '~/boards/components/board_card.vue';
 import eventHub from '~/boards/eventhub';
+import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 
 import { mockIssues } from './mock_data';
 
@@ -15,6 +16,7 @@ describe('Board list component', () => {
   const findByTestId = (testId) => wrapper.find(`[data-testid="${testId}"]`);
   const findIssueCountLoadingIcon = () => wrapper.find('[data-testid="count-loading-icon"]');
   const findDraggable = () => wrapper.findComponent(Draggable);
+  const findMoveToPositionComponent = () => wrapper.findComponent(BoardCardMoveToPosition);
 
   const startDrag = (
     params = {
@@ -98,6 +100,10 @@ describe('Board list component', () => {
 
       await nextTick();
       expect(wrapper.find('.board-list-count').attributes('data-issue-id')).toBe('-1');
+    });
+
+    it('renders the move to position icon', () => {
+      expect(findMoveToPositionComponent().exists()).toBe(true);
     });
   });
 

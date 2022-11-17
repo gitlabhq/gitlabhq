@@ -58,34 +58,15 @@ RSpec.describe 'Create an issue' do
         input['type'] = 'TASK'
       end
 
-      context 'when work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
+      it 'creates an issue with TASK type' do
+        expect do
+          post_graphql_mutation(mutation, current_user: current_user)
+        end.to change(Issue, :count).by(1)
 
-        it 'creates an issue with the default ISSUE type' do
-          expect do
-            post_graphql_mutation(mutation, current_user: current_user)
-          end.to change(Issue, :count).by(1)
+        created_issue = Issue.last
 
-          created_issue = Issue.last
-
-          expect(created_issue.work_item_type.base_type).to eq('issue')
-          expect(created_issue.issue_type).to eq('issue')
-        end
-      end
-
-      context 'when work_items feature flag is enabled' do
-        it 'creates an issue with TASK type' do
-          expect do
-            post_graphql_mutation(mutation, current_user: current_user)
-          end.to change(Issue, :count).by(1)
-
-          created_issue = Issue.last
-
-          expect(created_issue.work_item_type.base_type).to eq('task')
-          expect(created_issue.issue_type).to eq('task')
-        end
+        expect(created_issue.work_item_type.base_type).to eq('task')
+        expect(created_issue.issue_type).to eq('task')
       end
     end
 

@@ -12,14 +12,14 @@ import {
   convertObjectPropsToCamelCase,
 } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { defaultClient } from '~/graphql_shared/issuable_client';
 import { fullBoardId } from './boards_util';
-import { gqlClient } from './graphql';
 
 Vue.use(VueApollo);
 Vue.use(PortalVue);
 
 const apolloProvider = new VueApollo({
-  defaultClient: gqlClient,
+  defaultClient,
 });
 
 function mountBoardApp(el) {
@@ -53,6 +53,8 @@ function mountBoardApp(el) {
     store,
     apolloProvider,
     provide: {
+      isApolloBoard: window.gon?.features?.apolloBoards,
+      fullBoardId: fullBoardId(boardId),
       disabled: parseBoolean(el.dataset.disabled),
       groupId: Number(groupId),
       rootPath,
@@ -70,6 +72,8 @@ function mountBoardApp(el) {
       emailsDisabled: parseBoolean(el.dataset.emailsDisabled),
       hasMissingBoards: parseBoolean(el.dataset.hasMissingBoards),
       weights: el.dataset.weights ? JSON.parse(el.dataset.weights) : [],
+      isIssueBoard: true,
+      isEpicBoard: false,
       // Permissions
       canUpdate: parseBoolean(el.dataset.canUpdate),
       canAdminList: parseBoolean(el.dataset.canAdminList),

@@ -67,8 +67,8 @@ RSpec.shared_context 'project navbar structure' do
       {
         nav_item: _('Deployments'),
         nav_sub_items: [
-          _('Feature Flags'),
           _('Environments'),
+          _('Feature Flags'),
           _('Releases')
         ]
       },
@@ -85,8 +85,7 @@ RSpec.shared_context 'project navbar structure' do
           _('Metrics'),
           _('Error Tracking'),
           _('Alerts'),
-          _('Incidents'),
-          _('Product Analytics')
+          _('Incidents')
         ]
       },
       {

@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Create a new merge request' do
+    describe 'Create a new merge request', product_group: :code_review do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'project'
@@ -18,7 +18,7 @@ module QA
 
       it(
         'creates a basic merge request',
-        :smoke,
+        :smoke, :skip_fips_env,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347738'
       ) do
         Resource::MergeRequest.fabricate_via_browser_ui! do |merge_request|

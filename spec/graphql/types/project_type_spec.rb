@@ -36,7 +36,8 @@ RSpec.describe GitlabSchema.types['Project'] do
       cluster_agent cluster_agents agent_configurations
       ci_template timelogs merge_commit_template squash_commit_template work_item_types
       recent_issue_boards ci_config_path_or_default packages_cleanup_policy ci_variables
-      timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules
+      timelog_categories fork_targets branch_rules ci_config_variables pipeline_schedules languages
+      incident_management_timeline_event_tags
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
@@ -212,8 +213,8 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it "returns the project's sast configuration for analyzer variables" do
       analyzer = subject.dig('data', 'project', 'sastCiConfiguration', 'analyzers', 'nodes').first
-      expect(analyzer['name']).to eq('bandit')
-      expect(analyzer['label']).to eq('Bandit')
+      expect(analyzer['name']).to eq('brakeman')
+      expect(analyzer['label']).to eq('Brakeman')
       expect(analyzer['enabled']).to eq(true)
     end
 
@@ -290,14 +291,14 @@ RSpec.describe GitlabSchema.types['Project'] do
     subject { described_class.fields['issue'] }
 
     it { is_expected.to have_graphql_type(Types::IssueType) }
-    it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver.single) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ProjectIssuesResolver.single) }
   end
 
   describe 'issues field' do
     subject { described_class.fields['issues'] }
 
     it { is_expected.to have_graphql_type(Types::IssueType.connection_type) }
-    it { is_expected.to have_graphql_resolver(Resolvers::IssuesResolver) }
+    it { is_expected.to have_graphql_resolver(Resolvers::ProjectIssuesResolver) }
   end
 
   describe 'merge_request field' do
@@ -506,6 +507,12 @@ RSpec.describe GitlabSchema.types['Project'] do
 
     it { is_expected.to have_graphql_type(Types::Ci::JobTokenScopeType) }
     it { is_expected.to have_graphql_resolver(Resolvers::Ci::JobTokenScopeResolver) }
+  end
+
+  describe 'incident_management_timeline_event_tags field' do
+    subject { described_class.fields['incidentManagementTimelineEventTags'] }
+
+    it { is_expected.to have_graphql_type(Types::IncidentManagement::TimelineEventTagType) }
   end
 
   describe 'agent_configurations' do
@@ -728,6 +735,116 @@ RSpec.describe GitlabSchema.types['Project'] do
 
       it 'is empty' do
         expect(branch_rules_data.count).to eq(0)
+      end
+    end
+  end
+
+  describe 'timeline_event_tags' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) do
+      create(:project,
+      :private,
+      :repository,
+      creator_id: user.id,
+      namespace: user.namespace)
+    end
+
+    let_it_be(:tag1) do
+      create(:incident_management_timeline_event_tag,
+      project: project,
+      name: 'Tag 1')
+    end
+
+    let_it_be(:tag2) do
+      create(:incident_management_timeline_event_tag,
+      project: project,
+      name: 'Tag 2')
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            incidentManagementTimelineEventTags {
+              name
+              id
+            }
+          }
+        }
+      )
+    end
+
+    let(:tags) do
+      subject.dig('data', 'project', 'incidentManagementTimelineEventTags')
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    context 'when user has permissions to read project' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'contains timeline event tags' do
+        expect(tags.count).to eq(2)
+        expect(tags.first['name']).to eq(tag1.name)
+        expect(tags.last['name']).to eq(tag2.name)
+      end
+    end
+  end
+
+  describe 'languages' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) do
+      create(:project,
+      :private,
+      :repository,
+      creator_id: user.id,
+      namespace: user.namespace)
+    end
+
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            languages {
+              name
+              share
+              color
+            }
+          }
+        }
+      )
+    end
+
+    let(:mock_languages) { [] }
+
+    before do
+      allow_next_instance_of(::Projects::RepositoryLanguagesService) do |service|
+        allow(service).to receive(:execute).and_return(mock_languages)
+      end
+    end
+
+    subject { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    let(:languages) { subject.dig('data', 'project', 'languages') }
+
+    context "when the languages haven't been detected yet" do
+      it 'returns an empty array' do
+        expect(languages).to eq([])
+      end
+    end
+
+    context 'when the languages were detected before' do
+      let(:mock_languages) do
+        [{ share: 66.69, name: "Ruby", color: "#701516" },
+         { share: 22.98, name: "JavaScript", color: "#f1e05a" },
+         { share: 7.91, name: "HTML", color: "#e34c26" },
+         { share: 2.42, name: "CoffeeScript", color: "#244776" }]
+      end
+
+      it 'returns the repository languages' do
+        expect(languages).to eq(mock_languages.map(&:stringify_keys))
       end
     end
   end

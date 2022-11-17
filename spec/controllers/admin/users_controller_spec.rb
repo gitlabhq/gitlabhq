@@ -63,6 +63,114 @@ RSpec.describe Admin::UsersController do
       expect(response).to be_redirect
       expect(response.location).to end_with(user.username)
     end
+
+    describe 'impersonation_error_text' do
+      context 'when user can be impersonated' do
+        it 'sets impersonation_error_text to nil' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(nil)
+        end
+      end
+
+      context 'when impersonation is already in progress' do
+        let(:admin2) { create(:admin) }
+
+        before do
+          post :impersonate, params: { id: admin2.username }
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You are already impersonating another user"))
+        end
+      end
+
+      context 'when user is blocked' do
+        before do
+          user.block
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate a blocked user"))
+        end
+      end
+
+      context "when the user's password is expired" do
+        before do
+          user.update!(password_expires_at: 1.day.ago)
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate a user with an expired password"))
+        end
+      end
+
+      context "when the user is internal" do
+        before do
+          user.update!(user_type: :migration_bot)
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate an internal user"))
+        end
+      end
+
+      context "when the user is a project bot" do
+        before do
+          user.update!(user_type: :project_bot)
+        end
+
+        it 'sets impersonation_error_text' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:impersonation_error_text)).to eq(_("You cannot impersonate a user who cannot log in"))
+        end
+      end
+    end
+
+    describe 'can_impersonate' do
+      context 'when user can be impersonated' do
+        it 'sets can_impersonate to true' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:can_impersonate)).to eq(true)
+        end
+      end
+
+      context 'when impersonation is already in progress' do
+        let(:admin2) { create(:admin) }
+
+        before do
+          post :impersonate, params: { id: admin2.username }
+        end
+
+        it 'sets can_impersonate to false' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:can_impersonate)).to eq(false)
+        end
+      end
+
+      context 'when user cannot log in' do
+        before do
+          user.update!(user_type: :project_bot)
+        end
+
+        it 'sets can_impersonate to false' do
+          get :show, params: { id: user.username.downcase }
+
+          expect(assigns(:can_impersonate)).to eq(false)
+        end
+      end
+    end
   end
 
   describe 'DELETE #destroy', :sidekiq_might_not_need_inline do
@@ -73,120 +181,61 @@ RSpec.describe Admin::UsersController do
       project.add_developer(user)
     end
 
-    context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-      it 'initiates user removal' do
-        delete :destroy, params: { id: user.username }, format: :json
+    it 'initiates user removal' do
+      delete :destroy, params: { id: user.username }, format: :json
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(
-          Users::GhostUserMigration.where(user: user,
-                                          initiator_user: admin,
-                                          hard_delete: false)
-        ).to be_exists
-      end
-
-      it 'initiates user removal and passes hard delete option' do
-        delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(
-          Users::GhostUserMigration.where(user: user,
-                                          initiator_user: admin,
-                                          hard_delete: true)
-        ).to be_exists
-      end
-
-      context 'prerequisites for account deletion' do
-        context 'solo-owned groups' do
-          let(:group) { create(:group) }
-
-          context 'if the user is the sole owner of at least one group' do
-            before do
-              create(:group_member, :owner, group: group, user: user)
-            end
-
-            context 'soft-delete' do
-              it 'fails' do
-                delete :destroy, params: { id: user.username }
-
-                message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
-
-                expect(flash[:alert]).to eq(message)
-                expect(response).to have_gitlab_http_status(:see_other)
-                expect(response).to redirect_to admin_user_path(user)
-                expect(Users::GhostUserMigration).not_to exist
-              end
-            end
-
-            context 'hard-delete' do
-              it 'succeeds' do
-                delete :destroy, params: { id: user.username, hard_delete: true }
-
-                expect(response).to redirect_to(admin_users_path)
-                expect(flash[:notice]).to eq(_('The user is being deleted.'))
-                expect(
-                  Users::GhostUserMigration.where(user: user,
-                                                  initiator_user: admin,
-                                                  hard_delete: true)
-                ).to be_exists
-              end
-            end
-          end
-        end
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(
+        Users::GhostUserMigration.where(user: user,
+                                        initiator_user: admin,
+                                        hard_delete: false)
+      ).to be_exists
     end
 
-    context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-      before do
-        stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-      end
+    it 'initiates user removal and passes hard delete option' do
+      delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
 
-      it 'deletes user and ghosts their contributions' do
-        delete :destroy, params: { id: user.username }, format: :json
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(
+        Users::GhostUserMigration.where(user: user,
+                                        initiator_user: admin,
+                                        hard_delete: true)
+      ).to be_exists
+    end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(User.exists?(user.id)).to be_falsy
-        expect(issue.reload.author).to be_ghost
-      end
+    context 'prerequisites for account deletion' do
+      context 'solo-owned groups' do
+        let(:group) { create(:group) }
 
-      it 'deletes the user and their contributions when hard delete is specified' do
-        delete :destroy, params: { id: user.username, hard_delete: true }, format: :json
+        context 'if the user is the sole owner of at least one group' do
+          before do
+            create(:group_member, :owner, group: group, user: user)
+          end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(User.exists?(user.id)).to be_falsy
-        expect(Issue.exists?(issue.id)).to be_falsy
-      end
+          context 'soft-delete' do
+            it 'fails' do
+              delete :destroy, params: { id: user.username }
 
-      context 'prerequisites for account deletion' do
-        context 'solo-owned groups' do
-          let(:group) { create(:group) }
+              message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
 
-          context 'if the user is the sole owner of at least one group' do
-            before do
-              create(:group_member, :owner, group: group, user: user)
+              expect(flash[:alert]).to eq(message)
+              expect(response).to have_gitlab_http_status(:see_other)
+              expect(response).to redirect_to admin_user_path(user)
+              expect(Users::GhostUserMigration).not_to exist
             end
+          end
 
-            context 'soft-delete' do
-              it 'fails' do
-                delete :destroy, params: { id: user.username }
+          context 'hard-delete' do
+            it 'succeeds' do
+              delete :destroy, params: { id: user.username, hard_delete: true }
 
-                message = s_('AdminUsers|You must transfer ownership or delete the groups owned by this user before you can delete their account')
-
-                expect(flash[:alert]).to eq(message)
-                expect(response).to have_gitlab_http_status(:see_other)
-                expect(response).to redirect_to admin_user_path(user)
-                expect(User.exists?(user.id)).to be_truthy
-              end
-            end
-
-            context 'hard-delete' do
-              it 'succeeds' do
-                delete :destroy, params: { id: user.username, hard_delete: true }
-
-                expect(response).to redirect_to(admin_users_path)
-                expect(flash[:notice]).to eq(_('The user is being deleted.'))
-                expect(User.exists?(user.id)).to be_falsy
-              end
+              expect(response).to redirect_to(admin_users_path)
+              expect(flash[:notice]).to eq(_('The user is being deleted.'))
+              expect(
+                Users::GhostUserMigration.where(user: user,
+                                                initiator_user: admin,
+                                                hard_delete: true)
+              ).to be_exists
             end
           end
         end
@@ -200,27 +249,13 @@ RSpec.describe Admin::UsersController do
     context 'when rejecting a pending user' do
       let(:user) { create(:user, :blocked_pending_approval) }
 
-      context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-        it 'initiates user removal', :sidekiq_inline do
-          subject
+      it 'initiates user removal', :sidekiq_inline do
+        subject
 
-          expect(
-            Users::GhostUserMigration.where(user: user,
-                                            initiator_user: admin)
-          ).to be_exists
-        end
-      end
-
-      context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-        before do
-          stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-        end
-
-        it 'hard deletes the user', :sidekiq_inline do
-          subject
-
-          expect(User.exists?(user.id)).to be_falsy
-        end
+        expect(
+          Users::GhostUserMigration.where(user: user,
+                                          initiator_user: admin)
+        ).to be_exists
       end
 
       it 'displays the rejection message' do
@@ -908,6 +943,60 @@ RSpec.describe Admin::UsersController do
         post :impersonate, params: { id: user.username }
 
         expect(session[:github_access_token]).to be_nil
+      end
+
+      context "when the user's password is expired" do
+        before do
+          user.update!(password_expires_at: 1.day.ago)
+        end
+
+        it "shows a notice" do
+          post :impersonate, params: { id: user.username }
+
+          expect(flash[:alert]).to eq(_('You cannot impersonate a user with an expired password'))
+        end
+
+        it "doesn't sign us in as the user" do
+          post :impersonate, params: { id: user.username }
+
+          expect(warden.user).to eq(admin)
+        end
+      end
+
+      context "when the user is internal" do
+        before do
+          user.update!(user_type: :migration_bot)
+        end
+
+        it "shows a notice" do
+          post :impersonate, params: { id: user.username }
+
+          expect(flash[:alert]).to eq(_("You cannot impersonate an internal user"))
+        end
+
+        it "doesn't sign us in as the user" do
+          post :impersonate, params: { id: user.username }
+
+          expect(warden.user).to eq(admin)
+        end
+      end
+
+      context "when the user is a project bot" do
+        before do
+          user.update!(user_type: :project_bot)
+        end
+
+        it "shows a notice" do
+          post :impersonate, params: { id: user.username }
+
+          expect(flash[:alert]).to eq(_("You cannot impersonate a user who cannot log in"))
+        end
+
+        it "doesn't sign us in as the user" do
+          post :impersonate, params: { id: user.username }
+
+          expect(warden.user).to eq(admin)
+        end
       end
     end
 

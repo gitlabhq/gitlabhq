@@ -41,7 +41,7 @@ RSpec.describe 'Help Pages' do
     end
 
     it 'renders the version check badge' do
-      expect(page).to have_selector('.js-gitlab-version-check')
+      expect(page).to have_selector('.js-gitlab-version-check-badge')
     end
   end
 

@@ -26,6 +26,8 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def show
+    @can_impersonate = can_impersonate_user
+    @impersonation_error_text = @can_impersonate ? nil : impersonation_error_text
   end
 
   # rubocop: disable CodeReuse/ActiveRecord
@@ -47,7 +49,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def impersonate
-    if can?(user, :log_in) && !impersonation_in_progress?
+    if can_impersonate_user
       session[:impersonator_id] = current_user.id
 
       warden.set_user(user, scope: :user)
@@ -59,16 +61,7 @@ class Admin::UsersController < Admin::ApplicationController
 
       redirect_to root_path
     else
-      flash[:alert] =
-        if impersonation_in_progress?
-          _("You are already impersonating another user")
-        elsif user.blocked?
-          _("You cannot impersonate a blocked user")
-        elsif user.internal?
-          _("You cannot impersonate an internal user")
-        else
-          _("You cannot impersonate a user who cannot log in")
-        end
+      flash[:alert] = impersonation_error_text
 
       redirect_to admin_user_path(user)
     end
@@ -377,6 +370,24 @@ class Admin::UsersController < Admin::ApplicationController
 
   def log_impersonation_event
     Gitlab::AppLogger.info(_("User %{current_user_username} has started impersonating %{username}") % { current_user_username: current_user.username, username: user.username })
+  end
+
+  def can_impersonate_user
+    can?(user, :log_in) && !user.password_expired? && !impersonation_in_progress?
+  end
+
+  def impersonation_error_text
+    if impersonation_in_progress?
+      _("You are already impersonating another user")
+    elsif user.blocked?
+      _("You cannot impersonate a blocked user")
+    elsif user.password_expired?
+      _("You cannot impersonate a user with an expired password")
+    elsif user.internal?
+      _("You cannot impersonate an internal user")
+    else
+      _("You cannot impersonate a user who cannot log in")
+    end
   end
 end
 

@@ -16,7 +16,7 @@ module API
       default_format :json
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -61,7 +61,7 @@ module API
           desc 'Upload a Secure File'
           params do
             requires :name, type: String, desc: 'The name of the file'
-            requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file to be uploaded'
+            requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The secure file to be uploaded', documentation: { type: 'file' }
           end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: true
           post ':id/secure_files' do

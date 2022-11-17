@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages do
+  RSpec.describe 'Package', :orchestrated, :packages, product_group: :package_registry do
     describe 'Terraform Module Registry' do
       include Runtime::Fixtures
 

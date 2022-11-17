@@ -104,18 +104,9 @@ module ErrorTracking
       api_host
     end
 
-    def sentry_response_limit_enabled?
-      Feature.enabled?(:error_tracking_sentry_limit, project)
-    end
-
-    def reactive_cache_limit_enabled?
-      sentry_response_limit_enabled?
-    end
-
     def sentry_client
       strong_memoize(:sentry_client) do
-        ::ErrorTracking::SentryClient
-          .new(api_url, token, validate_size_guarded_by_feature_flag: sentry_response_limit_enabled?)
+        ::ErrorTracking::SentryClient.new(api_url, token)
       end
     end
 

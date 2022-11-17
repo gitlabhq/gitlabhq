@@ -16,9 +16,6 @@ RSpec.describe Projects::Alerting::NotificationsController do
     end
 
     shared_examples 'process alert payload' do |notify_service_class|
-      let(:alert_1) { build(:alert_management_alert, project: project) }
-      let(:alert_2) { build(:alert_management_alert, project: project) }
-      let(:service_response) { ServiceResponse.success(payload: { alerts: [alert_1, alert_2] }) }
       let(:notify_service) { instance_double(notify_service_class, execute: service_response) }
 
       before do
@@ -35,11 +32,14 @@ RSpec.describe Projects::Alerting::NotificationsController do
         it 'responds with the alert data' do
           make_request
 
-          expect(json_response).to contain_exactly(
-            { 'iid' => alert_1.iid, 'title' => alert_1.title },
-            { 'iid' => alert_2.iid, 'title' => alert_2.title }
-          )
-          expect(response).to have_gitlab_http_status(:ok)
+          if service_response.payload.present?
+            expect(json_response).to contain_exactly(
+              { 'iid' => alert_1.iid, 'title' => alert_1.title },
+              { 'iid' => alert_2.iid, 'title' => alert_2.title }
+            )
+          end
+
+          expect(response).to have_gitlab_http_status(service_response.http_status)
         end
 
         it 'does not pass excluded parameters to the notify service' do
@@ -146,6 +146,9 @@ RSpec.describe Projects::Alerting::NotificationsController do
 
     context 'with generic alert payload' do
       it_behaves_like 'process alert payload', Projects::Alerting::NotifyService do
+        let(:alert_1) { build(:alert_management_alert, project: project) }
+        let(:alert_2) { build(:alert_management_alert, project: project) }
+        let(:service_response) { ServiceResponse.success(payload: { alerts: [alert_1, alert_2] }) }
         let(:payload) { { title: 'Alert title' } }
       end
     end
@@ -154,6 +157,7 @@ RSpec.describe Projects::Alerting::NotificationsController do
       include PrometheusHelpers
 
       it_behaves_like 'process alert payload', Projects::Prometheus::Alerts::NotifyService do
+        let(:service_response) { ServiceResponse.success(http_status: :created) }
         let(:payload) { prometheus_alert_payload }
       end
     end

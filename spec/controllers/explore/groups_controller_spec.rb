@@ -9,31 +9,43 @@ RSpec.describe Explore::GroupsController do
     sign_in(user)
   end
 
-  it 'renders group trees' do
-    expect(described_class).to include(GroupTree)
-  end
-
-  it 'includes public projects' do
-    member_of_group = create(:group)
-    member_of_group.add_developer(user)
-    public_group = create(:group, :public)
-
-    get :index
-
-    expect(assigns(:groups)).to contain_exactly(member_of_group, public_group)
-  end
-
-  context 'restricted visibility level is public' do
-    before do
-      sign_out(user)
-
-      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+  shared_examples 'explore groups' do
+    it 'renders group trees' do
+      expect(described_class).to include(GroupTree)
     end
 
-    it 'redirects to login page' do
+    it 'includes public projects' do
+      member_of_group = create(:group)
+      member_of_group.add_developer(user)
+      public_group = create(:group, :public)
+
       get :index
 
-      expect(response).to redirect_to new_user_session_path
+      expect(assigns(:groups)).to contain_exactly(member_of_group, public_group)
     end
+
+    context 'restricted visibility level is public' do
+      before do
+        sign_out(user)
+
+        stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
+      end
+
+      it 'redirects to login page' do
+        get :index
+
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
+  end
+
+  it_behaves_like 'explore groups'
+
+  context 'generic_explore_groups flag is disabled' do
+    before do
+      stub_feature_flags(generic_explore_groups: false)
+    end
+
+    it_behaves_like 'explore groups'
   end
 end

@@ -1,9 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Internal usage of Feature Flags for GitLab development'
+status: accepted
+creation-date: "2020-06-10"
+authors: [ "@kamil" ]
+coach: "@glopezfernandez"
+approvers: [ "@kencjohnston", "@craig-gomes" ]
+owning-stage: "~devops::non_devops"
+participating-stages: []
 ---
 
 # Architectural discussion of feature flags
@@ -118,26 +120,3 @@ These are reason why these changes are needed:
 This work is being done as part of dedicated epic:
 [Improve internal usage of Feature Flags](https://gitlab.com/groups/gitlab-org/-/epics/3551).
 This epic describes a meta reasons for making these changes.
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Kamil Trzciński         |
-| Architecture Evolution Coach | Gerardo Lopez-Fernandez |
-| Engineering Leader           | Kamil Trzciński         |
-| Domain Expert                | Shinya Maeda            |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      | Kenny Johnston         |
-| Leadership                   | Craig Gomes            |
-| Engineering                  | Kamil Trzciński        |
-
-<!-- vale gitlab.Spelling = YES -->

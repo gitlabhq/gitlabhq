@@ -3,9 +3,9 @@
 #
 # Suggests the correct way to describe elements in a form.
 #
-# For a list of all options, see https://errata-ai.github.io/vale/styles/
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
-message: 'When describing elements, %s "%s".'
+message: "When describing elements, %s '%s'."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
 level: suggestion
 ignorecase: true

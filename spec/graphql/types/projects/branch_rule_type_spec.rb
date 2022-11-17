@@ -12,12 +12,13 @@ RSpec.describe GitlabSchema.types['BranchRule'] do
       name
       isDefault
       branch_protection
+      matching_branches_count
       created_at
       updated_at
     ]
   end
 
-  specify { is_expected.to require_graphql_authorizations(:read_protected_branch) }
+  it { is_expected.to require_graphql_authorizations(:read_protected_branch) }
 
-  specify { is_expected.to have_graphql_fields(fields).at_least }
+  it { is_expected.to have_graphql_fields(fields).at_least }
 end

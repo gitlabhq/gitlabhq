@@ -87,11 +87,13 @@ describe('Multi-file store mutations', () => {
         emptyStateSvgPath: 'emptyState',
         noChangesStateSvgPath: 'noChanges',
         committedStateSvgPath: 'committed',
+        switchEditorSvgPath: 'switchEditorSvg',
       });
 
       expect(localState.emptyStateSvgPath).toBe('emptyState');
       expect(localState.noChangesStateSvgPath).toBe('noChanges');
       expect(localState.committedStateSvgPath).toBe('committed');
+      expect(localState.switchEditorSvgPath).toBe('switchEditorSvg');
     });
   });
 

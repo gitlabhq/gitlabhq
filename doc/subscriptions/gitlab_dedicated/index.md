@@ -30,7 +30,7 @@ GitLab Dedicated enables you to offload the operational overhead of managing the
 - Backups: Regular backups taken and tested.
 - Choice of cloud region: Upon onboarding, choose the cloud region where you want to deploy your instance. Some AWS regions have limited features and as a result, we are not able to deploy production instances to those regions. See below for the [full list of regions](#aws-regions-not-supported) not currently supported.
 - Security: Data encrypted at rest and in transit using latest encryption standards.
-- Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/self-managed/feature-comparison/) with the exception of the unsupported features [listed below](#features-that-are-not-available).
+- Application: Self-managed [Ultimate feature set](https://about.gitlab.com/pricing/feature-comparison/) with the exception of the unsupported features [listed below](#features-that-are-not-available).
 
 ## Features that are not available
 

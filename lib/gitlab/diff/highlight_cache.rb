@@ -62,7 +62,7 @@ module Gitlab
       end
 
       def clear
-        Gitlab::Redis::Cache.with do |redis|
+        with_redis do |redis|
           redis.del(key)
         end
       end
@@ -124,7 +124,7 @@ module Gitlab
       #   ...it will write/update a Gitlab::Redis hash (HSET)
       #
       def write_to_redis_hash(hash)
-        Gitlab::Redis::Cache.with do |redis|
+        with_redis do |redis|
           redis.pipelined do |pipeline|
             hash.each do |diff_file_id, highlighted_diff_lines_hash|
               pipeline.hset(
@@ -132,7 +132,7 @@ module Gitlab
                 diff_file_id,
                 gzip_compress(highlighted_diff_lines_hash.to_json)
               )
-            rescue Encoding::UndefinedConversionError
+            rescue Encoding::UndefinedConversionError, EncodingError, JSON::GeneratorError
               nil
             end
 
@@ -189,7 +189,7 @@ module Gitlab
         results = []
         cache_key = key # Moving out redis calls for feature flags out of redis.pipelined
 
-        Gitlab::Redis::Cache.with do |redis|
+        with_redis do |redis|
           redis.pipelined do |pipeline|
             results = pipeline.hmget(cache_key, file_paths)
             pipeline.expire(key, EXPIRATION)
@@ -221,6 +221,10 @@ module Gitlab
 
       def current_transaction
         ::Gitlab::Metrics::WebTransaction.current
+      end
+
+      def with_redis(&block)
+        Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
       end
 
       def record_hit_ratio(results)

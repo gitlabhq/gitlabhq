@@ -34,11 +34,11 @@ import issueMoveListMutation from 'ee_else_ce/boards/graphql/issue_move_list.mut
 import totalCountAndWeightQuery from 'ee_else_ce/boards/graphql/board_lists_deferred.query.graphql';
 import { fetchPolicies } from '~/lib/graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { defaultClient as gqlClient } from '~/graphql_shared/issuable_client';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import eventHub from '../eventhub';
-import { gqlClient } from '../graphql';
 import projectBoardQuery from '../graphql/project_board.query.graphql';
 import groupBoardQuery from '../graphql/group_board.query.graphql';
 import boardLabelsQuery from '../graphql/board_labels.query.graphql';
@@ -149,6 +149,9 @@ export default {
         query: listsQuery[issuableType].query,
         variables,
         ...(resetLists ? { fetchPolicy: fetchPolicies.NO_CACHE } : {}),
+        context: {
+          isSingleRequest: true,
+        },
       })
       .then(({ data }) => {
         const { lists, hideBacklogList } = data[boardType].board;

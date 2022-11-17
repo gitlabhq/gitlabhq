@@ -29,7 +29,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "https://api.ciscospark.com/v1/webhooks/incoming/...", required: true },
+        { type: 'text', name: 'webhook', help: 'https://api.ciscospark.com/v1/webhooks/incoming/...', required: true },
         { type: 'checkbox', name: 'notify_only_broken_pipelines' },
         {
           type: 'select',
@@ -44,7 +44,7 @@ module Integrations
 
     def notify(message, opts)
       header = { 'Content-Type' => 'application/json' }
-      response = Gitlab::HTTP.post(webhook, headers: header, body: { markdown: message.summary }.to_json)
+      response = Gitlab::HTTP.post(webhook, headers: header, body: Gitlab::Json.dump({ markdown: message.summary }))
 
       response if response.success?
     end

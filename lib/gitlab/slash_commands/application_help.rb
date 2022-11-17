@@ -3,14 +3,9 @@
 module Gitlab
   module SlashCommands
     class ApplicationHelp < BaseCommand
-      def initialize(project, params)
-        @project = project
-        @params = params
-      end
-
       def execute
         Gitlab::SlashCommands::Presenters::Help
-          .new(project, commands)
+          .new(project, commands, params)
           .present(trigger, params[:text])
       end
 
@@ -21,7 +16,11 @@ module Gitlab
       end
 
       def commands
-        Gitlab::SlashCommands::Command.commands
+        Gitlab::SlashCommands::Command.new(
+          project,
+          chat_name,
+          params
+        ).commands
       end
     end
   end

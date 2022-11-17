@@ -30,7 +30,7 @@ describe('AlertDetails', () => {
   const projectPath = 'root/alerts';
   const projectIssuesPath = 'root/alerts/-/issues';
   const projectId = '1';
-  const $router = { replace: jest.fn() };
+  const $router = { push: jest.fn() };
 
   function mountComponent({
     data,
@@ -352,7 +352,7 @@ describe('AlertDetails', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({ currentTabIndex: index });
-        expect($router.replace).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });
+        expect($router.push).toHaveBeenCalledWith({ name: 'tab', params: { tabId } });
       });
     });
   });

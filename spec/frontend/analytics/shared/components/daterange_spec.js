@@ -77,7 +77,7 @@ describe('Daterange component', () => {
       it('sets the tooltip', () => {
         const tooltip = findDaterangePicker().props('tooltip');
         expect(tooltip).toBe(
-          'Showing data for workflow items created in this date range. Date range limited to 30 days.',
+          'Showing data for workflow items completed in this date range. Date range limited to 30 days.',
         );
       });
     });

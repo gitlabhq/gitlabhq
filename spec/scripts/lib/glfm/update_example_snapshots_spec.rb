@@ -32,8 +32,8 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   subject { described_class.new }
 
   # GLFM input files
-  let(:glfm_spec_txt_path) { described_class::GLFM_SPEC_TXT_PATH }
-  let(:glfm_spec_txt_local_io) { StringIO.new(glfm_spec_txt_contents) }
+  let(:es_snapshot_spec_md_path) { described_class::ES_SNAPSHOT_SPEC_MD_PATH }
+  let(:es_snapshot_spec_md_local_io) { StringIO.new(es_snapshot_spec_md_contents) }
   let(:glfm_example_status_yml_path) { described_class::GLFM_EXAMPLE_STATUS_YML_PATH }
   let(:glfm_example_metadata_yml_path) { described_class::GLFM_EXAMPLE_METADATA_YML_PATH }
   let(:glfm_example_normalizations_yml_path) { described_class::GLFM_EXAMPLE_NORMALIZATIONS_YML_PATH }
@@ -53,16 +53,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
   # Internal tempfiles
   let(:static_html_tempfile_path) { Tempfile.new.path }
 
-  let(:glfm_spec_txt_contents) do
+  let(:es_snapshot_spec_md_contents) do
     <<~MARKDOWN
       ---
       title: GitLab Flavored Markdown Spec
       ...
-
-      # Introduction
-
-      GLFM intro text...
-
       # Inlines
 
       ## Strong
@@ -96,7 +91,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       ### Another H3
 
       This is a second consecutive third-level heading. It exists to drive full code coverage
-      for this scenario, although it doesn't (yet) exist in the actual spec.txt.
+      for this scenario, although it doesn't (yet) exist in the actual snapshot_spec.md.
 
       ## An H2 with all disabled examples
 
@@ -243,12 +238,6 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       .
       <p><a href="project-wikis-test-file">project-wikis-test-file</a></p>
       ````````````````````````````````
-
-      <!-- END TESTS -->
-
-      # Appendix
-
-      Appendix text.
     MARKDOWN
   end
 
@@ -305,11 +294,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       ---
       01_00_00__obsolete_entry_to_be_deleted__001:
         canonical: |
-          This entry is no longer exists in the spec.txt, so it will be deleted.
+          This entry is no longer exists in the snapshot_spec.md, so it will be deleted.
         static: |-
-          This entry is no longer exists in the spec.txt, so it will be deleted.
+          This entry is no longer exists in the snapshot_spec.md, so it will be deleted.
         wysiwyg: |-
-          This entry is no longer exists in the spec.txt, so it will be deleted.
+          This entry is no longer exists in the snapshot_spec.md, so it will be deleted.
       02_01_00__inlines__strong__001:
         canonical: |
           This entry is existing, but not skipped, so it will be overwritten.
@@ -332,7 +321,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       ---
       01_00_00__obsolete_entry_to_be_deleted__001: |-
         {
-          "obsolete": "This entry is no longer exists in the spec.txt, and is not skipped, so it will be deleted."
+          "obsolete": "This entry is no longer exists in the snapshot_spec.md, and is not skipped, so it will be deleted."
         }
       02_01_00__inlines__strong__001: |-
         {
@@ -370,7 +359,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
     # actual network and filesystem I/O during the spec run.
 
     # input files
-    allow(File).to receive(:open).with(glfm_spec_txt_path) { glfm_spec_txt_local_io }
+    allow(File).to receive(:open).with(es_snapshot_spec_md_path) { es_snapshot_spec_md_local_io }
     allow(File).to receive(:open).with(glfm_example_status_yml_path) do
       StringIO.new(glfm_example_status_yml_contents)
     end
@@ -454,43 +443,43 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
       <<~YAML
         ---
         02_01_00__inlines__strong__001:
-          spec_txt_example_position: 1
+          spec_example_position: 1
           source_specification: commonmark
         02_01_00__inlines__strong__002:
-          spec_txt_example_position: 2
+          spec_example_position: 2
           source_specification: github
         02_03_00__inlines__strikethrough_extension__001:
-          spec_txt_example_position: 4
+          spec_example_position: 4
           source_specification: github
         03_01_00__first_gitlab_specific_section_with_examples__strong_but_with_two_asterisks__001:
-          spec_txt_example_position: 5
+          spec_example_position: 5
           source_specification: gitlab
         03_02_01__first_gitlab_specific_section_with_examples__h2_which_contains_an_h3__example_in_an_h3__001:
-          spec_txt_example_position: 6
+          spec_example_position: 6
           source_specification: gitlab
         04_01_00__second_gitlab_specific_section_with_examples__strong_but_with_html__001:
-          spec_txt_example_position: 7
+          spec_example_position: 7
           source_specification: gitlab
         05_01_00__third_gitlab_specific_section_with_skipped_examples__strong_but_skipped__001:
-          spec_txt_example_position: 8
+          spec_example_position: 8
           source_specification: gitlab
         05_02_00__third_gitlab_specific_section_with_skipped_examples__strong_but_manually_modified_and_skipped__001:
-          spec_txt_example_position: 9
+          spec_example_position: 9
           source_specification: gitlab
         06_01_00__api_request_overrides__group_upload_link__001:
-          spec_txt_example_position: 10
+          spec_example_position: 10
           source_specification: gitlab
         06_02_00__api_request_overrides__project_repo_link__001:
-          spec_txt_example_position: 11
+          spec_example_position: 11
           source_specification: gitlab
         06_03_00__api_request_overrides__project_snippet_ref__001:
-          spec_txt_example_position: 12
+          spec_example_position: 12
           source_specification: gitlab
         06_04_00__api_request_overrides__personal_snippet_ref__001:
-          spec_txt_example_position: 13
+          spec_example_position: 13
           source_specification: gitlab
         06_05_00__api_request_overrides__project_wiki_link__001:
-          spec_txt_example_position: 14
+          spec_example_position: 14
           source_specification: gitlab
       YAML
     end
@@ -696,7 +685,7 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process' do
             canonical: |
               <p><a href="projects-test-file">projects-test-file</a></p>
             static: |-
-              <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file">projects-test-file</a></p>
+              <p data-sourcepos="1:1-1:40" dir="auto"><a href="/glfm_group/glfm_project/-/blob/master/projects-test-file" class="gfm">projects-test-file</a></p>
             wysiwyg: |-
               <p><a target="_blank" rel="noopener noreferrer nofollow" href="projects-test-file">projects-test-file</a></p>
           06_03_00__api_request_overrides__project_snippet_ref__001:

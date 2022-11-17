@@ -12,8 +12,8 @@ module Projects
       Project.transaction do
         user_stars.update_all(project_id: @project.id)
 
-        Project.reset_counters @project.id, :users_star_projects
-        Project.reset_counters source_project.id, :users_star_projects
+        @project.update(star_count: @project.starrers.with_state(:active).size)
+        source_project.update(star_count: source_project.starrers.with_state(:active).size)
 
         success
       end

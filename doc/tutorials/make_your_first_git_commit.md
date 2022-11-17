@@ -1,10 +1,10 @@
 ---
 stage: none
-group: unassigned
+group: Tutorials
 info: For assistance with this tutorial, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
 ---
 
-# Make your first Git commit
+# Tutorial: Make your first Git commit
 
 This tutorial is going to teach you a little bit about how Git works. It walks
 you through the steps of creating your own project, editing a file, and
@@ -37,11 +37,12 @@ Each time you push a change, Git records it as a unique *commit*. These commits 
 the history of when and how a file changed, and who changed it.
 
 ```mermaid
-graph TB
+graph LR
     subgraph Repository commit history
-    A(Author: Alex<br>Date: 3 Jan at 1PM<br>Commit message: Added sales figures for January<br> Commit ID: 123abc12) --->  B
-    B(Author: Sam<br>Date: 4 Jan at 10AM<br>Commit message: Removed outdated marketing information<br> Commit ID: aabb1122) ---> C
-    C(Author: Zhang<br>Date: 5 Jan at 3PM<br>Commit message: Added a new 'Invoices' file<br> Commit ID: ddee4455)
+    direction LR
+    A(Author: Alex<br>Date: 3 Jan at 1PM<br>Commit message: Added sales figures<br> Commit ID: 123abc12) --->  B
+    B(Author: Sam<br>Date: 4 Jan at 10AM<br>Commit message: Removed old info<br> Commit ID: aabb1122) ---> C
+    C(Author: Zhang<br>Date: 5 Jan at 3PM<br>Commit message: Added invoices<br> Commit ID: ddee4455)
     end
 ```
 
@@ -54,15 +55,14 @@ of a repository are in a default branch. To make changes, you:
 1. When you're ready, *merge* your branch into the default branch.
 
 ```mermaid
-flowchart TB
+flowchart LR
     subgraph Default branch
     A[Commit] --> B[Commit] --> C[Commit] --> D[Commit]
     end
     subgraph My branch
     B --1. Create my branch--> E(Commit)
     E --2. Add my commit--> F(Commit)
-    F --2. Add my commit--> G(Commit)
-    G --3. Merge my branch to default--> D
+    F --3. Merge my branch to default--> D
     end
 ```
 

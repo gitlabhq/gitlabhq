@@ -50,7 +50,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
   it { is_expected.to respond_to :git_author_full_text }
   it { is_expected.to respond_to :short_sha }
   it { is_expected.to delegate_method(:full_path).to(:project).with_prefix }
-  it { is_expected.to delegate_method(:title).to(:pipeline_metadata).allow_nil }
+  it { is_expected.to delegate_method(:name).to(:pipeline_metadata).allow_nil }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:sha) }
@@ -166,13 +166,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       it do
         pipeline.status = from_status.to_s
 
-        if from_status != to_status
+        if from_status != to_status || success_to_success?
           expect(pipeline.set_status(to_status.to_s))
             .to eq(true)
         else
           expect(pipeline.set_status(to_status.to_s))
             .to eq(false), "loopback transitions are not allowed"
         end
+      end
+
+      private
+
+      def success_to_success?
+        from_status == :success && to_status == :success
       end
     end
   end
@@ -1601,7 +1607,8 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
 
     describe 'track artifact report' do
-      let(:pipeline) { create(:ci_pipeline, :running, :with_test_reports, status: :running, user: create(:user)) }
+      let_it_be(:user) { create(:user) }
+      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :running, :with_test_reports, :with_coverage_reports, status: :running, user: user) }
 
       context 'when transitioning to completed status' do
         %i[drop! skip! succeed! cancel!].each do |command|
@@ -1613,11 +1620,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
       end
 
       context 'when pipeline retried from failed to success', :clean_gitlab_redis_shared_state do
-        let(:test_event_name) { 'i_testing_test_report_uploaded' }
+        let(:test_event_name_1) { 'i_testing_test_report_uploaded' }
+        let(:test_event_name_2) { 'i_testing_coverage_report_uploaded' }
         let(:start_time) { 1.week.ago }
         let(:end_time) { 1.week.from_now }
 
-        it 'counts only one report' do
+        it 'counts only one test event report' do
           expect(Ci::JobArtifacts::TrackArtifactReportWorker).to receive(:perform_async).with(pipeline.id).twice.and_call_original
 
           Sidekiq::Testing.inline! do
@@ -1627,7 +1635,24 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
           end
 
           unique_pipeline_pass = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
-            event_names: test_event_name,
+            event_names: test_event_name_1,
+            start_date: start_time,
+            end_date: end_time
+          )
+          expect(unique_pipeline_pass).to eq(1)
+        end
+
+        it 'counts only one coverage event report' do
+          expect(Ci::JobArtifacts::TrackArtifactReportWorker).to receive(:perform_async).with(pipeline.id).twice.and_call_original
+
+          Sidekiq::Testing.inline! do
+            pipeline.drop!
+            pipeline.run!
+            pipeline.succeed!
+          end
+
+          unique_pipeline_pass = Gitlab::UsageDataCounters::HLLRedisCounter.unique_events(
+            event_names: test_event_name_2,
             start_date: start_time,
             end_date: end_time
           )
@@ -4173,7 +4198,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     let(:pipeline) { create(:ci_pipeline) }
     let!(:old_job) { create(:ci_build, name: 'rspec', retried: true, pipeline: pipeline) }
     let!(:job_without_artifacts) { create(:ci_build, name: 'rspec', pipeline: pipeline) }
-    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline ) }
+    let!(:expected_job) { create(:ci_build, :artifacts, name: 'rspec', pipeline: pipeline) }
     let!(:different_job) { create(:ci_build, name: 'deploy', pipeline: pipeline) }
 
     subject { pipeline.find_job_with_archive_artifacts('rspec') }

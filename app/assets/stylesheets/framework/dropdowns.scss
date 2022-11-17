@@ -46,6 +46,10 @@
       }
     }
 
+    &.dropdown-reduced-height {
+      max-height: $dropdown-max-height;
+    }
+
     @include media-breakpoint-down(xs) {
       width: 100%;
     }

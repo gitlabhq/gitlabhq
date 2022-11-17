@@ -33,16 +33,15 @@
       - else
         = render partial: 'projects/commits/commit', collection: context_commits, locals: { project: project, ref: ref, merge_request: merge_request }
 
-- if hidden > 0
+- if hidden > 0 && !@merge_request
   %li
     = render Pajamas::AlertComponent.new(variant: :warning,
       dismissible: false) do |c|
       = c.body do
         = n_('%s additional commit has been omitted to prevent performance issues.', '%s additional commits have been omitted to prevent performance issues.', hidden) % number_with_delimiter(hidden)
 
-- if can_update_merge_request && context_commits&.empty?
-  = render Pajamas::ButtonComponent.new(button_options: { class: 'gl-mt-5 add-review-item-modal-trigger', data: { context_commits_empty: 'true' } }) do
-    = _('Add previously merged commits')
+- if can_update_merge_request && context_commits&.empty? && !(defined?(@next_page) && @next_page)
+  .add-review-item-modal-trigger{ data: { context_commits_empty: 'true' } }
 
 - if commits.size == 0 && context_commits.nil?
   .commits-empty.gl-mt-6

@@ -1,11 +1,10 @@
-import { GlButton, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { MOCK_QUERY } from 'jest/search/mock_data';
 import GlobalSearchSidebar from '~/search/sidebar/components/app.vue';
-import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
-import StatusFilter from '~/search/sidebar/components/status_filter.vue';
+import ResultsFilters from '~/search/sidebar/components/results_filters.vue';
+import ScopeNavigation from '~/search/sidebar/components/scope_navigation.vue';
 
 Vue.use(Vuex);
 
@@ -17,7 +16,7 @@ describe('GlobalSearchSidebar', () => {
     resetQuery: jest.fn(),
   };
 
-  const createComponent = (initialState) => {
+  const createComponent = (initialState, featureFlags) => {
     const store = new Vuex.Store({
       state: {
         urlQuery: MOCK_QUERY,
@@ -28,6 +27,11 @@ describe('GlobalSearchSidebar', () => {
 
     wrapper = shallowMount(GlobalSearchSidebar, {
       store,
+      provide: {
+        glFeatures: {
+          ...featureFlags,
+        },
+      },
     });
   };
 
@@ -35,28 +39,36 @@ describe('GlobalSearchSidebar', () => {
     wrapper.destroy();
   });
 
-  const findSidebarForm = () => wrapper.find('form');
-  const findStatusFilter = () => wrapper.findComponent(StatusFilter);
-  const findConfidentialityFilter = () => wrapper.findComponent(ConfidentialityFilter);
-  const findApplyButton = () => wrapper.findComponent(GlButton);
-  const findResetLinkButton = () => wrapper.findComponent(GlLink);
+  const findSidebarSection = () => wrapper.find('section');
+  const findFilters = () => wrapper.findComponent(ResultsFilters);
+  const findSidebarNavigation = () => wrapper.findComponent(ScopeNavigation);
 
-  describe('template', () => {
+  describe('renders properly', () => {
     describe('scope=projects', () => {
       beforeEach(() => {
         createComponent({ urlQuery: { ...MOCK_QUERY, scope: 'projects' } });
       });
 
-      it("doesn't render StatusFilter", () => {
-        expect(findStatusFilter().exists()).toBe(false);
+      it('shows section', () => {
+        expect(findSidebarSection().exists()).toBe(true);
       });
 
-      it("doesn't render ConfidentialityFilter", () => {
-        expect(findConfidentialityFilter().exists()).toBe(false);
+      it("doesn't shows filters", () => {
+        expect(findFilters().exists()).toBe(false);
+      });
+    });
+
+    describe('scope=merge_requests', () => {
+      beforeEach(() => {
+        createComponent({ urlQuery: { ...MOCK_QUERY, scope: 'merge_requests' } });
       });
 
-      it("doesn't render ApplyButton", () => {
-        expect(findApplyButton().exists()).toBe(false);
+      it('shows section', () => {
+        expect(findSidebarSection().exists()).toBe(true);
+      });
+
+      it('shows filters', () => {
+        expect(findFilters().exists()).toBe(true);
       });
     });
 
@@ -64,89 +76,31 @@ describe('GlobalSearchSidebar', () => {
       beforeEach(() => {
         createComponent({ urlQuery: MOCK_QUERY });
       });
-      it('renders StatusFilter', () => {
-        expect(findStatusFilter().exists()).toBe(true);
+      it('shows section', () => {
+        expect(findSidebarSection().exists()).toBe(true);
       });
 
-      it('renders ConfidentialityFilter', () => {
-        expect(findConfidentialityFilter().exists()).toBe(true);
-      });
-
-      it('renders ApplyButton', () => {
-        expect(findApplyButton().exists()).toBe(true);
+      it('shows filters', () => {
+        expect(findFilters().exists()).toBe(true);
       });
     });
   });
 
-  describe('ApplyButton', () => {
-    describe('when sidebarDirty is false', () => {
-      beforeEach(() => {
-        createComponent({ sidebarDirty: false });
-      });
-
-      it('disables the button', () => {
-        expect(findApplyButton().attributes('disabled')).toBe('true');
-      });
-    });
-
-    describe('when sidebarDirty is true', () => {
-      beforeEach(() => {
-        createComponent({ sidebarDirty: true });
-      });
-
-      it('enables the button', () => {
-        expect(findApplyButton().attributes('disabled')).toBe(undefined);
-      });
-    });
-  });
-
-  describe('ResetLinkButton', () => {
-    describe('with no filter selected', () => {
-      beforeEach(() => {
-        createComponent({ urlQuery: {} });
-      });
-
-      it('does not render', () => {
-        expect(findResetLinkButton().exists()).toBe(false);
-      });
-    });
-
-    describe('with filter selected', () => {
-      beforeEach(() => {
-        createComponent({ urlQuery: MOCK_QUERY });
-      });
-
-      it('does render', () => {
-        expect(findResetLinkButton().exists()).toBe(true);
-      });
-    });
-
-    describe('with filter selected and user updated query back to default', () => {
-      beforeEach(() => {
-        createComponent({ urlQuery: MOCK_QUERY, query: {} });
-      });
-
-      it('does render', () => {
-        expect(findResetLinkButton().exists()).toBe(true);
-      });
-    });
-  });
-
-  describe('actions', () => {
+  describe('when search_page_vertical_nav is enabled', () => {
     beforeEach(() => {
-      createComponent({});
+      createComponent({}, { searchPageVerticalNav: true });
     });
-
-    it('clicking ApplyButton calls applyQuery', () => {
-      findSidebarForm().trigger('submit');
-
-      expect(actionSpies.applyQuery).toHaveBeenCalled();
+    it('shows the vertical navigation', () => {
+      expect(findSidebarNavigation().exists()).toBe(true);
     });
+  });
 
-    it('clicking ResetLinkButton calls resetQuery', () => {
-      findResetLinkButton().vm.$emit('click');
-
-      expect(actionSpies.resetQuery).toHaveBeenCalled();
+  describe('when search_page_vertical_nav is disabled', () => {
+    beforeEach(() => {
+      createComponent({}, { searchPageVerticalNav: false });
+    });
+    it('hides the vertical navigation', () => {
+      expect(findSidebarNavigation().exists()).toBe(false);
     });
   });
 });

@@ -3,7 +3,6 @@
 module Integrations
   class Packagist < Integration
     include HasWebHook
-    extend Gitlab::Utils::Override
 
     field :username,
       title: -> { s_('Username') },
@@ -55,12 +54,12 @@ module Integrations
     def test(data)
       begin
         result = execute(data)
-        return { success: false, result: result[:message] } if result[:http_status] != 202
+        return { success: false, result: result.message } if result.payload[:http_status] != 202
       rescue StandardError => e
-        return { success: false, result: e }
+        return { success: false, result: e.message }
       end
 
-      { success: true, result: result[:message] }
+      { success: true, result: result.message }
     end
 
     override :hook_url

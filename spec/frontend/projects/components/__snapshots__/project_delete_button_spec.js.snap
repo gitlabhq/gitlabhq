@@ -19,6 +19,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
   <gl-button-stub
     buttontextclasses=""
     category="primary"
+    data-qa-selector="delete_button"
     icon=""
     role="button"
     size="medium"
@@ -102,6 +103,7 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
       </p>
        
       <gl-form-input-stub
+        data-qa-selector="confirm_name_field"
         id="confirm_name_input"
         name="confirm_name_input"
         type="text"

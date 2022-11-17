@@ -30,6 +30,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
                 Gitlab::Ci::Pipeline::Chain::Validate::External,
                 Gitlab::Ci::Pipeline::Chain::Populate,
+                Gitlab::Ci::Pipeline::Chain::PopulateMetadata,
                 Gitlab::Ci::Pipeline::Chain::StopDryRun,
                 Gitlab::Ci::Pipeline::Chain::EnsureEnvironments,
                 Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups,
@@ -117,17 +118,6 @@ module Ci
       @logger.commit(pipeline: pipeline, caller: self.class.name)
     end
     # rubocop: enable Metrics/ParameterLists
-
-    def execute!(*args, &block)
-      source = args[0]
-      params = Hash(args[1])
-
-      execute(source, **params, &block).tap do |response|
-        unless response.payload.persisted?
-          raise CreateError, pipeline.full_error_messages
-        end
-      end
-    end
 
     private
 

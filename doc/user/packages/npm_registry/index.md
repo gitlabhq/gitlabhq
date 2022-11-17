@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -20,72 +20,7 @@ WARNING:
 Never hardcode GitLab tokens (or any tokens) directly in `.npmrc` files or any other files that can
 be committed to a repository.
 
-## Build an npm package
-
-This section covers how to install npm or Yarn and build a package for your
-JavaScript project.
-
-If you already use npm and know how to build your own packages, go to
-the [next section](#authenticate-to-the-package-registry).
-
-### Install npm
-
-Install Node.js and npm in your local development environment by following
-the instructions at [npmjs.com](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm/).
-
-When installation is complete, verify you can use npm in your terminal by
-running:
-
-```shell
-npm --version
-```
-
-The npm version is shown in the output:
-
-```plaintext
-6.10.3
-```
-
-### Install Yarn
-
-As an alternative to npm, you can install Yarn in your local environment by following the
-instructions at [classic.yarnpkg.com](https://classic.yarnpkg.com/en/docs/install).
-
-When installation is complete, verify you can use Yarn in your terminal by
-running:
-
-```shell
-yarn --version
-```
-
-The Yarn version is shown in the output:
-
-```plaintext
-1.19.1
-```
-
-### Create a project
-
-To create a project:
-
-1. Create an empty directory.
-1. Go to the directory and initialize an empty package by running:
-
-   ```shell
-   npm init
-   ```
-
-   Or if you're using Yarn:
-
-   ```shell
-   yarn init
-   ```
-
-1. Enter responses to the questions. Ensure the **package name** follows
-   the [naming convention](#package-naming-convention) and is scoped to the
-   project or group where the registry exists.
-
-A `package.json` file is created.
+Learn how to build an [npm](../workflows/build_packages.md#npm) or [yarn](../workflows/build_packages.md#yarn) package.
 
 ## Use the GitLab endpoint for npm packages
 
@@ -244,15 +179,15 @@ In this case, the `@scope` needs to be `@registries-group` and not `@source-code
 For example, if your project is `https://gitlab.example.com/my-org/engineering-group/team-amazing/analytics`,
 the root namespace is `my-org`. When you publish a package, it must have `my-org` as the scope.
 
-| Project                | Package                 | Supported |
-| ---------------------- | ----------------------- | --------- |
-| `my-org/bar`           | `@my-org/bar`           | Yes       |
-| `my-org/bar/baz`       | `@my-org/baz`           | Yes       |
-| `My-Org/Bar/baz`       | `@my-org/Baz`           | Yes       |
-| `My-Org/Bar/baz`       | `@My-Org/Baz`           | Yes       |
-| `my-org/bar/buz`       | `@my-org/anything`      | Yes       |
-| `gitlab-org/gitlab`    | `@gitlab-org/gitlab`    | Yes       |
-| `gitlab-org/gitlab`    | `@foo/bar`              | No        |
+| Project             | Package              | Supported |
+| ------------------- | -------------------- | --------- |
+| `my-org/bar`        | `@my-org/bar`        | Yes       |
+| `my-org/bar/baz`    | `@my-org/baz`        | Yes       |
+| `My-Org/Bar/baz`    | `@my-org/Baz`        | Yes       |
+| `My-Org/Bar/baz`    | `@My-Org/Baz`        | Yes       |
+| `my-org/bar/buz`    | `@my-org/anything`   | Yes       |
+| `gitlab-org/gitlab` | `@gitlab-org/gitlab` | Yes       |
+| `gitlab-org/gitlab` | `@foo/bar`           | No        |
 
 In GitLab, this regex validates all package names from all package managers:
 
@@ -290,7 +225,9 @@ You can also define `"publishConfig"` for your project in `package.json`. For ex
 
 ```json
 {
-"publishConfig": { "@foo:registry":" https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/" }
+  "publishConfig": {
+    "@foo:registry": " https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
+  }
 }
 ```
 
@@ -342,13 +279,13 @@ To publish and install with the project-level npm endpoint, set the following co
 ```yaml
 npmScopes:
   foo:
-    npmRegistryServer: "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
-    npmPublishRegistry: "https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/"
+    npmRegistryServer: 'https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/'
+    npmPublishRegistry: 'https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/'
 
 npmRegistries:
   //gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:
     npmAlwaysAuth: true
-    npmAuthToken: "<your_token>"
+    npmAuthToken: '<your_token>'
 ```
 
 For the instance-level npm endpoint, use this Yarn 2 configuration in `.yarnrc.yml`:
@@ -356,12 +293,12 @@ For the instance-level npm endpoint, use this Yarn 2 configuration in `.yarnrc.y
 ```yaml
 npmScopes:
   foo:
-    npmRegistryServer: "https://gitlab.example.com/api/v4/packages/npm/"
+    npmRegistryServer: 'https://gitlab.example.com/api/v4/packages/npm/'
 
 npmRegistries:
   //gitlab.example.com/api/v4/packages/npm/:
     npmAlwaysAuth: true
-    npmAuthToken: "<your_token>"
+    npmAuthToken: '<your_token>'
 ```
 
 In this configuration:
@@ -561,7 +498,7 @@ should look like:
 {
   "name": "@foo/my-package",
   "version": "1.0.0",
-  "description": "Example package for GitLab npm registry",
+  "description": "Example package for GitLab npm registry"
 }
 ```
 

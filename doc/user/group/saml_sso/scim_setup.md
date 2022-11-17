@@ -168,13 +168,16 @@ Prerequisites:
 OneLogin provides a **GitLab (SaaS)** app in their catalog, which includes a SCIM integration. Contact OneLogin if you
 encounter issues.
 
-## User access and linking setup
+## User access
 
-During the synchronization process, all of your users get GitLab accounts, welcoming them
-to their respective groups, with an invitation email. When implementing SCIM provisioning,
-you may want to warn your security-conscious employees about this email.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325712) in GitLab 14.0, GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning are displayed with an **Enterprise** badge in the **Members** view.
 
-The following diagram is a general outline on what happens when you add users to your SCIM app:
+During the synchronization process, all new users:
+
+- Receive GitLab accounts.
+- Are welcomed to their groups with an invitation email. You may want to warn your employees to expect this email.
+
+The following diagram describes what happens when you add users to your SCIM app:
 
 ```mermaid
 graph TD
@@ -186,29 +189,38 @@ graph TD
 During provisioning:
 
 - Both primary and secondary emails are considered when checking whether a GitLab user account exists.
-- Duplicate usernames are also handled, by adding suffix `1` upon user creation. For example,
-  due to already existing `test_user` username, `test_user1` is used.
+- Duplicate usernames are handled by adding suffix `1` when creating the user. For example, if `test_user` already
+  exists, `test_user1` is used. If `test_user1` already exists, GitLab increments the suffix until an unused username
+  is found.
 
-If [Group SAML](index.md) has been configured and you have an existing GitLab.com account, you can link your SCIM and SAML identities:
+On subsequent visits, new and existing users can access groups either:
 
-1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account to match the
-   user profile email address in your identity provider.
+- Through the identity provider's dashboard.
+- By visiting links directly.
+
+For role information, see the [Group SAML](index.md#user-access-and-management) page.
+
+### Link SCIM and SAML identities
+
+If [group SAML](index.md) is configured and you have an existing GitLab.com account, users can link their SCIM and SAML
+identities. Users should do this before synchronization is turned on because there can be provisioning errors for
+existing users when synchronization is active.
+
+To link your SCIM and SAML identities:
+
+1. Update the [primary email](../../profile/index.md#change-your-primary-email) address in your GitLab.com user account
+   to match the user profile email address in your identity provider.
 1. [Link your SAML identity](index.md#linking-saml-to-your-existing-gitlabcom-account).
 
-We recommend users do this prior to turning on sync, because while synchronization is active, there may be provisioning errors for existing users.
+### Remove access
 
-New users and existing users on subsequent visits can access the group through the identity provider's dashboard or by visiting links directly.
+Remove or deactivate a user on the identity provider to remove their access to:
 
-[In GitLab 14.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/325712), GitLab users created by [SAML SSO](index.md#user-access-and-management) or SCIM provisioning display with an **Enterprise** badge in the **Members** view.
+- The top-level group.
+- All subgroups and projects.
 
-![Enterprise badge for users created with a SCIM identity](img/member_enterprise_badge_v14_0.png)
-
-For role information, see the [Group SAML page](index.md#user-access-and-management)
-
-### Blocking access
-
-To rescind access to the top-level group, all subgroups, and projects, remove or deactivate the user
-on the identity provider. After the identity provider performs a sync, based on its configured schedule, the user's membership is revoked and they lose access.
+After the identity provider performs a sync based on its configured schedule, the user's membership is revoked and they
+lose access.
 
 NOTE:
 Deprovisioning does not delete the GitLab user account.

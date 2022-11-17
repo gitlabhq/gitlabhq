@@ -85,8 +85,7 @@ module Packages
         scope :with_codename_or_suite, ->(codename_or_suite) { with_codename(codename_or_suite).or(with_suite(codename_or_suite)) }
 
         mount_file_store_uploader Packages::Debian::DistributionReleaseFileUploader
-        mount_uploader :signed_file, Packages::Debian::DistributionReleaseFileUploader
-        after_save :update_signed_file_store, if: :saved_change_to_signed_file?
+        mount_file_store_uploader Packages::Debian::DistributionReleaseFileUploader, file_field: :signed_file
 
         def component_names
           components.pluck(:name).sort
@@ -118,12 +117,6 @@ module Packages
           return false unless suite.present?
 
           self.class.with_container(container).with_codename(suite).exists?
-        end
-
-        def update_signed_file_store
-          # The signed_file.object_store is set during `uploader.store!`
-          # which happens after object is inserted/updated
-          self.update_column(:signed_file_store, signed_file.object_store)
         end
       end
     end

@@ -30,7 +30,6 @@ RSpec.describe 'Projects > Settings > Repository settings' do
 
       before do
         stub_container_registry_config(enabled: true)
-        stub_feature_flags(ajax_new_deploy_token: project)
       end
 
       it_behaves_like 'a deploy token in settings' do

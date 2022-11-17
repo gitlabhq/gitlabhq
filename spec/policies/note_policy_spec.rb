@@ -309,42 +309,41 @@ RSpec.describe NotePolicy do
 
         shared_examples_for 'confidential notes permissions' do
           it 'does not allow non members to read confidential notes and replies' do
-            expect(permissions(non_member, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
+            expect(permissions(non_member, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
           end
 
           it 'does not allow guests to read confidential notes and replies' do
-            expect(permissions(guest, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
+            expect(permissions(guest, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
           end
 
           it 'allows reporter to read all notes but not resolve and admin them' do
-            expect(permissions(reporter, confidential_note)).to be_allowed(:read_note, :award_emoji)
+            expect(permissions(reporter, confidential_note)).to be_allowed(:read_note, :award_emoji, :mark_note_as_confidential)
             expect(permissions(reporter, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
           end
 
           it 'allows developer to read and resolve all notes' do
-            expect(permissions(developer, confidential_note)).to be_allowed(:read_note, :award_emoji, :resolve_note)
+            expect(permissions(developer, confidential_note)).to be_allowed(:read_note, :award_emoji, :resolve_note, :mark_note_as_confidential)
             expect(permissions(developer, confidential_note)).to be_disallowed(:admin_note, :reposition_note)
           end
 
           it 'allows maintainers to read all notes and admin them' do
-            expect(permissions(maintainer, confidential_note)).to be_allowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
+            expect(permissions(maintainer, confidential_note)).to be_allowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
           end
 
           context 'when admin mode is enabled', :enable_admin_mode do
             it 'allows admins to read all notes and admin them' do
-              expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
+              expect(permissions(admin, confidential_note)).to be_allowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
             end
           end
 
           context 'when admin mode is disabled' do
             it 'does not allow non members to read confidential notes and replies' do
-              expect(permissions(admin, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji)
+              expect(permissions(admin, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
             end
           end
 
-          it 'allows noteable author to read and resolve all notes' do
-            expect(permissions(author, confidential_note)).to be_allowed(:read_note, :resolve_note, :award_emoji)
-            expect(permissions(author, confidential_note)).to be_disallowed(:admin_note, :reposition_note)
+          it 'disallows noteable author to read and resolve all notes' do
+            expect(permissions(author, confidential_note)).to be_disallowed(:read_note, :resolve_note, :award_emoji, :mark_note_as_confidential, :admin_note, :reposition_note)
           end
         end
 
@@ -354,9 +353,8 @@ RSpec.describe NotePolicy do
 
           it_behaves_like 'confidential notes permissions'
 
-          it 'allows noteable assignees to read all notes' do
-            expect(permissions(assignee, confidential_note)).to be_allowed(:read_note, :award_emoji)
-            expect(permissions(assignee, confidential_note)).to be_disallowed(:admin_note, :reposition_note, :resolve_note)
+          it 'disallows noteable assignees to read all notes' do
+            expect(permissions(assignee, confidential_note)).to be_disallowed(:read_note, :award_emoji, :mark_note_as_confidential, :admin_note, :reposition_note, :resolve_note)
           end
         end
       end

@@ -11,10 +11,6 @@ module Projects
       before_action :authorize_admin_pipeline!
       before_action :check_builds_available!
       before_action :define_variables
-      before_action do
-        push_frontend_feature_flag(:ajax_new_deploy_token, @project)
-        push_frontend_feature_flag(:ci_variable_settings_graphql, @project)
-      end
 
       helper_method :highlight_badge
 
@@ -23,9 +19,11 @@ module Projects
 
       def show
         if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
-          @triggers_json = ::Ci::TriggerSerializer.new.represent(
+          triggers = ::Ci::TriggerSerializer.new.represent(
             @project.triggers, current_user: current_user, project: @project
-          ).to_json
+          )
+
+          @triggers_json = Gitlab::Json.dump(triggers)
         end
 
         render

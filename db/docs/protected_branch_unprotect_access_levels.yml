@@ -4,6 +4,6 @@ classes:
 - ProtectedBranch::UnprotectAccessLevel
 feature_categories:
 - source_code_management
-description: TODO
+description: Stores access settings for protected branch unprotection
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/5103
 milestone: '10.7'

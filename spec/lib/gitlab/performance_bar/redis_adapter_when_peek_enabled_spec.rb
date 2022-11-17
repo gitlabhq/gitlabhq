@@ -30,7 +30,7 @@ RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled do
     it 'stores request id and enqueues stats job' do
       expect_to_obtain_exclusive_lease(GitlabPerformanceBarStatsWorker::LEASE_KEY, uuid)
       expect(GitlabPerformanceBarStatsWorker).to receive(:perform_in).with(GitlabPerformanceBarStatsWorker::WORKER_DELAY, uuid)
-      expect(client).to receive(:sadd).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
+      expect(client).to receive(:sadd?).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
       expect(client).to receive(:expire).with(GitlabPerformanceBarStatsWorker::STATS_KEY, GitlabPerformanceBarStatsWorker::STATS_KEY_EXPIRE)
 
       peek_adapter.new(client).save('foo')
@@ -56,7 +56,7 @@ RSpec.describe Gitlab::PerformanceBar::RedisAdapterWhenPeekEnabled do
 
       it 'stores request id but does not enqueue any job' do
         expect(GitlabPerformanceBarStatsWorker).not_to receive(:perform_in)
-        expect(client).to receive(:sadd).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
+        expect(client).to receive(:sadd?).with(GitlabPerformanceBarStatsWorker::STATS_KEY, uuid)
 
         peek_adapter.new(client).save('foo')
       end

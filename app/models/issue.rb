@@ -39,13 +39,14 @@ class Issue < ApplicationRecord
   DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   SORTING_PREFERENCE_FIELD = :issues_sort
+  MAX_BRANCH_TEMPLATE = 255
 
   # Types of issues that should be displayed on issue lists across the app
   # for example, project issues list, group issues list, and issues dashboard.
   #
   # This should be kept consistent with the enums used for the GraphQL issue list query in
   # https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/assets/javascripts/issues/list/constants.js#L154-158
-  TYPES_FOR_LIST = %w(issue incident test_case task).freeze
+  TYPES_FOR_LIST = %w(issue incident test_case task objective).freeze
 
   # Types of issues that should be displayed on issue board lists
   TYPES_FOR_BOARD_LIST = %w(issue incident).freeze
@@ -90,6 +91,7 @@ class Issue < ApplicationRecord
   has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
+  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue
   has_many :prometheus_alerts, through: :prometheus_alert_events
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues
@@ -210,6 +212,7 @@ class Issue < ApplicationRecord
   end
   scope :with_null_relative_position, -> { where(relative_position: nil) }
   scope :with_non_null_relative_position, -> { where.not(relative_position: nil) }
+  scope :with_projects_matching_search_data, -> { where('issue_search_data.project_id = issues.project_id') }
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
@@ -270,9 +273,14 @@ class Issue < ApplicationRecord
       reorder(upvotes_count: :asc)
     end
 
-    override :pg_full_text_search
-    def pg_full_text_search(search_term)
-      super.where('issue_search_data.project_id = issues.project_id')
+    override :full_search
+    def full_search(query, matched_columns: nil, use_minimum_char_limit: true)
+      return super if query.match?(IssuableFinder::FULL_TEXT_SEARCH_TERM_REGEX)
+
+      super.where(
+        'issues.title NOT SIMILAR TO :pattern OR issues.description NOT SIMILAR TO :pattern',
+        pattern: IssuableFinder::FULL_TEXT_SEARCH_TERM_PATTERN
+      )
     end
   end
 
@@ -393,10 +401,21 @@ class Issue < ApplicationRecord
     )
   end
 
-  def self.to_branch_name(*args)
-    branch_name = args.map(&:to_s).each_with_index.map do |arg, i|
-      arg.parameterize(preserve_case: i == 0).presence
-    end.compact.join('-')
+  def self.to_branch_name(id, title, project: nil)
+    params = {
+      'id' => id.to_s.parameterize(preserve_case: true),
+      'title' => title.to_s.parameterize
+    }
+    template = project&.issue_branch_template
+
+    branch_name =
+      if template.present?
+        Gitlab::StringPlaceholderReplacer.replace_string_placeholders(template, /(#{params.keys.join('|')})/) do |arg|
+          params[arg]
+        end
+      else
+        params.values.select(&:present?).join('-')
+      end
 
     if branch_name.length > 100
       truncated_string = branch_name[0, 100]
@@ -474,7 +493,7 @@ class Issue < ApplicationRecord
     if self.confidential?
       "#{iid}-confidential-issue"
     else
-      self.class.to_branch_name(iid, title)
+      self.class.to_branch_name(iid, title, project: project)
     end
   end
 
@@ -651,6 +670,10 @@ class Issue < ApplicationRecord
   def expire_etag_cache
     key = Gitlab::Routing.url_helpers.realtime_changes_project_issue_path(project, self)
     Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
+  def supports_confidentiality?
+    true
   end
 
   private

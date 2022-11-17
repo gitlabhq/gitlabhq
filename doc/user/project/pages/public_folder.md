@@ -116,7 +116,7 @@ GitLab Pages supports only static sites.
    ```
 
 1. Configure your Nuxt.js application for
-   [Static Site Generation](https://nuxtjs.org/docs/features/deployment-targets#static-hosting).
+   [Static Site Generation](https://nuxtjs.org/docs/features/deployment-targets/#static-hosting).
 
 ### Vite
 

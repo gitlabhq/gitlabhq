@@ -200,7 +200,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
           let_it_be(:project2) { create(:project, :private, namespace: group) }
 
           it_behaves_like 'project namespace path is in sync with project path' do
-            let(:group_full_path) { "#{group.path}" }
+            let(:group_full_path) { group.path.to_s }
             let(:projects_with_project_namespace) { [project1, project2] }
           end
         end
@@ -274,7 +274,7 @@ RSpec.describe Groups::TransferService, :sidekiq_inline do
         end
 
         it_behaves_like 'project namespace path is in sync with project path' do
-          let(:group_full_path) { "#{new_parent_group.full_path}" }
+          let(:group_full_path) { new_parent_group.full_path.to_s }
           let(:projects_with_project_namespace) { [project] }
         end
       end

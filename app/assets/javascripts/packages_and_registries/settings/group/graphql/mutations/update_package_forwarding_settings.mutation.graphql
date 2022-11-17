@@ -1,0 +1,16 @@
+mutation updatePackageForwardingSettings($input: UpdateNamespacePackageSettingsInput!) {
+  updateNamespacePackageSettings(input: $input) {
+    packageSettings {
+      mavenPackageRequestsForwarding
+      lockMavenPackageRequestsForwarding
+      mavenPackageRequestsForwardingLocked
+      npmPackageRequestsForwarding
+      lockNpmPackageRequestsForwarding
+      npmPackageRequestsForwardingLocked
+      pypiPackageRequestsForwarding
+      lockPypiPackageRequestsForwarding
+      pypiPackageRequestsForwardingLocked
+    }
+    errors
+  }
+}

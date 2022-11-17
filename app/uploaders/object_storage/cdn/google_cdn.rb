@@ -24,18 +24,24 @@ module ObjectStorage
         !GoogleIpCache.google_ip?(request_ip)
       end
 
-      def signed_url(path, expiry: 10.minutes)
+      def signed_url(path, expiry: 10.minutes, params: {})
         expiration = (Time.current + expiry).utc.to_i
 
         uri = Addressable::URI.parse(cdn_url)
         uri.path = path
-        uri.query = "Expires=#{expiration}&KeyName=#{key_name}"
+        # Use an Array to preserve order: Google CDN needs to have
+        # Expires, KeyName, and Signature in that order or it will return a 403 error:
+        # https://cloud.google.com/cdn/docs/troubleshooting-steps#signing
+        query_params = params.to_a
+        query_params << ['Expires', expiration]
+        query_params << ['KeyName', key_name]
+        uri.query_values = query_params
 
-        signature = OpenSSL::HMAC.digest('SHA1', decoded_key, uri.to_s)
+        unsigned_url = uri.to_s
+        signature = OpenSSL::HMAC.digest('SHA1', decoded_key, unsigned_url)
         encoded_signature = Base64.urlsafe_encode64(signature)
 
-        uri.query += "&Signature=#{encoded_signature}"
-        uri.to_s
+        "#{unsigned_url}&Signature=#{encoded_signature}"
       end
 
       private

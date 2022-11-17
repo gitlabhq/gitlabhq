@@ -7,6 +7,7 @@ import PipelinesList from '../pipelines/list.vue';
 import Clientside from '../preview/clientside.vue';
 import ResizablePanel from '../resizable_panel.vue';
 import TerminalView from '../terminal/view.vue';
+import SwitchEditorsView from '../switch_editors/switch_editors_view.vue';
 import CollapsibleSidebar from './collapsible_sidebar.vue';
 
 // Need to add the width of the nav buttons since the resizable container contains those as well
@@ -20,7 +21,7 @@ export default {
   },
   computed: {
     ...mapState('terminal', { isTerminalVisible: 'isVisible' }),
-    ...mapState(['currentMergeRequestId', 'clientsidePreviewEnabled']),
+    ...mapState(['currentMergeRequestId', 'clientsidePreviewEnabled', 'canUseNewWebIde']),
     ...mapGetters(['packageJson']),
     ...mapState('rightPane', ['isOpen']),
     showLivePreview() {
@@ -28,6 +29,12 @@ export default {
     },
     rightExtensionTabs() {
       return [
+        {
+          show: this.canUseNewWebIde,
+          title: __('Switch editors'),
+          views: [{ component: SwitchEditorsView, ...rightSidebarViews.switchEditors }],
+          icon: 'bullhorn',
+        },
         {
           show: true,
           title: __('Pipelines'),
@@ -53,6 +60,7 @@ export default {
     },
   },
   WIDTH,
+  SWITCH_EDITORS_VIEW_NAME: rightSidebarViews.switchEditors.name,
 };
 </script>
 
@@ -64,6 +72,11 @@ export default {
     :min-size="$options.WIDTH"
     :resizable="isOpen"
   >
-    <collapsible-sidebar class="gl-w-full" :extension-tabs="rightExtensionTabs" side="right" />
+    <collapsible-sidebar
+      class="gl-w-full"
+      :extension-tabs="rightExtensionTabs"
+      :init-open-view="$options.SWITCH_EDITORS_VIEW_NAME"
+      side="right"
+    />
   </resizable-panel>
 </template>

@@ -32,14 +32,15 @@ review-build-cng-env:
   extends:
     - .default-retry
     - .review:rules:review-build-cng
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:3.0-alpine3.13
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}:bundler-2.3
   stage: prepare
   needs: []
   before_script:
     - source ./scripts/utils.sh
     - install_gitlab_gem
   script:
-    - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env'
+    - ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > build.env
+    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> build.env
     - cat build.env
   artifacts:
     reports:
@@ -70,12 +71,14 @@ review-build-cng:
     FORCE_RAILS_IMAGE_BUILDS: "${FORCE_RAILS_IMAGE_BUILDS}"
     CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
     EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
-    GITLAB_SHELL_VERSION: "${GITLAB_SHELL_VERSION}"
     GITLAB_ELASTICSEARCH_INDEXER_VERSION: "${GITLAB_ELASTICSEARCH_INDEXER_VERSION}"
     GITLAB_KAS_VERSION: "${GITLAB_KAS_VERSION}"
-    GITLAB_WORKHORSE_VERSION: "${GITLAB_WORKHORSE_VERSION}"
+    GITLAB_METRICS_EXPORTER_VERSION: "${GITLAB_METRICS_EXPORTER_VERSION}"
     GITLAB_PAGES_VERSION: "${GITLAB_PAGES_VERSION}"
+    GITLAB_SHELL_VERSION: "${GITLAB_SHELL_VERSION}"
+    GITLAB_WORKHORSE_VERSION: "${GITLAB_WORKHORSE_VERSION}"
     GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
+    RUBY_VERSION: "${FULL_RUBY_VERSION}"
   trigger:
     project: gitlab-org/build/CNG-mirror
     branch: $TRIGGER_BRANCH
@@ -88,9 +91,9 @@ review-build-cng:
   variables:
     HOST_SUFFIX: "${CI_ENVIRONMENT_SLUG}"
     DOMAIN: "-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}"
-    GITLAB_HELM_CHART_REF: "138c146a5ba787942f66d4c7d795d224d6ba206a"
+    GITLAB_HELM_CHART_REF: "ed813953079c1d81aa69d4cb8171c69aa9741f01"  # 6.5.4: https://gitlab.com/gitlab-org/charts/gitlab/-/commit/ed813953079c1d81aa69d4cb8171c69aa9741f01
   environment:
-    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
+    name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
     auto_stop_in: 48 hours
@@ -113,11 +116,11 @@ review-deploy:
     - echo "QA_GITLAB_URL=${CI_ENVIRONMENT_URL}" > environment.env
     - *base-before_script
   script:
-    - check_kube_domain
-    - download_chart
-    - deploy || (display_deployment_debug && exit 1)
-    - verify_deploy || exit 1
-    - disable_sign_ups || (delete_release && exit 1)
+    - run_timed_command "check_kube_domain"
+    - run_timed_command "download_chart"
+    - run_timed_command "deploy" || (display_deployment_debug && exit 1)
+    - run_timed_command "verify_deploy"|| (display_deployment_debug && exit 1)
+    - run_timed_command "disable_sign_ups"
   after_script:
     # Run seed-dast-test-data.sh only when DAST_RUN is set to true. This is to pupulate review app with data for DAST scan.
     # Set DAST_RUN to true when jobs are manually scheduled.
@@ -165,14 +168,14 @@ review-delete-deployment:
     - .review:rules:review-delete-deployment
   stage: prepare
   script:
-    - delete_release
+    - delete_helm_release
 
 review-stop:
   extends:
     - .review-stop-base
     - .review:rules:review-stop
-  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE} # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
+  resource_group: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # CI_ENVIRONMENT_SLUG is not available here and we want this to be the same as the environment
   stage: deploy
   needs: []
   script:
-    - delete_namespace
+    - delete_helm_release

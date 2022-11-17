@@ -136,7 +136,7 @@ class MergeRequest < ApplicationRecord
 
   before_validation :set_draft_status
 
-  after_create :ensure_merge_request_diff
+  after_create :ensure_merge_request_diff, unless: :skip_ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
   after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
@@ -145,6 +145,10 @@ class MergeRequest < ApplicationRecord
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
+
+  # Temporary flag to skip merge_request_diff creation on create.
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100390
+  attr_accessor :skip_ensure_merge_request_diff
 
   # Temporary fields to store compare vars
   # when creating new merge request
@@ -242,9 +246,7 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
-      if Feature.enabled?(:trigger_mr_subscription_on_merge_status_change, merge_request.project)
-        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
-      end
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
 
     # rubocop: disable CodeReuse/ServiceClass
@@ -649,8 +651,8 @@ class MergeRequest < ApplicationRecord
     context_commits.count
   end
 
-  def commits(limit: nil, load_from_gitaly: false)
-    return merge_request_diff.commits(limit: limit, load_from_gitaly: load_from_gitaly) if merge_request_diff.persisted?
+  def commits(limit: nil, load_from_gitaly: false, page: nil)
+    return merge_request_diff.commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page) if merge_request_diff.persisted?
 
     commits_arr = if compare_commits
                     reversed_commits = compare_commits.reverse
@@ -662,8 +664,8 @@ class MergeRequest < ApplicationRecord
     CommitCollection.new(source_project, commits_arr, source_branch)
   end
 
-  def recent_commits(load_from_gitaly: false)
-    commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: load_from_gitaly)
+  def recent_commits(limit: MergeRequestDiff::COMMITS_SAFE_SIZE, load_from_gitaly: false, page: nil)
+    commits(limit: limit, load_from_gitaly: load_from_gitaly, page: page)
   end
 
   def commits_count
@@ -1130,7 +1132,7 @@ class MergeRequest < ApplicationRecord
   # rubocop: enable CodeReuse/ServiceClass
 
   def diffable_merge_ref?
-    open? && merge_head_diff.present? && (Feature.enabled?(:display_merge_conflicts_in_diff, project) || can_be_merged?)
+    open? && merge_head_diff.present? && can_be_merged?
   end
 
   # Returns boolean indicating the merge_status should be rechecked in order to
@@ -1673,7 +1675,7 @@ class MergeRequest < ApplicationRecord
   # TODO: consider renaming this as with exposed artifacts we generate reports,
   # not always compare
   # issue: https://gitlab.com/gitlab-org/gitlab/issues/34224
-  def compare_reports(service_class, current_user = nil, report_type = nil, additional_params = {} )
+  def compare_reports(service_class, current_user = nil, report_type = nil, additional_params = {})
     with_reactive_cache(service_class.name, current_user&.id, report_type) do |data|
       unless service_class.new(project, current_user, id: id, report_type: report_type, additional_params: additional_params)
         .latest?(comparison_base_pipeline(service_class.name), actual_head_pipeline, data)

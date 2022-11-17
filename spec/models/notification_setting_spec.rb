@@ -5,6 +5,12 @@ require 'spec_helper'
 RSpec.describe NotificationSetting do
   it_behaves_like 'having unique enum values'
 
+  describe 'default values' do
+    subject(:notification_setting) { build(:notification_setting) }
+
+    it { expect(notification_setting.level).to eq('global') }
+  end
+
   describe "Associations" do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:source) }

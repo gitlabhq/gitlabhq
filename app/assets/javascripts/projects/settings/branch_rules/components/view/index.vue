@@ -12,11 +12,13 @@ import {
   WILDCARDS_HELP_PATH,
   PROTECTED_BRANCHES_HELP_PATH,
   APPROVALS_HELP_PATH,
+  STATUS_CHECKS_HELP_PATH,
 } from './constants';
 
 const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
 const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
 const approvalsHelpDocLink = helpPagePath(APPROVALS_HELP_PATH);
+const statusChecksHelpDocLink = helpPagePath(STATUS_CHECKS_HELP_PATH);
 
 export default {
   name: 'RuleView',
@@ -24,6 +26,7 @@ export default {
   wildcardsHelpDocLink,
   protectedBranchesHelpDocLink,
   approvalsHelpDocLink,
+  statusChecksHelpDocLink,
   components: { Protection, GlSprintf, GlLink, GlLoadingIcon },
   inject: {
     projectPath: {
@@ -33,6 +36,9 @@ export default {
       default: '',
     },
     approvalRulesPath: {
+      default: '',
+    },
+    statusChecksPath: {
       default: '',
     },
   },
@@ -45,18 +51,19 @@ export default {
         };
       },
       update({ project: { branchRules } }) {
-        this.branchProtection = branchRules.nodes.find(
-          (rule) => rule.name === this.branch,
-        )?.branchProtection;
+        const branchRule = branchRules.nodes.find((rule) => rule.name === this.branch);
+        this.branchProtection = branchRule?.branchProtection;
+        this.approvalRules = branchRule?.approvalRules;
+        this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
       },
     },
   },
   data() {
     return {
       branch: getParameterByName(BRANCH_PARAM_NAME),
-      branchProtection: {
-        approvalRules: {},
-      },
+      branchProtection: {},
+      approvalRules: {},
+      statusChecks: [],
     };
   },
   computed: {
@@ -92,6 +99,11 @@ export default {
         total,
       });
     },
+    statusChecksHeader() {
+      return sprintf(this.$options.i18n.statusChecksHeader, {
+        total: this.statusChecks.length,
+      });
+    },
     allBranches() {
       return this.branch === ALL_BRANCHES_WILDCARD;
     },
@@ -104,7 +116,7 @@ export default {
         : this.$options.i18n.branchNameOrPattern;
     },
     approvals() {
-      return this.branchProtection?.approvalRules?.nodes || [];
+      return this.approvalRules?.nodes || [];
     },
   },
   methods: {
@@ -202,6 +214,21 @@ export default {
     />
 
     <!-- Status checks -->
-    <!-- Follow-up: add status checks section (https://gitlab.com/gitlab-org/gitlab/-/issues/372362) -->
+    <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h4>
+    <gl-sprintf :message="$options.i18n.statusChecksDescription">
+      <template #link="{ content }">
+        <gl-link :href="$options.statusChecksHelpDocLink">
+          {{ content }}
+        </gl-link>
+      </template>
+    </gl-sprintf>
+
+    <protection
+      class="gl-mt-3"
+      :header="statusChecksHeader"
+      :header-link-title="$options.i18n.statusChecksLinkTitle"
+      :header-link-href="statusChecksPath"
+      :status-checks="statusChecks"
+    />
   </div>
 </template>

@@ -109,7 +109,7 @@ To select a notification level for a group, use either of these methods:
 Or:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
-1. Select the notification dropdown, next to the bell icon (**{notifications}**).
+1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
 #### Change email address used for group notifications
@@ -140,7 +140,7 @@ To select a notification level for a project, use either of these methods:
 Or:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. Select the notification dropdown, next to the bell icon (**{notifications}**).
+1. Select the notification dropdown list, next to the bell icon (**{notifications}**).
 1. Select the desired [notification level](#notification-levels).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
@@ -194,6 +194,7 @@ Users are notified of the following events:
 | Personal access tokens expiring soon     | User            | Security email, always sent.                                                                                                            |
 | Personal access tokens have been created | User            | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337591) in GitLab 14.9._                       |
 | Personal access tokens have expired      | User            | Security email, always sent.                                                                                                            |
+| Personal access token has been revoked   | User            | Security email, always sent.  [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98911) in GitLab 15.5.                 |
 | Project access level changed             | User            | Sent when user project access level is changed.                                                                                         |
 | SSH key has expired                      | User            | Security email, always sent. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/322637) in GitLab 13.12._                      |
 | Two-factor authentication disabled       | User            | Security email, always sent.                                                                                                            |
@@ -227,20 +228,20 @@ to change their user notification settings to **Watch** instead.
 
 ### Edit notification settings for issues, merge requests, and epics
 
-To enable notifications on a specific issue, merge request, or epic, you must turn on the
-**Notifications** toggle in the right sidebar.
+To toggle notifications on an issue, merge request, or epic: on the right sidebar, turn on or off the **Notifications** toggle.
 
-- To subscribe, **turn on** if you are not a participant in the discussion, but want to receive
-  notifications on each update.
+When you **turn on** notifications, you start receiving notifications on each update, even if you
+haven't participated in the discussion.
+When you turn notifications on in an epic, you aren't automatically subscribed to the issues linked
+to the epic.
 
-  When you turn notifications on in an epic, you aren't automatically subscribed to the issues linked
-  to the epic.
+When you **turn off** notifications, you stop receiving notifications for updates.
+Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
+Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
 
-- To unsubscribe, **turn off** if you are receiving notifications for updates but no longer want to
-  receive them.
-
-  Turning this toggle off only unsubscribes you from updates related to this issue, merge request, or epic.
-  Learn how to [opt out of all emails from GitLab](#opt-out-of-all-gitlab-emails).
+<!-- Delete when the `moved_mr_sidebar` feature flag is removed -->
+If you don't see this action on the right sidebar, your project or instance may have
+enabled a feature flag for [moved sidebar actions](../project/merge_requests/index.md#move-sidebar-actions).
 
 ### Notification events on issues, merge requests, and epics
 
@@ -356,13 +357,13 @@ a merge request or an issue.
 The following table lists all GitLab-specific email headers:
 
 | Header                                                        | Description                                                                                                                                    |
-|---------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
 | `List-Id`                                                     | The path of the project in an RFC 2919 mailing list identifier. You can use it for email organization with filters.                            |
 | `X-GitLab-(Resource)-ID`                                      | The ID of the resource the notification is for. The resource, for example, can be `Issue`, `MergeRequest`, `Commit`, or another such resource. |
 | `X-GitLab-Discussion-ID`                                      | The ID of the thread the comment belongs to, in notification emails for comments.                                                              |
 | `X-GitLab-Group-Id`                                           | The group's ID. Only present on notification emails for [epics](../group/epics/index.md).                                                      |
 | `X-GitLab-Group-Path`                                         | The group's path. Only present on notification emails for [epics](../group/epics/index.md)                                                     |
-| [`X-GitLab-NotificationReason`](#x-gitlab-notificationreason) | The reason for the notification. This can be `mentioned`, `assigned`, or `own_activity`.                                                       |
+| `X-GitLab-NotificationReason` | The reason for the notification. [See possible values.](#x-gitlab-notificationreason). |
 | `X-GitLab-Pipeline-Id`                                        | The ID of the pipeline the notification is for, in notification emails for pipelines.                                                          |
 | `X-GitLab-Project-Id`                                         | The project's ID.                                                                                                                              |
 | `X-GitLab-Project-Path`                                       | The project's path.                                                                                                                            |
@@ -376,20 +377,34 @@ The value is one of the following, in order of priority:
 
 - `own_activity`
 - `assigned`
+- `review_requested`
 - `mentioned`
+- `subscribed`
 
 The reason for the notification is also included in the footer of the notification email.
 For example, an email with the reason `assigned` has this sentence in the footer:
 
 > You are receiving this email because you have been assigned an item on \<configured GitLab hostname>.
 
-For example, an alert notification email can have one of
-[the alert's](../../operations/incident_management/alerts.md) statuses:
+#### On-call alerts notifications **(PREMIUM)**
+
+An [on-call alert](../../operations/incident_management/oncall_schedules.md)
+notification email can have one of [the alert's](../../operations/incident_management/alerts.md) statuses:
 
 - `alert_triggered`
 - `alert_acknowledged`
 - `alert_resolved`
 - `alert_ignored`
+
+#### Incident escalation notifications **(PREMIUM)**
+
+An [incident escalation](../../operations/incident_management/escalation_policies.md)
+notification email can have one of [the incident's](../../operations/incident_management/incidents.md) status:
+
+- `incident_triggered`
+- `incident_acknowledged`
+- `incident_resolved`
+- `incident_ignored`
 
 Expanding the list of events included in the `X-GitLab-NotificationReason` header is tracked in
 [issue 20689](https://gitlab.com/gitlab-org/gitlab/-/issues/20689).

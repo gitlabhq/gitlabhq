@@ -444,7 +444,7 @@ On your GitLab project repository navigate to the **Registry** tab.
 You may need to enable the Container Registry for your project to see this tab. You'll find it under your project's **Settings > General > Visibility, project features, permissions**.
 
 To start using Container Registry on our machine, we first need to sign in to the GitLab registry using our GitLab username and password.
-Make sure you have [Docker](https://docs.docker.com/engine/installation/) installed on our machine,
+Make sure you have [Docker](https://docs.docker.com/engine/install/) installed on our machine,
 then run the following commands:
 
 ```shell
@@ -628,11 +628,11 @@ To do that, commit and push `.gitlab-ci.yml` to the `main` branch. It will trigg
 
 Here we see our **Test** and **Deploy** stages.
 The **Test** stage has the `unit_test` build running.
-click on it to see the runner's output.
+Select it to see the runner's output.
 
 ![pipeline page](img/pipeline_page.png)
 
-After our code passed through the pipeline successfully, we can deploy to our production server by clicking the **play** button on the right side.
+After our code passed through the pipeline successfully, we can deploy to our production server by selecting the **play** button on the right side.
 
 ![pipelines page deploy button](img/pipelines_page_deploy_button.png)
 
@@ -644,7 +644,7 @@ If something doesn't work as expected, you can roll back to the latest working v
 
 ![environment page](img/environment_page.png)
 
-By clicking on the external link icon specified on the right side, GitLab opens the production website.
+By selecting the external link icon specified on the right side, GitLab opens the production website.
 Our deployment successfully was done and we can see the application is live.
 
 ![Laravel welcome page](img/laravel_welcome_page.png)

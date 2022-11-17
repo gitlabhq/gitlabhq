@@ -234,7 +234,7 @@ below the doc link:
   external_url: true
 ```
 
-All nav links are clickable. If the higher-level link does not have a link
+All nav links are selectable. If the higher-level link does not have a link
 of its own, it must link to its first sub-item link, mimicking the navigation in GitLab.
 This must be avoided so that we don't have duplicated links nor two `.active` links
 at the same time.

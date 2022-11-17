@@ -12,20 +12,27 @@ module WorkItems
 
     # Base types need to exist on the DB on app startup
     # This constant is used by the DB seeder
+    # TODO - where to add new icon names created?
     BASE_TYPES = {
       issue: { name: 'Issue', icon_name: 'issue-type-issue', enum_value: 0 },
       incident: { name: 'Incident', icon_name: 'issue-type-incident', enum_value: 1 },
       test_case: { name: 'Test Case', icon_name: 'issue-type-test-case', enum_value: 2 }, ## EE-only
       requirement: { name: 'Requirement', icon_name: 'issue-type-requirements', enum_value: 3 }, ## EE-only
-      task: { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 }
+      task: { name: 'Task', icon_name: 'issue-type-task', enum_value: 4 },
+      objective: { name: 'Objective', icon_name: 'issue-type-objective', enum_value: 5 }, ## EE-only
+      key_result: { name: 'Key Result', icon_name: 'issue-type-keyresult', enum_value: 6 } ## EE-only
     }.freeze
 
     WIDGETS_FOR_TYPE = {
-      issue: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate],
+      issue: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
+              Widgets::Milestone],
       incident: [Widgets::Description, Widgets::Hierarchy],
       test_case: [Widgets::Description],
       requirement: [Widgets::Description],
-      task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate]
+      task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
+             Widgets::Milestone],
+      objective: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::Milestone],
+      key_result: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::StartAndDueDate]
     }.freeze
 
     WI_TYPES_WITH_CREATED_HEADER = %w[issue incident].freeze
@@ -67,7 +74,7 @@ module WorkItems
     end
 
     def self.allowed_types_for_issues
-      base_types.keys.excluding('task')
+      base_types.keys.excluding('task', 'objective', 'key_result')
     end
 
     def default?

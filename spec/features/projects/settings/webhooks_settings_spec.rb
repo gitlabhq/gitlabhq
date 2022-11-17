@@ -48,22 +48,47 @@ RSpec.describe 'Projects > Settings > Webhook Settings' do
         expect(page).to have_content('Releases events')
       end
 
-      it 'create webhook', :js do
-        visit webhooks_path
+      context 'when feature flag "enhanced_webhook_support_regex" is disabled' do
+        before do
+          stub_feature_flags(enhanced_webhook_support_regex: false)
+        end
 
-        fill_in 'URL', with: url
-        check 'Tag push events'
-        fill_in 'hook_push_events_branch_filter', with: 'master'
-        check 'Enable SSL verification'
-        check 'Job events'
+        it 'create webhook', :js do
+          visit webhooks_path
 
-        click_button 'Add webhook'
+          fill_in 'URL', with: url
+          check 'Tag push events'
+          fill_in 'hook_push_events_branch_filter', with: 'master'
+          check 'Enable SSL verification'
+          check 'Job events'
 
-        expect(page).to have_content(url)
-        expect(page).to have_content('SSL Verification: enabled')
-        expect(page).to have_content('Push events')
-        expect(page).to have_content('Tag push events')
-        expect(page).to have_content('Job events')
+          click_button 'Add webhook'
+
+          expect(page).to have_content(url)
+          expect(page).to have_content('SSL Verification: enabled')
+          expect(page).to have_content('Tag push events')
+          expect(page).to have_content('Job events')
+          expect(page).to have_content('Push events')
+        end
+      end
+
+      context 'when feature flag "enhanced_webhook_support_regex" is enabled' do
+        it 'create webhook', :js do
+          visit webhooks_path
+
+          fill_in 'URL', with: url
+          check 'Tag push events'
+          check 'Enable SSL verification'
+          check 'Job events'
+
+          click_button 'Add webhook'
+
+          expect(page).to have_content(url)
+          expect(page).to have_content('SSL Verification: enabled')
+          expect(page).to have_content('Tag push events')
+          expect(page).to have_content('Job events')
+          expect(page).to have_content('Push events')
+        end
       end
 
       it 'edit existing webhook', :js do

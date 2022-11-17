@@ -8,10 +8,12 @@ RSpec.describe UsersStarProjectsFinder do
   let(:user) { create(:user) }
   let(:private_user) { create(:user, private_profile: true) }
   let(:other_user) { create(:user) }
+  let(:blocked_user) { create(:user, state: 'blocked') }
 
   before do
     user.toggle_star(project)
     private_user.toggle_star(project)
+    blocked_user.toggle_star(project)
   end
 
   describe '#execute' do
@@ -37,6 +39,14 @@ RSpec.describe UsersStarProjectsFinder do
       let(:current_user) { nil }
 
       it { is_expected.to match_array(public_stars) }
+    end
+
+    describe 'with active users only' do
+      let(:current_user) { private_user }
+
+      it 'ignores stars of non-active users' do
+        is_expected.not_to include(*blocked_user.users_star_projects)
+      end
     end
   end
 end

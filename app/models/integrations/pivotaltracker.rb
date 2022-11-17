@@ -56,7 +56,7 @@ module Integrations
         }
         Gitlab::HTTP.post(
           API_ENDPOINT,
-          body: message.to_json,
+          body: Gitlab::Json.dump(message),
           headers: {
             'Content-Type' => 'application/json',
             'X-TrackerToken' => token

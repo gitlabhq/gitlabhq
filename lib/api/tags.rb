@@ -7,17 +7,25 @@ module API
     TAG_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS.merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
     before do
-      authorize! :download_code, user_project
+      authorize! :read_code, user_project
 
       not_found! unless user_project.repo_exists?
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a project repository tags' do
-        success Entities::Tag
+        is_array true
+        success code: 200, model: Entities::Tag
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags %w[tags]
       end
       params do
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
@@ -46,7 +54,12 @@ module API
       end
 
       desc 'Get a single repository tag' do
-        success Entities::Tag
+        success code: 200, model: Entities::Tag
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[tags]
       end
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
@@ -59,12 +72,18 @@ module API
       end
 
       desc 'Create a new repository tag' do
-        success Entities::Tag
+        success code: 201, model: Entities::Tag
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[tags]
       end
       params do
-        requires :tag_name,            type: String, desc: 'The name of the tag'
-        requires :ref,                 type: String, desc: 'The commit sha or branch name'
-        optional :message,             type: String, desc: 'Specifying a message creates an annotated tag'
+        requires :tag_name, type: String, desc: 'The name of the tag', documentation: { example: 'v.1.0.0' }
+        requires :ref, type: String, desc: 'The commit sha or branch name', documentation: { example: '2695effb5807a22ff3d138d593fd856244e155e7' }
+        optional :message, type: String, desc: 'Specifying a message creates an annotated tag', documentation: { example: 'Release 1.0.0' }
       end
       post ':id/repository/tags', :release_orchestration do
         authorize_admin_tag
@@ -81,7 +100,15 @@ module API
         end
       end
 
-      desc 'Delete a repository tag'
+      desc 'Delete a repository tag' do
+        success code: 204
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 412, message: 'Precondition failed' }
+        ]
+        tags %w[tags]
+      end
       params do
         requires :tag_name, type: String, desc: 'The name of the tag'
       end

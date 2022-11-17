@@ -3,14 +3,16 @@
 = f.hidden_field(:name)
 
 = dropdown_tag(_('Select branch or create wildcard'),
-               options: { toggle_class: "js-protected-branch-select js-filter-submit wide monospace qa-protected-branch-select #{toggle_classes}",
+               options: { toggle_class: "js-protected-branch-select js-filter-submit wide monospace #{toggle_classes}",
                           filter: true,
-                          dropdown_class: "dropdown-menu-selectable git-revision-dropdown qa-protected-branch-dropdown",
+                          dropdown_class: "dropdown-menu-selectable git-revision-dropdown",
+                          dropdown_qa_selector: "protected_branch_dropdown_content",
                           placeholder: _("Search protected branches"),
                           footer_content: true,
                           data: { show_no: true, show_any: true, show_upcoming: true,
                                   selected: params[:protected_branch_name],
-                                  project_id: @project.try(:id) } }) do
+                                  project_id: @project.try(:id),
+                                  qa_selector: "protected_branch_dropdown" } }) do
 
   %ul.dropdown-footer-list
     %li

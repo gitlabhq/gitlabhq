@@ -76,7 +76,7 @@ module QA
 
           expect(branches_page).to have_no_branch(third_branch)
 
-          branches_page.delete_merged_branches
+          branches_page.delete_merged_branches('delete')
 
           expect(branches_page).to have_content(
             'Merged branches are being deleted. This can take some time depending on the number of branches. Please refresh the page to see changes.'

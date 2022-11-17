@@ -7,7 +7,20 @@ RSpec.describe 'Branches' do
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }
 
-  context 'logged in as developer' do
+  context 'when logged in as reporter' do
+    before do
+      sign_in(user)
+      project.add_reporter(user)
+    end
+
+    it 'does not show delete button' do
+      visit project_branches_path(project)
+
+      expect(page).not_to have_css '.js-delete-branch-button'
+    end
+  end
+
+  context 'when logged in as developer' do
     before do
       sign_in(user)
       project.add_developer(user)
@@ -21,11 +34,15 @@ RSpec.describe 'Branches' do
       before do
         # Add 4 stale branches
         (1..4).reverse_each do |i|
-          travel_to((threshold + i.hours).ago) { create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}") }
+          travel_to((threshold + i.hours).ago) do
+            create_file(message: "a commit in stale-#{i}", branch_name: "stale-#{i}")
+          end
         end
         # Add 6 active branches
         (1..6).each do |i|
-          travel_to((threshold - i.hours).ago) { create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}") }
+          travel_to((threshold - i.hours).ago) do
+            create_file(message: "a commit in active-#{i}", branch_name: "active-#{i}")
+          end
         end
       end
 
@@ -38,7 +55,10 @@ RSpec.describe 'Branches' do
 
           expect(page).to have_button('Copy branch name')
 
-          expect(page).to have_link('Show more active branches', href: project_branches_filtered_path(project, state: 'active'))
+          expect(page).to have_link(
+            'Show more active branches',
+            href: project_branches_filtered_path(project, state: 'active')
+          )
           expect(page).not_to have_content('Show more stale branches')
         end
       end
@@ -75,13 +95,15 @@ RSpec.describe 'Branches' do
         it 'shows only default_per_page active branches sorted by last updated' do
           visit project_branches_filtered_path(project, state: 'active')
 
-          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page, sort_by: :updated_desc, state: 'active'))
+          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page,
+                                                                   sort_by: :updated_desc, state: 'active'))
         end
 
         it 'shows only default_per_page branches sorted by last updated on All branches' do
           visit project_branches_filtered_path(project, state: 'all')
 
-          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page, sort_by: :updated_desc))
+          expect(page).to have_content(sorted_branches(repository, count: Kaminari.config.default_per_page,
+                                                                   sort_by: :updated_desc))
         end
       end
     end
@@ -141,7 +163,7 @@ RSpec.describe 'Branches' do
       it 'avoids a N+1 query in branches index' do
         control_count = ActiveRecord::QueryRecorder.new { visit project_branches_path(project) }.count
 
-        %w(one two three four five).each { |ref| repository.add_branch(user, ref, 'master') }
+        %w[one two three four five].each { |ref| repository.add_branch(user, ref, 'master') }
 
         expect { visit project_branches_filtered_path(project, state: 'all') }.not_to exceed_query_limit(control_count)
       end
@@ -193,7 +215,7 @@ RSpec.describe 'Branches' do
     end
   end
 
-  context 'logged in as maintainer' do
+  context 'when logged in as maintainer' do
     before do
       sign_in(user)
       project.add_maintainer(user)
@@ -220,7 +242,7 @@ RSpec.describe 'Branches' do
     end
   end
 
-  context 'logged out' do
+  context 'when logged out' do
     before do
       visit project_branches_path(project)
     end
@@ -314,7 +336,7 @@ RSpec.describe 'Branches' do
     Regexp.new(sorted_branches.join('.*'))
   end
 
-  def create_file(message: 'message', branch_name:)
+  def create_file(branch_name:, message: 'message')
     repository.create_file(user, generate(:branch), 'content', message: message, branch_name: branch_name)
   end
 

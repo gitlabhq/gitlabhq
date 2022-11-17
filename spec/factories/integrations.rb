@@ -43,6 +43,19 @@ FactoryBot.define do
     end
   end
 
+  factory :packagist_integration, class: 'Integrations::Packagist' do
+    project
+    type { 'Integrations::Packagist' }
+    active { true }
+    properties do
+      {
+        username: 'username',
+        token: 'test',
+        server: 'https://packagist.example.com'
+      }
+    end
+  end
+
   factory :prometheus_integration, class: 'Integrations::Prometheus' do
     project
     active { true }

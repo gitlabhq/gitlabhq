@@ -7,6 +7,12 @@ RSpec.describe Member do
 
   using RSpec::Parameterized::TableSyntax
 
+  describe 'default values' do
+    subject(:member) { build(:project_member) }
+
+    it { expect(member.notification_level).to eq(NotificationSetting.levels[:global]) }
+  end
+
   describe 'Associations' do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to belong_to(:member_namespace) }
@@ -213,7 +219,7 @@ RSpec.describe Member do
   describe 'Scopes & finders' do
     let_it_be(:project) { create(:project, :public) }
     let_it_be(:group) { create(:group) }
-    let_it_be(:blocked_pending_approval_user) { create(:user, :blocked_pending_approval ) }
+    let_it_be(:blocked_pending_approval_user) { create(:user, :blocked_pending_approval) }
     let_it_be(:blocked_pending_approval_project_member) { create(:project_member, :invited, :developer, project: project, invite_email: blocked_pending_approval_user.email) }
     let_it_be(:awaiting_group_member) { create(:group_member, :awaiting, group: group) }
     let_it_be(:awaiting_project_member) { create(:project_member, :awaiting, project: project) }

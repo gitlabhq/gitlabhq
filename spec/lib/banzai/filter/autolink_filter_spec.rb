@@ -195,7 +195,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter do
     it 'escapes RTLO and other characters' do
       # rendered text looks like "http://example.com/evilexe.mp3"
       evil_link = "#{link}evil\u202E3pm.exe"
-      doc = filter("#{evil_link}")
+      doc = filter(evil_link.to_s)
 
       expect(doc.at_css('a')['href']).to eq "http://about.gitlab.com/evil%E2%80%AE3pm.exe"
     end

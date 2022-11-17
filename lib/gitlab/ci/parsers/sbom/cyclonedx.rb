@@ -61,22 +61,18 @@ module Gitlab
           end
 
           def parse_components
-            data['components']&.each do |component_data|
-              type = component_data['type']
-              next unless supported_component_type?(type)
-
+            data['components']&.each_with_index do |component_data, index|
               component = ::Gitlab::Ci::Reports::Sbom::Component.new(
-                type: type,
+                type: component_data['type'],
                 name: component_data['name'],
+                purl: component_data['purl'],
                 version: component_data['version']
               )
 
-              report.add_component(component)
+              report.add_component(component) if component.ingestible?
+            rescue ::Sbom::PackageUrl::InvalidPackageUrl
+              report.add_error("/components/#{index}/purl is invalid")
             end
-          end
-
-          def supported_component_type?(type)
-            ::Enums::Sbom.component_types.include?(type.to_sym)
           end
         end
       end

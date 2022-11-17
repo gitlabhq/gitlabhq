@@ -171,7 +171,7 @@ RSpec.describe Labels::PromoteService do
       end
 
       context 'when there is an existing identical group label' do
-        let!(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title ) }
+        let!(:existing_group_label) { create(:group_label, group: group_1, title: project_label_1_1.title) }
 
         it 'uses the existing group label' do
           expect { service.execute(project_label_1_1) }

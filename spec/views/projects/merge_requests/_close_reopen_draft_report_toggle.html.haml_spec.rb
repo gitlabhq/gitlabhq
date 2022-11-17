@@ -19,7 +19,7 @@ RSpec.describe 'projects/merge_requests/_close_reopen_draft_report_toggle.html.h
 
         render
 
-        expect(rendered).to have_css('li', class: 'js-sidebar-subscriptions-entry-point')
+        expect(rendered).to have_css('li', class: 'js-sidebar-subscriptions-widget-root')
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe 'projects/merge_requests/_close_reopen_draft_report_toggle.html.h
       it 'is not present' do
         render
 
-        expect(rendered).not_to have_css('li', class: 'js-sidebar-subscriptions-entry-point')
+        expect(rendered).not_to have_css('li', class: 'js-sidebar-subscriptions-widget-root')
       end
     end
   end

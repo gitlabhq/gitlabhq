@@ -68,7 +68,7 @@ RSpec.shared_context 'ProjectPolicy context' do
       admin_project admin_project_member admin_snippet admin_terraform_state
       admin_wiki create_deploy_token destroy_deploy_token
       push_to_delete_protected_branch read_deploy_token update_snippet
-      destroy_upload
+      destroy_upload admin_member_access_request rename_project
     ]
   end
 
@@ -83,7 +83,7 @@ RSpec.shared_context 'ProjectPolicy context' do
   let(:base_owner_permissions) do
     %i[
       archive_project change_namespace change_visibility_level destroy_issue
-      destroy_merge_request manage_owners remove_fork_project remove_project rename_project
+      destroy_merge_request manage_owners remove_fork_project remove_project
       set_issue_created_at set_issue_iid set_issue_updated_at
       set_note_created_at
     ]

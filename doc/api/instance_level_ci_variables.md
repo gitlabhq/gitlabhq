@@ -28,14 +28,16 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
         "variable_type": "env_var",
         "value": "TEST_1",
         "protected": false,
-        "masked": false
+        "masked": false,
+        "raw": false
     },
     {
         "key": "TEST_VARIABLE_2",
         "variable_type": "env_var",
         "value": "TEST_2",
         "protected": false,
-        "masked": false
+        "masked": false,
+        "raw": false
     }
 ]
 ```
@@ -62,7 +64,8 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
     "variable_type": "env_var",
     "value": "TEST_1",
     "protected": false,
-    "masked": false
+    "masked": false,
+    "raw": false
 }
 ```
 
@@ -83,6 +86,7 @@ POST /admin/ci/variables
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 | `protected`     | boolean | no       | Whether the variable is protected. |
 | `masked`        | boolean | no       | Whether the variable is masked. |
+| `raw`           | boolean | no       | Whether the variable is expandable. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -95,7 +99,8 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
     "value": "new value",
     "variable_type": "env_var",
     "protected": false,
-    "masked": false
+    "masked": false,
+    "raw": false
 }
 ```
 
@@ -114,6 +119,7 @@ PUT /admin/ci/variables/:key
 | `variable_type` | string  | no       | The type of a variable. Available types are: `env_var` (default) and `file`. |
 | `protected`     | boolean | no       | Whether the variable is protected. |
 | `masked`        | boolean | no       | Whether the variable is masked. |
+| `raw`           | boolean | no       | Whether the variable is expandable. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -126,7 +132,8 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
     "value": "updated value",
     "variable_type": "env_var",
     "protected": true,
-    "masked": true
+    "masked": true,
+    "raw": true
 }
 ```
 

@@ -378,7 +378,7 @@ module GraphqlHelpers
 
   def field_with_params(name, attributes = {})
     namerized = GraphqlHelpers.fieldnamerize(name.to_s)
-    return "#{namerized}" if attributes.blank?
+    return namerized.to_s if attributes.blank?
 
     field_params = if attributes.is_a?(Hash)
                      "(#{attributes_to_graphql(attributes)})"

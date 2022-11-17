@@ -22,24 +22,24 @@ All event definitions are stored in the following directories:
 
 Each event is defined in a separate YAML file consisting of the following fields:
 
-| Field                  | Required | Additional information                                                                                                                                          |
-|------------------------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `description`          | yes      | A description of the event.                                                                                                                                        |
-| `category`             | yes      | The event category (see [Structured event taxonomy](index.md#structured-event-taxonomy)).                                                  |
-| `action`               | yes      | The event action (see [Structured event taxonomy](index.md#structured-event-taxonomy)).                                                    |
-| `label_description`    | no       | A description of the event label (see [Structured event taxonomy](index.md#structured-event-taxonomy)).                                      |
-| `property_description` | no       | A description of the event property (see [Structured event taxonomy](index.md#structured-event-taxonomy)).                                   |
-| `value_description`    | no       | A description of the event value (see [Structured event taxonomy](index.md#structured-event-taxonomy)).                                      |
-| `extra_properties`     | no       | The type and description of each extra property sent with the event.                                                                                                 |
-| `identifiers`          | no       | A list of identifiers sent with the event. Can be set to one or more of `project`, `user`, or `namespace`.                                                                                    |
-| `iglu_schema_url`      | no       | The URL to the custom schema sent with the event, for example, `iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0`.                                                         |
-| `product_section`      | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml).                                                                    |
-| `product_stage`        | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the event.                                                             |
-| `product_group`        | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the event.                                                       |
-| `product_category`     | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the event.                                              |
-| `milestone`            | no       | The milestone when the event is introduced.                                                                                                                      |
-| `introduced_by_url`    | no       | The URL to the merge request that introduced the event.                                                                                                          |
-| `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`. |
+| Field                  | Required | Additional information                                                                                                                                                                      |
+|------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `description`          | yes      | A description of the event.                                                                                                                                                                 |
+| `category`             | yes      | The event category (see [Event schema](index.md#event-schema)).                                                                                                                             |
+| `action`               | yes      | The event action (see [Event schema](index.md#event-schema)).                                                                                                                               |
+| `label_description`    | no       | A description of the event label (see [Event schema](index.md#event-schema)).                                                                                                               |
+| `property_description` | no       | A description of the event property (see [Event schema](index.md#event-schema)).                                                                                                            |
+| `value_description`    | no       | A description of the event value (see [Event schema](index.md#event-schema)).                                                                                                               |
+| `extra_properties`     | no       | The type and description of each extra property sent with the event.                                                                                                                        |
+| `identifiers`          | no       | A list of identifiers sent with the event. Can be set to one or more of `project`, `user`, or `namespace`.                                                                                  |
+| `iglu_schema_url`      | no       | The URL to the custom schema sent with the event, for example, `iglu:com.gitlab/gitlab_experiment/jsonschema/1-0-0`.                                                                        |
+| `product_section`      | yes      | The [section](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/data/sections.yml).                                                                                                |
+| `product_stage`        | no       | The [stage](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) for the event.                                                                                        |
+| `product_group`        | yes      | The [group](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/stages.yml) that owns the event.                                                                                  |
+| `product_category`     | no       | The [product category](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/data/categories.yml) for the event.                                                                         |
+| `milestone`            | no       | The milestone when the event is introduced.                                                                                                                                                 |
+| `introduced_by_url`    | no       | The URL to the merge request that introduced the event.                                                                                                                                     |
+| `distributions`        | yes      | The [distributions](https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.  |
 | `tiers`                | yes      | The [tiers]( https://about.gitlab.com/handbook/marketing/strategic-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`. |
 
 ### Example event definition

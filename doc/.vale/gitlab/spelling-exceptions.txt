@@ -546,6 +546,7 @@ relicensing
 remediations
 renderers
 replicables
+rpcs
 repmgr
 repmgrd
 repurposing
@@ -570,6 +571,7 @@ roadmap
 roadmaps
 rollout
 rollouts
+RSpec
 rsync
 rsynced
 rsyncing
@@ -613,6 +615,7 @@ Silverlight
 Sisense
 Sitespeed
 skippable
+skopeo
 Slack
 Slackbot
 Slony

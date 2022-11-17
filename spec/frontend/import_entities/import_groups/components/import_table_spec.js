@@ -1,10 +1,11 @@
-import { GlAlert, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
+import { GlAlert, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { createAlert } from '~/flash';
 import httpStatus from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
@@ -50,6 +51,7 @@ describe('import table', () => {
     rowWrapper.find('[data-testid="target-namespace-selector"]');
   const findPaginationDropdownText = () => findPaginationDropdown().find('button').text();
   const findSelectionCount = () => wrapper.find('[data-test-id="selection-count"]');
+  const findNewPathCol = () => wrapper.find('[data-test-id="new-path-col"]');
 
   const triggerSelectAllCheckbox = (checked = true) =>
     wrapper.find('thead input[type=checkbox]').setChecked(checked);
@@ -75,6 +77,9 @@ describe('import table', () => {
         sourceUrl: SOURCE_URL,
         historyPath: '/fake_history_path',
         defaultTargetNamespace,
+      },
+      directives: {
+        GlTooltip: createMockDirective(),
       },
       apolloProvider,
     });
@@ -538,6 +543,26 @@ describe('import table', () => {
     expect(wrapper.getComponent(PaginationBar).props('storageKey')).toBe(
       ImportTable.LOCAL_STORAGE_KEY,
     );
+  });
+
+  it('displays info icon with a tooltip', async () => {
+    const NEW_GROUPS = [generateFakeEntry({ id: 1, status: STATUSES.NONE })];
+
+    createComponent({
+      bulkImportSourceGroups: () => ({
+        nodes: NEW_GROUPS,
+        pageInfo: FAKE_PAGE_INFO,
+        versionValidation: FAKE_VERSION_VALIDATION,
+      }),
+    });
+    jest.spyOn(apolloProvider.defaultClient, 'mutate');
+    await waitForPromises();
+
+    const icon = findNewPathCol().findComponent(GlIcon);
+    const tooltip = getBinding(icon.element, 'gl-tooltip');
+
+    expect(tooltip).toBeDefined();
+    expect(tooltip.value).toBe('Path of the new group.');
   });
 
   describe('unavailable features warning', () => {

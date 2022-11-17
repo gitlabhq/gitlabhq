@@ -15,6 +15,7 @@ import eventHub from '../event_hub';
 import GroupsApp from './app.vue';
 
 const [SORTING_ITEM_NAME] = OVERVIEW_TABS_SORTING_ITEMS;
+const MIN_SEARCH_LENGTH = 3;
 
 export default {
   components: { GlTabs, GlTab, GroupsApp, GlSearchBoxByType, GlSorting, GlSortingItem },
@@ -136,7 +137,9 @@ export default {
     handleSearchInput(value) {
       this.search = value;
 
-      this.debouncedSearch();
+      if (!this.search || this.search.length >= MIN_SEARCH_LENGTH) {
+        this.debouncedSearch();
+      }
     },
     debouncedSearch: debounce(async function debouncedSearch() {
       this.handleSearchOrSortChange();

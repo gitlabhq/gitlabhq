@@ -22,12 +22,12 @@ module Banzai
             addressable_uri = nil
           end
 
-          unless internal_url?(addressable_uri)
-            punycode_autolink_node!(addressable_uri, node)
-            sanitize_link_text!(node)
-            add_malicious_tooltip!(addressable_uri, node)
-            add_nofollow!(addressable_uri, node)
-          end
+          next if internal_url?(addressable_uri)
+
+          punycode_autolink_node!(addressable_uri, node)
+          sanitize_link_text!(node)
+          add_malicious_tooltip!(addressable_uri, node)
+          add_nofollow!(addressable_uri, node)
         end
 
         doc

@@ -202,12 +202,12 @@ left.
 ## Switching merge requests
 
 To switch between your authored and assigned merge requests, select the
-dropdown in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
+dropdown list in the top of the sidebar to open a list of merge requests. You must commit or discard all your changes before switching to a different merge
 request.
 
 ## Switching branches
 
-To switch between branches of the current project repository, select the dropdown
+To switch between branches of the current project repository, select the dropdown list
 in the top of the sidebar to open a list of branches.
 You must commit or discard all your changes before switching to a
 different branch.
@@ -459,3 +459,12 @@ The Web IDE has a few limitations:
 - If the terminal displays **Connection Failure**, then the terminal could not
   connect to the runner. Try to stop and restart the terminal. If the
   problem persists, double check your runner configuration.
+
+## VSCode Reimplementation
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+
+As announced in [this blog post](https://about.gitlab.com/blog/2022/05/23/the-future-of-the-gitlab-web-ide/),
+the current implementation of the Web IDE will be replaced with a [VSCode inspired implementation](https://gitlab.com/groups/gitlab-org/-/epics/7683).
+
+This effort is currently under development. Follow [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7683) for updates and more information.

@@ -28,6 +28,7 @@ describe('BoardApp', () => {
       store,
       provide: {
         ...provide,
+        fullBoardId: 'gid://gitlab/Board/1',
       },
     });
   };

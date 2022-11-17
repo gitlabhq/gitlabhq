@@ -86,10 +86,10 @@ RSpec.describe ::Packages::Npm::PackagePresenter do
       it 'avoids N+1 database queries' do
         check_n_plus_one(:versions) do
           create_list(:npm_package, 5, project: project, name: package_name).each do |npm_package|
-            if has_dependencies
-              ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
-                create(:packages_dependency_link, package: npm_package, dependency_type: dependency_type)
-              end
+            next unless has_dependencies
+
+            ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
+              create(:packages_dependency_link, package: npm_package, dependency_type: dependency_type)
             end
           end
         end

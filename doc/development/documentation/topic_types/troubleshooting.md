@@ -6,10 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting topic type
 
-Troubleshooting topics should be the last topics on a page.
+Troubleshooting topics should be the final topics on a page.
 
 If a page has more than five troubleshooting topics, put the content on a separate page that has troubleshooting information exclusively. Name the page `Troubleshooting <feature>`
-and in the left nav, use the word `Troubleshoot` only.
+and in the left nav, use the word `Troubleshooting` only.
 
 Troubleshooting can be one of three types.
 
@@ -46,11 +46,22 @@ The workaround is...
 If multiple causes or workarounds exist, consider putting them into a table format.
 If you use the exact error message, surround it in backticks so it's styled as code.
 
-## Troubleshooting headings
+## Troubleshooting topic titles
 
-For the heading of a **Troubleshooting reference** topic:
+For the title of a **Troubleshooting reference** topic:
 
 - Consider including at least a partial error message.
 - Use fewer than 70 characters.
+- Do not use links in the title.
 
 If you do not put the full error in the title, include it in the body text.
+
+## Rails console write functions
+
+If the troubleshooting suggestion includes a function that changes data on the GitLab instance,
+add the following warning:
+
+```markdown
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+```

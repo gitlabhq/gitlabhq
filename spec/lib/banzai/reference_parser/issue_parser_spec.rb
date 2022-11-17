@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Banzai::ReferenceParser::IssueParser do
   include ReferenceParserHelpers
 
-  let_it_be(:group)   { create(:group, :public) }
-  let_it_be(:project) { create(:project, :public, group: group) }
-  let_it_be(:user)    { create(:user) }
-  let_it_be(:issue)   { create(:issue, project: project) }
+  let_it_be(:group) { create(:group, :public) }
+  let_it_be_with_reload(:project) { create(:project, :public, group: group) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:issue) { create(:issue, project: project) }
 
   let(:link)    { empty_html_link }
 

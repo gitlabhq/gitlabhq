@@ -4,11 +4,11 @@ import { TEST_HOST } from 'helpers/test_constants';
 import SelfMonitor from '~/self_monitor/components/self_monitor_form.vue';
 import { createStore } from '~/self_monitor/store';
 
-describe('self monitor component', () => {
+describe('self-monitor component', () => {
   let wrapper;
   let store;
 
-  describe('When the self monitor project has not been created', () => {
+  describe('When the self-monitor project has not been created', () => {
     beforeEach(() => {
       store = createStore({
         projectEnabled: false,
@@ -35,7 +35,7 @@ describe('self monitor component', () => {
     it('renders header text', () => {
       wrapper = shallowMount(SelfMonitor, { store });
 
-      expect(wrapper.find('.js-section-header').text()).toBe('Self monitoring');
+      expect(wrapper.find('.js-section-header').text()).toBe('Self-monitoring');
     });
 
     describe('expand/collapse button', () => {
@@ -53,7 +53,7 @@ describe('self monitor component', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
         expect(wrapper.find('.js-section-sub-header').text()).toContain(
-          'Activate or deactivate instance self monitoring.',
+          'Activate or deactivate instance self-monitoring.',
         );
       });
     });
@@ -63,7 +63,7 @@ describe('self monitor component', () => {
         wrapper = shallowMount(SelfMonitor, { store });
 
         expect(wrapper.vm.selfMonitoringFormText).toContain(
-          'Activate self monitoring to create a project to use to monitor the health of your instance.',
+          'Activate self-monitoring to create a project to use to monitor the health of your instance.',
         );
       });
 

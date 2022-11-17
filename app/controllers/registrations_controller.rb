@@ -8,12 +8,15 @@ class RegistrationsController < Devise::RegistrationsController
   include OneTrustCSP
   include BizibleCSP
   include GoogleAnalyticsCSP
+  include PreferredLanguageSwitcher
   include RegistrationsTracking
+  include Gitlab::Tracking::Helpers::WeakPasswordErrorEvent
 
   layout 'devise'
 
   prepend_before_action :check_captcha, only: :create
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
+  before_action :init_preferred_language, only: :new
   before_action :load_recaptcha, only: :new
   before_action :set_invite_params, only: :new
   before_action only: [:create] do
@@ -33,15 +36,15 @@ class RegistrationsController < Devise::RegistrationsController
 
   def create
     set_user_state
-    token = set_custom_confirmation_token
+    set_custom_confirmation_token
 
     super do |new_user|
       accept_pending_invitations if new_user.persisted?
 
       persist_accepted_terms_if_required(new_user)
       set_role_required(new_user)
-      track_experiment_event(new_user)
-      send_custom_confirmation_instructions(new_user, token)
+      send_custom_confirmation_instructions
+      track_weak_password_error(new_user, self.class.name, 'create')
 
       if pending_approval?
         NotificationService.new.new_instance_access_request(new_user)
@@ -127,7 +130,7 @@ class RegistrationsController < Devise::RegistrationsController
     # after user confirms and comes back, he will be redirected
     store_location_for(:redirect, users_sign_up_welcome_path(glm_tracking_params))
 
-    return identity_verification_redirect_path if custom_confirmation_enabled?(resource)
+    return identity_verification_redirect_path if custom_confirmation_enabled?
 
     users_almost_there_path(email: resource.email)
   end
@@ -189,7 +192,8 @@ class RegistrationsController < Devise::RegistrationsController
 
   def resource
     @resource ||= Users::RegistrationsBuildService
-                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email? }))
+                    .new(current_user, sign_up_params.merge({ skip_confirmation: registered_with_invite_email?,
+                                                              preferred_language: preferred_language }))
                     .execute
   end
 
@@ -239,19 +243,11 @@ class RegistrationsController < Devise::RegistrationsController
     current_user
   end
 
-  def track_experiment_event(new_user)
-    # Track signed up event to relate it with click "Sign up" button events from
-    # the experimental logged out header with marketing links. This allows us to
-    # have a funnel of visitors clicking on the header and those visitors
-    # signing up and becoming users
-    experiment(:logged_out_marketing_header, actor: new_user).track(:signed_up) if new_user.persisted?
-  end
-
   def identity_verification_redirect_path
     # overridden by EE module
   end
 
-  def custom_confirmation_enabled?(resource)
+  def custom_confirmation_enabled?
     # overridden by EE module
   end
 
@@ -259,7 +255,7 @@ class RegistrationsController < Devise::RegistrationsController
     # overridden by EE module
   end
 
-  def send_custom_confirmation_instructions(user, token)
+  def send_custom_confirmation_instructions
     # overridden by EE module
   end
 end

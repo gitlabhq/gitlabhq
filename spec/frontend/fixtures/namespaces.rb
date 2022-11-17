@@ -32,6 +32,26 @@ RSpec.describe 'Jobs (JavaScript fixtures)' do
     end
   end
 
+  describe API::Groups, type: :request do
+    let_it_be(:user) { create(:user) }
+
+    describe 'transfer_locations' do
+      let_it_be(:groups) { create_list(:group, 4) }
+      let_it_be(:transfer_from_group) { create(:group) }
+
+      before_all do
+        groups.each { |group| group.add_owner(user) }
+        transfer_from_group.add_owner(user)
+      end
+
+      it 'api/groups/transfer_locations.json' do
+        get api("/groups/#{transfer_from_group.id}/transfer_locations", user)
+
+        expect(response).to be_successful
+      end
+    end
+  end
+
   describe GraphQL::Query, type: :request do
     let_it_be(:user) { create(:user) }
 

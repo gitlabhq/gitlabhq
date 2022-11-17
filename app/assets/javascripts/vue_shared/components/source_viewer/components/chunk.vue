@@ -1,5 +1,6 @@
 <script>
 import { GlIntersectionObserver, GlSafeHtmlDirective } from '@gitlab/ui';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import ChunkLine from './chunk_line.vue';
 
 /*
@@ -23,6 +24,11 @@ export default {
     SafeHtml: GlSafeHtmlDirective,
   },
   props: {
+    isFirstChunk: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     chunkIndex: {
       type: Number,
       required: false,
@@ -46,6 +52,11 @@ export default {
       required: false,
       default: 0,
     },
+    totalChunks: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
     language: {
       type: String,
       required: false,
@@ -56,10 +67,31 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isLoading: true,
+    };
+  },
   computed: {
     lines() {
       return this.content.split('\n');
     },
+  },
+
+  created() {
+    if (this.isFirstChunk) {
+      this.isLoading = false;
+      return;
+    }
+
+    window.requestIdleCallback(() => {
+      this.isLoading = false;
+      const { hash } = this.$route;
+      if (hash && this.totalChunks > 0 && this.totalChunks === this.chunkIndex + 1) {
+        // when the last chunk is loaded scroll to the hash
+        scrollToElement(hash, { behavior: 'auto' });
+      }
+    });
   },
   methods: {
     handleChunkAppear() {
@@ -67,42 +99,36 @@ export default {
         this.$emit('appear', this.chunkIndex);
       }
     },
+    calculateLineNumber(index) {
+      return this.startingFrom + index + 1;
+    },
   },
 };
 </script>
 <template>
-  <div>
-    <gl-intersection-observer @appear="handleChunkAppear">
-      <div v-if="isHighlighted">
-        <chunk-line
-          v-for="(line, index) in lines"
+  <gl-intersection-observer @appear="handleChunkAppear">
+    <div v-if="isHighlighted">
+      <chunk-line
+        v-for="(line, index) in lines"
+        :key="index"
+        :number="calculateLineNumber(index)"
+        :content="line"
+        :language="language"
+        :blame-path="blamePath"
+      />
+    </div>
+    <div v-else-if="!isLoading" class="gl-display-flex gl-text-transparent">
+      <div class="gl-display-flex gl-flex-direction-column content-visibility-auto">
+        <span
+          v-for="(n, index) in totalLines"
+          v-once
+          :id="`L${calculateLineNumber(index)}`"
           :key="index"
-          :number="startingFrom + index + 1"
-          :content="line"
-          :language="language"
-          :blame-path="blamePath"
-        />
+          data-testid="line-number"
+          v-text="calculateLineNumber(index)"
+        ></span>
       </div>
-      <div v-else class="gl-display-flex">
-        <div class="gl-display-flex gl-flex-direction-column">
-          <a
-            v-for="(n, index) in totalLines"
-            :id="`L${startingFrom + index + 1}`"
-            :key="index"
-            class="gl-ml-5 gl-text-transparent"
-            :href="`#L${startingFrom + index + 1}`"
-            :data-line-number="startingFrom + index + 1"
-            data-testid="line-number"
-          >
-            {{ startingFrom + index + 1 }}
-          </a>
-        </div>
-        <div
-          class="gl-white-space-pre-wrap! gl-text-transparent"
-          data-testid="content"
-          v-text="content"
-        ></div>
-      </div>
-    </gl-intersection-observer>
-  </div>
+      <div v-once class="gl-white-space-pre-wrap!" data-testid="content">{{ content }}</div>
+    </div>
+  </gl-intersection-observer>
 </template>

@@ -108,7 +108,7 @@ RSpec.describe PersonalAccessToken do
     describe '.last_used_before' do
       context 'last_used_*' do
         let_it_be(:date) { DateTime.new(2022, 01, 01) }
-        let_it_be(:token) { create(:personal_access_token, last_used_at: date ) }
+        let_it_be(:token) { create(:personal_access_token, last_used_at: date) }
         # This token should never occur in the following tests and indicates that filtering was done correctly with it
         let_it_be(:never_used_token) { create(:personal_access_token) }
 
@@ -191,47 +191,6 @@ RSpec.describe PersonalAccessToken do
       active_personal_access_token.revoke!
 
       expect(active_personal_access_token).to be_revoked
-    end
-  end
-
-  describe 'Redis storage' do
-    let(:user_id) { 123 }
-    let(:token) { 'KS3wegQYXBLYhQsciwsj' }
-
-    context 'reading encrypted data' do
-      before do
-        subject.redis_store!(user_id, token)
-      end
-
-      it 'returns stored data' do
-        expect(subject.redis_getdel(user_id)).to eq(token)
-      end
-    end
-
-    context 'reading unencrypted data' do
-      before do
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.set(described_class.redis_shared_state_key(user_id),
-                    token,
-                    ex: PersonalAccessToken::REDIS_EXPIRY_TIME)
-        end
-      end
-
-      it 'returns stored data unmodified' do
-        expect(subject.redis_getdel(user_id)).to eq(token)
-      end
-    end
-
-    context 'after deletion' do
-      before do
-        subject.redis_store!(user_id, token)
-
-        expect(subject.redis_getdel(user_id)).to eq(token)
-      end
-
-      it 'token is removed' do
-        expect(subject.redis_getdel(user_id)).to be_nil
-      end
     end
   end
 
@@ -365,25 +324,13 @@ RSpec.describe PersonalAccessToken do
 
   describe '.simple_sorts' do
     it 'includes overridden keys' do
-      expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc expires_at_desc expires_at_asc_id_desc))
+      expect(described_class.simple_sorts.keys).to include(*%w(expires_at_asc_id_desc))
     end
   end
 
   describe 'ordering by expires_at' do
     let_it_be(:earlier_token) { create(:personal_access_token, expires_at: 2.days.ago) }
     let_it_be(:later_token) { create(:personal_access_token, expires_at: 1.day.ago) }
-
-    describe '.order_expires_at_asc' do
-      it 'returns ordered list in asc order of expiry date' do
-        expect(described_class.order_expires_at_asc).to match [earlier_token, later_token]
-      end
-    end
-
-    describe '.order_expires_at_desc' do
-      it 'returns ordered list in desc order of expiry date' do
-        expect(described_class.order_expires_at_desc).to match [later_token, earlier_token]
-      end
-    end
 
     describe '.order_expires_at_asc_id_desc' do
       let_it_be(:earlier_token_2) { create(:personal_access_token, expires_at: 2.days.ago) }

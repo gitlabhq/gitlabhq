@@ -4,11 +4,12 @@ module API
   module Entities
     class Package < Grape::Entity
       include ::API::Helpers::RelatedResourcesHelpers
+      include ::Routing::PackagesHelper
       extend ::API::Entities::EntityHelpers
 
-      expose :id
+      expose :id, documentation: { type: 'integer', example: 1 }
 
-      expose :name do |package|
+      expose :name, documentation: { type: 'string', example: '@foo/bar' } do |package|
         if package.conan?
           package.conan_recipe
         else
@@ -20,17 +21,13 @@ module API
         package.name
       end
 
-      expose :version
-      expose :package_type
-      expose :status
+      expose :version, documentation: { type: 'string', example: '1.0.3' }
+      expose :package_type, documentation: { type: 'string', example: 'npm' }
+      expose :status, documentation: { type: 'string', example: 'default' }
 
       expose :_links do
-        expose :web_path do |package, opts|
-          if package.infrastructure_package?
-            ::Gitlab::Routing.url_helpers.namespace_project_infrastructure_registry_path(opts[:namespace], package.project, package)
-          else
-            ::Gitlab::Routing.url_helpers.project_package_path(package.project, package)
-          end
+        expose :web_path do |package|
+          package_path(package)
         end
 
         expose :delete_api_path, if: can_destroy(:package, &:project) do |package|
@@ -38,10 +35,12 @@ module API
         end
       end
 
-      expose :created_at
-      expose :last_downloaded_at
-      expose :project_id, if: ->(_, opts) { opts[:group] }
-      expose :project_path, if: ->(obj, opts) { opts[:group] && Ability.allowed?(opts[:user], :read_project, obj.project) }
+      expose :created_at, documentation: { type: 'dateTime', example: '2022-09-16T12:47:31.949Z' }
+      expose :last_downloaded_at, documentation: { type: 'dateTime', example: '2022-09-19T11:32:35.169Z' }
+      expose :project_id, documentation: { type: 'integer', example: 2 }, if: ->(_, opts) { opts[:group] }
+      expose :project_path, documentation: { type: 'string', example: 'gitlab/foo/bar' }, if: ->(obj, opts) do
+        opts[:group] && Ability.allowed?(opts[:user], :read_project, obj.project)
+      end
       expose :tags
 
       expose :pipeline, if: ->(package) { package.original_build_info }, using: Package::Pipeline

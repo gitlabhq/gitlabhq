@@ -18,38 +18,9 @@
 
 .boards-list,
 .board-swimlanes {
-  height: calc(100vh - #{$issue-board-list-difference-xs});
   overflow-x: scroll;
   min-height: 200px;
   border-left: 8px solid var(--gray-10, $white);
-
-  @include media-breakpoint-only(sm) {
-    height: calc(100vh - #{$issue-board-list-difference-sm});
-  }
-
-  @include media-breakpoint-up(md) {
-    height: calc(100vh - #{$issue-board-list-difference-md});
-  }
-
-  @include media-breakpoint-up(lg) {
-    height: calc(100vh - #{$issue-board-list-difference-lg});
-  }
-
-  .with-performance-bar & {
-    height: calc(100vh - #{$issue-board-list-difference-xs} - #{$performance-bar-height});
-
-    @include media-breakpoint-only(sm) {
-      height: calc(100vh - #{$issue-board-list-difference-sm} - #{$performance-bar-height});
-    }
-
-    @include media-breakpoint-up(md) {
-      height: calc(100vh - #{$issue-board-list-difference-md} - #{$performance-bar-height});
-    }
-
-    @include media-breakpoint-up(lg) {
-      height: calc(100vh - #{$issue-board-list-difference-lg} - #{$performance-bar-height});
-    }
-  }
 }
 
 .board {

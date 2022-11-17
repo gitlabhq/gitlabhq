@@ -13,12 +13,18 @@ module API
     helpers Helpers::ProtectedTagsHelpers
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc "Get a project's protected tags" do
         detail 'This feature was introduced in GitLab 11.3.'
-        success Entities::ProtectedTag
+        is_array true
+        success code: 200, model: Entities::ProtectedTag
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[protected_tags]
       end
       params do
         use :pagination
@@ -33,10 +39,15 @@ module API
 
       desc 'Get a single protected tag' do
         detail 'This feature was introduced in GitLab 11.3.'
-        success Entities::ProtectedTag
+        success code: 200, model: Entities::ProtectedTag
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[protected_tags]
       end
       params do
-        requires :name, type: String, desc: 'The name of the tag or wildcard'
+        requires :name, type: String, desc: 'The name of the tag or wildcard', documentation: { example: 'release*' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/protected_tags/:name', requirements: TAG_ENDPOINT_REQUIREMENTS do
@@ -48,13 +59,21 @@ module API
 
       desc 'Protect a single tag or wildcard' do
         detail 'This feature was introduced in GitLab 11.3.'
-        success Entities::ProtectedTag
+        success code: 201, model: Entities::ProtectedTag
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags %w[protected_tags]
       end
       params do
-        requires :name, type: String, desc: 'The name of the protected tag'
-        optional :create_access_level, type: Integer,
-                                       values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
-                                       desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)'
+        requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
+        optional :create_access_level,
+                 type: Integer,
+                 values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
+                 desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)',
+                 documentation: { example: 30 }
         use :optional_params_ee
       end
       post ':id/protected_tags' do
@@ -76,9 +95,16 @@ module API
 
       desc 'Unprotect a single tag' do
         detail 'This feature was introduced in GitLab 11.3.'
+        success code: 204
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 412, message: 'Precondition Failed' }
+        ]
+        tags %w[protected_tags]
       end
       params do
-        requires :name, type: String, desc: 'The name of the protected tag'
+        requires :name, type: String, desc: 'The name of the protected tag', documentation: { example: 'release-1-0' }
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/protected_tags/:name', requirements: TAG_ENDPOINT_REQUIREMENTS do

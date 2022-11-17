@@ -12,7 +12,7 @@ type: howto
 NOTE:
 This is the final step in setting up a **secondary** Geo site. Stages of the
 setup process must be completed in the documented order.
-If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before procceed.
+If not, [complete all prior stages](../setup/index.md#using-omnibus-gitlab) before proceeding.
 
 Make sure you [set up the database replication](../setup/database.md), and [configured fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md) in **both primary and secondary sites**.
 
@@ -239,8 +239,9 @@ keys must be manually replicated to the **secondary** site.
 
    If any of the checks fail, check the [troubleshooting documentation](troubleshooting.md).
 
-Once added to the Geo administration page and restarted, the **secondary** site automatically starts
-replicating missing data from the **primary** site in a process known as **backfill**.
+After the **secondary** site is added to the Geo administration page and restarted,
+the site automatically starts replicating missing data from the **primary** site
+in a process known as **backfill**.
 Meanwhile, the **primary** site starts to notify each **secondary** site of any changes, so
 that the **secondary** site can act on those notifications immediately.
 

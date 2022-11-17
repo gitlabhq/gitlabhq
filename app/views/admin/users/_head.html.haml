@@ -30,9 +30,11 @@
     .gl-p-2
       #js-admin-user-actions{ data: admin_user_actions_data_attributes(@user) }
     - if @user != current_user
-      - if impersonation_enabled? && @user.can?(:log_in)
+      - if impersonation_enabled?
         .gl-p-2
-          = link_to _('Impersonate'), impersonate_admin_user_path(@user), method: :post, class: "btn btn-default gl-button", data: { qa_selector: 'impersonate_user_link' }
+          %span.btn-group{ class: !@can_impersonate ? 'has-tooltip' : nil, title: @impersonation_error_text }
+            = render Pajamas::ButtonComponent.new(disabled: !@can_impersonate, method: :post, href: impersonate_admin_user_path(@user), button_options: { data: { qa_selector: 'impersonate_user_link', testid: 'impersonate_user_link' } }) do
+              = _('Impersonate')
       - if can_force_email_confirmation?(@user)
         .gl-p-2
           = render Pajamas::ButtonComponent.new(variant: :default, button_options: { class: 'js-confirm-modal-button', data: confirm_user_data(@user) }) do

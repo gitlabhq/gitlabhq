@@ -231,7 +231,7 @@ RSpec.describe API::Todos do
       create(:on_commit_todo, project: new_todo.project, author: author_1, user: john_doe, target: merge_request_3)
       create(:todo, project: new_todo.project, author: author_2, user: john_doe, target: merge_request_3)
 
-      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(4)
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(5)
       control2 = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
 
       create_issue_todo_for(john_doe)

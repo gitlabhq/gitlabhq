@@ -88,8 +88,8 @@ Parameters:
 | `id`          | integer or string | yes      | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user |
 | `title`       | string         | yes      | The title of a milestone                                                                                        |
 | `description` | string         | no       | The description of the milestone                                                                                |
-| `due_date`    | string         | no       | The due date of the milestone                                                                                   |
-| `start_date`  | string         | no       | The start date of the milestone                                                                                 |
+| `due_date`    | string         | no       | The due date of the milestone (`YYYYMMDD`)                                                                        |
+| `start_date`  | string         | no       | The start date of the milestone (`YYYYMMDD`)                                                                                |
 
 ## Edit milestone
 
@@ -107,8 +107,8 @@ Parameters:
 | `milestone_id` | integer        | yes      | The ID of the project's milestone                                                                               |
 | `title`        | string         | no       | The title of a milestone                                                                                        |
 | `description`  | string         | no       | The description of the milestone                                                                                |
-| `due_date`     | string         | no       | The due date of the milestone                                                                                   |
-| `start_date`   | string         | no       | The start date of the milestone                                                                                 |
+| `due_date`     | string         | no       | The due date of the milestone (`YYYYMMDD`)                                                                                   |
+| `start_date`   | string         | no       | The start date of the milestone (`YYYYMMDD`)                                                                                 |
 | `state_event`  | string         | no       | The state event of the milestone (close or activate)                                                            |
 
 ## Delete project milestone

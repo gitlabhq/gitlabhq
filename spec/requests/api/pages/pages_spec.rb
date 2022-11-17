@@ -36,7 +36,7 @@ RSpec.describe API::Pages do
         end
 
         it 'removes the pages' do
-          delete api("/projects/#{project.id}/pages", admin )
+          delete api("/projects/#{project.id}/pages", admin)
 
           expect(project.reload.pages_metadatum.deployed?).to be(false)
         end

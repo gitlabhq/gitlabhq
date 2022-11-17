@@ -13,13 +13,15 @@ module Gitlab
 
           protected_branches = client.branches(repo).select { |branch| branch.dig(:protection, :enabled) }
           protected_branches.each do |protected_branch|
+            next if already_imported?(protected_branch)
+
             object = client.branch_protection(repo, protected_branch[:name])
-            next if object.nil? || already_imported?(object)
+            next if object.nil?
 
             yield object
 
             Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
-            mark_as_imported(object)
+            mark_as_imported(protected_branch)
           end
         end
 

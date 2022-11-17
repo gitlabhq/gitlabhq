@@ -1,7 +1,6 @@
 <script>
-import { GlLink, GlTooltipDirective } from '@gitlab/ui';
+import { GlLink, GlTooltipDirective, GlTruncate } from '@gitlab/ui';
 import { __ } from '~/locale';
-import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import {
   MANUAL_DEPLOY,
@@ -18,7 +17,7 @@ export default {
   components: {
     GlLink,
     MemoryUsage: () => import('./memory_usage.vue'),
-    TooltipOnTruncate,
+    GlTruncate,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -74,16 +73,19 @@ export default {
   <div class="js-deployment-info deployment-info">
     <template v-if="hasDeploymentMeta">
       <span>{{ deployedText }}</span>
-      <tooltip-on-truncate :title="deployment.name" truncate-target="child" class="label-truncate">
-        <gl-link
-          :href="deployment.url"
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="js-deploy-meta gl-font-sm gl-pb-1"
-        >
-          {{ deployment.name }}
-        </gl-link>
-      </tooltip-on-truncate>
+      <gl-link
+        :href="deployment.url"
+        target="_blank"
+        rel="noopener noreferrer nofollow"
+        class="js-deploy-meta gl-font-sm gl-pb-1"
+      >
+        <gl-truncate
+          class="js-deploy-env-name"
+          :text="deployment.name"
+          position="middle"
+          with-tooltip
+        />
+      </gl-link>
     </template>
     <span
       v-if="hasDeploymentTime"

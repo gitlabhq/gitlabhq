@@ -7,16 +7,6 @@ RSpec.describe Groups::GroupMembersHelper do
 
   let_it_be(:group) { create(:group) }
 
-  describe '.group_member_select_options' do
-    before do
-      helper.instance_variable_set(:@group, group)
-    end
-
-    it 'returns an options hash' do
-      expect(helper.group_member_select_options).to include(multiple: true, scope: :all, email_user: true)
-    end
-  end
-
   describe '#group_members_app_data' do
     include_context 'group_group_link'
 
@@ -36,6 +26,7 @@ RSpec.describe Groups::GroupMembersHelper do
       allow(helper).to receive(:group_group_member_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
       allow(helper).to receive(:group_group_link_path).with(shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
       allow(helper).to receive(:can?).with(current_user, :admin_group_member, shared_group).and_return(true)
+      allow(helper).to receive(:can?).with(current_user, :admin_member_access_request, shared_group).and_return(true)
     end
 
     subject do
@@ -63,7 +54,8 @@ RSpec.describe Groups::GroupMembersHelper do
     it 'returns expected json' do
       expected = {
         source_id: shared_group.id,
-        can_manage_members: true
+        can_manage_members: true,
+        can_manage_access_requests: true
       }
 
       expect(subject).to include(expected)
@@ -109,6 +101,7 @@ RSpec.describe Groups::GroupMembersHelper do
           allow(helper).to receive(:group_group_member_path).with(sub_shared_group, ':id').and_return('/groups/foo-bar/-/group_members/:id')
           allow(helper).to receive(:group_group_link_path).with(sub_shared_group, ':id').and_return('/groups/foo-bar/-/group_links/:id')
           allow(helper).to receive(:can?).with(current_user, :admin_group_member, sub_shared_group).and_return(true)
+          allow(helper).to receive(:can?).with(current_user, :admin_member_access_request, sub_shared_group).and_return(true)
           allow(helper).to receive(:can?).with(current_user, :export_group_memberships, sub_shared_group).and_return(true)
         end
 

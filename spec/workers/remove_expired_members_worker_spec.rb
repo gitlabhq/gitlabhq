@@ -56,27 +56,13 @@ RSpec.describe RemoveExpiredMembersWorker do
           expect(Member.find_by(user_id: expired_project_bot.id)).to be_nil
         end
 
-        context 'when user_destroy_with_limited_execution_time_worker is enabled' do
-          it 'initiates project bot removal' do
-            worker.perform
+        it 'initiates project bot removal' do
+          worker.perform
 
-            expect(
-              Users::GhostUserMigration.where(user: expired_project_bot,
-                                              initiator_user: nil)
-            ).to be_exists
-          end
-        end
-
-        context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-          before do
-            stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-          end
-
-          it 'deletes expired project bot' do
-            worker.perform
-
-            expect(User.exists?(expired_project_bot.id)).to be(false)
-          end
+          expect(
+            Users::GhostUserMigration.where(user: expired_project_bot,
+                                            initiator_user: nil)
+          ).to be_exists
         end
       end
 

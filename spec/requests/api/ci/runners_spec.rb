@@ -399,7 +399,7 @@ RSpec.describe API::Ci::Runners do
         it 'unrelated runner attribute on an existing runner with too many tags' do
           # This test ensures that it is possible to update any attribute on a runner that currently fails the
           # validation that ensures that there aren't too many tags associated with a runner
-          existing_invalid_shared_runner = build(:ci_runner, :instance, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" } )
+          existing_invalid_shared_runner = build(:ci_runner, :instance, tag_list: (1..::Ci::Runner::TAG_LIST_MAX_LENGTH + 1).map { |i| "tag#{i}" })
           existing_invalid_shared_runner.save!(validate: false)
 
           active = existing_invalid_shared_runner.active

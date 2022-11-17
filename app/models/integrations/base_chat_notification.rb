@@ -22,7 +22,9 @@ module Integrations
       MATCH_ALL_LABELS = 'match_all'
     ].freeze
 
-    default_value_for :category, 'chat'
+    SECRET_MASK = '************'
+
+    attribute :category, default: 'chat'
 
     prop_accessor :webhook, :username, :channel, :branches_to_be_notified, :labels_to_be_notified, :labels_to_be_notified_behavior
 
@@ -71,7 +73,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "#{webhook_placeholder}", required: true }.freeze,
+        { type: 'text', name: 'webhook', help: "#{webhook_help}", required: true }.freeze,
         { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze,
         { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
         {
@@ -147,7 +149,7 @@ module Integrations
       raise NotImplementedError
     end
 
-    def webhook_placeholder
+    def webhook_help
       raise NotImplementedError
     end
 

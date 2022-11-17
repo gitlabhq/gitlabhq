@@ -111,8 +111,9 @@ export const issuablesBlockHeaderTextMap = {
 };
 
 export const issuablesBlockHelpTextMap = {
-  [issuableTypesMap.ISSUE]: __('Read more about related issues'),
-  [issuableTypesMap.EPIC]: __('Read more about related epics'),
+  [issuableTypesMap.ISSUE]: __('Learn more about linking issues'),
+  [issuableTypesMap.INCIDENT]: __('Learn more about linking issues and incidents'),
+  [issuableTypesMap.EPIC]: __('Learn more about linking epics'),
 };
 
 export const issuablesBlockAddButtonTextMap = {

@@ -53,7 +53,7 @@ module API
 
         # HTTP status codes to terminate the job on GitLab Runner:
         # - 403
-        def authenticate_job!(require_running: true, heartbeat_runner: false)
+        def authenticate_job!(heartbeat_runner: false)
           job = current_job
 
           # 404 is not returned here because we want to terminate the job if it's
@@ -66,10 +66,7 @@ module API
 
           forbidden!('Project has been deleted!') if job.project.nil? || job.project.pending_delete?
           forbidden!('Job has been erased!') if job.erased?
-
-          if require_running
-            job_forbidden!(job, 'Job is not running') unless job.running?
-          end
+          job_forbidden!(job, 'Job is not running') unless job.running?
 
           # Only some requests (like updating the job or patching the trace) should trigger
           # runner heartbeat. Operations like artifacts uploading are executed in context of
@@ -87,9 +84,9 @@ module API
         end
 
         def authenticate_job_via_dependent_job!
-          forbidden! unless current_authenticated_job
+          authenticate!
           forbidden! unless current_job
-          forbidden! unless can?(current_authenticated_job.user, :read_build, current_job)
+          forbidden! unless can?(current_user, :read_build, current_job)
         end
 
         def current_job
@@ -103,21 +100,6 @@ module API
 
           strong_memoize(:current_job) do
             ::Ci::Build.find_by_id(id)
-          end
-        end
-
-        # TODO: Replace this with `#current_authenticated_job from API::Helpers`
-        # after the feature flag `ci_authenticate_running_job_token_for_artifacts`
-        # is removed.
-        #
-        # For the time being, this needs to be overridden because the API
-        # GET api/v4/jobs/:id/artifacts
-        # needs to allow requests using token whose job is not running.
-        #
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83713#note_942368526
-        def current_authenticated_job
-          strong_memoize(:current_authenticated_job) do
-            ::Ci::AuthJobFinder.new(token: job_token).execute
           end
         end
 
@@ -149,10 +131,6 @@ module API
 
         def get_runner_config_from_request
           { config: attributes_for_keys(%w(gpus), params.dig('info', 'config')) }
-        end
-
-        def request_using_running_job_token?
-          current_job.present? && current_authenticated_job.present? && current_job != current_authenticated_job
         end
 
         def metrics

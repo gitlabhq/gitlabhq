@@ -11,6 +11,10 @@ value_type: number
 status: active
 time_frame: all
 data_source: database
+instrumentation_class: DistinctCountProjectsWithExpirationPolicyMetric
+options:
+  enabled: true
+  keep_n: null
 distribution:
 - ee
 - ce

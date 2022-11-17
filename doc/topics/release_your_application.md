@@ -28,7 +28,7 @@ deployment using GitLab CI/CD.
 With the extensive integration between GitLab and Kubernetes, you can safely deploy your applications
 to Kubernetes clusters using the [GitLab agent](../user/clusters/agent/install/index.md).
 
-#### GitOps deployments **(PREMIUM)**
+#### GitOps deployments
 
 With the [GitLab agent for Kubernetes](../user/clusters/agent/install/index.md), you can perform
 [pull-based deployments of Kubernetes manifests](../user/clusters/agent/gitops.md). This provides a scalable, secure,

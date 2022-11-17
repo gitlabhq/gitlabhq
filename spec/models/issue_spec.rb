@@ -25,6 +25,7 @@ RSpec.describe Issue do
     it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
+    it { is_expected.to have_many(:alert_management_alerts) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_and_belong_to_many(:prometheus_alert_events) }
@@ -654,7 +655,7 @@ RSpec.describe Issue do
     let_it_be(:authorized_issue_a) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_b) { create(:issue, project: authorized_project) }
     let_it_be(:authorized_issue_c) { create(:issue, project: authorized_project2) }
-    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project ) }
+    let_it_be(:authorized_incident_a) { create(:incident, project: authorized_project) }
 
     let_it_be(:unauthorized_issue) { create(:issue, project: unauthorized_project) }
 
@@ -863,7 +864,7 @@ RSpec.describe Issue do
 
   describe '.to_branch_name' do
     it 'parameterizes arguments and joins with dashes' do
-      expect(described_class.to_branch_name(123, 'foo bar', '!@#$%', 'f!o@o#b$a%r^')).to eq('123-foo-bar-f-o-o-b-a-r')
+      expect(described_class.to_branch_name(123, 'foo bar!@#$%f!o@o#b$a%r^')).to eq('123-foo-bar-f-o-o-b-a-r')
     end
 
     it 'preserves the case in the first argument' do
@@ -871,7 +872,7 @@ RSpec.describe Issue do
     end
 
     it 'truncates branch name to at most 100 characters' do
-      expect(described_class.to_branch_name('a' * 101)).to eq('a' * 100)
+      expect(described_class.to_branch_name('a' * 101, 'a')).to eq('a' * 100)
     end
 
     it 'truncates dangling parts of the branch name' do
@@ -882,6 +883,13 @@ RSpec.describe Issue do
 
       # 100 characters would've got us "999-lorem...lacus-custom-fri".
       expect(branch_name).to eq('999-lorem-ipsum-dolor-sit-amet-consectetur-adipiscing-elit-mauris-sit-amet-ipsum-id-lacus-custom')
+    end
+
+    it 'takes issue branch template into account' do
+      project = create(:project)
+      project.project_setting.update!(issue_branch_template: 'feature-%{id}-%{title}')
+
+      expect(described_class.to_branch_name(123, 'issue title', project: project)).to eq('feature-123-issue-title')
     end
   end
 
@@ -1782,6 +1790,24 @@ RSpec.describe Issue do
     describe '.order_closed_at_desc' do
       it 'orders on closed at' do
         expect(described_class.order_closed_at_desc.to_a).to eq([issue_a, issue_d, issue_b, issue_c_nil, issue_e_nil])
+      end
+    end
+  end
+
+  describe '#full_search' do
+    context 'when searching non-english terms' do
+      [
+        'abc 中文語',
+        '中文語cn',
+        '中文語',
+        'Привет'
+      ].each do |term|
+        it 'adds extra where clause to match partial index' do
+          expect(described_class.full_search(term).to_sql).to include(
+            "AND (issues.title NOT SIMILAR TO '[\\u0000-\\u02FF\\u1E00-\\u1EFF\\u2070-\\u218F]*' " \
+            "OR issues.description NOT SIMILAR TO '[\\u0000-\\u02FF\\u1E00-\\u1EFF\\u2070-\\u218F]*')"
+          )
+        end
       end
     end
   end

@@ -72,33 +72,6 @@ module Ci
     delegate :trigger_short_token, to: :trigger_request, allow_nil: true
     delegate :ensure_persistent_ref, to: :pipeline
 
-    ##
-    # Since Gitlab 11.5, deployments records started being created right after
-    # `ci_builds` creation. We can look up a relevant `environment` through
-    # `deployment` relation today.
-    # (See more https://gitlab.com/gitlab-org/gitlab-foss/merge_requests/22380)
-    #
-    # Since Gitlab 12.9, we started persisting the expanded environment name to
-    # avoid repeated variables expansion in `action: stop` builds as well.
-    def persisted_environment
-      return unless has_environment?
-
-      strong_memoize(:persisted_environment) do
-        # This code path has caused N+1s in the past, since environments are only indirectly
-        # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
-        # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
-        BatchLoader.for(expanded_environment_name).batch(key: project_id) do |names, loader, args|
-          Environment.where(name: names, project: args[:key]).find_each do |environment|
-            loader.call(environment.name, environment)
-          end
-        end
-      end
-    end
-
-    def persisted_environment=(environment)
-      strong_memoize(:persisted_environment) { environment }
-    end
-
     serialize :options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
@@ -199,7 +172,7 @@ module Ci
 
     add_authentication_token_field :token, encrypted: :required
 
-    before_save :ensure_token
+    before_save :ensure_token, unless: :assign_token_on_scheduling?
 
     after_save :stick_build_if_status_changed
 
@@ -216,10 +189,6 @@ module Ci
 
       def with_preloads
         preload(:job_artifacts_archive, :job_artifacts, :tags, project: [:namespace])
-      end
-
-      def extra_accessors
-        []
       end
 
       def clone_accessors
@@ -276,6 +245,14 @@ module Ci
 
       before_transition on: :enqueue do |build|
         !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
+      end
+
+      before_transition any => [:pending] do |build, transition|
+        if build.assign_token_on_scheduling?
+          build.ensure_token
+        end
+
+        true
       end
 
       after_transition created: :scheduled do |build|
@@ -445,9 +422,10 @@ module Ci
       manual? && starts_environment? && deployment&.blocked?
     end
 
-    def prevent_rollback_deployment?
-      strong_memoize(:prevent_rollback_deployment) do
+    def outdated_deployment?
+      strong_memoize(:outdated_deployment) do
         starts_environment? &&
+          incomplete? &&
           project.ci_forward_deployment_enabled? &&
           deployment&.older_than_last_successful_deployment?
       end
@@ -494,8 +472,34 @@ module Ci
       Gitlab::Ci::Build::Prerequisite::Factory.new(self).unmet
     end
 
+    def persisted_environment
+      return unless has_environment_keyword?
+
+      strong_memoize(:persisted_environment) do
+        # This code path has caused N+1s in the past, since environments are only indirectly
+        # associated to builds and pipelines; see https://gitlab.com/gitlab-org/gitlab/-/issues/326445
+        # We therefore batch-load them to prevent dormant N+1s until we found a proper solution.
+        BatchLoader.for(expanded_environment_name).batch(key: project_id) do |names, loader, args|
+          Environment.where(name: names, project: args[:key]).find_each do |environment|
+            loader.call(environment.name, environment)
+          end
+        end
+      end
+    end
+
+    def persisted_environment=(environment)
+      strong_memoize(:persisted_environment) { environment }
+    end
+
+    # If build.persisted_environment is a BatchLoader, we need to remove
+    # the method proxy in order to clone into new item here
+    # https://github.com/exAspArk/batch-loader/issues/31
+    def actual_persisted_environment
+      persisted_environment.respond_to?(:__sync) ? persisted_environment.__sync : persisted_environment
+    end
+
     def expanded_environment_name
-      return unless has_environment?
+      return unless has_environment_keyword?
 
       strong_memoize(:expanded_environment_name) do
         # We're using a persisted expanded environment name in order to avoid
@@ -509,7 +513,7 @@ module Ci
     end
 
     def expanded_kubernetes_namespace
-      return unless has_environment?
+      return unless has_environment_keyword?
 
       namespace = options.dig(:environment, :kubernetes, :namespace)
 
@@ -520,16 +524,16 @@ module Ci
       end
     end
 
-    def has_environment?
+    def has_environment_keyword?
       environment.present?
     end
 
     def starts_environment?
-      has_environment? && self.environment_action == 'start'
+      has_environment_keyword? && self.environment_action == 'start'
     end
 
     def stops_environment?
-      has_environment? && self.environment_action == 'stop'
+      has_environment_keyword? && self.environment_action == 'stop'
     end
 
     def environment_action
@@ -971,7 +975,7 @@ module Ci
 
     def collect_codequality_reports!(codequality_report)
       each_report(Ci::JobArtifact.file_types_for_report(:codequality)) do |file_type, blob|
-        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report)
+        Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, codequality_report, { project: project, commit_sha: pipeline.sha })
       end
 
       codequality_report
@@ -1043,7 +1047,8 @@ module Ci
       # TODO: Have `debug_mode?` check against data on sent back from runner
       # to capture all the ways that variables can be set.
       # See (https://gitlab.com/gitlab-org/gitlab/-/issues/290955)
-      variables['CI_DEBUG_TRACE']&.value&.casecmp('true') == 0
+      variables['CI_DEBUG_TRACE']&.value&.casecmp('true') == 0 ||
+        variables['CI_DEBUG_SERVICES']&.value&.casecmp('true') == 0
     end
 
     def drop_with_exit_code!(failure_reason, exit_code)
@@ -1131,6 +1136,10 @@ module Ci
       end
     end
 
+    def assign_token_on_scheduling?
+      ::Feature.enabled?(:ci_assign_job_token_on_scheduling, project)
+    end
+
     protected
 
     def run_status_commit_hooks!
@@ -1185,7 +1194,7 @@ module Ci
 
     def environment_status
       strong_memoize(:environment_status) do
-        if has_environment? && merge_request
+        if has_environment_keyword? && merge_request
           EnvironmentStatus.new(project, persisted_environment, merge_request, pipeline.sha)
         end
       end
@@ -1205,8 +1214,6 @@ module Ci
 
     def legacy_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        break variables unless Feature.enabled?(:ci_job_jwt, project)
-
         jwt = Gitlab::Ci::Jwt.for_build(self)
         jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)
         variables.append(key: 'CI_JOB_JWT', value: jwt, public: false, masked: true)

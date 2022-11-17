@@ -7,6 +7,11 @@ module Gitlab
         class UsageQuotas < Chemlab::Page
           # Seats section
           link :seats_tab
+          div :seats_in_use
+          p :seats_used
+          p :seats_owed
+          table :subscription_users
+          button :remove_user
 
           # Pipelines section
           link :pipelines_tab

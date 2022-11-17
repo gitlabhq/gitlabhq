@@ -20,23 +20,11 @@ RSpec.describe Projects::PipelinesController do
   end
 
   shared_examples 'the show page' do |param|
-    it 'redirects to pipeline path with param' do
+    it 'renders the show template' do
       get param, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
 
-      expect(response).to redirect_to(pipeline_path(pipeline, tab: param))
-    end
-
-    context 'when the FF pipeline_tabs_vue is disabled' do
-      before do
-        stub_feature_flags(pipeline_tabs_vue: false)
-      end
-
-      it 'renders the show template' do
-        get param, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template :show
-      end
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(response).to render_template :show
     end
   end
 
@@ -311,14 +299,15 @@ RSpec.describe Projects::PipelinesController do
       stub_application_setting(auto_devops_enabled: false)
     end
 
-    def action
-      get :index, params: { namespace_id: project.namespace, project_id: project }
-    end
+    context 'with runners_availability_section experiment' do
+      it 'tracks the assignment', :experiment do
+        stub_experiments(runners_availability_section: true)
 
-    subject { project.namespace }
+        expect(experiment(:runners_availability_section))
+          .to track(:assignment).with_context(namespace: project.namespace).on_next_instance
 
-    context 'runners_availability_section experiment' do
-      it_behaves_like 'tracks assignment and records the subject', :runners_availability_section, :namespace
+        get :index, params: { namespace_id: project.namespace, project_id: project }
+      end
     end
   end
 
@@ -710,37 +699,25 @@ RSpec.describe Projects::PipelinesController do
   describe 'GET failures' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
 
-    context 'with ff `pipeline_tabs_vue` disabled' do
+    context 'with failed jobs' do
       before do
-        stub_feature_flags(pipeline_tabs_vue: false)
+        create(:ci_build, :failed, pipeline: pipeline, name: 'hello')
       end
 
-      context 'with failed jobs' do
-        before do
-          create(:ci_build, :failed, pipeline: pipeline, name: 'hello')
-        end
+      it 'shows the page' do
+        get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
 
-        it 'shows the page' do
-          get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template :show
-        end
-      end
-
-      context 'without failed jobs' do
-        it 'redirects to the main pipeline page' do
-          get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
-
-          expect(response).to redirect_to(pipeline_path(pipeline))
-        end
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template :show
       end
     end
 
-    it 'redirects to the pipeline page with `failures` query param' do
-      get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
+    context 'without failed jobs' do
+      it 'redirects to the main pipeline page' do
+        get :failures, params: { namespace_id: project.namespace, project_id: project, id: pipeline }
 
-      expect(response).to redirect_to(pipeline_path(pipeline, tab: 'failures'))
+        expect(response).to redirect_to(pipeline_path(pipeline))
+      end
     end
   end
 

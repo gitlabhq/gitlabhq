@@ -5,7 +5,7 @@
 # working with GitLab merge requests
 module Integrations
   class BaseCi < Integration
-    default_value_for :category, 'ci'
+    attribute :category, default: 'ci'
 
     def valid_token?(token)
       self.respond_to?(:token) && self.token.present? && ActiveSupport::SecurityUtils.secure_compare(token, self.token)

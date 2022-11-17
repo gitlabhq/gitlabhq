@@ -43,5 +43,13 @@ RSpec.describe Admin::GroupsController do
         post :create, params: { group: {  path: 'test', name: 'test', admin_note_attributes: { note: 'test' } } }
       end.to change { Namespace::AdminNote.count }.by(1)
     end
+
+    it 'delegates to Groups::CreateService service instance' do
+      expect_next_instance_of(::Groups::CreateService) do |service|
+        expect(service).to receive(:execute).once.and_call_original
+      end
+
+      post :create, params: { group: { path: 'test', name: 'test' } }
+    end
   end
 end

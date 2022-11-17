@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { parseInterval } from '~/runner/utils';
+import { parseInterval } from '~/ci/runner/utils';
 import ExpirationIntervals from './components/expiration_intervals.vue';
 
 const initRunnerTokenExpirationIntervals = (selector = '#js-runner-token-expiration-intervals') => {

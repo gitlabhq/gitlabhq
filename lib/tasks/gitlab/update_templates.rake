@@ -58,14 +58,14 @@ namespace :gitlab do
 
       # extract a concrete commit for signing off what we actually downloaded
       # this way we do the right thing even if the repository gets updated in the meantime
-      get_commits_response = Gitlab::HTTP.get("https://gitlab.com/api/v4/projects/#{uri_encoded_project_path}/repository/commits",
+      get_commits_response = Gitlab::HTTP.get("#{template.project_host}/api/v4/projects/#{uri_encoded_project_path}/repository/commits",
         query: { page: 1, per_page: 1 }
       )
       raise "Failed to retrieve latest commit for template '#{template.name}'" unless get_commits_response.success?
 
       commit_sha = get_commits_response.parsed_response.dig(0, 'id')
 
-      project_archive_uri = "https://gitlab.com/api/v4/projects/#{uri_encoded_project_path}/repository/archive.tar.gz?sha=#{commit_sha}"
+      project_archive_uri = "#{template.project_host}/api/v4/projects/#{uri_encoded_project_path}/repository/archive.tar.gz?sha=#{commit_sha}"
       commit_message = <<~MSG
         Initialized from '#{template.title}' project template
 

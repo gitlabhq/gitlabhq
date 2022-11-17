@@ -11,23 +11,9 @@ RSpec.describe 'Group variables', :js do
   before do
     group.add_owner(user)
     gitlab_sign_in(user)
+    visit page_path
     wait_for_requests
   end
 
-  context 'with disabled ff `ci_variable_settings_graphql' do
-    before do
-      stub_feature_flags(ci_variable_settings_graphql: false)
-      visit page_path
-    end
-
-    it_behaves_like 'variable list'
-  end
-
-  context 'with enabled ff `ci_variable_settings_graphql' do
-    before do
-      visit page_path
-    end
-
-    it_behaves_like 'variable list'
-  end
+  it_behaves_like 'variable list'
 end

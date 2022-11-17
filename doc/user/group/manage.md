@@ -66,6 +66,7 @@ This action removes the group. It also adds a background job to delete all proje
 Specifically:
 
 - In [GitLab 12.8 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/33257), on [GitLab Premium](https://about.gitlab.com/pricing/premium/) or higher tiers, this action adds a background job to mark a group for deletion. By default, the job schedules the deletion 7 days in the future. You can modify this waiting period through the [instance settings](../admin_area/settings/visibility_and_access_controls.md#deletion-protection).
+
 - In [GitLab 13.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/39504), if the user who sets up the deletion is removed from the group before the
 deletion happens, the job is cancelled, and the group is no longer scheduled for deletion.
 
@@ -201,6 +202,13 @@ To remove a member from a group:
    - To unassign the user from linked issues and merge requests, select the **Also unassign this user from linked issues and merge requests** checkbox.
 1. Select **Remove member**.
 
+## Ensure removed users cannot invite themselves back
+
+Malicious users with the Maintainer or Owner role could exploit a race condition that allows
+them to invite themselves back to a group or project that a GitLab administrator has removed them from.
+
+To avoid this problem, GitLab administrators can [ensure removed users cannot invite themselves back](../project/members/index.md#ensure-removed-users-cannot-invite-themselves-back).
+
 ## Add projects to a group
 
 There are two different ways to add a new project to a group:
@@ -255,6 +263,12 @@ If you are changing the path so it can be claimed by another group or user,
 you must rename the group too. Both names and paths must
 be unique.
 
+After you change the group path, the new group path is a new namespace and you must update the existing project URL in the following resources:
+
+- [Include statements](../../ci/yaml/includes.md#include-a-single-configuration-file).
+- Docker image references in CI files.
+- Variables that specify a project or namespace.
+
 To retain ownership of the original namespace and protect the URL redirects,
 create a new group and transfer projects to it instead.
 
@@ -303,9 +317,7 @@ for the group's projects to meet your group's needs.
     [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Similar to how you [share a project with a group](../project/members/share_project_with_groups.md),
-you can share a group with another group. To invite a group, you must be a member of it. Members get direct access
-to the shared group. This includes members who inherited group membership from a parent group.
-
+you can share a group with another group. To invite a group, you must be a member of it.
 To share a given group, for example, `Frontend` with another group, for example,
 `Engineering`:
 
@@ -320,7 +332,7 @@ After sharing the `Frontend` group with the `Engineering` group:
 
 - The **Groups** tab lists the `Engineering` group.
 - The **Groups** tab lists a group regardless of whether it is a public or private group.
-- All members of the `Engineering` group have access to the `Frontend` group. The same access levels of the members apply up to the maximum access level selected when sharing the group.
+- All direct members of the `Engineering` group have access to the `Frontend` group. Direct members of `Engineering` that gain access to the `Frontend` group keep their same access level as in `Engineering`, but up to the maximum access level selected when sharing the group. Inherited members of the `Engineering` group do not gain access to the `Frontend` group.
 
 ## Transfer a group
 
@@ -384,214 +396,6 @@ To enable delayed deletion of projects in a group:
 
 NOTE:
 In GitLab 13.11 and above the group setting for delayed project deletion is inherited by subgroups. As discussed in [Cascading settings](../../development/cascading_settings.md) inheritance can be overridden, unless enforced by an ancestor.
-
-## Compliance frameworks **(PREMIUM)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/276221) in GitLab 13.9.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/287779) in GitLab 13.12.
-
-You can create a compliance framework that is a label to identify that your project has certain compliance
-requirements or needs additional oversight. The label can optionally enforce
-[compliance pipeline configuration](#configure-a-compliance-pipeline) to the projects on which it is
-[applied](../project/settings/index.md#add-a-compliance-framework-to-a-project).
-
-Group owners can create, edit, and delete compliance frameworks:
-
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
-1. Expand the **Compliance frameworks** section.
-1. Create, edit, or delete compliance frameworks.
-
-### Configure a compliance pipeline **(ULTIMATE)**
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3156) in GitLab 13.9, disabled behind `ff_evaluate_group_level_compliance_pipeline` [feature flag](../../administration/feature_flags.md).
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/300324) in GitLab 13.11.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/331231) in GitLab 14.2.
-
-Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
-pipeline configuration (`.gitlab-ci.yml` file) is run instead of the pipeline configuration of labeled projects.
-
-However, the compliance pipeline configuration can reference the `.gitlab-ci.yml` file of the labeled projects so that:
-
-- The compliance pipeline can also run jobs of labeled project pipelines. This allows for centralized control of
-  pipeline configuration.
-- Jobs and variables defined in the compliance pipeline can't be changed by variables in the labeled project's
-  `.gitlab-ci.yml` file.
-
-See [example configuration](#example-configuration) for help configuring a compliance pipeline that runs jobs from
-labeled project pipeline configuration.
-
-To configure a compliance pipeline:
-
-1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
-1. On the left sidebar, select **Settings** > **General**.
-1. Expand the **Compliance frameworks** section.
-1. In **Compliance pipeline configuration (optional)**, add the path to the compliance framework configuration. Use the
-   `path/file.y[a]ml@group-name/project-name` format. For example:
-
-   - `.compliance-ci.yml@gitlab-org/gitlab`.
-   - `.compliance-ci.yaml@gitlab-org/gitlab`.
-
-This configuration is inherited by projects where the compliance framework label is
-[applied](../project/settings/index.md#add-a-compliance-framework-to-a-project). In projects with the applied compliance
-framework label, the compliance pipeline configuration is run instead of the labeled project's own pipeline configuration.
-
-The user running the pipeline in the labeled project must at least have the Reporter role on the compliance project.
-
-When used to enforce scan execution, this feature has some overlap with
-[scan execution policies](../application_security/policies/scan-execution-policies.md). We have not
-[unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312). For details on
-the similarities and differences between these features, see [Enforce scan execution](../application_security/index.md#enforce-scan-execution).
-
-#### Example configuration
-
-The following example `.compliance-gitlab-ci.yml` includes the `include` keyword to ensure labeled project pipeline
-configuration is also executed.
-
-```yaml
-# Allows compliance team to control the ordering and interweaving of stages/jobs.
-# Stages without jobs defined will remain hidden.
-stages:
-  - pre-compliance
-  - build
-  - test
-  - pre-deploy-compliance
-  - deploy
-  - post-compliance
-
-variables:  # Can be overridden by setting a job-specific variable in project's local .gitlab-ci.yml
-  FOO: sast
-
-sast:  # None of these attributes can be overridden by a project's local .gitlab-ci.yml
-  variables:
-    FOO: sast
-  image: ruby:2.6
-  stage: pre-compliance
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: always  # or when: on_success
-  allow_failure: false
-  before_script:
-    - "# No before scripts."
-  script:
-    - echo "running $FOO"
-  after_script:
-    - "# No after scripts."
-
-sanity check:
-  image: ruby:2.6
-  stage: pre-deploy-compliance
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: always  # or when: on_success
-  allow_failure: false
-  before_script:
-    - "# No before scripts."
-  script:
-    - echo "running $FOO"
-  after_script:
-    - "# No after scripts."
-
-audit trail:
-  image: ruby:2.7
-  stage: post-compliance
-  rules:
-    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-      when: never
-    - when: always  # or when: on_success
-  allow_failure: false
-  before_script:
-    - "# No before scripts."
-  script:
-    - echo "running $FOO"
-  after_script:
-    - "# No after scripts."
-
-include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
-  project: '$CI_PROJECT_PATH'
-  file: '$CI_CONFIG_PATH'
-  ref: '$CI_COMMIT_REF_NAME' # Must be defined or MR pipelines always use the use default branch
-```
-
-##### CF pipelines in Merge Requests originating in project forks
-
-When an MR originates in a fork, the branch to be merged usually only exists in the fork.
-When creating such an MR against a project with CF pipelines, the above snippet will fail with a
-`Project <project-name> reference <branch-name> does not exist!` error message.
-This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
-
-To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead of `$CI_PROJECT_PATH`.
-This variable is only availabe in
-[merge request pipelines](../../ci/pipelines/merge_request_pipelines.md).
-
-For example, for a configuration that supports both branch pipelines, as well as merge request pipelines originating in project forks,
-you need to [combine both `include` directives with `rules:if`](../../ci/yaml/includes.md#use-rules-with-include):
-
-```yaml
-include:  # Execute individual project's configuration (if project contains .gitlab-ci.yml)
-  - project: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH'
-    file: '$CI_CONFIG_PATH'
-    ref: '$CI_COMMIT_REF_NAME'
-    rules:
-      - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-  - project: '$CI_PROJECT_PATH'
-    file: '$CI_CONFIG_PATH'
-    ref: '$CI_COMMIT_REF_NAME'
-    rules:
-      - if: $CI_PIPELINE_SOURCE != 'merge_request_event'
-```
-
-### Ensure compliance jobs are always run
-
-Compliance pipelines [use GitLab CI/CD](../../ci/index.md) to give you an incredible amount of flexibility
-for defining any sort of compliance jobs you like. Depending on your goals, these jobs
-can be configured to be:
-
-- Modified by users.
-- Non-modifiable.
-
-Generally, if a value in a compliance job:
-
-- Is set, it cannot be changed or overridden by project-level configurations.
-- Is not set, a project-level configuration may set.
-
-Either might be wanted or not depending on your use case.
-
-There are a few best practices for ensuring that these jobs are always run exactly
-as you define them and that downstream, project-level pipeline configurations
-cannot change them:
-
-- Add [a `rules:when:always` block](../../ci/yaml/index.md#when) to each of your compliance jobs. This ensures they are
-  non-modifiable and are always run.
-- Explicitly set any [variables](../../ci/yaml/index.md#variables) the job references. This:
-  - Ensures that project-level pipeline configurations do not set them and alter their
-    behavior.
-  - Includes any jobs that drive the logic of your job.
-- Explicitly set the [container image](../../ci/yaml/index.md#image) to run the job in. This ensures that your script
-  steps execute in the correct environment.
-- Explicitly set any relevant GitLab pre-defined [job keywords](../../ci/yaml/index.md#job-keywords).
-  This ensures that your job uses the settings you intend and that they are not overridden by
-  project-level pipelines.
-
-### Avoid parent and child pipelines in GitLab 14.7 and earlier
-
-NOTE:
-This advice does not apply to GitLab 14.8 and later because [a fix](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78878) added
-compatibility for combining compliance pipelines, and parent and child pipelines.
-
-Compliance pipelines start on the run of _every_ pipeline in a labeled project. This means that if a pipeline in the labeled project
-triggers a child pipeline, the compliance pipeline runs first. This can trigger the parent pipeline, instead of the child pipeline.
-
-Therefore, in projects with compliance frameworks, we recommend replacing
-[parent-child pipelines](../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines) with the following:
-
-- Direct [`include`](../../ci/yaml/index.md#include) statements that provide the parent pipeline with child pipeline configuration.
-- Child pipelines placed in another project that are run using the [trigger API](../../ci/triggers/index.md) rather than the parent-child
-  pipeline feature.
-
-This alternative ensures the compliance pipeline does not re-start the parent pipeline.
 
 ## Disable email notifications
 
@@ -722,7 +526,7 @@ This includes projects shared with the group, but it **excludes** projects in
 subgroups or parent groups of the group being configured.
 
 You can configure this feature for both subgroups and immediate parent groups. A project
-in a subgroup has access to the templates for that subgroup, as well as
+in a subgroup has access to the templates for that subgroup and
 any immediate parent groups.
 
 To learn how to create templates for issues and merge requests, see
@@ -811,7 +615,7 @@ Group.find_by_sql("SELECT * FROM namespaces WHERE name LIKE '%oup'")
 If transferring a group doesn't work through the UI or API, you may want to attempt the transfer in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session):
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 user = User.find_by_username('<username>')
@@ -842,8 +646,27 @@ At times, a group deletion may get stuck. If needed, in a [Rails console session
 you can attempt to delete a group using the following command:
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ```ruby
 GroupDestroyWorker.new.perform(group_id, user_id)
 ```
+
+### Find a user's maximum permissions for a group or project
+
+Administrators can find a user's maximum permissions for a group or project.
+
+1. Start a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following commands:
+
+   ```ruby
+   user = User.find_by_username 'username'
+   project = Project.find_by_full_path 'group/project'
+   user.max_member_access_for_project project.id
+   ```
+
+   ```ruby
+   user = User.find_by_username 'username'
+   group = Group.find_by_full_path 'group'
+   user.max_member_access_for_group group.id
+   ```

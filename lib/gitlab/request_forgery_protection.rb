@@ -10,6 +10,14 @@ module Gitlab
     class Controller < ActionController::Base
       protect_from_forgery with: :exception, prepend: true
 
+      def initialize
+        super
+
+        # Squelch noisy and unnecessary "Can't verify CSRF token authenticity." messages.
+        # X-Csrf-Token is only one authentication mechanism for API helpers.
+        self.logger = ActiveSupport::Logger.new(File::NULL)
+      end
+
       def index
         head :ok
       end

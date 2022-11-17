@@ -209,6 +209,10 @@ RSpec.describe PagesDomain do
       expect(subject.wildcard).to eq(false)
     end
 
+    it 'defaults auto_ssl_enabled to false' do
+      expect(subject.auto_ssl_enabled).to eq(false)
+    end
+
     it 'defaults scope to project' do
       expect(subject.scope).to eq('project')
     end

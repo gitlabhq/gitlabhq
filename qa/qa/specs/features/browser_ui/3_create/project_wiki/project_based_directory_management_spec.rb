@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'A project wiki' do
       let(:initial_wiki) { Resource::Wiki::ProjectPage.fabricate_via_api! }
       let(:new_path) { "a/new/path-with-spaces" }

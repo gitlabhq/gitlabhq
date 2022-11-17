@@ -1,9 +1,11 @@
 ---
-stage: Configure
-group: Configure
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'GitLab to Kubernetes communication'
+status: implemented
+creation-date: "2020-12-03"
+authors: [ "@ash2k" ]
+coach: "@andrewn"
+approvers: [ "@nicholasklick", "@nagyv-gitlab" ]
+owning-stage: "~devops::configure"
+participating-stages: []
 ---
 
 # GitLab to Kubernetes communication **(FREE)**
@@ -137,28 +139,3 @@ flowchart LR
 ### Iterations
 
 Iterations are tracked in [the dedicated epic](https://gitlab.com/groups/gitlab-org/-/epics/4591).
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |    Mikhail Mazurskiy    |
-| Architecture Evolution Coach |    Andrew Newdigate     |
-| Engineering Leader           |    Nicholas Klick       |
-| Domain Expert                |    Thong Kuah           |
-| Domain Expert                |    Graeme Gillies       |
-| Security Expert              | Vitor Meireles De Sousa |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product Lead                 |    Viktor Nagy         |
-| Engineering Leader           |    Nicholas Klick      |
-| Domain Expert                |    Mikhail Mazurskiy   |
-
-<!-- vale gitlab.Spelling = YES -->

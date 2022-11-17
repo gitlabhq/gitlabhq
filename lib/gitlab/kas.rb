@@ -34,7 +34,7 @@ module Gitlab
       end
 
       def version_info
-        Gitlab::VersionInfo.parse(version)
+        Gitlab::VersionInfo.parse(version, parse_suffix: true)
       end
 
       # Return GitLab KAS external_url

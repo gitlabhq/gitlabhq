@@ -4,11 +4,6 @@ class NamespaceSetting < ApplicationRecord
   include CascadingNamespaceSettingAttribute
   include Sanitizable
   include ChronicDurationAttribute
-  include IgnorableColumns
-
-  ignore_columns %i[exclude_from_free_user_cap include_for_free_user_cap_preview],
-                 remove_with: '15.5',
-                 remove_after: '2022-09-23'
 
   cascading_attr :delayed_project_removal
 

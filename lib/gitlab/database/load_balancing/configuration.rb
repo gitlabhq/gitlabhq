@@ -57,7 +57,8 @@ module Gitlab
             record_type: 'A',
             interval: 60,
             disconnect_timeout: 120,
-            use_tcp: false
+            use_tcp: false,
+            max_replica_pools: nil
           }
         end
 

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
-import initPipelineSchedulesApp from '~/pipeline_schedules/mount_pipeline_schedules_app';
-import PipelineSchedulesTakeOwnershipModal from '~/pipeline_schedules/components/take_ownership_modal.vue';
+import initPipelineSchedulesApp from '~/ci/pipeline_schedules/mount_pipeline_schedules_app';
+import PipelineSchedulesTakeOwnershipModalLegacy from '~/ci/pipeline_schedules/components/take_ownership_modal_legacy.vue';
 import PipelineSchedulesCallout from '../shared/components/pipeline_schedules_callout.vue';
 
 function initPipelineSchedulesCallout() {
@@ -58,7 +58,7 @@ function initTakeownershipModal() {
       });
     },
     render(createElement) {
-      return createElement(PipelineSchedulesTakeOwnershipModal, {
+      return createElement(PipelineSchedulesTakeOwnershipModalLegacy, {
         props: {
           ownershipUrl: this.url,
         },

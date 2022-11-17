@@ -1,10 +1,18 @@
 import { flattenDeep } from 'lodash';
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
+import {
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_RELEASE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 
 export const tokenKeys = [
   {
-    formattedKey: __('Author'),
+    formattedKey: TOKEN_TITLE_AUTHOR,
     key: 'author',
     type: 'string',
     param: 'username',
@@ -13,7 +21,7 @@ export const tokenKeys = [
     tag: '@author',
   },
   {
-    formattedKey: s__('SearchToken|Assignee'),
+    formattedKey: TOKEN_TITLE_ASSIGNEE,
     key: 'assignee',
     type: 'string',
     param: 'username',
@@ -22,7 +30,7 @@ export const tokenKeys = [
     tag: '@assignee',
   },
   {
-    formattedKey: __('Milestone'),
+    formattedKey: TOKEN_TITLE_MILESTONE,
     key: 'milestone',
     type: 'string',
     param: 'title',
@@ -31,7 +39,7 @@ export const tokenKeys = [
     tag: '%milestone',
   },
   {
-    formattedKey: __('Release'),
+    formattedKey: TOKEN_TITLE_RELEASE,
     key: 'release',
     type: 'string',
     param: 'tag',
@@ -40,7 +48,7 @@ export const tokenKeys = [
     tag: __('tag name'),
   },
   {
-    formattedKey: __('Label'),
+    formattedKey: TOKEN_TITLE_LABEL,
     key: 'label',
     type: 'array',
     param: 'name[]',
@@ -53,7 +61,7 @@ export const tokenKeys = [
 if (gon.current_user_id) {
   // Appending tokenkeys only logged-in
   tokenKeys.push({
-    formattedKey: __('My-Reaction'),
+    formattedKey: TOKEN_TITLE_MY_REACTION,
     key: 'my-reaction',
     type: 'string',
     param: 'emoji',
@@ -65,7 +73,7 @@ if (gon.current_user_id) {
 
 export const alternativeTokenKeys = [
   {
-    formattedKey: __('Label'),
+    formattedKey: TOKEN_TITLE_LABEL,
     key: 'label',
     type: 'string',
     param: 'name',

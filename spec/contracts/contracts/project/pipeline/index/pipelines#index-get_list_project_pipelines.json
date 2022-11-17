@@ -198,6 +198,9 @@
             "match": "regex",
             "regex": "^(push|web|trigger|schedule|api|external|pipeline|chat|webide|merge_request_event|external_pull_request_event|parent_pipeline|ondemand_dast_scan|ondemand_dast_validation)$"
           },
+          "$.body.pipelines[*].name": {
+            "match": "type"
+          },
           "$.body.pipelines[*].created_at": {
             "match": "regex",
             "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
@@ -333,6 +336,9 @@
             "regex": "^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d(:?[0-5]\\d)?|Z)$"
           },
           "$.body.pipelines[*].details.name": {
+            "match": "type"
+          },
+          "$.body.pipelines[*].details.event_type_name": {
             "match": "type"
           },
           "$.body.pipelines[*].details.manual_actions": {

@@ -17,9 +17,9 @@ module Pajamas
       @avatar_options = avatar_options
     end
 
-    private
-
     SIZE_OPTIONS = [16, 24, 32, 48, 64, 96].freeze
+
+    private
 
     def avatar_classes
       classes = ["gl-avatar", "gl-avatar-s#{@size}", @class]

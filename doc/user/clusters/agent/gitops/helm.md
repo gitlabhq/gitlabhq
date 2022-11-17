@@ -54,16 +54,50 @@ gitops:
         path: dir-in-project/with/charts
     namespace: my-ns
     max_history: 1
+    values:
+      - inline:
+          someKey: example value
 ```
 
 | Keyword | Description |
 |--|--|
 | `charts` | List of charts you want to be applied in your cluster. Charts are applied concurrently. |
 | `release_name` | Required. Name of the release to use when applying the chart. |
-| `id` | Required. ID of the project where Helm chart is committed. No authentication mechanisms are currently supported. |
-| `path` | Optional. Path of the chart in the project repository. Root of the repository is used by default. This is the directory with the `Chart.yaml` file. |
+| `values` | Optional. [Custom values](#custom-values) for the release. An array of objects. Only supports `inline` values. |
 | `namespace` | Optional. Namespace to use when applying the chart. Defaults to `default`. |
 | `max_history` | Optional. Maximum number of release [revisions to store in the cluster](https://helm.sh/docs/helm/helm_history/). |
+| `source` | Required. From where the chart should get installed. Only supports project sources. |
+| `source.project.id` | Required. ID of the project where Helm chart is committed. Authentication is not supported. |
+| `source.project.path` | Optional. Path of the chart in the project repository. Root of the repository is used by default. Should be the directory with the `Chart.yaml` file. |
+
+## Custom values
+
+> [Introduced](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/merge_requests/766) in GitLab 15.6. Requires both GitLab and the installed agent to be version 15.6 or later.
+
+To customize the values for a release, set the `values` key. It must be
+an array of objects. Each object must have exactly one top-level key that describes
+where the values come from. The supported top-level keys are:
+
+- `inline`: Specify the values inline in YAML format, similar to a Helm values
+  file.
+
+When installing a chart with custom values:
+
+- Custom values get merged on top of the chart's default `values.yaml` file.
+- Values from subsequent entries in the `values` array overwrite values from
+  previous entries.
+
+Example:
+
+```yaml
+gitops:
+  charts:
+  - release_name: some-release
+    values:
+      - inline:
+          someKey: example value
+    # ...
+```
 
 ## Automatic drift remediation
 
@@ -98,7 +132,7 @@ The following are known issues:
   [this epic](https://gitlab.com/groups/gitlab-org/-/epics/7704).
 - Values for the chart must be in a `values.yaml` file. This file must be with the chart,
   in the same project and path.
-- Because of drift detection and remediation, release history, stored in the cluster, is not useful.
+- Because of drift detection and remediation, the release history stored in the cluster is not useful.
   A new release is created every five minutes and the oldest release is discarded.
   Eventually history consists only of the same information.
   View [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/372023) for details.

@@ -11,6 +11,8 @@ module TestEnv
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
     'signed-commits' => 'c7794c1',
+    'gpg-signed' => '8a852d5',
+    'x509-signed' => 'a4df3c8',
     'not-merged-branch' => 'b83d6e3',
     'branch-merged' => '498214d',
     'empty-branch' => '7efb185',
@@ -43,7 +45,7 @@ module TestEnv
     'video' => '8879059',
     'crlf-diff' => '5938907',
     'conflict-start' => '824be60',
-    'conflict-resolvable' => '1450cd6',
+    'conflict-resolvable' => '1450cd639e0bc6721eb02800169e464f212cde06',
     'conflict-binary-file' => '259a6fb',
     'conflict-contains-conflict-markers' => '78a3086',
     'conflict-missing-side' => 'eb227b3',
@@ -282,15 +284,30 @@ module TestEnv
     unless File.directory?(repo_path)
       start = Time.now
       system(*%W(#{Gitlab.config.git.bin_path} clone --quiet -- #{clone_url} #{repo_path}))
-      system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} remote remove origin))
       puts "==> #{repo_path} set up in #{Time.now - start} seconds...\n"
     end
 
-    set_repo_refs(repo_path, refs)
+    create_bundle = !File.file?(repo_bundle_path)
 
-    unless File.file?(repo_bundle_path)
+    unless set_repo_refs(repo_path, refs)
+      # Prefer not to fetch over the network. Only fetch when we have failed to
+      # set all the required local branches. This would happen when a new
+      # branch is added to BRANCH_SHA, in which case we want to update
+      # everything.
+      unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
+        raise 'Could not fetch test seed repository.'
+      end
+
+      unless set_repo_refs(repo_path, refs)
+        raise "Could not update test seed repository, please delete #{repo_path} and try again"
+      end
+
+      create_bundle = true
+    end
+
+    if create_bundle
       start = Time.now
-      system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --all))
+      system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{repo_path} bundle create #{repo_bundle_path} --exclude refs/remotes/* --all))
       puts "==> #{repo_bundle_path} generated in #{Time.now - start} seconds...\n"
     end
   end
@@ -392,20 +409,13 @@ module TestEnv
   end
 
   def set_repo_refs(repo_path, branch_sha)
-    instructions = branch_sha.map { |branch, sha| "update refs/heads/#{branch}\x00#{sha}\x00" }.join("\x00") << "\x00"
-    update_refs = %W(#{Gitlab.config.git.bin_path} update-ref --stdin -z)
-    reset = proc do
-      Dir.chdir(repo_path) do
-        IO.popen(update_refs, "w") { |io| io.write(instructions) }
-        $?.success?
+    IO.popen(%W[#{Gitlab.config.git.bin_path} -C #{repo_path} update-ref --stdin -z], "w") do |io|
+      branch_sha.each do |branch, sha|
+        io.write("update refs/heads/#{branch}\x00#{sha}\x00\x00")
       end
     end
 
-    # Try to reset without fetching to avoid using the network.
-    unless reset.call
-      raise 'Could not fetch test seed repository.' unless system(*%W(#{Gitlab.config.git.bin_path} -C #{repo_path} fetch origin))
-      raise "Could not update test seed repository, please delete #{repo_path} and try again" unless reset.call
-    end
+    $?.success?
   end
 
   def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])

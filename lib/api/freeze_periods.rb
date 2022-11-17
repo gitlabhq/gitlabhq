@@ -4,19 +4,28 @@ module API
   class FreezePeriods < ::API::Base
     include PaginationParams
 
+    freeze_periods_tags = %w[freeze_periods]
+
     before { authenticate! }
 
     feature_category :continuous_delivery
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get project freeze periods' do
-        detail 'This feature was introduced in GitLab 13.0.'
+      desc 'List freeze periods' do
+        detail 'Paginated list of Freeze Periods, sorted by created_at in ascending order. ' \
+               'This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
+        tags freeze_periods_tags
       end
       params do
         use :pagination
@@ -30,12 +39,17 @@ module API
         present paginate(freeze_periods), with: Entities::FreezePeriod, current_user: current_user
       end
 
-      desc 'Get a single freeze period' do
-        detail 'This feature was introduced in GitLab 13.0.'
+      desc 'Get a freeze period' do
+        detail 'Get a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags freeze_periods_tags
       end
       params do
-        requires :freeze_period_id, type: Integer, desc: 'The ID of a project freeze period'
+        requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
       end
       get ":id/freeze_periods/:freeze_period_id" do
         authorize! :read_freeze_period, user_project
@@ -43,14 +57,21 @@ module API
         present freeze_period, with: Entities::FreezePeriod, current_user: current_user
       end
 
-      desc 'Create a new freeze period' do
-        detail 'This feature was introduced in GitLab 13.0.'
+      desc 'Create a freeze period' do
+        detail 'Creates a freeze period. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags freeze_periods_tags
       end
       params do
-        requires :freeze_start, type: String, desc: 'Freeze Period start'
-        requires :freeze_end, type: String, desc: 'Freeze Period end'
-        optional :cron_timezone, type: String, desc: 'Timezone'
+        requires :freeze_start, type: String, desc: 'Start of the freeze period in cron format.'
+        requires :freeze_end, type: String, desc: 'End of the freeze period in cron format'
+        optional :cron_timezone,
+          type: String,
+          desc: 'The time zone for the cron fields, defaults to UTC if not provided'
       end
       post ':id/freeze_periods' do
         authorize! :create_freeze_period, user_project
@@ -67,13 +88,18 @@ module API
       end
 
       desc 'Update a freeze period' do
-        detail 'This feature was introduced in GitLab 13.0.'
+        detail 'Updates a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags freeze_periods_tags
       end
       params do
-        optional :freeze_start, type: String, desc: 'Freeze Period start'
-        optional :freeze_end, type: String, desc: 'Freeze Period end'
-        optional :cron_timezone, type: String, desc: 'Freeze Period Timezone'
+        optional :freeze_start, type: String, desc: 'Start of the freeze period in cron format'
+        optional :freeze_end, type: String, desc: 'End of the freeze period in cron format'
+        optional :cron_timezone, type: String, desc: 'The time zone for the cron fields'
       end
       put ':id/freeze_periods/:freeze_period_id' do
         authorize! :update_freeze_period, user_project
@@ -88,11 +114,15 @@ module API
       end
 
       desc 'Delete a freeze period' do
-        detail 'This feature was introduced in GitLab 13.0.'
+        detail 'Deletes a freeze period for the given `freeze_period_id`. This feature was introduced in GitLab 13.0.'
         success Entities::FreezePeriod
+        failure [
+          { code: 401, message: 'Unauthorized' }
+        ]
+        tags freeze_periods_tags
       end
       params do
-        requires :freeze_period_id, type: Integer, desc: 'Freeze Period ID'
+        requires :freeze_period_id, type: Integer, desc: 'The ID of the freeze period'
       end
       delete ':id/freeze_periods/:freeze_period_id' do
         authorize! :destroy_freeze_period, user_project

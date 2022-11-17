@@ -9,6 +9,7 @@ RSpec.describe DiffsMetadataEntity do
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_diffs) { merge_request.merge_request_diffs }
   let(:merge_request_diff) { merge_request_diffs.last }
+  let(:merge_conflicts_in_diff) { false }
   let(:options) { {} }
 
   let(:entity) do
@@ -17,7 +18,8 @@ RSpec.describe DiffsMetadataEntity do
       options.merge(
         request: request,
         merge_request: merge_request,
-        merge_request_diffs: merge_request_diffs
+        merge_request_diffs: merge_request_diffs,
+        merge_conflicts_in_diff: merge_conflicts_in_diff
       )
     )
   end
@@ -54,49 +56,36 @@ RSpec.describe DiffsMetadataEntity do
         end
       end
 
-      it 'returns diff files metadata' do
-        payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
+      it 'serializes diff files metadata using DiffFileMetadataEntity' do
+        expect(DiffFileMetadataEntity)
+          .to receive(:represent)
+          .with(
+            raw_diff_files,
+            hash_including(options.merge(conflicts: nil))
+          )
 
-        expect(subject[:diff_files]).to eq(payload)
+        subject[:diff_files]
       end
 
-      context 'when merge_ref_head_diff and allow_tree_conflicts options are set' do
+      context 'when merge_conflicts_in_diff is true' do
         let(:conflict_file) { double(path: raw_diff_files.first.new_path, conflict_type: :both_modified) }
         let(:conflicts) { double(conflicts: double(files: [conflict_file]), can_be_resolved_in_ui?: false) }
+        let(:merge_conflicts_in_diff) { true }
 
         before do
           allow(merge_request).to receive(:cannot_be_merged?).and_return(true)
           allow(MergeRequests::Conflicts::ListService).to receive(:new).and_return(conflicts)
         end
 
-        context 'when merge_ref_head_diff is true and allow_tree_conflicts is false' do
-          let(:options) { { merge_ref_head_diff: true, allow_tree_conflicts: false } }
+        it 'serializes diff files with conflicts' do
+          expect(DiffFileMetadataEntity)
+            .to receive(:represent)
+            .with(
+              raw_diff_files,
+              hash_including(options.merge(conflicts: { conflict_file.path => conflict_file }))
+            )
 
-          it 'returns diff files metadata without conflicts' do
-            payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
-
-            expect(subject[:diff_files]).to eq(payload)
-          end
-        end
-
-        context 'when merge_ref_head_diff is false and allow_tree_conflicts is true' do
-          let(:options) { { merge_ref_head_diff: false, allow_tree_conflicts: true } }
-
-          it 'returns diff files metadata without conflicts' do
-            payload = DiffFileMetadataEntity.represent(raw_diff_files).as_json
-
-            expect(subject[:diff_files]).to eq(payload)
-          end
-        end
-
-        context 'when merge_ref_head_diff and allow_tree_conflicts are true' do
-          let(:options) { { merge_ref_head_diff: true, allow_tree_conflicts: true } }
-
-          it 'returns diff files metadata with conflicts' do
-            payload = DiffFileMetadataEntity.represent(raw_diff_files, conflicts: { conflict_file.path => conflict_file }).as_json
-
-            expect(subject[:diff_files]).to eq(payload)
-          end
+          subject[:diff_files]
         end
       end
     end

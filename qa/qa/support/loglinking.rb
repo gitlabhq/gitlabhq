@@ -9,15 +9,12 @@ module QA
       PRE_PROD_ADDRESS    = 'https://pre.gitlab.com'
       SENTRY_ENVIRONMENTS = {
         staging: 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg',
-        staging_canary: 'https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg-cny',
-        staging_ref: 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=gstg-ref',
-        pre: 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=pre',
-        canary: 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd',
-        production: 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd-cny'
+        staging_ref: 'https://sentry.gitlab.net/gitlab/staging-ref/?environment=all',
+        pre: 'https://sentry.gitlab.net/gitlab/pregitlabcom/?environment=all',
+        production: 'https://sentry.gitlab.net/gitlab/gitlabcom/?environment=gprd'
       }.freeze
       KIBANA_ENVIRONMENTS = {
         staging: 'https://nonprod-log.gitlab.net/',
-        staging_canary: 'https://nonprod-log.gitlab.net/',
         canary: 'https://log.gprd.gitlab.net/',
         production: 'https://log.gprd.gitlab.net/'
       }.freeze
@@ -30,7 +27,7 @@ module QA
 
         errors = ["Correlation Id: #{correlation_id}"]
         errors << "Sentry Url: #{sentry_uri}&query=correlation_id%3A%22#{correlation_id}%22" if sentry_uri
-        errors << "Kibana Url: #{kibana_uri}app/discover#/?_a=(query:(language:kuery,query:'json.correlation_id%20:%20#{correlation_id}'))&_g=(time:(from:now-24h%2Fh,to:now))" if kibana_uri
+        errors << "Kibana Url: #{kibana_uri}app/discover#/?_a=%28query%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29%29&_g=%28time%3A%28from%3Anow-24h%2Cto%3Anow%29%29" if kibana_uri
 
         errors.join("\n")
       end
@@ -53,11 +50,11 @@ module QA
 
         case address
         when STAGING_ADDRESS
-          canary? ? :staging_canary : :staging
+          :staging
         when STAGING_REF_ADDRESS
           :staging_ref
         when PRODUCTION_ADDRESS
-          canary? ? :canary : :production
+          :production
         when PRE_PROD_ADDRESS
           :pre
         else
@@ -67,19 +64,6 @@ module QA
 
       def self.logging_environment?
         !logging_environment.nil?
-      end
-
-      def self.cookies
-        browser_cookies = Capybara.current_session.driver.browser.manage.all_cookies
-        # rubocop:disable Rails/IndexBy
-        browser_cookies.each_with_object({}) do |cookie, memo|
-          memo[cookie[:name]] = cookie
-        end
-        # rubocop:enable Rails/IndexBy
-      end
-
-      def self.canary?
-        cookies.dig('gitlab_canary', :value) == 'true'
       end
     end
   end

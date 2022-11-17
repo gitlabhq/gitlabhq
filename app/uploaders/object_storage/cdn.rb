@@ -12,9 +12,9 @@ module ObjectStorage
 
       UrlResult = Struct.new(:url, :used_cdn)
 
-      def cdn_enabled_url(project, ip_address)
-        if Feature.enabled?(:ci_job_artifacts_cdn, project) && use_cdn?(ip_address)
-          UrlResult.new(cdn_signed_url, true)
+      def cdn_enabled_url(ip_address, params = {})
+        if use_cdn?(ip_address)
+          UrlResult.new(cdn_signed_url(params), true)
         else
           UrlResult.new(url, false)
         end
@@ -27,8 +27,8 @@ module ObjectStorage
         cdn_provider.use_cdn?(request_ip)
       end
 
-      def cdn_signed_url
-        cdn_provider&.signed_url(path)
+      def cdn_signed_url(params = {})
+        cdn_provider&.signed_url(path, params: params)
       end
 
       private

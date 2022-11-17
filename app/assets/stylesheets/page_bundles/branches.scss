@@ -1,0 +1,41 @@
+@import 'mixins_and_variables_and_functions';
+
+.branch-info {
+  flex: auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.divergence-graph {
+  $graph-side-width: 80px;
+  $graph-separator-width: 1px;
+
+  .graph-side {
+    width: $graph-side-width;
+
+    &.full {
+      width: $graph-side-width * 2 + $graph-separator-width;
+    }
+
+    .bar {
+      height: 4px;
+      background-color: $gray-100;
+    }
+
+    .count {
+      font-size: 12px;
+    }
+  }
+
+  .graph-separator {
+    width: $graph-separator-width;
+    height: 18px;
+    background-color: $gray-100;
+  }
+}
+
+.divergence-graph,
+.branch-item .controls {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}

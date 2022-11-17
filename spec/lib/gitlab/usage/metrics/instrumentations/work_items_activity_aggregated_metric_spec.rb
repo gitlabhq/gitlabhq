@@ -15,6 +15,8 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::WorkItemsActivityAggreg
           users_creating_work_items
           users_updating_work_item_title
           users_updating_work_item_dates
+          users_updating_work_item_labels
+          users_updating_work_item_milestone
           users_updating_work_item_iteration
         ]
       }
@@ -44,16 +46,26 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::WorkItemsActivityAggreg
 
     describe '#value', :clean_gitlab_redis_shared_state do
       let(:counter) { Gitlab::UsageDataCounters::HLLRedisCounter }
+      let(:author1_id) { 1 }
+      let(:author2_id) { 2 }
+      let(:event_time) { 1.week.ago }
 
       before do
-        counter.track_event(:users_creating_work_items, values: 1, time: 1.week.ago)
-        counter.track_event(:users_updating_work_item_title, values: 1, time: 1.week.ago)
-        counter.track_event(:users_updating_work_item_dates, values: 2, time: 1.week.ago)
-        counter.track_event(:users_updating_work_item_iteration, values: 2, time: 1.week.ago)
+        counter.track_event(:users_creating_work_items, values: author1_id, time: event_time)
       end
 
-      it 'has correct value' do
-        expect(described_class.new(metric_definition).value).to eq 2
+      it 'has correct value after events are tracked', :aggregate_failures do
+        expect do
+          counter.track_event(:users_updating_work_item_title, values: author1_id, time: event_time)
+          counter.track_event(:users_updating_work_item_dates, values: author1_id, time: event_time)
+          counter.track_event(:users_updating_work_item_labels, values: author1_id, time: event_time)
+          counter.track_event(:users_updating_work_item_milestone, values: author1_id, time: event_time)
+        end.to not_change { described_class.new(metric_definition).value }
+
+        expect do
+          counter.track_event(:users_updating_work_item_iteration, values: author2_id, time: event_time)
+          counter.track_event(:users_updating_weight_estimate, values: author1_id, time: event_time)
+        end.to change { described_class.new(metric_definition).value }.from(1).to(2)
       end
     end
   end

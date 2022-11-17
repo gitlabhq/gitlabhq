@@ -7,6 +7,7 @@ module Ci
     extend ::Gitlab::Utils::Override
 
     has_one :resource, class_name: 'Ci::Resource', foreign_key: 'build_id', inverse_of: :processable
+    has_one :sourced_pipeline, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_job_id, inverse_of: :source_job
 
     belongs_to :resource_group, class_name: 'Ci::ResourceGroup', inverse_of: :processables
 

@@ -35,6 +35,7 @@ class GroupsController < Groups::ApplicationController
   before_action :track_experiment_event, only: [:new]
 
   before_action only: :issues do
+    push_frontend_feature_flag(:or_issuable_queries, group)
     push_force_frontend_feature_flag(:work_items, group.work_items_feature_flag_enabled?)
   end
 
@@ -111,7 +112,7 @@ class GroupsController < Groups::ApplicationController
   def details
     respond_to do |format|
       format.html do
-        render_details_html
+        redirect_to group_path(group)
       end
 
       format.atom do
@@ -233,10 +234,6 @@ class GroupsController < Groups::ApplicationController
     Gitlab::Tracking.event('group_overview', 'render', user: current_user, namespace: @group)
 
     render 'groups/show', locals: { trial: params[:trial] }
-  end
-
-  def render_details_html
-    render 'groups/show'
   end
 
   def render_details_view_atom

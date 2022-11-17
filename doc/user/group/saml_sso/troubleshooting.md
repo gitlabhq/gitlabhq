@@ -19,9 +19,10 @@ SAML responses are base64 encoded, so we recommend the following browser plugins
 - [SAML-tracer](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/) for Firefox.
 - [SAML Message Decoder](https://chrome.google.com/webstore/detail/saml-message-decoder/mpabchoaimgbdbbjjieoaeiibojelbhm?hl=en) for Chrome.
 
-Specific attention should be paid to:
+Pay specific attention to:
 
-- The NameID, which we use to identify which user is signing in. If the user has previously signed in, this [must match the value we have stored](#verifying-nameid).
+- The `NameID`, which we use to identify which user is signing in. If the user has previously signed in, this
+  [must match the value we have stored](#verify-nameid).
 - The presence of a `X509Certificate`, which we require to verify the response signature.
 - The `SubjectConfirmation` and `Conditions`, which can cause errors if misconfigured.
 
@@ -32,7 +33,7 @@ using an identity provider.
 
 To generate a SAML Response:
 
-1. Install one of the browser debugging tools previously mentioned.
+1. Install one of the [browser debugging tools](#saml-debugging-tools).
 1. Open a new browser tab.
 1. Open the SAML tracer console:
    - Chrome: On a context menu on the page, select **Inspect**, then select the **SAML** tab in the opened developer
@@ -43,16 +44,17 @@ To generate a SAML Response:
    [example SAML response](index.md#example-saml-response).
 1. Within the SAML tracer, select the **Export** icon to save the response in JSON format.
 
-## GitLab SAML Testing Environments
+## Testing GitLab SAML
 
-To troubleshoot, [a complete GitLab with SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/tree/master/compose_files)
-is available.
+You can use one of the following to troubleshoot SAML:
 
-If you only require a SAML provider for testing, a [quick start guide to start a Docker container](../../../administration/troubleshooting/test_environments.md#saml) with a plug and play SAML 2.0 Identity Provider (identity provider) is available.
+- A [complete GitLab with SAML testing environment using Docker compose](https://gitlab.com/gitlab-com/support/toolbox/replication/tree/master/compose_files).
+- A [quick start guide to start a Docker container](../../../administration/troubleshooting/test_environments.md#saml)
+  with a plug and play SAML 2.0 identity provider if you only require a SAML provider.
+- A local environment by
+  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#configuring-group-saml-on-a-self-managed-gitlab-instance).
 
-You can test the SaaS feature locally by [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#configuring-group-saml-on-a-self-managed-gitlab-instance).
-
-## Verifying configuration
+## Verify configuration
 
 For convenience, we've included some [example resources](../../../user/group/saml_sso/example_saml_config.md) used by our Support Team. While they may help you verify the SAML app configuration, they are not guaranteed to reflect the current state of third-party products.
 
@@ -82,7 +84,7 @@ in case the customer has [configured SAML Group Sync](group_sync.md):
 - `json.class`: `GroupSamlGroupSyncWorker`
 - `json.args`: `<user ID> or <group ID>`
 
-In the relevant log entry, the: 
+In the relevant log entry, the:
 
 - `json.args` are in the form `<userID>, <group ID>,
   [group link ID 1, group link ID 2, ..., group link ID N]`.
@@ -148,13 +150,13 @@ If you do not wish to use that GitLab user with the SAML login, you can [unlink 
 
 ### Message: "SAML authentication failed: User has already been taken"
 
-The user that you're signed in with already has SAML linked to a different identity, or the NameID value has changed.
+The user that you're signed in with already has SAML linked to a different identity, or the `NameID` value has changed.
 Here are possible causes and solutions:
 
 | Cause                                                                                          | Solution                                                                                                                                                                   |
 | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | You've tried to link multiple SAML identities to the same user, for a given identity provider. | Change the identity that you sign in with. To do so, [unlink the previous SAML identity](index.md#unlinking-accounts) from this GitLab account before attempting to sign in again. |
-| The NameID changes every time the user requests SSO identification | [Check the NameID](#verifying-nameid) is not set with `Transient` format, or the NameID is not changing on subsequent requests.|
+| The `NameID` changes every time the user requests SSO identification | [Check the `NameID`](#verify-nameid) is not set with `Transient` format, or the `NameID` is not changing on subsequent requests.|
 
 ### Message: "SAML authentication failed: Email has already been taken"
 
@@ -171,9 +173,9 @@ User accounts are created in one of the following ways:
 
 ### Message: "SAML authentication failed: Extern UID has already been taken, User has already been taken"
 
-Getting both of these errors at the same time suggests the NameID capitalization provided by the identity provider didn't exactly match the previous value for that user.
+Getting both of these errors at the same time suggests the `NameID` capitalization provided by the identity provider didn't exactly match the previous value for that user.
 
-This can be prevented by configuring the NameID to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](index.md#unlinking-accounts).
+This can be prevented by configuring the `NameID` to return a consistent value. Fixing this for an individual user involves changing the identifier for the user. For GitLab.com, the user needs to [unlink their SAML from the GitLab account](index.md#unlinking-accounts).
 
 ### Message: "Request to link SAML account must be authorized"
 
@@ -196,15 +198,15 @@ to [reset their password](https://gitlab.com/users/password/new) if both:
 
 ## Other user sign in issues
 
-### Verifying NameID
+### Verify `NameID`
 
-In troubleshooting, any authenticated user can use the API to verify the NameID GitLab already has linked to the user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
+In troubleshooting, any authenticated user can use the API to verify the `NameID` GitLab already has linked to their user by visiting [`https://gitlab.com/api/v4/user`](https://gitlab.com/api/v4/user) and checking the `extern_uid` under identities.
 
 For self-managed, administrators can use the [users API](../../../api/users.md) to see the same information.
 
 When using SAML for groups, group members of a role with the appropriate permissions can make use of the [members API](../../../api/members.md) to view group SAML identity information for members of the group.
 
-This can then be compared to the NameID being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match to identify users.
+This can then be compared to the `NameID` being sent by the identity provider by decoding the message with a [SAML debugging tool](#saml-debugging-tools). We require that these match to identify users.
 
 ### Stuck in a login "loop"
 

@@ -13,7 +13,7 @@ class CreateDastSiteProfileVariables < ActiveRecord::Migration[6.0]
     encrypted_value_constraint_name = check_constraint_name(:dast_site_profile_secret_variables, 'encrypted_value', 'max_length')
     encrypted_value_iv_constraint_name = check_constraint_name(:dast_site_profile_secret_variables, 'encrypted_value_iv', 'max_length')
 
-    create_table_with_constraints :dast_site_profile_secret_variables, comment: table_comment.to_json do |t|
+    create_table_with_constraints :dast_site_profile_secret_variables, comment: Gitlab::Json.dump(table_comment) do |t|
       t.references :dast_site_profile, null: false, foreign_key: { on_delete: :cascade }, index: false
 
       t.timestamps_with_timezone

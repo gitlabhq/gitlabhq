@@ -33,9 +33,13 @@ module Ci
     end
 
     def runner_variables
-      stop_expanding_file_vars = ::Feature.enabled?(:ci_stop_expanding_file_vars_for_runners, project)
+      stop_expanding_raw_refs = ::Feature.enabled?(:ci_raw_variables_in_yaml_config, project)
+
       variables
-        .sort_and_expand_all(keep_undefined: true, expand_file_vars: !stop_expanding_file_vars, project: project)
+        .sort_and_expand_all(keep_undefined: true,
+                             expand_file_refs: false,
+                             expand_raw_refs: !stop_expanding_raw_refs,
+                             project: project)
         .to_runner_variables
     end
 

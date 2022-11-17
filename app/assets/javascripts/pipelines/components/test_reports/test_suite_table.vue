@@ -112,21 +112,21 @@ export default {
       >
         <div class="table-section section-20 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Suite') }}</div>
-          <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-overflow-wrap-break">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.classname" />
           </div>
         </div>
 
         <div class="table-section section-40 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Name') }}</div>
-          <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-overflow-wrap-break">
             <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.name" />
           </div>
         </div>
 
         <div class="table-section section-10 section-wrap">
           <div role="rowheader" class="table-mobile-header">{{ __('Filename') }}</div>
-          <div class="table-mobile-content gl-md-pr-2 gl-overflow-wrap-break">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2 gl-overflow-wrap-break">
             <gl-link v-if="testCase.file" :href="testCase.filePath" target="_blank">
               <gl-friendly-wrap :symbols="$options.wrapSymbols" :text="testCase.file" />
             </gl-link>
@@ -156,7 +156,7 @@ export default {
           <div role="rowheader" class="table-mobile-header">
             {{ __('Duration') }}
           </div>
-          <div class="table-mobile-content gl-sm-pr-2">
+          <div class="table-mobile-content gl-pr-0 gl-sm-pr-2">
             {{ testCase.formattedTime }}
           </div>
         </div>

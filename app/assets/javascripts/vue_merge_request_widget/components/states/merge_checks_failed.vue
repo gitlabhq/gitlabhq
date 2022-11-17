@@ -9,6 +9,7 @@ export default {
     blockingMergeRequests: s__(
       'mrWidget|Merge blocked: you can only merge after the above items are resolved.',
     ),
+    externalStatusChecksFailed: s__('mrWidget|Merge blocked: all status checks must pass.'),
   },
   components: {
     StatusIcon,
@@ -25,6 +26,8 @@ export default {
         return this.$options.i18n.approvalNeeded;
       } else if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.BLOCKED_STATUS) {
         return this.$options.i18n.blockingMergeRequests;
+      } else if (this.mr.detailedMergeStatus === DETAILED_MERGE_STATUS.EXTERNAL_STATUS_CHECKS) {
+        return this.$options.i18n.externalStatusChecksFailed;
       }
 
       return null;

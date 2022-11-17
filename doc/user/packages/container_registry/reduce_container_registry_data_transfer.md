@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -90,7 +90,7 @@ build process instead of trying to minify images afterward.
 
 ### Use multi-stage builds
 
-With [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/),
+With [multi-stage builds](https://docs.docker.com/build/building/multi-stage/),
 you use multiple `FROM` statements in your Dockerfile. Each `FROM` instruction can use a different
 base, and each begins a new build stage. You can selectively copy artifacts from one stage to
 another, leaving behind everything you don't want in the final image. This is especially useful when

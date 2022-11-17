@@ -4,6 +4,6 @@ classes:
 - ApprovalProjectRule
 feature_categories:
 - source_code_management
-description: TODO
+description: Keeps approval project rules
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'

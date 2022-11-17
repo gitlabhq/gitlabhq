@@ -11,7 +11,7 @@ module Types
     graphql_name 'Deployment'
     description 'The deployment of an environment'
 
-    present_using Deployments::DeploymentPresenter
+    present_using ::Deployments::DeploymentPresenter
 
     authorize :read_deployment
 

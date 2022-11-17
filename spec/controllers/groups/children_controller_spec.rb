@@ -277,7 +277,7 @@ RSpec.describe Groups::ChildrenController do
 
       context 'with only projects' do
         let!(:other_project) { create(:project, :public, namespace: group) }
-        let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group ) }
+        let!(:first_page_projects) { create_list(:project, per_page, :public, namespace: group) }
 
         it 'has projects on the first page' do
           get :index, params: { group_id: group.to_param, sort: 'id_desc' }, format: :json

@@ -36,7 +36,7 @@ it should be disapproved in Crowdin. Our strings must use [variables](externaliz
 for HTML instead.
 
 It might be useful to pause the integration on the Crowdin side for a
-moment so translations don't keep coming. You can do this by clicking
+moment so translations don't keep coming. You can do this by selecting
 **Pause sync** on the [Crowdin integration settings page](https://translate.gitlab.com/project/gitlab-ee/settings#integration).
 
 ## Merging translations

@@ -17,7 +17,7 @@
 - authentication_and_authorization
 - auto_devops
 - backup_restore
-- billing_and_subscription_management
+- billing_and_payments
 - build
 - build_artifacts
 - chatops
@@ -35,6 +35,7 @@
 - continuous_integration_scaling
 - continuous_verification
 - credential_management
+- customersdot_application
 - database
 - dataops
 - dedicated
@@ -59,7 +60,9 @@
 - experimentation_expansion
 - feature_flags
 - five_minute_production_app
-- fulfillment_platform
+- fulfillment_admin_tooling
+- fulfillment_developer_productivity
+- fulfillment_infrastructure
 - fuzz_testing
 - geo_replication
 - git_lfs
@@ -97,10 +100,8 @@
 - planning_analytics
 - pods
 - portfolio_management
-- privacy_control_center
 - product_analytics
 - projects
-- provision
 - pubsec_services
 - purchase
 - quality_management
@@ -114,6 +115,7 @@
 - runner
 - runner_fleet
 - runner_saas
+- saas_provisioning
 - scalability
 - secret_detection
 - secrets_management
@@ -121,16 +123,19 @@
 - security_policy_management
 - service_desk
 - service_ping
+- sm_provisioning
 - snippets
 - source_code_management
 - static_application_security_testing
 - subgroups
+- subscription_cost_management
+- subscription_management
+- subscription_usage_reports
 - system_access
 - team_planning
 - tracing
 - user_management
 - users
-- utilization
 - value_stream_management
 - vulnerability_management
 - web_ide

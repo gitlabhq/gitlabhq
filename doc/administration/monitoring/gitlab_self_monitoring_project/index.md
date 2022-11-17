@@ -30,31 +30,31 @@ As an administrator, you can add new members to the group to give them the Maint
 
 This project can be used to:
 
-- Self monitor your GitLab instance. The metrics dashboard of the project shows some basic resource
+- Self-monitor your GitLab instance. The metrics dashboard of the project shows some basic resource
   usage charts, such as CPU and memory usage of each server in
   [Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
 - Also configure your own [custom metrics](../../../operations/metrics/index.md#adding-custom-metrics)
   using metrics exposed by the [GitLab exporter](../prometheus/gitlab_metrics.md#metrics-available).
 
-## Create the self monitoring project
+## Create the self-monitoring project
 
 1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Self monitoring**.
-1. Toggle **Self monitoring** on.
+1. On the left sidebar, select **Settings > Metrics and profiling** and expand **Self-monitoring**.
+1. Toggle **Self-monitoring** on.
 1. After your GitLab instance creates the project, GitLab displays a link to the
-   project in the text above the **Self monitoring** toggle. You can also find it
+   project in the text above the **Self-monitoring** toggle. You can also find it
    from the top bar by selecting **Main menu > Projects**.
 
-## Delete the self monitoring project
+## Delete the self-monitoring project
 
 WARNING:
-Deleting the self monitoring project removes any changes made to the project. If
+Deleting the self-monitoring project removes any changes made to the project. If
 you create the project again, it's created in its default state.
 
 1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, go to **Settings > Metrics and profiling** and expand **Self monitoring**.
-1. Toggle **Self monitoring** off.
-1. In the confirmation dialog that opens, select **Delete self monitoring project**.
+1. On the left sidebar, go to **Settings > Metrics and profiling** and expand **Self-monitoring**.
+1. Toggle **Self-monitoring** off.
+1. In the confirmation dialog that opens, select **Delete self-monitoring project**.
    It can take a few seconds for it to be deleted.
 1. After the project is deleted, GitLab displays a message confirming your action.
 
@@ -66,7 +66,7 @@ panels, provide a regular expression in the **Instance label regex** field.
 The dashboard uses metrics available in
 [Omnibus GitLab](https://docs.gitlab.com/omnibus/) installations.
 
-![GitLab self monitoring overview dashboard](img/self_monitoring_overview_dashboard.png)
+![GitLab self-monitoring overview dashboard](img/self_monitoring_overview_dashboard.png)
 
 You can also
 [create your own dashboards](../../../operations/metrics/dashboards/index.md).
@@ -85,12 +85,12 @@ you [configure it manually](../../../user/project/integrations/prometheus.md#man
 You can [add a Prometheus integration](../../../operations/incident_management/integrations.md)
 to GitLab to receive notifications of any alerts.
 
-Once the integration is setup, you can
+When the integration is set up, you can
 [take action on incoming alerts](../../../operations/metrics/alerts.md#trigger-actions-from-alerts).
 
-## Add custom metrics to the self monitoring project
+## Add custom metrics to the self-monitoring project
 
-You can add custom metrics in the self monitoring project by:
+You can add custom metrics in the self-monitoring project by:
 
 1. [Duplicating](../../../operations/metrics/dashboards/index.md#duplicate-a-gitlab-defined-dashboard) the overview dashboard.
 1. [Editing](../../../operations/metrics/index.md) the newly created dashboard file and configuring it with [dashboard YAML properties](../../../operations/metrics/dashboards/yaml.md).
@@ -118,4 +118,4 @@ If this returns true, the first administrator user is an external user.
 If you face this issue, you can temporarily
 [make the administrator user a non-external user](../../../user/permissions.md#external-users)
 and then try to create the project.
-Once the project is created, the administrator user can be changed back to an external user.
+After the project is created, the administrator user can be changed back to an external user.

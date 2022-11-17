@@ -80,7 +80,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       click_button 'Edit issues'
       check 'Select all'
       click_button 'Select milestone'
-      click_link milestone.title
+      click_button milestone.title
       click_update_issues_button
 
       expect(page.find('.issue')).to have_content milestone.title
@@ -97,7 +97,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js do
       click_button 'Edit issues'
       check 'Select all'
       click_button 'Select milestone'
-      click_link 'No milestone'
+      click_button 'No milestone'
       click_update_issues_button
 
       expect(find('.issue:first-of-type')).not_to have_text milestone.title

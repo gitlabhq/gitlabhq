@@ -1,11 +1,20 @@
 import { nextTick } from 'vue';
 import * as Sentry from '@sentry/browser';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
+
+jest.mock('~/vue_merge_request_widget/components/extensions/telemetry', () => ({
+  createTelemetryHub: jest.fn().mockReturnValue({
+    viewed: jest.fn(),
+    expanded: jest.fn(),
+    fullReportClicked: jest.fn(),
+  }),
+}));
 
 describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   let wrapper;
@@ -14,13 +23,15 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findToggleButton = () => wrapper.findByTestId('toggle-button');
+  const findHelpPopover = () => wrapper.findComponent(HelpPopover);
 
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
       propsData: {
         isCollapsible: false,
         loadingText: 'Loading widget',
-        widgetName: 'MyWidget',
+        widgetName: 'WidgetTest',
+        fetchCollapsedData: () => Promise.resolve([]),
         value: {
           collapsed: null,
           expanded: null,
@@ -30,6 +41,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       slots,
       stubs: {
         StatusIcon,
+        ActionButtons,
         ContentRow: WidgetContentRow,
       },
     });
@@ -52,8 +64,9 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('sets the error text when fetch method fails', async () => {
-      const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
-      createComponent({ propsData: { fetchCollapsedData } });
+      createComponent({
+        propsData: { fetchCollapsedData: jest.fn().mockRejectedValue('Something went wrong') },
+      });
       await waitForPromises();
       expect(wrapper.findByText('Failed to load').exists()).toBe(true);
       expect(findStatusIcon().props()).toMatchObject({ iconName: 'failed', isLoading: false });
@@ -79,11 +92,23 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('displays the loading text', async () => {
-      const fetchCollapsedData = jest.fn().mockReturnValue(() => Promise.reject());
-      createComponent({ propsData: { fetchCollapsedData, statusIconName: 'warning' } });
+      createComponent({
+        propsData: {
+          statusIconName: 'warning',
+        },
+      });
+
       expect(wrapper.text()).not.toContain('Loading');
       await nextTick();
       expect(wrapper.text()).toContain('Loading');
+    });
+
+    it('validates widget name', () => {
+      expect(() => {
+        createComponent({
+          propsData: { widgetName: 'InvalidWidgetName' },
+        });
+      }).toThrow();
     });
   });
 
@@ -136,7 +161,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           summary: 'Hello world',
-          fetchCollapsedData: () => Promise.resolve(),
         },
       });
 
@@ -145,15 +169,14 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     it.todo('displays content property when content slot is not provided');
 
-    it('displays the summary slot when provided', () => {
+    it('displays the summary slot when provided', async () => {
       createComponent({
-        propsData: {
-          fetchCollapsedData: () => Promise.resolve(),
-        },
         slots: {
           summary: '<b>More complex summary</b>',
         },
       });
+
+      await waitForPromises();
 
       expect(wrapper.findByTestId('widget-extension-top-level-summary').text()).toBe(
         'More complex summary',
@@ -161,12 +184,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
 
     it('does not display action buttons if actionButtons is not provided', () => {
-      createComponent({
-        propsData: {
-          fetchCollapsedData: () => Promise.resolve(),
-        },
-      });
-
+      createComponent();
       expect(findActionButtons().exists()).toBe(false);
     });
 
@@ -175,7 +193,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
       createComponent({
         propsData: {
-          fetchCollapsedData: () => Promise.resolve(),
           actionButtons,
         },
       });
@@ -184,12 +201,34 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
     });
   });
 
+  describe('help popover', () => {
+    it('renders a help popover', () => {
+      createComponent({
+        propsData: {
+          helpPopover: {
+            options: { title: 'My help popover title' },
+            content: { text: 'Help popover content', learnMorePath: '/path/to/docs' },
+          },
+        },
+      });
+
+      expect(findHelpPopover().props('options')).toEqual({ title: 'My help popover title' });
+      expect(wrapper.findByText('Help popover content').exists()).toBe(true);
+      expect(wrapper.findByText('Learn more').attributes('href')).toBe('/path/to/docs');
+      expect(wrapper.findByText('Learn more').attributes('target')).toBe('_blank');
+    });
+
+    it('does not render help popover when it is not provided', () => {
+      createComponent();
+      expect(findHelpPopover().exists()).toBe(false);
+    });
+  });
+
   describe('handle collapse toggle', () => {
     it('displays the toggle button correctly', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           content: '<b>More complex content</b>',
@@ -204,7 +243,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve(),
         },
         slots: {
           content: '<b>More complex content</b>',
@@ -221,7 +259,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: false,
-          fetchCollapsedData: () => Promise.resolve(),
         },
       });
 
@@ -278,7 +315,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve([]),
           fetchExpandedData,
         },
       });
@@ -306,7 +342,6 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       createComponent({
         propsData: {
           isCollapsible: true,
-          fetchCollapsedData: () => Promise.resolve([]),
           fetchExpandedData,
         },
       });
@@ -321,6 +356,56 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       await nextTick();
 
       expect(wrapper.findByText('Failed to load').exists()).toBe(false);
+    });
+  });
+
+  describe('telemetry - enabled', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          actionButtons: [
+            {
+              fullReport: true,
+              href: '#',
+              target: '_blank',
+              id: 'full-report-button',
+              text: 'Full Report',
+            },
+          ],
+        },
+      });
+    });
+
+    it('should call create a telemetry hub', () => {
+      expect(wrapper.vm.telemetryHub).not.toBe(null);
+    });
+
+    it('should call the viewed state', async () => {
+      await nextTick();
+      expect(wrapper.vm.telemetryHub.viewed).toHaveBeenCalledTimes(1);
+    });
+
+    it('when full report is clicked it should call the respective telemetry event', async () => {
+      expect(wrapper.vm.telemetryHub.fullReportClicked).not.toHaveBeenCalled();
+      wrapper.findByText('Full Report').vm.$emit('click');
+      await nextTick();
+      expect(wrapper.vm.telemetryHub.fullReportClicked).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('telemetry - disabled', () => {
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          telemetry: false,
+        },
+      });
+    });
+
+    it('should not call create a telemetry hub', () => {
+      expect(wrapper.vm.telemetryHub).toBe(null);
     });
   });
 });

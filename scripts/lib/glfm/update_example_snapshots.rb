@@ -30,12 +30,12 @@ module Glfm
     def process(skip_static_and_wysiwyg: false)
       output('Updating example snapshots...')
 
-      output("Reading #{GLFM_SPEC_TXT_PATH}...")
-      glfm_spec_txt_lines = File.open(GLFM_SPEC_TXT_PATH).readlines
+      output("Reading #{ES_SNAPSHOT_SPEC_MD_PATH}...")
+      es_snapshot_spec_md_lines = File.open(ES_SNAPSHOT_SPEC_MD_PATH).readlines
 
-      # Parse all the examples from `spec.txt`, using a Ruby port of the Python `get_tests`
+      # Parse all the examples from `snapshot_spec.md`, using a Ruby port of the Python `get_tests`
       # function the from original CommonMark/GFM `spec_test.py` script.
-      all_examples = parse_examples(glfm_spec_txt_lines)
+      all_examples = parse_examples(es_snapshot_spec_md_lines)
 
       add_example_names(all_examples)
 
@@ -55,7 +55,7 @@ module Glfm
       #    in the H1 header count. So, even though due to the concatenation it appears before the
       #    GitLab examples sections, it doesn't result in their header counts being off by +1.
       # 5. If an example contains the 'disabled' string extension, it is skipped (and will thus
-      #    result in a skip in the `spec_txt_example_position`). This behavior is taken from the
+      #    result in a skip in the `spec_example_position`). This behavior is taken from the
       #    GFM `spec_test.py` script (but it's NOT in the original CommonMark `spec_test.py`).
       # 6. If a section contains ONLY disabled examples, the section numbering will still be
       #    incremented to match the rendered HTML specification section numbering.
@@ -202,7 +202,7 @@ module Glfm
       ) do |example, hash|
         name = example.fetch(:name).to_sym
         hash[name] = {
-          'spec_txt_example_position' => example.fetch(:example),
+          'spec_example_position' => example.fetch(:example),
           'source_specification' => source_specification_for_extensions(example.fetch(:extensions))
         }
       end

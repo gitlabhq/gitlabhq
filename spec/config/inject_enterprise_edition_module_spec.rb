@@ -126,4 +126,22 @@ RSpec.describe InjectEnterpriseEditionModule do
   describe '#include_mod' do
     it_behaves_like 'expand the assumed extension with', :include
   end
+
+  describe '#gitlab_extensions' do
+    context 'when there are no extension modules' do
+      it 'returns the class itself' do
+        expect(fish_class.gitlab_extensions).to contain_exactly(fish_class)
+      end
+    end
+
+    context 'when there are extension modules' do
+      it 'returns the class itself and any extensions' do
+        stub_const(extension_name, extension_namespace)
+        extension_namespace.const_set(fish_name, fish_extension)
+        fish_class.prepend_mod
+
+        expect(fish_class.gitlab_extensions).to contain_exactly(fish_class, fish_extension)
+      end
+    end
+  end
 end

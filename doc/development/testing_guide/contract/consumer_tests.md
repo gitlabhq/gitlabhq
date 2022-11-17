@@ -213,7 +213,7 @@ pactWith(
         const discussions = await getDiscussions({
           url: provider.mockService.baseUrl,
         });
-        
+
         expect(discussions).toEqual(Matchers.eachLike({
           id: 'fd73763cbcbf7b29eb8765d969a38f7d735e222a',
           project_id: 6954442,

@@ -395,7 +395,7 @@ HA.
 
 #### In the application node
 
-According to [official Redis documentation](https://redis.io/docs/manual/admin/#upgrading-or-restarting-a-redis-instance-without-downtime),
+According to [official Redis documentation](https://redis.io/docs/management/admin/#upgrading-or-restarting-a-redis-instance-without-downtime),
 the easiest way to update an HA instance using Sentinel is to upgrade the
 secondaries one after the other, perform a manual failover from current
 primary (running old version) to a recently upgraded secondary (running a new

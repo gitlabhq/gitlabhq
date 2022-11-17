@@ -28,9 +28,20 @@ You can use two types of labels in GitLab:
 
 ## Assign and unassign labels
 
-> Unassigning labels with the **X** button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216881) in GitLab 13.5.
+> - Unassigning labels with the **X** button [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216881) in GitLab 13.5.
+> - Real-time updates in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
+> - Real-time updates in the sidebar [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
+> - Real-time updates in the sidebar [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
+> - Real-time updates in the sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103199) in GitLab 15.6. Feature flag `realtime_labels` removed.
 
 You can assign labels to any issue, merge request, or epic.
+
+Changed labels are immediately visible to other users, without refreshing the page, on the following:
+
+- Epics
+- Incidents
+- Issues
+- Merge requests
 
 To assign or unassign a label:
 
@@ -410,7 +421,7 @@ To subscribe to a label:
 1. To the right of any label, select **Subscribe**.
 1. Optional. If you are subscribing to a group label from a project, select either:
    - **Subscribe at project level** to be notified about events in this project.
-   - **Subscribe at group level**: to be notified about events in the whole group.
+   - **Subscribe at group level** to be notified about events in the whole group.
 
 ## Set label priority
 
@@ -443,23 +454,6 @@ The labels higher in the list get higher priority.
 
 To learn what happens when you sort by priority or label priority, see
 [Sorting and ordering issue lists](issues/sorting_issue_lists.md).
-
-## Real-time changes to labels
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
-> - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
-
-FLAG:
-On self-managed GitLab, to prevent updating labels in real-time, you can ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `realtime_labels`.
-On GitLab.com, this feature is available.
-
-Changed labels are immediately visible to other users, without refreshing the page, on the following:
-
-- Epics
-- Incidents
-- Issues
-- Merge requests
 
 ## Troubleshooting
 

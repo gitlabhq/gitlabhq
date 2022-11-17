@@ -57,45 +57,37 @@ Geo secondary sites have a [Geo tracking database](https://gitlab.com/gitlab-org
   # frozen_string_literal: true
 
   class CreateCoolWidgetRegistry < Gitlab::Database::Migration[2.0]
-    disable_ddl_transaction!
+    def change
+      create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
+        t.bigint :cool_widget_id, null: false
+        t.datetime_with_timezone :created_at, null: false
+        t.datetime_with_timezone :last_synced_at
+        t.datetime_with_timezone :retry_at
+        t.datetime_with_timezone :verified_at
+        t.datetime_with_timezone :verification_started_at
+        t.datetime_with_timezone :verification_retry_at
+        t.integer :state, default: 0, null: false, limit: 2
+        t.integer :verification_state, default: 0, null: false, limit: 2
+        t.integer :retry_count, default: 0, limit: 2, null: false
+        t.integer :verification_retry_count, default: 0, limit: 2, null: false
+        t.boolean :checksum_mismatch, default: false, null: false
+        t.boolean :force_to_redownload, default: false, null: false
+        t.boolean :missing_on_primary, default: false, null: false
+        t.binary :verification_checksum
+        t.binary :verification_checksum_mismatched
+        t.text :verification_failure, limit: 255
+        t.text :last_sync_failure, limit: 255
 
-    def up
-      Geo::TrackingBase.transaction do
-        create_table :cool_widget_registry, id: :bigserial, force: :cascade do |t|
-          t.bigint :cool_widget_id, null: false
-          t.datetime_with_timezone :created_at, null: false
-          t.datetime_with_timezone :last_synced_at
-          t.datetime_with_timezone :retry_at
-          t.datetime_with_timezone :verified_at
-          t.datetime_with_timezone :verification_started_at
-          t.datetime_with_timezone :verification_retry_at
-          t.integer :state, default: 0, null: false, limit: 2
-          t.integer :verification_state, default: 0, null: false, limit: 2
-          t.integer :retry_count, default: 0, limit: 2, null: false
-          t.integer :verification_retry_count, default: 0, limit: 2, null: false
-          t.boolean :checksum_mismatch, default: false, null: false
-          t.boolean :force_to_redownload, default: false, null: false
-          t.boolean :missing_on_primary, default: false, null: false
-          t.binary :verification_checksum
-          t.binary :verification_checksum_mismatched
-          t.text :verification_failure, limit: 255
-          t.text :last_sync_failure, limit: 255
-
-          t.index :cool_widget_id, name: :index_cool_widget_registry_on_cool_widget_id, unique: true
-          t.index :retry_at
-          t.index :state
-          # To optimize performance of CoolWidgetRegistry.verification_failed_batch
-          t.index :verification_retry_at, name:  :cool_widget_registry_failed_verification, order: "NULLS FIRST",  where: "((state = 2) AND (verification_state = 3))"
-          # To optimize performance of CoolWidgetRegistry.needs_verification_count
-          t.index :verification_state, name:  :cool_widget_registry_needs_verification, where: "((state = 2)  AND (verification_state = ANY (ARRAY[0, 3])))"
-          # To optimize performance of CoolWidgetRegistry.verification_pending_batch
-          t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
-        end
+        t.index :cool_widget_id, name: :index_cool_widget_registry_on_cool_widget_id, unique: true
+        t.index :retry_at
+        t.index :state
+        # To optimize performance of CoolWidgetRegistry.verification_failed_batch
+        t.index :verification_retry_at, name: :cool_widget_registry_failed_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 3))"
+        # To optimize performance of CoolWidgetRegistry.needs_verification_count
+        t.index :verification_state, name: :cool_widget_registry_needs_verification, where: "((state = 2) AND (verification_state = ANY (ARRAY[0, 3])))"
+        # To optimize performance of CoolWidgetRegistry.verification_pending_batch
+        t.index :verified_at, name: :cool_widget_registry_pending_verification, order: "NULLS FIRST", where: "((state = 2) AND (verification_state = 0))"
       end
-    end
-
-    def down
-      drop_table :cool_widget_registry
     end
   end
   ```

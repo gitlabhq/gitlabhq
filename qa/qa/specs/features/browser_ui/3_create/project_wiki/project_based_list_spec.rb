@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'Project Wiki' do
       let(:small_number_of_pages) { 5 }
       let(:large_number_of_pages) { 15 }

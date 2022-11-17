@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :runner, feature_flag: {
-    name: 'ci_stop_expanding_file_vars_for_runners',
-    scope: :project
-  } do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     describe 'Pipeline with project file variables' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
@@ -14,7 +11,7 @@ module QA
         end
       end
 
-      let(:runner) do
+      let!(:runner) do
         Resource::Runner.fabricate! do |runner|
           runner.project = project
           runner.name = executor
@@ -60,59 +57,30 @@ module QA
         end
       end
 
+      before do
+        add_file_variables
+        add_ci_file
+        trigger_pipeline
+        wait_for_pipeline
+      end
+
       after do
         runner.remove_via_api!
       end
 
-      shared_examples 'variables are read correctly' do
-        it 'shows in job log accordingly' do
-          job = Resource::Job.fabricate_via_api! do |job|
-            job.project = project
-            job.id = project.job_by_name('test')[:id]
-          end
-
-          aggregate_failures do
-            trace = job.trace
-            expect(trace).to have_content('run something -f hello, this is test')
-            expect(trace).to have_content('docker run --tlscacert="This is secret"')
-            expect(trace).to have_content('run --output=This is secret.crt')
-            expect(trace).to have_content('Will read private key from hello, this is test')
-          end
-        end
-      end
-
-      # FF does not change current behavior
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94198#note_1057609893
-      #
-      # TODO: Remove when FF is removed
-      # TODO: Archive testcase issue when FF is removed
-      # Rollout issue: https://gitlab.com/gitlab-org/gitlab/-/issues/369907
-      context 'when FF is on', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370787' do
-        before do
-          Runtime::Feature.enable(:ci_stop_expanding_file_vars_for_runners, project: project)
-
-          runner
-          add_file_variables
-          add_ci_file
-          trigger_pipeline
-          wait_for_pipeline
+      it 'shows in job log accordingly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791' do
+        job = Resource::Job.fabricate_via_api! do |job|
+          job.project = project
+          job.id = project.job_by_name('test')[:id]
         end
 
-        it_behaves_like 'variables are read correctly'
-      end
-
-      # TODO: Refactor when FF is removed
-      # TODO: Update testcase issue title and description to not refer to FF status
-      context 'when FF is off', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/370791' do
-        before do
-          runner
-          add_file_variables
-          add_ci_file
-          trigger_pipeline
-          wait_for_pipeline
+        aggregate_failures do
+          trace = job.trace
+          expect(trace).to have_content('run something -f hello, this is test')
+          expect(trace).to have_content('docker run --tlscacert="This is secret"')
+          expect(trace).to have_content('run --output=This is secret.crt')
+          expect(trace).to have_content('Will read private key from hello, this is test')
         end
-
-        it_behaves_like 'variables are read correctly'
       end
 
       private

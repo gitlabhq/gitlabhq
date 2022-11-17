@@ -16,12 +16,12 @@ RSpec.describe API::GoProxy do
 
   let_it_be(:modules) do
     commits = [
-      create(:go_module_commit, :files,   project: project, tag: 'v1.0.0', files: { 'README.md' => 'Hi' }       ),
-      create(:go_module_commit, :module,  project: project, tag: 'v1.0.1'                                       ),
-      create(:go_module_commit, :package, project: project, tag: 'v1.0.2', path: 'pkg'                          ),
-      create(:go_module_commit, :module,  project: project, tag: 'v1.0.3', name: 'mod'                          ),
-      create(:go_module_commit, :files,   project: project,                files: { 'y.go' => "package a\n" }   ),
-      create(:go_module_commit, :module,  project: project,                name: 'v2'                           ),
+      create(:go_module_commit, :files,   project: project, tag: 'v1.0.0', files: { 'README.md' => 'Hi' }),
+      create(:go_module_commit, :module,  project: project, tag: 'v1.0.1'),
+      create(:go_module_commit, :package, project: project, tag: 'v1.0.2', path: 'pkg'),
+      create(:go_module_commit, :module,  project: project, tag: 'v1.0.3', name: 'mod'),
+      create(:go_module_commit, :files,   project: project,                files: { 'y.go' => "package a\n" }),
+      create(:go_module_commit, :module,  project: project,                name: 'v2'),
       create(:go_module_commit, :files,   project: project, tag: 'v2.0.0', files: { 'v2/x.go' => "package a\n" })
     ]
 
@@ -288,10 +288,10 @@ RSpec.describe API::GoProxy do
     let_it_be(:base) { "#{Settings.build_gitlab_go_url}/#{project.full_path}" }
 
     let_it_be(:modules) do
-      create(:go_module_commit, :files, project: project,                files: { 'a.go' => "package\a" }                   )
+      create(:go_module_commit, :files, project: project,                files: { 'a.go' => "package\a" })
       create(:go_module_commit, :files, project: project, tag: 'v1.0.0', files: { 'go.mod' => "module not/a/real/module\n" })
-      create(:go_module_commit, :files, project: project,                files: { 'v2/a.go' => "package a\n" }              )
-      create(:go_module_commit, :files, project: project, tag: 'v2.0.0', files: { 'v2/go.mod' => "module #{base}\n" }       )
+      create(:go_module_commit, :files, project: project,                files: { 'v2/a.go' => "package a\n" })
+      create(:go_module_commit, :files, project: project, tag: 'v2.0.0', files: { 'v2/go.mod' => "module #{base}\n" })
     end
 
     describe 'GET /projects/:id/packages/go/*module_name/@v/list' do
@@ -405,6 +405,19 @@ RSpec.describe API::GoProxy do
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+
+    context 'with access to package registry for everyone' do
+      let_it_be(:user) { nil }
+
+      before do
+        project.reload.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+      end
+
+      it_behaves_like 'a module version list resource', 'v1.0.1', 'v1.0.2', 'v1.0.3'
+      it_behaves_like 'a module version information resource', 'v1.0.1'
+      it_behaves_like 'a module file resource', 'v1.0.1'
+      it_behaves_like 'a module archive resource', 'v1.0.1', ['README.md', 'go.mod', 'a.go']
     end
   end
 

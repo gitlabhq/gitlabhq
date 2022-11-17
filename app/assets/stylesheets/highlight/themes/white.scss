@@ -2,9 +2,18 @@
   @import '../white_base';
 
   @include conflict-colors('white');
+
+  // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
+  // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
   @include hljs-override('variable', $white-nv);
   @include hljs-override('symbol', $white-ss);
-  @include hljs-override('title.class_.inherited__', $white-no);
+  @include hljs-override('title\\.class_\\.inherited__', $white-no);
+  @include hljs-override('title\\.class\\.inherited', $white-no);
+  @include hljs-override('title\\.class', $white-nc);
+  @include hljs-override('variable\\.constant', $white-no);
+  @include hljs-override('variable\\.language', $white-nb);
+  @include hljs-override('title\\.function', $white-nf);
+  @include hljs-override('params', $white-nb);
 }
 
 :root {

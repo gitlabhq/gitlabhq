@@ -10,6 +10,20 @@ RSpec.describe Appearance do
 
   it { is_expected.to have_many(:uploads) }
 
+  describe 'default values' do
+    subject(:appearance) { described_class.new }
+
+    it { expect(appearance.title).to eq('') }
+    it { expect(appearance.description).to eq('') }
+    it { expect(appearance.new_project_guidelines).to eq('') }
+    it { expect(appearance.profile_image_guidelines).to eq('') }
+    it { expect(appearance.header_message).to eq('') }
+    it { expect(appearance.footer_message).to eq('') }
+    it { expect(appearance.message_background_color).to eq('#E75E40') }
+    it { expect(appearance.message_font_color).to eq('#FFFFFF') }
+    it { expect(appearance.email_header_and_footer_enabled).to eq(false) }
+  end
+
   describe '#single_appearance_row' do
     it 'adds an error when more than 1 row exists' do
       create(:appearance)

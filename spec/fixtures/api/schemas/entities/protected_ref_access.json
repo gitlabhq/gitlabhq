@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "access_level",
+    "access_level_description"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "access_level": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "access_level_description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

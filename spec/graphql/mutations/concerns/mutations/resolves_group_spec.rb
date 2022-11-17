@@ -9,7 +9,7 @@ RSpec.describe Mutations::ResolvesGroup do
     end
   end
 
-  let(:context) { double }
+  let(:context) { {} }
 
   subject(:mutation) { mutation_class.new(object: nil, context: context, field: nil) }
 

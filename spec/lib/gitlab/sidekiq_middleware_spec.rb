@@ -6,7 +6,7 @@ require 'sidekiq/testing'
 RSpec.describe Gitlab::SidekiqMiddleware do
   let(:job_args) { [0.01] }
   let(:disabled_sidekiq_middlewares) { [] }
-  let(:chain) { Sidekiq::Middleware::Chain.new }
+  let(:chain) { Sidekiq::Middleware::Chain.new(Sidekiq) }
   let(:queue) { 'test' }
   let(:enabled_sidekiq_middlewares) { all_sidekiq_middlewares - disabled_sidekiq_middlewares }
   let(:worker_class) do

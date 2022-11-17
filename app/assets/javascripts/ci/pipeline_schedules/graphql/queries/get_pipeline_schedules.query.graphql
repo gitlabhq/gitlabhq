@@ -1,0 +1,41 @@
+query getPipelineSchedulesQuery($projectPath: ID!, $status: PipelineScheduleStatus) {
+  project(fullPath: $projectPath) {
+    id
+    pipelineSchedules(status: $status) {
+      count
+      nodes {
+        id
+        description
+        forTag
+        refPath
+        refForDisplay
+        lastPipeline {
+          id
+          detailedStatus {
+            id
+            group
+            icon
+            label
+            text
+            detailsPath
+          }
+        }
+        active
+        nextRunAt
+        realNextRun
+        owner {
+          id
+          avatarUrl
+          name
+          webPath
+        }
+        userPermissions {
+          playPipelineSchedule
+          takeOwnershipPipelineSchedule
+          updatePipelineSchedule
+          adminPipelineSchedule
+        }
+      }
+    }
+  }
+}

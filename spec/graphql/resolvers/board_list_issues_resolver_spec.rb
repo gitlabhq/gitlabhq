@@ -7,7 +7,7 @@ RSpec.describe Resolvers::BoardListIssuesResolver do
 
   let_it_be(:user)          { create(:user) }
   let_it_be(:unauth_user)   { create(:user) }
-  let_it_be(:user_project)  { create(:project, creator_id: user.id, namespace: user.namespace ) }
+  let_it_be(:user_project)  { create(:project, creator_id: user.id, namespace: user.namespace) }
   let_it_be(:group)         { create(:group, :private) }
 
   shared_examples_for 'group and project board list issues resolver' do

@@ -131,10 +131,10 @@ export default {
     <div
       v-for="(link, index) in release.assets.links"
       :key="link.id"
-      class="row flex-column flex-sm-row align-items-stretch align-items-sm-start no-gutters"
+      class="gl-sm-display-flex flex-column flex-sm-row gl-gap-5 align-items-stretch align-items-sm-start no-gutters"
     >
       <gl-form-group
-        class="url-field form-group col pr-sm-2"
+        class="url-field form-group col"
         :label="__('URL')"
         :label-for="`asset-url-${index}`"
       >
@@ -174,7 +174,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        class="link-title-field col px-sm-2"
+        class="link-title-field col"
         :label="__('Link title')"
         :label-for="`asset-link-name-${index}`"
       >
@@ -201,7 +201,7 @@ export default {
       </gl-form-group>
 
       <gl-form-group
-        class="link-type-field col-auto px-sm-2"
+        class="link-type-field col-auto"
         :label="__('Type')"
         :label-for="`asset-type-${index}`"
       >
@@ -216,9 +216,8 @@ export default {
         />
       </gl-form-group>
 
-      <div class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto pl-sm-2">
+      <div v-if="release.assets.links.length !== 1" class="mb-5 mb-sm-3 mt-sm-4 col col-sm-auto">
         <gl-button
-          v-gl-tooltip
           class="remove-button w-100 form-control"
           :aria-label="__('Remove asset link')"
           :title="__('Remove asset link')"
@@ -233,8 +232,9 @@ export default {
     </div>
     <gl-button
       ref="addAnotherLinkButton"
-      variant="link"
-      class="align-self-end mb-5 mb-sm-0"
+      category="secondary"
+      variant="confirm"
+      class="gl-align-self-start gl-mb-5"
       @click="onAddAnotherClicked"
     >
       {{ __('Add another link') }}

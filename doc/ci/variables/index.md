@@ -106,7 +106,7 @@ job1:
 
 Variables saved in the `.gitlab-ci.yml` file should store only non-sensitive project
 configuration, like a `RAILS_ENV` or `DATABASE_URL` variable. These variables are
-visible in the repository. Store sensitive variables containing secrets, keys, and so on
+visible in the repository. Store sensitive variables containing values like secrets or keys
 in project settings.
 
 Variables saved in the `.gitlab-ci.yml` file are also available in [service containers](../docker/using_docker_images.md).
@@ -161,7 +161,7 @@ in the project settings, not in the `.gitlab-ci.yml` file.
 To add or update variables in the project settings:
 
 1. Go to your project's **Settings > CI/CD** and expand the **Variables** section.
-1. Select the **Add Variable** button and fill in the details:
+1. Select **Add variable** and fill in the details:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
@@ -203,7 +203,7 @@ Use group variables to store secrets like passwords, SSH keys, and credentials, 
 To add a group variable:
 
 1. In the group, go to **Settings > CI/CD**.
-1. Select the **Add Variable** button and fill in the details:
+1. Select **Add variable** and fill in the details:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: No limitations.
@@ -241,7 +241,7 @@ To add an instance variable:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD** and expand the **Variables** section.
-1. Select the **Add variable** button, and fill in the details:
+1. Select **Add variable** and fill in the details:
 
    - **Key**: Must be one line, with no spaces, using only letters, numbers, or `_`.
    - **Value**: In [GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/220028),
@@ -254,8 +254,6 @@ To add an instance variable:
      in job logs. The variable is not saved if the value does not meet the [masking requirements](#mask-a-cicd-variable).
 
 ### CI/CD variable types
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/46806) in GitLab 11.11.
 
 All predefined CI/CD variables and variables defined in the `.gitlab-ci.yml` file
 are `Variable` type. Project, group and instance CI/CD variables can be `Variable`
@@ -333,7 +331,7 @@ job1:
 
 ### Mask a CI/CD variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784) in GitLab 11.10
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330650) in GitLab 13.12, the `~` character can be used in masked variables.
 
 You can mask a project, group, or instance CI/CD variable so the value of the variable
 does not display in job logs.
@@ -352,20 +350,24 @@ The value of the variable must:
 - Be a single line.
 - Be 8 characters or longer, consisting only of:
   - Characters from the Base64 alphabet (RFC4648).
-  - The `@` and `:` characters (In [GitLab 12.2 and later](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63043)).
-  - The `.` character (In [GitLab 12.10 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29022)).
-  - The `~` character (In [GitLab 13.12 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61517)).
+  - The `@`, `:`, `.`, or `~` characters.
 - Not match the name of an existing predefined or custom CI/CD variable.
 
-NOTE:
-Masking a CI/CD variable is not a guaranteed way to prevent malicious users from accessing
-variable values. To make variables more secure, you can [use external secrets](../secrets/index.md).
-
 WARNING:
-Due to a technical limitation, masked variables that are more than 4 KiB in length are not recommended. Printing such
-a large value to the trace log has the potential to be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128).
-When using GitLab Runner 14.2, only the tail of the variable, characters beyond 4KiB in length, have the potential to
-be revealed.
+Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
+accessing variable values. The masking feature is "best-effort" and there to
+help when a variable is accidentally revealed. To make variables more secure,
+consider using [external secrets](../secrets/index.md) and [file type variables](#cicd-variable-types)
+to prevent commands such as `env`/`printenv` from printing secret variables.
+
+Runner versions implement masking in different ways, some with technical
+limitations. Below is a table of such limitations.
+
+| Version from | Version to | Limitations |
+| ------------ | ---------- | ------ |
+| v11.9.0      | v14.1.0    | Masking of large secrets (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
+| v14.2.0      | v15.3.0    | The tail of a large secret (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
+| v15.7.0      |            | Potential for secrets to be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/index.md#capturing-service-container-logs). |
 
 ### Protected CI/CD variables
 
@@ -506,7 +508,7 @@ job_name:
     # - 'dir env:'  # Use this for PowerShell
 ```
 
-Example job log output:
+Example job log output (truncated):
 
 ```shell
 export CI_JOB_ID="50"
@@ -528,31 +530,6 @@ export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-foss"
 export CI_PROJECT_NAME="gitlab-foss"
 export CI_PROJECT_TITLE="GitLab FOSS"
-export CI_PROJECT_DESCRIPTION="GitLab FOSS is a read-only mirror of GitLab, with all proprietary code removed."
-export CI_PROJECT_NAMESPACE="gitlab-org"
-export CI_PROJECT_ROOT_NAMESPACE="gitlab-org"
-export CI_PROJECT_PATH="gitlab-org/gitlab-foss"
-export CI_PROJECT_URL="https://example.com/gitlab-org/gitlab-foss"
-export CI_REGISTRY="registry.example.com"
-export CI_REGISTRY_IMAGE="registry.example.com/gitlab-org/gitlab-foss"
-export CI_REGISTRY_USER="gitlab-ci-token"
-export CI_REGISTRY_PASSWORD="[masked]"
-export CI_RUNNER_ID="10"
-export CI_RUNNER_DESCRIPTION="my runner"
-export CI_RUNNER_TAGS="docker, linux"
-export CI_SERVER="yes"
-export CI_SERVER_URL="https://example.com"
-export CI_SERVER_HOST="example.com"
-export CI_SERVER_PORT="443"
-export CI_SERVER_PROTOCOL="https"
-export CI_SERVER_NAME="GitLab"
-export CI_SERVER_REVISION="70606bf"
-export CI_SERVER_VERSION="8.9.0"
-export CI_SERVER_VERSION_MAJOR="8"
-export CI_SERVER_VERSION_MINOR="9"
-export CI_SERVER_VERSION_PATCH="0"
-export GITLAB_USER_EMAIL="user@example.com"
-export GITLAB_USER_ID="42"
 ...
 ```
 
@@ -776,8 +753,6 @@ explains if the integration has any deployment variables available.
 
 ## Auto DevOps environment variables
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/49056) in GitLab 11.7.
-
 You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD variables
 to a running application.
 
@@ -817,7 +792,7 @@ job_name:
 
 Example output (truncated):
 
-```shell
+```plaintext
 ...
 export CI_SERVER_TLS_CA_FILE="/builds/gitlab-examples/ci-debug-trace.tmp/CI_SERVER_TLS_CA_FILE"
 if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
@@ -885,48 +860,6 @@ if [[ -d "/builds/gitlab-examples/ci-debug-trace/.git" ]]; then
 ++ CI_PROJECT_ID=17893
 ++ export CI_PROJECT_NAME=ci-debug-trace
 ++ CI_PROJECT_NAME=ci-debug-trace
-++ export CI_PROJECT_TITLE='GitLab FOSS'
-++ CI_PROJECT_TITLE='GitLab FOSS'
-++ export CI_PROJECT_DESCRIPTION='GitLab FOSS is a read-only mirror of GitLab, with all proprietary code removed.'
-++ CI_PROJECT_DESCRIPTION='GitLab FOSS is a read-only mirror of GitLab, with all proprietary code removed.'
-++ export CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
-++ CI_PROJECT_PATH=gitlab-examples/ci-debug-trace
-++ export CI_PROJECT_PATH_SLUG=gitlab-examples-ci-debug-trace
-++ CI_PROJECT_PATH_SLUG=gitlab-examples-ci-debug-trace
-++ export CI_PROJECT_NAMESPACE=gitlab-examples
-++ CI_PROJECT_NAMESPACE=gitlab-examples
-++ export CI_PROJECT_ROOT_NAMESPACE=gitlab-examples
-++ CI_PROJECT_ROOT_NAMESPACE=gitlab-examples
-++ export CI_PROJECT_URL=https://gitlab.com/gitlab-examples/ci-debug-trace
-++ CI_PROJECT_URL=https://gitlab.com/gitlab-examples/ci-debug-trace
-++ export CI_PROJECT_VISIBILITY=public
-++ CI_PROJECT_VISIBILITY=public
-++ export CI_PROJECT_REPOSITORY_LANGUAGES=
-++ CI_PROJECT_REPOSITORY_LANGUAGES=
-++ export CI_PROJECT_CLASSIFICATION_LABEL=
-++ CI_PROJECT_CLASSIFICATION_LABEL=
-++ export CI_DEFAULT_BRANCH=main
-++ CI_DEFAULT_BRANCH=main
-++ export CI_REGISTRY=registry.gitlab.com
-++ CI_REGISTRY=registry.gitlab.com
-++ export CI_API_V4_URL=https://gitlab.com/api/v4
-++ CI_API_V4_URL=https://gitlab.com/api/v4
-++ export CI_PIPELINE_IID=123
-++ CI_PIPELINE_IID=123
-++ export CI_PIPELINE_SOURCE=web
-++ CI_PIPELINE_SOURCE=web
-++ export CI_CONFIG_PATH=.gitlab-ci.yml
-++ CI_CONFIG_PATH=.gitlab-ci.yml
-++ export CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ CI_COMMIT_SHA=dd648b2e48ce6518303b0bb580b2ee32fadaf045
-++ export CI_COMMIT_SHORT_SHA=dd648b2e
-++ CI_COMMIT_SHORT_SHA=dd648b2e
-++ export CI_COMMIT_BEFORE_SHA=0000000000000000000000000000000000000000
-++ CI_COMMIT_BEFORE_SHA=0000000000000000000000000000000000000000
-++ export CI_COMMIT_REF_NAME=main
-++ CI_COMMIT_REF_NAME=main
-++ export CI_COMMIT_REF_SLUG=main
-++ CI_COMMIT_REF_SLUG=main
 ...
 ```
 

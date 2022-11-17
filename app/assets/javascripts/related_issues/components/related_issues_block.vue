@@ -1,6 +1,6 @@
 <script>
 import { GlLink, GlIcon, GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { __, sprintf } from '~/locale';
 import {
   issuableIconMap,
   linkedIssueTypesMap,
@@ -95,6 +95,16 @@ export default {
       required: false,
       default: true,
     },
+    hasError: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    itemAddFailureMessage: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -120,9 +130,6 @@ export default {
     shouldShowTokenBody() {
       return this.hasRelatedIssues || this.isFetching;
     },
-    hasBody() {
-      return this.isFormVisible || this.shouldShowTokenBody;
-    },
     headerText() {
       return issuablesBlockHeaderTextMap[this.issuableType];
     },
@@ -147,6 +154,11 @@ export default {
     toggleLabel() {
       return this.isOpen ? __('Collapse') : __('Expand');
     },
+    emptyStateMessage() {
+      return this.showCategorizedIssues
+        ? sprintf(this.$options.i18n.emptyItemsPremium, { issuableType: this.issuableType })
+        : sprintf(this.$options.i18n.emptyItemsFree, { issuableType: this.issuableType });
+    },
   },
   methods: {
     handleToggle() {
@@ -158,6 +170,12 @@ export default {
     },
   },
   linkedIssueTypesTextMap,
+  i18n: {
+    emptyItemsFree: __("Link %{issuableType}s together to show that they're related."),
+    emptyItemsPremium: __(
+      "Link %{issuableType}s together to show that they're related or that one is blocking others.",
+    ),
+  },
 };
 </script>
 
@@ -166,7 +184,6 @@ export default {
     <div class="card card-slim gl-overflow-hidden gl-mt-5 gl-mb-0">
       <div
         :class="{
-          'panel-empty-heading border-bottom-0': !hasBody,
           'gl-border-b-1': isOpen,
           'gl-border-b-0': !isOpen,
         }"
@@ -180,16 +197,6 @@ export default {
             aria-hidden="true"
           />
           <slot name="header-text">{{ headerText }}</slot>
-          <gl-link
-            v-if="hasHelpPath"
-            :href="helpPath"
-            target="_blank"
-            class="gl-display-flex gl-align-items-center gl-ml-2 gl-text-gray-500"
-            data-testid="help-link"
-            :aria-label="helpLinkText"
-          >
-            <gl-icon name="question" :size="12" />
-          </gl-link>
 
           <div class="js-related-issues-header-issue-count gl-display-inline-flex gl-mx-3">
             <span class="gl-display-inline-flex gl-align-items-center">
@@ -216,7 +223,6 @@ export default {
             size="small"
             :icon="toggleIcon"
             :aria-label="toggleLabel"
-            :disabled="!hasRelatedIssues"
             data-testid="toggle-links"
             @click="handleToggle"
           />
@@ -233,7 +239,7 @@ export default {
         <div
           v-if="isFormVisible"
           class="js-add-related-issues-form-area card-body bordered-box bg-white"
-          :class="{ 'gl-mb-5': shouldShowTokenBody }"
+          :class="{ 'gl-mb-5': shouldShowTokenBody, 'gl-show-field-errors': hasError }"
         >
           <add-issuable-form
             :show-categorized-issues="showCategorizedIssues"
@@ -245,6 +251,8 @@ export default {
             :auto-complete-epics="autoCompleteEpics"
             :auto-complete-issues="autoCompleteIssues"
             :path-id-separator="pathIdSeparator"
+            :has-error="hasError"
+            :item-add-failure-message="itemAddFailureMessage"
             @pendingIssuableRemoveRequest="$emit('pendingIssuableRemoveRequest', $event)"
             @addIssuableFormInput="$emit('addIssuableFormInput', $event)"
             @addIssuableFormBlur="$emit('addIssuableFormBlur', $event)"
@@ -269,6 +277,20 @@ export default {
             @saveReorder="$emit('saveReorder', $event)"
           />
         </template>
+        <div v-if="!shouldShowTokenBody && !isFormVisible" data-testid="related-items-empty">
+          <p class="gl-my-5 gl-px-5">
+            {{ emptyStateMessage }}
+            <gl-link
+              v-if="hasHelpPath"
+              :href="helpPath"
+              target="_blank"
+              data-testid="help-link"
+              :aria-label="helpLinkText"
+            >
+              {{ __('Learn more.') }}
+            </gl-link>
+          </p>
+        </div>
       </div>
     </div>
   </div>

@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
 import TooltipOnTruncate from './tooltip_on_truncate.vue';
 
 const defaultWidth = '250px';

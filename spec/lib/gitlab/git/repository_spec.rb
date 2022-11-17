@@ -461,11 +461,7 @@ RSpec.describe Gitlab::Git::Repository do
     end
 
     it 'raises an error if it failed' do
-      # TODO: Once https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4921
-      # is merged, remove the assertion for Gitlab::Git::Repository::GitError
-      expect { repository.delete_refs('refs\heads\fix') }.to raise_error do |e|
-        expect(e).to be_a(Gitlab::Git::Repository::GitError).or be_a(Gitlab::Git::InvalidRefFormatError)
-      end
+      expect { repository.delete_refs('refs\heads\fix') }.to raise_error(Gitlab::Git::InvalidRefFormatError)
     end
   end
 
@@ -940,10 +936,8 @@ RSpec.describe Gitlab::Git::Repository do
         let(:options) { { ref: 'master', path: ['PROCESS.md', 'README.md'] } }
 
         def commit_files(commit)
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            commit.deltas.flat_map do |delta|
-              [delta.old_path, delta.new_path].uniq.compact
-            end
+          commit.deltas.flat_map do |delta|
+            [delta.old_path, delta.new_path].uniq.compact
           end
         end
 

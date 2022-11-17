@@ -7,6 +7,8 @@ module Gitlab
       PUBLIC = 20
       THRESHOLD_DATE = '2022-02-17 09:00:00'
 
+      operation_name :disable_legacy_open_source_licence_for_recent_public_projects
+
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord
         self.table_name = 'project_settings'
@@ -14,7 +16,6 @@ module Gitlab
 
       def perform
         each_sub_batch(
-          operation_name: :disable_legacy_open_source_licence_for_recent_public_projects,
           batching_scope: ->(relation) {
             relation.where(visibility_level: PUBLIC).where('created_at >= ?', THRESHOLD_DATE)
           }

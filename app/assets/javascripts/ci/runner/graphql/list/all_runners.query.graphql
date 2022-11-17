@@ -1,0 +1,29 @@
+#import "~/ci/runner/graphql/list/all_runners_connection.fragment.graphql"
+
+query getAllRunners(
+  $before: String
+  $after: String
+  $first: Int
+  $last: Int
+  $paused: Boolean
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $tagList: [String!]
+  $search: String
+  $sort: CiRunnerSort
+) {
+  runners(
+    before: $before
+    after: $after
+    first: $first
+    last: $last
+    paused: $paused
+    status: $status
+    type: $type
+    tagList: $tagList
+    search: $search
+    sort: $sort
+  ) {
+    ...AllRunnersConnection
+  }
+}

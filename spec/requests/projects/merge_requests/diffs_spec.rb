@@ -33,7 +33,7 @@ RSpec.describe 'Merge Requests Diffs' do
         commit: nil,
         diff_view: :inline,
         merge_ref_head_diff: nil,
-        allow_tree_conflicts: true,
+        merge_conflicts_in_diff: true,
         pagination_data: {
           total_pages: nil
         }.merge(pagination_data)
@@ -80,6 +80,20 @@ RSpec.describe 'Merge Requests Diffs' do
         expect(response).to have_gitlab_http_status(:not_modified)
       end
 
+      context 'with check_etags_diffs_batch_before_write_cache flag turned off' do
+        before do
+          stub_feature_flags(check_etags_diffs_batch_before_write_cache: false)
+        end
+
+        it 'does not serialize diffs' do
+          expect(PaginatedDiffSerializer).not_to receive(:new)
+
+          go(headers: headers, page: 0, per_page: 5)
+
+          expect(response).to have_gitlab_http_status(:not_modified)
+        end
+      end
+
       context 'with the different user' do
         let(:another_user) { create(:user) }
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
@@ -114,7 +128,7 @@ RSpec.describe 'Merge Requests Diffs' do
 
       context 'with disabled display_merge_conflicts_in_diff feature' do
         let(:collection) { Gitlab::Diff::FileCollection::MergeRequestDiffBatch }
-        let(:expected_options) { collection_arguments(total_pages: 20).merge(allow_tree_conflicts: false) }
+        let(:expected_options) { collection_arguments(total_pages: 20).merge(merge_conflicts_in_diff: false) }
 
         before do
           stub_feature_flags(display_merge_conflicts_in_diff: false)

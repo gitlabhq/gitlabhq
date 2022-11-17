@@ -14,7 +14,10 @@ module Gitlab
     # Also see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24223#note_284122580
     # It also checks for ALT_SEPARATOR aka '\' (forward slash)
     def check_path_traversal!(path)
-      return unless path.is_a?(String)
+      return unless path
+
+      path = path.to_s if path.is_a?(Gitlab::HashedPath)
+      raise PathTraversalAttackError, 'Invalid path' unless path.is_a?(String)
 
       path = decode_path(path)
       path_regex = %r{(\A(\.{1,2})\z|\A\.\.[/\\]|[/\\]\.\.\z|[/\\]\.\.[/\\]|\n)}
@@ -164,9 +167,10 @@ module Gitlab
     end
 
     def deep_indifferent_access(data)
-      if data.is_a?(Array)
+      case data
+      when Array
         data.map(&method(:deep_indifferent_access))
-      elsif data.is_a?(Hash)
+      when Hash
         data.with_indifferent_access
       else
         data
@@ -174,9 +178,10 @@ module Gitlab
     end
 
     def deep_symbolized_access(data)
-      if data.is_a?(Array)
+      case data
+      when Array
         data.map(&method(:deep_symbolized_access))
-      elsif data.is_a?(Hash)
+      when Hash
         data.deep_symbolize_keys
       else
         data

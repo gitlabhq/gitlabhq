@@ -3,18 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Conflict::File do
-  include GitHelpers
-
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
-  let(:rugged) { rugged_repo(repository) }
-  let(:their_commit) { rugged.branches['conflict-start'].target }
-  let(:our_commit) { rugged.branches['conflict-resolvable'].target }
+  let(:their_commit) { TestEnv::BRANCH_SHA['conflict-start'] }
+  let(:our_commit) { TestEnv::BRANCH_SHA['conflict-resolvable'] }
   let(:merge_request) { create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) }
-  let(:index) { rugged.merge_commits(our_commit, their_commit) }
-  let(:rugged_conflict) { index.conflicts.last }
-  let(:raw_conflict_content) { index.merge_file('files/ruby/regex.rb')[:data] }
-  let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit.oid, rugged_conflict, raw_conflict_content) }
+  let(:conflicts_client) { repository.gitaly_conflicts_client(our_commit, their_commit) }
+  let(:raw_conflict_files) { conflicts_client.list_conflict_files }
+  let(:conflict_file_name) { 'files/ruby/regex.rb' }
+  let(:raw_conflict_file) { raw_conflict_files.find { |conflict| conflict.our_path == conflict_file_name } }
   let(:conflict_file) { described_class.new(raw_conflict_file, merge_request: merge_request) }
 
   describe 'delegates' do
@@ -137,8 +134,7 @@ RSpec.describe Gitlab::Conflict::File do
     end
 
     context 'when there are unchanged trailing lines' do
-      let(:rugged_conflict) { index.conflicts.first }
-      let(:raw_conflict_content) { index.merge_file('files/ruby/popen.rb')[:data] }
+      let(:conflict_file_name) { 'files/ruby/popen.rb' }
 
       it 'assign conflict types and adds match line to the end of the section' do
         expect(diff_line_types).to eq(
@@ -294,6 +290,8 @@ RSpec.describe Gitlab::Conflict::File do
         FILE
       end
 
+      let(:conflict) { { ancestor: { path: '' }, theirs: { path: conflict_file_name }, ours: { path: conflict_file_name } } }
+      let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit, conflict, raw_conflict_content) }
       let(:sections) { conflict_file.sections }
 
       it 'sets the correct match line headers' do
@@ -324,7 +322,7 @@ RSpec.describe Gitlab::Conflict::File do
   describe '#as_json' do
     it 'includes the blob path for the file' do
       expect(conflict_file.as_json[:blob_path])
-        .to eq("/#{project.full_path}/-/blob/#{our_commit.oid}/files/ruby/regex.rb")
+        .to eq("/#{project.full_path}/-/blob/#{our_commit}/files/ruby/regex.rb")
     end
 
     it 'includes the blob icon for the file' do
@@ -341,7 +339,8 @@ RSpec.describe Gitlab::Conflict::File do
   describe '#conflict_type' do
     using RSpec::Parameterized::TableSyntax
 
-    let(:rugged_conflict) { { ancestor: { path: ancestor_path }, theirs: { path: their_path }, ours: { path: our_path } } }
+    let(:conflict) { { ancestor: { path: ancestor_path }, theirs: { path: their_path }, ours: { path: our_path } } }
+    let(:raw_conflict_file) { Gitlab::Git::Conflict::File.new(repository, our_commit, conflict, '') }
     let(:diff_file) { double(renamed_file?: renamed_file?) }
 
     subject(:conflict_type) { conflict_file.conflict_type(diff_file) }

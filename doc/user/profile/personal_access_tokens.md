@@ -89,8 +89,10 @@ At any time, you can revoke a personal access token.
 
 ## View the last time a token was used
 
-Token usage is updated once every 24 hours. It is updated each time the token is used to request
-[API resources](../../api/api_resources.md) and the [GraphQL API](../../api/graphql/index.md).
+Token usage information is updated every 24 hours. GitLab considers a token used when the token is used to:
+
+- Authenticate with the [REST](../../api/index.md) or [GraphQL](../../api/graphql/index.md) APIs.
+- Perform a Git operation.
 
 To view the last time a token was used:
 
@@ -195,17 +197,29 @@ This code can be shortened into a single-line shell command using the
 sudo gitlab-rails runner "PersonalAccessToken.find_by_token('token-string-here123').revoke!"
 ```
 
-<!-- ## Troubleshooting
+## Troubleshooting
 
-Include any troubleshooting steps that you can foresee. If you know beforehand what issues
-one might have when setting this up, or when something is changed, or on upgrading, it's
-important to describe those, too. Think of things that may go wrong and include them here.
-This is important to minimize requests for support, and to avoid doc comments with
-questions that you know someone might ask.
+### Unrevoke a personal access token **(FREE SELF)**
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
-If you have none to add when creating a doc, leave this section in place
-but commented out to help encourage others to add to it in the future. -->
+If a personal access token is revoked accidentally by any method, administrators can unrevoke that token.
+
+WARNING:
+Running the following commands changes data directly. This could be damaging if not done correctly, or under the right conditions. You should first run these commands in a test environment with a backup of the instance ready to be restored, just in case.
+
+1. Open a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Unrevoke the token:
+
+   ```ruby
+   token = PersonalAccessToken.find_by_token('<token_string>')
+   token.update!(revoked:false)
+   ```
+
+   For example, to unrevoke a token of `token-string-here123`:
+
+   ```ruby
+   token = PersonalAccessToken.find_by_token('token-string-here123')
+   token.update!(revoked:false)
+   ```
 
 ## Alternatives to personal access tokens
 

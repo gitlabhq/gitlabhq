@@ -231,13 +231,6 @@ Examples:
      estimate_batch_distinct_count(::Note.with_suggestions.where(time_period), :author_id, start: ::Note.minimum(:id), finish: ::Note.maximum(:id))
    ```
 
-1. Execution of estimated batch counter with joined relation (`joins(:cluster)`),
-   for a custom column (`'clusters.user_id'`):
-
-   ```ruby
-     estimate_batch_distinct_count(::Clusters::Applications::CertManager.where(time_period).available.joins(:cluster), 'clusters.user_id')
-   ```
-
 When instrumenting metric with usage of estimated batch counter please add
 `_estimated` suffix to its name, for example:
 
@@ -266,7 +259,7 @@ Arguments:
 
 #### Ordinary Redis counters
 
-Example of implementation: [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb), using Redis methods [`INCR`](https://redis.io/commands/incr) and [`GET`](https://redis.io/commands/get).
+Example of implementation: [`Gitlab::UsageDataCounters::WikiPageCounter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/wiki_page_counter.rb), using Redis methods [`INCR`](https://redis.io/commands/incr/) and [`GET`](https://redis.io/commands/get/).
 
 Events are handled by counter classes in the `Gitlab::UsageDataCounters` namespace, inheriting from `BaseCounter`, that are either:
 
@@ -813,7 +806,7 @@ and run a local container instance:
 1. On your local machine, make sure you are signed in to the GitLab Docker registry. You can find the instructions for this in
    [Authenticate to the GitLab Container Registry](../../user/packages/container_registry/index.md#authenticate-with-the-container-registry).
 1. Once signed in, download the new image by using `docker pull registry.gitlab.com/gitlab-org/build/omnibus-gitlab-mirror/gitlab-ee:<VERSION>`
-1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](https://docs.gitlab.com/omnibus/docker/README.html) in the Omnibus documentation.
+1. For more information about working with and running Omnibus GitLab containers in Docker, refer to [GitLab Docker images](../../install/docker.md) documentation.
 
 ### Test with GitLab development toolkits
 
@@ -849,105 +842,6 @@ You can then count each user that performed any combination of these actions.
 To add data for aggregated metrics to the Service Ping payload,
 create metric YAML definition file following [Aggregated metric instrumentation guide](metrics_instrumentation.md#aggregated-metrics).
 
-### (DEPRECATED) Defining aggregated metric via aggregated metric YAML config file
-
-WARNING:
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98206) in GitLab 15.5
-and is planned for removal in 15.5. Use [metrics definition YAMLs](https://gitlab.com/gitlab-org/gitlab/-/issues/370963) instead.
-
-To add data for aggregated metrics to the Service Ping payload, add a corresponding definition to:
-
-- [`config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/) for metrics available in the Community Edition.
-- [`ee/config/metrics/aggregates/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/metrics/aggregates/) for metrics available in the Enterprise Edition.
-
-Each aggregate definition includes following parts:
-
-- `name`: Unique name under which the aggregate metric is added to the Service Ping payload.
-- `operator`: Operator that defines how the aggregated metric data is counted. Available operators are:
-  - `OR`: Removes duplicates and counts all entries that triggered any of listed events.
-  - `AND`: Removes duplicates and counts all elements that were observed triggering all of following events.
-- `time_frame`: One or more valid time frames. Use these to limit the data included in aggregated metric to events within a specific date-range. Valid time frames are:
-  - `7d`: Last seven days of data.
-  - `28d`: Last twenty eight days of data.
-  - `all`: All historical data, only available for `database` sourced aggregated metrics.
-- `source`: Data source used to collect all events data included in aggregated metric. Valid data sources are:
-  - [`database`](#database-sourced-aggregated-metrics)
-  - [`redis`](#redis-sourced-aggregated-metrics)
-- `events`: list of events names to aggregate into metric. All events in this list must
-  relay on the same data source. Additional data source requirements are described in the
-  [Database sourced aggregated metrics](#database-sourced-aggregated-metrics) and
-  [Redis sourced aggregated metrics](#redis-sourced-aggregated-metrics) sections.
-- `feature_flag`: Name of [development feature flag](../feature_flags/index.md#development-type)
-  that is checked before metrics aggregation is performed. Corresponding feature flag
-  should have `default_enabled` attribute set to `false`. The `feature_flag` attribute
-  is optional and can be omitted. When `feature_flag` is missing, no feature flag is checked.
-
-Example aggregated metric entries:
-
-```yaml
-- name: example_metrics_union
-  operator: OR
-  events:
-    - 'users_expanding_secure_security_report'
-    - 'users_expanding_testing_code_quality_report'
-    - 'users_expanding_testing_accessibility_report'
-  source: redis
-  time_frame:
-    - 7d
-    - 28d
-- name: example_metrics_intersection
-  operator: AND
-  source: database
-  time_frame:
-    - 28d
-    - all
-  events:
-    - 'dependency_scanning_pipeline_all_time'
-    - 'container_scanning_pipeline_all_time'
-  feature_flag: example_aggregated_metric
-```
-
-Aggregated metrics collected in `7d` and `28d` time frames are added into Service Ping payload under the `aggregated_metrics` sub-key in the `counts_weekly` and `counts_monthly` top level keys.
-
-```ruby
-{
-  :counts_monthly => {
-    :deployments => 1003,
-    :successful_deployments => 78,
-    :failed_deployments => 275,
-    :packages => 155,
-    :personal_snippets => 2106,
-    :project_snippets => 407,
-    :aggregated_metrics => {
-      :example_metrics_union => 7,
-      :example_metrics_intersection => 2
-    },
-    :snippets => 2513
-  }
-}
-```
-
-Aggregated metrics for `all` time frame are present in the `count` top level key, with the `aggregate_` prefix added to their name.
-
-For example:
-
-`example_metrics_intersection`
-
-Becomes:
-
-`counts.aggregate_example_metrics_intersection`
-
-```ruby
-{
-  :counts => {
-    :deployments => 11003,
-    :successful_deployments => 178,
-    :failed_deployments => 1275,
-    :aggregate_example_metrics_intersection => 12
-  }
-}
-```
-
 ### Redis sourced aggregated metrics
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45979) in GitLab 13.6.
@@ -963,9 +857,7 @@ you must fulfill the following requirements:
 
 ### Database sourced aggregated metrics
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.
-> - It's [deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - It's enabled on GitLab.com.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52784) in GitLab 13.9.
 
 To declare an aggregate of metrics based on events collected from database, follow
 these steps:
@@ -1018,25 +910,9 @@ end
 
 #### Add new aggregated metric definition
 
-After all metrics are persisted, you can add an aggregated metric definition at
-[`aggregated_metrics/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/aggregates/).
-
+After all metrics are persisted, you can add an aggregated metric definition following [Aggregated metric instrumentation guide](metrics_instrumentation.md#aggregated-metrics).
 To declare the aggregate of metrics collected with [Estimated Batch Counters](#estimated-batch-counters),
 you must fulfill the following requirements:
 
 - Metrics names listed in the `events:` attribute, have to use the same names you passed in the `metric_name` argument while persisting metrics in previous step.
 - Every metric listed in the `events:` attribute, has to be persisted for **every** selected `time_frame:` value.
-
-Example definition:
-
-```yaml
-- name: example_metrics_intersection_database_sourced
-  operator: AND
-  source: database
-  events:
-    - 'dependency_scanning_pipeline'
-    - 'container_scanning_pipeline'
-  time_frame:
-    - 28d
-    - all
-```

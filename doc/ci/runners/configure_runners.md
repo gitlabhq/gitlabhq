@@ -97,6 +97,13 @@ Whenever a project is forked, it copies the settings of the jobs that relate
 to it. This means that if you have shared runners set up for a project and
 someone forks that project, the shared runners serve jobs of this project.
 
+Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/364303), you might encounter the message `An error occurred while forking the project. Please try again.` if the runner settings of the project you are forking does not match the new project namespace.
+
+To work around this issue, you should make sure that the shared runner settings are consistent in the forked project and the new namespace.
+
+- If shared runners are **enabled** on the forked project, then this should also be **enabled** on the new namespace.
+- If shared runners are **disabled** on the forked project, then this should also be **disabled** on the new namespace.
+
 ### Attack vectors in runners
 
 Mentioned briefly earlier, but the following things of runners can be exploited.
@@ -299,12 +306,14 @@ globally or for individual jobs:
 
 - [`GIT_STRATEGY`](#git-strategy)
 - [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy)
+- [`GIT_SUBMODULE_PATHS`](#sync-or-exclude-specific-submodules-from-ci-jobs)
 - [`GIT_CHECKOUT`](#git-checkout)
 - [`GIT_CLEAN_FLAGS`](#git-clean-flags)
 - [`GIT_FETCH_EXTRA_FLAGS`](#git-fetch-extra-flags)
 - [`GIT_SUBMODULE_PATHS`](#git-submodule-paths)
 - [`GIT_SUBMODULE_UPDATE_FLAGS`](#git-submodule-update-flags)
 - [`GIT_DEPTH`](#shallow-cloning) (shallow cloning)
+- [`GIT_SUBMODULE_DEPTH`](#git-submodule-depth)
 - [`GIT_CLONE_PATH`](#custom-build-directories) (custom build directories)
 - [`TRANSFER_METER_FREQUENCY`](#artifact-and-cache-settings) (artifact/cache meter update frequency)
 - [`ARTIFACT_COMPRESSION_LEVEL`](#artifact-and-cache-settings) (artifact archiver compression level)
@@ -556,6 +565,34 @@ You should be aware of the implications for the security, stability, and reprodu
 your builds when using the `--remote` flag. In most cases, it is better to explicitly track
 submodule commits as designed, and update them using an auto-remediation/dependency bot.
 
+### Sync or exclude specific submodules from CI jobs
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/26495) in GitLab Runner 14.0.
+
+Some projects have a large number of submodules, and not all of them need to be
+synced or updated in all CI jobs. Use the `GIT_SUBMODULE_PATHS` variable to control this behavior.
+The path syntax is the same as [`git submodule`](https://git-scm.com/docs/git-submodule#Documentation/git-submodule.txt-ltpathgt82308203):
+
+- To sync and update specific paths:
+
+  ```yaml
+  variables:
+     GIT_SUBMODULE_PATHS: 'submoduleA'
+  ```
+
+- To exclude specific paths:
+
+  ```yaml
+  variables:
+     GIT_SUBMODULE_PATHS: ':(exclude)submoduleA'
+  ```
+
+WARNING:
+Git ignores nested and multiple submodule paths. To ignore a nested submodule, exclude
+the parent submodule and then manually clone it in the job's scripts. For example,
+ `git clone <repo> --recurse-submodules=':(exclude)nested-submodule'`. Make sure
+to wrap the string in single quotes so the YAML can be parsed successfully.
+
 ### Shallow cloning
 
 > Introduced in GitLab 8.9 as an experimental feature.
@@ -589,6 +626,24 @@ variables:
 ```
 
 You can set it globally or per-job in the [`variables`](../yaml/index.md#variables) section.
+
+### Git submodule depth
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/3651) in GitLab Runner 15.5.
+
+Use the `GIT_SUBMODULE_DEPTH` variable to specify the depth of fetching and cloning submodules
+when [`GIT_SUBMODULE_STRATEGY`](#git-submodule-strategy) is set to either `normal` or `recursive`.
+You can set it globally or for a specific job in the [`variables`](../yaml/index.md#variables) section.
+
+When you set the `GIT_SUBMODULE_DEPTH` variable, it overwrites the [`GIT_DEPTH`](#shallow-cloning) setting
+for the submodules only.
+
+To fetch or clone only the last 3 commits:
+
+```yaml
+variables:
+  GIT_SUBMODULE_DEPTH: 3
+```
 
 ### Custom build directories
 
@@ -752,7 +807,7 @@ variables:
 NOTE:
 Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
 
-GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{JOB_ID}-artifacts-metadata.json`.
+GitLab Runner can generate and produce attestation metadata for all build artifacts. To enable this feature, you must set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment variable to `true`. This variable can either be set globally or it can be set for individual jobs. The metadata is in rendered in a plain text `.json` file that's stored with the artifact. The file name is as follows: `{ARTIFACT_NAME}-metadata.json` where `ARTIFACT_NAME` is what was defined as the [name for the artifact](../pipelines/job_artifacts.md#use-cicd-variables-to-define-the-artifacts-name) in the CI file. The file name, however, defaults to `artifacts-metadata.json` if no name was given to the build artifacts.
 
 ### Attestation format
 

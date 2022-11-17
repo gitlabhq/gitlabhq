@@ -4,7 +4,7 @@ module HooksHelper
   def webhook_form_data(hook)
     {
       url: hook.url,
-      url_variables: nil
+      url_variables: Gitlab::Json.dump(hook.url_variables.keys.map { { key: _1 } })
     }
   end
 

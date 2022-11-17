@@ -1,15 +1,18 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Package Registry Development
+# Package and container registry documentation
 
-Development and Architectural documentation for the package registry
+The documentation for package and container registry development is split into two groups.
+
+## Package registry development
+
+Development and architectural documentation for the package registry:
 
 - [Debian repository structure](debian_repository.md)
-- [Dependency proxy structure](dependency_proxy.md)
 - [Developing a new format](new_format_development.md)
 - [Settings](settings.md)
 - [Structure / Schema](structure.md)
@@ -25,3 +28,12 @@ Development and Architectural documentation for the package registry
   - [NuGet](../../api/packages/nuget.md)
   - [PyPI](../../api/packages/pypi.md)
   - [Ruby Gems](../../api/packages/rubygems.md)
+
+## Container registry development
+
+Development and architectural documentation for the container registry
+
+- [Dependency proxy structure](dependency_proxy.md)
+- [Settings](settings.md)
+- [Structure / Schema](structure.md)
+- [Cleanup policies](cleanup_policies.md)

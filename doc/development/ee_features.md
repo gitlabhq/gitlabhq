@@ -120,24 +120,32 @@ To do so:
 
 ### Simulate a SaaS instance
 
-If you're developing locally and need your instance to act like the SaaS version of the product,
-you can simulate SaaS by exporting an environment variable:
+If you're developing locally and need your instance to simulate the SaaS (GitLab.com)
+version of the product:
 
-```shell
-export GITLAB_SIMULATE_SAAS=1
-```
+1. Export this environment variable:
 
-There are many ways to pass an environment variable to your local GitLab instance.
-For example, you can create a `env.runit` file in the root of your GDK with the above snippet.
+   ```shell
+   export GITLAB_SIMULATE_SAAS=1
+   ```
 
-#### Allow use of licensed EE feature
+   There are many ways to pass an environment variable to your local GitLab instance.
+   For example, you can create an `env.runit` file in the root of your GDK with the above snippet.
 
-To enable plans per namespace turn on the `Allow use of licensed EE features` option from the settings page.
-This will make licensed EE features available to projects only if the project namespace's plan includes the feature
-or if the project is public. To enable it:
+1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
+   only if the project namespace's plan includes the feature.
 
-1. If you are developing locally, follow the steps in [Simulate a SaaS instance](#simulate-a-saas-instance) to make the option available.
-1. Visit Admin > Settings > General > "Account and limit" and enable "Allow use of licensed EE features".
+    1. Visit **Admin > Settings > General**.
+    1. Expand **Account and limit**.
+    1. Select the **Allow use of licensed EE features** checkbox.
+    1. Click **Save changes**.
+
+1. Ensure that the group for which you want to test the EE feature, is actually using an EE plan:
+   1. On the top bar, select **Main menu > Admin**.
+   1. On the left sidebar, select **Overview > Groups**.
+   1. Identify the group you want to modify, and select **Edit**.
+   1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
+   1. Select **Save changes**.
 
 ### Run CI pipelines in a FOSS context
 
@@ -147,7 +155,7 @@ FOSS context as well.
 
 To run pipelines in both contexts, add the `~"pipeline:run-as-if-foss"` label to the merge request.
 
-See the [As-if-FOSS jobs](pipelines.md#as-if-foss-jobs) pipelines documentation for more information.
+See the [As-if-FOSS jobs](pipelines/index.md#as-if-foss-jobs) pipelines documentation for more information.
 
 ## Separation of EE code in the backend
 
@@ -692,7 +700,7 @@ module EE
 
       prepended do
         params do
-          requires :id, type: String, desc: 'The ID of a project'
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
         resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
           # ...

@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -231,7 +231,8 @@ RAILS_ENV=production sudo -u git -H bundle exec rake gitlab:packages:migrate
 You can optionally track progress and verify that all packages migrated successfully using the
 [PostgreSQL console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-bundled-postgresql-database):
 
-- `sudo gitlab-rails dbconsole` for Omnibus GitLab instances.
+- `sudo gitlab-rails dbconsole` for Omnibus GitLab 14.1 and earlier.
+- `sudo gitlab-rails dbconsole --database main` for Omnibus GitLab 14.2 and later.
 - `sudo -u git -H psql -d gitlabhq_production` for source-installed instances.
 
 Verify `objectstg` below (where `file_store = '2'`) has count of all packages:

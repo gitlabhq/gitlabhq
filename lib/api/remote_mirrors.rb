@@ -11,11 +11,17 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc "List the project's remote mirrors" do
-        success Entities::RemoteMirror
+        success code: 200, model: Entities::RemoteMirror
+        is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
       end
       params do
         use :pagination
@@ -26,7 +32,12 @@ module API
       end
 
       desc 'Get a single remote mirror' do
-        success Entities::RemoteMirror
+        success code: 200, model: Entities::RemoteMirror
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
       end
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
@@ -38,13 +49,21 @@ module API
       end
 
       desc 'Create remote mirror for a project' do
-        success Entities::RemoteMirror
+        success code: 201, model: Entities::RemoteMirror
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
       end
       params do
-        requires :url, type: String, desc: 'The URL for a remote mirror'
-        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled'
-        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored'
-        optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target'
+        requires :url, type: String, desc: 'The URL for a remote mirror', documentation: { example: 'https://*****:*****@example.com/gitlab/example.git' }
+        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: false }
+        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored',
+                                           documentation: { example: false }
+        optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
+                                       documentation: { example: false }
       end
       post ':id/remote_mirrors' do
         create_params = declared_params(include_missing: false)
@@ -59,13 +78,21 @@ module API
       end
 
       desc 'Update the attributes of a single remote mirror' do
-        success Entities::RemoteMirror
+        success code: 200, model: Entities::RemoteMirror
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
       end
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'
-        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled'
-        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored'
-        optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target'
+        optional :enabled, type: Boolean, desc: 'Determines if the mirror is enabled', documentation: { example: true }
+        optional :only_protected_branches, type: Boolean, desc: 'Determines if only protected branches are mirrored',
+                                           documentation: { example: false }
+        optional :keep_divergent_refs, type: Boolean, desc: 'Determines if divergent refs are kept on the target',
+                                       documentation: { example: false }
       end
       put ':id/remote_mirrors/:mirror_id' do
         mirror = user_project.remote_mirrors.find(params[:mirror_id])
@@ -88,6 +115,13 @@ module API
 
       desc 'Delete a single remote mirror' do
         detail 'This feature was introduced in GitLab 14.10'
+        success code: 204
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[remote_mirrors]
       end
       params do
         requires :mirror_id, type: String, desc: 'The ID of a remote mirror'

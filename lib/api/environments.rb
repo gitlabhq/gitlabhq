@@ -5,24 +5,35 @@ module API
   class Environments < ::API::Base
     include PaginationParams
 
+    environments_tags = %w[environments]
+
     before { authenticate! }
 
     feature_category :continuous_delivery
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The project ID'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get all environments of the project' do
-        detail 'This feature was introduced in GitLab 8.11.'
+      desc 'List environments' do
+        detail 'Get all environments for a given project. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
+        is_array true
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags environments_tags
       end
       params do
         use :pagination
-        optional :name, type: String, desc: 'Returns the environment with this name'
-        optional :search, type: String, desc: 'Returns list of environments matching the search criteria'
-        optional :states, type: String, values: Environment.valid_states.map(&:to_s), desc: 'List all environments that match a specific state'
+        optional :name, type: String, desc: 'Return the environment with this name. Mutually exclusive with search'
+        optional :search, type: String, desc: 'Return list of environments matching the search criteria. Mutually exclusive with name'
+        optional :states,
+          type: String,
+          values: Environment.valid_states.map(&:to_s),
+          desc: 'List all environments that match a specific state. Accepted values: `available`, `stopping`, or `stopped`. If no state value given, returns all environments'
         mutually_exclusive :name, :search, message: 'cannot be used together'
       end
       get ':id/environments' do
@@ -33,15 +44,21 @@ module API
         present paginate(environments), with: Entities::Environment, current_user: current_user
       end
 
-      desc 'Creates a new environment' do
-        detail 'This feature was introduced in GitLab 8.11.'
+      desc 'Create a new environment' do
+        detail 'Creates a new environment with the given name and `external_url`. It returns `201` if the environment was successfully created, `400` for wrong parameters. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags environments_tags
       end
       params do
-        requires :name,           type: String,   desc: 'The name of the environment to be created'
-        optional :external_url,   type: String,   desc: 'URL on which this deployment is viewable'
+        requires :name,           type: String,   desc: 'The name of the environment'
+        optional :external_url,   type: String,   desc: 'Place to link to for this environment'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
-        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the environment to be created'
+        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
       end
       post ':id/environments' do
         authorize! :create_environment, user_project
@@ -55,17 +72,23 @@ module API
         end
       end
 
-      desc 'Updates an existing environment' do
-        detail 'This feature was introduced in GitLab 8.11.'
+      desc 'Update an existing environment' do
+        detail 'Updates an existing environment name and/or `external_url`. It returns `200` if the environment was successfully updated. In case of an error, a status code `400` is returned. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags environments_tags
       end
       params do
-        requires :environment_id, type: Integer,  desc: 'The environment ID'
+        requires :environment_id, type: Integer,  desc: 'The ID of the environment'
         # TODO: disallow renaming via the API https://gitlab.com/gitlab-org/gitlab/-/issues/338897
         optional :name,           type: String,   desc: 'DEPRECATED: Renaming environment can lead to errors, this will be removed in 15.0'
         optional :external_url,   type: String,   desc: 'The new URL on which this deployment is viewable'
         optional :slug, absence: { message: "is automatically generated and cannot be changed" }, documentation: { hidden: true }
-        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the environment to be created'
+        optional :tier, type: String, values: Environment.tiers.keys, desc: 'The tier of the new environment. Allowed values are `production`, `staging`, `testing`, `development`, and `other`'
       end
       put ':id/environments/:environment_id' do
         authorize! :update_environment, user_project
@@ -80,14 +103,21 @@ module API
         end
       end
 
-      desc "Delete multiple stopped review apps" do
-        detail "Remove multiple stopped review environments older than a specific age"
+      desc 'Delete multiple stopped review apps' do
+        detail 'It schedules for deletion multiple environments that have already been stopped and are in the review app folder. The actual deletion is performed after 1 week from the time of execution. By default, it only deletes environments 30 days or older. You can change this default using the `before` parameter.'
         success Entities::EnvironmentBasic
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' },
+          { code: 409, message: 'Conflict' }
+        ]
+        tags environments_tags
       end
       params do
-        optional :before, type: Time, desc: "The timestamp before which environments can be deleted. Defaults to 30 days ago.", default: -> { 30.days.ago }
-        optional :limit, type: Integer, desc: "Maximum number of environments to delete. Defaults to 100.", default: 100, values: 1..1000
-        optional :dry_run, type: Boolean, desc: "If set, perform a dry run where no actual deletions will be performed. Defaults to true.", default: true
+        optional :before, type: Time, desc: "The date before which environments can be deleted. Defaults to 30 days ago. Expected in ISO 8601 format (`YYYY-MM-DDTHH:MM:SSZ`)", default: -> { 30.days.ago }
+        optional :limit, type: Integer, desc: "Maximum number of environments to delete. Defaults to 100", default: 100, values: 1..1000
+        optional :dry_run, type: Boolean, desc: "Defaults to true for safety reasons. It performs a dry run where no actual deletion will be performed. Set to false to actually delete the environment", default: true
       end
       delete ":id/environments/review_apps" do
         authorize! :read_environment, user_project
@@ -107,12 +137,17 @@ module API
         end
       end
 
-      desc 'Deletes an existing environment' do
-        detail 'This feature was introduced in GitLab 8.11.'
+      desc 'Delete an environment' do
+        detail 'It returns 204 if the environment was successfully deleted, and 404 if the environment does not exist. This feature was introduced in GitLab 8.11.'
         success Entities::Environment
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[environments]
       end
       params do
-        requires :environment_id, type: Integer, desc: 'The environment ID'
+        requires :environment_id, type: Integer, desc: 'The ID of the environment'
       end
       delete ':id/environments/:environment_id' do
         authorize! :read_environment, user_project
@@ -123,12 +158,18 @@ module API
         destroy_conditionally!(environment)
       end
 
-      desc 'Stops an existing environment' do
+      desc 'Stop an environment' do
+        detail 'It returns 200 if the environment was successfully stopped, and 404 if the environment does not exist.'
         success Entities::Environment
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[environments]
       end
       params do
-        requires :environment_id, type: Integer, desc: 'The environment ID'
-        optional :force, type: Boolean, default: false
+        requires :environment_id, type: Integer, desc: 'The ID of the environment'
+        optional :force, type: Boolean, default: false, desc: 'Force environment to stop without executing `on_stop` actions'
       end
       post ':id/environments/:environment_id/stop' do
         authorize! :read_environment, user_project
@@ -141,11 +182,16 @@ module API
         present environment, with: Entities::Environment, current_user: current_user
       end
 
-      desc 'Get a single environment' do
+      desc 'Get a specific environment' do
         success Entities::Environment
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[environments]
       end
       params do
-        requires :environment_id, type: Integer, desc: 'The environment ID'
+        requires :environment_id, type: Integer, desc: 'The ID of the environment'
       end
       get ':id/environments/:environment_id' do
         authorize! :read_environment, user_project

@@ -10,13 +10,13 @@ Sometimes it's easier to make quick changes directly from the GitLab interface
 than to clone the project and use the Git command-line tool. In this feature
 highlight, we look at how you can create a new file, directory, branch, or
 tag from the file browser. All of these actions are available from a single
-dropdown menu.
+dropdown list.
 
 ## Create a file
 
 From a project's files page, select the '+' button to the right of the branch selector.
-Choose **New file** from the dropdown.
-![New file dropdown menu](img/web_editor_new_file_dropdown_v14_1.png)
+Choose **New file** from the dropdown list.
+![New file dropdown list](img/web_editor_new_file_dropdown_v14_1.png)
 
 Enter a filename in the **Filename** box. Then, add file content in the editor
 area. Add a descriptive commit message and choose a branch. The branch field
@@ -55,6 +55,18 @@ NOTE:
 The **Set up CI/CD** button does not appear on an empty repository. For the button
 to display, add a file to your repository.
 
+## Preview Markdown
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378966) in GitLab 15.6.
+
+To preview Markdown content in the Web Editor, select the **Preview** tab.
+In this tab, you can see a live Markdown preview that updates as you type alongside your content.
+
+To close the preview panel, do one of the following:
+
+- Select the **Write** tab.
+- From the context menu, select **Hide Live Preview**.
+
 ## Highlight lines
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56159) in GitLab 13.10 for GitLab SaaS instances.
@@ -85,7 +97,7 @@ this case, you need to upload a file.
 From a project's files page, select the '+' button to the right of the branch
 selector. Choose **Upload file** from the dropdown:
 
-![Upload file dropdown menu](img/web_editor_upload_file_dropdown_v14_1.png)
+![Upload file dropdown list](img/web_editor_upload_file_dropdown_v14_1.png)
 
 After the upload dialog pops up, there are two ways to upload your file. Either
 drag and drop a file on the popup or use the **click to upload** link. After you
@@ -104,7 +116,7 @@ directory.
 From a project's files page, select the plus button (`+`) to the right of the branch selector.
 Choose **New directory** from the dropdown.
 
-![New directory dropdown](img/web_editor_new_directory_dropdown_v14_1.png)
+![New directory dropdown list](img/web_editor_new_directory_dropdown_v14_1.png)
 
 In the new directory dialog, enter a directory name, a commit message, and choose
 the target branch. Select **Create directory** to finish.
@@ -138,6 +150,7 @@ The **Create merge request** button doesn't display if:
 - A branch with the same name already exists.
 - A merge request already exists for this branch.
 - Your project has an active fork relationship.
+- Your project is private and the issue is confidential.
 
 To make this button appear, one possible workaround is to
 [remove your project's fork relationship](../settings/index.md#remove-a-fork-relationship).
@@ -177,9 +190,9 @@ merge request is merged.
 If you want to make changes to several files before creating a new merge
 request, you can create a new branch upfront.
 
-1. From a project's files page, choose **New branch** from the dropdown.
+1. From a project's files page, choose **New branch** from the dropdown list.
 
-   ![New branch dropdown](img/web_editor_new_branch_dropdown_v14_1.png)
+   ![New branch dropdown list](img/web_editor_new_branch_dropdown_v14_1.png)
 
 1. Enter a new **Branch name**.
 1. Optional. Change the **Create from** field to choose which branch, tag, or
@@ -202,9 +215,9 @@ Tags help you mark major milestones such as production releases and
 release candidates. You can create a tag from a branch or a commit
 SHA:
 
-1. From a project's files page, choose **New tag** from the dropdown.
+1. From a project's files page, choose **New tag** from the dropdown list.
 
-   ![New tag dropdown](img/web_editor_new_tag_dropdown.png)
+   ![New tag dropdown list](img/web_editor_new_tag_dropdown.png)
 
 1. Give the tag a name such as `v1.0.0`.
 1. Choose the branch or SHA from which you want to create this new tag.
@@ -238,6 +251,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

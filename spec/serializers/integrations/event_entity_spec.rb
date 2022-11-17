@@ -35,6 +35,7 @@ RSpec.describe Integrations::EventEntity do
         expect(subject[:value]).to eq(false)
         expect(subject[:field][:name]).to eq('note_channel')
         expect(subject[:field][:value]).to eq('note-channel')
+        expect(subject[:field][:placeholder]).to eq('#general, #development')
       end
     end
   end

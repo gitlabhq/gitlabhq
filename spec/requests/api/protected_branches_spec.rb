@@ -29,8 +29,7 @@ RSpec.describe API::ProtectedBranches do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-
+        expect(response).to match_response_schema('protected_branches')
         protected_branch_names = json_response.map { |x| x['name'] }
         expect(protected_branch_names).to match_array(expected_branch_names)
       end
@@ -71,6 +70,7 @@ RSpec.describe API::ProtectedBranches do
         get api(route, user)
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
@@ -130,6 +130,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -140,6 +141,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, push_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
@@ -150,6 +152,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, merge_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -160,6 +163,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, push_access_level: 30, merge_access_level: 30 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::DEVELOPER)
@@ -170,6 +174,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, push_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
@@ -180,6 +185,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, merge_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -190,6 +196,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, push_access_level: 0, merge_access_level: 0 }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(false)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::NO_ACCESS)
@@ -200,6 +207,7 @@ RSpec.describe API::ProtectedBranches do
         post post_endpoint, params: { name: branch_name, allow_force_push: true }
 
         expect(response).to have_gitlab_http_status(:created)
+        expect(response).to match_response_schema('protected_branch')
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['allow_force_push']).to eq(true)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
@@ -240,6 +248,49 @@ RSpec.describe API::ProtectedBranches do
 
       it "returns a 403 error if guest" do
         post post_endpoint, params: { name: branch_name }
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  describe 'PATCH /projects/:id/protected_branches/:name' do
+    let(:route) { "/projects/#{project.id}/protected_branches/#{branch_name}" }
+
+    context 'when authenticated as a maintainer' do
+      let(:user) { maintainer }
+
+      it "updates a single branch" do
+        expect do
+          patch api(route, user), params: { allow_force_push: true }
+        end.to change { protected_branch.reload.allow_force_push }.from(false).to(true)
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'when returned protected branch is invalid' do
+      let(:user) { maintainer }
+
+      before do
+        allow_next_found_instance_of(ProtectedBranch) do |instance|
+          allow(instance).to receive(:valid?).and_return(false)
+        end
+      end
+
+      it "returns a 422" do
+        expect do
+          patch api(route, user), params: { allow_force_push: true }
+        end.not_to change { protected_branch.reload.allow_force_push }
+
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when authenticated as a guest' do
+      let(:user) { guest }
+
+      it "returns a 403 error" do
+        patch api(route, user), params: { allow_force_push: true }
 
         expect(response).to have_gitlab_http_status(:forbidden)
       end

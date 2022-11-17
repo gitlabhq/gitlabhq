@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module LoadBalancing
       class SidekiqServerMiddleware
-        JobReplicaNotUpToDate = Class.new(StandardError)
+        JobReplicaNotUpToDate = Class.new(::Gitlab::SidekiqMiddleware::RetryError)
 
         MINIMUM_DELAY_INTERVAL_SECONDS = 0.8
 

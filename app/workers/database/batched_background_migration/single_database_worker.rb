@@ -58,14 +58,7 @@ module Database
           break unless self.class.enabled? && active_migration
 
           with_exclusive_lease(active_migration.interval) do
-            # Now that we have the exclusive lease, reload migration in case another process has changed it.
-            # This is a temporary solution until we have better concurrency handling around job execution
-            #
-            # We also have to disable this cop, because ApplicationRecord aliases reset to reload, but our database
-            # models don't inherit from ApplicationRecord
-            active_migration.reload # rubocop:disable Cop/ActiveRecordAssociationReload
-
-            run_active_migration if active_migration.active? && active_migration.interval_elapsed?(variance: INTERVAL_VARIANCE)
+            run_active_migration
           end
         end
       end
@@ -77,7 +70,7 @@ module Database
       end
 
       def run_active_migration
-        Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new(connection: base_model.connection).run_migration_job(active_migration)
+        Database::BatchedBackgroundMigration::ExecutionWorker.new.perform(self.class.tracking_database, active_migration.id)
       end
 
       def base_model

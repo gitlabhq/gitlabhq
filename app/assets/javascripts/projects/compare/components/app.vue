@@ -131,7 +131,7 @@ export default {
       <revision-card
         data-testid="sourceRevisionCard"
         :refs-project-path="to.refsProjectPath"
-        revision-text="Source"
+        :revision-text="__('Source')"
         params-name="to"
         :params-branch="to.revision"
         :projects="to.projects"
@@ -160,7 +160,7 @@ export default {
       <revision-card
         data-testid="targetRevisionCard"
         :refs-project-path="from.refsProjectPath"
-        revision-text="Target"
+        :revision-text="__('Target')"
         params-name="from"
         :params-branch="from.revision"
         :projects="from.projects"

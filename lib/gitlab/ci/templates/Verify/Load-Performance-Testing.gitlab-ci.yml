@@ -3,7 +3,7 @@
 # This specific template is located at:
 # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Verify/Load-Performance-Testing.gitlab-ci.yml
 
-# Read more about the feature here: https://docs.gitlab.com/ee/user/project/merge_requests/load_performance_testing.html
+# Read more about the feature here: https://docs.gitlab.com/ee/ci/testing/code_quality.html
 
 stages:
   - build
@@ -17,7 +17,7 @@ load_performance:
   variables:
     K6_IMAGE: loadimpact/k6
     K6_VERSION: 0.27.0
-    K6_TEST_FILE: github.com/loadimpact/k6/samples/http_get.js
+    K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/samples/http_get.js
     K6_OPTIONS: ''
     K6_DOCKER_OPTIONS: ''
   services:

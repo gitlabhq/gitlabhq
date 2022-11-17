@@ -222,6 +222,7 @@ describe('MRWidgetPipeline', () => {
     beforeEach(() => {
       ({ pipeline } = JSON.parse(JSON.stringify(mockData)));
 
+      pipeline.details.event_type_name = 'Pipeline';
       pipeline.details.name = 'Pipeline';
       pipeline.merge_request_event_type = undefined;
       pipeline.ref.tag = false;
@@ -263,6 +264,7 @@ describe('MRWidgetPipeline', () => {
 
     describe('for a detached merge request pipeline', () => {
       it('renders a pipeline widget that reads "Merge request pipeline <ID> <status> for <SHA>"', () => {
+        pipeline.details.event_type_name = 'Merge request pipeline';
         pipeline.details.name = 'Merge request pipeline';
         pipeline.merge_request_event_type = 'detached';
 

@@ -2,6 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import Api from '~/api';
 import { createAlert } from '~/flash';
+import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import * as actions from '~/search/store/actions';
@@ -23,6 +24,9 @@ import {
   MOCK_FRESH_DATA_RES,
   PRELOAD_EXPECTED_MUTATIONS,
   PROMISE_ALL_EXPECTED_MUTATIONS,
+  MOCK_NAVIGATION_DATA,
+  MOCK_NAVIGATION_ACTION_MUTATION,
+  MOCK_ENDPOINT_RESPONSE,
 } from '../mock_data';
 
 jest.mock('~/flash');
@@ -30,6 +34,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
   setUrlParams: jest.fn(),
   joinPaths: jest.fn().mockReturnValue(''),
   visitUrl: jest.fn(),
+}));
+jest.mock('~/lib/logger', () => ({
+  logError: jest.fn(),
 }));
 
 describe('Global Search Store Actions', () => {
@@ -258,6 +265,34 @@ describe('Global Search Store Actions', () => {
         state.frequentItems,
         MOCK_PROJECT,
       );
+    });
+  });
+
+  describe.each`
+    action                       | axiosMock                         | type         | scope         | expectedMutations                    | errorLogs
+    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: 200 }} | ${'success'} | ${'issues'}   | ${[MOCK_NAVIGATION_ACTION_MUTATION]} | ${0}
+    ${actions.fetchSidebarCount} | ${{ method: null, code: 0 }}      | ${'success'} | ${'projects'} | ${[]}                                | ${0}
+    ${actions.fetchSidebarCount} | ${{ method: 'onGet', code: 500 }} | ${'error'}   | ${'issues'}   | ${[]}                                | ${1}
+  `('fetchSidebarCount', ({ action, axiosMock, type, expectedMutations, scope, errorLogs }) => {
+    describe(`on ${type}`, () => {
+      beforeEach(() => {
+        state.navigation = MOCK_NAVIGATION_DATA;
+        state.urlQuery = {
+          scope,
+        };
+
+        if (axiosMock.method) {
+          mock[axiosMock.method]().reply(axiosMock.code, MOCK_ENDPOINT_RESPONSE);
+        }
+      });
+
+      it(`should ${expectedMutations.length === 0 ? 'NOT ' : ''}dispatch ${
+        expectedMutations.length === 0 ? '' : 'the correct '
+      }mutations for ${scope}`, () => {
+        return testAction({ action, state, expectedMutations }).then(() => {
+          expect(logger.logError).toHaveBeenCalledTimes(errorLogs);
+        });
+      });
     });
   });
 });

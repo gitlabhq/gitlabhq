@@ -12,10 +12,10 @@ RSpec.describe 'Terraform.gitlab-ci.yml' do
   describe 'the created pipeline' do
     let(:default_branch) { project.default_branch_or_main }
     let(:pipeline_branch) { default_branch }
-    let(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
+    let_it_be(:project) { create(:project, :repository, create_branch: 'patch-1') }
     let(:user) { project.first_owner }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do
@@ -27,22 +27,29 @@ RSpec.describe 'Terraform.gitlab-ci.yml' do
     end
 
     context 'on master branch' do
-      it 'creates init, validate and build jobs', :aggregate_failures do
+      it 'creates init, validate,build terraform jobs as well as kics-iac-sast job', :aggregate_failures do
         expect(pipeline.errors).to be_empty
-        expect(build_names).to include('validate', 'build', 'deploy')
+        expect(build_names).to include('kics-iac-sast', 'validate', 'build', 'deploy')
       end
     end
 
     context 'outside the master branch' do
       let(:pipeline_branch) { 'patch-1' }
 
-      before do
-        project.repository.create_branch(pipeline_branch, default_branch)
-      end
-
       it 'does not creates a deploy and a test job', :aggregate_failures do
         expect(pipeline.errors).to be_empty
         expect(build_names).not_to include('deploy')
+      end
+    end
+
+    context 'on merge request' do
+      let(:service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
+      let(:merge_request) { create(:merge_request, :simple, source_project: project) }
+      let(:pipeline) { service.execute(merge_request).payload }
+
+      it 'creates a pipeline with no jobs' do
+        expect(pipeline).to be_merge_request_event
+        expect(pipeline.builds.count).to be_zero
       end
     end
   end

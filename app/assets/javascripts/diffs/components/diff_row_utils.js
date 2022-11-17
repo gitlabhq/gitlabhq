@@ -57,21 +57,32 @@ export const classNameMapCell = ({ line, hll, isLoggedIn, isHover }) => {
 
 export const addCommentTooltip = (line) => {
   let tooltip;
-  if (!line) return tooltip;
+  if (!line) {
+    return tooltip;
+  }
 
   tooltip = __('Add a comment to this line or drag for multiple lines');
-  const brokenSymlinks = line.commentsDisabled;
 
-  if (brokenSymlinks) {
-    if (brokenSymlinks.wasSymbolic || brokenSymlinks.isSymbolic) {
+  if (!line.problems) {
+    return tooltip;
+  }
+
+  const { brokenSymlink, brokenLineCode, fileOnlyMoved } = line.problems;
+
+  if (brokenSymlink) {
+    if (brokenSymlink.wasSymbolic || brokenSymlink.isSymbolic) {
       tooltip = __(
-        'Commenting on symbolic links that replace or are replaced by files is currently not supported.',
+        'Commenting on symbolic links that replace or are replaced by files is not supported',
       );
-    } else if (brokenSymlinks.wasReal || brokenSymlinks.isReal) {
+    } else if (brokenSymlink.wasReal || brokenSymlink.isReal) {
       tooltip = __(
-        'Commenting on files that replace or are replaced by symbolic links is currently not supported.',
+        'Commenting on files that replace or are replaced by symbolic links is not supported',
       );
     }
+  } else if (fileOnlyMoved) {
+    tooltip = __('Commenting on files that are only moved or renamed is not supported');
+  } else if (brokenLineCode) {
+    tooltip = __('Commenting on this line is not supported');
   }
 
   return tooltip;

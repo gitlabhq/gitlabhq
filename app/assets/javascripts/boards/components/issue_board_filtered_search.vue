@@ -12,9 +12,24 @@ import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
 import {
-  TOKEN_TITLE_MY_REACTION,
   OPERATOR_IS_AND_IS_NOT,
   OPERATOR_IS_ONLY,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
+  TOKEN_TITLE_RELEASE,
+  TOKEN_TITLE_TYPE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
@@ -28,17 +43,8 @@ export default {
     INCIDENT: 'INCIDENT',
   },
   i18n: {
-    search: __('Search'),
-    epic: __('Epic'),
-    label: __('Label'),
-    author: __('Author'),
-    assignee: __('Assignee'),
-    type: __('Type'),
     incident: __('Incident'),
     issue: __('Issue'),
-    milestone: __('Milestone'),
-    release: __('Release'),
-    confidential: __('Confidential'),
   },
   components: { BoardFilteredSearch },
   inject: ['isSignedIn', 'releasesFetchPath', 'fullPath', 'boardType'],
@@ -52,17 +58,7 @@ export default {
         : this.fullPath.slice(0, this.fullPath.lastIndexOf('/'));
     },
     tokensCE() {
-      const {
-        label,
-        author,
-        assignee,
-        issue,
-        incident,
-        type,
-        milestone,
-        release,
-        confidential,
-      } = this.$options.i18n;
+      const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
       const { fetchAuthors, fetchLabels } = issueBoardFilters(
         this.$apollo,
@@ -73,8 +69,8 @@ export default {
       const tokens = [
         {
           icon: 'user',
-          title: assignee,
-          type: 'assignee',
+          title: TOKEN_TITLE_ASSIGNEE,
+          type: TOKEN_TYPE_ASSIGNEE,
           operators: OPERATOR_IS_AND_IS_NOT,
           token: AuthorToken,
           unique: true,
@@ -83,8 +79,8 @@ export default {
         },
         {
           icon: 'pencil',
-          title: author,
-          type: 'author',
+          title: TOKEN_TITLE_AUTHOR,
+          type: TOKEN_TYPE_AUTHOR,
           operators: OPERATOR_IS_AND_IS_NOT,
           symbol: '@',
           token: AuthorToken,
@@ -94,8 +90,8 @@ export default {
         },
         {
           icon: 'labels',
-          title: label,
-          type: 'label',
+          title: TOKEN_TITLE_LABEL,
+          type: TOKEN_TYPE_LABEL,
           operators: OPERATOR_IS_AND_IS_NOT,
           token: LabelToken,
           unique: false,
@@ -105,7 +101,7 @@ export default {
         ...(this.isSignedIn
           ? [
               {
-                type: 'my-reaction',
+                type: TOKEN_TYPE_MY_REACTION,
                 title: TOKEN_TITLE_MY_REACTION,
                 icon: 'thumb-up',
                 token: EmojiToken,
@@ -127,9 +123,9 @@ export default {
                 },
               },
               {
-                type: 'confidential',
+                type: TOKEN_TYPE_CONFIDENTIAL,
                 icon: 'eye-slash',
-                title: confidential,
+                title: TOKEN_TITLE_CONFIDENTIAL,
                 unique: true,
                 token: GlFilteredSearchToken,
                 operators: OPERATOR_IS_ONLY,
@@ -141,8 +137,8 @@ export default {
             ]
           : []),
         {
-          type: 'milestone',
-          title: milestone,
+          type: TOKEN_TYPE_MILESTONE,
+          title: TOKEN_TITLE_MILESTONE,
           icon: 'clock',
           symbol: '%',
           token: MilestoneToken,
@@ -152,8 +148,8 @@ export default {
         },
         {
           icon: 'issues',
-          title: type,
-          type: 'type',
+          title: TOKEN_TITLE_TYPE,
+          type: TOKEN_TYPE_TYPE,
           token: GlFilteredSearchToken,
           unique: true,
           options: [
@@ -162,8 +158,8 @@ export default {
           ],
         },
         {
-          type: 'release',
-          title: release,
+          type: TOKEN_TYPE_RELEASE,
+          title: TOKEN_TITLE_RELEASE,
           icon: 'rocket',
           token: ReleaseToken,
           fetchReleases: (search) => {

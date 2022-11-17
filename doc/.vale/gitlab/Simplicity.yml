@@ -3,12 +3,12 @@
 #
 # Checks for words implying ease of use, to avoid cognitive dissonance for frustrated users.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Avoid words like "%s" that imply ease of use, because the user may find this action hard.'
+message: "Remove '%s'. Be precise instead of subjective."
 level: suggestion
 ignorecase: true
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#usage-list
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 tokens:
   - easy
   - easily

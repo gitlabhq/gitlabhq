@@ -85,7 +85,7 @@ module Gitlab
         end
 
         def load_from_cache
-          Gitlab::Redis::Cache.with do |redis|
+          with_redis do |redis|
             self.sha, self.status, self.ref = redis.hmget(cache_key, :sha, :status, :ref)
 
             self.status = nil if self.status.empty?
@@ -93,13 +93,13 @@ module Gitlab
         end
 
         def store_in_cache
-          Gitlab::Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.mapped_hmset(cache_key, { sha: sha, status: status, ref: ref })
           end
         end
 
         def delete_from_cache
-          Gitlab::Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.del(cache_key)
           end
         end
@@ -107,7 +107,7 @@ module Gitlab
         def has_cache?
           return self.loaded unless self.loaded.nil?
 
-          Gitlab::Redis::Cache.with do |redis|
+          with_redis do |redis|
             redis.exists?(cache_key) # rubocop:disable CodeReuse/ActiveRecord
           end
         end
@@ -124,6 +124,10 @@ module Gitlab
           strong_memoize(:commit) do
             project.commit
           end
+        end
+
+        def with_redis(&block)
+          Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
         end
       end
     end

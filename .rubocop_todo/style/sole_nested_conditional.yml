@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/SoleNestedConditional:
-  Details: grace period
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/ldap/omniauth_callbacks_controller.rb'

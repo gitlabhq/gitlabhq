@@ -250,7 +250,7 @@ can use the following setup:
      on the top nav.
    - Select **Create Page Rule**.
    - Enter the domain `www.domain.com` and select **+ Add a Setting**.
-   - From the dropdown menu, choose **Forwarding URL**, then select the
+   - From the dropdown list, choose **Forwarding URL**, then select the
      status code **301 - Permanent Redirect**.
    - Enter the destination URL `https://domain.com`.
 

@@ -5,10 +5,6 @@ module Groups::GroupMembersHelper
 
   AVATAR_SIZE = 40
 
-  def group_member_select_options
-    { multiple: true, class: 'input-clamp qa-member-select-field ', scope: :all, email_user: true }
-  end
-
   def group_members_app_data(group, members:, invited:, access_requests:, banned:, include_relations:, search:)
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),
@@ -16,7 +12,8 @@ module Groups::GroupMembersHelper
       invite: group_members_list_data(group, invited.nil? ? [] : invited, { param_name: :invited_members_page, params: { page: nil } }),
       access_request: group_members_list_data(group, access_requests.nil? ? [] : access_requests),
       source_id: group.id,
-      can_manage_members: can?(current_user, :admin_group_member, group)
+      can_manage_members: can?(current_user, :admin_group_member, group),
+      can_manage_access_requests: can?(current_user, :admin_member_access_request, group)
     }
   end
 

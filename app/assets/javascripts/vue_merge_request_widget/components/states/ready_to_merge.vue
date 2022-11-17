@@ -19,7 +19,6 @@ import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
 import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   AUTO_MERGE_STRATEGIES,
@@ -54,9 +53,6 @@ export default {
   apollo: {
     state: {
       query: readyToMergeQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -123,14 +119,14 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [readyToMergeMixin, glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [readyToMergeMixin, mergeRequestQueryVariablesMixin],
   props: {
     mr: { type: Object, required: true },
     service: { type: Object, required: true },
   },
   data() {
     return {
-      loading: this.glFeatures.mergeRequestWidgetGraphql,
+      loading: true,
       state: {},
       removeSourceBranch: this.mr.shouldRemoveSourceBranch,
       isMakingRequest: false,
@@ -148,7 +144,7 @@ export default {
   },
   computed: {
     stateData() {
-      return this.glFeatures.mergeRequestWidgetGraphql ? this.state : this.mr;
+      return this.state;
     },
     hasCI() {
       return this.stateData.hasCI || this.stateData.hasCi;
@@ -157,35 +153,19 @@ export default {
       return !isEmpty(this.stateData.availableAutoMergeStrategies);
     },
     pipeline() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.headPipeline;
-      }
-
-      return this.mr.pipeline;
+      return this.state.headPipeline;
     },
     isPipelineFailed() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return ['FAILED', 'CANCELED'].indexOf(this.pipeline?.status) !== -1;
-      }
-
-      return this.mr.isPipelineFailed;
+      return ['FAILED', 'CANCELED'].indexOf(this.pipeline?.status) !== -1;
     },
     showMergeFailedPipelineConfirmationDialog() {
       return this.status === PIPELINE_FAILED_STATE && this.isPipelineFailed;
     },
     isMergeAllowed() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.mergeable;
-      }
-
-      return this.mr.isMergeAllowed;
+      return this.state.mergeable || false;
     },
     canRemoveSourceBranch() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.userPermissions.removeSourceBranch;
-      }
-
-      return this.mr.canRemoveSourceBranch;
+      return this.state.userPermissions.removeSourceBranch;
     },
     commitTemplateHelpPage() {
       return helpPagePath('user/project/merge_requests/commit_templates.md');
@@ -200,46 +180,24 @@ export default {
       return this.$options.i18n.mergeCommitTemplateHintText;
     },
     commits() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.commitsWithoutMergeCommits.nodes;
-      }
-
-      return this.mr.commits;
+      return this.state.commitsWithoutMergeCommits?.nodes;
     },
     commitsCount() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.state.commitCount || 0;
-      }
-
-      return this.mr.commitsCount;
+      return this.state.commitCount || 0;
     },
     preferredAutoMergeStrategy() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return MergeRequestStore.getPreferredAutoMergeStrategy(
-          this.state.availableAutoMergeStrategies,
-        );
-      }
-
-      return this.mr.preferredAutoMergeStrategy;
+      return MergeRequestStore.getPreferredAutoMergeStrategy(
+        this.state.availableAutoMergeStrategies,
+      );
     },
     squashIsSelected() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
-      }
-
-      return this.mr.squashIsSelected;
+      return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;
     },
     isPipelineActive() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return this.pipeline?.active || false;
-      }
-
-      return this.mr.isPipelineActive;
+      return this.pipeline?.active || false;
     },
     status() {
-      const ciStatus = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.pipeline?.status.toLowerCase()
-        : this.mr.ciStatus;
+      const ciStatus = this.pipeline?.status?.toLowerCase();
 
       if ((this.hasCI && !ciStatus) || this.hasPipelineMustSucceedConflict) {
         return PIPELINE_FAILED_STATE;
@@ -304,11 +262,7 @@ export default {
       return this.squashBeforeMerge && this.shouldShowSquashBeforeMerge;
     },
     shouldShowMergeEdit() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return !this.state.mergeRequestsFfOnlyEnabled;
-      }
-
-      return !this.mr.ffOnlyEnabled;
+      return !this.state.mergeRequestsFfOnlyEnabled;
     },
     shaMismatchLink() {
       return this.mr.mergeRequestDiffsPath;
@@ -345,18 +299,15 @@ export default {
     },
   },
   mounted() {
-    if (this.glFeatures.mergeRequestWidgetGraphql) {
-      eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
-      eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
-      eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
-    }
+    eventHub.$on('ApprovalUpdated', this.updateGraphqlState);
+    eventHub.$on('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$on('mr.discussion.updated', this.updateGraphqlState);
   },
   beforeDestroy() {
-    if (this.glFeatures.mergeRequestWidgetGraphql) {
-      eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
-      eventHub.$off('MRWidgetUpdateRequested', this.updateGraphqlState);
-      eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
-    }
+    eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
+    eventHub.$off('MRWidgetUpdateRequested', this.updateGraphqlState);
+    eventHub.$off('mr.discussion.updated', this.updateGraphqlState);
+    eventHub.$off('ApprovalUpdated', this.updateGraphqlState);
 
     if (this.pollingInterval) {
       this.pollingInterval.destroy();
@@ -391,9 +342,7 @@ export default {
       if (mergeImmediately) {
         this.isMergingImmediately = true;
       }
-      const latestSha = this.glFeatures.mergeRequestWidgetGraphql
-        ? this.state.diffHeadSha
-        : this.mr.latestSHA;
+      const latestSha = this.state.diffHeadSha;
 
       const options = {
         sha: latestSha || this.mr.sha,
@@ -435,9 +384,7 @@ export default {
             this.mr.transitionStateMachine({ transition: MERGE_FAILURE });
           }
 
-          if (this.glFeatures.mergeRequestWidgetGraphql) {
-            this.updateGraphqlState();
-          }
+          this.updateGraphqlState();
 
           this.isMakingRequest = false;
         })
@@ -521,7 +468,7 @@ export default {
 <template>
   <div
     data-testid="ready_to_merge_state"
-    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7"
   >
     <div v-if="loading" class="mr-widget-body">
       <div class="gl-w-full mr-ready-to-merge-loader">
@@ -538,13 +485,15 @@ export default {
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <template v-if="shouldShowMergeControls">
-              <div class="gl-display-flex gl-align-items-center gl-flex-wrap gl-w-full gl-mb-5">
+              <div
+                class="gl-display-flex gl-sm-flex-direction-column gl-md-align-items-center gl-flex-wrap gl-w-full gl-md-pb-5"
+              >
                 <gl-form-checkbox
                   v-if="canRemoveSourceBranch"
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
                   :disabled="isRemoveSourceBranchButtonDisabled"
-                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5"
+                  class="js-remove-source-branch-checkbox gl-display-flex gl-align-items-center gl-mr-5 gl-mb-3 gl-md-mb-0"
                 >
                   {{ __('Delete source branch') }}
                 </gl-form-checkbox>
@@ -555,36 +504,17 @@ export default {
                   v-model="squashBeforeMerge"
                   :help-path="mr.squashBeforeMergeHelpPath"
                   :is-disabled="isSquashReadOnly"
-                  class="gl-mr-5"
+                  class="gl-mr-5 gl-mb-3 gl-md-mb-0"
                 />
 
                 <gl-form-checkbox
                   v-if="shouldShowSquashEdit || shouldShowMergeEdit"
                   v-model="editCommitMessage"
                   data-testid="widget_edit_commit_message"
-                  class="gl-display-flex gl-align-items-center"
+                  class="gl-display-flex gl-align-items-center gl-mb-3 gl-md-mb-0"
                 >
                   {{ __('Edit commit message') }}
                 </gl-form-checkbox>
-              </div>
-              <div class="gl-w-full gl-text-gray-500 gl-mb-5">
-                <added-commit-message
-                  :is-squash-enabled="squashBeforeMerge"
-                  :is-fast-forward-enabled="!shouldShowMergeEdit"
-                  :commits-count="commitsCount"
-                  :target-branch="stateData.targetBranch"
-                />
-                <template v-if="mr.relatedLinks">
-                  &middot;
-                  <related-links
-                    :state="mr.state"
-                    :related-links="mr.relatedLinks"
-                    :show-assign-to-me="false"
-                    :diverged-commits-count="mr.divergedCommitsCount"
-                    :target-branch-path="mr.targetBranchPath"
-                    class="mr-ready-merge-related-links gl-display-inline"
-                  />
-                </template>
               </div>
               <div v-if="editCommitMessage" class="gl-w-full" data-testid="edit_commit_message">
                 <ul class="border-top commits-list flex-list gl-list-style-none gl-p-0 gl-pt-4">
@@ -624,6 +554,25 @@ export default {
                     </p>
                   </li>
                 </ul>
+              </div>
+              <div class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5">
+                <added-commit-message
+                  :is-squash-enabled="squashBeforeMerge"
+                  :is-fast-forward-enabled="!shouldShowMergeEdit"
+                  :commits-count="commitsCount"
+                  :target-branch="state.targetBranch"
+                />
+                <template v-if="mr.relatedLinks">
+                  &middot;
+                  <related-links
+                    :state="mr.state"
+                    :related-links="mr.relatedLinks"
+                    :show-assign-to-me="false"
+                    :diverged-commits-count="mr.divergedCommitsCount"
+                    :target-branch-path="mr.targetBranchPath"
+                    class="mr-ready-merge-related-links gl-display-inline"
+                  />
+                </template>
               </div>
               <gl-button-group class="gl-align-self-start">
                 <gl-button
@@ -702,7 +651,7 @@ export default {
                     :is-squash-enabled="squashBeforeMerge"
                     :is-fast-forward-enabled="!shouldShowMergeEdit"
                     :commits-count="commitsCount"
-                    :target-branch="stateData.targetBranch"
+                    :target-branch="state.targetBranch"
                     :merge-commit-path="mr.mergeCommitPath"
                   />
                 </li>

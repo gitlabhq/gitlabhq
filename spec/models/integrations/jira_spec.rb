@@ -26,7 +26,7 @@ RSpec.describe Integrations::Jira do
   end
 
   before do
-    WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json )
+    WebMock.stub_request(:get, /serverInfo/).to_return(body: server_info_results.to_json)
   end
 
   it_behaves_like Integrations::ResetSecretFields do
@@ -162,7 +162,7 @@ RSpec.describe Integrations::Jira do
   end
 
   describe '#fields' do
-    let(:integration) { create(:jira_integration) }
+    let(:integration) { jira_integration }
 
     subject(:fields) { integration.fields }
 
@@ -172,7 +172,7 @@ RSpec.describe Integrations::Jira do
   end
 
   describe '#sections' do
-    let(:integration) { create(:jira_integration) }
+    let(:integration) { jira_integration }
 
     subject(:sections) { integration.sections.map { |s| s[:type] } }
 
@@ -332,28 +332,7 @@ RSpec.describe Integrations::Jira do
   # we need to make sure we are able to read both from properties and jira_tracker_data table
   # TODO: change this as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
   context 'overriding properties' do
-    let(:access_params) do
-      { url: url, api_url: api_url, username: username, password: password,
-        jira_issue_transition_id: transition_id }
-    end
-
-    let(:data_params) do
-      {
-        url: url, api_url: api_url,
-        username: username, password: password,
-        jira_issue_transition_id: transition_id
-      }
-    end
-
     shared_examples 'handles jira fields' do
-      let(:data_params) do
-        {
-          url: url, api_url: api_url,
-          username: username, password: password,
-          jira_issue_transition_id: transition_id
-        }
-      end
-
       context 'reading data' do
         it 'reads data correctly' do
           expect(integration.url).to eq(url)
@@ -449,32 +428,40 @@ RSpec.describe Integrations::Jira do
     end
 
     # this  will be removed as part of https://gitlab.com/gitlab-org/gitlab/issues/29404
-    context 'when data are stored in properties' do
-      let(:properties) { data_params }
-      let!(:integration) do
-        create(:jira_integration, :without_properties_callback, properties: properties.merge(additional: 'something'))
+    context 'with properties' do
+      let(:data_params) do
+        {
+          url: url, api_url: api_url,
+          username: username, password: password,
+          jira_issue_transition_id: transition_id
+        }
       end
 
-      it_behaves_like 'handles jira fields'
-    end
-
-    context 'when data are stored in separated fields' do
-      let(:integration) do
-        create(:jira_integration, data_params.merge(properties: {}))
-      end
-
-      it_behaves_like 'handles jira fields'
-    end
-
-    context 'when data are stored in both properties and separated fields' do
-      let(:properties) { data_params }
-      let(:integration) do
-        create(:jira_integration, :without_properties_callback, properties: properties).tap do |integration|
-          create(:jira_tracker_data, data_params.merge(integration: integration))
+      context 'when data are stored in properties' do
+        let(:integration) do
+          create(:jira_integration, :without_properties_callback, project: project, properties: data_params.merge(additional: 'something'))
         end
+
+        it_behaves_like 'handles jira fields'
       end
 
-      it_behaves_like 'handles jira fields'
+      context 'when data are stored in separated fields' do
+        let(:integration) do
+          create(:jira_integration, data_params.merge(properties: {}, project: project))
+        end
+
+        it_behaves_like 'handles jira fields'
+      end
+
+      context 'when data are stored in both properties and separated fields' do
+        let(:integration) do
+          create(:jira_integration, :without_properties_callback, properties: data_params, project: project).tap do |integration|
+            create(:jira_tracker_data, data_params.merge(integration: integration))
+          end
+        end
+
+        it_behaves_like 'handles jira fields'
+      end
     end
   end
 
@@ -872,7 +859,7 @@ RSpec.describe Integrations::Jira do
     end
 
     context 'when resource is a merge request' do
-      let(:resource) { create(:merge_request) }
+      let_it_be(:resource) { create(:merge_request, source_project: project) }
       let(:commit_id) { resource.diff_head_sha }
 
       it_behaves_like 'close_issue'
@@ -1084,7 +1071,7 @@ RSpec.describe Integrations::Jira do
     end
 
     it 'removes trailing slashes from url' do
-      integration = described_class.new(url: 'http://jira.test.com/path/')
+      integration = described_class.new(url: 'http://jira.test.com/path/', project: project)
 
       expect(integration.url).to eq('http://jira.test.com/path')
     end
@@ -1105,7 +1092,7 @@ RSpec.describe Integrations::Jira do
   end
 
   context 'generating external URLs' do
-    let(:integration) { described_class.new(url: 'http://jira.test.com/path/') }
+    let(:integration) { described_class.new(url: 'http://jira.test.com/path/', project: project) }
 
     describe '#web_url' do
       it 'handles paths, slashes, and query string' do

@@ -137,8 +137,6 @@ module Notes
     end
 
     def invalid_assignees?(update_params)
-      return false unless Feature.enabled?(:limit_assignees_per_issuable)
-
       if update_params.key?(:assignee_ids)
         possible_assignees = update_params[:assignee_ids]&.uniq&.size
 

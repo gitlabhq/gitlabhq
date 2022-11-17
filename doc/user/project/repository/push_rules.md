@@ -267,7 +267,7 @@ to use them as normal characters in a match condition.
 
 ## Related topics
 
-- [Server hooks](../../../administration/server_hooks.md), to create complex custom push rules
+- [Git server hooks](../../../administration/server_hooks.md) (previously called server hooks), to create complex custom push rules
 - [Signing commits with GPG](gpg_signed_commits/index.md)
 - [Protected branches](../protected_branches.md)
 
@@ -304,7 +304,7 @@ For example, to enable **Check whether the commit author is a GitLab user** and 
 and create a filter for allowing commits from a specific email domain only through rails console:
 
 WARNING:
-Any command that changes data directly could be damaging if not run correctly, or under the right conditions. We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
 ``` ruby
 Project.find_each do |p|

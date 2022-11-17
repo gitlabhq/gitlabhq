@@ -102,19 +102,5 @@ RSpec.describe Sidebars::Projects::Menus::MonitorMenu do
 
       it_behaves_like 'access rights checks'
     end
-
-    describe 'Product Analytics' do
-      let(:item_id) { :product_analytics }
-
-      specify { is_expected.not_to be_nil }
-
-      describe 'when feature flag :product_analytics is disabled' do
-        specify do
-          stub_feature_flags(product_analytics: false)
-
-          is_expected.to be_nil
-        end
-      end
-    end
   end
 end

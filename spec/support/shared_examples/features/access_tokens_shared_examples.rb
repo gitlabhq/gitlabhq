@@ -9,13 +9,7 @@ RSpec.shared_examples 'resource access tokens missing access rights' do
 end
 
 RSpec.shared_examples 'resource access tokens creation' do |resource_type|
-  def active_resource_access_tokens
-    find("[data-testid='active-tokens']")
-  end
-
-  def created_resource_access_token
-    find_field('new-access-token').value
-  end
+  include Spec::Support::Helpers::AccessTokenHelpers
 
   it 'allows creation of an access token', :aggregate_failures do
     name = 'My access token'
@@ -34,12 +28,12 @@ RSpec.shared_examples 'resource access tokens creation' do |resource_type|
 
     click_on "Create #{resource_type} access token"
 
-    expect(active_resource_access_tokens).to have_text(name)
-    expect(active_resource_access_tokens).to have_text('in')
-    expect(active_resource_access_tokens).to have_text('read_api')
-    expect(active_resource_access_tokens).to have_text('read_repository')
-    expect(active_resource_access_tokens).to have_text('Guest')
-    expect(created_resource_access_token).not_to be_empty
+    expect(active_access_tokens).to have_text(name)
+    expect(active_access_tokens).to have_text('in')
+    expect(active_access_tokens).to have_text('read_api')
+    expect(active_access_tokens).to have_text('read_repository')
+    expect(active_access_tokens).to have_text('Guest')
+    expect(created_access_token).to match(/[\w-]{20}/)
   end
 end
 
@@ -105,14 +99,14 @@ RSpec.shared_examples 'resource access tokens creation disallowed' do |error_mes
 end
 
 RSpec.shared_examples 'active resource access tokens' do
-  def active_resource_access_tokens
+  def active_access_tokens
     find("[data-testid='active-tokens']")
   end
 
   it 'shows active access tokens' do
     visit resource_settings_access_tokens_path
 
-    expect(active_resource_access_tokens).to have_text(resource_access_token.name)
+    expect(active_access_tokens).to have_text(resource_access_token.name)
   end
 
   context 'when User#time_display_relative is false' do
@@ -123,13 +117,13 @@ RSpec.shared_examples 'active resource access tokens' do
     it 'shows absolute times for expires_at' do
       visit resource_settings_access_tokens_path
 
-      expect(active_resource_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %-d'))
+      expect(active_access_tokens).to have_text(PersonalAccessToken.last.expires_at.strftime('%b %-d'))
     end
   end
 end
 
 RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_text|
-  def active_resource_access_tokens
+  def active_access_tokens
     find("[data-testid='active-tokens']")
   end
 
@@ -137,14 +131,14 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
     visit resource_settings_access_tokens_path
     accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
 
-    expect(active_resource_access_tokens).to have_text(no_active_tokens_text)
+    expect(active_access_tokens).to have_text(no_active_tokens_text)
   end
 
   it 'removes expired tokens from active section' do
     resource_access_token.update!(expires_at: 5.days.ago)
     visit resource_settings_access_tokens_path
 
-    expect(active_resource_access_tokens).to have_text(no_active_tokens_text)
+    expect(active_access_tokens).to have_text(no_active_tokens_text)
   end
 
   context 'when resource access token creation is not allowed' do
@@ -156,7 +150,7 @@ RSpec.shared_examples 'inactive resource access tokens' do |no_active_tokens_tex
       visit resource_settings_access_tokens_path
       accept_gl_confirm(button_text: 'Revoke') { click_on 'Revoke' }
 
-      expect(active_resource_access_tokens).to have_text(no_active_tokens_text)
+      expect(active_access_tokens).to have_text(no_active_tokens_text)
     end
   end
 end

@@ -27,7 +27,7 @@ module IpynbDiff
     def validate_notebook(notebook)
       notebook_json = Oj::Parser.usual.parse(notebook)
 
-      return notebook_json if notebook_json.key?('cells')
+      return notebook_json if notebook_json&.key?('cells')
 
       raise InvalidNotebookError
     rescue EncodingError, Oj::ParseError, JSON::ParserError

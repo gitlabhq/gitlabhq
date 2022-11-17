@@ -5,19 +5,23 @@
   if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/'
 
 .if-not-ee: &if-not-ee
-  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/'
+  # Only consider FOSS not EE
+  if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/ && $CI_PROJECT_NAME !~ /^gitlab-jh/'
 
 .if-not-foss: &if-not-foss
   if: '$CI_PROJECT_NAME != "gitlab-foss" && $CI_PROJECT_NAME != "gitlab-ce" && $CI_PROJECT_NAME != "gitlabhq"'
 
 .if-jh: &if-jh
-  if: '$CI_PROJECT_PATH =~ /^gitlab-(jh|cn)\/.*/'
+  # Example of these projects:
+  # https://jihulab.com/gitlab-cn/gitlab
+  # https://gitlab.com/gitlab-org-sandbox/gitlab-jh-validation
+  if: '$CI_PROJECT_PATH =~ /^gitlab-(jh|cn)\/.*/ || $CI_PROJECT_NAME =~ /^gitlab-jh/'
 
 .if-force-ci: &if-force-ci
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME == "ruby3" || $CI_MERGE_REQUEST_IID || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -79,8 +83,11 @@
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
   if: '$CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
-.if-merge-request-labels-pipeline-revert: &if-merge-request-labels-pipeline-revert
-  if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:revert/'
+.if-merge-request-labels-pipeline-expedite-master-fixing: &if-merge-request-labels-pipeline-expedite-master-fixing
+  if: '$CI_MERGE_REQUEST_LABELS =~ /master:(foss-)?broken/ && $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite-master-fixing/'
+
+.if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
+  if: '$CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
 .if-security-merge-request: &if-security-merge-request
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_MERGE_REQUEST_IID'
@@ -206,6 +213,9 @@
   - "scripts/lint-doc.sh"
   - ".gitlab/ci/docs.gitlab-ci.yml"
 
+.docs-code-quality-patterns: &docs-code-quality-patterns
+  - "doc/**/*.md"
+
 .docs-deprecations-and-removals-patterns: &docs-deprecations-and-removals-patterns
   - "doc/update/deprecations.md"
   - "doc/update/removals.md"
@@ -275,7 +285,7 @@
   - "Dockerfile.assets"
   - "config/**/*.js"
   - "vendor/assets/**/*"
-  - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,symbol}/**/*"
+  - "{app/assets,app/components,app/helpers,app/presenters,app/views,locale,public,spec/frontend,storybook,symbol}/**/*"
 
 .controllers-patterns: &controllers-patterns
   - "{,ee/,jh/}{app/controllers}/**/*"
@@ -390,7 +400,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -447,7 +457,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   # CI changes
   - ".gitlab-ci.yml"
@@ -466,6 +476,9 @@
   - "data/whats_new/*.yml"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
+# NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
+#       result in docs-only pipelines having failures of jobs which use `setup-test-env-patterns`
+#       in their rules and thus require `setup-test-env`, which isn't present in docs-only pipelines.
 .setup-test-env-patterns: &setup-test-env-patterns
   - "{package.json,yarn.lock}"
   - ".browserslistrc"
@@ -481,7 +494,7 @@
   - "Rakefile"
   - "tests.yml"
   - "config.ru"
-  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,symbol,vendor}/**/*"
+  - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
   - "data/whats_new/*.yml"
   # CI changes
@@ -504,6 +517,8 @@
   # CI Templates changes
   - "scripts/lint_templates_bash.rb"
   - "lib/gitlab/ci/templates/**/*.gitlab-ci.yml"
+  # GLFM specification changes
+  - "glfm_specification/**/*"
 
 .static-analysis-patterns: &static-analysis-patterns
   - ".{codeclimate,eslintrc,haml-lint,haml-lint_todo}.yml"
@@ -535,14 +550,28 @@
 .feature-flag-development-config-patterns: &feature-flag-development-config-patterns
   - "{,ee/,jh/}config/feature_flags/{development,ops}/*.yml"
 
+.glfm-patterns: &glfm-patterns
+  - ".gitlab/ci/rules.gitlab-ci.yml"
+  - "glfm_specification/**/*"
+  - "scripts/glfm/**/*"
+  - "scripts/lib/glfm/**/*"
+
 ##################
 # Conditions set #
 ##################
+
 .strict-ee-only-rules:
   rules:
     - <<: *if-not-ee
       when: never
     - <<: *if-jh
+      when: never
+
+.as-if-jh-default-exclusion-rules:
+  rules:
+    - <<: *if-security-merge-request
+      when: never
+    - <<: *if-merge-request-targeting-stable-branch
       when: never
 
 .rails:rules:minimal-default-rules:
@@ -558,6 +587,8 @@
   rules:
     - <<: *if-merge-request-labels-group-global-search
       changes: *search-backend-patterns
+    - <<: *if-merge-request-labels-group-global-search
+      changes: *ci-patterns
 
 .rails:rules:ee-and-foss-default-rules:
   rules:
@@ -636,7 +667,8 @@
 .shared:rules:update-gitaly-binaries-cache:
   rules:
     - <<: *if-merge-request-labels-update-caches
-    - changes: *gitaly-patterns
+    - <<: *if-default-refs
+      changes: *gitaly-patterns
 
 ######################
 # Build images rules #
@@ -653,7 +685,11 @@
       changes: *code-qa-patterns
     - <<: *if-auto-deploy-branches
     - <<: *if-default-branch-or-tag
+      variables:
+        ARCH: amd64,arm64
     - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        ARCH: amd64,arm64
     - <<: *if-force-ci
     - <<: *if-ruby3-branch
 
@@ -665,8 +701,10 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
     - <<: *if-ruby3-branch
-    - changes: *ci-build-images-patterns
-    - changes: *code-qa-patterns
+    - <<: *if-default-refs
+      changes: *ci-build-images-patterns
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
 
 #################
 # Caching rules #
@@ -760,6 +798,12 @@
       when: manual
       allow_failure: true
 
+.docs:rules:docs-code-quality:
+  rules:
+    - <<: *if-default-branch-refs
+    - <<: *if-default-refs
+      changes: *docs-code-quality-patterns
+
 .docs:rules:docs-lint:
   rules:
     - <<: *if-default-refs
@@ -769,6 +813,36 @@
   rules:
     - <<: *if-default-refs
       changes: *docs-deprecations-and-removals-patterns
+
+##################
+# GLFM rules     #
+##################
+.glfm:rules:glfm-verify:
+  # NOTES ON RULES:
+  # 1. We only run this job in EE because some of the markdown examples in the generated files depend
+  #    on EE-only features. This means that it may fail when it is first run in a full EE pipeline.
+  # 2. We run this job for the `.setup-test-env-patterns` subset of file changes because:
+  #    A. There are potentially many different source files within the codebase which could
+  #       change the contents of the generated GLFM files, and it is therefore safer to always
+  #       run this job to ensure that no changes are missed.
+  #    B. The `.setup-test-env-patterns` restriction is needed because the job `needs` the
+  #       `setup-test-env` job.
+  # See more context on each rule in the inline comments below:
+  rules:
+    # The `glfm-verify` job has dependencies on EE, so only run it for EE
+    - !reference [".strict-ee-only-rules", rules]
+    # If any of the files that are DIRECTLY related to generating or managing the GLFM specification change,
+    # run `glfm-verify` to get quick feedback on any needed updates, even if the MR is not yet approved
+    - changes: *glfm-patterns
+    # Otherwise do not run `glfm-verify` if the MR is not approved
+    - <<: *if-merge-request-not-approved
+      when: never
+    # If we passed all the previous rules, run `glfm-verify` if there are any changes that could impact `glfm-verify`.
+    # This could potentially be a wide range of files, so we reuse `setup-test-env-patterns`, which includes
+    # almost all app files except docs files.
+    - changes: *setup-test-env-patterns
+    # If we are forcing all rspec to run, run this job too.
+    - <<: *if-merge-request-labels-run-all-rspec
 
 ##################
 # GraphQL rules  #
@@ -786,6 +860,8 @@
 
 .frontend:rules:minimal-default-rules:
   rules:
+    - <<: *if-merge-request-approved
+      when: never
     - <<: *if-automated-merge-request
       when: never
     - <<: *if-security-merge-request
@@ -798,15 +874,21 @@
     - <<: *if-merge-request-targeting-stable-branch
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-auto-deploy-branches
-    - changes: *ci-build-images-patterns
-    - changes: *code-qa-patterns
-    - changes: *workhorse-patterns
+    - <<: *if-ruby3-branch
+    - <<: *if-default-refs
+      changes: *ci-build-images-patterns
+    - <<: *if-default-refs
+      changes: *code-qa-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 .frontend:rules:compile-test-assets:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
-    - changes: *code-backstage-qa-patterns
-    - changes: *workhorse-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 .frontend:rules:compile-test-assets-as-if-foss:
   rules:
@@ -814,14 +896,18 @@
       when: never
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
-    - changes: *code-backstage-qa-patterns
-    - changes: *startup-css-patterns
-    - changes: *workhorse-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *startup-css-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 .frontend:rules:default-frontend-jobs:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
-    - changes: *code-backstage-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
 
 .frontend:rules:default-frontend-jobs-as-if-foss:
   rules:
@@ -832,11 +918,14 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *startup-css-patterns
+    - <<: *if-merge-request
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:frontend_fixture-as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
+    - <<: *if-merge-request-labels-run-all-jest
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 
@@ -845,13 +934,18 @@
     - <<: *if-fork-merge-request
       when: never
     - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
     - <<: *if-merge-request
       changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
     - <<: *if-automated-merge-request
       changes: *code-backstage-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-default-branch-refs
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-default-refs
       changes: *code-backstage-patterns
 
 .frontend:rules:jest:minimal:
@@ -861,10 +955,13 @@
     - !reference [".frontend:rules:minimal-default-rules", rules]
     - <<: *if-merge-request-labels-run-all-jest
       when: never
-    - changes: *core-frontend-patterns
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
       when: never
     - <<: *if-merge-request
-      changes: *ci-patterns
+      changes: *frontend-dependency-patterns
+      when: never
+    - <<: *if-merge-request
+      changes: [".gitlab/ci/rules.gitlab-ci.yml", ".gitlab/ci/frontend.gitlab-ci.yml"]
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -874,14 +971,25 @@
     - !reference [".strict-ee-only-rules", rules]
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
     - <<: *if-security-merge-request
       changes: *code-backstage-patterns
+    - <<: *if-merge-request-not-approved
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-patterns-for-as-if-foss
 
 .frontend:rules:jest:minimal:as-if-foss:
   rules:
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:minimal-default-rules", rules]
+    - <<: *if-merge-request-labels-as-if-foss
+      when: never
     - <<: *if-merge-request-labels-run-all-jest
+      when: never
+    - <<: *if-merge-request
+      changes: *frontend-dependency-patterns
       when: never
     - <<: *if-fork-merge-request
       when: never
@@ -899,7 +1007,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -940,6 +1048,18 @@
   rules:
     - <<: *if-default-refs
       changes: *code-patterns
+
+##########
+# Notify #
+##########
+.notify:rules:notify-pipeline-failure:
+  rules:
+    # Don't report child pipeline failures
+    - if: '$CI_PIPELINE_SOURCE == "parent_pipeline"'
+      when: never
+    - if: '$CI_SLACK_WEBHOOK_URL && $NOTIFY_PIPELINE_FAILURE_CHANNEL'
+      when: on_failure
+      allow_failure: true
 
 ###############
 # Pages rules #
@@ -996,7 +1116,7 @@
       when: never
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-targeting-stable-branch
       allow_failure: true
@@ -1031,6 +1151,8 @@
         SKIP_REPORT_IN_ISSUES: "false"
         PROCESS_TEST_RESULTS: "true"
         KNAPSACK_GENERATE_REPORT: "true"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
     - <<: *if-force-ci
       when: manual
       allow_failure: true
@@ -1040,7 +1162,8 @@
 ###############
 .rails:rules:setup-test-env:
   rules:
-    - changes: *setup-test-env-patterns
+    - <<: *if-default-refs
+      changes: *setup-test-env-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:single-db:
@@ -1072,7 +1195,8 @@
       changes: *db-patterns
     - <<: *if-merge-request-not-approved
       when: never
-    - changes: *db-patterns
+    - <<: *if-default-refs
+      changes: *db-patterns
 
 .rails:rules:ee-and-foss-migration:minimal:
   rules:
@@ -1105,7 +1229,8 @@
     - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
-    - changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *backend-patterns
 
 .rails:rules:ee-and-foss-unit:minimal:
   rules:
@@ -1121,7 +1246,8 @@
     - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
-    - changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *backend-patterns
 
 .rails:rules:ee-and-foss-integration:minimal:
   rules:
@@ -1137,7 +1263,8 @@
     - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:system-default-rules", rules]
-    - changes: *code-backstage-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
 
 .rails:rules:ee-and-foss-system:minimal:
   rules:
@@ -1151,11 +1278,13 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-merge-request
       changes: *backend-patterns
-    - changes: *core-backend-patterns
+    - <<: *if-default-refs
+      changes: *core-backend-patterns
 
 .rails:rules:code-backstage-qa:
   rules:
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:ee-only-migration:
@@ -1175,7 +1304,8 @@
       changes: *db-patterns
     - <<: *if-merge-request-not-approved
       when: never
-    - changes: *db-patterns
+    - <<: *if-default-refs
+      changes: *db-patterns
 
 .rails:rules:ee-only-migration:minimal:
   rules:
@@ -1196,7 +1326,8 @@
     - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
-    - changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *backend-patterns
 
 .rails:rules:ee-only-unit:minimal:
   rules:
@@ -1216,7 +1347,8 @@
     - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:ee-and-foss-default-rules", rules]
-    - changes: *backend-patterns
+    - <<: *if-default-refs
+      changes: *backend-patterns
 
 .rails:rules:ee-only-integration:minimal:
   rules:
@@ -1236,7 +1368,8 @@
     - <<: *if-fork-merge-request
       when: never
     - !reference [".rails:rules:system-default-rules", rules]
-    - changes: *code-backstage-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
 
 .rails:rules:ee-only-system:minimal:
   rules:
@@ -1350,7 +1483,8 @@
 
 .rails:rules:ee-and-foss-db-library-code:
   rules:
-    - changes: *db-library-patterns
+    - <<: *if-default-refs
+      changes: *db-library-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:ee-mr-and-default-branch-only:
@@ -1366,8 +1500,10 @@
 .rails:rules:detect-tests:
   rules:
     - <<: *if-merge-request-labels-run-all-rspec
-    - changes: *code-backstage-qa-patterns
-    - changes: *workhorse-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 .rails:rules:detect-previous-failed-tests:
   rules:
@@ -1419,7 +1555,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
@@ -1430,7 +1566,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-labels-skip-undercoverage
       when: never
@@ -1458,13 +1594,14 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *code-backstage-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
 
 .rails:rules:flaky-tests-report:
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - if: '$SKIP_FLAKY_TESTS_AUTOMATICALLY == "true" || $RETRY_FAILED_TESTS_IN_NEW_PROCESS == "true"'
       changes: *code-backstage-patterns
@@ -1476,38 +1613,51 @@
 
 .static-analysis:rules:static-analysis:
   rules:
-    - changes: *code-backstage-qa-patterns
-    - changes: *static-analysis-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *static-analysis-patterns
 
 .static-analysis:rules:static-verification-with-database:
   rules:
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
 
 .static-analysis:rules:rubocop:
   rules:
-    - changes: *rubocop-patterns
+    - <<: *if-default-refs
+      changes: *rubocop-patterns
       variables:
         RUN_ALL_RUBOCOP: "true"
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
 
 .static-analysis:rules:qa:metadata-lint:
   rules:
-    - changes: *qa-patterns
-    - changes: [".gitlab/ci/static-analysis.gitlab-ci.yml"]
+    - <<: *if-default-refs
+      changes: *qa-patterns
+    - <<: *if-default-refs
+      changes: [".gitlab/ci/static-analysis.gitlab-ci.yml"]
 
 .static-analysis:rules:haml-lint:
   rules:
-    - changes: *rubocop-patterns
-    - changes: *static-analysis-patterns
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *rubocop-patterns
+    - <<: *if-default-refs
+      changes: *static-analysis-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
 
 .static-analysis:rules:haml-lint-ee:
   rules:
     - <<: *if-not-ee
       when: never
-    - changes: *rubocop-patterns
-    - changes: *static-analysis-patterns
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *rubocop-patterns
+    - <<: *if-default-refs
+      changes: *static-analysis-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
 
 .static-analysis:rules:static-analysis-as-if-foss:
   rules:
@@ -1614,8 +1764,10 @@
   rules:
     - if: '$CODE_QUALITY_DISABLED'
       when: never
+    # Run code_quality on master until https://gitlab.com/gitlab-org/gitlab/-/issues/363747 is resolved
+    - <<: *if-default-branch-refs
     - <<: *if-default-refs
-      changes: *code-backstage-patterns
+      changes: *code-backstage-qa-patterns
 
 .reports:rules:brakeman-sast:
   rules:
@@ -1623,18 +1775,10 @@
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /brakeman/
       when: never
-    - changes:
+    - <<: *if-default-refs
+      changes:
         - '**/*.rb'
         - '**/Gemfile'
-
-.reports:rules:gosec-sast:
-  rules:
-    - if: $SAST_DISABLED
-      when: never
-    - if: $SAST_EXCLUDED_ANALYZERS =~ /gosec/
-      when: never
-    - changes:
-        - '**/*.go'
 
 .reports:rules:semgrep-sast:
   rules:
@@ -1642,7 +1786,8 @@
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
-    - changes:
+    - <<: *if-default-refs
+      changes:
         - '**/*.py'
         - '**/*.js'
         - '**/*.jsx'
@@ -1658,7 +1803,8 @@
       when: never
     # Scan each commit on master to feed the Vulnerability Reports with detected secrets
     - <<: *if-default-branch-refs
-    - changes: *code-backstage-qa-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-qa-patterns
 
 .reports:rules:gemnasium-dependency_scanning:
   rules:
@@ -1666,7 +1812,8 @@
       when: never
     # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
     - <<: *if-default-branch-refs
-    - changes: *dependency-patterns
+    - <<: *if-default-refs
+      changes: *dependency-patterns
 
 .reports:rules:gemnasium-python-dependency_scanning:
   rules:
@@ -1674,7 +1821,8 @@
       when: never
     # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
     - <<: *if-default-branch-refs
-    - changes: *python-patterns
+    - <<: *if-default-refs
+      changes: *python-patterns
 
 .reports:rules:yarn-audit-dependency_scanning:
   rules:
@@ -1682,13 +1830,20 @@
       when: never
     # Run Dependency Scanning on master until https://gitlab.com/gitlab-org/gitlab/-/issues/361657 is resolved
     - <<: *if-default-branch-refs
-    - changes: *nodejs-patterns
+    - <<: *if-default-refs
+      changes: *nodejs-patterns
 
 .reports:rules:schedule-dast:
   rules:
     - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
       when: never
     - <<: *if-dot-com-ee-schedule-nightly-child-pipeline
+
+.reports:rules:test-dast:
+  rules:
+    - if: '$DAST_DISABLED || $GITLAB_FEATURES !~ /\bdast\b/'
+      when: never
+    - <<: *if-merge-request
 
 .reports:rules:package_hunter-yarn:
   rules:
@@ -1710,7 +1865,8 @@
   rules:
     - if: '$LICENSE_MANAGEMENT_DISABLED || $GITLAB_FEATURES !~ /\blicense_scanning\b/'
       when: never
-    - changes: *dependency-patterns
+    - <<: *if-default-refs
+      changes: *dependency-patterns
 
 ################
 # Review rules #
@@ -1726,33 +1882,42 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *models-patterns
       variables: *review-change-pattern
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *lib-gitlab-patterns
       variables: *review-change-pattern
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
+      when: never
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
+      when: never
       allow_failure: true
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false" # on main runs, metrics are exported to separate bucket via rake task for better consistency
 
 .review:rules:review-build-cng:
   rules:
@@ -1783,7 +1948,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-merge-request-labels-pipeline-revert
+    - <<: *if-merge-request-labels-pipeline-expedite-master-fixing
       when: never
     - <<: *if-merge-request-labels-run-review-app
       when: manual
@@ -1897,7 +2062,8 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-maintenance
-    - changes:
+    - <<: *if-default-refs
+      changes:
         - ".gitlab/ci/setup.gitlab-ci.yml"
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
@@ -1907,8 +2073,10 @@
 #######################
 .test-metadata:rules:retrieve-tests-metadata:
   rules:
-    - changes: *code-backstage-patterns
-    - changes: *workhorse-patterns
+    - <<: *if-default-refs
+      changes: *code-backstage-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
     - <<: *if-merge-request-labels-run-all-rspec
 
 .test-metadata:rules:update-tests-metadata:
@@ -1916,7 +2084,8 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-dot-com-ee-schedule-maintenance
-    - changes:
+    - <<: *if-default-refs
+      changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
 
@@ -1925,7 +2094,8 @@
 ###################
 .workhorse:rules:workhorse:
   rules:
-    - changes: *workhorse-patterns
+    - <<: *if-default-refs
+      changes: *workhorse-patterns
 
 ###################
 # yaml-lint rules #
@@ -1944,3 +2114,21 @@
   rules:
     - <<: *if-default-refs
       changes: *lint-metrics-yaml-patterns
+
+##################
+# as-if-jh rules #
+##################
+.as-if-jh:rules:prepare-as-if-jh:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - !reference [".as-if-jh-default-exclusion-rules", rules]
+    - <<: *if-merge-request-labels-as-if-jh
+
+# This rule should share the same logic with .as-if-jh:rules:prepare-as-if-jh
+# Because the jobs using this need jobs using the preparation rules
+.as-if-jh:rules:start-as-if-jh:
+  rules:
+    - !reference [".strict-ee-only-rules", rules]
+    - !reference [".as-if-jh-default-exclusion-rules", rules]
+    - <<: *if-merge-request-labels-as-if-jh
+      allow_failure: true  # See https://gitlab.com/gitlab-org/gitlab/-/issues/351136

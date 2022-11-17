@@ -16,7 +16,7 @@ Prerequisites:
 
 - Access to an existing Azure Subscription with `Owner` access level.
 - Access to the corresponding Azure Active Directory Tenant with at least the `Application Developer` access level.
-- A local installation of the [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli).
+- A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
   Alternatively, you can follow all the steps below with the [Azure Cloud Shell](https://shell.azure.com/).
 - A GitLab project.
 
@@ -27,11 +27,11 @@ To complete this tutorial:
 1. [Grant permissions for the service principal](#grant-permissions-for-the-service-principal).
 1. [Retrieve a temporary credential](#retrieve-a-temporary-credential).
 
-For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/azure/active-directory/develop/workload-identity-federation).
+For more information, review Azure's documentation on [Workload identity federation](https://learn.microsoft.com/en-us/azure/active-directory/develop/workload-identity-federation).
 
 ## Create Azure AD application and service principal
 
-To create an [Azure AD application](https://learn.microsoft.com/cli/azure/ad/app?view=azure-cli-latest#az-ad-app-create)
+To create an [Azure AD application](https://learn.microsoft.com/en-us/cli/azure/ad/app?view=azure-cli-latest#az-ad-app-create)
 and service principal:
 
 1. In the Azure CLI, create the AD application:
@@ -43,13 +43,13 @@ and service principal:
    Save the `appId` (Application client ID) output, as you need it later
    to configure your GitLab CI/CD pipeline.
 
-1. Create a corresponding [Service Principal](https://learn.microsoft.com/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create):
+1. Create a corresponding [Service Principal](https://learn.microsoft.com/en-us/cli/azure/ad/sp?view=azure-cli-latest#az-ad-sp-create):
 
    ```shell
    az ad sp create --id $appId --query appId -otsv
    ```
 
-Instead of the Azure CLI, you can [use the Azure Portal to create these resources](https://learn.microsoft.com/azure/active-directory/develop/howto-create-service-principal-portal).
+Instead of the Azure CLI, you can [use the Azure Portal to create these resources](https://learn.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
 
 ## Create Azure AD federated identity credentials
 
@@ -88,7 +88,7 @@ identity credentials from the Azure Portal:
 
 ## Grant permissions for the service principal
 
-After you create the credentials, use [`role assignment`](https://learn.microsoft.com/cli/azure/role/assignment?view=azure-cli-latest#az-role-assignment-create)
+After you create the credentials, use [`role assignment`](https://learn.microsoft.com/en-us/cli/azure/role/assignment?view=azure-cli-latest#az-role-assignment-create)
 to grant permissions to the above service principal to access to Azure resources:
 
 ```shell
@@ -97,13 +97,13 @@ az role assignment create --assignee $appId --role Reader --scope /subscriptions
 
 You can find your subscription ID in:
 
-- The [Azure Portal](https://learn.microsoft.com/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
-- The [Azure CLI](https://learn.microsoft.com/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).
+- The [Azure Portal](https://learn.microsoft.com/en-us/azure/azure-portal/get-subscription-tenant-id#find-your-azure-subscription).
+- The [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/manage-azure-subscriptions-azure-cli#get-the-active-subscription).
 
 ## Retrieve a temporary credential
 
 After you configure the Azure AD application and federated identity credentials,
-the CI/CD job can retrieve a temporary credential by using the [Azure CLI](https://learn.microsoft.com/cli/azure/reference-index?view=azure-cli-latest#az-login):
+the CI/CD job can retrieve a temporary credential by using the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/reference-index?view=azure-cli-latest#az-login):
 
 ```yaml
 default:
@@ -123,7 +123,7 @@ The CI/CD variables are:
 
 - `AZURE_CLIENT_ID`: The [application client ID you saved earlier](#create-azure-ad-application-and-service-principal).
 - `AZURE_TENANT_ID`: Your Azure Active Directory. You can
-  [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/azure/active-directory/fundamentals/active-directory-how-to-find-tenant).
+  [find it by using the Azure CLI or Azure Portal](https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/active-directory-how-to-find-tenant).
 - `CI_JOB_JWT_V2`: The JSON web token is a [predefined CI/CD variable](../../variables/predefined_variables.md).
 
 ## Troubleshooting

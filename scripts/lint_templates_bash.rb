@@ -58,6 +58,12 @@ module LintTemplatesBash
 
   def check_template(template)
     parsed = process_content(template.content)
+
+    unless parsed.valid?
+      warn "#{template.full_name} is invalid: #{parsed.errors.inspect}"
+      return true
+    end
+
     results = parsed.jobs.map do |name, job|
       out, success = check_job(job)
 

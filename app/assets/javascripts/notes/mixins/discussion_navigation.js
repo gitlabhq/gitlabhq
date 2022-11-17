@@ -1,8 +1,12 @@
 import { mapGetters, mapActions, mapState } from 'vuex';
 import { scrollToElement, contentTop } from '~/lib/utils/common_utils';
 
+function isOverviewPage() {
+  return window.mrTabs?.currentAction === 'show';
+}
+
 function getAllDiscussionElements() {
-  const containerEl = window.mrTabs?.currentAction === 'diffs' ? '.diffs' : '.notes';
+  const containerEl = isOverviewPage() ? '.tab-pane.notes' : '.diffs';
   return Array.from(
     document.querySelectorAll(
       `${containerEl} div[data-discussion-id]:not([data-discussion-resolved])`,
@@ -59,6 +63,14 @@ function getPreviousDiscussion() {
 
 function handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions) {
   const discussion = getDiscussion();
+  if (!isOverviewPage() && !discussion) {
+    window.mrTabs?.eventHub.$once('NotesAppReady', () => {
+      handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions);
+    });
+    window.mrTabs?.setCurrentAction('show');
+    window.mrTabs?.tabShown('show', undefined, false);
+    return;
+  }
   const id = discussion.dataset.discussionId;
   ctx.expandDiscussion({ discussionId: id });
   scrollToElement(discussion, scrollOptions);

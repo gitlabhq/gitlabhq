@@ -1,9 +1,26 @@
-export const packageSettings = () => ({
+const packageDuplicateSettings = {
   mavenDuplicatesAllowed: true,
   mavenDuplicateExceptionRegex: '',
   genericDuplicatesAllowed: true,
   genericDuplicateExceptionRegex: '',
-});
+};
+
+export const packageForwardingSettings = {
+  mavenPackageRequestsForwarding: true,
+  lockMavenPackageRequestsForwarding: false,
+  npmPackageRequestsForwarding: true,
+  lockNpmPackageRequestsForwarding: false,
+  pypiPackageRequestsForwarding: true,
+  lockPypiPackageRequestsForwarding: false,
+  mavenPackageRequestsForwardingLocked: false,
+  npmPackageRequestsForwardingLocked: false,
+  pypiPackageRequestsForwardingLocked: false,
+};
+
+export const packageSettings = {
+  ...packageDuplicateSettings,
+  ...packageForwardingSettings,
+};
 
 export const dependencyProxySettings = (extend) => ({
   enabled: true,
@@ -21,10 +38,49 @@ export const groupPackageSettingsMock = {
     group: {
       id: '1',
       fullPath: 'foo_group_path',
-      packageSettings: packageSettings(),
+      packageSettings: {
+        ...packageSettings,
+        __typename: 'PackageSettings',
+      },
       dependencyProxySetting: dependencyProxySettings(),
       dependencyProxyImageTtlPolicy: dependencyProxyImageTtlPolicy(),
     },
+  },
+};
+
+export const npmProps = {
+  forwarding: packageForwardingSettings.npmPackageRequestsForwarding,
+  lockForwarding: packageForwardingSettings.lockNpmPackageRequestsForwarding,
+  label: 'npm',
+  disabled: false,
+  modelNames: {
+    forwarding: 'npmPackageRequestsForwarding',
+    lockForwarding: 'lockNpmPackageRequestsForwarding',
+    isLocked: 'npmPackageRequestsForwardingLocked',
+  },
+};
+
+export const pypiProps = {
+  forwarding: packageForwardingSettings.pypiPackageRequestsForwarding,
+  lockForwarding: packageForwardingSettings.lockPypiPackageRequestsForwarding,
+  label: 'PyPI',
+  disabled: false,
+  modelNames: {
+    forwarding: 'pypiPackageRequestsForwarding',
+    lockForwarding: 'lockPypiPackageRequestsForwarding',
+    isLocked: 'pypiPackageRequestsForwardingLocked',
+  },
+};
+
+export const mavenProps = {
+  forwarding: packageForwardingSettings.mavenPackageRequestsForwarding,
+  lockForwarding: packageForwardingSettings.lockMavenPackageRequestsForwarding,
+  label: 'Maven',
+  disabled: false,
+  modelNames: {
+    forwarding: 'mavenPackageRequestsForwarding',
+    lockForwarding: 'lockMavenPackageRequestsForwarding',
+    isLocked: 'mavenPackageRequestsForwardingLocked',
   },
 };
 
@@ -36,6 +92,19 @@ export const groupPackageSettingsMutationMock = (override) => ({
         mavenDuplicateExceptionRegex: 'latest[main]something',
         genericDuplicatesAllowed: true,
         genericDuplicateExceptionRegex: 'latest[main]somethingGeneric',
+      },
+      errors: [],
+      ...override,
+    },
+  },
+});
+
+export const groupPackageForwardSettingsMutationMock = (override) => ({
+  data: {
+    updateNamespacePackageSettings: {
+      packageSettings: {
+        npmPackageRequestsForwarding: true,
+        lockNpmPackageRequestsForwarding: false,
       },
       errors: [],
       ...override,

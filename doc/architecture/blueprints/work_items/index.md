@@ -1,14 +1,14 @@
 ---
-stage: Plan
-group: Project Management
-comments: false
-description: 'Work Items'
+status: accepted
+creation-date: "2022-09-28"
+authors: [ "@ntepluhina" ]
+coach: "@kamil"
+approvers: [ "@gweaver" ]
+owning-stage: "~devops::plan"
+participating-stages: []
 ---
 
 # Work Items
-
-DISCLAIMER:
-This page may contain information related to upcoming products, features and functionality. It is important to note that the information presented is for informational purposes only, so please do not rely on the information for purchasing or planning purposes. Just like with all projects, the items mentioned on the page are subject to change or delay, and the development, release, and timing of any products, features, or functionality remain at the sole discretion of GitLab Inc.
 
 This document is a work-in-progress. Some aspects are not documented, though we expect to add them in the future.
 
@@ -55,14 +55,19 @@ All Work Item types share the same pool of predefined widgets and are customized
 
 ### Work Item widget types (updating)
 
-- assignees
-- description
-- hierarchy
-- iteration
-- labels
-- start and due date
-- verification status
-- weight
+| widget type  | feature flag  |
+|---|---|---|
+| assignees  | |
+| description | |
+| hierarchy | |
+| [iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) | work_items_mvc_2 |
+| [milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) | work_items_mvc_2 |
+| labels | |
+| start and due date | |
+| status\* | |
+| weight | |
+
+\* status is not currently a widget, but a part of the root work item, similar to title
 
 ### Work Item view
 
@@ -71,6 +76,16 @@ The new frontend view that renders Work Items of any type using global Work Item
 ### Task
 
 Task is a special Work Item type. Tasks can be added to issues as child items and can be displayed in the modal on the issue view.
+
+### Feature flags
+
+Since this is a large project with numerous moving parts, feature flags are being used to track promotions of available widgets. The table below shows the different feature flags that are being used, and the audience that they are available to.  
+
+| feature flag name | audience |
+|---|---|
+| `work_items` | defaulted to on |
+| `work_items_mvc` | `gitlab-org`, `gitlab-com` |
+| `work_items_mvc_2` | `gitlab-org/plan-stage` |
 
 ## Motivation
 
@@ -107,24 +122,3 @@ Work Item architecture is designed with making all the features for all the type
 - [Tasks roadmap](https://gitlab.com/groups/gitlab-org/-/epics/7103?_gl=1*zqatx*_ga*NzUyOTc3NTc1LjE2NjEzNDcwMDQ.*_ga_ENFH3X7M5Y*MTY2MjU0MDQ0MC43LjEuMTY2MjU0MDc2MC4wLjAuMA..)
 - [Work Item "Vision" Prototype](https://gitlab.com/gitlab-org/gitlab/-/issues/368607)
 - [Work Item Discussions](https://gitlab.com/groups/gitlab-org/-/epics/7060)
-
-### Who
-
-| Role                         | Who
-|------------------------------|-----------------------------|
-| Author                       | Natalia Tepluhina           |
-| Architecture Evolution Coach | Kamil Trzciński             |
-| Engineering Leader           | TBD                         |
-| Product Manager              | Gabe Weaver                 |
-| Domain Expert / Frontend     | Natalia Tepluhina           |
-| Domain Expert / Backend      | Heinrich Lee Yu             |
-| Domain Expert / Backend      | Jan Provaznik               |
-| Domain Expert / Backend      | Mario Celi                  |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Leadership                   | TBD                    |
-| Product                      | Gabe Weaver            |
-| Engineering                  | TBD                    |

@@ -35,15 +35,22 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
       end
       strong_memoize_attr :method_name_attr
 
-      strong_memoize_attr :different_method_name_attr, :different_member_name_attr
       def different_method_name_attr
         trace << value
         value
       end
+      strong_memoize_attr :different_method_name_attr, :different_member_name_attr
 
-      strong_memoize_attr :enabled?
       def enabled?
         true
+      end
+      strong_memoize_attr :enabled?
+
+      def method_name_with_args(*args)
+        strong_memoize_with(:method_name_with_args, args) do
+          trace << [value, args]
+          value
+        end
       end
 
       def trace
@@ -141,6 +148,36 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
     end
   end
 
+  describe '#strong_memoize_with' do
+    [nil, false, true, 'value', 0, [0]].each do |value|
+      context "with value #{value}" do
+        let(:value) { value }
+
+        it 'only calls the block once' do
+          value0 = object.method_name_with_args(1)
+          value1 = object.method_name_with_args(1)
+          value2 = object.method_name_with_args([2, 3])
+          value3 = object.method_name_with_args([2, 3])
+
+          expect(value0).to eq(value)
+          expect(value1).to eq(value)
+          expect(value2).to eq(value)
+          expect(value3).to eq(value)
+
+          expect(object.trace).to contain_exactly([value, [1]], [value, [[2, 3]]])
+        end
+
+        it 'returns and defines the instance variable for the exact value' do
+          returned_value = object.method_name_with_args(1, 2, 3)
+          memoized_value = object.instance_variable_get(:@method_name_with_args)
+
+          expect(returned_value).to eql(value)
+          expect(memoized_value).to eql({ [[1, 2, 3]] => value })
+        end
+      end
+    end
+  end
+
   describe '#strong_memoized?' do
     let(:value) { :anything }
 
@@ -225,6 +262,22 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
         expect(klass.private_instance_methods).not_to include(:public_method)
         expect(klass.protected_instance_methods).not_to include(:public_method)
         expect(klass.public_instance_methods).to include(:public_method)
+      end
+    end
+
+    context "when method doesn't exist" do
+      let(:klass) do
+        strong_memoize_class = described_class
+
+        Struct.new(:value) do
+          include strong_memoize_class
+        end
+      end
+
+      subject { klass.strong_memoize_attr(:nonexistent_method) }
+
+      it 'fails when strong-memoizing a nonexistent method' do
+        expect { subject }.to raise_error(NameError, %r{undefined method `nonexistent_method' for class})
       end
     end
   end

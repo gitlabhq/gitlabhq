@@ -55,6 +55,7 @@ To avoid confusion and ensure communication is efficient, we will use the follow
 | legacy issue view | The existing view used to render issues and incidents | | |
 | issue             | The existing issue model | | |
 | issuable          | Any model currently using the issueable module (issues, epics and MRs) | _Incidents are an **issuable**_ | _Incidents are a **work item type**_ |
+| widget            | A UI element to present or allow interaction with specific work item data | | |
 
 Some terms have been used in the past but have since become confusing and are now discouraged.
 
@@ -138,6 +139,20 @@ To introduce a new WIT there are two options:
 
 ### Work item type widgets
 
+A widget is a single component that can exist on a work item. This component can be used on one or
+many work item types and can be lightly customized at the point of implementation.
+
+A widget contains both the frontend UI (if present) and the associated logic for presenting and
+managing any data used by the widget. There can be a one-to-many connection between the data model
+and widgets. It means there can be multiple widgets that use or manage the same data, and they could
+be present at the same time (for example, a read-only summary widget and an editable detail widget,
+or two widgets showing two different filtered views of the same model).
+
+Widgets should be differentiated by their **purpose**. When possible, this purpose should be
+abstracted to the highest reasonable level to maximize reusability. For example, the widget for
+managing "tasks" was built as "child items". Rather than managing one type of child, it's abstracted
+up to managing any children.
+
 All WITs will share the same pool of predefined widgets and will be customized by
 which widgets are active on a specific WIT. Every attribute (column or association)
 will become a widget with self-encapsulated functionality regardless of the WIT it belongs to.
@@ -164,13 +179,17 @@ define these various types in a very flexible manner. Having GitLab use
 this system first (without introducing customer customization) allows us to
 better build out the initial system.
 
-NOTE:
-Currently work item's `base_type` is used to define static mapping of what
+Work item's `base_type` is used to define static mapping of what
 widgets are available for each type (current status), this definition should be
-rather stored in database table. The exact structure of the WIT widgets
-metadata is still to be defined. `base_type` was added to help converting other
-types of resources (requirements and incidents) into work items. Eventually (when
-these resources become regular work items), `base_type` will be removed.
+rather stored in a database table. The exact structure of the WIT widgets metadata
+is [still to be defined](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
+`base_type` was added to help convert other types of resources (requirements
+and incidents) into work items. Eventually (when these resources become regular
+work items), `base_type` will be removed.
+
+Until the architecture of WIT widgets is finalized, we are holding off on the creation of new work item
+types. If a new work item type is absolutely necessary, please reach out to a
+member of the [Project Management Engineering Team](https://gitlab.com/gitlab-org/gitlab/-/issues/370599).
 
 ### Custom work item types
 

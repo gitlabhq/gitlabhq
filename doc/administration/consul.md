@@ -8,7 +8,7 @@ type: reference
 # How to set up Consul **(PREMIUM SELF)**
 
 A Consul cluster consists of both
-[server and client agents](https://www.consul.io/docs/agent).
+[server and client agents](https://developer.hashicorp.com/consul/docs/agent).
 The servers run on their own nodes and the clients run on other nodes that in
 turn communicate with the servers.
 
@@ -99,7 +99,7 @@ Consul nodes communicate using the raft protocol. If the current leader goes
 offline, there must be a leader election. A leader node must exist to facilitate
 synchronization across the cluster. If too many nodes go offline at the same time,
 the cluster loses quorum and doesn't elect a leader due to
-[broken consensus](https://www.consul.io/docs/architecture/consensus).
+[broken consensus](https://developer.hashicorp.com/consul/docs/architecture/consensus).
 
 Consult the [troubleshooting section](#troubleshooting-consul) if the cluster is not
 able to recover after the upgrade. The [outage recovery](#outage-recovery) may
@@ -148,7 +148,7 @@ you follow the Consul [outage recovery](#outage-recovery) process.
 To be safe, it's recommended that you only restart Consul in one node at a time to
 ensure the cluster remains intact. For larger clusters, it is possible to restart
 multiple nodes at a time. See the
-[Consul consensus document](https://www.consul.io/docs/architecture/consensus#deployment-table)
+[Consul consensus document](https://developer.hashicorp.com/consul/docs/architecture/consensus#deployment-table)
 for the number of failures it can tolerate. This is the number of simultaneous
 restarts it can sustain.
 
@@ -161,7 +161,7 @@ sudo gitlab-ctl restart consul
 ### Consul nodes unable to communicate
 
 By default, Consul attempts to
-[bind](https://www.consul.io/docs/agent/config/config-files#bind_addr) to `0.0.0.0`, but
+[bind](https://developer.hashicorp.com/consul/docs/agent/config/config-files#bind_addr) to `0.0.0.0`, but
 it advertises the first private IP address on the node for other Consul nodes
 to communicate with it. If the other nodes cannot communicate with a node on
 this address, then the cluster has a failed status.
@@ -249,5 +249,5 @@ Shortly after that, the client agents should rejoin as well.
 
 If you have taken advantage of Consul to store other data and want to restore
 the failed node, follow the
-[Consul guide](https://learn.hashicorp.com/tutorials/consul/recovery-outage)
+[Consul guide](https://developer.hashicorp.com/consul/tutorials/datacenter-operations/recovery-outage)
 to recover a failed cluster.

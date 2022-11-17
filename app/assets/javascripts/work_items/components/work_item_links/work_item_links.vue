@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlIcon, GlAlert, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlButton,
+  GlDropdown,
+  GlDropdownItem,
+  GlIcon,
+  GlAlert,
+  GlLoadingIcon,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { produce } from 'immer';
 import { s__ } from '~/locale';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -9,7 +17,12 @@ import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_detail
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 
-import { WIDGET_ICONS, WORK_ITEM_STATUS_TEXT, WIDGET_TYPE_HIERARCHY } from '../../constants';
+import {
+  FORM_TYPES,
+  WIDGET_ICONS,
+  WORK_ITEM_STATUS_TEXT,
+  WIDGET_TYPE_HIERARCHY,
+} from '../../constants';
 import getWorkItemLinksQuery from '../../graphql/work_item_links.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import workItemQuery from '../../graphql/work_item.query.graphql';
@@ -20,6 +33,8 @@ import WorkItemLinksForm from './work_item_links_form.vue';
 export default {
   components: {
     GlButton,
+    GlDropdown,
+    GlDropdownItem,
     GlIcon,
     GlAlert,
     GlLoadingIcon,
@@ -80,6 +95,7 @@ export default {
       prefetchedWorkItem: null,
       error: undefined,
       parentIssue: null,
+      formType: null,
     };
   },
   computed: {
@@ -88,6 +104,9 @@ export default {
     },
     issuableIteration() {
       return this.parentIssue?.iteration;
+    },
+    issuableMilestone() {
+      return this.parentIssue?.milestone;
     },
     children() {
       return (
@@ -125,9 +144,10 @@ export default {
     toggle() {
       this.isOpen = !this.isOpen;
     },
-    showAddForm() {
+    showAddForm(formType) {
       this.isOpen = true;
       this.isShownAddForm = true;
+      this.formType = formType;
       this.$nextTick(() => {
         this.$refs.wiLinksForm.$refs.wiTitleInput?.$el.focus();
       });
@@ -239,15 +259,18 @@ export default {
       'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
     ),
     addChildButtonLabel: s__('WorkItem|Add'),
+    addChildOptionLabel: s__('WorkItem|Existing task'),
+    createChildOptionLabel: s__('WorkItem|New task'),
   },
   WIDGET_TYPE_TASK_ICON: WIDGET_ICONS.TASK,
   WORK_ITEM_STATUS_TEXT,
+  FORM_TYPES,
 };
 </script>
 
 <template>
   <div
-    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-5"
+    class="gl-rounded-base gl-border-1 gl-border-solid gl-border-gray-100 gl-bg-gray-10 gl-mt-4"
     data-testid="work-item-links"
   >
     <div
@@ -264,15 +287,26 @@ export default {
           {{ childrenCountLabel }}
         </span>
       </div>
-      <gl-button
+      <gl-dropdown
         v-if="canUpdate"
-        category="secondary"
+        right
         size="small"
-        data-testid="toggle-add-form"
-        @click="showAddForm"
+        :text="$options.i18n.addChildButtonLabel"
+        data-testid="toggle-form"
       >
-        {{ $options.i18n.addChildButtonLabel }}
-      </gl-button>
+        <gl-dropdown-item
+          data-testid="toggle-create-form"
+          @click="showAddForm($options.FORM_TYPES.create)"
+        >
+          {{ $options.i18n.createChildOptionLabel }}
+        </gl-dropdown-item>
+        <gl-dropdown-item
+          data-testid="toggle-add-form"
+          @click="showAddForm($options.FORM_TYPES.add)"
+        >
+          {{ $options.i18n.addChildOptionLabel }}
+        </gl-dropdown-item>
+      </gl-dropdown>
       <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-100 gl-pl-3 gl-ml-3">
         <gl-button
           category="tertiary"
@@ -309,6 +343,8 @@ export default {
           :children-ids="childrenIds"
           :parent-confidential="confidential"
           :parent-iteration="issuableIteration"
+          :parent-milestone="issuableMilestone"
+          :form-type="formType"
           @cancel="hideAddForm"
           @addWorkItemChild="addChild"
         />

@@ -4,6 +4,7 @@ module Ci
   class PipelineVariable < Ci::ApplicationRecord
     include Ci::Partitionable
     include Ci::HasVariable
+    include Ci::RawVariable
 
     belongs_to :pipeline
 

@@ -8,6 +8,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
+import { FORM_TYPES } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
@@ -40,6 +41,13 @@ const issueDetailsResponse = (confidential = false) => ({
             __typename: 'IterationCadence',
           },
           __typename: 'Iteration',
+        },
+        milestone: {
+          dueDate: null,
+          expired: false,
+          id: 'gid://gitlab/Milestone/28',
+          title: 'v2.0',
+          __typename: 'Milestone',
         },
         __typename: 'Issue',
       },
@@ -107,7 +115,9 @@ describe('WorkItemLinks', () => {
   const findToggleButton = () => wrapper.findByTestId('toggle-links');
   const findLinksBody = () => wrapper.findByTestId('links-body');
   const findEmptyState = () => wrapper.findByTestId('links-empty');
+  const findToggleFormDropdown = () => wrapper.findByTestId('toggle-form');
   const findToggleAddFormButton = () => wrapper.findByTestId('toggle-add-form');
+  const findToggleCreateFormButton = () => wrapper.findByTestId('toggle-create-form');
   const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
   const findFirstWorkItemLinkChild = () => findWorkItemLinkChildItems().at(0);
   const findAddLinksForm = () => wrapper.findByTestId('add-links-form');
@@ -136,11 +146,27 @@ describe('WorkItemLinks', () => {
   });
 
   describe('add link form', () => {
-    it('displays form on click add button and hides form on cancel', async () => {
+    it('displays add work item form on click add dropdown then add existing button and hides form on cancel', async () => {
+      findToggleFormDropdown().vm.$emit('click');
       findToggleAddFormButton().vm.$emit('click');
       await nextTick();
 
       expect(findAddLinksForm().exists()).toBe(true);
+      expect(findAddLinksForm().props('formType')).toBe(FORM_TYPES.add);
+
+      findAddLinksForm().vm.$emit('cancel');
+      await nextTick();
+
+      expect(findAddLinksForm().exists()).toBe(false);
+    });
+
+    it('displays create work item form on click add dropdown then create button and hides form on cancel', async () => {
+      findToggleFormDropdown().vm.$emit('click');
+      findToggleCreateFormButton().vm.$emit('click');
+      await nextTick();
+
+      expect(findAddLinksForm().exists()).toBe(true);
+      expect(findAddLinksForm().props('formType')).toBe(FORM_TYPES.create);
 
       findAddLinksForm().vm.$emit('cancel');
       await nextTick();
@@ -193,7 +219,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('does not display button to toggle Add form', () => {
-      expect(findToggleAddFormButton().exists()).toBe(false);
+      expect(findToggleFormDropdown().exists()).toBe(false);
     });
 
     it('does not display link menu on children', () => {
@@ -283,6 +309,7 @@ describe('WorkItemLinks', () => {
       await createComponent({
         issueDetailsQueryHandler: jest.fn().mockResolvedValue(issueDetailsResponse(true)),
       });
+      findToggleFormDropdown().vm.$emit('click');
       findToggleAddFormButton().vm.$emit('click');
       await nextTick();
 

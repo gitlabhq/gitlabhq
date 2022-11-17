@@ -15,6 +15,7 @@ RSpec.describe 'Issue Boards', :js do
   let!(:issue3) { create(:labeled_issue, project: project, title: 'testing 3', labels: [label], relative_position: 1) }
 
   before do
+    stub_feature_flags(apollo_boards: false)
     project.add_maintainer(user)
 
     sign_in(user)

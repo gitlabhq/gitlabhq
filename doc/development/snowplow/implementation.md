@@ -13,7 +13,7 @@ This page describes how to:
 
 ## Snowplow JavaScript frontend tracking
 
-GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/)
+GitLab provides a `Tracking` interface that wraps the [Snowplow JavaScript tracker](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/)
 to track custom events.
 
 For the recommended frontend tracking implementation, see [Usage recommendations](#usage-recommendations).
@@ -42,14 +42,14 @@ and the custom `extra` object. You can modify this object for any subsequent
 structured event that fires, although this is not recommended.
 
 Tracking implementations must have an `action` and a `category`. You can provide additional
-properties from the [structured event taxonomy](index.md#structured-event-taxonomy), in
+properties from the [event schema](index.md#event-schema), in
 addition to an `extra` object that accepts key-value pairs.
 
-| Property      | Type   | Default value              | Description                                                                                                                                                                                                    |
-|:-----------|:-------|:---------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `category` | string | `document.body.dataset.page` | Page or subsection of a page in which events are captured.                                                                                                                                            |
+| Property      | Type   | Default value              | Description                                                                                                                                                                                 |
+|:-----------|:-------|:---------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `category` | string | `document.body.dataset.page` | Page or subsection of a page in which events are captured.                                                                                                                                  |
 | `action`   | string | `'generic'`                  | Action the user is taking. Clicks must be `click` and activations must be `activate`. For example, focusing a form field is `activate_form_input`, and clicking a button is `click_button`. |
-| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value` as described in [Structured event taxonomy](index.md#structured-event-taxonomy), `context` for custom contexts, and `extra` (key-value pairs object). |
+| `data`     | object | `{}`                         | Additional data such as `label`, `property`, `value` as described in [Event schema](index.md#event-schema), `context` for custom contexts, and `extra` (key-value pairs object).            |
 
 ### Usage recommendations
 
@@ -81,7 +81,7 @@ The following example shows `data-track-*` attributes assigned to a button:
 | Attribute             | Required | Description |
 |:----------------------|:---------|:------------|
 | `data-track-action`    | true     | Action the user is taking. Clicks must be prepended with `click` and activations must be prepended with `activate`. For example, focusing a form field is `activate_form_input` and clicking a button is `click_button`. Replaces `data-track-event`, which was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/290962) in GitLab 13.11. |
-| `data-track-label`    | false    | The specific element or object to act on. This can be: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created. |
+| `data-track-label`    | false    | The specific element or object to act on. This can be: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown list in the top bar; or the name or title attribute of a record being created. |
 | `data-track-property` | false    | Any additional property of the element, or object being acted on. |
 | `data-track-value`    | false    | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility. If omitted, this is the element's `value` property or `undefined`. For checkboxes, the default value is the element's checked attribute or `0` when unchecked. The value is parsed as numeric before sending the event. |
 | `data-track-extra` | false    | A key-value pair object passed as a valid JSON string. This attribute is added to the `extra` property in our [`gitlab_standard`](schemas.md#gitlab_standard) schema. |
@@ -349,7 +349,7 @@ describe('MyTracking', () => {
 
 ### Form tracking
 
-To enable Snowplow automatic [form tracking](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracking-specific-events/#form-tracking):
+To enable Snowplow automatic [form tracking](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracking-specific-events/#form-tracking):
 
 1. Call `Tracking.enableFormTracking` when the DOM is ready.
 1. Provide a `config` object that includes at least one of the following elements:
@@ -389,7 +389,7 @@ describe('MyFormTracking', () => {
 
 ## Implement Ruby backend tracking
 
-`Gitlab::Tracking` is an interface that wraps the [Snowplow Ruby Tracker](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/ruby-tracker/) for tracking custom events.
+`Gitlab::Tracking` is an interface that wraps the [Snowplow Ruby Tracker](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/ruby-tracker/) for tracking custom events.
 Backend tracking provides:
 
 - User behavior tracking
@@ -415,7 +415,7 @@ Use the following arguments:
 |------------|---------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------|
 | `category` | String                    |               | Area or aspect of the application. For example,  `HealthCheckController` or `Lfs::FileTransformer`.                  |
 | `action`   | String                    |               | The action being taken. For example, a controller action such as `create`, or an Active Record callback. |
-| `label`    | String                    | `nil`           | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown in the top bar; or the name or title attribute of a record being created.                                                          |
+| `label`    | String                    | `nil`           | The specific element or object to act on. This can be one of the following: the label of the element, for example, a tab labeled 'Create from template' for `create_from_template`; a unique identifier if no text is available, for example, `groups_dropdown_close` for closing the Groups dropdown list in the top bar; or the name or title attribute of a record being created.                                                          |
 | `property` | String                    | `nil`           | Any additional property of the element, or object being acted on.                                                          |
 | `value`    | Numeric                   | `nil`           | Describes a numeric value (decimal) directly related to the event. This could be the value of an input. For example, `10` when clicking `internal` visibility.                                                          |
 | `context`  | Array\[SelfDescribingJSON\] | `nil`           | An array of custom contexts to send with this event. Most events should not have any custom contexts.                             |
@@ -451,7 +451,7 @@ Before you test frontend events in development, you must:
 1. Turn off ad blockers that could prevent Snowplow JavaScript from loading in your environment.
 1. Turn off "Do Not Track" (DNT) in your browser.
 
-All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplowanalytics.com/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#Setting_a_custom_page_URL_and_referrer_URL) personally identifiable
+All URLs are pseudonymized. The entity identifier [replaces](https://docs.snowplow.io/docs/collecting-data/collecting-from-own-applications/javascript-trackers/javascript-tracker/javascript-tracker-v2/tracker-setup/other-parameters-2/#setting-a-custom-page-url-and-referrer-url) personally identifiable
 information (PII). PII includes usernames, group, and project names.
 Page titles are hardcoded as `GitLab` for the same reason.
 
@@ -477,7 +477,7 @@ For a video tutorial, see the [Snowplow plugin walk through](https://www.youtube
 
 #### Snowplow Micro
 
-[Snowplow Micro](https://snowplowanalytics.com/blog/2019/07/17/introducing-snowplow-micro/) is a
+[Snowplow Micro](https://snowplow.io/blog/introducing-snowplow-micro/) is a
 Docker-based solution for testing backend and frontend in a local development environment. Snowplow Micro
 records the same events as the full Snowplow pipeline. To query events, use the Snowplow Micro API.
 

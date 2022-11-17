@@ -233,6 +233,26 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
     it_behaves_like 'truncating legacy tables on a database'
   end
 
+  context 'when running with multiple shared databases' do
+    before do
+      skip_if_multiple_databases_not_setup
+      ci_db_config = Ci::ApplicationRecord.connection_db_config
+      allow(::Gitlab::Database).to receive(:db_config_share_with).with(ci_db_config).and_return('main')
+    end
+
+    it 'raises an error when truncating the main database that it is a single database setup' do
+      expect do
+        described_class.new(database_name: 'main', min_batch_size: min_batch_size).execute
+      end.to raise_error(/Cannot truncate legacy tables in single-db setup/)
+    end
+
+    it 'raises an error when truncating the ci database that it is a single database setup' do
+      expect do
+        described_class.new(database_name: 'ci', min_batch_size: min_batch_size).execute
+      end.to raise_error(/Cannot truncate legacy tables in single-db setup/)
+    end
+  end
+
   context 'when running in a single database mode' do
     before do
       skip_if_multiple_databases_are_setup

@@ -10,7 +10,7 @@ module Banzai
     # HTML filter that implements our math syntax, adding class="code math"
     #
     class MathFilter < HTML::Pipeline::Filter
-      CSS_MATH   = 'pre.code.language-math'
+      CSS_MATH   = 'pre[lang="math"] > code'
       XPATH_MATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_MATH).freeze
       CSS_CODE   = 'code'
       XPATH_CODE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_CODE).freeze
@@ -32,7 +32,7 @@ module Banzai
       # Corresponds to the $$\n...\n$$ syntax
       DOLLAR_DISPLAY_BLOCK_PATTERN = %r{
         ^(?<matched>\$\$\ *\n(?<math>.*)\n\$\$\ *)$
-      }x.freeze
+      }mx.freeze
 
       # Order dependent. Handle the `$$` syntax before the `$` syntax
       DOLLAR_MATH_PIPELINE = [
@@ -107,27 +107,27 @@ module Banzai
 
           # We need a sibling before and after.
           # They should end and start with $ respectively.
-          if closing && opening &&
-              closing.text? && opening.text? &&
-              closing.content.first == DOLLAR_SIGN &&
-              opening.content.last == DOLLAR_SIGN
+          next unless closing && opening &&
+            closing.text? && opening.text? &&
+            closing.content.first == DOLLAR_SIGN &&
+            opening.content.last == DOLLAR_SIGN
 
-            code[:class] = MATH_CLASSES
-            code[STYLE_ATTRIBUTE] = 'inline'
-            closing.content = closing.content[1..]
-            opening.content = opening.content[0..-2]
+          code[:class] = MATH_CLASSES
+          code[STYLE_ATTRIBUTE] = 'inline'
+          closing.content = closing.content[1..]
+          opening.content = opening.content[0..-2]
 
-            @nodes_count += 1
-            break if @nodes_count >= RENDER_NODES_LIMIT
-          end
+          @nodes_count += 1
+          break if @nodes_count >= RENDER_NODES_LIMIT
         end
       end
 
       # corresponds to the "```math...```" syntax
       def process_math_codeblock
-        doc.xpath(XPATH_MATH).each do |el|
-          el[STYLE_ATTRIBUTE] = 'display'
-          el[:class] += " #{TAG_CLASS}"
+        doc.xpath(XPATH_MATH).each do |node|
+          pre_node = node.parent
+          pre_node[STYLE_ATTRIBUTE] = 'display'
+          pre_node[:class] = TAG_CLASS
         end
       end
 

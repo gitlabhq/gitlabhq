@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create' do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'Open a fork in Web IDE',
       skip: {
         issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/351696",

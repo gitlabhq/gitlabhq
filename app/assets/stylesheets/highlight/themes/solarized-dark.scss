@@ -107,7 +107,9 @@ $solarized-dark-il: #2aa198;
     @include hljs-override('selector-tag', $solarized-dark-nt);
     @include hljs-override('keyword', $solarized-dark-k);
     @include hljs-override('variable', $solarized-dark-nv);
-    @include hljs-override('variable.language_', $solarized-dark-k);
+    @include hljs-override('variable\\.language_', $solarized-dark-k);
+    @include hljs-override('variable\\.language', $solarized-dark-k);
+    @include hljs-override('variable\\.constant', $solarized-dark-no);
     @include hljs-override('title', $solarized-dark-nf);
     @include hljs-override('name', $solarized-dark-k);
     @include hljs-override('tag', $solarized-dark-nt);
@@ -119,7 +121,11 @@ $solarized-dark-il: #2aa198;
     @include hljs-override('bullet', $solarized-dark-n);
     @include hljs-override('subst', $solarized-dark-p);
     @include hljs-override('symbol', $solarized-dark-ni);
-    @include hljs-override('title.class_.inherited__', $solarized-dark-no);
+    @include hljs-override('title\\.class_\\.inherited__', $solarized-dark-no);
+    @include hljs-override('title\\.class', $solarized-dark-nc);
+    @include hljs-override('title\\.class\\.inherited', $solarized-dark-no);
+    @include hljs-override('title\\.function', $solarized-dark-nf);
+    @include hljs-override('params', $solarized-dark-nb);
 
   // Line numbers
   .file-line-num {

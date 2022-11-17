@@ -20,7 +20,7 @@ module WebHooks
 
       unless hook.valid?
         self.hooks = relation.select(&:persisted?)
-        flash[:alert] = hook.errors.full_messages.join.html_safe
+        flash[:alert] = hook.errors.full_messages.to_sentence.html_safe
       end
 
       redirect_to action: :index
@@ -53,6 +53,8 @@ module WebHooks
 
       ps = params.require(:hook).permit(*permitted).to_h
 
+      ps.delete(:token) if action_name == 'update' && ps[:token] == WebHook::SECRET_MASK
+
       ps[:url_variables] = ps[:url_variables].to_h { [_1[:key], _1[:value].presence] } if ps.key?(:url_variables)
 
       if action_name == 'update' && ps.key?(:url_variables)
@@ -64,7 +66,9 @@ module WebHooks
     end
 
     def hook_param_names
-      %i[enable_ssl_verification token url push_events_branch_filter]
+      param_names = %i[enable_ssl_verification token url push_events_branch_filter]
+      param_names.push(:branch_filter_strategy) if Feature.enabled?(:enhanced_webhook_support_regex)
+      param_names
     end
 
     def destroy_hook(hook)

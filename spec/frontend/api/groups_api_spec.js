@@ -1,10 +1,13 @@
 import MockAdapter from 'axios-mock-adapter';
+import getGroupTransferLocationsResponse from 'test_fixtures/api/groups/transfer_locations.json';
 import httpStatus from '~/lib/utils/http_status';
 import axios from '~/lib/utils/axios_utils';
-import { updateGroup } from '~/api/groups_api';
+import { DEFAULT_PER_PAGE } from '~/api';
+import { updateGroup, getGroupTransferLocations } from '~/api/groups_api';
 
 const mockApiVersion = 'v4';
 const mockUrlRoot = '/gitlab';
+const mockGroupId = '99';
 
 describe('GroupsApi', () => {
   let originalGon;
@@ -27,7 +30,6 @@ describe('GroupsApi', () => {
   });
 
   describe('updateGroup', () => {
-    const mockGroupId = '99';
     const mockData = { attr: 'value' };
     const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}`;
 
@@ -41,6 +43,27 @@ describe('GroupsApi', () => {
       const res = await updateGroup(mockGroupId, mockData);
 
       expect(res.data).toMatchObject({ id: mockGroupId, ...mockData });
+    });
+  });
+
+  describe('getGroupTransferLocations', () => {
+    beforeEach(() => {
+      jest.spyOn(axios, 'get');
+    });
+
+    it('retrieves transfer locations from the correct URL and returns them in the response data', async () => {
+      const params = { page: 1 };
+      const expectedUrl = `${mockUrlRoot}/api/${mockApiVersion}/groups/${mockGroupId}/transfer_locations`;
+
+      mock.onGet(expectedUrl).replyOnce(200, { data: getGroupTransferLocationsResponse });
+
+      await expect(getGroupTransferLocations(mockGroupId, params)).resolves.toMatchObject({
+        data: { data: getGroupTransferLocationsResponse },
+      });
+
+      expect(axios.get).toHaveBeenCalledWith(expectedUrl, {
+        params: { ...params, per_page: DEFAULT_PER_PAGE },
+      });
     });
   });
 });

@@ -5,10 +5,10 @@ module API
     class Environment < Entities::EnvironmentBasic
       include RequestAwareEntity
 
-      expose :tier
+      expose :tier, documentation: { type: 'string', example: 'development' }
       expose :project, using: Entities::BasicProjectDetails
       expose :last_deployment, using: Entities::Deployment, if: { last_deployment: true }
-      expose :state
+      expose :state, documentation: { type: 'string', example: 'available' }
     end
   end
 end

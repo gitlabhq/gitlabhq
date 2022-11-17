@@ -29,7 +29,7 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', placeholder: "https://yourcircuit.com/rest/v2/webhooks/incoming/…", required: true },
+        { type: 'text', name: 'webhook', help: 'https://yourcircuit.com/rest/v2/webhooks/incoming/…', required: true },
         { type: 'checkbox', name: 'notify_only_broken_pipelines' },
         {
           type: 'select',
@@ -43,11 +43,13 @@ module Integrations
     private
 
     def notify(message, opts)
-      response = Gitlab::HTTP.post(webhook, body: {
+      body = {
         subject: message.project_name,
         text: message.summary,
         markdown: true
-      }.to_json)
+      }
+
+      response = Gitlab::HTTP.post(webhook, body: Gitlab::Json.dump(body))
 
       response if response.success?
     end

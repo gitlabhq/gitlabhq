@@ -39,7 +39,7 @@ You can view and find routes from the console by running:
 rails routes | grep crm
 ```
 
-You can also view routes in your browser by going to [http://gdk.test:3000/rails/info/routes](http://gdk.test:3000/rails/info/routes).
+You can also view routes in your browser by going to `http://gdk.test:3000/rails/info/routes`.
 
 ## Global routes
 

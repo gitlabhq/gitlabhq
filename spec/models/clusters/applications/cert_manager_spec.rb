@@ -10,6 +10,11 @@ RSpec.describe Clusters::Applications::CertManager do
   include_examples 'cluster application version specs', :clusters_applications_cert_manager
   include_examples 'cluster application initial status specs'
 
+  describe 'default values' do
+    it { expect(cert_manager.version).to eq(described_class::VERSION) }
+    it { expect(cert_manager.email).to eq("admin@example.com") }
+  end
+
   describe '#can_uninstall?' do
     subject { cert_manager.can_uninstall? }
 

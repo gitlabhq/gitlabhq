@@ -1,0 +1,7 @@
+mutation destroyArtifact($id: CiJobArtifactID!) {
+  artifactDestroy(input: { id: $id }) {
+    artifact {
+      id
+    }
+  }
+}

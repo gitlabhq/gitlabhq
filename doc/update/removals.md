@@ -31,6 +31,18 @@ For removal reviewers (Technical Writers only):
   https://about.gitlab.com/handbook/marketing/blog/release-posts/#update-the-removals-doc
 -->
 
+## Removed in 16.0
+
+### Changing merge request approvals with the `/approvals` API endpoint
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+To change the approvals required for a merge request, you should no longer use the `/approvals` API endpoint, which was deprecated in GitLab 12.3.
+
+Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
+
 ## Removed in 15.4
 
 ### SAST analyzer consolidation and CI/CD template changes
@@ -251,7 +263,7 @@ Elasticsearch 6.8 support has been removed in GitLab 15.0. Elasticsearch 6.8 has
 If you use Elasticsearch 6.8, **you must upgrade your Elasticsearch version to 7.x** prior to upgrading to GitLab 15.0.
 You should not upgrade to Elasticsearch 8 until you have completed the GitLab 15.0 upgrade.
 
-View the [version requirements](https://docs.gitlab.com/ee/integration/elasticsearch.html#version-requirements) for details.
+View the [version requirements](https://docs.gitlab.com/ee/integration/advanced_search/elasticsearch.html#version-requirements) for details.
 
 ### End of support for Python 3.6 in Dependency Scanning
 
@@ -444,7 +456,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/request_profiling.html) has been removed in GitLab 15.0.
+[Request profiling](https://docs.gitlab.com/ee/administration/monitoring/performance/index.html) has been removed in GitLab 15.0.
 
 We're working on [consolidating our profiling tools](https://gitlab.com/groups/gitlab-org/-/epics/7327) and making them more easily accessible.
 We [evaluated](https://gitlab.com/gitlab-org/gitlab/-/issues/350152) the use of this feature and we found that it is not widely used.
@@ -574,7 +586,7 @@ If you installed GitLab from source, verify manually that both servers are confi
 
 ### Static Site Editor
 
-The Static Site Editor was deprecated in GitLab 14.7 and the feature is being removed in GitLab 15.0. Incoming requests to the Static Site Editor will be redirected and open the target file to edit in the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/static_site_editor/) for more information, including how to remove the configuration files from existing projects. We will continue investing in improvements to the Markdown editing experience by [maturing the Content Editor](https://gitlab.com/groups/gitlab-org/-/epics/5401) and making it available as a way to edit content across GitLab.
+The Static Site Editor was deprecated in GitLab 14.7 and the feature is being removed in GitLab 15.0. Incoming requests to the Static Site Editor will be redirected and open the target file to edit in the Web IDE. Current users of the Static Site Editor can view the [documentation](https://docs.gitlab.com/ee/user/project/web_ide/index.html) for more information, including how to remove the configuration files from existing projects. We will continue investing in improvements to the Markdown editing experience by [maturing the Content Editor](https://gitlab.com/groups/gitlab-org/-/epics/5401) and making it available as a way to edit content across GitLab.
 
 ### Support for `gitaly['internal_socket_dir']`
 
@@ -849,7 +861,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-By default, the Code Quality feature has not provided support for Ruby 2.6+ if you're using the Code Quality template. To better support the latest versions of Ruby, the default RuboCop version is updated to add support for Ruby 2.4 through 3.0. As a result, support for Ruby 2.1, 2.2, and 2.3 is removed. You can re-enable support for older versions by [customizing your configuration](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html#rubocop-errors).
+By default, the Code Quality feature has not provided support for Ruby 2.6+ if you're using the Code Quality template. To better support the latest versions of Ruby, the default RuboCop version is updated to add support for Ruby 2.4 through 3.0. As a result, support for Ruby 2.1, 2.2, and 2.3 is removed. You can re-enable support for older versions by [customizing your configuration](https://docs.gitlab.com/ee/ci/testing/code_quality.html#rubocop-errors).
 
 Relevant Issue: [Default `codeclimate-rubocop` engine does not support Ruby 2.6+](https://gitlab.com/gitlab-org/ci-cd/codequality/-/issues/28)
 
@@ -892,7 +904,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-Browser Performance Testing has run in a job named `performance` by default. With the introduction of [Load Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/load_performance_testing.html) in GitLab 13.2, this naming could be confusing. To make it clear which job is running [Browser Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html), the default job name is changed from `performance` to `browser_performance` in the template in GitLab 14.0.
+Browser Performance Testing has run in a job named `performance` by default. With the introduction of [Load Performance Testing](https://docs.gitlab.com/ee/ci/testing/code_quality.html) in GitLab 13.2, this naming could be confusing. To make it clear which job is running [Browser Performance Testing](https://docs.gitlab.com/ee/ci/testing/browser_performance_testing.html), the default job name is changed from `performance` to `browser_performance` in the template in GitLab 14.0.
 
 Relevant Issue: [Rename default Browser Performance Testing job](https://gitlab.com/gitlab-org/gitlab/-/issues/225914)
 
@@ -1158,7 +1170,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The [deployment frequency project-level API](https://docs.gitlab.com/ee/api/dora4_project_analytics.html#list-project-deployment-frequencies) endpoint has been deprecated in favor of the [DORA 4 API](https://docs.gitlab.com/ee/api/dora/metrics.html), which consolidates all the metrics under one API with the specific metric as a required field. As a result, the timestamp field, which doesn't allow adding future extensions and causes performance issues, will be removed. With the old API, an example response would be `{ "2021-03-01": 3, "date": "2021-03-01", "value": 3 }`. The first key/value (`"2021-03-01": 3`) will be removed and replaced by the last two (`"date": "2021-03-01", "value": 3`).
+The [deployment frequency project-level API](https://docs.gitlab.com/ee/api/dora/metrics.html#list-project-deployment-frequencies) endpoint has been deprecated in favor of the [DORA 4 API](https://docs.gitlab.com/ee/api/dora/metrics.html), which consolidates all the metrics under one API with the specific metric as a required field. As a result, the timestamp field, which doesn't allow adding future extensions and causes performance issues, will be removed. With the old API, an example response would be `{ "2021-03-01": 3, "date": "2021-03-01", "value": 3 }`. The first key/value (`"2021-03-01": 3`) will be removed and replaced by the last two (`"date": "2021-03-01", "value": 3`).
 
 ### Release description in the Tags API
 

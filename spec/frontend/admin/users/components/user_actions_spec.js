@@ -121,8 +121,11 @@ describe('AdminUserActions component', () => {
         it.each(DELETE_ACTIONS)('renders a delete action component item for "%s"', (action) => {
           const component = wrapper.findComponent(Actions[capitalizeFirstCharacter(action)]);
 
-          expect(component.props('username')).toBe(user.name);
-          expect(component.props('paths')).toEqual(userPaths);
+          expect(component.props()).toMatchObject({
+            username: user.name,
+            userId: user.id,
+            paths: userPaths,
+          });
           expect(component.text()).toBe(I18N_USER_ACTIONS[action]);
         });
       });

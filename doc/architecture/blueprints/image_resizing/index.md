@@ -1,9 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Image Resizing'
+status: implemented
+creation-date: "2020-10-21"
+authors: [ "@craig-gomes" ]
+coach: "@kamil"
+approvers: [ "@timzallmann", "@joshlambert" ]
+owning-stage: "~devops::non_devops"
+participating-stages: []
 ---
 
 # Image resizing for avatars and content images

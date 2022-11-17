@@ -26,20 +26,20 @@ RSpec.describe IssuePresenter do
     context 'when issue type is task' do
       let(:presented_issue) { task }
 
-      context 'when work_items feature flag is enabled' do
+      context 'when use_iid_in_work_items_path feature flag is disabled' do
+        before do
+          stub_feature_flags(use_iid_in_work_items_path: false)
+        end
+
         it 'returns a work item url for the task' do
           expect(presenter.web_url).to eq(project_work_items_url(project, work_items_path: presented_issue.id))
         end
       end
 
-      context 'when work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        it 'returns an issue url for the task' do
-          expect(presenter.web_url).to eq("http://localhost/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
-        end
+      it 'returns a work item url using iid for the task' do
+        expect(presenter.web_url).to eq(
+          project_work_items_url(project, work_items_path: presented_issue.iid, iid_path: true)
+        )
       end
     end
   end
@@ -66,20 +66,20 @@ RSpec.describe IssuePresenter do
     context 'when issue type is task' do
       let(:presented_issue) { task }
 
-      context 'when work_items feature flag is enabled' do
+      context 'when use_iid_in_work_items_path feature flag is disabled' do
+        before do
+          stub_feature_flags(use_iid_in_work_items_path: false)
+        end
+
         it 'returns a work item path for the task' do
           expect(presenter.issue_path).to eq(project_work_items_path(project, work_items_path: presented_issue.id))
         end
       end
 
-      context 'when work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        it 'returns an issue path for the task' do
-          expect(presenter.issue_path).to eq("/#{group.name}/#{project.name}/-/issues/#{presented_issue.iid}")
-        end
+      it 'returns a work item path using iid for the task' do
+        expect(presenter.issue_path).to eq(
+          project_work_items_path(project, work_items_path: presented_issue.iid, iid_path: true)
+        )
       end
     end
   end

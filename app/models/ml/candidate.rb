@@ -11,8 +11,15 @@ module Ml
     belongs_to :user
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
+    has_many :latest_metrics, -> { latest }, class_name: 'Ml::CandidateMetric', inverse_of: :candidate
 
-    default_value_for(:iid) { SecureRandom.uuid }
+    attribute :iid, default: -> { SecureRandom.uuid }
+
+    scope :including_metrics_and_params, -> { includes(:latest_metrics, :params) }
+
+    def artifact_root
+      "/ml_candidate_#{iid}/-/"
+    end
 
     class << self
       def with_project_id_and_iid(project_id, iid)

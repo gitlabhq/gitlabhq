@@ -18,7 +18,7 @@ GitLab has been tested by vendors and customers on a number of object storage pr
 - [Amazon S3](https://aws.amazon.com/s3/)
 - [Google Cloud Storage](https://cloud.google.com/storage)
 - [Digital Ocean Spaces](https://www.digitalocean.com/products/spaces)
-- [Oracle Cloud Infrastructure](https://docs.cloud.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
+- [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/Object/Tasks/s3compatibleapi.htm)
 - [OpenStack Swift (S3 compatible mode)](https://docs.openstack.org/swift/latest/s3_compat.html)
 - [Azure Blob storage](https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-introduction)
 - On-premises hardware and appliances from various storage vendors, whose list is not officially established.
@@ -88,8 +88,8 @@ Object storage for <object type> must have a bucket specified
 If you want to use local storage for specific object types, you can
 [selectively disable object storages](#selectively-disabling-object-storage).
 
-Most types of objects, such as CI artifacts, LFS files, upload
-attachments, and so on can be saved in object storage by specifying a single
+Most types of objects, such as CI artifacts, LFS files, and upload
+attachments can be saved in object storage by specifying a single
 credential for object storage with multiple buckets.
 
 When the consolidated form is:
@@ -279,7 +279,7 @@ Here are the valid connection parameters for GCS:
 | `google_project`             | GCP project name. | `gcp-project-12345` |
 | `google_json_key_location`   | JSON key path.    | `/path/to/gcp-project-12345-abcde.json` |
 | `google_json_key_string`     | JSON key string.  | `{ "type": "service_account", "project_id": "example-project-382839", ... }` |
-| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication/production#automatically) to locate service account credentials. | |
+| `google_application_default` | Set to `true` to use [Google Cloud Application Default Credentials](https://cloud.google.com/docs/authentication#adc) to locate service account credentials. | |
 
 GitLab reads the value of `google_json_key_location`, then `google_json_key_string`, and finally, `google_application_default`.
 It uses the first of these settings that has a value.
@@ -492,7 +492,7 @@ To migrate existing local data to object storage see the following guides:
 Prior to GitLab 13.2:
 
 - Object storage configuration for all types of objects such as CI/CD artifacts, LFS
-  files, upload attachments, and so on had to be configured independently.
+  files, and upload attachments had to be configured independently.
 - Object store connection parameters such as passwords and endpoint URLs had to be
   duplicated for each type.
 

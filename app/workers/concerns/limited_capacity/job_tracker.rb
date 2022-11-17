@@ -58,7 +58,7 @@ module LimitedCapacity
     end
 
     def remove_job_keys(redis, keys)
-      redis.srem(counter_key, keys)
+      redis.srem?(counter_key, keys)
     end
 
     def with_redis(&block)

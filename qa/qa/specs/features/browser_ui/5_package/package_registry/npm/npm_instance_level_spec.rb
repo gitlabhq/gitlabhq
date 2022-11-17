@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Package' do
-    describe 'Package Registry', :orchestrated, :reliable, :packages, :object_storage do
+    describe 'Package Registry', :skip_live_env, :orchestrated, :reliable, :packages, :object_storage, product_group: :package_registry do
       describe 'npm instance level endpoint' do
         using RSpec::Parameterized::TableSyntax
         include Runtime::Fixtures

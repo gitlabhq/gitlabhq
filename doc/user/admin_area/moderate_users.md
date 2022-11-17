@@ -54,7 +54,7 @@ To approve or reject a user sign up:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Pending approval** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Approve** or **Reject**.
 
 Approving a user:
@@ -78,7 +78,7 @@ by removing them in LDAP, or directly from the Admin Area. To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Block**.
 
 A blocked user:
@@ -102,7 +102,7 @@ A blocked user can be unblocked from the Admin Area. To do this:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Blocked** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Unblock**.
 
 The user's state is set to active and they consume a
@@ -156,13 +156,13 @@ A user can be deactivated from the Admin Area. To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Deactivate**.
 
 For the deactivation option to be visible to an administrator, the user:
 
 - Must be currently active.
-- Must not have signed in, or have any activity, in the last 90 days.
+- Must not be [dormant](#automatically-deactivate-dormant-users).
 
 NOTE:
 Users can also be deactivated using the [GitLab API](../../api/users.md#deactivate-user).
@@ -203,7 +203,7 @@ To do this:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Deactivated** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Activate**.
 
 The user's state is set to active and they consume a
@@ -235,7 +235,7 @@ Users can be banned using the Admin Area. To do this:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Overview > Users**.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Ban user**.
 
 The banned user does not consume a [seat](../../subscriptions/self_managed/index.md#billable-users).
@@ -248,7 +248,7 @@ A banned user can be unbanned using the Admin Area. To do this:
 1. On the left sidebar, select **Overview > Users**.
 1. Select the **Banned** tab.
 1. Optional. Select a user.
-1. Select the **{settings}** **User administration** dropdown.
+1. Select the **{settings}** **User administration** dropdown list.
 1. Select **Unban user**.
 
 The user's state is set to active and they consume a
@@ -283,3 +283,68 @@ You can also delete a user and their contributions, such as merge requests, issu
 
 NOTE:
 Before 15.1, additionally groups of which deleted user were the only owner among direct members were deleted.
+
+## Troubleshooting
+
+When moderating users, you may need to perform bulk actions on them based on certain conditions. The following rails console scripts show some examples of this. You may [start a rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session) and use scripts similar to the following:
+
+### Deactivate users that have no recent activity
+
+Administrators can deactivate users that have no recent activity.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+days_inactive = 90
+inactive_users = User.active.where("last_activity_on <= ?", days_inactive.days.ago)
+
+inactive_users.each do |user|
+    puts "user '#{user.username}': #{user.last_activity_on}"
+    user.deactivate!
+end
+```
+
+### Block users that have no recent activity
+
+Administrators can block users that have no recent activity.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+days_inactive = 90
+inactive_users = User.active.where("last_activity_on <= ?", days_inactive.days.ago)
+
+inactive_users.each do |user|
+    puts "user '#{user.username}': #{user.last_activity_on}"
+    user.block!
+end
+```
+
+### Block or delete users that have no projects or groups
+
+Administrators can block or delete users that have no projects or groups.
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+users = User.where('id NOT IN (select distinct(user_id) from project_authorizations)')
+
+# How many users are removed?
+users.count
+
+# If that count looks sane:
+
+# You can either block the users:
+users.each { |user|  user.blocked? ? nil  : user.block! }
+
+# Or you can delete them:
+  # need 'current user' (your user) for auditing purposes
+current_user = User.find_by(username: '<your username>')
+
+users.each do |user|
+  DeleteUserWorker.perform_async(current_user.id, user.id)
+end
+```

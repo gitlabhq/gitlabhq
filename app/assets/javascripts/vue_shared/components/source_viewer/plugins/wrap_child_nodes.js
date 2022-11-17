@@ -22,7 +22,7 @@ const format = (node, kind = '') => {
       .split(newlineRegex)
       .map((newline) => generateHLJSTag(kind, newline, true))
       .join('\n');
-  } else if (node.kind) {
+  } else if (node.kind || node.sublanguage) {
     const { children } = node;
     if (children.length && children.length === 1) {
       buffer += format(children[0], node.kind);

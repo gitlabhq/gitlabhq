@@ -3,10 +3,11 @@ import { GlButton, GlAlert, GlLoadingIcon, GlFormSelect } from '@gitlab/ui';
 import { getPreferredLocales, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { sprintfWorkItem, I18N_WORK_ITEM_ERROR_CREATING } from '../constants';
-import workItemQuery from '../graphql/work_item.query.graphql';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import { getWorkItemQuery } from '../utils';
 
 import ItemTitle from '../components/item_title.vue';
 
@@ -21,6 +22,7 @@ export default {
     ItemTitle,
     GlFormSelect,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
   props: {
     initialTitle: {
@@ -71,6 +73,9 @@ export default {
 
       return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemType);
     },
+    fetchByIid() {
+      return this.glFeatures.useIidInWorkItemsPath;
+    },
   },
   methods: {
     async createWorkItem() {
@@ -89,28 +94,47 @@ export default {
               workItemTypeId: this.selectedWorkItemType,
             },
           },
-          update(store, { data: { workItemCreate } }) {
+          update: (store, { data: { workItemCreate } }) => {
             const { workItem } = workItemCreate;
+            const data = this.fetchByIid
+              ? {
+                  workspace: {
+                    // eslint-disable-next-line @gitlab/require-i18n-strings
+                    __typename: 'Project',
+                    id: workItem.project.id,
+                    workItems: {
+                      __typename: 'WorkItemConnection',
+                      nodes: [workItem],
+                    },
+                  },
+                }
+              : { workItem };
 
             store.writeQuery({
-              query: workItemQuery,
-              variables: {
-                id: workItem.id,
-              },
-              data: {
-                workItem,
-              },
+              query: getWorkItemQuery(this.fetchByIid),
+              variables: this.fetchByIid
+                ? {
+                    fullPath: this.fullPath,
+                    iid: workItem.iid,
+                  }
+                : {
+                    id: workItem.id,
+                  },
+              data,
             });
           },
         });
         const {
           data: {
             workItemCreate: {
-              workItem: { id },
+              workItem: { id, iid },
             },
           },
         } = response;
-        this.$router.push({ name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } });
+        const routerParams = this.fetchByIid
+          ? { name: 'workItem', params: { id: iid }, query: { iid_path: 'true' } }
+          : { name: 'workItem', params: { id: `${getIdFromGraphQLId(id)}` } };
+        this.$router.push(routerParams);
       } catch {
         this.error = this.createErrorText;
       }

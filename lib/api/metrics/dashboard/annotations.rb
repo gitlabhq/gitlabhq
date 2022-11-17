@@ -7,8 +7,15 @@ module API
         feature_category :metrics
         urgency :low
 
-        desc 'Create a new monitoring dashboard annotation' do
+        desc 'Create a new annotation' do
+          detail 'Creates a new monitoring dashboard annotation'
           success Entities::Metrics::Dashboard::Annotation
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[dashboard_annotations]
         end
 
         ANNOTATIONS_SOURCES = [
@@ -20,12 +27,16 @@ module API
           resource annotations_source[:resource] do
             params do
               requires :starting_at, type: DateTime,
-                                     desc: 'Date time indicating starting moment to which the annotation relates.'
+                                     desc: 'Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.'\
+                                      'Timestamp marking start point of annotation.'
               optional :ending_at, type: DateTime,
-                                   desc: 'Date time indicating ending moment to which the annotation relates.'
+                                   desc: 'Date time string, ISO 8601 formatted, such as 2016-03-11T03:45:40Z.'\
+                                    'Timestamp marking end point of annotation.'\
+                                    'When not supplied, an annotation displays as a single event at the start point.'
               requires :dashboard_path, type: String, coerce_with: -> (val) { CGI.unescape(val) },
-                                        desc: 'The path to a file defining the dashboard on which the annotation should be added'
-              requires :description, type: String, desc: 'The description of the annotation'
+                                        desc: 'ID of the dashboard which needs to be annotated.'\
+                                          'Treated as a CGI-escaped path, and automatically un-escaped.'
+              requires :description, type: String, desc: 'Description of the annotation.'
             end
 
             post ':id/metrics_dashboard/annotations' do
@@ -33,7 +44,9 @@ module API
 
               forbidden! unless can?(current_user, :create_metrics_dashboard_annotation, annotations_source_object)
 
-              create_service_params = declared(params).merge(annotations_source[:create_service_param_key] => annotations_source_object)
+              create_service_params = declared(params).merge(
+                annotations_source[:create_service_param_key] => annotations_source_object
+              )
 
               result = ::Metrics::Dashboard::Annotations::CreateService.new(current_user, create_service_params).execute
 

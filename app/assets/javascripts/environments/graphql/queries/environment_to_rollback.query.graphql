@@ -3,5 +3,6 @@ query environmentToRollback {
     id
     name
     lastDeployment
+    retryUrl
   }
 }

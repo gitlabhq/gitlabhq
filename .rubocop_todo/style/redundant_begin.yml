@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/RedundantBegin:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/membership_actions.rb'
     - 'app/controllers/concerns/metrics_dashboard.rb'

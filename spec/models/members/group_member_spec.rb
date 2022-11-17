@@ -3,6 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe GroupMember do
+  describe 'default values' do
+    subject(:goup_member) { build(:group_member) }
+
+    it { expect(goup_member.source_type).to eq(described_class::SOURCE_TYPE) }
+  end
+
   context 'scopes' do
     let_it_be(:user_1) { create(:user) }
     let_it_be(:user_2) { create(:user) }

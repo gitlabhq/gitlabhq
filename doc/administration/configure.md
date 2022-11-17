@@ -30,7 +30,7 @@ The tables lists features on the left and provides their capabilities to the rig
 
 ## Geo Capabilities
 
-If your availability needs to span multiple zones or multiple locations, please read about [Geo](geo/index.md).
+If your availability needs to span multiple zones or multiple locations, read about [Geo](geo/index.md).
 
 | | Availability | Recoverability | Data Resiliency | Performance | Risks/Trade-offs|
 |-|--------------|----------------|-----------------|-------------|-----------------|
@@ -46,5 +46,5 @@ The following table outlines failure modes and mitigation paths for the product 
 | Single Gitaly Node + Geo Secondary | Downtime - Must restore from backup, can perform a manual failover to secondary | Downtime - Must restore from Backup, errors could have propagated to secondary | Manual intervention - failover to Geo secondary | |
 | Sharded Gitaly Install | Partial Downtime - Only repositories on impacted node affected, must restore from backup | Partial Downtime - Only repositories on impacted node affected, must restore from backup | Downtime - Must wait for outage to end | |
 | Sharded Gitaly Install + Geo Secondary | Partial Downtime - Only repositories on impacted node affected, must restore from backup, could perform manual failover to secondary for impacted repositories | Partial Downtime - Only repositories on impacted node affected, must restore from backup, errors could have propagated to secondary | Manual intervention - failover to Geo secondary | |
-| Gitaly Cluster Install* | No Downtime - will swap repository primary to another node after 10 seconds | Not applicable; All writes are voted on by multiple Gitaly Cluster nodes | Downtime - Must wait for outage to end | Snapshot backups for Gitaly Cluster nodes not supported at this time |
-| Gitaly Cluster Install* + Geo Secondary | No Downtime - will swap repository primary to another node after 10 seconds | Not applicable; All writes are voted on by multiple Gitaly Cluster nodes | Manual intervention - failover to Geo secondary | Snapshot backups for Gitaly Cluster nodes not supported at this time |
+| Gitaly Cluster Install* | No Downtime - swaps repository primary to another node after 10 seconds | Not applicable; All writes are voted on by multiple Gitaly Cluster nodes | Downtime - Must wait for outage to end | Snapshot backups for Gitaly Cluster nodes not supported at this time |
+| Gitaly Cluster Install* + Geo Secondary | No Downtime - swaps repository primary to another node after 10 seconds | Not applicable; All writes are voted on by multiple Gitaly Cluster nodes | Manual intervention - failover to Geo secondary | Snapshot backups for Gitaly Cluster nodes not supported at this time |

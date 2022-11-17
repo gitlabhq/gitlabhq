@@ -1,16 +1,22 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/integer/time'
+require 'active_support/testing/time_helpers'
 
 RSpec.describe QA::Support::Repeater do
+  include ActiveSupport::Testing::TimeHelpers
+
   subject do
     Module.new do
       extend QA::Support::Repeater
     end
   end
 
-  let(:time_start) { Time.now }
   let(:return_value) { "test passed" }
+
+  after do
+    travel_back
+  end
 
   describe '.repeat_until' do
     context 'when raise_on_failure is not provided (default: true)' do
@@ -19,12 +25,7 @@ RSpec.describe QA::Support::Repeater do
           context 'when max duration is reached' do
             it 'raises an exception with default message' do
               expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_duration: 1) do
-                    Timecop.travel(2)
-                    false
-                  end
-                end
+                subject.repeat_until(max_duration: 1) { travel(2.seconds) && false }
               end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
             end
 
@@ -32,12 +33,7 @@ RSpec.describe QA::Support::Repeater do
               message = 'Some custom action'
 
               expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_duration: 1, message: message) do
-                    Timecop.travel(2)
-                    false
-                  end
-                end
+                subject.repeat_until(max_duration: 1, message: message) { travel(2.seconds) && false }
               end.to raise_error(QA::Support::Repeater::WaitExceededError, "#{message} failed after 1 second")
             end
 
@@ -45,16 +41,14 @@ RSpec.describe QA::Support::Repeater do
               loop_counter = 0
 
               expect(
-                Timecop.freeze do
-                  subject.repeat_until(max_duration: 1) do
-                    loop_counter += 1
+                subject.repeat_until(max_duration: 1) do
+                  loop_counter += 1
 
-                    if loop_counter > 3
-                      Timecop.travel(1)
-                      return_value
-                    else
-                      false
-                    end
+                  if loop_counter > 3
+                    travel(1.second)
+                    return_value
+                  else
+                    false
                   end
                 end
               ).to eq(return_value)
@@ -64,13 +58,7 @@ RSpec.describe QA::Support::Repeater do
 
           context 'when max duration is not reached' do
             it 'returns value from block' do
-              Timecop.freeze(time_start) do
-                expect(
-                  subject.repeat_until(max_duration: 1) do
-                    return_value
-                  end
-                ).to eq(return_value)
-              end
+              expect(subject.repeat_until(max_duration: 10) { return_value }).to eq(return_value)
             end
           end
         end
@@ -78,41 +66,31 @@ RSpec.describe QA::Support::Repeater do
         context 'when max_attempts is provided' do
           context 'when max_attempts is reached' do
             it 'raises an exception with default message' do
-              expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 1) do
-                    false
-                  end
-                end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
+              expect { subject.repeat_until(max_attempts: 1) { false } }.to raise_error(
+                QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt"
+              )
             end
 
             it 'raises an exception with custom message' do
               message = 'Some custom action'
 
-              expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 1, message: message) do
-                    false
-                  end
-                end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "#{message} failed after 1 attempt")
+              expect { subject.repeat_until(max_attempts: 1, message: message) { false } }.to raise_error(
+                QA::Support::Repeater::RetriesExceededError, "#{message} failed after 1 attempt"
+              )
             end
 
             it 'ignores duration' do
               loop_counter = 0
 
               expect(
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 2) do
-                    loop_counter += 1
-                    Timecop.travel(1.year)
+                subject.repeat_until(max_attempts: 2) do
+                  loop_counter += 1
+                  travel(1.year)
 
-                    if loop_counter > 1
-                      return_value
-                    else
-                      false
-                    end
+                  if loop_counter > 1
+                    return_value
+                  else
+                    false
                   end
                 end
               ).to eq(return_value)
@@ -122,13 +100,7 @@ RSpec.describe QA::Support::Repeater do
 
           context 'when max_attempts is not reached' do
             it 'returns value from block' do
-              expect(
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 1) do
-                    return_value
-                  end
-                end
-              ).to eq(return_value)
+              expect(subject.repeat_until(max_attempts: 1) { return_value }).to eq(return_value)
             end
           end
         end
@@ -136,31 +108,17 @@ RSpec.describe QA::Support::Repeater do
         context 'when both max_attempts and max_duration are provided' do
           context 'when max_attempts is reached first' do
             it 'raises an exception' do
-              loop_counter = 0
-              expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 1, max_duration: 2) do
-                    loop_counter += 1
-                    Timecop.travel(time_start + loop_counter)
-                    false
-                  end
-                end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
+              expect { subject.repeat_until(max_attempts: 1, max_duration: 2) { false } }.to(
+                raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
+              )
             end
           end
 
           context 'when max_duration is reached first' do
             it 'raises an exception' do
-              loop_counter = 0
-              expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 2, max_duration: 1) do
-                    loop_counter += 1
-                    Timecop.travel(time_start + loop_counter)
-                    false
-                  end
-                end
-              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
+              expect { subject.repeat_until(max_attempts: 2, max_duration: 1) { travel(10.seconds) && false } }.to(
+                raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
+              )
             end
           end
         end
@@ -169,30 +127,26 @@ RSpec.describe QA::Support::Repeater do
       context 'when retry_on_exception is true' do
         context 'when max duration is reached' do
           it 'raises an exception' do
-            Timecop.freeze do
-              expect do
-                subject.repeat_until(max_duration: 1, retry_on_exception: true) do
-                  Timecop.travel(2)
+            expect do
+              subject.repeat_until(max_duration: 1, retry_on_exception: true) do
+                travel(10.seconds)
 
-                  raise "this should be raised"
-                end
-              end.to raise_error(RuntimeError, "this should be raised")
-            end
+                raise "this should be raised"
+              end
+            end.to raise_error(RuntimeError, "this should be raised")
           end
 
           it 'does not raise an exception until max_duration is reached' do
             loop_counter = 0
 
-            Timecop.freeze(time_start) do
-              expect do
-                subject.repeat_until(max_duration: 2, retry_on_exception: true) do
-                  loop_counter += 1
-                  Timecop.travel(time_start + loop_counter)
+            expect do
+              subject.repeat_until(max_duration: 5, retry_on_exception: true) do
+                loop_counter += 1
+                travel(10.seconds) if loop_counter == 2
 
-                  raise "this should be raised"
-                end
-              end.to raise_error(RuntimeError, "this should be raised")
-            end
+                raise "this should be raised"
+              end
+            end.to raise_error(RuntimeError, "this should be raised")
             expect(loop_counter).to eq(2)
           end
         end
@@ -201,51 +155,16 @@ RSpec.describe QA::Support::Repeater do
           it 'returns value from block' do
             loop_counter = 0
 
-            Timecop.freeze(time_start) do
-              expect(
-                subject.repeat_until(max_duration: 3, retry_on_exception: true) do
-                  loop_counter += 1
-                  Timecop.travel(time_start + loop_counter)
+            expect(
+              subject.repeat_until(max_duration: 3, retry_on_exception: true) do
+                loop_counter += 1
 
-                  raise "this should not be raised" if loop_counter == 1
+                raise "this should not be raised" if loop_counter == 1
 
-                  return_value
-                end
-              ).to eq(return_value)
-            end
+                return_value
+              end
+            ).to eq(return_value)
             expect(loop_counter).to eq(2)
-          end
-        end
-
-        context 'when both max_attempts and max_duration are provided' do
-          context 'when max_attempts is reached first' do
-            it 'raises an exception' do
-              loop_counter = 0
-              expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 1, max_duration: 2, retry_on_exception: true) do
-                    loop_counter += 1
-                    Timecop.travel(time_start + loop_counter)
-                    false
-                  end
-                end
-              end.to raise_error(QA::Support::Repeater::RetriesExceededError, "Retry failed after 1 attempt")
-            end
-          end
-
-          context 'when max_duration is reached first' do
-            it 'raises an exception' do
-              loop_counter = 0
-              expect do
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: 2, max_duration: 1, retry_on_exception: true) do
-                    loop_counter += 1
-                    Timecop.travel(time_start + loop_counter)
-                    false
-                  end
-                end
-              end.to raise_error(QA::Support::Repeater::WaitExceededError, "Wait failed after 1 second")
-            end
           end
         end
       end
@@ -255,11 +174,9 @@ RSpec.describe QA::Support::Repeater do
       context 'when retry_on_exception is not provided (default: false)' do
         context 'when max duration is reached' do
           def test_wait
-            Timecop.freeze do
-              subject.repeat_until(max_duration: 1, raise_on_failure: false) do
-                Timecop.travel(2)
-                return_value
-              end
+            subject.repeat_until(max_duration: 1, raise_on_failure: false) do
+              travel(10.seconds)
+              return_value
             end
           end
 
@@ -274,23 +191,15 @@ RSpec.describe QA::Support::Repeater do
 
         context 'when max duration is not reached' do
           it 'returns the value from the block' do
-            Timecop.freeze do
-              expect(
-                subject.repeat_until(max_duration: 1, raise_on_failure: false) do
-                  return_value
-                end
-              ).to eq(return_value)
-            end
+            expect(subject.repeat_until(max_duration: 10, raise_on_failure: false) { return_value }).to eq(return_value)
           end
 
           it 'raises an exception' do
-            Timecop.freeze do
-              expect do
-                subject.repeat_until(max_duration: 1, raise_on_failure: false) do
-                  raise "this should be raised"
-                end
-              end.to raise_error(RuntimeError, "this should be raised")
-            end
+            expect do
+              subject.repeat_until(max_duration: 10, raise_on_failure: false) do
+                raise "this should be raised"
+              end
+            end.to raise_error(RuntimeError, "this should be raised")
           end
         end
 
@@ -300,12 +209,10 @@ RSpec.describe QA::Support::Repeater do
               loop_counter = 0
 
               expect(
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: max_attempts, max_duration: max_duration, raise_on_failure: false) do
-                    loop_counter += 1
-                    Timecop.travel(time_start + loop_counter)
-                    false
-                  end
+                subject.repeat_until(max_attempts: max_attempts, max_duration: max_duration, raise_on_failure: false) do
+                  loop_counter += 1
+                  travel(max_attempts.seconds)
+                  false
                 end
               ).to eq(false)
               expect(loop_counter).to eq(1)
@@ -313,7 +220,7 @@ RSpec.describe QA::Support::Repeater do
           end
 
           context 'when max_attempts is reached first' do
-            it_behaves_like 'repeat until', max_attempts: 1, max_duration: 2
+            it_behaves_like 'repeat until', max_attempts: 1, max_duration: 10
           end
 
           context 'when max_duration is reached first' do
@@ -325,11 +232,9 @@ RSpec.describe QA::Support::Repeater do
       context 'when retry_on_exception is true' do
         context 'when max duration is reached' do
           def test_wait
-            Timecop.freeze do
-              subject.repeat_until(max_duration: 1, raise_on_failure: false, retry_on_exception: true) do
-                Timecop.travel(2)
-                return_value
-              end
+            subject.repeat_until(max_duration: 1, raise_on_failure: false, retry_on_exception: true) do
+              travel(10.seconds)
+              return_value
             end
           end
 
@@ -339,61 +244,6 @@ RSpec.describe QA::Support::Repeater do
 
           it 'returns the value from the block' do
             expect(test_wait).to eq(return_value)
-          end
-        end
-
-        context 'when max duration is not reached' do
-          before do
-            @loop_counter = 0
-          end
-
-          def test_wait_with_counter
-            Timecop.freeze(time_start) do
-              subject.repeat_until(max_duration: 3, raise_on_failure: false, retry_on_exception: true) do
-                @loop_counter += 1
-                Timecop.travel(time_start + @loop_counter)
-
-                raise "this should not be raised" if @loop_counter == 1
-
-                return_value
-              end
-            end
-          end
-
-          it 'does not raise an exception' do
-            expect { test_wait_with_counter }.not_to raise_error
-          end
-
-          it 'returns the value from the block' do
-            expect(test_wait_with_counter).to eq(return_value)
-            expect(@loop_counter).to eq(2)
-          end
-        end
-
-        context 'when both max_attempts and max_duration are provided' do
-          shared_examples 'repeat until' do |max_attempts:, max_duration:|
-            it "returns when #{max_attempts < max_duration ? 'max_attempts' : 'max_duration'} is reached" do
-              loop_counter = 0
-
-              expect(
-                Timecop.freeze do
-                  subject.repeat_until(max_attempts: max_attempts, max_duration: max_duration, raise_on_failure: false, retry_on_exception: true) do
-                    loop_counter += 1
-                    Timecop.travel(time_start + loop_counter)
-                    false
-                  end
-                end
-              ).to eq(false)
-              expect(loop_counter).to eq(1)
-            end
-          end
-
-          context 'when max_attempts is reached first' do
-            it_behaves_like 'repeat until', max_attempts: 1, max_duration: 2
-          end
-
-          context 'when max_duration is reached first' do
-            it_behaves_like 'repeat until', max_attempts: 2, max_duration: 1
           end
         end
       end

@@ -20,6 +20,11 @@ export default {
       required: false,
       default: () => ({}),
     },
+    icon: {
+      type: String,
+      required: false,
+      default: 'question-o',
+    },
   },
   methods: {
     targetFn() {
@@ -30,7 +35,7 @@ export default {
 </script>
 <template>
   <span>
-    <gl-button ref="popoverTrigger" variant="link" icon="question-o" :aria-label="__('Help')" />
+    <gl-button ref="popoverTrigger" variant="link" :icon="icon" :aria-label="__('Help')" />
     <gl-popover :target="targetFn" v-bind="options">
       <template v-if="options.title" #title>
         <span v-safe-html="options.title"></span>

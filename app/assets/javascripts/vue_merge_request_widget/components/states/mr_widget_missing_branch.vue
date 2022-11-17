@@ -1,7 +1,6 @@
 <script>
 import { GlIcon, GlTooltipDirective, GlSprintf } from '@gitlab/ui';
 import { sprintf } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
 import missingBranchQuery from '../../queries/states/missing_branch.query.graphql';
 import {
@@ -21,13 +20,10 @@ export default {
     GlSprintf,
     StatusIcon,
   },
-  mixins: [glFeatureFlagMixin(), mergeRequestQueryVariablesMixin],
+  mixins: [mergeRequestQueryVariablesMixin],
   apollo: {
     state: {
       query: missingBranchQuery,
-      skip() {
-        return !this.glFeatures.mergeRequestWidgetGraphql;
-      },
       variables() {
         return this.mergeRequestQueryVariables;
       },
@@ -44,15 +40,8 @@ export default {
     return { state: {} };
   },
   computed: {
-    sourceBranchRemoved() {
-      if (this.glFeatures.mergeRequestWidgetGraphql) {
-        return !this.state.sourceBranchExists;
-      }
-
-      return this.mr.sourceBranchRemoved;
-    },
     type() {
-      return this.sourceBranchRemoved ? 'source' : 'target';
+      return this.mr.sourceBranchRemoved ? 'source' : 'target';
     },
     name() {
       return this.type === 'source' ? this.mr.sourceBranch : this.mr.targetBranch;

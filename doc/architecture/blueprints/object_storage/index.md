@@ -1,8 +1,11 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'Object storage: direct_upload consolidation - architecture blueprint.'
+status: ready
+creation-date: "2021-11-18"
+authors: [ "@nolith" ]
+coach: "@glopezfernandez"
+approvers: [ "@marin" ]
+owning-stage: "~devops::data_stores"
+participating-stages: []
 ---
 
 # Object storage: `direct_upload` consolidation
@@ -197,24 +200,3 @@ require one bucket.
 - [Speed up the monolith, building a smart reverse proxy in Go](https://archive.fosdem.org/2020/schedule/event/speedupmonolith/): a presentation explaining a bit of workhorse history and the challenge we faced in releasing the first cloud-native installation.
 - [Object Storage improvements epic](https://gitlab.com/groups/gitlab-org/-/epics/483).
 - We are moving to GraphQL API, but [we do not support direct upload](https://gitlab.com/gitlab-org/gitlab/-/issues/280819).
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                           | Who                     |
-|--------------------------------|-------------------------|
-| Author                         | Alessio Caiazza         |
-| Architecture Evolution Coach   | Gerardo Lopez-Fernandez |
-| Engineering Leader             | Marin Jankovski         |
-| Domain Expert / Object storage | Stan Hu                 |
-| Domain Expert / Security       | Joern Schneeweisz       |
-
-DRIs:
-
-The DRI for this blueprint is the
-[Object Storage Working Group](https://about.gitlab.com/company/team/structure/working-groups/object-storage/).
-
-<!-- vale gitlab.Spelling = YES -->

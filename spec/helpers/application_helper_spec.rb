@@ -253,17 +253,44 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#client_class_list' do
-    it 'returns string containing CSS classes representing client browser and platform' do
-      class_list = helper.client_class_list
-      expect(class_list).to eq('gl-browser-generic gl-platform-other')
+    context 'when browser or platform are unknown' do
+      it 'returns string containing CSS classes representing fallbacks' do
+        class_list = helper.client_class_list
+        expect(class_list).to eq('gl-browser-generic gl-platform-other')
+      end
+    end
+
+    context 'when browser and platform are known' do
+      before do
+        allow(helper.controller).to receive(:browser).and_return(::Browser.new('Google Chrome/Linux'))
+      end
+
+      it 'returns string containing CSS classes representing them' do
+        class_list = helper.client_class_list
+        expect(class_list).to eq('gl-browser-chrome gl-platform-linux')
+      end
     end
   end
 
   describe '#client_js_flags' do
-    it 'returns map containing JS flags representing client browser and platform' do
-      flags_list = helper.client_js_flags
-      expect(flags_list[:isGeneric]).to eq(true)
-      expect(flags_list[:isOther]).to eq(true)
+    context 'when browser or platform are unknown' do
+      it 'returns map containing JS flags representing falllbacks' do
+        flags_list = helper.client_js_flags
+        expect(flags_list[:isGeneric]).to eq(true)
+        expect(flags_list[:isOther]).to eq(true)
+      end
+    end
+
+    context 'when browser and platform are known' do
+      before do
+        allow(helper.controller).to receive(:browser).and_return(::Browser.new('Google Chrome/Linux'))
+      end
+
+      it 'returns map containing JS flags representing client browser and platform' do
+        flags_list = helper.client_js_flags
+        expect(flags_list[:isChrome]).to eq(true)
+        expect(flags_list[:isLinux]).to eq(true)
+      end
     end
   end
 
@@ -506,42 +533,24 @@ RSpec.describe ApplicationHelper do
   end
 
   describe '#page_class' do
-    context 'when logged_out_marketing_header experiment is enabled' do
-      let_it_be(:expected_class) { 'logged-out-marketing-header-candidate' }
+    let_it_be(:expected_class) { 'logged-out-marketing-header' }
 
-      let(:current_user) { nil }
-      let(:variant) { :candidate }
+    let(:current_user) { nil }
 
-      subject do
-        helper.page_class.flatten
-      end
+    subject do
+      helper.page_class.flatten
+    end
 
-      before do
-        stub_experiments(logged_out_marketing_header: variant)
-        allow(helper).to receive(:current_user) { current_user }
-      end
+    before do
+      allow(helper).to receive(:current_user) { current_user }
+    end
 
-      context 'when candidate' do
-        it { is_expected.to include(expected_class) }
-      end
+    it { is_expected.to include(expected_class) }
 
-      context 'when candidate (:trial_focused variant)' do
-        let(:variant) { :trial_focused }
+    context 'when a user is logged in' do
+      let(:current_user) { create(:user) }
 
-        it { is_expected.to include(expected_class) }
-      end
-
-      context 'when control' do
-        let(:variant) { :control }
-
-        it { is_expected.not_to include(expected_class) }
-      end
-
-      context 'when a user is logged in' do
-        let(:current_user) { create(:user) }
-
-        it { is_expected.not_to include(expected_class) }
-      end
+      it { is_expected.not_to include(expected_class) }
     end
   end
 

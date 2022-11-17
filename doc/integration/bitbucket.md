@@ -38,7 +38,7 @@ you to use.
      The URL to your GitLab installation, such as
      `https://gitlab.example.com/users/auth`.
      Leaving this field empty
-     [results in an `Invalid redirect_uri` message](https://confluence.atlassian.com/bitbucket/oauth-faq-338365710.html).
+     results in an `Invalid redirect_uri` message.
 
      WARNING:
      To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)

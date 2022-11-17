@@ -43,23 +43,19 @@ GitLab supports the following OmniAuth providers.
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
 
-Setting                    | Description | Default value
----------------------------|-------------|--------------
-`allow_single_sign_on`     | Enables you to list the providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | The default is `false`. If `false`, users must be created manually, or they can't sign in using OmniAuth.
-`auto_link_ldap_user`      | If enabled, creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | The default is `false`.
-`block_auto_created_users` | If enabled, blocks users that are automatically created from signing in until they are approved by an administrator. | The default is `true`. If you set the value to `false`, make sure you only define providers for `allow_single_sign_on` that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
+Omnibus, Docker, and source | Helm chart | Description | Default value
+----------------------------|------------|-------------|-----------
+`allow_single_sign_on`     | `allowSingleSignOn` | List of providers that automatically create a GitLab account. The provider names are available in the **OmniAuth provider name** column in the [supported providers table](#supported-providers). | `false`, which means that signing in using your OmniAuth provider account without a pre-existing GitLab account is not allowed. You must create a GitLab account first, and then connect it to your OmniAuth provider account through your profile settings.
+`auto_link_ldap_user`      | `autoLinkLdapUser` | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | `false`
+`block_auto_created_users` | `blockAutoCreatedUsers` | Blocks users that are automatically created from signing in until they are approved by an administrator. | `true`. If you set the value to `false`, make sure you define providers that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
 
 To change these settings:
 
-- **For Omnibus package**
+  ::Tabs
 
-  1. Open the configuration file:
+  :::TabTitle Omnibus
 
-     ```shell
-     sudo editor /etc/gitlab/gitlab.rb
-     ```
-
-  1. Update the following section:
+  1. Edit `/etc/gitlab/gitlab.rb` and update the following section:
 
      ```ruby
      # CAUTION!
@@ -71,13 +67,47 @@ To change these settings:
      gitlab_rails['omniauth_block_auto_created_users'] = true
      ```
 
-- **For installations from source**
+  1. Reconfigure GitLab:
+
+     ```shell
+     sudo gitlab-ctl reconfigure
+     ```
+
+  :::TabTitle Helm chart
+
+  1. Export the Helm values:
+
+     ```shell
+     helm get values gitlab > gitlab_values.yaml
+     ```
+
+  1. Edit `gitlab_values.yaml`, and update the `omniauth` section under `globals.appConfig`:
+
+     ```yaml
+     global:
+       appConfig:
+         omniauth:
+           enabled: true
+           allowSingleSignOn: ['saml', 'twitter']
+           autoLinkLdapUser: false
+           blockAutoCreatedUsers: true
+     ```
+
+     For more details, see the
+     [globals documentation](https://docs.gitlab.com/charts/charts/globals.html#omniauth).
+
+  1. Apply the new values:
+
+     ```shell
+     helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+     ```
+
+  :::TabTitle Source
 
   1. Open the configuration file:
 
      ```shell
      cd /home/git/gitlab
-
      sudo -u git -H editor config/gitlab.yml
      ```
 
@@ -101,6 +131,14 @@ To change these settings:
        # Locks down those users until they have been cleared by the admin (default: true).
        block_auto_created_users: true
      ```
+
+  1. Restart GitLab:
+
+     ```shell
+     sudo service gitlab restart
+     ```
+
+  ::EndTabs
 
 After configuring these settings, you can configure
 your chosen [provider](#supported-providers).

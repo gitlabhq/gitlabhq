@@ -207,7 +207,8 @@ the appropriate project and followed up from there.
 
 ### Fields in the new issue form
 
-> Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
+> - Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
+> - Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
 
 When you're creating a new issue, you can complete the following fields:
 
@@ -222,6 +223,7 @@ When you're creating a new issue, you can complete the following fields:
 - [Due date](due_dates.md)
 - [Milestone](../milestones/index.md)
 - [Labels](../labels.md)
+- [Iteration](../../group/iterations/index.md)
 
 ## Edit an issue
 
@@ -339,6 +341,29 @@ To move an issue:
 1. Select **Move**.
 
 ### Bulk move issues **(FREE SELF)**
+
+#### From the issues list
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
+
+You can move multiple issues at the same time when you’re in a project.
+You can't move tasks or test cases.
+
+Prerequisite:
+
+- You must have at least the Reporter role for the project.
+
+To move multiple issues at the same time:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Issues**.
+1. Select **Edit issues**. A sidebar on the right of your screen appears.
+1. Select the checkboxes next to each issue you want to move.
+1. From the right sidebar, select **Move selected**.
+1. From the dropdown list, select the destination project.
+1. Select **Move**.
+
+#### From the Rails console
 
 You can move all open issues from one project to another.
 
@@ -586,7 +611,7 @@ To filter the list of issues:
 1. Select or type the operator to use for filtering the attribute. The following operators are
    available:
    - `=`: Is
-   - `!=`: Is not ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18059) in GitLab 12.7)
+   - `!=`: Is not one of
 1. Enter the text to filter the attribute by.
    You can filter some attributes by **None** or **Any**.
 1. Repeat this process to filter by multiple attributes. Multiple attributes are joined by a logical
@@ -594,6 +619,21 @@ To filter the list of issues:
 
 GitLab displays the results on-screen, but you can also
 [retrieve them as an RSS feed](../../search/index.md#retrieve-search-results-as-feed).
+
+### Filter with the OR operator
+
+> OR filtering for assignees was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available.
+To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `or_issuable_queries`.
+The feature is not ready for production use.
+
+When this feature is enabled, you can use the OR operator (**is one of: `||`**)
+when you [filter the list of issues](#filter-the-list-of-issues).
+
+`is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
+`Assignee is one of Zhang Wei`, GitLab shows issues where either Sidney, Zhang, or both of them are assignees.
 
 ### Filter issues by ID
 
@@ -648,7 +688,7 @@ you can see the change without having to refresh the page.
 The following sections are updated in real time:
 
 - [Assignee](#assignee)
-- Labels, [if enabled](../labels.md#real-time-changes-to-labels)
+- [Labels](../labels.md#assign-and-unassign-labels)
 
 ## Assignee
 

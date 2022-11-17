@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe Projects::MergeRequestsController do
   include ProjectForksHelper
   include Gitlab::Routing
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_refind(:project) { create(:project, :repository) }
   let_it_be_with_reload(:project_public_with_private_builds) { create(:project, :repository, :public, :builds_private) }
@@ -708,12 +709,14 @@ RSpec.describe Projects::MergeRequestsController do
   end
 
   describe 'GET commits' do
-    def go(format: 'html')
+    def go(page: nil, per_page: 1, format: 'html')
       get :commits,
           params: {
             namespace_id: project.namespace.to_param,
             project_id: project,
-            id: merge_request.iid
+            id: merge_request.iid,
+            page: page,
+            per_page: per_page
           },
           format: format
     end
@@ -723,6 +726,27 @@ RSpec.describe Projects::MergeRequestsController do
 
       expect(response).to render_template('projects/merge_requests/_commits')
       expect(json_response).to have_key('html')
+      expect(json_response).to have_key('next_page')
+      expect(json_response['next_page']).to eq(2)
+    end
+
+    describe 'pagination' do
+      where(:page, :next_page) do
+        1 | 2
+        2 | 3
+        3 | nil
+      end
+
+      with_them do
+        it "renders the commits for page #{params[:page]}" do
+          go format: 'json', page: page, per_page: 10
+
+          expect(response).to render_template('projects/merge_requests/_commits')
+          expect(json_response).to have_key('html')
+          expect(json_response).to have_key('next_page')
+          expect(json_response['next_page']).to eq(next_page)
+        end
+      end
     end
   end
 
@@ -1756,7 +1780,7 @@ RSpec.describe Projects::MergeRequestsController do
     end
 
     it 'renders MergeRequest as JSON' do
-      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'merge_status', 'can_be_merged', 'current_user')
+      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'current_user')
     end
   end
 
@@ -1790,7 +1814,7 @@ RSpec.describe Projects::MergeRequestsController do
     it 'renders MergeRequest as JSON' do
       subject
 
-      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'merge_status', 'can_be_merged', 'current_user')
+      expect(json_response.keys).to include('id', 'iid', 'title', 'has_ci', 'current_user')
     end
   end
 

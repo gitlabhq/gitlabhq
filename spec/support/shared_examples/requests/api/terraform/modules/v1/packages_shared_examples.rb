@@ -63,9 +63,9 @@ RSpec.shared_examples 'redirects to version download' do |user_type, status, add
     it 'returns a valid response' do
       subject
 
-      expect(request.url).to include 'module-1/system/download'
+      expect(request.url).to include "#{package.name}/download"
       expect(response.headers).to include 'Location'
-      expect(response.headers['Location']).to include 'module-1/system/1.0.1/download'
+      expect(response.headers['Location']).to include "#{package.name}/1.0.1/download"
     end
   end
 end

@@ -4,6 +4,6 @@ classes:
 - ProtectedBranch::RequiredCodeOwnersSection
 feature_categories:
 - source_code_management
-description: TODO
+description: Keeps required code owners sections
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43573
 milestone: '13.5'

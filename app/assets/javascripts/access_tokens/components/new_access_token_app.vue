@@ -104,18 +104,13 @@ export default {
     @[$options.EVENT_ERROR]="onError"
     @[$options.EVENT_SUCCESS]="onSuccess"
   >
-    <div ref="container">
+    <div ref="container" data-testid="access-token-section" data-qa-selector="access_token_section">
       <template v-if="newToken">
-        <!-- 
-          After issue https://gitlab.com/gitlab-org/gitlab/-/issues/360921 is
-          closed remove the `initial-visibility`.
-         -->
         <input-copy-toggle-visibility
           :copy-button-title="copyButtonTitle"
           :label="label"
           :label-for="$options.tokenInputId"
           :value="newToken"
-          initial-visibility
           :form-input-group-props="formInputGroupProps"
         >
           <template #description>

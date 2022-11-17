@@ -2,12 +2,62 @@
 
 exports[`PackagesListApp renders 1`] = `
 <div>
+  <!---->
+   
+  <gl-card-stub
+    bodyclass="gl-display-flex gl-p-0!"
+    class="gl-px-8 gl-py-6 gl-line-height-20 gl-mt-3"
+    footerclass=""
+    headerclass=""
+  >
+    <!---->
+     
+    <div
+      class="gl-banner-content"
+    >
+      <h2
+        class="gl-banner-title"
+      >
+        Help us learn about your registry migration needs
+      </h2>
+       
+      <p>
+        If you are interested in migrating packages from your private registry to the GitLab Package Registry, take our survey and tell us more about your needs.
+      </p>
+       
+      <gl-button-stub
+        buttontextclasses=""
+        category="primary"
+        data-testid="gl-banner-primary-button"
+        href="https://gitlab.fra1.qualtrics.com/jfe/form/SV_cHomH9FPzOaiDTU"
+        icon=""
+        size="medium"
+        variant="confirm"
+      >
+        Take survey
+      </gl-button-stub>
+       
+    </div>
+     
+    <gl-button-stub
+      aria-label="Close banner"
+      buttontextclasses=""
+      category="tertiary"
+      class="gl-banner-close"
+      icon="close"
+      size="small"
+      variant="default"
+    />
+  </gl-card-stub>
+   
   <package-title-stub
     count="2"
     helpurl="/help/user/packages/index"
   />
    
-  <package-search-stub />
+  <package-search-stub
+    class="gl-mb-5"
+  />
    
   <div>
     <section
@@ -69,5 +119,7 @@ exports[`PackagesListApp renders 1`] = `
       </div>
     </section>
   </div>
+   
+  <div />
 </div>
 `;

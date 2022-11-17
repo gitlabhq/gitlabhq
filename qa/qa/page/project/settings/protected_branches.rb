@@ -6,8 +6,8 @@ module QA
       module Settings
         class ProtectedBranches < Page::Base
           view 'app/views/projects/protected_branches/shared/_dropdown.html.haml' do
-            element :protected_branch_select
             element :protected_branch_dropdown
+            element :protected_branch_dropdown_content
           end
 
           view 'app/views/projects/protected_branches/_create_protected_branch.html.haml' do
@@ -22,9 +22,9 @@ module QA
           end
 
           def select_branch(branch_name)
-            click_element :protected_branch_select
+            click_element :protected_branch_dropdown
 
-            within_element(:protected_branch_dropdown) do
+            within_element(:protected_branch_dropdown_content) do
               click_on branch_name
             end
           end

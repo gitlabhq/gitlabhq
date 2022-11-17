@@ -9,7 +9,8 @@ module QA
     quarantine: {
       issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/338179',
       type: :bug
-    }
+    },
+    product_group: :editor
   ) do
     describe 'Web IDE web terminal' do
       before do

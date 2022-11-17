@@ -8,17 +8,12 @@ module API
     resource :user_counts do
       desc 'Return the user specific counts' do
         detail 'Assigned open issues, assigned MRs and pending todos count'
+        success Entities::UserCounts
       end
       get do
         unauthorized! unless current_user
 
-        {
-          merge_requests: current_user.assigned_open_merge_requests_count, # @deprecated
-          assigned_issues: current_user.assigned_open_issues_count,
-          assigned_merge_requests: current_user.assigned_open_merge_requests_count,
-          review_requested_merge_requests: current_user.review_requested_open_merge_requests_count,
-          todos: current_user.todos_pending_count
-        }
+        present current_user, with: Entities::UserCounts
       end
     end
   end

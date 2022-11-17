@@ -163,6 +163,7 @@ overrides:
       - '*.stories.js'
     rules:
       filenames/match-regex: off
+      '@gitlab/require-i18n-strings': off
   - files:
       - '*.graphql'
     plugins:

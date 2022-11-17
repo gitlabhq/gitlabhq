@@ -22,7 +22,7 @@ module Gitlab
           def call
             heap_fragmentation = Gitlab::Metrics::Memory.gc_heap_fragmentation
 
-            return { threshold_violated: false, payload: {} } unless heap_fragmentation > max_heap_fragmentation
+            return { threshold_violated: false, payload: {} } if heap_fragmentation <= max_heap_fragmentation
 
             { threshold_violated: true, payload: payload(heap_fragmentation) }
           end

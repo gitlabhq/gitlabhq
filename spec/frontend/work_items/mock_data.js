@@ -41,6 +41,7 @@ export const workItemQueryResponse = {
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
+      iid: '1',
       title: 'Test',
       state: 'OPEN',
       description: 'description',
@@ -113,6 +114,7 @@ export const updateWorkItemMutationResponse = {
       workItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -178,6 +180,19 @@ export const mockParent = {
   },
 };
 
+export const descriptionTextWithCheckboxes = `- [ ] todo 1\n- [ ] todo 2`;
+
+export const descriptionHtmlWithCheckboxes = `
+  <ul dir="auto" class="task-list" data-sourcepos"1:1-2:12">
+    <li class="task-list-item" data-sourcepos="1:1-1:11">
+      <input class="task-list-item-checkbox" type="checkbox"> todo 1
+    </li>
+    <li class="task-list-item" data-sourcepos="2:1-2:12">
+      <input class="task-list-item-checkbox" type="checkbox"> todo 2
+    </li>
+  </ul>
+`;
+
 export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
@@ -193,12 +208,14 @@ export const workItemResponseFactory = ({
   allowsScopedLabels = false,
   lastEditedAt = null,
   lastEditedBy = null,
+  withCheckboxes = false,
   parent = mockParent.parent,
 } = {}) => ({
   data: {
     workItem: {
       __typename: 'WorkItem',
       id: 'gid://gitlab/WorkItem/1',
+      iid: 1,
       title: 'Updated title',
       state: 'OPEN',
       description: 'description',
@@ -224,9 +241,10 @@ export const workItemResponseFactory = ({
         {
           __typename: 'WorkItemWidgetDescription',
           type: 'DESCRIPTION',
-          description: 'some **great** text',
-          descriptionHtml:
-            '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
+          description: withCheckboxes ? descriptionTextWithCheckboxes : 'some **great** text',
+          descriptionHtml: withCheckboxes
+            ? descriptionHtmlWithCheckboxes
+            : '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
           lastEditedAt,
           lastEditedBy,
         },
@@ -283,11 +301,12 @@ export const workItemResponseFactory = ({
         milestoneWidgetPresent
           ? {
               __typename: 'WorkItemWidgetMilestone',
-              dueDate: null,
-              expired: false,
-              id: 'gid://gitlab/Milestone/30',
-              title: 'v4.0',
               type: 'MILESTONE',
+              milestone: {
+                expired: false,
+                id: 'gid://gitlab/Milestone/30',
+                title: 'v4.0',
+              },
             }
           : { type: 'MOCK TYPE' },
         {
@@ -312,7 +331,8 @@ export const workItemResponseFactory = ({
 export const projectWorkItemTypesQueryResponse = {
   data: {
     workspace: {
-      id: 'gid://gitlab/WorkItem/1',
+      __typename: 'Project',
+      id: 'gid://gitlab/Project/2',
       workItemTypes: {
         nodes: [
           { id: 'gid://gitlab/WorkItems::Type/1', name: 'Issue' },
@@ -331,6 +351,7 @@ export const createWorkItemMutationResponse = {
       workItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
         title: 'Updated title',
         state: 'OPEN',
         description: 'description',
@@ -368,6 +389,7 @@ export const createWorkItemFromTaskMutationResponse = {
         __typename: 'WorkItem',
         description: 'New description',
         id: 'gid://gitlab/WorkItem/1',
+        iid: '1',
         title: 'Updated title',
         state: 'OPEN',
         confidential: false,
@@ -405,6 +427,7 @@ export const createWorkItemFromTaskMutationResponse = {
       newWorkItem: {
         __typename: 'WorkItem',
         id: 'gid://gitlab/WorkItem/1000000',
+        iid: '100',
         title: 'Updated title',
         state: 'OPEN',
         createdAt: '2022-08-03T12:41:54Z',
@@ -498,6 +521,28 @@ export const workItemTitleSubscriptionResponse = {
   },
 };
 
+export const workItemDescriptionSubscriptionResponse = {
+  data: {
+    issuableDescriptionUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetDescription',
+          type: 'DESCRIPTION',
+          description: 'New description',
+          descriptionHtml: '<p>New description</p>',
+          lastEditedAt: '2022-09-21T06:18:42Z',
+          lastEditedBy: {
+            id: 'gid://gitlab/User/2',
+            name: 'Someone else',
+            webPath: '/not-you',
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const workItemWeightSubscriptionResponse = {
   data: {
     issuableWeightUpdated: {
@@ -560,6 +605,25 @@ export const workItemIterationSubscriptionResponse = {
             iid: '95',
             startDate: '2022-06-22',
             title: 'Iteration subcription title',
+          },
+        },
+      ],
+    },
+  },
+};
+
+export const workItemMilestoneSubscriptionResponse = {
+  data: {
+    issuableMilestoneUpdated: {
+      id: 'gid://gitlab/WorkItem/1',
+      widgets: [
+        {
+          __typename: 'WorkItemWidgetMilestone',
+          type: 'MILESTONE',
+          milestone: {
+            id: 'gid://gitlab/Milestone/1125',
+            expired: false,
+            title: 'Milestone title',
           },
         },
       ],
@@ -776,6 +840,7 @@ export const changeWorkItemParentMutationResponse = {
         },
         description: null,
         id: 'gid://gitlab/WorkItem/2',
+        iid: '2',
         state: 'OPEN',
         title: 'Foo',
         confidential: false,
@@ -809,22 +874,20 @@ export const availableWorkItemsResponse = {
       __typename: 'Project',
       id: 'gid://gitlab/Project/2',
       workItems: {
-        edges: [
+        nodes: [
           {
-            node: {
-              id: 'gid://gitlab/WorkItem/458',
-              title: 'Task 1',
-              state: 'OPEN',
-              createdAt: '2022-08-03T12:41:54Z',
-            },
+            id: 'gid://gitlab/WorkItem/458',
+            title: 'Task 1',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            __typename: 'WorkItem',
           },
           {
-            node: {
-              id: 'gid://gitlab/WorkItem/459',
-              title: 'Task 2',
-              state: 'OPEN',
-              createdAt: '2022-08-03T12:41:54Z',
-            },
+            id: 'gid://gitlab/WorkItem/459',
+            title: 'Task 2',
+            state: 'OPEN',
+            createdAt: '2022-08-03T12:41:54Z',
+            __typename: 'WorkItem',
           },
         ],
       },
@@ -1072,7 +1135,7 @@ export const groupIterationsResponseWithNoIterations = {
 };
 
 export const mockMilestoneWidgetResponse = {
-  dueDate: null,
+  state: 'active',
   expired: false,
   id: 'gid://gitlab/Milestone/30',
   title: 'v4.0',
@@ -1119,6 +1182,17 @@ export const projectMilestonesResponseWithNoMilestones = {
         __typename: 'MilestoneConnection',
       },
       __typename: 'Project',
+    },
+  },
+};
+
+export const projectWorkItemResponse = {
+  data: {
+    workspace: {
+      id: 'gid://gitlab/Project/1',
+      workItems: {
+        nodes: [workItemQueryResponse.data.workItem],
+      },
     },
   },
 };

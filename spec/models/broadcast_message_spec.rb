@@ -27,6 +27,13 @@ RSpec.describe BroadcastMessage do
     it { is_expected.to validate_inclusion_of(:target_access_levels).in_array(described_class::ALLOWED_TARGET_ACCESS_LEVELS) }
   end
 
+  describe 'default values' do
+    subject(:message) { described_class.new }
+
+    it { expect(message.color).to eq('#E75E40') }
+    it { expect(message.font).to eq('#FFFFFF') }
+  end
+
   shared_examples 'time constrainted' do |broadcast_type|
     it 'returns message if time match' do
       message = create(:broadcast_message, broadcast_type: broadcast_type)

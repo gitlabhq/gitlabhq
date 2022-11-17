@@ -4,96 +4,96 @@ group: Pipeline Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Review Apps **(FREE)**
+# Review apps **(FREE)**
 
-Review Apps is a collaboration tool that assists with providing an environment to showcase product changes.
+Review apps are a collaboration tool that provide an environment to showcase product changes.
 
 NOTE:
 If you have a Kubernetes cluster, you can automate this feature in your applications
 by using [Auto DevOps](../../topics/autodevops/index.md).
 
-Review Apps:
+Review apps:
 
 - Provide an automatic live preview of changes made in a feature branch by spinning up a dynamic environment for your merge requests.
 - Allow designers and product managers to see your changes without needing to check out your branch and run your changes in a sandbox environment.
 - Are fully integrated with the [GitLab DevOps LifeCycle](../../index.md#the-entire-devops-lifecycle).
 - Allow you to deploy your changes wherever you want.
 
-![Review Apps Workflow](img/continuous-delivery-review-apps.svg)
+![review apps workflow](img/continuous-delivery-review-apps.svg)
 
 In the previous example:
 
-- A Review App is built every time a commit is pushed to `topic branch`.
+- A review app is built every time a commit is pushed to `topic branch`.
 - The reviewer fails two reviews before passing the third review.
 - After the review passes, `topic branch` is merged into the default branch, where it's deployed to staging.
 - After its approval in staging, the changes that were merged into the default branch are deployed to production.
 
-## How Review Apps work
+## How review apps work
 
-A Review App is a mapping of a branch with an [environment](../environments/index.md).
-Access to the Review App is made available as a link on the [merge request](../../user/project/merge_requests/index.md) relevant to the branch.
+A review app is a mapping of a branch with an [environment](../environments/index.md).
+Access to the review app is made available as a link on the [merge request](../../user/project/merge_requests/index.md) relevant to the branch.
 
 The following is an example of a merge request with an environment set dynamically.
 
-![Review App in merge request](img/review_apps_preview_in_mr.png)
+![review app in merge request](img/review_apps_preview_in_mr.png)
 
 In this example, a branch was:
 
 - Successfully built.
 - Deployed under a dynamic environment that can be reached by selecting **View app**.
 
-After adding Review Apps to your workflow, you follow the branched Git flow. That is:
+After adding review apps to your workflow, you follow the branched Git flow. That is:
 
-1. Push a branch and let the runner deploy the Review App based on the `script` definition of the dynamic environment job.
+1. Push a branch and let the runner deploy the review app based on the `script` definition of the dynamic environment job.
 1. Wait for the runner to build and deploy your web application.
 1. To view the changes live, select the link in the merge request related to the branch.
 
-## Configuring Review Apps
+## Configuring review apps
 
-Review Apps are built on [dynamic environments](../environments/index.md#create-a-dynamic-environment), which allow you to dynamically create a new environment for each branch.
+Review apps are built on [dynamic environments](../environments/index.md#create-a-dynamic-environment), which allow you to dynamically create a new environment for each branch.
 
-The process of configuring Review Apps is as follows:
+The process of configuring review apps is as follows:
 
-1. Set up the infrastructure to host and deploy the Review Apps (check the [examples](#review-apps-examples) below).
+1. Set up the infrastructure to host and deploy the review apps (check the [examples](#review-apps-examples) below).
 1. [Install](https://docs.gitlab.com/runner/install/) and [configure](https://docs.gitlab.com/runner/commands/) a runner to do deployment.
 1. Set up a job in `.gitlab-ci.yml` that uses the [predefined CI/CD variable](../variables/index.md) `${CI_COMMIT_REF_SLUG}`
    to create dynamic environments and restrict it to run only on branches.
-   Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-apps-button) for your project.
-1. Optionally, set a job that [manually stops](../environments/index.md#stop-an-environment) the Review Apps.
+   Alternatively, you can get a YAML template for this job by [enabling review apps](#enable-review-app-button) for your project.
+1. Optionally, set a job that [manually stops](../environments/index.md#stop-an-environment) the review apps.
 
-### Enable Review Apps button
+### Enable review app button
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118844) in GitLab 12.8.
 
-When configuring Review Apps for a project, you add a new job to the `.gitlab-ci.yml` file,
+When configuring review apps for a project, you add a new job to the `.gitlab-ci.yml` file,
 as mentioned above. To facilitate this, and if you are using Kubernetes, you can select
-**Enable Review Apps** and GitLab prompts you with a template code block that
+**Enable review app** and GitLab prompts you with a template code block that
 you can copy and paste into `.gitlab-ci.yml` as a starting point.
 
 Prerequisite:
 
 - You need at least the Developer role for the project.
 
-To use the Review Apps template:
+To use the review apps template:
 
-1. On the top bar, select **Main menu > Projects** and find the project you want to create a Review App job for.
+1. On the top bar, select **Main menu > Projects** and find the project you want to create a review app job for.
 1. On the left sidebar, select **Deployments > Environments**.
-1. Select **Enable Review Apps**.
+1. Select **Enable review app**.
 1. Copy the provided code snippet and paste it into your
    `.gitlab-ci.yml` file:
 
-   ![Enable Review Apps modal](img/enable_review_app_v12_8.png)
+   ![enable review apps modal](img/enable_review_app_v12_8.png)
 
 You can edit this template as needed.
 
-## Review Apps auto-stop
+## Review apps auto-stop
 
-See how to [configure Review Apps environments to expire and auto-stop](../environments/index.md#stop-an-environment-after-a-certain-time-period)
+See how to [configure review apps environments to expire and auto-stop](../environments/index.md#stop-an-environment-after-a-certain-time-period)
 after a given period of time.
 
-## Review Apps examples
+## Review apps examples
 
-The following are example projects that demonstrate Review App configuration:
+The following are example projects that demonstrate review app configuration:
 
 | Project                                                                 | Configuration file |
 |-------------------------------------------------------------------------|--------------------|
@@ -104,17 +104,17 @@ The following are example projects that demonstrate Review App configuration:
 | [`https://about.gitlab.com/`](https://gitlab.com/gitlab-com/www-gitlab-com/)       | [`.gitlab-ci.yml`](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/6ffcdc3cb9af2abed490cbe5b7417df3e83cd76c/.gitlab-ci.yml#L332) |
 | [GitLab Insights](https://gitlab.com/gitlab-org/gitlab-insights/)       | [`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-insights/-/blob/9e63f44ac2a5a4defc965d0d61d411a768e20546/.gitlab-ci.yml#L234) |
 
-Other examples of Review Apps:
+Other examples of review apps:
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [Cloud Native Development with GitLab](https://www.youtube.com/watch?v=jfIyQEwrocw).
-- [Review Apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
+- [Review apps for Android](https://about.gitlab.com/blog/2020/05/06/how-to-create-review-apps-for-android-with-gitlab-fastlane-and-appetize-dot-io/).
 
 ## Route Maps
 
 Route Maps allows you to go directly from source files
 to public pages on the [environment](../environments/index.md) defined for
-Review Apps.
+review apps.
 
 Once set up, the review app link in the merge request
 widget can take you directly to the pages changed, making it easier
@@ -198,7 +198,7 @@ After you have the route mapping set up, it takes effect in the following locati
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10761) in GitLab 12.0.
 > - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 > - It's [deployed behind a feature flag](../../user/feature_flags.md), `anonymous_visual_review_feedback`, disabled by default.
-> - It's enabled on GitLab.com.
+> - It's disabled on GitLab.com.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -209,7 +209,7 @@ With Visual Reviews, members of any team (Product, Design, Quality, and so on) c
 ### Using Visual Reviews
 
 After Visual Reviews has been [configured](#configure-review-apps-for-visual-reviews) for the
-Review App, the Visual Reviews feedback form is overlaid on the right side of every page.
+review app, the Visual Reviews feedback form is overlaid on the right side of every page.
 
 ![Visual review feedback form](img/toolbar_feedback_form_v13_5.png)
 
@@ -227,9 +227,9 @@ To use the feedback form to make a comment in the merge request:
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 To see Visual reviews in action, see the [Visual Reviews Walk through](https://youtu.be/1_tvWTlPfM4).
 
-### Configure Review Apps for Visual Reviews
+### Configure review apps for Visual Reviews
 
-The feedback form is served through a script you add to pages in your Review App.
+The feedback form is served through a script you add to pages in your review app.
 It should be added to the `<head>` of your application and
 consists of some project and merge request specific values. Here's how it
 looks for a project with code hosted in a project on GitLab.com:

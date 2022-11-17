@@ -45,26 +45,14 @@ flowchart RL
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
-    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 Add users to a project so they become members and have permission
 to perform actions.
 
-The maximum role (access level) you set depends on if you have the Owner or Maintainer role for the group. For example, the maximum
-role that can be set is:
-
-- Owner (`50`), if you have the Owner role for the project.
-- Maintainer (`40`), if you have the Maintainer role on the project.
-
-In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
-The Owner [role](../../permissions.md#project-members-permissions) can only be added at the group level.
-
 Prerequisite:
 
-- You must have the Maintainer or Owner role:
-  - To remove direct members with the Maintainer role and below, you must have the Maintainer role.
-  - To remove members with the Owner role, you must have the Owner role.
+- You must have the Owner or Maintainer role.
 
 To add a user to a project:
 
@@ -73,7 +61,7 @@ To add a user to a project:
 1. Select **Invite members**.
 1. Enter an email address and select a [role](../../permissions.md).
 1. Optional. Select an **Access expiration date**.
-   On that date, the user can no longer access the project.
+   From that date onwards, the user can no longer access the project.
 1. Select **Invite**.
 
 If the user has a GitLab account, they are added to the members list.
@@ -86,12 +74,22 @@ deleted after 90 days.
 If the user does not have a GitLab account, they are prompted to create an account
 using the email address the invitation was sent to.
 
+### Which roles you can assign
+
+The maximum role you can assign depends on whether you have the Owner or Maintainer
+role for the group. For example, the maximum role you can set is:
+
+- Owner (`50`), if you have the Owner role for the project.
+- Maintainer (`40`), if you have the Maintainer role on the project.
+
+In GitLab 14.8 and earlier, direct members of a project have a maximum role of Maintainer.
+The Owner [role](../../permissions.md#project-members-permissions) can be added for the group only.
+
 ## Add groups to a project
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal window [with a flag](../../feature_flags.md). Disabled by default.
 > - Modal window [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 14.8.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9.
-    [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) in GitLab 14.9. [Feature flag `invite_members_group_modal`](https://gitlab.com/gitlab-org/gitlab/-/issues/352526) removed.
 
 When you add a group to a project, each user in the group gets access to the project.
 Each user's access is based on:
@@ -99,19 +97,20 @@ Each user's access is based on:
 - The role they're assigned in the group.
 - The maximum role you choose when you invite the group.
 
-Prerequisite:
+Prerequisites:
 
 - You must have the Maintainer or Owner role.
 - Sharing the project with other groups must not be [prevented](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
 
-To add groups to a project:
+To add a group to a project:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Project information > Members**.
 1. Select **Invite a group**.
 1. Select a group.
 1. Select the highest [role](../../permissions.md) for users in the group.
-1. Optional. Select an **Access expiration date**. On that date, the group can no longer access the project.
+1. Optional. Select an **Access expiration date**.
+   From that date onwards, the group can no longer access the project.
 1. Select **Invite**.
 
 The members of the group are not displayed on the **Members** tab.
@@ -169,7 +168,9 @@ group itself.
 
 Prerequisites:
 
-- You must have the Maintainer or Owner role.
+- To remove direct members with the:
+  - Maintainer, Developer, Reporter, or Guest role, you must have the Maintainer role.
+  - Owner role, you must have the Owner role.
 - Optional. Unassign the member from all issues and merge requests that
   are assigned to them.
 
@@ -186,6 +187,21 @@ To remove a member from a project:
    to prevent projects in a group
    [from being forked outside their group](../../group/access_and_permissions.md#prevent-project-forking-outside-group).
 1. Select **Remove member**.
+
+## Ensure removed users cannot invite themselves back
+
+Malicious users with the Maintainer or Owner role could exploit a race condition that allows
+them to invite themselves back to a group or project that a GitLab administrator has removed them from.
+
+To avoid this problem, GitLab administrators can:
+
+- Remove the malicious user session from the [GitLab Rails console](../../../administration/operations/rails_console.md).
+- Impersonate the malicious user to:
+  - Remove the user from the project.
+  - Log the user out of GitLab.
+- Block the malicious user account.
+- Remove the malicious user account.
+- Change the password for the malicious user account.
 
 ## Filter and sort members
 

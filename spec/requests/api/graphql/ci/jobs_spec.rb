@@ -109,7 +109,7 @@ RSpec.describe 'Query.project.pipeline' do
             'name' => 'docker 1 2',
             'needs' => { 'nodes' => [] },
             'previousStageJobsOrNeeds' => { 'nodes' => [
-              a_hash_including( 'name' => 'my test job' )
+              a_hash_including('name' => 'my test job')
             ] }
           ),
           a_hash_including(
@@ -129,7 +129,7 @@ RSpec.describe 'Query.project.pipeline' do
             'name' => 'rspec 2 2',
             'needs' => { 'nodes' => [a_hash_including('name' => 'my test job')] },
             'previousStageJobsOrNeeds' => { 'nodes' => [
-              a_hash_including('name' => 'my test job' )
+              a_hash_including('name' => 'my test job')
             ] }
           )
         )

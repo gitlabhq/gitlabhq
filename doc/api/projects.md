@@ -243,6 +243,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "auto_devops_enabled": false,
     "auto_devops_deploy_strategy": "continuous",
     "autoclose_referenced_issues": true,
@@ -421,6 +422,7 @@ GET /users/:user_id/projects
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
     "marked_for_deletion_on": "2020-04-03",
     "statistics": {
@@ -544,6 +546,7 @@ GET /users/:user_id/projects
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -677,6 +680,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -793,6 +797,7 @@ Example response:
     "suggestion_commit_message": null,
     "merge_commit_template": null,
     "squash_commit_template": null,
+    "issue_branch_template": "gitlab/%{id}-%{title}",
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -969,6 +974,7 @@ GET /projects/:id
   "enforce_auth_checks_on_uploads": true,
   "merge_commit_template": null,
   "squash_commit_template": null,
+  "issue_branch_template": "gitlab/%{id}-%{title}",
   "marked_for_deletion_at": "2020-04-03", // Deprecated and will be removed in API v5 in favor of marked_for_deletion_on
   "marked_for_deletion_on": "2020-04-03",
   "compliance_frameworks": [ "sox" ],
@@ -1334,6 +1340,7 @@ POST /projects/user/:user_id
 | `shared_runners_enabled`                                    | boolean | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
+| `issue_branch_template`                                     | string  | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/repository/web_editor.md#create-a-new-branch-from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
 | `squash_commit_template`                                    | string  | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |
 | `squash_option`                                             | string  | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                                 | string  | **{dotted-circle}** No | The commit message used to apply merge request [suggestions](../user/project/merge_requests/reviews/suggestions.md). |
@@ -1385,7 +1392,7 @@ Supported attributes:
 | `builds_access_level`                                       | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `ci_config_path`                                            | string         | **{dotted-circle}** No | The path to CI configuration file. |
 | `ci_default_git_depth`                                      | integer        | **{dotted-circle}** No | Default number of revisions for [shallow cloning](../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone). |
-| `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | When a new deployment job starts, [skip older deployment jobs](../ci/pipelines/settings.md#skip-outdated-deployment-jobs) that are still pending |
+| `ci_forward_deployment_enabled`                             | boolean        | **{dotted-circle}** No | Enable or disable [prevent outdated deployment jobs](../ci/pipelines/settings.md#prevent-outdated-deployment-jobs). |
 | `ci_allow_fork_pipelines_to_run_in_parent_project`          | boolean        | **{dotted-circle}** No | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                                       | boolean        | **{dotted-circle}** No | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `container_expiration_policy_attributes`                    | hash           | **{dotted-circle}** No | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
@@ -1439,6 +1446,7 @@ Supported attributes:
 | `shared_runners_enabled`                                    | boolean        | **{dotted-circle}** No | Enable shared runners for this project. |
 | `snippets_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `snippets_enabled`                                          | boolean        | **{dotted-circle}** No | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
+| `issue_branch_template`                                     | string         | **{dotted-circle}** No | Template used to suggest names for [branches created from issues](../user/project/repository/web_editor.md#create-a-new-branch-from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
 | `squash_commit_template`                                    | string         | **{dotted-circle}** No | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345275) in GitLab 14.6.)_ |
 | `squash_option`                                             | string         | **{dotted-circle}** No | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                                 | string         | **{dotted-circle}** No | The commit message used to apply merge request suggestions. |
@@ -2829,6 +2837,42 @@ Read more in the [Project members](members.md) documentation.
 ## Project vulnerabilities
 
 Read more in the [Project vulnerabilities](project_vulnerabilities.md) documentation.
+
+## Get a project's pull mirror details **(PREMIUM)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354506) in GitLab 15.5.
+
+Returns the details of the project's pull mirror.
+
+```plaintext
+GET /projects/:id/mirror/pull
+```
+
+Supported attributes:
+
+| Attribute | Type  | Required    | Description |
+|:----------|:------|:------------|:------------|
+| `id`      | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/:id/mirror/pull"
+```
+
+Example response:
+
+```json
+{
+  "id": 101486,
+  "last_error": null,
+  "last_successful_update_at": "2020-01-06T17:32:02.823Z",
+  "last_update_at": "2020-01-06T17:32:02.823Z",
+  "last_update_started_at": "2020-01-06T17:31:55.864Z",
+  "update_status": "finished",
+  "url": "https://*****:*****@gitlab.com/gitlab-org/security/gitlab.git"
+}
+```
 
 ## Configure pull mirroring for a project **(PREMIUM)**
 

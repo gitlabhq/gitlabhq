@@ -17,6 +17,7 @@ module GitlabRoutingHelper
   include ::Routing::WikiHelper
   include ::Routing::GraphqlHelper
   include ::Routing::PseudonymizationHelper
+  include ::Routing::PackagesHelper
   included do
     Gitlab::Routing.includes_helpers(self)
   end

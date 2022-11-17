@@ -36,6 +36,11 @@ export default {
       required: false,
       default: 'confirm-danger-button',
     },
+    buttonQaSelector: {
+      type: String,
+      required: false,
+      default: null,
+    },
     buttonVariant: {
       type: String,
       required: false,
@@ -53,7 +58,7 @@ export default {
       :variant="buttonVariant"
       :disabled="disabled"
       :data-testid="buttonTestid"
-      data-qa-selector="confirm_danger_button"
+      :data-qa-selector="buttonQaSelector"
       >{{ buttonText }}</gl-button
     >
     <confirm-danger-modal

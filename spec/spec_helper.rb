@@ -65,7 +65,6 @@ require_relative('../jh/spec/spec_helper') if Gitlab.jh?
 # Requires helpers, and shared contexts/examples first since they're used in other support files
 
 # Load these first since they may be required by other helpers
-require Rails.root.join("spec/support/helpers/git_helpers.rb")
 require Rails.root.join("spec/support/helpers/stub_requests.rb")
 
 # Then the rest
@@ -145,7 +144,7 @@ RSpec.configure do |config|
   config.include NextInstanceOf
   config.include TestEnv
   config.include FileReadHelpers
-  config.include Database::MultipleDatabases
+  config.include Database::MultipleDatabasesHelpers
   config.include Database::WithoutCheckConstraint
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :view
@@ -256,10 +255,6 @@ RSpec.configure do |config|
       # The survey popover can block the diffs causing specs to fail
       stub_feature_flags(mr_experience_survey: false)
 
-      # Merge request widget GraphQL requests are disabled in the tests
-      # for now whilst we migrate as much as we can over the GraphQL
-      # stub_feature_flags(merge_request_widget_graphql: false)
-
       # Using FortiAuthenticator as OTP provider is disabled by default in
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_authenticator: false)
@@ -310,6 +305,10 @@ RSpec.configure do |config|
       # This feature flag is for selectively disabling by actor, therefore we don't enable it by default.
       # See https://docs.gitlab.com/ee/development/feature_flags/#selectively-disable-by-actor
       stub_feature_flags(legacy_merge_request_state_check_for_merged_result_pipelines: false)
+
+      # Disable the `vue_issues_dashboard` feature flag in specs as we migrate the issues
+      # dashboard page to Vue. https://gitlab.com/gitlab-org/gitlab/-/issues/379025
+      stub_feature_flags(vue_issues_dashboard: false)
 
       allow(Gitlab::GitalyClient).to receive(:can_use_disk?).and_return(enable_rugged)
     else

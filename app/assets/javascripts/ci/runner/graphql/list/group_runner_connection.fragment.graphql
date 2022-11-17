@@ -1,0 +1,16 @@
+#import "ee_else_ce/ci/runner/graphql/list/list_item.fragment.graphql"
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+fragment GroupRunnerConnection on CiRunnerConnection {
+  edges {
+    webUrl
+    editUrl
+    node {
+      ...ListItem
+      projectCount # Used to determine why some project runners can't be deleted
+    }
+  }
+  pageInfo {
+    ...PageInfo
+  }
+}

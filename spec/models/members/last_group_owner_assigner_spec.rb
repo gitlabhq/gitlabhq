@@ -7,13 +7,9 @@ RSpec.describe LastGroupOwnerAssigner do
     let_it_be(:user, reload: true) { create(:user) }
     let_it_be(:group) { create(:group) }
 
-    let(:group_member) { user.members.last }
+    let!(:group_member) { group.add_owner(user) }
 
     subject(:assigner) { described_class.new(group, [group_member]) }
-
-    before do
-      group.add_owner(user)
-    end
 
     it "avoids extra database queries utilizing memoization", :aggregate_failures do
       control = ActiveRecord::QueryRecorder.new { assigner.execute }
@@ -56,6 +52,40 @@ RSpec.describe LastGroupOwnerAssigner do
                                                                 .from(nil).to(false)
         end
       end
+
+      context 'with owners from a parent' do
+        context 'when top-level group' do
+          context 'with group sharing' do
+            let!(:subgroup) { create(:group, parent: group) }
+
+            before do
+              create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+              create(:group_member, :owner, group: subgroup)
+            end
+
+            specify do
+              expect { assigner.execute }.to change(group_member, :last_owner)
+                .from(nil).to(true)
+                .and change(group_member, :last_blocked_owner)
+                .from(nil).to(false)
+            end
+          end
+        end
+
+        context 'when subgroup' do
+          let!(:subgroup) { create(:group, parent: group) }
+          let!(:group_member_2) { subgroup.add_owner(user) }
+
+          subject(:assigner) { described_class.new(subgroup, [group_member_2]) }
+
+          specify do
+            expect { assigner.execute }.to change(group_member_2, :last_owner)
+              .from(nil).to(false)
+              .and change(group_member_2, :last_blocked_owner)
+              .from(nil).to(false)
+          end
+        end
+      end
     end
 
     context "when there are blocked owners" do
@@ -91,6 +121,54 @@ RSpec.describe LastGroupOwnerAssigner do
                                            .from(nil).to(false)
                                            .and change(group_member, :last_blocked_owner)
                                                   .from(nil).to(false)
+        end
+      end
+
+      context 'with owners from a parent' do
+        context 'when top-level group' do
+          context 'with group sharing' do
+            let!(:subgroup) { create(:group, parent: group) }
+
+            before do
+              create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+              create(:group_member, :owner, group: subgroup)
+            end
+
+            specify do
+              expect { assigner.execute }.to change(group_member, :last_owner)
+                .from(nil).to(false)
+                .and change(group_member, :last_blocked_owner)
+                .from(nil).to(true)
+            end
+          end
+        end
+
+        context 'when subgroup' do
+          let!(:subgroup) { create(:group, :nested) }
+
+          let!(:group_member) { subgroup.add_owner(user) }
+
+          subject(:assigner) { described_class.new(subgroup, [group_member]) }
+
+          specify do
+            expect { assigner.execute }.to change(group_member, :last_owner)
+              .from(nil).to(false)
+              .and change(group_member, :last_blocked_owner)
+              .from(nil).to(true)
+          end
+
+          context 'with two owners' do
+            before do
+              create(:group_member, :owner, group: subgroup.parent)
+            end
+
+            specify do
+              expect { assigner.execute }.to change(group_member, :last_owner)
+                .from(nil).to(false)
+                .and change(group_member, :last_blocked_owner)
+                .from(nil).to(false)
+            end
+          end
         end
       end
     end

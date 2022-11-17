@@ -3,9 +3,9 @@
 #
 # Checks for use of all uppercase letters with unknown reason.
 #
-# For a list of all options, see https://docs.errata.ai/vale/styles.
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: conditional
-message: "'%s' is uppercase. Use lowercase or `backticks` if possible. Otherwise add this word to the rule's exception list."
+message: "Instead of uppercase for '%s', use lowercase or backticks (`) if possible. Otherwise, add this word or acronym to the rule's exception list."
 link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-uppercase-acronym-test
 level: warning
 ignorecase: false
@@ -25,6 +25,7 @@ exceptions:
   - ARN
   - ASCII
   - ASG
+  - AST
   - AWS
   - BMP
   - BSD
@@ -144,6 +145,7 @@ exceptions:
   - NOTE
   - NPM
   - NTP
+  - OCI
   - OKD
   - ONLY
   - OSS

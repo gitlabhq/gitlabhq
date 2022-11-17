@@ -225,7 +225,7 @@ has more information about building efficient Docker images.
 Methods to reduce Docker image size:
 
 - Use a small base image, for example `debian-slim`.
-- Do not install convenience tools like vim, curl, and so on, if they aren't strictly needed.
+- Do not install convenience tools such as vim or curl if they aren't strictly needed.
 - Create a dedicated development image.
 - Disable man pages and docs installed by packages to save space.
 - Reduce the `RUN` layers and combine software installation steps.

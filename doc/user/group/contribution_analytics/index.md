@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3090) in GitLab 12.2 for subgroups.
 
-With Contribution Analytics, you can get an overview of the [contribution events](../../profile/index.md#user-contribution-events) in your
+With Contribution Analytics, you can get an overview of the [contribution events](../../profile/contributions_calendar.md#user-contribution-events) in your
 group.
 
 - Analyze your team's contributions over a period of time.
@@ -43,7 +43,7 @@ You can choose from the following three periods:
 - Last month
 - Last three months
 
-Select the desired period from the calendar dropdown.
+Select the desired period from the calendar dropdown list.
 
 ![Contribution analytics choose period](img/group_stats_cal.png)
 
@@ -62,6 +62,10 @@ Contributions per group member are also presented in tabular format. Select a co
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
 
+## Contribution analytics GraphQL API
+
+To retrieve metrics for user contributions, use the [GraphQL](../../../api/graphql/reference/index.md#groupcontributions) API.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues
@@ -70,6 +74,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

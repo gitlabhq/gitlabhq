@@ -66,7 +66,7 @@ This means that new dependencies should, at a minimum, meet the following criter
 
 When adding a new gem to our `Gemfile` or even changing versions in
 `Gemfile.lock` it is strongly recommended that you
-[request a Security review](https://about.gitlab.com/handbook/engineering/security/#how-to-request-a-security-review).
+[request a Security review](https://about.gitlab.com/handbook/security/#how-to-request-a-security-review).
 New gems add an extra security risk for GitLab, and it is important to
 evaluate this risk before we ship this to production. Technically, just adding
 a new gem and pushing to a branch in our main `gitlab` project is a security

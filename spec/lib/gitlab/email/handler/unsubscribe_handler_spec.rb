@@ -10,7 +10,7 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
     stub_config_setting(host: 'localhost')
   end
 
-  let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}") }
+  let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX}") }
   let(:project)   { create(:project, :public) }
   let(:user)      { create(:user) }
   let(:noteable)  { create(:issue, project: project) }
@@ -21,19 +21,19 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
     let(:mail) { Mail::Message.new(email_raw) }
 
     it "matches the new format" do
-      handler = described_class.new(mail, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}")
+      handler = described_class.new(mail, "#{mail_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX}")
 
       expect(handler.can_handle?).to be_truthy
     end
 
     it "matches the legacy format" do
-      handler = described_class.new(mail, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY}")
+      handler = described_class.new(mail, "#{mail_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY}")
 
       expect(handler.can_handle?).to be_truthy
     end
 
     it "doesn't match either format" do
-      handler = described_class.new(mail, "+#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX}")
+      handler = described_class.new(mail, "+#{mail_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX}")
 
       expect(handler.can_handle?).to be_falsey
     end
@@ -64,7 +64,7 @@ RSpec.describe Gitlab::Email::Handler::UnsubscribeHandler do
     end
 
     context 'when using old style unsubscribe link' do
-      let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX_LEGACY}") }
+      let(:email_raw) { fixture_file('emails/valid_reply.eml').gsub(mail_key, "#{mail_key}#{Gitlab::Email::Common::UNSUBSCRIBE_SUFFIX_LEGACY}") }
 
       it 'unsubscribes user from notable' do
         expect { receiver.execute }.to change { noteable.subscribed?(user) }.from(true).to(false)

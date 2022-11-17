@@ -44,43 +44,19 @@ RSpec.describe FormHelper do
   describe '#assignees_dropdown_options' do
     let(:merge_request) { build(:merge_request) }
 
-    context "with the :limit_assignees_per_issuable feature flag on" do
-      context "with multiple assignees" do
-        it 'correctly returns the max amount of assignees to allow' do
-          allow(helper).to receive(:merge_request_supports_multiple_assignees?).and_return(true)
+    context "with multiple assignees" do
+      it 'correctly returns the max amount of assignees to allow' do
+        allow(helper).to receive(:merge_request_supports_multiple_assignees?).and_return(true)
 
-          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
-            .to eq(Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
-        end
-      end
-
-      context "with only 1 assignee" do
-        it 'correctly returns the max amount of assignees to allow' do
-          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
-            .to eq(1)
-        end
+        expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
+          .to eq(Issuable::MAX_NUMBER_OF_ASSIGNEES_OR_REVIEWERS)
       end
     end
 
-    context "with the :limit_assignees_per_issuable feature flag off" do
-      before do
-        stub_feature_flags(limit_assignees_per_issuable: false)
-      end
-
-      context "with multiple assignees" do
-        it 'correctly returns the max amount of assignees to allow' do
-          allow(helper).to receive(:merge_request_supports_multiple_assignees?).and_return(true)
-
-          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
-            .to eq(nil)
-        end
-      end
-
-      context "with only 1 assignee" do
-        it 'correctly returns the max amount of assignees to allow' do
-          expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
-            .to eq(1)
-        end
+    context "with only 1 assignee" do
+      it 'correctly returns the max amount of assignees to allow' do
+        expect(helper.assignees_dropdown_options(:merge_request)[:data][:'max-select'])
+          .to eq(1)
       end
     end
   end

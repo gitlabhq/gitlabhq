@@ -148,7 +148,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
       end
 
       context 'when file size is faked by setting the attachment length param to a lower size' do
-        let(:params) { super().deep_merge!( { _attachments: { "#{package_name}-#{version}.tgz" => { data: encoded_package_data, length: 1 } } }) }
+        let(:params) { super().deep_merge!({ _attachments: { "#{package_name}-#{version}.tgz" => { data: encoded_package_data, length: 1 } } }) }
 
         # TODO (technical debt): Extract the package size calculation outside the service and add separate specs for it.
         # Right now we have several contexts here to test the calculation's different scenarios.
@@ -193,7 +193,7 @@ RSpec.describe Packages::Npm::CreatePackageService do
     end
 
     context 'with empty versions' do
-      let(:params) { super().merge!({ versions: {} } ) }
+      let(:params) { super().merge!({ versions: {} }) }
 
       it { expect(subject[:http_status]).to eq 400 }
       it { expect(subject[:message]).to eq 'Version is empty.' }

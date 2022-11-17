@@ -3,7 +3,7 @@
 require 'parallel'
 
 module QA
-  RSpec.describe 'Systems' do
+  RSpec.describe 'Systems', product_group: :gitaly do
     describe 'Gitaly Cluster replication queue', :orchestrated, :gitaly_cluster, :skip_live_env do
       let(:praefect_manager) { Service::PraefectManager.new }
       let(:project) do

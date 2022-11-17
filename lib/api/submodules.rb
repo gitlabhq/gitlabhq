@@ -18,17 +18,34 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The project ID'
+      requires :id,
+        type: String,
+        desc: 'The ID or URL-encoded path of a project',
+        documentation: { example: 'gitlab-org/gitlab' }
     end
-    resource :projects, requirements: Files::FILE_ENDPOINT_REQUIREMENTS do
+    resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Update existing submodule reference in repository' do
-        success Entities::Commit
+        success code: 200, model: Entities::CommitDetail
+        failure [
+          { code: 404, message: '404 Project Not Found' },
+          { code: 401, message: '401 Unauthorized' },
+          { code: 400, message: 'The repository is empty' }
+        ]
       end
       params do
-        requires :submodule, type: String, desc: 'Url encoded full path to submodule.'
-        requires :commit_sha, type: String, desc: 'Commit sha to update the submodule to.'
-        requires :branch, type: String, desc: 'Name of the branch to commit into.'
-        optional :commit_message, type: String, desc: 'Commit message. If no message is provided a default one will be set.'
+        requires :submodule,
+          type: String,
+          desc: 'Url encoded full path to submodule.',
+          documentation: { example: 'gitlab-org/gitlab-shell' }
+        requires :commit_sha,
+          type: String,
+          desc: 'Commit sha to update the submodule to.',
+          documentation: { example: 'ed899a2f4b50b4370feeea94676502b42383c746' }
+        requires :branch, type: String, desc: 'Name of the branch to commit into.', documentation: { example: 'main' }
+        optional :commit_message,
+          type: String,
+          desc: 'Commit message. If no message is provided a default one will be set.',
+          documentation: { example: 'Commit message' }
       end
       put ":id/repository/submodules/:submodule", requirements: Files::FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project

@@ -3,7 +3,6 @@
 module Integrations
   class Datadog < Integration
     include HasWebHook
-    extend Gitlab::Utils::Override
 
     DEFAULT_DOMAIN = 'datadoghq.com'
     URL_TEMPLATE = 'https://webhook-intake.%{datadog_domain}/api/v2/webhook'
@@ -91,7 +90,7 @@ module Integrations
 
     with_options if: :activated? do
       validates :api_key, presence: true, format: { with: /\A\w+\z/ }
-      validates :datadog_site, format: { with: /\A[\w\.]+\z/, allow_blank: true }
+      validates :datadog_site, format: { with: %r{\A\w+([-.]\w+)*\.[a-zA-Z]{2,5}(:[0-9]{1,5})?\z}, allow_blank: true }
       validates :api_url, public_url: { allow_blank: true }
       validates :datadog_site, presence: true, unless: -> (obj) { obj.api_url.present? }
       validates :api_url, presence: true, unless: -> (obj) { obj.datadog_site.present? }
@@ -169,8 +168,8 @@ module Integrations
       result = execute(data)
 
       {
-        success: (200..299).cover?(result[:http_status]),
-        result: result[:message]
+        success: (200..299).cover?(result.payload[:http_status]),
+        result: result.message
       }
     end
 

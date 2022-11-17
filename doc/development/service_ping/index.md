@@ -115,7 +115,7 @@ sequenceDiagram
    > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/295289) in GitLab 15.2. [Feature flag `measure_service_ping_metric_collection`](https://gitlab.com/gitlab-org/gitlab/-/issues/358128) removed.
 
 ```ruby
-    { 
+    {
       "metadata"=>
       {
         "uuid"=>"0000000-0000-0000-0000-000000000000",
@@ -504,7 +504,7 @@ Service Ping reporting process state is monitored with [internal SiSense dashboa
 
 - [Product Intelligence Guide](https://about.gitlab.com/handbook/product/product-intelligence-guide/)
 - [Snowplow Guide](../snowplow/index.md)
-- [Product Intelligence Direction](https://about.gitlab.com/direction/product-intelligence/)
+- [Product Intelligence Direction](https://about.gitlab.com/direction/analytics/product-intelligence/)
 - [Data Analysis Process](https://about.gitlab.com/handbook/business-technology/data-team/#data-analysis-process/)
 - [Data for Product Managers](https://about.gitlab.com/handbook/business-technology/data-team/programs/data-for-product-managers/)
 - [Data Infrastructure](https://about.gitlab.com/handbook/business-technology/data-team/platform/infrastructure/)

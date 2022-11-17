@@ -463,12 +463,17 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
 
 The `n_` and `n__` methods should only be used to fetch pluralized translations of the same
 string, not to control the logic of showing different strings for different
-quantities. Some languages have different quantities of target plural forms.
+quantities. For similar strings, pluralize the entire sentence to provide the most context
+when translating. Some languages have different quantities of target plural forms.
 For example, Chinese (simplified) has only one target plural form in our
 translation tool. This means the translator has to choose to translate only one
 of the strings, and the translation doesn't behave as intended in the other case.
 
-For example, use this:
+Below are some examples:
+
+Example 1: For different strings
+
+Use this:
 
 ```ruby
 if selected_projects.one?
@@ -483,6 +488,27 @@ Instead of this:
 ```ruby
 # incorrect usage example
 format(n_("%{project_name}", "%d projects selected", count), project_name: 'GitLab')
+```
+
+Example 2: For similar strings
+
+Use this:
+
+```ruby
+n__('Last day', 'Last %d days', days.length)
+```
+
+Instead of this:
+
+```ruby
+# incorrect usage example
+const pluralize = n__('day', 'days', days.length)
+
+if (days.length === 1 ) {
+  return sprintf(s__('Last %{pluralize}', pluralize)
+}
+
+return sprintf(s__('Last %{dayNumber} %{pluralize}'), { dayNumber: days.length, pluralize })
 ```
 
 ### Namespaces

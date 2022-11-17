@@ -798,7 +798,7 @@ RSpec.describe API::Helpers do
     context 'with object storage' do
       let(:artifact) { create(:ci_job_artifact, :zip, :remote_store) }
 
-      subject { helper.present_artifacts_file!(artifact.file, project: artifact.job.project) }
+      subject { helper.present_artifacts_file!(artifact.file) }
 
       before do
         allow(helper).to receive(:env).and_return({})
@@ -830,7 +830,7 @@ RSpec.describe API::Helpers do
       it 'retrieves a CDN-fronted URL' do
         expect(artifact.file).to receive(:cdn_enabled_url).and_call_original
         expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
-        expect(helper.cdn_fronted_url(artifact.file, artifact.job.project)).to be_a(String)
+        expect(helper.cdn_fronted_url(artifact.file)).to be_a(String)
       end
     end
 
@@ -841,7 +841,7 @@ RSpec.describe API::Helpers do
         file = double(url: url)
 
         expect(Gitlab::ApplicationContext).not_to receive(:push)
-        expect(helper.cdn_fronted_url(file, nil)).to eq(url)
+        expect(helper.cdn_fronted_url(file)).to eq(url)
       end
     end
   end

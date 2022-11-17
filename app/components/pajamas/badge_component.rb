@@ -22,10 +22,10 @@ module Pajamas
       @html_options = html_options
     end
 
-    private
-
     SIZE_OPTIONS = [:sm, :md, :lg].freeze
     VARIANT_OPTIONS = [:muted, :neutral, :info, :success, :warning, :danger].freeze
+
+    private
 
     delegate :sprite_icon, to: :helpers
 

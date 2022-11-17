@@ -18,6 +18,12 @@ RSpec.describe SendFileUpload do
     end
   end
 
+  let(:cdn_uploader_class) do
+    Class.new(uploader_class) do
+      include ObjectStorage::CDN::Concern
+    end
+  end
+
   let(:controller_class) do
     Class.new do
       include SendFileUpload
@@ -268,6 +274,29 @@ RSpec.describe SendFileUpload do
       end
 
       it_behaves_like 'handles image resize requests'
+    end
+
+    context 'when CDN-enabled remote file is used' do
+      let(:uploader) { cdn_uploader_class.new(object, :file) }
+      let(:request) { instance_double('ActionDispatch::Request', remote_ip: '18.245.0.42') }
+      let(:signed_url) { 'https://cdn.example.org.test' }
+      let(:cdn_provider) { instance_double('ObjectStorage::CDN::GoogleCDN', signed_url: signed_url) }
+
+      before do
+        stub_uploads_object_storage(uploader: cdn_uploader_class)
+        uploader.object_store = ObjectStorage::Store::REMOTE
+        uploader.store!(temp_file)
+        allow(Gitlab.config.uploads.object_store).to receive(:proxy_download) { false }
+      end
+
+      it 'sends a file when CDN URL' do
+        expect(uploader).to receive(:use_cdn?).and_return(true)
+        expect(uploader).to receive(:cdn_provider).and_return(cdn_provider)
+        expect(controller).to receive(:request).and_return(request)
+        expect(controller).to receive(:redirect_to).with(signed_url)
+
+        subject
+      end
     end
   end
 end

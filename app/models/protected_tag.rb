@@ -4,6 +4,7 @@ class ProtectedTag < ApplicationRecord
   include ProtectedRef
 
   validates :name, uniqueness: { scope: :project_id }
+  validates :project, presence: true
 
   protected_ref_access_levels :create
 

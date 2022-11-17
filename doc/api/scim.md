@@ -25,7 +25,7 @@ Supported attributes:
 
 | Attribute         | Type    | Required | Description           |
 |:------------------|:--------|:---------|:----------------------|
-| `id`              | integer | Yes      | Return SAML identities for the given group ID. |
+| `id`              | integer | Yes      | Return SCIM identities for the given group ID. |
 
 If successful, returns [`200`](index.md#status-codes) and the following
 response attributes:
@@ -49,8 +49,8 @@ Example response:
 Example request:
 
 ```shell
-curl --location --request GET "https://gdk.test:3443/api/v4/groups/33/scim/identities" \
---header "<PRIVATE-TOKEN>" \
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/identities" \
+--header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" \
 --form "extern_uid=<ID_TO_BE_UPDATED>" \
 ```
 
@@ -77,7 +77,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gdk.test:3443/api/v4/groups/33/scim/sydney_jones" \
---header "<PRIVATE TOKEN>" \
+curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" \
+--header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
 --form "extern_uid=sydney_jones_new" \
 ```

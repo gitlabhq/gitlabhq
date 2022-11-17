@@ -103,7 +103,7 @@ Example response:
 }
 ```
 
-## Protect repository environments
+## Protect a single environment
 
 Protects a single environment:
 
@@ -343,7 +343,7 @@ Example response:
 }
 ```
 
-## Unprotect environment
+## Unprotect a single environment
 
 Unprotects the given protected environment:
 

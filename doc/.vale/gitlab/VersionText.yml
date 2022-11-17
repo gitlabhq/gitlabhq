@@ -9,9 +9,9 @@
 # - `> Introduced in GitLab 14.0.
 # - `> Removed in GitLab 15.0.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'This introduced-in section is not formatted correctly. Each entry must start with `> -` and long entries must be on one line.'
+message: "Start each entry with `> -`. Keep long entries on one line."
 link: https://docs.gitlab.com/ee/development/documentation/versions.html
 level: error
 scope: raw

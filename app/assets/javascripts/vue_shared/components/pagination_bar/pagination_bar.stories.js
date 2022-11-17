@@ -1,4 +1,3 @@
-/* eslint-disable @gitlab/require-i18n-strings */
 import PaginationBar from './pagination_bar.vue';
 
 export default {

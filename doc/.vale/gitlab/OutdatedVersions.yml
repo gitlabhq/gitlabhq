@@ -3,10 +3,10 @@
 #
 # Checks for references to versions of GitLab that are no longer supported.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Can this reference to "%s" be refactored?'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#gitlab-versions
+message: "If possible, remove the reference to '%s'."
+link: https://docs.gitlab.com/ee/development/documentation/versions.html
 level: suggestion
 nonword: true
 ignorecase: true

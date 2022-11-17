@@ -66,11 +66,18 @@ module Gitlab
           labels: merge_request.labels_hook_attrs,
           state: merge_request.state, # This key is deprecated
           blocking_discussions_resolved: merge_request.mergeable_discussions_state?,
-          first_contribution: merge_request.first_contribution?
+          first_contribution: merge_request.first_contribution?,
+          detailed_merge_status: detailed_merge_status
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
           .merge!(attrs)
+      end
+
+      private
+
+      def detailed_merge_status
+        ::MergeRequests::Mergeability::DetailedMergeStatusService.new(merge_request: merge_request).execute.to_s
       end
     end
   end

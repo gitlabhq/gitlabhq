@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Merge request creation from fork' do
+    describe 'Merge request creation from fork', product_group: :code_review do
       let(:merge_request) do
         Resource::MergeRequestFromFork.fabricate_via_browser_ui! do |merge_request|
           merge_request.fork_branch = 'feature-branch'

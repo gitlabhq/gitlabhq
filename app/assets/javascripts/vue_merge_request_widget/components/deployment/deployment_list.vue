@@ -67,7 +67,6 @@ export default {
       v-for="deployment in deployments"
       :key="deployment.id"
       :class="deploymentClass"
-      class="gl-bg-gray-50"
       :deployment="deployment"
       :show-metrics="hasDeploymentMetrics"
     />

@@ -1211,7 +1211,7 @@ Example usage for setting a `body-json` override:
 }
 ```
 
-Note that each JSON property name in the object `body-json` is set to a [JSON Path](https://goessner.net/articles/JsonPath/)
+Each JSON property name in the object `body-json` is set to a [JSON Path](https://goessner.net/articles/JsonPath/)
 expression. The JSON Path expression `$.credentials.access-token` identifies the node to be
 overridden with the value `iddqd!42.$`. The override engine uses `body-json` when the request body
 has only [JSON](https://www.json.org/json-en.html) content.
@@ -1250,7 +1250,7 @@ the second entry overrides an XML element:
 }
 ```
 
-Note that each JSON property name in the object `body-xml` is set to an
+Each JSON property name in the object `body-xml` is set to an
 [XPath v2](https://www.w3.org/TR/xpath20/)
 expression. The XPath expression `/credentials/@isEnabled` identifies the attribute node to override
 with the value `true`. The XPath expression `/credentials/access-token/text()` identifies the
@@ -1392,7 +1392,7 @@ It is also possible to write messages from your script to a log file that is col
 
 Adding some basic logging to your overrides script is useful in case the script fails unexpectedly during normal running of the job. The log file is automatically included as an artifact of the job, allowing you to download it after the job has finished.
 
-Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Please notice two things in the script:
+Following our example, we provided `renew_token.py` in the environmental variable `FUZZAPI_OVERRIDES_CMD`. Notice two things in the script:
 
 - Log file is saved in the location indicated by the environment variable `CI_PROJECT_DIR`.
 - Log filename should match `gl-*.log`.
@@ -1871,7 +1871,7 @@ variables:
 
 ##### Excluding two URLs and their child resources
 
-In order to exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
+To exclude the URLs: `http://target/api/buy` and `http://target/api/sell`, and their child resources. To provide multiple URLs we use the `,` character as follows:
 
 ```yaml
 stages:
@@ -1888,7 +1888,11 @@ variables:
 
 ##### Excluding URL using regular expressions
 
-In order to exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more). We could use `https://target/api/v.*/user/create$`, in the previous regular expression `.` indicates any character and `*` indicates zero or more times, additionally `$` indicates that the URL should end there.
+To exclude exactly `https://target/api/v1/user/create` and `https://target/api/v2/user/create` or any other version (`v3`,`v4`, and more), we could use `https://target/api/v.*/user/create$`. In the previous regular expression:
+
+- `.` indicates any character.
+- `*` indicates zero or more times.
+- `$` indicates that the URL should end there.
 
 ```yaml
 stages:
@@ -2211,9 +2215,235 @@ Setting `SECURE_ANALYZERS_PREFIX` changes the Docker image registry location for
 
 For more information, see [Offline environments](../offline_deployments/index.md).
 
+## Performance tuning and testing speed
+
+Security tools that perform API fuzz testing, such as API Fuzzing, perform testing by sending requests to an instance of your running application. The requests are mutated by our fuzzing engine to trigger unexpected behavior that might exist in your application. The speed of an API fuzzing test depends on the following:
+
+- How many requests per second can be sent to your application by our tooling
+- How fast your application responds to requests
+- How many requests must be sent to test the application
+  - How many operations your API is comprised of
+  - How many fields are in each operation (think JSON bodies, headers, query string, cookies, etc.)
+
+If API Fuzzing testing job still takes longer than expected after following the advice in this performance guide, reach out to support for further assistance.
+
+### Diagnosing performance issues
+
+The first step to resolving performance issues is to understand what is contributing to the slower-than-expected testing time. Some common issues we see are:
+
+- API Fuzzing is running on a slow or single-CPU GitLab Runner (GitLab Shared Runners are single-CPU)
+- The application deployed to a slow/single-CPU instance and is not able to keep up with the testing load
+- The application contains a slow operation that impacts the overall test speed (> 1/2 second)
+- The application contains an operation that returns a large amount of data (> 500K+)
+- The application contains a large number of operations (> 40)
+
+#### The application contains a slow operation that impacts the overall test speed (> 1/2 second)
+
+The API Fuzzing job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
+
+```shell
+API Security: Loaded 10 operations from: assets/har-large-response/large_responses.har
+API Security:
+API Security: Testing operation [1/10]: 'GET http://target:7777/api/large_response_json'.
+API Security:  - Parameters: (Headers: 4, Query: 0, Body: 0)
+API Security:  - Request body size: 0 Bytes (0 bytes)
+API Security:
+API Security: Finished testing operation 'GET http://target:7777/api/large_response_json'.
+API Security:  - Excluded Parameters: (Headers: 0, Query: 0, Body: 0)
+API Security:  - Performed 767 requests
+API Security:  - Average response body size: 130 MB
+API Security:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 seconds)
+API Security:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
+```
+
+This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took API Fuzzing 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
+
+An average response time of 2 seconds is a good initial indicator that this specific operation takes a long time to test. Further, we can see that the response body size is quite large. The large body size is the culprit here, transferring that much data on each request is what takes the majority of that 2 seconds.
+
+For this issue, the team might decide to:
+
+- Use a multi-CPU runner. Using a multi-CPU runner allows API Fuzzing to parallelize the work being performed. This helps lower the test time, but getting the test down under 10 minutes might still be problematic without moving to a high CPU machine due to how long the operation takes to test.
+  - Trade off between how many CPUs and cost.
+- [Exclude this operation](#excluding-slow-operations) from the API Fuzzing test. While this is the simplest, it has the downside of a gap in security test coverage.
+- [Exclude the operation from feature branch API Fuzzing tests, but include it in the default branch test](#excluding-operations-in-feature-branches-but-not-default-branch).
+- [Split up the API Fuzzing testing into multiple jobs](#splitting-a-test-into-multiple-jobs).
+
+The likely solution is to use a combination of these solutions to reach an acceptable test time, assuming your team's requirements are in the 5-7 minute range.
+
+### Addressing performance issues
+
+The following sections document various options for addressing performance issues for API Fuzzing:
+
+- [Using a multi-CPU Runner](#using-a-multi-cpu-runner)
+- [Excluding slow operations](#excluding-slow-operations)
+- [Splitting a test into multiple jobs](#splitting-a-test-into-multiple-jobs)
+- [Excluding operations in feature branches, but not default branch](#excluding-operations-in-feature-branches-but-not-default-branch)
+
+#### Using a multi-CPU Runner
+
+One of the easiest performance boosts can be achieved using a multi-CPU runner with API Fuzzing. This table shows statistics collected during benchmarking of a Java Spring Boot REST API. In this benchmark, the target and API Fuzzing share a single runner instance.
+
+| CPU Count            | Request per Second |
+|----------------------|--------------------|
+| 1 CPU (Shared Runner)| 75  |
+| 4 CPU                | 255 |
+| 8 CPU                | 400 |
+
+As we can see from this table, increasing the CPU count of the runner can have a large impact on testing speed/performance.
+
+To use a multi-CPU typically requires deploying a self-managed GitLab Runner onto a multi-CPU machine or cloud compute instance.
+
+When multiple types of GitLab Runners are available for use, the various instances are commonly set up with tags that can be used in the job definition to select a type of runner.
+
+Here is an example job definition for API Fuzzing that adds a `tags` section with the tag `multi-cpu`. The job automatically extends the job definition included through the API Fuzzing template.
+
+```yaml
+apifuzzer_fuzz:
+  tags:
+  - multi-cpu
+```
+
+To verify that API Fuzzing can detect multiple CPUs in the runner, download the `gl-api-security-scanner.log` file from a completed job's artifacts. Search the file for the string `Starting work item processor` and inspect the reported max DOP (degree of parallelism). The max DOP should be greater than or equal to the number of CPUs assigned to the runner. The value is never lower than 2, even on single CPU runners, unless forced through a configuration variable. If the value reported is less than the number of CPUs assigned to the runner, then something is wrong with the runner deployment. If unable to identify the problem, open a ticket with support to assist.
+
+Example log entry:
+
+`17:00:01.084 [INF] <Peach.Web.Core.Services.WebRunnerMachine> Starting work item processor with 2 max DOP`
+
+#### Excluding slow operations
+
+In the case of one or two slow operations, the team might decide to skip testing the operations. Excluding the operation is done using the `FUZZAPI_EXCLUDE_PATHS` configuration [variable as explained in this section.](#exclude-paths)
+
+In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`.
+
+To verify the operation is excluded, run the API Fuzzing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
+
+```yaml
+apifuzzer_fuzz:
+  variables:
+    FUZZAPI_EXCLUDE_PATHS: /api/large_response_json
+```
+
+Excluding operations from testing could allow some vulnerabilities to go undetected.
+{: .alert .alert-warning}
+
+#### Splitting a test into multiple jobs
+
+Splitting a test into multiple jobs is supported by API Fuzzing through the use of [`FUZZAPI_EXCLUDE_PATHS`](#exclude-paths) and [`FUZZAPI_EXCLUDE_URLS`](#exclude-urls). When splitting a test up, a good pattern is to disable the `apifuzzer_fuzz` job and replace it with two jobs with identifying names. In this example we have two jobs, each job is testing a version of the API, so our names reflect that. However, this technique can be applied to any situation, not just with versions of an API.
+
+The rules we are using in the `apifuzzer_v1` and `apifuzzer_v2` jobs are copied from the [API Fuzzing template](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/templates/Security/DAST-API.gitlab-ci.yml).
+
+```yaml
+# Disable the main apifuzzer_fuzz job
+apifuzzer_fuzz:
+  rules:
+  - if: $CI_COMMIT_BRANCH
+    when: never
+
+apifuzzer_v1:
+  extends: apifuzzer_fuzz
+  variables:
+    FUZZAPI_EXCLUDE_PATHS: /api/v1/**
+  rules:
+    rules:
+    - if: $API_FUZZING_DISABLED
+      when: never
+    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+            $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+          FUZZAPI_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH
+
+apifuzzer_v2:
+  variables:
+    FUZZAPI_EXCLUDE_PATHS: /api/v2/**
+  rules:
+    rules:
+    - if: $API_FUZZING_DISABLED
+      when: never
+    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+            $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+          FUZZAPI_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH
+```
+
+#### Excluding operations in feature branches, but not default branch
+
+In the case of one or two slow operations, the team might decide to skip testing the operations, or exclude them from feature branch tests, but include them for default branch tests. Excluding the operation is done using the `FUZZAPI_EXCLUDE_PATHS` configuration [variable as explained in this section.](#exclude-paths)
+
+In this example, we have an operation that returns a large amount of data. The operation is `GET http://target:7777/api/large_response_json`. To exclude it we provide the `FUZZAPI_EXCLUDE_PATHS` configuration variable with the path portion of our operation URL `/api/large_response_json`. Our configuration disables the main `apifuzzer_fuzz` job and creates two new jobs `apifuzzer_main` and `apifuzzer_branch`. The `apifuzzer_branch` is set up to exclude the long operation and only run on non-default branches (e.g. feature branches). The `apifuzzer_main` branch is set up to only execute on the default branch (`main` in this example). The `apifuzzer_branch` jobs run faster, allowing for quick development cycles, while the `apifuzzer_main` job which only runs on default branch builds, takes longer to run.
+
+To verify the operation is excluded, run the API Fuzzing job and review the job console output. It includes a list of included and excluded operations at the end of the test.
+
+```yaml
+# Disable the main job so we can create two jobs with
+# different names
+apifuzzer_fuzz:
+  rules:
+  - if: $CI_COMMIT_BRANCH
+    when: never
+
+# API Fuzzing for feature branch work, excludes /api/large_response_json
+apifuzzer_branch:
+  extends: apifuzzer_fuzz
+  variables:
+    FUZZAPI_EXCLUDE_PATHS: /api/large_response_json
+  rules:
+    rules:
+    - if: $API_FUZZING_DISABLED
+      when: never
+    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+            $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+          FUZZAPI_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+# API Fuzzing for default branch (main in our case)
+# Includes the long running operations
+apifuzzer_main:
+  extends: apifuzzer_fuzz
+    rules:
+    - if: $API_FUZZING_DISABLED
+      when: never
+    - if: $API_FUZZING_DISABLED_FOR_DEFAULT_BRANCH &&
+            $CI_DEFAULT_BRANCH == $CI_COMMIT_REF_NAME
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $CI_GITLAB_FIPS_MODE == "true"
+      variables:
+          FUZZAPI_IMAGE_SUFFIX: "-fips"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+```
+
 ## Troubleshooting
 
-### `Error waiting for API Security 'http://127.0.0.1:5000' to become available`
+### API Fuzzing job times out after N hours
+
+The top two reasons for the API Fuzzing job timing out are slow operations (> 1 second) and using a single-CPU runner for API Fuzzing (GitLab shared runners are single-CPU). Before you can diagnose the problem further, the job must complete so the output can be analyzed. We recommend to start with a multi-CPU runner first, then exclude portions of your API operations until the job completes and the output can be further reviewed.
+
+See the following documentation sections for assistance:
+
+- [Performance tuning and testing speed](#performance-tuning-and-testing-speed)
+- [Using a multi-CPU Runner](#using-a-multi-cpu-runner)
+- [Excluding operations by path](#exclude-paths)
+- [Excluding slow operations](#excluding-slow-operations)
+
+### API Fuzzing job takes too long to complete
+
+See [Performance Tuning and Testing Speed](#performance-tuning-and-testing-speed)
+
+### Error waiting for API Security 'http://127.0.0.1:5000' to become available
 
 A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the API Fuzzing analyzer.
 
@@ -2281,16 +2511,16 @@ For OpenAPI Specifications that are generated automatically validation errors ar
 
 1. Identify the validation errors.
     1. Use the [Swagger Editor](https://editor.swagger.io/) to identify validation problems in your specification. The visual nature of the Swagger Editor makes it easier to understand what needs to change.
-    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Note that JSON Schema validation messages might not be easy to understand. This is why we recommend the use of editors to validate schema documents.
+    1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
 1. Review the documentation for the OpenAPI generation your framework/tech stack is using. Identify the changes needed to produce a correct OpenAPI document.
-1. Once the validation issues are resolved, re-run your pipeline.
+1. After the validation issues are resolved, re-run your pipeline.
 
 **For manually created OpenAPI Specifications**
 
 1. Identify the validation errors.
    1. The simplest solution is to use a visual tool to edit and validate the OpenAPI document. For example the [Swagger Editor](https://editor.swagger.io/) highlights schema errors and possible solutions.
-   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. Note that JSON Schema validation message might not be easy to understand. This is why we recommend the use of editors to validate document.
-1. Once the validation issues are resolved, re-run your pipeline.
+   1. Alternatively, you can check the log output and look for schema validation warnings. They are prefixed with messages such as `OpenAPI 2.0 schema validation error` or `OpenAPI 3.0.x schema validation error`. Each failed validation provides extra information about `location` and `description`. Correct each of the validation failures and then resubmit the OpenAPI doc. JSON Schema validation messages can be complex, and editors can help you validate schema documents.
+1. After the validation issues are resolved, re-run your pipeline.
 
 ### `Failed to start scanner session (version header not found)`
 
@@ -2312,7 +2542,10 @@ The API Fuzzing analyzer outputs an error message when it cannot determine the t
 
 There is an order of precedence in which the API Fuzzing analyzer tries to get the target API when checking the different sources. First, it will try to use the `FUZZAPI_TARGET_URL`. If the environment variable has not been set, then the API Fuzzing analyzer will attempt to use the `environment_url.txt` file. If there is no file `environment_url.txt`, the API Fuzzing analyzer will then use the OpenAPI document contents and the URL provided in `FUZZAPI_OPENAPI` (if a URL is provided) to try to compute the target API.
 
-The best-suited solution will depend on whether or not your target API changes for each deployment. In static environments, the target API is the same for each deployment, in this case please refer to the [static environment solution](#static-environment-solution). If the target API changes for each deployment a [dynamic environment solution](#dynamic-environment-solutions) should be applied.
+The best-suited solution depends on whether or not your target API changes for each deployment:
+
+- If the target API is the same for each deployment (a static environment), use the [static environment solution](#static-environment-solution).
+- If the target API changes for each deployment, use a [dynamic environment solution](#dynamic-environment-solutions).
 
 #### Static environment solution
 
@@ -2417,10 +2650,10 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 
 ## Get support or request an improvement
 
-To get support for your particular problem please use the [getting help channels](https://about.gitlab.com/get-help/).
+To get support for your particular problem use the [getting help channels](https://about.gitlab.com/get-help/).
 
 The [GitLab issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues) is the right place for bugs and feature proposals about API Security and API Fuzzing.
-Please use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Please refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
+Use `~"Category:API Security"` [label](../../../development/contributing/issue_workflow.md#labels) when opening a new issue regarding API fuzzing to ensure it is quickly reviewed by the right people. Refer to our [review response SLO](https://about.gitlab.com/handbook/engineering/workflow/code-review/#review-response-slo) to understand when you should receive a response.
 
 [Search the issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues) for similar entries before submitting your own, there's a good chance somebody else had the same issue or feature proposal. Show your support with an award emoji and or join the discussion.
 
@@ -2432,7 +2665,7 @@ When experiencing a behavior not working as expected, consider providing context
 - Scanner log file available as a job artifact named `gl-api-security-scanner.log`.
 
 WARNING:
-**Sanitize data attached to a support issue**. Please remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
+**Sanitize data attached to a support issue**. Remove sensitive information, including: credentials, passwords, tokens, keys, and secrets.
 
 ## Glossary
 

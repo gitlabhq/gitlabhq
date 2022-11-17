@@ -66,6 +66,8 @@ module Banzai
         projects = lazy { projects_for_nodes(nodes) }
         project_attr = 'data-project'
 
+        preload_associations(projects, user)
+
         nodes.select do |node|
           if node.has_attribute?(project_attr)
             can_read_reference?(user, projects[node], node)
@@ -260,6 +262,14 @@ module Banzai
         Gitlab::SafeRequestStore[:banzai_collection_cache] ||= Hash.new do |hash, key|
           hash[key] = {}
         end
+      end
+
+      # For any preloading of project associations
+      # needed to avoid N+1s.
+      # Note: `projects` param is a hash of { node => project }.
+      # See #projects_for_nodes for more information.
+      def preload_associations(projects, user)
+        ::Preloaders::ProjectPolicyPreloader.new(projects.values, user).execute
       end
     end
   end

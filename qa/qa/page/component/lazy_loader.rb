@@ -9,8 +9,8 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/lazy_loader.js' do
-            element :js_lazy_loaded
+          base.view 'app/views/layouts/_img_loader.html.haml' do
+            element :js_lazy_loaded_content
           end
         end
       end

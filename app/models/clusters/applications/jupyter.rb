@@ -18,7 +18,7 @@ module Clusters
 
       belongs_to :oauth_application, class_name: 'Doorkeeper::Application'
 
-      default_value_for :version, VERSION
+      attribute :version, default: VERSION
 
       def set_initial_status
         return unless not_installable?

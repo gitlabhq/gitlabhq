@@ -82,9 +82,22 @@ Any "burstable" instance types are not recommended due to inconsistent performan
 
 ### Supported infrastructure
 
-As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP, Azure) and their services, or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section. However, this does not constitute a guarantee for every potential permutation.
+As a general guidance, GitLab should run on most infrastructure such as reputable Cloud Providers (AWS, GCP) and their services,
+or self managed (ESXi) that meet both the specs detailed above, as well as any requirements in this section.
+However, this does not constitute a guarantee for every potential permutation.
 
 See [Recommended cloud providers and services](index.md#recommended-cloud-providers-and-services) for more information.
+
+### Additional workloads
+
+The Reference Architectures have been [designed and tested](index.md#validation-and-test-results) for standard GitLab setups with
+good headroom in mind to cover most scenarios. However, if any additional workloads are being added on the nodes,
+such as security software, you may still need to adjust the specs accordingly to compensate.
+
+This also applies for some GitLab features where it's possible to run custom scripts, for example [server hooks](../server_hooks.md).
+
+As a general rule, it's recommended to have robust monitoring in place to measure the impact of
+any additional workloads to inform any changes needed to be made.
 
 ### Swap
 

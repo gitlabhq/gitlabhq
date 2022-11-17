@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'Admin::Hooks' do
   include Spec::Support::Helpers::ModalHelpers
 
-  let(:user) { create(:admin) }
+  let_it_be(:user) { create(:admin) }
 
   before do
     sign_in(user)

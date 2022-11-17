@@ -593,7 +593,7 @@ GET /api/v4/projects/1/repository/tags/my%2Ftag
 ## Request Payload
 
 API Requests can use parameters sent as [query strings](https://en.wikipedia.org/wiki/Query_string)
-or as a [payload body](https://tools.ietf.org/html/draft-ietf-httpbis-p3-payload-14#section-3.2).
+or as a [payload body](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-p3-payload-14#section-3.2).
 GET requests usually send a query string, while PUT or POST requests usually
 send the payload body:
 

@@ -4,7 +4,7 @@
 - filterable = local_assigns.fetch(:filterable, true)
 - paginatable = local_assigns.fetch(:paginatable, false)
 - default_namespace_path = (local_assigns[:default_namespace] || current_user.namespace).full_path
-- provider_title = Gitlab::ImportSources.title(provider)
+- provider_title = Gitlab::ImportSources.title(local_assigns.fetch(:provider))
 - optional_stages = local_assigns.fetch(:optional_stages, [])
 
 - header_title _("New project"), new_project_path

@@ -10,7 +10,7 @@ module AppearancesHelper
 
   def default_brand_title
     # This resides in a separate method so that EE can easily redefine it.
-    'GitLab Community Edition'
+    _('GitLab Community Edition')
   end
 
   def brand_image

@@ -1,0 +1,10 @@
+job_with_no_when:
+  script: exit 0
+
+job_with_when_always:
+  script: exit 0
+  when: always
+
+job_with_when_on_failure:
+  script: exit 0
+  when: on_failure

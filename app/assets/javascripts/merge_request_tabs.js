@@ -260,7 +260,7 @@ export default class MergeRequestTabs {
     }
   }
 
-  tabShown(action, href) {
+  tabShown(action, href, shouldScroll = true) {
     if (action !== this.currentTab && this.mergeRequestTabs) {
       this.currentTab = action;
 
@@ -289,7 +289,9 @@ export default class MergeRequestTabs {
       }
 
       if (action === 'commits') {
-        this.loadCommits(href);
+        if (!this.commitsLoaded) {
+          this.loadCommits(href);
+        }
         // this.hideSidebar();
         this.resetViewContainer();
         this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
@@ -334,7 +336,7 @@ export default class MergeRequestTabs {
 
       $('.detail-page-description').renderGFM();
 
-      this.recallScroll(action);
+      if (shouldScroll) this.recallScroll(action);
     } else if (action === this.currentAction) {
       // ContentTop is used to handle anything at the top of the page before the main content
       const mainContentContainer = document.querySelector('.content-wrapper');
@@ -348,7 +350,7 @@ export default class MergeRequestTabs {
         const scrollDestination = tabContentTop - mainContentTop - 51;
 
         // scrollBehavior is only available in browsers that support scrollToOptions
-        if ('scrollBehavior' in document.documentElement.style) {
+        if ('scrollBehavior' in document.documentElement.style && shouldScroll) {
           window.scrollTo({
             top: scrollDestination,
             behavior: 'smooth',
@@ -423,28 +425,39 @@ export default class MergeRequestTabs {
     return this.currentAction;
   }
 
-  loadCommits(source) {
-    if (this.commitsLoaded) {
-      return;
-    }
-
+  loadCommits(source, page = 1) {
     toggleLoader(true);
 
     axios
-      .get(`${source}.json`)
+      .get(`${source}.json`, { params: { page, per_page: 100 } })
       .then(({ data }) => {
+        toggleLoader(false);
+
         const commitsDiv = document.querySelector('div#commits');
         // eslint-disable-next-line no-unsanitized/property
-        commitsDiv.innerHTML = data.html;
+        commitsDiv.innerHTML += data.html;
         localTimeAgo(commitsDiv.querySelectorAll('.js-timeago'));
         this.commitsLoaded = true;
         scrollToContainer('#commits');
 
-        toggleLoader(false);
+        const loadMoreButton = document.querySelector('.js-load-more-commits');
 
-        return import('./add_context_commits_modal');
+        if (loadMoreButton) {
+          loadMoreButton.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            loadMoreButton.remove();
+            this.loadCommits(source, loadMoreButton.dataset.nextPage);
+          });
+        }
+
+        if (!data.next_page) {
+          return import('./add_context_commits_modal');
+        }
+
+        return null;
       })
-      .then((m) => m.default())
+      .then((m) => m?.default())
       .catch(() => {
         toggleLoader(false);
         createAlert({

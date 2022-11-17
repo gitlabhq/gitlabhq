@@ -1,17 +1,22 @@
 package config
 
 import (
+	"context"
+	"fmt"
 	"math"
 	"net/url"
+	"os"
 	"runtime"
 	"strings"
 	"time"
 
-	"github.com/Azure/azure-storage-blob-go/azblob"
+	"github.com/Azure/azure-sdk-for-go/sdk/storage/azblob"
 	"github.com/BurntSushi/toml"
-	"gitlab.com/gitlab-org/labkit/log"
 	"gocloud.dev/blob"
 	"gocloud.dev/blob/azureblob"
+	"gocloud.dev/blob/gcsblob"
+	"gocloud.dev/gcp"
+	"golang.org/x/oauth2/google"
 )
 
 type TomlURL struct {
@@ -37,8 +42,9 @@ func (d *TomlDuration) UnmarshalText(text []byte) error {
 type ObjectStorageCredentials struct {
 	Provider string
 
-	S3Credentials    S3Credentials    `toml:"s3"`
-	AzureCredentials AzureCredentials `toml:"azurerm"`
+	S3Credentials     S3Credentials     `toml:"s3"`
+	AzureCredentials  AzureCredentials  `toml:"azurerm"`
+	GoogleCredentials GoogleCredentials `toml:"google"`
 }
 
 type ObjectStorageConfig struct {
@@ -67,6 +73,12 @@ type GoCloudConfig struct {
 type AzureCredentials struct {
 	AccountName string `toml:"azure_storage_account_name"`
 	AccountKey  string `toml:"azure_storage_access_key"`
+}
+
+type GoogleCredentials struct {
+	ApplicationDefault bool   `toml:"google_application_default"`
+	JSONKeyString      string `toml:"google_json_key_string"`
+	JSONKeyLocation    string `toml:"google_json_key_location"`
 }
 
 type RedisConfig struct {
@@ -143,27 +155,80 @@ func (c *Config) RegisterGoCloudURLOpeners() error {
 
 	creds := c.ObjectStorageCredentials
 	if strings.EqualFold(creds.Provider, "AzureRM") && creds.AzureCredentials.AccountName != "" && creds.AzureCredentials.AccountKey != "" {
-		accountName := azureblob.AccountName(creds.AzureCredentials.AccountName)
-		accountKey := azureblob.AccountKey(creds.AzureCredentials.AccountKey)
-
-		credential, err := azureblob.NewCredential(accountName, accountKey)
+		urlOpener, err := creds.AzureCredentials.getURLOpener()
 		if err != nil {
-			log.WithError(err).Error("error creating Azure credentials")
 			return err
 		}
+		c.ObjectStorageConfig.URLMux.RegisterBucket(azureblob.Scheme, urlOpener)
+	}
 
-		pipeline := azureblob.NewPipeline(credential, azblob.PipelineOptions{})
-
-		azureURLOpener := &azureURLOpener{
-			&azureblob.URLOpener{
-				AccountName: accountName,
-				Pipeline:    pipeline,
-				Options:     azureblob.Options{Credential: credential},
-			},
+	if strings.EqualFold(creds.Provider, "Google") && (creds.GoogleCredentials.JSONKeyLocation != "" || creds.GoogleCredentials.JSONKeyString != "" || creds.GoogleCredentials.ApplicationDefault) {
+		urlOpener, err := creds.GoogleCredentials.getURLOpener()
+		if err != nil {
+			return err
 		}
-
-		c.ObjectStorageConfig.URLMux.RegisterBucket(azureblob.Scheme, azureURLOpener)
+		c.ObjectStorageConfig.URLMux.RegisterBucket(gcsblob.Scheme, urlOpener)
 	}
 
 	return nil
+}
+
+func (creds *AzureCredentials) getURLOpener() (*azureblob.URLOpener, error) {
+	serviceURLOptions := azureblob.ServiceURLOptions{
+		AccountName: creds.AccountName,
+	}
+
+	clientFunc := func(svcURL azureblob.ServiceURL) (*azblob.ServiceClient, error) {
+		sharedKeyCred, err := azblob.NewSharedKeyCredential(creds.AccountName, creds.AccountKey)
+		if err != nil {
+			return nil, fmt.Errorf("error creating Azure credentials: %w", err)
+		}
+		return azblob.NewServiceClientWithSharedKey(string(svcURL), sharedKeyCred, &azblob.ClientOptions{})
+	}
+
+	return &azureblob.URLOpener{
+		MakeClient:        clientFunc,
+		ServiceURLOptions: serviceURLOptions,
+	}, nil
+}
+
+func (creds *GoogleCredentials) getURLOpener() (*gcsblob.URLOpener, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second) // lint:allow context.Background
+	defer cancel()
+
+	gcpCredentials, err := creds.getGCPCredentials(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	client, err := gcp.NewHTTPClient(
+		gcp.DefaultTransport(),
+		gcp.CredentialsTokenSource(gcpCredentials),
+	)
+	if err != nil {
+		return nil, fmt.Errorf("error creating Google HTTP client: %w", err)
+	}
+
+	return &gcsblob.URLOpener{
+		Client: client,
+	}, nil
+}
+
+func (creds *GoogleCredentials) getGCPCredentials(ctx context.Context) (*google.Credentials, error) {
+	const gcpCredentialsScope = "https://www.googleapis.com/auth/devstorage.read_write"
+	if creds.ApplicationDefault {
+		return gcp.DefaultCredentials(ctx)
+	}
+
+	if creds.JSONKeyLocation != "" {
+		b, err := os.ReadFile(creds.JSONKeyLocation)
+		if err != nil {
+			return nil, fmt.Errorf("error reading Google json key location: %w", err)
+		}
+
+		return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope)
+	}
+
+	b := []byte(creds.JSONKeyString)
+	return google.CredentialsFromJSON(ctx, b, gcpCredentialsScope)
 }

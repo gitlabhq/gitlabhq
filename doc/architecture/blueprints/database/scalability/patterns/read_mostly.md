@@ -8,7 +8,7 @@ description: 'Learn how to scale operating on read-mostly data at scale'
 
 # Read-mostly data
 
-[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326037) in GitLab 14.0.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326037) in GitLab 14.0.
 
 This document describes the *read-mostly* pattern introduced in the
 [Database Scalability Working Group](https://about.gitlab.com/company/team/structure/working-groups/database-scalability/#read-mostly-data).

@@ -9,7 +9,7 @@ RSpec.describe 'Promote an incident timeline event from a comment' do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
-  let_it_be(:comment) { create(:note, project: project, noteable: incident) }
+  let_it_be(:comment) { create(:note, project: project, noteable: incident, note: 'a' * 281) }
 
   let(:input) { { note_id: comment.to_global_id.to_s } }
   let(:mutation) do

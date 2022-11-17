@@ -33,11 +33,9 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
 
     if result[:status] == :error
       fail_import(result[:message])
-
-      raise result[:message]
+    else
+      project.after_import
     end
-
-    project.after_import
   end
 
   private

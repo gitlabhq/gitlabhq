@@ -16,9 +16,295 @@ securityDefinitions:
     in: query
 host: gitlab.com
 tags:
+- name: user_counts
+  description: Operations about user_counts
 - name: metadata
   description: Operations related to metadata of the GitLab instance
+- name: access_requests
+  description: Operations related to access requests
 paths:
+  "/api/v4/groups/{id}/access_requests/{user_id}":
+    delete:
+      summary: Denies an access request for the given user.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the group owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: path
+        name: user_id
+        description: The user ID of the access requester
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '204':
+          description: Denies an access request for the given user.
+      tags:
+      - access_requests
+      operationId: deleteApiV4GroupsIdAccessRequestsUserId
+  "/api/v4/groups/{id}/access_requests/{user_id}/approve":
+    put:
+      summary: Approves an access request for the given user.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the group owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: path
+        name: user_id
+        description: The user ID of the access requester
+        type: integer
+        format: int32
+        required: true
+      - in: formData
+        name: access_level
+        description: 'A valid access level (defaults: `30`, the Developer role)'
+        type: integer
+        format: int32
+        default: 30
+        required: false
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/API_Entities_AccessRequester"
+          examples:
+            successfull_response:
+              id: 1
+              username: raymond_smith
+              name: Raymond Smith
+              state: active
+              created_at: '2012-10-22T14:13:35Z'
+              access_level: 20
+      tags:
+      - access_requests
+      operationId: putApiV4GroupsIdAccessRequestsUserIdApprove
+  "/api/v4/groups/{id}/access_requests":
+    post:
+      summary: Requests access for the authenticated user to a group.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the group owned by the authenticated
+          user
+        type: string
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/API_Entities_AccessRequester"
+          examples:
+            successfull_response:
+              id: 1
+              username: raymond_smith
+              name: Raymond Smith
+              state: active
+              created_at: '2012-10-22T14:13:35Z'
+              access_level: 20
+      tags:
+      - access_requests
+      operationId: postApiV4GroupsIdAccessRequests
+    get:
+      summary: Gets a list of access requests for a group.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the group owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+      responses:
+        '200':
+          description: Gets a list of access requests for a group.
+          schema:
+            "$ref": "#/definitions/API_Entities_AccessRequester"
+      tags:
+      - access_requests
+      operationId: getApiV4GroupsIdAccessRequests
+  "/api/v4/projects/{id}/access_requests/{user_id}":
+    delete:
+      summary: Denies an access request for the given user.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: path
+        name: user_id
+        description: The user ID of the access requester
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '204':
+          description: Denies an access request for the given user.
+      tags:
+      - access_requests
+      operationId: deleteApiV4ProjectsIdAccessRequestsUserId
+  "/api/v4/projects/{id}/access_requests/{user_id}/approve":
+    put:
+      summary: Approves an access request for the given user.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: path
+        name: user_id
+        description: The user ID of the access requester
+        type: integer
+        format: int32
+        required: true
+      - in: formData
+        name: access_level
+        description: 'A valid access level (defaults: `30`, the Developer role)'
+        type: integer
+        format: int32
+        default: 30
+        required: false
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/API_Entities_AccessRequester"
+          examples:
+            successfull_response:
+              id: 1
+              username: raymond_smith
+              name: Raymond Smith
+              state: active
+              created_at: '2012-10-22T14:13:35Z'
+              access_level: 20
+      tags:
+      - access_requests
+      operationId: putApiV4ProjectsIdAccessRequestsUserIdApprove
+  "/api/v4/projects/{id}/access_requests":
+    post:
+      summary: Requests access for the authenticated user to a project.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      consumes:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project owned by the authenticated
+          user
+        type: string
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            "$ref": "#/definitions/API_Entities_AccessRequester"
+          examples:
+            successfull_response:
+              id: 1
+              username: raymond_smith
+              name: Raymond Smith
+              state: active
+              created_at: '2012-10-22T14:13:35Z'
+              access_level: 20
+      tags:
+      - access_requests
+      operationId: postApiV4ProjectsIdAccessRequests
+    get:
+      summary: Gets a list of access requests for a project.
+      description: This feature was introduced in GitLab 8.11.
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project owned by the authenticated
+          user
+        type: string
+        required: true
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+      responses:
+        '200':
+          description: Gets a list of access requests for a project.
+          schema:
+            "$ref": "#/definitions/API_Entities_AccessRequester"
+      tags:
+      - access_requests
+      operationId: getApiV4ProjectsIdAccessRequests
+  "/api/v4/user_counts":
+    get:
+      summary: Return the user specific counts
+      description: Assigned open issues, assigned MRs and pending todos count
+      produces:
+      - application/json
+      responses:
+        '200':
+          description: Return the user specific counts
+          schema:
+            "$ref": "#/definitions/API_Entities_UserCounts"
+      tags:
+      - user_counts
+      operationId: getApiV4UserCounts
   "/api/v4/metadata":
     get:
       summary: Retrieve metadata information for this GitLab instance.
@@ -71,6 +357,63 @@ paths:
       - metadata
       operationId: getApiV4Version
 definitions:
+  API_Entities_AccessRequester:
+    type: object
+    properties:
+      id:
+        type: string
+      username:
+        type: string
+      name:
+        type: string
+      state:
+        type: string
+      avatar_url:
+        type: string
+      avatar_path:
+        type: string
+      custom_attributes:
+        "$ref": "#/definitions/API_Entities_CustomAttribute"
+      web_url:
+        type: string
+      is_gitlab_employee:
+        type: string
+      email:
+        type: string
+      requested_at:
+        type: string
+    description: API_Entities_AccessRequester model
+  API_Entities_CustomAttribute:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  API_Entities_UserCounts:
+    type: object
+    properties:
+      merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      assigned_issues:
+        type: integer
+        format: int32
+        example: 10
+      assigned_merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      review_requested_merge_requests:
+        type: integer
+        format: int32
+        example: 10
+      todos:
+        type: integer
+        format: int32
+        example: 10
+    description: API_Entities_UserCounts model
   API_Entities_Metadata:
     type: object
     properties:

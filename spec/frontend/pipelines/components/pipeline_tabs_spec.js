@@ -2,10 +2,6 @@ import { shallowMount } from '@vue/test-utils';
 import { GlTab } from '@gitlab/ui';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import PipelineTabs from '~/pipelines/components/pipeline_tabs.vue';
-import PipelineGraphWrapper from '~/pipelines/components/graph/graph_component_wrapper.vue';
-import Dag from '~/pipelines/components/dag/dag.vue';
-import JobsApp from '~/pipelines/components/jobs/jobs_app.vue';
-import TestReports from '~/pipelines/components/test_reports/test_reports.vue';
 
 describe('The Pipeline Tabs', () => {
   let wrapper;
@@ -15,12 +11,6 @@ describe('The Pipeline Tabs', () => {
   const findJobsTab = () => wrapper.findByTestId('jobs-tab');
   const findPipelineTab = () => wrapper.findByTestId('pipeline-tab');
   const findTestsTab = () => wrapper.findByTestId('tests-tab');
-
-  const findDagApp = () => wrapper.findComponent(Dag);
-  const findFailedJobsApp = () => wrapper.findComponent(JobsApp);
-  const findJobsApp = () => wrapper.findComponent(JobsApp);
-  const findPipelineApp = () => wrapper.findComponent(PipelineGraphWrapper);
-  const findTestsApp = () => wrapper.findComponent(TestReports);
 
   const findFailedJobsBadge = () => wrapper.findByTestId('failed-builds-counter');
   const findJobsBadge = () => wrapper.findByTestId('builds-counter');
@@ -43,6 +33,7 @@ describe('The Pipeline Tabs', () => {
         },
         stubs: {
           GlTab,
+          RouterView: true,
         },
       }),
     );
@@ -54,17 +45,16 @@ describe('The Pipeline Tabs', () => {
 
   describe('Tabs', () => {
     it.each`
-      tabName          | tabComponent         | appComponent
-      ${'Pipeline'}    | ${findPipelineTab}   | ${findPipelineApp}
-      ${'Dag'}         | ${findDagTab}        | ${findDagApp}
-      ${'Jobs'}        | ${findJobsTab}       | ${findJobsApp}
-      ${'Failed Jobs'} | ${findFailedJobsTab} | ${findFailedJobsApp}
-      ${'Tests'}       | ${findTestsTab}      | ${findTestsApp}
-    `('shows $tabName tab with its associated component', ({ appComponent, tabComponent }) => {
+      tabName          | tabComponent
+      ${'Pipeline'}    | ${findPipelineTab}
+      ${'Dag'}         | ${findDagTab}
+      ${'Jobs'}        | ${findJobsTab}
+      ${'Failed Jobs'} | ${findFailedJobsTab}
+      ${'Tests'}       | ${findTestsTab}
+    `('shows $tabName tab', ({ tabComponent }) => {
       createComponent();
 
       expect(tabComponent().exists()).toBe(true);
-      expect(appComponent().exists()).toBe(true);
     });
 
     describe('with no failed jobs', () => {

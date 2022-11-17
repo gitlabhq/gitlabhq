@@ -25,11 +25,11 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
       - You can generate and use a [Bitbucket App Password](https://support.atlassian.com/bitbucket-cloud/docs/app-passwords/) for the password field.
 
    GitLab imports the repository and enables [Pull Mirroring](../../user/project/repository/mirror/pull.md).
-   You can check that mirroring is working in the project by going to **Settings > Repository > Mirroring repositories**.
+   You can check that mirroring is working in the project in **Settings > Repository > Mirroring repositories**.
 
 1. In GitLab, create a
    [Personal Access Token](../../user/profile/personal_access_tokens.md)
-   with `api` scope. This is used to authenticate requests from the web
+   with `api` scope. The token is used to authenticate requests from the web
    hook that is created in Bitbucket to notify GitLab of new commits.
 
 1. In Bitbucket, from **Settings > Webhooks**, create a new web hook to notify
@@ -58,18 +58,14 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 1. In GitLab, from **Settings > CI/CD > Variables**, add variables to allow
    communication with Bitbucket via the Bitbucket API:
 
-   `BITBUCKET_ACCESS_TOKEN`: the Bitbucket app password created above.
+   - `BITBUCKET_ACCESS_TOKEN`: The Bitbucket app password created above. This variable should be [masked](../variables/index.md#mask-a-cicd-variable).
+   - `BITBUCKET_USERNAME`: The username of the Bitbucket account.
+   - `BITBUCKET_NAMESPACE`: Set this variable if your GitLab and Bitbucket namespaces differ.
+   - `BITBUCKET_REPOSITORY`: Set this variable if your GitLab and Bitbucket project names differ.
 
-   `BITBUCKET_USERNAME`: the username of the Bitbucket account.
-
-   `BITBUCKET_NAMESPACE`: set this if your GitLab and Bitbucket namespaces differ.
-
-   `BITBUCKET_REPOSITORY`: set this if your GitLab and Bitbucket project names differ.
-
-1. In Bitbucket, add a script to push the pipeline status to Bitbucket.
-
-   NOTE:
-   The changes must be made in Bitbucket as any changes in the GitLab repository are overwritten by Bitbucket when GitLab next mirrors the repository.
+1. In Bitbucket, add a script that pushes the pipeline status to Bitbucket. The script
+   is created in Bitbucket, but the mirroring process copies it to the GitLab mirror. The GitLab
+   CI/CD pipeline runs the script, and pushes the status back to Bitbucket.
 
    Create a file `build_status` and insert the script below and run
    `chmod +x build_status` in your terminal to make the script executable.
@@ -125,7 +121,8 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
    ```
 
 1. In Bitbucket, create a `.gitlab-ci.yml` file to use the script to push
-   pipeline success and failures to Bitbucket.
+   pipeline success and failures to Bitbucket. Similar to the script added above,
+   this file is copied to the GitLab repo as part of the mirroring process.
 
    ```yaml
    stages:
@@ -168,6 +165,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

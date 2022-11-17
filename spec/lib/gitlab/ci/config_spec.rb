@@ -484,7 +484,7 @@ RSpec.describe Gitlab::Ci::Config do
       it 'raises ConfigError' do
         expect { config }.to raise_error(
           described_class::ConfigError,
-          'Include `{"remote":"http://url","local":"/local/file.yml"}` needs to match exactly one accessor!'
+          /Each include must use only one of/
         )
       end
     end
@@ -714,7 +714,7 @@ RSpec.describe Gitlab::Ci::Config do
           it 'raises an error' do
             expect { config }.to raise_error(
               described_class::ConfigError,
-              /needs to match exactly one accessor!/
+              /does not have a valid subkey for include/
             )
           end
         end

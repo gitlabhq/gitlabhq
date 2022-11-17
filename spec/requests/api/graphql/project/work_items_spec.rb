@@ -10,6 +10,8 @@ RSpec.describe 'getting a work item list for a project' do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:label1) { create(:label, project: project) }
   let_it_be(:label2) { create(:label, project: project) }
+  let_it_be(:milestone1) { create(:milestone, project: project) }
+  let_it_be(:milestone2) { create(:milestone, project: project) }
 
   let_it_be(:item1) { create(:work_item, project: project, discussion_locked: true, title: 'item1', labels: [label1]) }
   let_it_be(:item2) do
@@ -19,7 +21,8 @@ RSpec.describe 'getting a work item list for a project' do
       title: 'item2',
       last_edited_by: current_user,
       last_edited_at: 1.day.ago,
-      labels: [label2]
+      labels: [label2],
+      milestone: milestone1
     )
   end
 
@@ -55,7 +58,8 @@ RSpec.describe 'getting a work item list for a project' do
         :last_edited_by_user,
         last_edited_at: 1.week.ago,
         project: project,
-        labels: [label1, label2]
+        labels: [label1, label2],
+        milestone: milestone2
       )
 
       expect_graphql_errors_to_be_empty
@@ -94,6 +98,11 @@ RSpec.describe 'getting a work item list for a project' do
                 labels { nodes { id } }
                 allowsScopedLabels
               }
+              ... on WorkItemWidgetMilestone {
+                milestone {
+                  id
+                }
+              }
             }
           }
         GRAPHQL
@@ -112,18 +121,6 @@ RSpec.describe 'getting a work item list for a project' do
   context 'when the user does not have access to the item' do
     before do
       project.project_feature.update!(issues_access_level: ProjectFeature::PRIVATE)
-    end
-
-    it 'returns an empty list' do
-      post_graphql(query)
-
-      expect(items_data).to eq([])
-    end
-  end
-
-  context 'when work_items flag is disabled' do
-    before do
-      stub_feature_flags(work_items: false)
     end
 
     it 'returns an empty list' do

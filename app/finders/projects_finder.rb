@@ -27,7 +27,6 @@
 #     last_activity_after: datetime
 #     last_activity_before: datetime
 #     repository_storage: string
-#     without_deleted: boolean
 #     not_aimed_for_deletion: boolean
 #
 class ProjectsFinder < UnionFinder
@@ -76,6 +75,7 @@ class ProjectsFinder < UnionFinder
 
   # EE would override this to add more filters
   def filter_projects(collection)
+    collection = collection.without_deleted
     collection = by_ids(collection)
     collection = by_personal(collection)
     collection = by_starred(collection)
@@ -86,7 +86,6 @@ class ProjectsFinder < UnionFinder
     collection = by_search(collection)
     collection = by_archived(collection)
     collection = by_custom_attributes(collection)
-    collection = by_deleted_status(collection)
     collection = by_not_aimed_for_deletion(collection)
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
@@ -210,10 +209,6 @@ class ProjectsFinder < UnionFinder
     return items.none if params[:search].present? && params[:minimum_search_length].present? && params[:search].length < params[:minimum_search_length].to_i
 
     items.optionally_search(params[:search], include_namespace: params[:search_namespaces].present?)
-  end
-
-  def by_deleted_status(items)
-    params[:without_deleted].present? ? items.without_deleted : items
   end
 
   def by_not_aimed_for_deletion(items)

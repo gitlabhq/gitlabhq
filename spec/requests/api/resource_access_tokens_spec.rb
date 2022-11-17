@@ -243,65 +243,33 @@ RSpec.describe API::ResourceAccessTokens do
       end
 
       context "when the user has valid permissions" do
-        context 'when user_destroy_with_limited_execution_time_worker is enabled' do
+        it "deletes the #{source_type} access token from the #{source_type}" do
+          delete_token
+
+          expect(response).to have_gitlab_http_status(:no_content)
+          expect(
+            Users::GhostUserMigration.where(user: project_bot,
+                                            initiator_user: user)
+          ).to be_exists
+        end
+
+        context "when using #{source_type} access token to DELETE other #{source_type} access token" do
+          let_it_be(:other_project_bot) { create(:user, :project_bot) }
+          let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
+          let_it_be(:token_id) { other_token.id }
+
+          before do
+            resource.add_maintainer(other_project_bot)
+          end
+
           it "deletes the #{source_type} access token from the #{source_type}" do
             delete_token
 
             expect(response).to have_gitlab_http_status(:no_content)
             expect(
-              Users::GhostUserMigration.where(user: project_bot,
+              Users::GhostUserMigration.where(user: other_project_bot,
                                               initiator_user: user)
             ).to be_exists
-          end
-
-          context "when using #{source_type} access token to DELETE other #{source_type} access token" do
-            let_it_be(:other_project_bot) { create(:user, :project_bot) }
-            let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
-            let_it_be(:token_id) { other_token.id }
-
-            before do
-              resource.add_maintainer(other_project_bot)
-            end
-
-            it "deletes the #{source_type} access token from the #{source_type}" do
-              delete_token
-
-              expect(response).to have_gitlab_http_status(:no_content)
-              expect(
-                Users::GhostUserMigration.where(user: other_project_bot,
-                                                initiator_user: user)
-              ).to be_exists
-            end
-          end
-        end
-
-        context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-          before do
-            stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-          end
-
-          it "deletes the #{source_type} access token from the #{source_type}" do
-            delete_token
-
-            expect(response).to have_gitlab_http_status(:no_content)
-            expect(User.exists?(project_bot.id)).to be_falsy
-          end
-
-          context "when using #{source_type} access token to DELETE other #{source_type} access token" do
-            let_it_be(:other_project_bot) { create(:user, :project_bot) }
-            let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
-            let_it_be(:token_id) { other_token.id }
-
-            before do
-              resource.add_maintainer(other_project_bot)
-            end
-
-            it "deletes the #{source_type} access token from the #{source_type}" do
-              delete_token
-
-              expect(response).to have_gitlab_http_status(:no_content)
-              expect(User.exists?(other_project_bot.id)).to be_falsy
-            end
           end
         end
 
@@ -414,6 +382,41 @@ RSpec.describe API::ResourceAccessTokens do
 
               expect(response).to have_gitlab_http_status(:bad_request)
               expect(response.body).to include("scopes is missing")
+            end
+          end
+
+          context "when using invalid 'scopes'" do
+            let_it_be(:params) do
+              {
+                name: "test",
+                scopes: ["test"],
+                expires_at: 5.days.from_now
+              }
+            end
+
+            it "does not create a #{source_type} access token with invalid 'scopes'", :aggregate_failures do
+              create_token
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response.body).to include("scopes does not have a valid value")
+            end
+          end
+
+          context "when using invalid 'access_level'" do
+            let_it_be(:params) do
+              {
+                name: "test",
+                scopes: ["api"],
+                expires_at: 5.days.from_now,
+                access_level: Gitlab::Access::NO_ACCESS
+              }
+            end
+
+            it "does not create a #{source_type} access token with invalid 'access_level'", :aggregate_failures do
+              create_token
+
+              expect(response).to have_gitlab_http_status(:bad_request)
+              expect(response.body).to include("access_level does not have a valid value")
             end
           end
         end

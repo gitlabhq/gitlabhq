@@ -11,8 +11,8 @@ module API
         ->(obj, opts) { Ability.allowed?(opts[:user], "destroy_#{attr}".to_sym, yield(obj)) }
       end
 
-      def expose_restricted(attr, &block)
-        expose attr, if: can_read(attr, &block)
+      def expose_restricted(attr, documentation: {}, &block)
+        expose attr, documentation: documentation, if: can_read(attr, &block)
       end
     end
   end

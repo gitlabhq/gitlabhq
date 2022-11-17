@@ -1,3 +1,3 @@
-import { initAdminRunnerShow } from '~/runner/admin_runner_show';
+import { initAdminRunnerShow } from '~/ci/runner/admin_runner_show';
 
 initAdminRunnerShow();

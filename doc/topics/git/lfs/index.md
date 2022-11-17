@@ -43,6 +43,24 @@ Documentation for GitLab instance administrators is under [LFS administration do
   [add the URL to Git configuration manually](#troubleshooting).
 - [Group wikis](../../../user/project/wiki/group.md) do not support Git LFS.
 
+## How LFS objects affect repository size
+
+When you add an LFS object to a repository, GitLab:
+
+1. Creates an LFS object.
+1. Associates the LFS object with the repository.
+1. Queues a job to recalculate your project's statistics, including storage size and
+   LFS object storage. Your LFS object storage is the sum of the size of all LFS objects
+   associated with the repository.
+
+When your repository is forked, LFS objects from the upstream project are associated
+with the fork. When the fork is created, the LFS object storage for the fork is equal
+to the storage used by the upstream project. If new LFS objects are added to the fork,
+the total object storage changes for the fork, but not the upstream project.
+
+If you create a merge request from the fork back to the upstream project,
+any new LFS objects in the fork become associated with the upstream project.
+
 ## Using Git LFS
 
 Let's take a look at the workflow for checking large files into your Git

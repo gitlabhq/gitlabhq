@@ -20,7 +20,12 @@
     - |
       if [[ "${CACHE_ASSETS_AS_PACKAGE}" == "true" ]]; then
         source scripts/gitlab_component_helpers.sh
-        gitlab_assets_archive_doesnt_exist || run_timed_command "download_and_extract_gitlab_assets"
+
+        if ! gitlab_assets_archive_doesnt_exist; then
+          # We remove all assets from the native cache as they could pollute the fresh assets from the package
+          rm -rf public/assets/ app/assets/javascripts/locale/**/app.js
+          run_timed_command "download_and_extract_gitlab_assets"
+        fi
       fi
     - assets_compile_script
 
@@ -83,17 +88,6 @@ update-assets-compile-test-cache:
     - !reference [compile-test-assets, script]
     - echo -n "${GITLAB_ASSETS_HASH}" > "cached-assets-hash.txt"
   artifacts: {}  # This job's purpose is only to update the cache.
-
-# TODO: Remove this as it's duplicating update-assets-compile-*-cache
-update-yarn-cache:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .yarn-cache-push
-    - .shared:rules:update-cache
-  stage: prepare
-  script:
-    - yarn_install_script
 
 update-storybook-yarn-cache:
   extends:
@@ -171,7 +165,7 @@ graphql-schema-dump:
 graphql-schema-dump as-if-foss:
   extends:
     - graphql-schema-dump
-    - .frontend:rules:eslint-as-if-foss
+    - .frontend:rules:default-frontend-jobs-as-if-foss
     - .as-if-foss
 
 .frontend-test-base:
@@ -399,5 +393,5 @@ compile-storybook as-if-foss:
     - .as-if-foss
     - .frontend:rules:default-frontend-jobs-as-if-foss
   needs:
-    - !reference [.compile-storybook-base, needs]
+    - job: "graphql-schema-dump as-if-foss"
     - job: "rspec-all frontend_fixture as-if-foss"

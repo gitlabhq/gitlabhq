@@ -67,7 +67,7 @@ RSpec.describe Users::ApproveService do
 
           subject
 
-          expect(Gitlab::AppLogger).to have_received(:info).with(message: "User instance access request approved", user: "#{user.username}", email: "#{user.email}", approved_by: "#{current_user.username}", ip_address: "#{current_user.current_sign_in_ip}")
+          expect(Gitlab::AppLogger).to have_received(:info).with(message: "User instance access request approved", user: user.username.to_s, email: user.email.to_s, approved_by: current_user.username.to_s, ip_address: current_user.current_sign_in_ip.to_s)
         end
 
         it 'emails the user on approval' do

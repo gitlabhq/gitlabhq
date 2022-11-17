@@ -7,7 +7,11 @@ module QA
     # Common tools for use with influxdb metrics setup
     #
     module InfluxdbTools
+      # @return [String] bucket for storing all test run metrics
       INFLUX_TEST_METRICS_BUCKET = "e2e-test-stats"
+      # @return [String] bucket for storing metrics from main runs
+      INFLUX_MAIN_TEST_METRICS_BUCKET = "e2e-test-stats-main"
+      # @return [Array] live environment names
       LIVE_ENVS = %w[staging staging-canary staging-ref canary preprod production].freeze
 
       private

@@ -2,21 +2,23 @@
 
 # frozen_string_literal: true
 
+require 'optparse'
+require 'json'
+
 require_relative 'api/pipeline_failed_jobs'
 
-finder_options = API::DEFAULT_OPTIONS.dup.merge(exclude_allowed_to_fail_jobs: true)
-failed_jobs = PipelineFailedJobs.new(finder_options).execute
+class GenerateFailedPipelineSlackMessage
+  DEFAULT_OPTIONS = {
+    failed_pipeline_slack_message_file: 'failed_pipeline_slack_message.json',
+    incident_json_file: 'incident.json'
+  }.freeze
 
-class SlackReporter
-  DEFAULT_FAILED_PIPELINE_REPORT_FILE = 'failed_pipeline_report.json'
-
-  def initialize(failed_jobs)
-    @failed_jobs = failed_jobs
-    @failed_pipeline_report_file = ENV.fetch('FAILED_PIPELINE_REPORT_FILE', DEFAULT_FAILED_PIPELINE_REPORT_FILE)
+  def initialize(options)
+    @incident_json_file = options.delete(:incident_json_file)
   end
 
-  def report
-    payload = {
+  def execute
+    {
       channel: ENV['SLACK_CHANNEL'],
       username: "Failed pipeline reporter",
       icon_emoji: ":boom:",
@@ -27,33 +29,36 @@ class SlackReporter
           text: {
             type: "mrkdwn",
             text: "*#{title}*"
+          },
+          accessory: {
+            type: "button",
+            text: {
+              type: "plain_text",
+              text: incident_button_text
+            },
+            url: incident_button_link
           }
         },
         {
           type: "section",
-          fields: [
-            {
-              type: "mrkdwn",
-              text: "*Commit*\n#{commit_link}"
-            },
-            {
-              type: "mrkdwn",
-              text: "*Triggered by*\n#{triggered_by_link}"
-            }
-          ]
+          text: {
+            type: "mrkdwn",
+            text: "*Branch*: #{branch_link}"
+          }
         },
         {
           type: "section",
-          fields: [
-            {
-              type: "mrkdwn",
-              text: "*Source*\n#{source} from #{project_link}"
-            },
-            {
-              type: "mrkdwn",
-              text: "*Duration*\n#{pipeline_duration} minutes"
-            }
-          ]
+          text: {
+            type: "mrkdwn",
+            text: "*Commit*: #{commit_link}"
+          }
+        },
+        {
+          type: "section",
+          text: {
+            type: "mrkdwn",
+            text: "*Triggered by* #{triggered_by_link} • *Source:* #{source} • *Duration:* #{pipeline_duration} minutes"
+          }
         },
         {
           type: "section",
@@ -64,16 +69,47 @@ class SlackReporter
         }
       ]
     }
-
-    File.write(failed_pipeline_report_file, JSON.pretty_generate(payload))
   end
 
   private
 
-  attr_reader :failed_jobs, :failed_pipeline_report_file
+  attr_reader :incident_json_file
+
+  def failed_jobs
+    @failed_jobs ||= PipelineFailedJobs.new(API::DEFAULT_OPTIONS.dup.merge(exclude_allowed_to_fail_jobs: true)).execute
+  end
 
   def title
-    "Pipeline #{pipeline_link} for #{branch_link} failed"
+    "#{project_link} pipeline #{pipeline_link} failed"
+  end
+
+  def incident_exist?
+    return @incident_exist if defined?(@incident_exist)
+
+    @incident_exist = File.exist?(incident_json_file)
+  end
+
+  def incident
+    return unless incident_exist?
+
+    @incident ||= JSON.parse(File.read(incident_json_file))
+  end
+
+  def incident_button_text
+    if incident_exist?
+      "View incident ##{incident['iid']}"
+    else
+      'Create incident'
+    end
+  end
+
+  def incident_button_link
+    if incident_exist?
+      incident['web_url']
+    else
+      "#{ENV['CI_SERVER_URL']}/#{ENV['BROKEN_MASTER_INCIDENTS_PROJECT']}/-/issues/new?" \
+        "issuable_template=incident&issue%5Bissue_type%5D=incident"
+    end
   end
 
   def pipeline_link
@@ -93,11 +129,15 @@ class SlackReporter
   end
 
   def source
-    "`#{ENV['CI_PIPELINE_SOURCE']}`"
+    "`#{ENV['CI_PIPELINE_SOURCE']}#{schedule_type}`"
+  end
+
+  def schedule_type
+    ENV['CI_PIPELINE_SOURCE'] == 'schedule' ? ": #{ENV['SCHEDULE_TYPE']}" : ''
   end
 
   def project_link
-    "<#{ENV['CI_PROJECT_URL']}|#{ENV['CI_PROJECT_NAME']}>"
+    "<#{ENV['CI_PROJECT_URL']}|#{ENV['CI_PROJECT_PATH']}>"
   end
 
   def triggered_by_link
@@ -109,4 +149,33 @@ class SlackReporter
   end
 end
 
-SlackReporter.new(failed_jobs).report
+if $PROGRAM_NAME == __FILE__
+  options = GenerateFailedPipelineSlackMessage::DEFAULT_OPTIONS.dup
+
+  OptionParser.new do |opts|
+    opts.on("-i", "--incident-json-file file_path", String, "Path to a file where the incident JSON data "\
+      "can be found (defaults to "\
+      "`#{GenerateFailedPipelineSlackMessage::DEFAULT_OPTIONS[:incident_json_file]}`)") do |value|
+      options[:incident_json_file] = value
+    end
+
+    opts.on("-f", "--failed-pipeline-slack-message-file file_path", String, "Path to a file where to save the Slack "\
+      "message (defaults to "\
+      "`#{GenerateFailedPipelineSlackMessage::DEFAULT_OPTIONS[:failed_pipeline_slack_message_file]}`)") do |value|
+      options[:failed_pipeline_slack_message_file] = value
+    end
+
+    opts.on("-h", "--help", "Prints this help") do
+      puts opts
+      exit
+    end
+  end.parse!
+
+  failed_pipeline_slack_message_file = options.delete(:failed_pipeline_slack_message_file)
+
+  GenerateFailedPipelineSlackMessage.new(options).execute.tap do |message_payload|
+    if failed_pipeline_slack_message_file
+      File.write(failed_pipeline_slack_message_file, JSON.pretty_generate(message_payload))
+    end
+  end
+end

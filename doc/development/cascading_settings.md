@@ -38,7 +38,7 @@ Settings are not cascading by default. To define a cascading setting, take the f
    `application_settings`.
 
     ```ruby
-    class AddDelayedProjectRemovalCascadingSetting < Gitlab::Database::Migration[1.0]
+    class AddDelayedProjectRemovalCascadingSetting < Gitlab::Database::Migration[2.0]
       include Gitlab::Database::MigrationHelpers::CascadingNamespaceSettings
 
       enable_lock_retries!

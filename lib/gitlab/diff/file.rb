@@ -44,10 +44,6 @@ module Gitlab
         add_blobs_to_batch_loader
       end
 
-      def use_semantic_ipynb_diff?
-        strong_memoize(:_use_semantic_ipynb_diff) { Feature.enabled?(:ipynb_semantic_diff, repository.project) }
-      end
-
       def has_renderable?
         rendered&.has_renderable?
       end
@@ -372,7 +368,7 @@ module Gitlab
       end
 
       def rendered
-        return unless use_semantic_ipynb_diff? && ipynb? && modified_file? && !collapsed? && !too_large?
+        return unless ipynb? && modified_file? && !collapsed? && !too_large?
 
         strong_memoize(:rendered) { Rendered::Notebook::DiffFile.new(self) }
       end

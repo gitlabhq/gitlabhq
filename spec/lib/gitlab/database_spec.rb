@@ -242,13 +242,9 @@ RSpec.describe Gitlab::Database do
       pool&.disconnect!
     end
 
-    context "when there's CI connection", :request_store do
+    context "when there's CI connection" do
       before do
         skip_if_multiple_databases_not_setup
-
-        # FF due to lib/gitlab/database/load_balancing/configuration.rb:92
-        # Requires usage of `:request_store`
-        stub_feature_flags(force_no_sharing_primary_model: true)
       end
 
       context 'when CI uses database_tasks: false does indicate that ci: is subset of main:' do

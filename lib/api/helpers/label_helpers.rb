@@ -137,9 +137,10 @@ module API
       end
 
       def create_service_params(parent)
-        if parent.is_a?(Project)
+        case parent
+        when Project
           { project: parent }
-        elsif parent.is_a?(Group)
+        when Group
           { group: parent }
         else
           raise TypeError, 'Parent type is not supported'

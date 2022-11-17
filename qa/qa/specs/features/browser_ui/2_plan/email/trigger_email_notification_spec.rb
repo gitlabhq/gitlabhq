@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', :orchestrated, :smtp, :reliable do
+  RSpec.describe 'Plan', :orchestrated, :smtp, :reliable, product_group: :project_management do
     describe 'Email Notification' do
       include Support::API
 

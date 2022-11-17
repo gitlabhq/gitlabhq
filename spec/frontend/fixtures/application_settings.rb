@@ -8,7 +8,7 @@ RSpec.describe Admin::ApplicationSettingsController, '(JavaScript fixtures)', ty
   include AdminModeHelper
 
   let(:admin) { create(:admin) }
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'application-settings') }
 
   before do

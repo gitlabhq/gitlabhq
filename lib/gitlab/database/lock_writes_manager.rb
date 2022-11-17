@@ -5,6 +5,11 @@ module Gitlab
     class LockWritesManager
       TRIGGER_FUNCTION_NAME = 'gitlab_schema_prevent_write'
 
+      # Triggers to block INSERT / UPDATE / DELETE
+      # Triggers on TRUNCATE are not added to the information_schema.triggers
+      # See https://www.postgresql.org/message-id/16934.1568989957%40sss.pgh.pa.us
+      EXPECTED_TRIGGER_RECORD_COUNT = 3
+
       def initialize(table_name:, connection:, database_name:, logger: nil, dry_run: false)
         @table_name = table_name
         @connection = connection
@@ -20,7 +25,7 @@ module Gitlab
             AND trigger_name = '#{write_trigger_name(table_name)}'
         SQL
 
-        connection.select_value(query) == 3
+        connection.select_value(query) == EXPECTED_TRIGGER_RECORD_COUNT
       end
 
       def lock_writes

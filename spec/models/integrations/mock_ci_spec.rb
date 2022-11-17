@@ -7,6 +7,8 @@ RSpec.describe Integrations::MockCi do
 
   subject(:integration) { described_class.new(project: project, mock_service_url: generate(:url)) }
 
+  it_behaves_like Integrations::BaseCi
+
   include_context Integrations::EnableSslVerification
 
   describe '#commit_status' do

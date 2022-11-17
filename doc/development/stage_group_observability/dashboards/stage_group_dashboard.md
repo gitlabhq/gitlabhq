@@ -56,7 +56,7 @@ description, note the following:
 
 To inspect the raw data of the panel for further calculation, select **Inspect** from the dropdown list of a panel.
 Queries, raw data, and panel JSON structure are available.
-Read more at [Grafana panel inspection](http://grafana.com/docs/grafana/next/panels/query-a-data-source/).
+Read more at [Grafana panel inspection](https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/).
 
 All the dashboards are powered by [Grafana](https://grafana.com/), a frontend for displaying metrics.
 Grafana consumes the data returned from queries to backend Prometheus data source, then presents it

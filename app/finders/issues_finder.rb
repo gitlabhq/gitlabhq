@@ -29,6 +29,8 @@
 #     issue_types: array of strings (one of WorkItems::Type.base_types)
 #
 class IssuesFinder < IssuableFinder
+  extend ::Gitlab::Utils::Override
+
   CONFIDENTIAL_ACCESS_LEVEL = Gitlab::Access::REPORTER
 
   def self.scalar_params
@@ -94,6 +96,16 @@ class IssuesFinder < IssuableFinder
   def filter_negated_items(items)
     issues = super
     by_negated_issue_types(issues)
+  end
+
+  override :filter_by_full_text_search
+  def filter_by_full_text_search(items)
+    # This project condition is used as a hint to PG about the partitions that need searching
+    # because the search data is partitioned by project.
+    # In certain cases, like the recent items search, the query plan is much better without this condition.
+    return super if params[:skip_full_text_search_project_condition].present?
+
+    super.with_projects_matching_search_data
   end
 
   def by_confidential(items)

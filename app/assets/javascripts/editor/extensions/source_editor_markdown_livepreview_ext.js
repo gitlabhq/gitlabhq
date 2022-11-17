@@ -1,4 +1,4 @@
-import { KeyMod, KeyCode } from 'monaco-editor';
+import { KeyMod, KeyCode, Emitter } from 'monaco-editor';
 import { debounce } from 'lodash';
 import { BLOB_PREVIEW_ERROR } from '~/blob_edit/constants';
 import { createAlert } from '~/flash';
@@ -56,6 +56,7 @@ export class EditorMarkdownPreviewExtension {
       layoutChangeListener: undefined,
       path: setupOptions.previewMarkdownPath,
       actionShowPreviewCondition: instance.createContextKey('toggleLivePreview', true),
+      eventEmitter: new Emitter(),
     };
     this.toolbarButtons = [];
 
@@ -71,6 +72,8 @@ export class EditorMarkdownPreviewExtension {
         EditorMarkdownPreviewExtension.resizePreviewLayout(instance, newWidth);
       }
     });
+
+    this.preview.eventEmitter.event(this.togglePreview.bind(this, instance));
   }
 
   onBeforeUnuse(instance) {
@@ -187,6 +190,31 @@ export class EditorMarkdownPreviewExtension {
     });
   }
 
+  togglePreview(instance) {
+    if (!this.preview?.el) {
+      this.preview.el = setupDomElement({ injectToEl: instance.getDomNode().parentElement });
+    }
+    this.togglePreviewLayout(instance);
+    this.togglePreviewPanel(instance);
+
+    this.preview.actionShowPreviewCondition.set(!this.preview.actionShowPreviewCondition.get());
+
+    if (!this.preview?.shown) {
+      this.preview.modelChangeListener = instance.onDidChangeModelContent(
+        debounce(this.fetchPreview.bind(this, instance), EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY),
+      );
+    } else {
+      this.preview.modelChangeListener.dispose();
+    }
+
+    this.preview.shown = !this.preview?.shown;
+    if (instance.toolbar) {
+      instance.toolbar.updateItem(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID, {
+        selected: this.preview.shown,
+      });
+    }
+  }
+
   provides() {
     return {
       markdownPreview: this.preview,
@@ -195,33 +223,7 @@ export class EditorMarkdownPreviewExtension {
 
       setupPreviewAction: (instance) => this.setupPreviewAction(instance),
 
-      togglePreview: (instance) => {
-        if (!this.preview?.el) {
-          this.preview.el = setupDomElement({ injectToEl: instance.getDomNode().parentElement });
-        }
-        this.togglePreviewLayout(instance);
-        this.togglePreviewPanel(instance);
-
-        this.preview.actionShowPreviewCondition.set(!this.preview.actionShowPreviewCondition.get());
-
-        if (!this.preview?.shown) {
-          this.preview.modelChangeListener = instance.onDidChangeModelContent(
-            debounce(
-              this.fetchPreview.bind(this, instance),
-              EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY,
-            ),
-          );
-        } else {
-          this.preview.modelChangeListener.dispose();
-        }
-
-        this.preview.shown = !this.preview?.shown;
-        if (instance.toolbar) {
-          instance.toolbar.updateItem(EXTENSION_MARKDOWN_PREVIEW_ACTION_ID, {
-            selected: this.preview.shown,
-          });
-        }
-      },
+      togglePreview: (instance) => this.togglePreview(instance),
     };
   }
 }

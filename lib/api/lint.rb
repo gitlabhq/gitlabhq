@@ -15,12 +15,18 @@ module API
     end
 
     namespace :ci do
-      desc 'Validation of .gitlab-ci.yml content'
-      params do
-        requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
-        optional :include_merged_yaml, type: Boolean, desc: 'Whether or not to include merged CI config yaml in the response'
-        optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
+      desc 'Validates the .gitlab-ci.yml content' do
+        detail 'Checks if CI/CD YAML configuration is valid'
+        success code: 200, model: Entities::Ci::Lint::Result
+        tags %w[ci_lint]
       end
+      params do
+        requires :content, type: String, desc: 'The CI/CD configuration content'
+        optional :include_merged_yaml, type: Boolean, desc: 'If the expanded CI/CD configuration should be included in the response'
+        optional :include_jobs, type: Boolean, desc: 'If the list of jobs should be included in the response. This is
+        false by default'
+      end
+
       post '/lint', urgency: :low do
         unauthorized! unless can_lint_ci?
 
@@ -36,16 +42,21 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Validation of .gitlab-ci.yml content' do
-        detail 'This feature was introduced in GitLab 13.5.'
+      desc 'Validates a CI YAML configuration with a namespace' do
+        detail 'Checks if a project’s latest (HEAD of the project’s default branch) .gitlab-ci.yml configuration is
+        valid'
+        success Entities::Ci::Lint::Result
+        tags %w[ci_lint]
       end
       params do
-        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
-        optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
+        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check. This is false by default'
+        optional :include_jobs, type: Boolean, desc: 'If the list of jobs that would exist in a static check or pipeline
+        simulation should be included in the response. This is false by default'
         optional :ref, type: String, desc: 'Branch or tag used to execute a dry run. Defaults to the default branch of the project. Only used when dry_run is true'
       end
+
       get ':id/ci/lint', urgency: :low do
-        authorize! :download_code, user_project
+        authorize! :read_code, user_project
 
         if user_project.commit.present?
           content = user_project.repository.gitlab_ci_yml_for(user_project.commit.id, user_project.ci_config_path_or_default)
@@ -60,15 +71,19 @@ module API
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Validation of .gitlab-ci.yml content' do
-        detail 'This feature was introduced in GitLab 13.6.'
+      desc 'Validate a CI YAML configuration with a namespace' do
+        detail 'Checks if CI/CD YAML configuration is valid. This endpoint has namespace specific context'
+        success code: 200, model: Entities::Ci::Lint::Result
+        tags %w[ci_lint]
       end
       params do
         requires :content, type: String, desc: 'Content of .gitlab-ci.yml'
-        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check.'
-        optional :include_jobs, type: Boolean, desc: 'Whether or not to include CI jobs in the response'
-        optional :ref, type: String, desc: 'Branch or tag used to execute a dry run. Defaults to the default branch of the project. Only used when dry_run is true'
+        optional :dry_run, type: Boolean, default: false, desc: 'Run pipeline creation simulation, or only do static check. This is false by default'
+        optional :include_jobs, type: Boolean, desc: 'If the list of jobs that would exist in a static check or pipeline
+        simulation should be included in the response. This is false by default'
+        optional :ref, type: String, desc: 'When dry_run is true, sets the branch or tag to use. Defaults to the project’s default branch when not set'
       end
+
       post ':id/ci/lint', urgency: :low do
         authorize! :create_pipeline, user_project
 

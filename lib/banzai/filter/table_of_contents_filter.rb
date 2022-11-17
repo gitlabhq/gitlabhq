@@ -33,17 +33,17 @@ module Banzai
         header_root = current_header = HeaderNode.new
 
         doc.xpath(XPATH).each do |node|
-          if header_content = node.children.first
-            id = string_to_anchor(node.text[0...255])
+          next unless header_content = node.children.first
 
-            uniq = headers[id] > 0 ? "-#{headers[id]}" : ''
-            headers[id] += 1
-            href = "#{id}#{uniq}"
+          id = string_to_anchor(node.text[0...255])
 
-            current_header = HeaderNode.new(node: node, href: href, previous_header: current_header)
+          uniq = headers[id] > 0 ? "-#{headers[id]}" : ''
+          headers[id] += 1
+          href = "#{id}#{uniq}"
 
-            header_content.add_previous_sibling(anchor_tag(href))
-          end
+          current_header = HeaderNode.new(node: node, href: href, previous_header: current_header)
+
+          header_content.add_previous_sibling(anchor_tag(href))
         end
 
         push_toc(header_root.children, root: true)

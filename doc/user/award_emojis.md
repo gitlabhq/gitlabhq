@@ -4,23 +4,23 @@ group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Award emoji **(FREE)**
+# Award emojis **(FREE)**
 
 When you're collaborating online, you get fewer opportunities for high-fives
-and thumbs-ups. Emoji can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
+and thumbs-ups. Emojis can be awarded to [issues](project/issues/index.md), [merge requests](project/merge_requests/index.md),
 [snippets](snippets.md), and anywhere you can have a thread.
 
 ![Award emoji](img/award_emoji_select_v14_6.png)
 
-Award emoji make it much easier to give and receive feedback without a long
+Award emojis make it much easier to give and receive feedback without a long
 comment thread.
 
 For information on the relevant API, see [Award Emoji API](../api/award_emoji.md).
 
 ## Sort issues and merge requests on vote count
 
-You can quickly sort issues and merge requests by the number of votes they
-have received. The sort options can be found in the dropdown menu as "Most
+You can quickly sort issues and merge requests by the number of votes ("thumbs up" and "thumbs down" emoji) they
+have received. The sort options can be found in the dropdown list as "Most
 popular" and "Least popular".
 
 ![Votes sort options](img/award_emoji_votes_sort_options.png)
@@ -29,9 +29,9 @@ The total number of votes is not summed up. An issue with 18 upvotes and 5
 downvotes is considered more popular than an issue with 17 upvotes and no
 downvotes.
 
-## Award emoji for comments
+## Award emojis for comments
 
-Award emoji can also be applied to individual comments when you want to
+Award emojis can also be applied to individual comments when you want to
 celebrate an accomplishment or agree with an opinion.
 
 To add an award emoji:
@@ -40,3 +40,15 @@ To add an award emoji:
 1. Select an emoji from the dropdown list.
 
 To remove an award emoji, select the emoji again.
+
+## Custom emojis
+
+You can upload custom emojis to a GitLab instance with the GraphQL API.
+For more, visit [Use custom emojis with GraphQL](../api/graphql/custom_emoji.md).
+
+Custom emojis don't show in the emoji picker.
+To use them in a text box, type the filename without the extension and surrounded by colons.
+For example, for a file named `thank-you.png`, type `:thank-you:`.
+
+For the list of custom emojis available for GitLab.com, visit
+[the `custom_emoji` project](https://gitlab.com/custom_emoji/custom_emoji/-/tree/main/img).

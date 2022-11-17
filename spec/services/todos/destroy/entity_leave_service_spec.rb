@@ -17,7 +17,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
   let!(:todo_issue_user) { create(:todo, user: user, target: issue, project: project) }
   let!(:todo_issue_c_user) { create(:todo, user: user, target: issue_c, project: project) }
   let!(:todo_issue_c_user2) { create(:todo, user: user2, target: issue_c, project: project) }
-  let(:internal_note) { create(:note, noteable: issue, project: project, confidential: true ) }
+  let(:internal_note) { create(:note, noteable: issue, project: project, confidential: true) }
   let!(:todo_for_internal_note) do
     create(:todo, user: user, target: issue, project: project, note: internal_note)
   end
@@ -28,7 +28,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
       set_access(group, user, group_access) if group_access
     end
 
-    it "#{params[:method].to_s.humanize(capitalize: false)}" do
+    it params[:method].to_s.humanize(capitalize: false) do
       send(method_name)
     end
   end
@@ -250,7 +250,7 @@ RSpec.describe Todos::Destroy::EntityLeaveService do
           let!(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
           let!(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
           let!(:todo_parent_group_user) { create(:todo, user: user, group: parent_group) }
-          let(:subproject_internal_note) { create(:note, noteable: issue, project: project, confidential: true ) }
+          let(:subproject_internal_note) { create(:note, noteable: issue, project: project, confidential: true) }
           let!(:todo_for_internal_subproject_note) do
             create(:todo, user: user, target: issue, project: project, note: subproject_internal_note)
           end

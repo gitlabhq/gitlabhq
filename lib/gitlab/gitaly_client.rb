@@ -204,8 +204,9 @@ module Gitlab
       metadata['x-gitlab-correlation-id'] = Labkit::Correlation::CorrelationId.current_id if Labkit::Correlation::CorrelationId.current_id
       metadata['gitaly-session-id'] = session_id
       metadata['username'] = context_data['meta.user'] if context_data&.fetch('meta.user', nil)
+      metadata['user_id'] = context_data['meta.user_id'].to_s if context_data&.fetch('meta.user_id', nil)
       metadata['remote_ip'] = context_data['meta.remote_ip'] if context_data&.fetch('meta.remote_ip', nil)
-      metadata.merge!(Feature::Gitaly.server_feature_flags)
+      metadata.merge!(Feature::Gitaly.server_feature_flags(**feature_flag_actors))
       metadata.merge!(route_to_primary)
 
       deadline_info = request_deadline(timeout)
@@ -293,7 +294,7 @@ module Gitlab
       # check if the limit is being exceeded while testing in those environments
       # In that case we can use a feature flag to indicate that we do want to
       # enforce request limits.
-      return true if Feature::Gitaly.enabled?('enforce_requests_limits')
+      return true if Feature::Gitaly.enabled_for_any?(:gitaly_enforce_requests_limits)
 
       !Rails.env.production?
     end
@@ -502,5 +503,24 @@ module Gitlab
     end
 
     private_class_method :max_stacks
+
+    def self.with_feature_flag_actors(repository: nil, user: nil, project: nil, group: nil, &block)
+      feature_flag_actors[:repository] = repository
+      feature_flag_actors[:user] = user
+      feature_flag_actors[:project] = project
+      feature_flag_actors[:group] = group
+
+      yield
+    ensure
+      feature_flag_actors.clear
+    end
+
+    def self.feature_flag_actors
+      if Gitlab::SafeRequestStore.active?
+        Gitlab::SafeRequestStore[:gitaly_feature_flag_actors] ||= {}
+      else
+        Thread.current[:gitaly_feature_flag_actors] ||= {}
+      end
+    end
   end
 end

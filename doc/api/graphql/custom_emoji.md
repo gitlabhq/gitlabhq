@@ -6,17 +6,15 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Use custom emojis with GraphQL **(FREE)**
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 13.6
-> - [Deployed behind a feature flag](../../user/feature_flags.md), disabled by default.
-> - Enabled on GitLab.com.
-> - Recommended for production use.
-> - To use in GitLab self-managed instances, ask a GitLab administrator to [enable it](#enable-or-disable-custom-emoji-api). **(FREE SELF)**
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 13.6 [with a flag](../../administration/feature_flags.md) named `custom_emoji`. Disabled by default.
+> - Enabled on GitLab.com in GitLab 14.0.
 
-This in-development feature might not be available for your use. There can be
-[risks when enabling features still in development](../../administration/feature_flags.md#risks-when-enabling-features-still-in-development).
-Refer to this feature's version history for more details.
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `custom_emoji`.
+On GitLab.com, this feature is available.
+This feature is ready for production use.
 
-To use custom emoji in comments and descriptions, you can add them to a group using the GraphQL API.
+To use custom emojis in comments and descriptions, you can add them to a group using the GraphQL API.
 
 Parameters:
 
@@ -30,15 +28,17 @@ Parameters:
 
 ```graphql
 mutation CreateCustomEmoji($groupPath: ID!) {
-  createCustomEmoji(input: {groupPath: $groupPath, name: "party-parrot", file: "https://cultofthepartyparrot.com/parrots/hd/parrot.gif", external: true}) {
+  createCustomEmoji(input: {groupPath: $groupPath, name: "party-parrot", url: "https://cultofthepartyparrot.com/parrots/hd/parrot.gif"}) {
     clientMutationId
-    name
+    customEmoji {
+      name
+    }
     errors
   }
 }
 ```
 
-After adding custom emoji to the group, members can use it in the same way as other emoji in the comments.
+After adding a custom emoji to the group, members can use it in the same way as other emojis in the comments.
 
 ## Get custom emoji for a group
 
@@ -90,22 +90,3 @@ For more information on:
 - GraphQL specific entities, such as Fragments and Interfaces, see the official
   [GraphQL documentation](https://graphql.org/learn/).
 - Individual attributes, see the [GraphQL API Resources](reference/index.md).
-
-## Enable or disable custom emoji API **(FREE SELF)**
-
-Custom emoji is under development but ready for production use. It is
-deployed behind a feature flag that is **disabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../administration/feature_flags.md)
-can enable it.
-
-To enable it:
-
-```ruby
-Feature.enable(:custom_emoji)
-```
-
-To disable it:
-
-```ruby
-Feature.disable(:custom_emoji)
-```

@@ -306,8 +306,8 @@ class Deployment < ApplicationRecord
     last_deployment_id = environment.last_deployment&.id
 
     return false unless last_deployment_id.present?
-
     return false if self.id == last_deployment_id
+    return false if self.sha == environment.last_deployment&.sha
 
     self.id < last_deployment_id
   end
@@ -439,8 +439,9 @@ class Deployment < ApplicationRecord
   end
 
   # default tag limit is 100, 0 means no limit
+  # when refs_by_oid is passed an SHA, returns refs for that commit
   def tags(limit: 100)
-    project.repository.tag_names_contains(sha, limit: limit)
+    project.repository.refs_by_oid(oid: sha, limit: limit, ref_patterns: [Gitlab::Git::TAG_REF_PREFIX]) || []
   end
   strong_memoize_attr :tags
 

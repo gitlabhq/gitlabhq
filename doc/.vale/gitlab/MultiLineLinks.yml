@@ -3,10 +3,10 @@
 #
 # Checks that links are all on a single line.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Link "%s" must be on a single line, even if very long.'
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#basic-link-criteria
+message: "Put the full link on one line, even if the link is very long."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#links
 level: error
 scope: raw
 raw:

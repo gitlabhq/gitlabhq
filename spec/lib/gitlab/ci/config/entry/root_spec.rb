@@ -316,6 +316,35 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
         end
       end
     end
+
+    context 'when variables have "expand" data' do
+      let(:hash) do
+        {
+          variables: { 'VAR1' => 'val 1',
+                       'VAR2' => { value: 'val 2', expand: false },
+                       'VAR3' => { value: 'val 3', expand: true } },
+          rspec: { script: 'rspec' }
+        }
+      end
+
+      before do
+        root.compose!
+      end
+
+      it 'returns correct value' do
+        expect(root.variables_entry.value_with_data).to eq(
+          'VAR1' => { value: 'val 1' },
+          'VAR2' => { value: 'val 2', raw: true },
+          'VAR3' => { value: 'val 3', raw: false }
+        )
+
+        expect(root.variables_value).to eq(
+          'VAR1' => 'val 1',
+          'VAR2' => 'val 2',
+          'VAR3' => 'val 3'
+        )
+      end
+    end
   end
 
   context 'when configuration is not valid' do

@@ -6,10 +6,8 @@ module Types
     class CustomValue < GraphQL::Schema::EnumValue
       include ::GitlabStyleDeprecations
 
-      attr_reader :deprecation
-
       def initialize(name, desc = nil, **kwargs)
-        @deprecation = gitlab_deprecation(kwargs)
+        init_gitlab_deprecation(kwargs)
 
         super(name, desc, **kwargs)
       end

@@ -23,7 +23,7 @@ RSpec.describe Resolvers::UsersResolver do
     context 'when both ids and usernames are passed ' do
       it 'generates an error' do
         expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
-          resolve_users( args: { ids: [user1.to_global_id.to_s], usernames: [user1.username] } )
+          resolve_users(args: { ids: [user1.to_global_id.to_s], usernames: [user1.username] })
         end
       end
     end
@@ -31,7 +31,7 @@ RSpec.describe Resolvers::UsersResolver do
     context 'when a set of IDs is passed' do
       it 'returns those users' do
         expect(
-          resolve_users( args: { ids: [user1.to_global_id.to_s, user2.to_global_id.to_s] } )
+          resolve_users(args: { ids: [user1.to_global_id.to_s, user2.to_global_id.to_s] })
         ).to contain_exactly(user1, user2)
       end
     end
@@ -39,7 +39,7 @@ RSpec.describe Resolvers::UsersResolver do
     context 'when a set of usernames is passed' do
       it 'returns those users' do
         expect(
-          resolve_users( args: { usernames: [user1.username, user2.username] } )
+          resolve_users(args: { usernames: [user1.username, user2.username] })
         ).to contain_exactly(user1, user2)
       end
     end
@@ -49,16 +49,16 @@ RSpec.describe Resolvers::UsersResolver do
 
       it 'returns only admins' do
         expect(
-          resolve_users( args: { admins: true }, ctx: { current_user: admin_user } )
+          resolve_users(args: { admins: true }, ctx: { current_user: admin_user })
         ).to contain_exactly(admin_user)
       end
     end
 
     context 'when a search term is passed' do
       it 'returns all users who match', :aggregate_failures do
-        expect(resolve_users( args: { search: "some" } )).to contain_exactly(user1, user2)
-        expect(resolve_users( args: { search: "123784" } )).to contain_exactly(user2)
-        expect(resolve_users( args: { search: "someperson" } )).to contain_exactly(user1)
+        expect(resolve_users(args: { search: "some" })).to contain_exactly(user1, user2)
+        expect(resolve_users(args: { search: "123784" })).to contain_exactly(user2)
+        expect(resolve_users(args: { search: "someperson" })).to contain_exactly(user1)
       end
     end
 

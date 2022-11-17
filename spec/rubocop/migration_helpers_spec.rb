@@ -52,4 +52,21 @@ RSpec.describe RuboCop::MigrationHelpers do
 
     it { expect(fake_cop.version(node)).to eq(20200210184420) }
   end
+
+  describe '#time_enforced?' do
+    before do
+      allow(fake_cop).to receive(:name).and_return("TestCop")
+      allow(fake_cop).to receive(:config).and_return(double(for_cop: { 'EnforcedSince' => 20221018000000 }))
+    end
+
+    where(:name, :expected) do
+      '/gitlab/db/post_migrate/20200210184420_create_operations_scopes_table.rb' | false
+      '/gitlab/db/post_migrate/20220210184420_create_fake_table.rb'              | false
+      '/gitlab/db/post_migrate/20221019184420_add_id_to_reports_table.rb'        | true
+    end
+
+    with_them do
+      it { expect(fake_cop.time_enforced?(node)).to eq(expected) }
+    end
+  end
 end

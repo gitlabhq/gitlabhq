@@ -11,12 +11,13 @@ module API
       urgency :low
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        desc 'List agents' do
-          detail 'This feature was introduced in GitLab 14.10.'
+        desc 'List the agents for a project' do
+          detail 'This feature was introduced in GitLab 14.10. Returns the list of agents registered for the project.'
           success Entities::Clusters::Agent
+          tags %w[cluster_agents]
         end
         params do
           use :pagination
@@ -29,9 +30,10 @@ module API
           present paginate(agents), with: Entities::Clusters::Agent
         end
 
-        desc 'Get single agent' do
-          detail 'This feature was introduced in GitLab 14.10.'
+        desc 'Get details about an agent' do
+          detail 'This feature was introduced in GitLab 14.10. Gets a single agent details.'
           success Entities::Clusters::Agent
+          tags %w[cluster_agents]
         end
         params do
           requires :agent_id, type: Integer, desc: 'The ID of an agent'
@@ -42,9 +44,10 @@ module API
           present agent, with: Entities::Clusters::Agent
         end
 
-        desc 'Add an agent to a project' do
-          detail 'This feature was introduced in GitLab 14.10.'
+        desc 'Register an agent with a project' do
+          detail 'This feature was introduced in GitLab 14.10. Registers an agent to the project.'
           success Entities::Clusters::Agent
+          tags %w[cluster_agents]
         end
         params do
           requires :name, type: String, desc: 'The name of the agent'
@@ -61,8 +64,9 @@ module API
           present result[:cluster_agent], with: Entities::Clusters::Agent
         end
 
-        desc 'Delete an agent' do
-          detail 'This feature was introduced in GitLab 14.10.'
+        desc 'Delete a registered agent' do
+          detail 'This feature was introduced in GitLab 14.10. Deletes an existing agent registration.'
+          tags %w[cluster_agents]
         end
         params do
           requires :agent_id, type: Integer, desc: 'The ID of an agent'

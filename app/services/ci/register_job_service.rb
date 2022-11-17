@@ -42,7 +42,7 @@ module Ci
       if !db_all_caught_up && !result.build
         metrics.increment_queue_operation(:queue_replication_lag)
 
-        ::Ci::RegisterJobService::Result.new(nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks
+        ::Ci::RegisterJobService::Result.new(nil, nil, false) # rubocop:disable Cop/AvoidReturnFromBlocks
       else
         result
       end
@@ -226,7 +226,7 @@ module Ci
       log_artifacts_context(build)
       log_build_dependencies_size(presented_build)
 
-      build_json = ::API::Entities::Ci::JobRequest::Response.new(presented_build).to_json
+      build_json = Gitlab::Json.dump(::API::Entities::Ci::JobRequest::Response.new(presented_build))
       Result.new(build, build_json, true)
     end
 

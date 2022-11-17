@@ -9,6 +9,10 @@ module Types
                required: false,
                description: 'List of negated arguments.'
 
+      argument :or, Types::Issues::UnionedIssueFilterInputType,
+               required: false,
+               description: 'List of arguments with inclusive OR.'
+
       argument :search, GraphQL::Types::String,
                required: false,
                description: 'Search query for issue title or description.'

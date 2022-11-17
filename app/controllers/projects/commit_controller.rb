@@ -86,7 +86,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.json do
-        render json: @merge_requests.to_json
+        render json: Gitlab::Json.dump(@merge_requests)
       end
     end
   end

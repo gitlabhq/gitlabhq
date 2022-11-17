@@ -1,5 +1,0 @@
-# invalid variable (unknown keyword is used)
-variables:
-  FOO:
-    value: BAR
-    desc: A single value variable

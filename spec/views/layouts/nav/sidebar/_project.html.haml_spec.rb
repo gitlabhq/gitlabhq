@@ -472,24 +472,6 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
         end
       end
     end
-
-    describe 'Product Analytics' do
-      it 'has a link to the product analytics page' do
-        render
-
-        expect(rendered).to have_link('Product Analytics', href: project_product_analytics_path(project))
-      end
-
-      describe 'when feature flag :product_analytics is disabled' do
-        it 'does not have a link to the feature flags page' do
-          stub_feature_flags(product_analytics: false)
-
-          render
-
-          expect(rendered).not_to have_link('Product Analytics')
-        end
-      end
-    end
   end
 
   describe 'Infrastructure' do

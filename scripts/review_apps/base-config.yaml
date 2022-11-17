@@ -18,73 +18,91 @@ global:
     preemptible: "true"
 certmanager:
   install: false
+
 gitlab:
   gitaly:
     resources:
       requests:
-        cpu: 2400m
-        memory: 1000M
+        cpu: 1200m
+        memory: 600Mi
       limits:
-        cpu: 3600m
-        memory: 1500M
+        cpu: 1800m
+        memory: 1000Mi
     persistence:
-      size: 10G
+      size: 10Gi
       storageClass: ssd
     nodeSelector:
       preemptible: "false"
     podAnnotations:
       <<: *safe-to-evict
+
   gitlab-exporter:
     enabled: false
-  mailroom:
-    enabled: false
-  migrations:
-    resources:
-      requests:
-        cpu: 350m
-        memory: 200M
-      limits:
-        cpu: 700m
+
   gitlab-shell:
     resources:
       requests:
         cpu: 500m
-        memory: 100M
+        memory: 100Mi
       limits:
         cpu: 750m
-        memory: 150M
-    maxReplicas: 3
+        memory: 150Mi
+    minReplicas: 1
+    maxReplicas: 1
     hpa:
-      targetAverageValue: 500m
+      cpu:
+        targetAverageValue: 500m
     deployment:
       livenessProbe:
         timeoutSeconds: 5
+
+  kas:
+    minReplicas: 1
+    maxReplicas: 1
+
+  mailroom:
+    enabled: false
+
+  migrations:
+    resources:
+      requests:
+        cpu: 400m
+        memory: 920Mi
+      limits:
+        cpu: 600m
+        memory: 1100Mi
+
   sidekiq:
     resources:
       requests:
         cpu: 855m
-        memory: 1927M
+        memory: 1927Mi
       limits:
         cpu: 1282m
-        memory: 2890M
+        memory: 2890Mi
     hpa:
-      targetAverageValue: 650m
+      cpu:
+        targetAverageValue: 650m
+
   toolbox:
     resources:
       requests:
         cpu: 300m
-        memory: 1927M
+        memory: 1927Mi
       limits:
         cpu: 450m
-        memory: 2890M
+        memory: 2890Mi
+
   webservice:
     resources:
       requests:
         cpu: 746m
-        memory: 2809M
+        memory: 2809Mi
       limits:
         cpu: 1119m
-        memory: 4214M
+        memory: 4214Mi
+    minReplicas: 1
+    maxReplicas: 1
     deployment:
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
@@ -94,38 +112,41 @@ gitlab:
       resources:
         requests:
           cpu: 400m
-          memory: 75M
+          memory: 75Mi
         limits:
           cpu: 600m
-          memory: 113M
+          memory: 113Mi
       readinessProbe:
         initialDelaySeconds: 5  # Default is 0
         periodSeconds: 15  # Default is 10
         timeoutSeconds: 5  # Default is 2
+
 gitlab-runner:
   resources:
     requests:
       cpu: 675m
-      memory: 100M
+      memory: 100Mi
     limits:
       cpu: 1015m
-      memory: 150M
+      memory: 150Mi
   nodeSelector:
     preemptible: "true"
   podAnnotations:
     <<: *safe-to-evict
+
 minio:
   resources:
     requests:
       cpu: 9m
-      memory: 128M
+      memory: 128Mi
     limits:
       cpu: 15m
-      memory: 280M
+      memory: 280Mi
   nodeSelector:
     preemptible: "true"
   podAnnotations:
       <<: *safe-to-evict
+
 nginx-ingress:
   controller:
     config:
@@ -133,10 +154,10 @@ nginx-ingress:
     resources:
       requests:
         cpu: 300m
-        memory: 450M
+        memory: 450Mi
       limits:
         cpu: 600m
-        memory: 675M
+        memory: 675Mi
     service:
       enableHttp: false
     livenessProbe:
@@ -149,53 +170,58 @@ nginx-ingress:
     resources:
       requests:
         cpu: 5m
-        memory: 12M
+        memory: 12Mi
       limits:
         cpu: 10m
-        memory: 24M
+        memory: 24Mi
     nodeSelector:
       preemptible: "true"
+
 postgresql:
   metrics:
     enabled: false
   resources:
     requests:
       cpu: 600m
-      memory: 1000M
+      memory: 1000Mi
     limits:
       cpu: 1300m
-      memory: 1500M
+      memory: 1600Mi
   master:
     nodeSelector:
       preemptible: "false"
     podAnnotations:
       <<: *safe-to-evict
+
 prometheus:
   install: false
+
 redis:
   metrics:
     enabled: false
   resources:
     requests:
       cpu: 100m
-      memory: 60M
+      memory: 60Mi
     limits:
       cpu: 200m
-      memory: 130M
+      memory: 130Mi
   master:
     nodeSelector:
       preemptible: "true"
     podAnnotations:
       <<: *safe-to-evict
+
 registry:
   hpa:
     minReplicas: 1
+    maxReplicas: 1
   resources:
     requests:
       cpu: 100m
-      memory: 30M
+      memory: 30Mi
     limits:
       cpu: 200m
-      memory: 45M
+      memory: 45Mi
   nodeSelector:
     preemptible: "true"

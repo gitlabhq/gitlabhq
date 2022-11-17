@@ -1,0 +1,12 @@
+mutation takeOwnership($id: CiPipelineScheduleID!) {
+  pipelineScheduleTakeOwnership(input: { id: $id }) {
+    pipelineSchedule {
+      id
+      owner {
+        id
+        name
+      }
+    }
+    errors
+  }
+}

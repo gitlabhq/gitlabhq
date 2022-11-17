@@ -161,7 +161,7 @@ module Gitlab
         parse_params do |raw_duration|
           Gitlab::TimeTrackingFormatter.parse(raw_duration)
         end
-        command :estimate do |time_estimate|
+        command :estimate, :estimate_time do |time_estimate|
           if time_estimate
             @updates[:time_estimate] = time_estimate
           end
@@ -184,7 +184,7 @@ module Gitlab
         parse_params do |raw_time_date|
           Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
         end
-        command :spend, :spent do |time_spent, time_spent_date|
+        command :spend, :spent, :spend_time do |time_spent, time_spent_date|
           if time_spent
             @updates[:spend_time] = {
               duration: time_spent,
@@ -202,7 +202,7 @@ module Gitlab
           quick_action_target.persisted? &&
             current_user.can?(:"admin_#{quick_action_target.to_ability_name}", project)
         end
-        command :remove_estimate do
+        command :remove_estimate, :remove_time_estimate do
           @updates[:time_estimate] = 0
         end
 

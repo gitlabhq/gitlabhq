@@ -196,7 +196,7 @@ same user) has the email `email@example.com` set as a secondary email, which
 is throwing this error.
 
 We can check where this conflicting email address is coming from using the
-[rails console](#rails-console). Once in the console, run the following:
+[rails console](#rails-console). In the console, run the following:
 
 ```ruby
 # This searches for an email among the primary AND secondary emails
@@ -546,7 +546,7 @@ this entry, it could be due to a mismatched DN stored in GitLab. See
 ```shell
 User with DN `uid=john0,ou=people,dc=example,dc=com` should have access
 to 'my_group' group but there is no user in GitLab with that
-identity. Membership will be updated once the user signs in for
+identity. Membership will be updated when the user signs in for
 the first time.
 ```
 
@@ -556,7 +556,7 @@ Finally, the following entry says syncing has finished for this group:
 Finished syncing all providers for 'my_group' group
 ```
 
-Once all the configured group links have been synchronized, GitLab looks
+When all the configured group links have been synchronized, GitLab looks
 for any Administrators or External users to sync:
 
 ```shell
@@ -613,6 +613,16 @@ ldap_group = EE::Gitlab::Auth::Ldap::Group.find_by_cn('group_cn_here', adapter)
 ldap_group.member_dns
 ldap_group.member_uids
 ```
+
+#### LDAP synchronization does not remove group creator from group
+
+[LDAP synchronization](ldap_synchronization.md) should remove an LDAP group's creator
+from that group, if that user does not exist in the group. If running LDAP synchronization
+does not do this:
+
+1. Add the user to the LDAP group.
+1. Wait until LDAP group synchronization has finished running.
+1. Remove the user from the LDAP group.
 
 ### User DN or/and email have changed
 
@@ -735,7 +745,7 @@ To resolve this error, you must apply a new license to the GitLab instance witho
 
 1. Remove or comment out the GitLab configuration lines for all non-primary LDAP servers.
 1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) so that it temporarily uses only one LDAP server.
-1. Enter the [Rails console and add the license key](../../troubleshooting/gitlab_rails_cheat_sheet.md#add-a-license-through-the-console).
+1. Enter the [Rails console and add the license key](../../../user/admin_area/license_file.md#add-a-license-through-the-console).
 1. Re-enable the additional LDAP servers in the GitLab configuration and reconfigure GitLab again.
 
 ## Debugging Tools

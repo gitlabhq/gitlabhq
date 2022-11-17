@@ -46,36 +46,24 @@ RSpec.describe RepositoryImportWorker do
     end
 
     context 'when the import has failed' do
-      it 'hide the credentials that were used in the import URL' do
-        error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
+      it 'updates the error on Import/Export & hides credentials from import URL' do
+        import_url = 'https://user:pass@test.com/root/repoC.git/'
+        error = "#{import_url} not found"
 
         import_state.update!(jid: '123')
-        expect_next_instance_of(Projects::ImportService) do |instance|
-          expect(instance).to receive(:execute).and_return({ status: :error, message: error })
-        end
-
-        expect do
-          subject.perform(project.id)
-        end.to raise_error(RuntimeError, error)
-        expect(import_state.reload.jid).not_to be_nil
-        expect(import_state.status).to eq('failed')
-      end
-
-      it 'updates the error on Import/Export' do
-        error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
-
         project.update!(import_type: 'gitlab_project')
-        import_state.update!(jid: '123')
+
         expect_next_instance_of(Projects::ImportService) do |instance|
-          expect(instance).to receive(:execute).and_return({ status: :error, message: error })
+          expect(instance).to receive(:track_start_import).and_raise(StandardError, error)
         end
 
-        expect do
-          subject.perform(project.id)
-        end.to raise_error(RuntimeError, error)
+        expect { subject.perform(project.id) }.not_to raise_error
 
-        expect(import_state.reload.last_error).not_to be_nil
+        import_state.reload
+        expect(import_state.jid).to eq('123')
         expect(import_state.status).to eq('failed')
+        expect(import_state.last_error).to include("[FILTERED] not found")
+        expect(import_state.last_error).not_to include(import_url)
       end
     end
 

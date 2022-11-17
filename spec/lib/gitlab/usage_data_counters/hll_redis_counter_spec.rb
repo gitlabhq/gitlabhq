@@ -17,6 +17,7 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
     # Without freezing the time, the test may behave inconsistently
     # depending on which day of the week test is run.
     # Monday 6th of June
+    described_class.clear_memoization(:known_events)
     reference_time = Time.utc(2020, 6, 1)
     travel_to(reference_time) { example.run }
     described_class.clear_memoization(:known_events)

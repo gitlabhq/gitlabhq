@@ -163,6 +163,7 @@ module Issues
 
       invalidate_milestone_issue_counters(issue)
       send_milestone_change_notification(issue)
+      GraphqlTriggers.issuable_milestone_updated(issue)
     end
 
     def invalidate_milestone_issue_counters(issue)

@@ -11,8 +11,6 @@ export default {
   render(h) {
     const { extensions } = registeredExtensions;
 
-    if (extensions.length === 0) return null;
-
     return h(
       'section',
       {
@@ -22,26 +20,28 @@ export default {
         },
       },
       [
-        h(
-          'ul',
-          {
-            class: 'gl-p-0 gl-m-0 gl-list-style-none',
-          },
-          [
-            ...extensions.map((extension, index) =>
-              h('li', { attrs: { class: index > 0 && 'mr-widget-border-top' } }, [
-                h(
-                  { ...extension },
-                  {
-                    props: {
-                      mr: this.mr,
+        h('div', { attrs: { class: 'mr-widget-section' } }, [
+          h(
+            'ul',
+            {
+              class: 'gl-p-0 gl-m-0 gl-list-style-none',
+            },
+            [
+              ...extensions.map((extension, index) =>
+                h('li', { attrs: { class: index > 0 && 'mr-widget-border-top' } }, [
+                  h(
+                    { ...extension },
+                    {
+                      props: {
+                        mr: this.mr,
+                      },
                     },
-                  },
-                ),
-              ]),
-            ),
-          ],
-        ),
+                  ),
+                ]),
+              ),
+            ],
+          ),
+        ]),
       ],
     );
   },

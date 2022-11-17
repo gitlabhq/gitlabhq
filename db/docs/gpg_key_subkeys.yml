@@ -4,6 +4,6 @@ classes:
 - GpgKeySubkey
 feature_categories:
 - source_code_management
-description: TODO
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/3098
+description: Stores GPG subkeys
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/14517
 milestone: '10.1'

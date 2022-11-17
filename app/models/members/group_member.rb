@@ -13,7 +13,7 @@ class GroupMember < Member
   delegate :update_two_factor_requirement, to: :user, allow_nil: true
 
   # Make sure group member points only to group as it source
-  default_value_for :source_type, SOURCE_TYPE
+  attribute :source_type, default: SOURCE_TYPE
   validates :source_type, format: { with: SOURCE_TYPE_FORMAT }
 
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope

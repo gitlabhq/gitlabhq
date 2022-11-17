@@ -4,10 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Git::BaseHooksService do
   include RepoHelpers
-  include GitHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, :repository) }
+
   let(:oldrev) { Gitlab::Git::BLANK_SHA }
   let(:newrev) { "8a2a6eb295bb170b34c24c76c49ed0e9b2eaf34b" } # gitlab-test: git rev-parse refs/tags/v1.1.0
   let(:ref) { 'refs/tags/v1.1.0' }
@@ -150,11 +150,16 @@ RSpec.describe Git::BaseHooksService do
     end
 
     shared_examples 'creates pipeline with params and expected variables' do
+      let(:pipeline_service) { double(execute: service_response) }
+      let(:service_response) { double(error?: false, payload: pipeline, message: "Error") }
+      let(:pipeline) { double(persisted?: true) }
+
       it 'calls the create pipeline service' do
         expect(Ci::CreatePipelineService)
           .to receive(:new)
           .with(project, user, pipeline_params)
-          .and_return(double(execute!: true))
+          .and_return(pipeline_service)
+        expect(subject).not_to receive(:log_pipeline_errors)
 
         subject.execute
       end
@@ -237,6 +242,87 @@ RSpec.describe Git::BaseHooksService do
       end
 
       it_behaves_like 'creates pipeline with params and expected variables'
+    end
+  end
+
+  describe "Pipeline creation" do
+    let(:pipeline_params) do
+      {
+        after: newrev,
+        before: oldrev,
+        checkout_sha: checkout_sha,
+        push_options: push_options,
+        ref: ref,
+        variables_attributes: variables_attributes
+      }
+    end
+
+    let(:pipeline_service) { double(execute: service_response) }
+    let(:push_options) { {} }
+    let(:variables_attributes) { [] }
+
+    context "when the pipeline is persisted" do
+      let(:pipeline) { double(persisted?: true) }
+
+      context "and there are no errors" do
+        let(:service_response) { double(error?: false, payload: pipeline, message: "Error") }
+
+        it "returns success" do
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+            .with(project, user, pipeline_params)
+            .and_return(pipeline_service)
+
+          expect(subject.execute[:status]).to eq(:success)
+        end
+      end
+
+      context "and there are errors" do
+        let(:service_response) { double(error?: true, payload: pipeline, message: "Error") }
+
+        it "does not log errors and returns success" do
+          # This behaviour is due to the save_on_errors: true setting that is the default in the execute method.
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+            .with(project, user, pipeline_params)
+            .and_return(pipeline_service)
+          expect(subject).not_to receive(:log_pipeline_errors).with(service_response.message)
+
+          expect(subject.execute[:status]).to eq(:success)
+        end
+      end
+    end
+
+    context "when the pipeline wasn't persisted" do
+      let(:pipeline) { double(persisted?: false) }
+
+      context "and there are no errors" do
+        let(:service_response) { double(error?: false, payload: pipeline, message: nil) }
+
+        it "returns success" do
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+            .with(project, user, pipeline_params)
+            .and_return(pipeline_service)
+          expect(subject).to receive(:log_pipeline_errors).with(service_response.message)
+
+          expect(subject.execute[:status]).to eq(:success)
+        end
+      end
+
+      context "and there are errors" do
+        let(:service_response) { double(error?: true, payload: pipeline, message: "Error") }
+
+        it "logs errors and returns success" do
+          expect(Ci::CreatePipelineService)
+            .to receive(:new)
+            .with(project, user, pipeline_params)
+            .and_return(pipeline_service)
+          expect(subject).to receive(:log_pipeline_errors).with(service_response.message)
+
+          expect(subject.execute[:status]).to eq(:success)
+        end
+      end
     end
   end
 end

@@ -25,7 +25,6 @@ module ProjectSearchArguments
 
   def project_finder_params(params)
     {
-      without_deleted: true,
       non_public: params[:membership],
       search: params[:search],
       search_namespaces: params[:search_namespaces],

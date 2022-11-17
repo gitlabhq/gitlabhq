@@ -35,10 +35,10 @@ RSpec.describe WorkItems::Type do
       it 'deletes type but not unrelated issues' do
         type = create(:work_item_type)
 
-        expect(WorkItems::Type.count).to eq(6)
+        expect(WorkItems::Type.count).to eq(8)
 
         expect { type.destroy! }.not_to change(Issue, :count)
-        expect(WorkItems::Type.count).to eq(5)
+        expect(WorkItems::Type.count).to eq(7)
       end
     end
 
@@ -69,7 +69,8 @@ RSpec.describe WorkItems::Type do
         ::WorkItems::Widgets::Hierarchy,
         ::WorkItems::Widgets::Labels,
         ::WorkItems::Widgets::Assignees,
-        ::WorkItems::Widgets::StartAndDueDate
+        ::WorkItems::Widgets::StartAndDueDate,
+        ::WorkItems::Widgets::Milestone
       )
     end
   end

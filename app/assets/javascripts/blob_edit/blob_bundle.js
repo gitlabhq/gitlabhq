@@ -3,9 +3,8 @@
 import $ from 'jquery';
 import initPopover from '~/blob/suggest_gitlab_ci_yml';
 import { createAlert } from '~/flash';
-import { disableButtonIfEmptyField, setCookie } from '~/lib/utils/common_utils';
+import { setCookie } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
-import BlobFileDropzone from '../blob/blob_file_dropzone';
 import NewCommitForm from '../new_commit_form';
 
 const initPopovers = () => {
@@ -38,21 +37,8 @@ const initPopovers = () => {
   }
 };
 
-export const initUploadForm = () => {
-  const uploadBlobForm = $('.js-upload-blob-form');
-  if (uploadBlobForm.length) {
-    const method = uploadBlobForm.data('method');
-
-    new BlobFileDropzone(uploadBlobForm, method);
-    new NewCommitForm(uploadBlobForm);
-
-    disableButtonIfEmptyField(uploadBlobForm.find('.js-commit-message'), '.btn-upload-file');
-  }
-};
-
 export default () => {
   const editBlobForm = $('.js-edit-blob-form');
-  const deleteBlobForm = $('.js-delete-blob-form');
 
   if (editBlobForm.length) {
     const urlRoot = editBlobForm.data('relativeUrlRoot');
@@ -98,11 +84,5 @@ export default () => {
 
     // returning here blocks page navigation
     window.onbeforeunload = () => '';
-  }
-
-  initUploadForm();
-
-  if (deleteBlobForm.length) {
-    new NewCommitForm(deleteBlobForm);
   }
 };

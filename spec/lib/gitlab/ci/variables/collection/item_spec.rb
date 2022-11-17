@@ -197,11 +197,11 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
     end
   end
 
-  describe '#raw' do
+  describe '#raw?' do
     it 'returns false when :raw is not specified' do
       item = described_class.new(**variable)
 
-      expect(item.raw).to eq false
+      expect(item.raw?).to eq false
     end
 
     context 'when :raw is specified as true' do
@@ -212,7 +212,7 @@ RSpec.describe Gitlab::Ci::Variables::Collection::Item do
       it 'returns true' do
         item = described_class.new(**variable)
 
-        expect(item.raw).to eq true
+        expect(item.raw?).to eq true
       end
     end
   end

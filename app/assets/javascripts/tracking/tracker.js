@@ -39,8 +39,8 @@ export const Tracker = {
   },
 
   /**
-   * Dispatches a structured event per our taxonomy:
-   * https://docs.gitlab.com/ee/development/snowplow/index.html#structured-event-taxonomy.
+   * Dispatches a structured event:
+   * https://docs.gitlab.com/ee/development/snowplow/index.html#event-schema.
    *
    * If the library is not initialized and events are trying to be
    * dispatched (data-attributes, load-events), they will be added
@@ -49,7 +49,7 @@ export const Tracker = {
    * If there is an error when using the library, it will return ´false´
    * and ´true´ otherwise.
    *
-   * @param  {...any} eventData defined event taxonomy
+   * @param  {...any} eventData defined event schema
    * @returns {Boolean}
    */
   event(...eventData) {

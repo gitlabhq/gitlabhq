@@ -34,9 +34,10 @@ class MemberTask < ApplicationRecord
   end
 
   def project_in_member_source
-    if member.is_a?(GroupMember)
+    case member
+    when GroupMember
       errors.add(:project, _('is not in the member group')) unless project.namespace == member.source
-    elsif member.is_a?(ProjectMember)
+    when ProjectMember
       errors.add(:project, _('is not the member project')) unless project == member.source
     end
   end

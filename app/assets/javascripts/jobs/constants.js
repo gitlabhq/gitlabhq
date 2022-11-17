@@ -15,6 +15,7 @@ export const JOB_SIDEBAR_COPY = {
   retry: __('Retry'),
   retryJobButtonLabel: s__('Job|Retry'),
   toggleSidebar: __('Toggle Sidebar'),
+  runAgainJobButtonLabel: s__('Job|Run again'),
 };
 
 export const JOB_RETRY_FORWARD_DEPLOYMENT_MODAL = {

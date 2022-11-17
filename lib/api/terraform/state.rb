@@ -27,13 +27,21 @@ module API
         increment_unique_values('p_terraform_state_api_unique_users', current_user.id)
 
         if Feature.enabled?(:route_hll_to_snowplow_phase2, user_project&.namespace)
-          Gitlab::Tracking.event('API::Terraform::State', 'p_terraform_state_api_unique_users',
-            namespace: user_project&.namespace, user: current_user)
+          Gitlab::Tracking.event(
+            'API::Terraform::State',
+            'terraform_state_api_request',
+            namespace: user_project&.namespace,
+            user: current_user,
+            project: user_project,
+            label: 'redis_hll_counters.terraform.p_terraform_state_api_unique_users_monthly',
+            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                               event: 'p_terraform_state_api_unique_users').to_context]
+          )
         end
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
@@ -49,7 +57,19 @@ module API
             end
           end
 
-          desc 'Get a terraform state by its name'
+          desc 'Get a Terraform state by its name' do
+            detail 'Get a Terraform state by its name'
+            success [
+              { code: 200 },
+              { code: 204, message: 'Empty state' }
+            ]
+            failure [
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not found' },
+              { code: 422, message: 'Validation failure' }
+            ]
+            tags %w[terraform_state]
+          end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           get do
             remote_state_handler.find_with_lock do |state|
@@ -60,7 +80,18 @@ module API
             end
           end
 
-          desc 'Add a new terraform state or update an existing one'
+          desc 'Add a new Terraform state or update an existing one' do
+            detail 'Add a new Terraform state or update an existing one'
+            success [
+              { code: 200 },
+              { code: 204, message: 'No data provided' }
+            ]
+            failure [
+              { code: 403, message: 'Forbidden' },
+              { code: 422, message: 'Validation failure' }
+            ]
+            tags %w[terraform_state]
+          end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           post do
             authorize! :admin_terraform_state, user_project
@@ -76,7 +107,16 @@ module API
             status :ok
           end
 
-          desc 'Delete a terraform state of a certain name'
+          desc 'Delete a Terraform state of a certain name' do
+            detail 'Delete a Terraform state of a certain name'
+            success code: 200
+            failure [
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not found' },
+              { code: 422, message: 'Validation failure' }
+            ]
+            tags %w[terraform_state]
+          end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           delete do
             authorize! :admin_terraform_state, user_project
@@ -89,7 +129,17 @@ module API
             status :ok
           end
 
-          desc 'Lock a terraform state of a certain name'
+          desc 'Lock a Terraform state of a certain name' do
+            detail 'Lock a Terraform state of a certain name'
+            success code: 200
+            failure [
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not found' },
+              { code: 409, message: 'Conflict' },
+              { code: 422, message: 'Validation failure' }
+            ]
+            tags %w[terraform_state]
+          end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           params do
             requires :ID, type: String, limit: 255, desc: 'Terraform state lock ID'
@@ -128,7 +178,17 @@ module API
             end
           end
 
-          desc 'Unlock a terraform state of a certain name'
+          desc 'Unlock a Terraform state of a certain name' do
+            detail 'Unlock a Terraform state of a certain name'
+            success code: 200
+            failure [
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not found' },
+              { code: 409, message: 'Conflict' },
+              { code: 422, message: 'Validation failure' }
+            ]
+            tags %w[terraform_state]
+          end
           route_setting :authentication, basic_auth_personal_access_token: true, job_token_allowed: :basic_auth
           params do
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'

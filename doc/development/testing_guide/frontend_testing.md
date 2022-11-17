@@ -11,7 +11,7 @@ at GitLab. We use Jest for JavaScript unit and integration testing,
 and RSpec feature tests with Capybara for e2e (end-to-end) integration testing.
 
 Unit and feature tests need to be written for all new features.
-Most of the time, you should use [RSpec](https://github.com/rspec/rspec-rails#feature-specs) for your feature tests.
+Most of the time, you should use [RSpec](https://github.com/rspec/rspec-rails#feature-specs) for your feature tests. For more information on how to get started with feature tests, see [get started with feature tests](#get-started-with-feature-tests)
 
 Regression tests should be written for bug fixes to prevent them from recurring
 in the future.
@@ -458,7 +458,7 @@ If you cannot register handlers to the `Promise`, for example because it is exec
 ```javascript
 it('waits for an Ajax call', async () => {
   synchronousFunction();
-  
+
   await waitForPromises();
 
   expect(something).toBe('done');
@@ -962,7 +962,7 @@ If an integration test depends on JavaScript to run correctly, you need to make
 sure the spec is configured to enable JavaScript when the tests are run. If you
 don't do this, the spec runner displays vague error messages.
 
-To enable a JavaScript driver in an `rspec` test, add `:js` to the
+To enable a JavaScript driver in an `RSpec` test, add `:js` to the
 individual spec or the context block containing multiple specs that need
 JavaScript enabled:
 
@@ -1241,6 +1241,332 @@ A good guideline to follow: the more complex the component you may want to steer
 - To capture large data structures just to have something
 - To just have some kind of test written
 - To capture highly volatile UI elements without stubbing them (Think of GitLab UI version updates)
+
+## Get started with feature tests
+
+### What is a feature test
+
+A [feature test](testing_levels.md#white-box-tests-at-the-system-level-formerly-known-as-system--feature-tests), also known as `white-box testing`, is a test that spawns a browser and has Capybara helpers. This means the test can:
+
+- Locate an element in the browser.
+- Click that element.
+- Call the API.
+
+Feature tests are expensive to run. You should make sure that you **really want** this type of test before running one.
+
+All of our feature tests are written in `Ruby` but often end up being written by `JavaScript` engineers, as they implement the user-facing feature. So, the following section assumes no prior knowledge of `Ruby` or `Capybara`, and provide a clear guideline on when and how to use these tests.
+
+### When to use feature tests
+
+You should use a feature test when the test:
+
+- Is across multiple components.
+- Requires that a user navigate across pages.
+- Is submitting a form and observing results elsewhere.
+- Would result in a huge number of mocking and stubbing with fake data and components if done as a unit test.
+
+Feature tests are especially useful when you want to test:
+
+- That multiple components are working together successfully.
+- Complex API interactions. Feature tests interact with the API, so they are slower but do not need any level of mocking or fixtures.
+
+### When not to use feature tests
+
+You should use `jest` and `vue-test-utils` unit tests instead of a feature test if you can get the same test results from these methods. Feature tests are quite expensive to run.
+
+You should use a unit test if:
+
+- The behavior you are implementing is all in one component.
+- You can simulate other components' behavior to trigger the desired effect.
+- You can already select UI elements in the virtual DOM to trigger the desired effects.
+
+Also, if a behavior in your new code needs multiple components to work together, you should consider testing your behavior higher in the component tree. For example, let's say that we have a component called `ParentComponent` with the code:
+
+```vue
+  <script>
+  export default{
+    name: ParentComponent,
+    data(){
+      return {
+        internalData: 'oldValue'
+      }
+    },
+     methods:{
+      changeSomeInternalData(newVal){
+        this.internalData = newVal
+      }
+     }
+  }
+  </script>
+  <template>
+   <div>
+    <child-component-1 @child-event="changeSomeInternalData" />
+    <child-component-2 :parent-data="internalData" />
+   </div>
+  </template>
+```
+
+In this example:
+
+- `ChildComponent1` emits an event.
+- `ParentComponent` changes its `internalData` value.
+- `ParentComponent` passes the props down to `ChildComponent2`.
+
+You can use a unit test instead by:
+
+- From inside the `ParentComponent` unit test file, emitting the expected event from `childComponent1`
+- Making sure the prop is passed down to `childComponent2`.
+
+Then each child component unit tests what happens when the event is emitted and when the prop changes.
+
+This example also applies at larger scale and with deeper component trees. It is definitely worth using unit tests and avoiding the extra cost of feature tests if you can:
+
+- Confidently mount child components.
+- Emit events or select elements in the virtual DOM.
+- Get the test behavior that you want.
+
+### Where to create your test
+
+Feature tests live in `spec/features` folder. You should look for existing files that can test the page you are adding a feature to. Within that folder, you can locate your section. For example, if you wanted to add a new feature test for the pipeline page, you would look in `spec/features/projects/pipelines` and see if the test you want to write exists here.
+
+### How to run a feature test
+
+1. Make sure that you have a working GDK environment.
+1. Start your `gdk` environment with `gdk start` command.
+1. In your terminal, run:
+
+  ```shell
+   bundle exec rspec path/to/file:line_of_my_test
+  ```
+
+You can also prefix this command with `WEBDRIVER_HEADLESS=0` which will run the test by opening an actual browser on your computer that you can see, which is very useful for debugging.
+
+### How to write a test
+
+#### Basic file structure
+
+1. Make all string literals unchangeable
+
+  In all feature tests, the very first line should be:
+
+  ```ruby
+  # frozen_string_literal: true
+  ```
+
+  This is in every `Ruby` file and makes all string literals unchangeable. There are also some performance benefits, but this is beyond the scope of this section.
+
+1. Import dependencies.
+
+  You should import the modules you need. You will most likely always need to require `spec_helper`:
+
+  ```ruby
+  require 'spec_helper'
+  ```
+  
+  Import any other relevant module.
+
+1. Create a global scope for RSpec to define our tests, just like what we do in jest with the initial describe block.
+
+Then, you need to create the very first `RSpec` scope.
+
+```ruby
+RSpec.describe 'Pipeline', :js do
+  ...
+end
+```
+
+What is different though, is that just like everything in Ruby, this is actually a `class`. Which means that right at the top, you can `include` modules that you'd need for your test. For example, you could include the `RoutesHelpers` to navigate more easily.
+
+```ruby
+RSpec.describe 'Pipeline', :js do
+  include RoutesHelpers
+  ...
+end
+```
+
+After all of this implementation, we have a file that looks something like this:
+
+```ruby
+# frozen_string_literal: true
+
+require 'spec_helper'
+
+RSpec.describe 'Pipeline', :js do
+  include RoutesHelpers
+end
+```
+
+#### Seeding data
+
+Each test is in its own environment and so you must use a factory to seed the required data. To continue on with the pipeline example, let's say that you want a test that takes you to the main pipeline page, which is at the route `/namespace/project/-/pipelines/:id/`.
+
+Most feature tests at least require you to create a user, because you want to be signed in. You can skip this step if you don't have to be signed in, but as a general rule, you should **always create a user unless you are specifically testing a feature looked at by an anonymous user**. This makes sure that you explicitly set a level of permission that you can edit in the test as needed to change or test a new level of permission as the section changes. To create a user:
+
+```ruby
+  let(:user) { create(:user) }
+```
+
+This creates a variable that holds the newly created user and we can use `create` because we imported the `spec_helper`.
+
+However, we have not done anything with this user yet because it's just a variable. So, in the `before do` block of the spec, we could sign in with the user so that every spec starts with a signed in user.
+
+```ruby
+  let(:user) { create(:user) }
+
+  before do
+    sign_in(user)
+  end
+```
+
+Now that we have a user, we should look at what else we'd need before asserting anything on a pipeline page. If you look at the route `/namespace/project/-/pipelines/:id/` we can determine we need a project and a pipeline.
+
+So we'd create a project and pipeline, and link them together. Usually in factories, the child element requires its parent as an argument. In this case, a pipeline is a child of a project. So we can create the project first, and then when we create the pipeline, we are pass the project as an argument which "binds" the pipeline to the project. A pipeline is also owned by a user, so we need the user as well. For example, this creates a project and a pipeline:
+
+```ruby
+  let(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
+  let(:pipeline) { create(:ci_pipeline, project: project, ref: 'master', sha: project.commit.id, user: user) }
+```
+
+In the same spirit, you could then create a job (build) by using the build factory and passing the parent pipeline:
+
+```ruby
+  create(:ci_build, pipeline: pipeline, stage_idx: 10, stage: 'publish', name: 'CentOS')
+```
+
+There are many factories that already exists, so make sure to look at other existing files to see if what you need is available.
+
+#### Navigation
+
+You can navigate to a page by using the `visit` method and passing the path as an argument. Rails automatically generates helper paths, so make sure to use these instead of a hardcoded string. They are generated using the route model, so if we want to go to a pipeline, we'd use:
+
+```ruby
+  visit project_pipeline_path(project, pipeline)
+```
+
+Before executing any page interaction when navigating or making asynchronous call through the UI, make sure to use `wait_for_requests` before proceeding with further instructions.
+
+#### Elements interaction
+
+There are a lot of different ways to find and interact with elements. For example, you could use the basic `find` method with the `selector` and `text` parameter and then use the `.click` method
+
+```ruby
+  find('.gl-tab-nav-item', text: 'Tests').click
+```
+
+Alternatively, you could use `click_button` with a string of text that is found within the button, which is a more semantically meaningful way of clicking the element.
+
+```ruby
+  click_button 'Text inside the button element'
+```
+
+If you want to follow a link, then there is `click_link`:
+
+```ruby
+  click_link 'Text inside the link tag'
+```
+
+You can use `fill_in` to fill input / form elements. The first argument is the selector, the second is `with:` which is the value to pass in.
+
+```ruby
+  fill_in 'current_password', with: '123devops'
+```
+
+Alternatively, you can use the `find` selector paired with `send_keys` to add keys in a field without removing previous text, or `set` which completely replaces the value of the input element.
+
+All of these are valid selectors and methods. Pick whichever suits your needs and look around as there are many more useful ones!
+
+#### Assertions
+
+To assert anything in a page, you can always access `page` variable, which is automatically defines and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
+
+```ruby
+  # Finding an element by ID
+  expect(page).to have_selector('#js-pipeline-graph')
+```
+
+```ruby
+  # Finding by text
+  expect(page).to have_content('build')
+```
+
+```ruby
+  # Finding by `href` value
+  expect(page).to have_link(pipeline.ref)
+```
+
+```ruby
+  # Finding by CSS selector. This is a last resort.
+  # For example, when you cannot add attributes on the desired element.
+  expect(page).to have_css('.js-icon-retry')
+```
+
+```ruby
+  # Find by data-testid
+  # Like CSS selector, this is acceptable when there isn't a specific matcher available.
+  expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
+```
+
+```ruby
+  # You can combine any of these selectors with `not_to` instead
+  expect(page).not_to have_selector('#js-pipeline-graph')
+```
+
+```ruby
+  # When a test case has back to back expectations,
+  # it is recommended to group them using `:aggregate_failures`
+  it 'shows the issue description and design references', :aggregate_failures do
+    expect(page).to have_text('The designs I mentioned')
+    expect(page).to have_link(design_tab_ref)
+    expect(page).to have_link(design_ref_a)
+    expect(page).to have_link(design_ref_b)
+  end
+```
+
+You can also create a sub-block to look into, to:
+
+- Scope down where you are making your assertions and reduce the risk of finding another element that was not intended.
+- Make sure an element is found within the right boundaries.
+
+```ruby
+  page.within('#js-pipeline-graph') do
+    ...
+  end
+```
+
+#### Feature flags
+
+By default, every feature flag is enabled **regardless of the YAML definition or the flags you've set manually in your GDK**. To test when a feature flag is disabled, you must manually stub the flag, ideally in a `before do` block.
+
+```ruby
+  stub_feature_flags(my_feature_flag: false)
+```
+
+If you are stubbing an `ee` feature flag, then use:
+
+```ruby
+  stub_licensed_features(my_feature_flag: false)
+```
+
+### Debugging
+
+You can run your spec with the prefix `WEBDRIVER_HEADLESS=0` to open an actual browser. However, the specs goes though the commands quickly and leaves you no time to look around.
+
+To avoid this problem, you can write `binding.pry` on the line where you want Capybara to stop execution. You are then inside the browser with normal usage. To understand why you cannot find certain elements, you can:
+
+- Select elements.
+- Use the console and network tab.
+- Execute selectors inside the browser console.
+
+Inside the terminal, where capybara is running, you can also execute `next` which goes line by line through the test. This way you can check every single interaction one by one to see what might be causing an issue.
+
+### Updating ChromeDriver
+
+On MacOS, if you get a ChromeDriver error, make sure to update it by running
+
+```shell
+  brew upgrade chromedriver
+```
 
 ---
 

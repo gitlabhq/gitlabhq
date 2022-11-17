@@ -28,6 +28,14 @@ module Gitlab
       "#{preview}.git"
     end
 
+    def project_host
+      return unless preview
+
+      uri = URI.parse(preview)
+      uri.path = ""
+      uri.to_s
+    end
+
     def project_path
       URI.parse(preview).path.delete_prefix('/')
     end

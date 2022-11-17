@@ -176,7 +176,7 @@ RSpec.describe Admin::TopicsController do
 
   describe 'POST #merge' do
     let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
-    let_it_be(:project) { create(:project, topic_list: source_topic.name ) }
+    let_it_be(:project) { create(:project, topic_list: source_topic.name) }
 
     it 'merges source topic into target topic' do
       post :merge, params: { source_topic_id: source_topic.id, target_topic_id: topic.id }

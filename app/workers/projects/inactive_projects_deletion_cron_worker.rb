@@ -90,21 +90,25 @@ module Projects
     end
 
     def save_last_processed_project_id(project_id)
-      Gitlab::Redis::Cache.with do |redis|
+      with_redis do |redis|
         redis.set(LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY, project_id)
       end
     end
 
     def last_processed_project_id
-      Gitlab::Redis::Cache.with do |redis|
+      with_redis do |redis|
         redis.get(LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY).to_i
       end
     end
 
     def reset_last_processed_project_id
-      Gitlab::Redis::Cache.with do |redis|
+      with_redis do |redis|
         redis.del(LAST_PROCESSED_INACTIVE_PROJECT_REDIS_KEY)
       end
+    end
+
+    def with_redis(&block)
+      Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
     end
   end
 end

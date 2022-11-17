@@ -10,7 +10,7 @@ class ProjectMember < Member
   delegate :namespace_id, to: :project
 
   # Make sure project member points only to project as it source
-  default_value_for :source_type, SOURCE_TYPE
+  attribute :source_type, default: SOURCE_TYPE
   validates :source_type, format: { with: SOURCE_TYPE_FORMAT }
   default_scope { where(source_type: SOURCE_TYPE) } # rubocop:disable Cop/DefaultScope
 

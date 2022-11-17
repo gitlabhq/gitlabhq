@@ -80,7 +80,7 @@ You can also configure specific aspects of your pipelines through the GitLab UI.
 ### Ref specs for runners
 
 When a runner picks a pipeline job, GitLab provides that job's metadata. This includes the [Git refspecs](https://git-scm.com/book/en/v2/Git-Internals-The-Refspec),
-which indicate which ref (branch, tag, and so on) and commit (SHA1) are checked out from your
+which indicate which ref (such as branch or tag) and commit (SHA1) are checked out from your
 project repository.
 
 This table lists the refspecs injected for each pipeline type:
@@ -158,7 +158,7 @@ The pipeline now executes the jobs as configured.
 You can use the [`description` and `value`](../yaml/index.md#variablesdescription)
 keywords to define [pipeline-level (global) variables](../variables/index.md#create-a-custom-cicd-variable-in-the-gitlab-ciyml-file)
 that are prefilled when running a pipeline manually. Use the description to explain
-what the variable is used for, what the acceptable values are, and so on.
+information such as what the variable is used for, and what the acceptable values are.
 
 Job-level variables cannot be pre-filled.
 
@@ -260,7 +260,7 @@ pipelines.
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24851) in GitLab 12.7.
 
 Users with the Owner role for a project can delete a pipeline
-by clicking on the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
+by selecting the pipeline in the **CI/CD > Pipelines** to get to the **Pipeline Details**
 page, then selecting **Delete**.
 
 ![Pipeline Delete](img/pipeline-delete.png)
@@ -300,6 +300,9 @@ branches, preventing untrusted code from executing on the protected runner and
 preserving deployment keys and other credentials from being unintentionally
 accessed. To ensure that jobs intended to be executed on protected
 runners do not use regular runners, they must be tagged accordingly.
+
+Review the [deployment safety](../environments/deployment_safety.md)
+page for additional security recommendations for securing your pipelines.
 
 ## Trigger a pipeline when an upstream project is rebuilt **(PREMIUM)**
 

@@ -18,8 +18,14 @@ module QA
       end
 
       attribute :sandbox do
-        Sandbox.fabricate_via_api! do |sandbox|
-          sandbox.api_client = api_client
+        if QA::Support::FIPS.enabled?
+          Resource::Sandbox.fabricate! do |sandbox|
+            sandbox.path = Runtime::Namespace.sandbox_name
+          end
+        else
+          Sandbox.fabricate_via_api! do |sandbox|
+            sandbox.api_client = api_client
+          end
         end
       end
 

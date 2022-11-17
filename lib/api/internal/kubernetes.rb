@@ -61,21 +61,18 @@ module API
           Guest.can?(:download_code, project) || agent.has_access_to?(project)
         end
 
-        def count_events
-          strong_memoize(:count_events) do
-            events = params.slice(:gitops_sync_count, :k8s_api_proxy_request_count)
-            events.transform_keys! { |event| event.to_s.chomp('_count') }
-            events = params[:counters]&.slice(:gitops_sync, :k8s_api_proxy_request) unless events.present?
-            events
-          end
-        end
-
         def increment_unique_events
           events = params[:unique_counters]&.slice(:agent_users_using_ci_tunnel)
 
           events&.each do |event, entity_ids|
             increment_unique_values(event, entity_ids)
           end
+        end
+
+        def increment_count_events
+          events = params[:counters]&.slice(:gitops_sync, :k8s_api_proxy_request)
+
+          Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
         end
       end
 
@@ -144,26 +141,17 @@ module API
             detail 'Updates usage metrics for agent'
           end
           params do
-            # Todo: Remove gitops_sync_count and k8s_api_proxy_request_count in the next milestone
-            #       https://gitlab.com/gitlab-org/gitlab/-/issues/369489
-            #       We're only keeping it for backwards compatibility until KAS is released
-            #       using `counts:` instead
-            optional :gitops_sync_count, type: Integer, desc: 'The count to increment the gitops_sync metric by'
-            optional :k8s_api_proxy_request_count, type: Integer, desc: 'The count to increment the k8s_api_proxy_request_count metric by'
             optional :counters, type: Hash do
               optional :gitops_sync, type: Integer, desc: 'The count to increment the gitops_sync metric by'
-              optional :k8s_api_proxy_request, type: Integer, desc: 'The count to increment the k8s_api_proxy_request_count metric by'
+              optional :k8s_api_proxy_request, type: Integer, desc: 'The count to increment the k8s_api_proxy_request metric by'
             end
-            mutually_exclusive :counters, :gitops_sync_count
-            mutually_exclusive :counters, :k8s_api_proxy_request_count
 
             optional :unique_counters, type: Hash do
               optional :agent_users_using_ci_tunnel, type: Set[Integer], desc: 'A set of user ids that have interacted a CI Tunnel to'
             end
           end
           post '/' do
-            Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(count_events) if count_events
-
+            increment_count_events
             increment_unique_events
 
             no_content!

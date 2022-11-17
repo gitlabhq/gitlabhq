@@ -236,7 +236,7 @@ Next we need a post-deployment migration that schedules the migration for
 existing data.
 
 ```ruby
-class ScheduleExtractIntegrationsUrl < Gitlab::Database::Migration[1.0]
+class ScheduleExtractIntegrationsUrl < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   MIGRATION = 'ExtractIntegrationsUrl'
@@ -263,7 +263,7 @@ jobs and manually run on any un-migrated rows. Such a migration would look like
 this:
 
 ```ruby
-class ConsumeRemainingExtractIntegrationsUrlJobs < Gitlab::Database::Migration[1.0]
+class ConsumeRemainingExtractIntegrationsUrlJobs < Gitlab::Database::Migration[2.0]
   disable_ddl_transaction!
 
   def up

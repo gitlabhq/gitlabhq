@@ -69,12 +69,13 @@ However, GitLab sometimes changes the GraphQL API in a way that is not backward-
 can include removing or renaming fields, arguments, or other parts of the schema.
 When creating a breaking change, GitLab follows a [deprecation and removal process](#deprecation-and-removal-process).
 
-Learn more about [breaking changes](../../development/deprecation_guidelines/index.md).
+To avoid having a breaking change affect your integrations, you should
+familiarize yourself with the [deprecation and removal process](#deprecation-and-removal-process) and
+frequently [verify your API calls against the future breaking-change schema](#verify-against-the-future-breaking-change-schema).
 
 Fields behind a feature flag and disabled by default do not follow the deprecation and removal process, and can be removed at any time without notice.
 
-To avoid having a breaking change affect your integrations, you should
-familiarize yourself with the deprecation and removal process.
+Learn more about [breaking changes](../../development/deprecation_guidelines/index.md).
 
 WARNING:
 GitLab makes all attempts to follow the [deprecation and removal process](#deprecation-and-removal-process).
@@ -82,10 +83,22 @@ On rare occasions, GitLab might make immediate breaking changes to the GraphQL
 API to patch critical security or performance concerns if the deprecation
 process would pose significant risk.
 
+### Verify against the future breaking-change schema
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353642) in GitLab 15.6.
+
+You can make calls against the GraphQL API as if all deprecated items were already removed.
+This way, you can verify API calls ahead of a [breaking-change release](#deprecation-and-removal-process)
+before the items are actually removed from the schema.
+
+To make these calls, add a
+`remove_deprecated=true` query parameter to the GitLab GraphQL API endpoint (for example,
+`https://gitlab.com/api/graphql?remove_deprecated=true` for GitLab SaaS GraphQL).
+
 ### Deprecation and removal process
 
 The deprecation and removal process for the GitLab GraphQL API aligns with the wider GitLab
-[deprecation process](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-changes-deprecations-and-removing-features).
+[deprecation process](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecations-removals-and-breaking-changes).
 
 Parts of the schema marked for removal from the GitLab GraphQL API are first
 [deprecated](https://about.gitlab.com/handbook/product/gitlab-the-product/#deprecation)
@@ -99,12 +112,13 @@ Items are marked as deprecated in:
 - The [deprecation feature removal schedule](../../update/deprecations.md), which is linked from release posts.
 - Introspection queries of the GraphQL API.
 
+The deprecation message provides an alternative for the deprecated schema item,
+if applicable.
+
 NOTE:
 If you use the GraphQL API, we recommend you remove the deprecated schema from your GraphQL
 API calls as soon as possible to avoid experiencing breaking changes.
-
-The deprecation message provides an alternative for the deprecated schema item,
-if applicable.
+You should [verify your API calls against the schema without the deprecated schema items](#verify-against-the-future-breaking-change-schema).
 
 #### Deprecation example
 

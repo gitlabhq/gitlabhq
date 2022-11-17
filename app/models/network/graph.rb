@@ -23,6 +23,8 @@ module Network
     protected
 
     def collect_notes
+      return {} if Feature.enabled?(:disable_network_graph_notes_count, @project, type: :experiment)
+
       h = Hash.new(0)
 
       @project

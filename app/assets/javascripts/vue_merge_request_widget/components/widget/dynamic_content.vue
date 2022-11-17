@@ -58,6 +58,7 @@ export default {
     :status-icon-name="statusIcon"
     :widget-name="widgetName"
     :header="data.header"
+    :help-popover="data.helpPopover"
   >
     <template #body>
       <div class="gl-display-flex gl-flex-direction-column">

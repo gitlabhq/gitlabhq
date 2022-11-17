@@ -92,11 +92,11 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
 
       context 'removing foreign keys' do
         it 'removes foreign keys from the table before dropping it' do
-          expect(dropper).to receive(:drop_detached_partition).and_wrap_original do |drop_method, partition_name|
-            expect(partition_name).to eq('test_partition')
-            expect(foreign_key_exists_by_name(partition_name, 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_falsey
+          expect(dropper).to receive(:drop_detached_partition).and_wrap_original do |drop_method, partition|
+            expect(partition.table_name).to eq('test_partition')
+            expect(foreign_key_exists_by_name(partition.table_name, 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_falsey
 
-            drop_method.call(partition_name)
+            drop_method.call(partition)
           end
 
           expect(foreign_key_exists_by_name('test_partition', 'fk_referenced', schema: Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA)).to be_truthy

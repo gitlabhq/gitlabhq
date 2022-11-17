@@ -48,7 +48,7 @@ describe('Packages Settings', () => {
       apolloProvider,
       provide: defaultProvide,
       propsData: {
-        packageSettings: packageSettings(),
+        packageSettings,
       },
       stubs: {
         SettingsBlock,
@@ -83,7 +83,7 @@ describe('Packages Settings', () => {
   };
 
   const emitMavenSettingsUpdate = (override) => {
-    findGenericDuplicatedSettingsExceptionsInput().vm.$emit('update', {
+    findMavenDuplicatedSettingsExceptionsInput().vm.$emit('update', {
       mavenDuplicateExceptionRegex: ')',
       ...override,
     });
@@ -117,7 +117,7 @@ describe('Packages Settings', () => {
     it('renders toggle', () => {
       mountComponent({ mountFn: mountExtended });
 
-      const { mavenDuplicatesAllowed } = packageSettings();
+      const { mavenDuplicatesAllowed } = packageSettings;
 
       expect(findMavenDuplicatedSettingsToggle().exists()).toBe(true);
 
@@ -132,7 +132,7 @@ describe('Packages Settings', () => {
     it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
       mountComponent({ mountFn: mountExtended });
 
-      const { mavenDuplicatesAllowed, mavenDuplicateExceptionRegex } = packageSettings();
+      const { mavenDuplicatesAllowed, mavenDuplicateExceptionRegex } = packageSettings;
 
       expect(findMavenDuplicatedSettingsExceptionsInput().exists()).toBe(true);
 
@@ -170,7 +170,7 @@ describe('Packages Settings', () => {
     it('renders toggle', () => {
       mountComponent({ mountFn: mountExtended });
 
-      const { genericDuplicatesAllowed } = packageSettings();
+      const { genericDuplicatesAllowed } = packageSettings;
 
       expect(findGenericDuplicatedSettingsToggle().exists()).toBe(true);
       expect(findGenericDuplicatedSettingsToggle().props()).toMatchObject({
@@ -184,7 +184,7 @@ describe('Packages Settings', () => {
     it('renders ExceptionsInput and assigns duplication allowness and exception props', async () => {
       mountComponent({ mountFn: mountExtended });
 
-      const { genericDuplicatesAllowed, genericDuplicateExceptionRegex } = packageSettings();
+      const { genericDuplicatesAllowed, genericDuplicateExceptionRegex } = packageSettings;
 
       expect(findGenericDuplicatedSettingsExceptionsInput().props()).toMatchObject({
         duplicatesAllowed: genericDuplicatesAllowed,
@@ -239,7 +239,7 @@ describe('Packages Settings', () => {
         emitMavenSettingsUpdate({ mavenDuplicateExceptionRegex });
 
         expect(updateGroupPackagesSettingsOptimisticResponse).toHaveBeenCalledWith({
-          ...packageSettings(),
+          ...packageSettings,
           mavenDuplicateExceptionRegex,
         });
       });

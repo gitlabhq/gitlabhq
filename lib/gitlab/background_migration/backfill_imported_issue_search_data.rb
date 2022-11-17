@@ -9,10 +9,10 @@ module Gitlab
     class BackfillImportedIssueSearchData < BatchedMigrationJob
       SUB_BATCH_SIZE = 1_000
 
+      operation_name :update_search_data
+
       def perform
-        each_sub_batch(
-          operation_name: :update_search_data
-        ) do |sub_batch|
+        each_sub_batch do |sub_batch|
           update_search_data(sub_batch)
         rescue ActiveRecord::StatementInvalid => e
           raise unless e.cause.is_a?(PG::ProgramLimitExceeded) && e.message.include?('string is too long for tsvector')

@@ -11,6 +11,8 @@ module MergeRequests
 
       reset_approvals_cache(merge_request)
       merge_request_activity_counter.track_approve_mr_action(user: current_user, merge_request: merge_request)
+      trigger_merge_request_merge_status_updated(merge_request)
+      trigger_merge_request_reviewers_updated(merge_request)
 
       # Approval side effects (things not required to be done immediately but
       # should happen after a successful approval) should be done asynchronously

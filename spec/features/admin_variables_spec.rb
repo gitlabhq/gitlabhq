@@ -12,23 +12,9 @@ RSpec.describe 'Instance variables', :js do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
     sign_in(admin)
     gitlab_enable_admin_mode_sign_in(admin)
+    visit page_path
     wait_for_requests
   end
 
-  context 'with disabled ff `ci_variable_settings_graphql' do
-    before do
-      stub_feature_flags(ci_variable_settings_graphql: false)
-      visit page_path
-    end
-
-    it_behaves_like 'variable list', isAdmin: true
-  end
-
-  context 'with enabled ff `ci_variable_settings_graphql' do
-    before do
-      visit page_path
-    end
-
-    it_behaves_like 'variable list', isAdmin: true
-  end
+  it_behaves_like 'variable list', isAdmin: true
 end

@@ -35,7 +35,7 @@ RSpec.describe Pajamas::SpinnerComponent, type: :component do
   describe 'inline' do
     context 'by default' do
       it 'renders a div' do
-        expect(page).to have_css 'div.gl-spinner'
+        expect(page).to have_css 'div.gl-spinner-container'
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe Pajamas::SpinnerComponent, type: :component do
       let(:options) { { inline: true } }
 
       it 'renders a span' do
-        expect(page).to have_css 'span.gl-spinner'
+        expect(page).to have_css 'span.gl-spinner-container'
       end
     end
   end

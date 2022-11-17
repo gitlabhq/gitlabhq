@@ -13,7 +13,7 @@ RSpec.describe API::GroupBoards do
     board_parent.add_owner(user)
   end
 
-  let_it_be(:project) { create(:project, :public, namespace: board_parent ) }
+  let_it_be(:project) { create(:project, :public, namespace: board_parent) }
 
   let_it_be(:dev_label) do
     create(:group_label, title: 'Development', color: '#FFAABB', group: board_parent)

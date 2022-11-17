@@ -163,6 +163,11 @@ can start signing your tags:
 
 ## Troubleshooting
 
+For committers without administrator access, review the list of
+[verification problems with signed commits](../gpg_signed_commits/index.md#fix-verification-problems-with-signed-commits)
+for possible fixes. The other troubleshooting suggestions on this page require
+administrator access.
+
 ### Re-verify commits
 
 GitLab stores the status of any checked commits in the database. You can use a

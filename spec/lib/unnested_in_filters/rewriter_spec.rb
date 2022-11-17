@@ -12,6 +12,12 @@ RSpec.describe UnnestedInFilters::Rewriter do
   describe '#rewrite?' do
     subject(:rewrite?) { rewriter.rewrite? }
 
+    context 'when a join table is receiving an IN list query' do
+      let(:relation) { User.joins(:status).where(status: { message: %w[foo bar] }).order(id: :desc).limit(2) }
+
+      it { is_expected.to be_falsey }
+    end
+
     context 'when the given relation does not have an `IN` predicate' do
       let(:relation) { User.where(username: 'user') }
 
@@ -167,6 +173,91 @@ RSpec.describe UnnestedInFilters::Rewriter do
         it 'changes the query' do
           expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
         end
+      end
+    end
+
+    context 'when the combined attributes include the primary key' do
+      let(:relation) { User.where(user_type: %i(support_bot alert_bot)).order(id: :desc).limit(2) }
+
+      let(:expected_query) do
+        <<~SQL
+          SELECT
+              "users".*
+          FROM
+              "users"
+          WHERE
+              "users"."id" IN (
+                  SELECT
+                      "users"."id"
+                  FROM
+                      unnest('{1,2}' :: smallint []) AS "user_types"("user_type"),
+                      LATERAL (
+                          SELECT
+                              "users"."user_type",
+                              "users"."id"
+                          FROM
+                              "users"
+                          WHERE
+                              (users."user_type" = "user_types"."user_type")
+                          ORDER BY
+                              "users"."id" DESC
+                          LIMIT
+                              2
+                      ) AS users
+                  ORDER BY
+                      "users"."id" DESC
+                  LIMIT
+                      2
+              )
+          ORDER BY
+              "users"."id" DESC
+          LIMIT
+              2
+        SQL
+      end
+
+      it 'changes the query' do
+        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
+      end
+    end
+
+    context 'when a join table is receiving an IN list query' do
+      let(:relation) { User.joins(:status).where(status: { message: %w[foo bar] }).order(id: :desc).limit(2) }
+
+      let(:expected_query) do
+        <<~SQL
+          SELECT
+              "users".*
+          FROM
+              "users"
+          WHERE
+              "users"."id" IN (
+                  SELECT
+                      "users"."id"
+                  FROM
+                      LATERAL (
+                          SELECT
+                              message,
+                              "users"."id"
+                          FROM
+                              "users"
+                              INNER JOIN "user_statuses" "status" ON "status"."user_id" = "users"."id"
+                          WHERE
+                              "status"."message" IN ('foo', 'bar')
+                          ORDER BY
+                              "users"."id" DESC
+                          LIMIT 2) AS users
+                  ORDER BY
+                      "users"."id" DESC
+                  LIMIT 2)
+          ORDER BY
+              "users"."id" DESC
+          LIMIT 2
+        SQL
+      end
+
+      it 'does not rewrite the in statement for the joined table' do
+        expect(issued_query.gsub(/\s/, '')).to start_with(expected_query.gsub(/\s/, ''))
       end
     end
 

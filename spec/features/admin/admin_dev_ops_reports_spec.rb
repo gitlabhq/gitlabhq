@@ -9,9 +9,9 @@ RSpec.describe 'DevOps Report page', :js do
     gitlab_enable_admin_mode_sign_in(admin)
   end
 
-  context 'with devops_adoption feature flag disabled' do
+  context 'without licensed feature devops adoption' do
     before do
-      stub_feature_flags(devops_adoption: false)
+      stub_licensed_features(devops_adoption: false)
     end
 
     it 'has dismissable intro callout' do

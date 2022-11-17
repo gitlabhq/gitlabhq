@@ -5,7 +5,7 @@ group: Certify
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Requirements Management **(ULTIMATE)**
+# Requirements management **(ULTIMATE)**
 
 NOTE:
 In 14.4, Requirements was moved under **Issues**.
@@ -120,8 +120,8 @@ You can search for a requirement from the requirements list page based on the fo
 To search for a requirement:
 
 1. In a project, go to **Issues > Requirements > List**.
-1. Select the **Search or filter results** field. A dropdown menu appears.
-1. Select the requirement author or status from the dropdown or enter plain text to search by requirement title.
+1. Select the **Search or filter results** field. A dropdown list appears.
+1. Select the requirement author or status from the dropdown list or enter plain text to search by requirement title.
 1. Press <kbd>Enter</kbd> on your keyboard to filter the list.
 
 You can also sort the requirements list by:

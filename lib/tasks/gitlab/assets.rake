@@ -84,7 +84,7 @@ namespace :gitlab do
       puts "Assets SHA256 for `HEAD`: #{Tasks::Gitlab::Assets.head_assets_sha256.inspect}"
 
       if Tasks::Gitlab::Assets.head_assets_sha256 != Tasks::Gitlab::Assets.master_assets_sha256
-        FileUtils.rm_r(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR) if Dir.exist?(Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR)
+        FileUtils.rm_rf([Tasks::Gitlab::Assets::PUBLIC_ASSETS_DIR] + Dir.glob('app/assets/javascripts/locale/**/app.js'))
 
         # gettext:po_to_json needs to run before rake:assets:precompile because
         # app/assets/javascripts/locale/**/app.js are pre-compiled by Sprockets
@@ -127,20 +127,20 @@ namespace :gitlab do
 
         # rewrite the corresponding gzip file (if it exists)
         gzip = "#{file}.gz"
-        if File.exist?(gzip)
-          puts "Fixing #{gzip}"
+        next unless File.exist?(gzip)
 
-          FileUtils.rm(gzip)
-          mtime = File.stat(file).mtime
+        puts "Fixing #{gzip}"
 
-          File.open(gzip, 'wb+') do |f|
-            gz = Zlib::GzipWriter.new(f, Zlib::BEST_COMPRESSION)
-            gz.mtime = mtime
-            gz.write IO.binread(file)
-            gz.close
+        FileUtils.rm(gzip)
+        mtime = File.stat(file).mtime
 
-            File.utime(mtime, mtime, f.path)
-          end
+        File.open(gzip, 'wb+') do |f|
+          gz = Zlib::GzipWriter.new(f, Zlib::BEST_COMPRESSION)
+          gz.mtime = mtime
+          gz.write IO.binread(file)
+          gz.close
+
+          File.utime(mtime, mtime, f.path)
         end
       end
     end

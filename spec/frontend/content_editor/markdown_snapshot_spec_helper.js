@@ -1,10 +1,12 @@
 // See https://docs.gitlab.com/ee/development/gitlab_flavored_markdown/specification_guide/#markdown-snapshot-testing
 // for documentation on this spec.
 
-import fs from 'fs';
-import path from 'path';
 import jsYaml from 'js-yaml';
 import { pick } from 'lodash';
+import glfmExampleStatusYml from '../../../glfm_specification/input/gitlab_flavored_markdown/glfm_example_status.yml';
+import markdownYml from '../../../glfm_specification/output_example_snapshots/markdown.yml';
+import htmlYml from '../../../glfm_specification/output_example_snapshots/html.yml';
+import prosemirrorJsonYml from '../../../glfm_specification/output_example_snapshots/prosemirror_json.yml';
 import {
   IMPLEMENTATION_ERROR_MSG,
   renderHtmlAndJsonForAllExamples,
@@ -18,29 +20,21 @@ const filterExamples = (examples) => {
   return pick(examples, focusedMarkdownExamples);
 };
 
-const loadExamples = (dir, fileName) => {
-  const yaml = fs.readFileSync(path.join(dir, fileName));
+const loadExamples = (yaml) => {
   const examples = jsYaml.safeLoad(yaml, {});
   return filterExamples(examples);
 };
 
 // eslint-disable-next-line jest/no-export
-export const describeMarkdownSnapshots = (description, glfmSpecificationDir) => {
+export const describeMarkdownSnapshots = (description) => {
   let actualHtmlAndJsonExamples;
   let skipRunningSnapshotWysiwygHtmlTests;
   let skipRunningSnapshotProsemirrorJsonTests;
 
-  const exampleStatuses = loadExamples(
-    path.join(glfmSpecificationDir, 'input', 'gitlab_flavored_markdown'),
-    'glfm_example_status.yml',
-  );
-  const glfmExampleSnapshotsDir = path.join(glfmSpecificationDir, 'example_snapshots');
-  const markdownExamples = loadExamples(glfmExampleSnapshotsDir, 'markdown.yml');
-  const expectedHtmlExamples = loadExamples(glfmExampleSnapshotsDir, 'html.yml');
-  const expectedProseMirrorJsonExamples = loadExamples(
-    glfmExampleSnapshotsDir,
-    'prosemirror_json.yml',
-  );
+  const exampleStatuses = loadExamples(glfmExampleStatusYml);
+  const markdownExamples = loadExamples(markdownYml);
+  const expectedHtmlExamples = loadExamples(htmlYml);
+  const expectedProseMirrorJsonExamples = loadExamples(prosemirrorJsonYml);
 
   beforeAll(async () => {
     return renderHtmlAndJsonForAllExamples(markdownExamples).then((examples) => {

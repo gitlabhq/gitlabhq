@@ -18,7 +18,7 @@ For the latest updates, check the [Tasks Roadmap](https://gitlab.com/groups/gitl
 
 FLAG:
 On self-managed GitLab, by default this feature is available. To hide the feature,
-ask an administrator to [disable the feature flags](../administration/feature_flags.md) named `work_items` and `work_items_hierarchy`.
+ask an administrator to [disable the feature flags](../administration/feature_flags.md) named `work_items`.
 On GitLab.com, this feature is available.
 
 Use tasks to track steps needed for the [issue](project/issues/index.md) to be closed.
@@ -50,8 +50,25 @@ Prerequisites:
 To create a task:
 
 1. In the issue description, in the **Tasks** section, select **Add**.
+1. Select **New task**.
 1. Enter the task title.
 1. Select **Create task**.
+
+## Add existing tasks to an issue
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381868) in GitLab 15.6.
+
+Prerequisites:
+
+- You must have at least the Guest role for the project, or the project must be public.
+
+To add a task:
+
+1. In the issue description, in the **Tasks** section, select **Add**.
+1. Select **Existing task**.
+1. Search tasks by title.
+1. Select one or multiple tasks to add to the issue.
+1. Select **Add task**.
 
 ## Edit a task
 
@@ -158,6 +175,30 @@ To set a start date:
 
    The due date must be the same or later than the start date.
    If you select a start date to be later than the due date, the due date is then changed to the same day.
+
+## Add a task to a milestone
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+You can add a task to a [milestone](project/milestones/index.md).
+You can see the milestone title when you view a task.
+If you create a task for an issue that already belongs to a milestone,
+the new task inherits the milestone.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To add a task to a milestone:
+
+1. In the issue description, in the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Milestone**, select **Add to milestone**.
+If a task already belongs to a milestone, the dropdown list shows the current milestone.
+1. From the dropdown list, select the milestone to be associated with the task.
 
 ## Set task weight **(PREMIUM)**
 

@@ -157,7 +157,7 @@ module GoogleApi
     def cloud_platform_projects_billing_info_body(project_id, billing_enabled)
       {
         "name": "projects/#{project_id}/billingInfo",
-        "projectId": "#{project_id}",
+        "projectId": project_id.to_s,
         "billingAccountName": "account-name",
         "billingEnabled": billing_enabled
       }

@@ -53,6 +53,18 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader do
       expect(directives['child_src']).to eq("#{directives['frame_src']} #{directives['worker_src']}")
     end
 
+    describe 'the images-src directive' do
+      it 'can be loaded from anywhere' do
+        expect(directives['img_src']).to include('http: https:')
+      end
+    end
+
+    describe 'the media-src directive' do
+      it 'can be loaded from anywhere' do
+        expect(directives['media_src']).to include('http: https:')
+      end
+    end
+
     context 'adds all websocket origins to support Safari' do
       it 'with insecure domain' do
         stub_config_setting(host: 'example.com', https: false)

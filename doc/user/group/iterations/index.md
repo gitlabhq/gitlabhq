@@ -278,8 +278,8 @@ To group issues by label:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Issues > Iterations**.
-1. In the **Group by** dropdown, select **Label**.
-1. Select the **Filter by label** dropdown.
-1. Select the labels you want to group by in the labels dropdown.
+1. In the **Group by** dropdown list, select **Label**.
+1. Select the **Filter by label** dropdown list.
+1. Select the labels you want to group by in the labels dropdown list.
    You can also search for labels by typing in the search input.
 1. Select any area outside the label dropdown list. The page is now grouped by the selected labels.

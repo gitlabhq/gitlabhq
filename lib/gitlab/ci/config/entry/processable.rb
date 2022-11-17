@@ -60,6 +60,7 @@ module Gitlab
 
             entry :variables, ::Gitlab::Ci::Config::Entry::Variables,
               description: 'Environment variables available for this job.',
+              metadata: { allowed_value_data: %i[value expand] },
               inherit: false
 
             entry :inherit, ::Gitlab::Ci::Config::Entry::Inherit,

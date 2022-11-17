@@ -66,7 +66,7 @@ To create a new dashboard from the command line:
 
 1. Save the file, commit, and push to your repository. The file must be present in your **default** branch.
 1. Navigate to your project's **Monitor > Metrics** and choose the custom
-   dashboard from the dropdown.
+   dashboard from the dropdown list.
 
 Your custom dashboard is available at `https://example.com/project/-/metrics/custom_dashboard_name.yml`.
 
@@ -125,7 +125,7 @@ can manage [the settings](settings.md) for your metrics dashboard.
 ## Chart Context Menu
 
 You can take action related to a chart's data by selecting the
-**{ellipsis_v}** **More actions** dropdown box above the upper right corner of
+**{ellipsis_v}** **More actions** dropdown list above the upper right corner of
 any chart on a dashboard:
 
 ![Context Menu](img/panel_context_menu_v14_0.png)

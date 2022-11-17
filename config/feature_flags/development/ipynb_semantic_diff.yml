@@ -1,8 +1,0 @@
----
-name: ipynb_semantic_diff
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85079
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/358917
-milestone: '15.0'
-type: development
-group: group::code review
-default_enabled: true

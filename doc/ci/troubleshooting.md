@@ -182,6 +182,14 @@ a branch pipeline instead.
 It's also possible that your [`workflow: rules`](yaml/index.md#workflow) configuration
 blocked the pipeline, or allowed the wrong pipeline type.
 
+### Pipeline with many jobs fails to start
+
+A Pipeline that has more jobs than the instance's defined [CI/CD limits](../user/admin_area/settings/continuous_integration.md#set-cicd-limits)
+fails to start.
+
+To reduce the number of jobs in your pipeline, you can split your `.gitlab-ci.yml`
+configuration using [parent-child pipelines](../ci/pipelines/pipeline_architectures.md#parent-child-pipelines).
+
 ### A job runs unexpectedly
 
 A common reason a job is added to a pipeline unexpectedly is because the `changes`
@@ -285,14 +293,14 @@ has failed or been canceled.
 
 If a merge request pipeline or merged result pipeline was canceled or failed, you can:
 
-- Re-run the entire pipeline by clicking **Run pipeline** in the pipeline tab in the merge request.
+- Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request.
 - [Retry only the jobs that failed](pipelines/index.md#view-pipelines). If you re-run the entire pipeline, this is not necessary.
 - Push a new commit to fix the failure.
 
 If the merge train pipeline has failed, you can:
 
 - Check the failure and determine if you can use the [`/merge` quick action](../user/project/quick_actions.md) to immediately add the merge request to the train again.
-- Re-run the entire pipeline by clicking **Run pipeline** in the pipeline tab in the merge request, then add the merge request to the train again.
+- Re-run the entire pipeline by selecting **Run pipeline** in the pipeline tab in the merge request, then add the merge request to the train again.
 - Push a commit to fix the failure, then add the merge request to the train again.
 
 If the merge train pipeline was canceled before the merge request was merged, without a failure, you can:
@@ -399,6 +407,77 @@ This flag reduces system resource usage on the `jobs/request` endpoint.
 
 When enabled, jobs created in the last hour can run in projects which are out of quota.
 Earlier jobs are already canceled by a periodic background worker (`StuckCiJobsWorker`).
+
+## CI/CD troubleshooting rails console commands
+
+The following commands are run in the [rails console](../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions.  
+We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+### Cancel stuck pending pipelines
+
+```ruby
+project = Project.find_by_full_path('<project_path>')
+Ci::Pipeline.where(project_id: project.id).where(status: 'pending').count
+Ci::Pipeline.where(project_id: project.id).where(status: 'pending').each {|p| p.cancel if p.stuck?}
+Ci::Pipeline.where(project_id: project.id).where(status: 'pending').count
+```
+
+### Try merge request integration
+
+```ruby
+project = Project.find_by_full_path('<project_path>')
+mr = project.merge_requests.find_by(iid: <merge_request_iid>)
+mr.project.try(:ci_integration)
+```
+
+### Validate the `.gitlab-ci.yml` file
+
+```ruby
+project = Project.find_by_full_path('<project_path>')
+content = p.repository.gitlab_ci_yml_for(project.repository.root_ref_sha)
+Gitlab::Ci::Lint.new(project: project,  current_user: User.first).validate(content)
+```
+
+### Disable AutoDevOps on Existing Projects
+
+```ruby
+Project.all.each do |p|
+  p.auto_devops_attributes={"enabled"=>"0"}
+  p.save
+end
+```
+
+### Obtain runners registration token
+
+```ruby
+Gitlab::CurrentSettings.current_application_settings.runners_registration_token
+```
+
+### Seed runners registration token
+
+```ruby
+appSetting = Gitlab::CurrentSettings.current_application_settings
+appSetting.set_runners_registration_token('<new-runners-registration-token>')
+appSetting.save!
+```
+
+### Run pipeline schedules manually
+
+You can run pipeline schedules manually through the Rails console to reveal any errors that are usually not visible.
+
+```ruby
+# schedule_id can be obtained from Edit Pipeline Schedule page
+schedule = Ci::PipelineSchedule.find_by(id: <schedule_id>)
+
+# Select the user that you want to run the schedule for
+user = User.find_by_username('<username>')
+
+# Run the schedule
+ps = Ci::CreatePipelineService.new(schedule.project, user, ref: schedule.ref).execute!(:schedule, ignore_skip_ci: true, save_on_errors: false, schedule: schedule)
+```
 
 ## How to get help
 

@@ -287,39 +287,6 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#parent_group_options' do
-    let_it_be(:current_user) { create(:user) }
-    let_it_be(:group) { create(:group, name: 'group') }
-    let_it_be(:group2) { create(:group, name: 'group2') }
-
-    before do
-      group.add_owner(current_user)
-      group2.add_owner(current_user)
-    end
-
-    it 'includes explicitly owned groups except self' do
-      expect(parent_group_options(group2)).to eq([{ id: group.id, text: group.human_name }].to_json)
-    end
-
-    it 'excludes parent group' do
-      subgroup = create(:group, parent: group2)
-
-      expect(parent_group_options(subgroup)).to eq([{ id: group.id, text: group.human_name }].to_json)
-    end
-
-    it 'includes subgroups with inherited ownership' do
-      subgroup = create(:group, parent: group)
-
-      expect(parent_group_options(group2)).to eq([{ id: group.id, text: group.human_name }, { id: subgroup.id, text: subgroup.human_name }].to_json)
-    end
-
-    it 'excludes own subgroups' do
-      create(:group, parent: group2)
-
-      expect(parent_group_options(group2)).to eq([{ id: group.id, text: group.human_name }].to_json)
-    end
-  end
-
   describe '#can_disable_group_emails?' do
     let_it_be(:current_user) { create(:user) }
     let_it_be(:group) { create(:group, name: 'group') }
@@ -502,32 +469,6 @@ RSpec.describe GroupsHelper do
     end
   end
 
-  describe '#subgroups_and_projects_list_app_data' do
-    let_it_be(:group) { create(:group) }
-    let_it_be(:user) { create(:user) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-
-      allow(helper).to receive(:can?).with(user, :create_subgroup, group) { true }
-      allow(helper).to receive(:can?).with(user, :create_projects, group) { true }
-    end
-
-    it 'returns expected hash' do
-      expect(helper.subgroups_and_projects_list_app_data(group)).to match({
-        show_schema_markup: 'true',
-        new_subgroup_path: including("groups/new?parent_id=#{group.id}#create-group-pane"),
-        new_project_path: including("/projects/new?namespace_id=#{group.id}"),
-        new_subgroup_illustration: including('illustrations/subgroup-create-new-sm'),
-        new_project_illustration: including('illustrations/project-create-new-sm'),
-        empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
-        render_empty_state: 'true',
-        can_create_subgroups: 'true',
-        can_create_projects: 'true'
-      })
-    end
-  end
-
   describe '#group_overview_tabs_app_data' do
     let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
@@ -548,8 +489,17 @@ RSpec.describe GroupsHelper do
           shared_projects_endpoint: including("/groups/#{group.path}/-/shared_projects.json"),
           archived_projects_endpoint: including("/groups/#{group.path}/-/children.json?archived=only"),
           current_group_visibility: group.visibility,
-          initial_sort: initial_sort
-        }.merge(helper.group_overview_tabs_app_data(group))
+          initial_sort: initial_sort,
+          show_schema_markup: 'true',
+          new_subgroup_path: including("groups/new?parent_id=#{group.id}#create-group-pane"),
+          new_project_path: including("/projects/new?namespace_id=#{group.id}"),
+          new_subgroup_illustration: including('illustrations/subgroup-create-new-sm'),
+          new_project_illustration: including('illustrations/project-create-new-sm'),
+          empty_subgroup_illustration: including('illustrations/empty-state/empty-subgroup-md'),
+          render_empty_state: 'true',
+          can_create_subgroups: 'true',
+          can_create_projects: 'true'
+        }
       )
     end
   end

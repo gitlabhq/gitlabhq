@@ -56,17 +56,19 @@ To change the permitted Git access protocols for a group:
 1. Choose the permitted protocols from **Enabled Git access protocols**.
 1. Select **Save changes**.
 
-## Restrict group access by IP address **(PREMIUM)**
+## Restrict access to groups by IP address **(PREMIUM)**
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1985) in GitLab 12.0.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/215410) from GitLab Ultimate to GitLab Premium in 13.1.
 
-To ensure only people from your organization can access particular
-resources, you can restrict access to groups by IP address. This group-level setting
-applies to:
+To ensure only people from your organization can access particular resources, you can restrict access to groups by IP
+address. This group-level setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues.
 - [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/12874), the API.
+
+Administrators can combine restricted access by IP address with
+[globally-allowed IP addresses](../admin_area/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges).
 
 ### Security implications
 
@@ -94,7 +96,12 @@ To restrict group access by IP address:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Permissions and group features** section.
-1. In the **Restrict access by IP address** field, enter IPv4 or IPv6 address ranges in CIDR notation.
+1. In the **Restrict access by IP address** field, enter a list of IPv4 or IPv6
+   address ranges in CIDR notation. This list:
+   - Has no limit on the number of IP address ranges.
+   - Has a size limit of 1 GB.
+   - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
+     this list by type of authorization.
 1. Select **Save changes**.
 
 In self-managed installations of GitLab 15.1 and later, you can also configure
@@ -290,5 +297,4 @@ If a user sees a 404 when they would normally expect access, and the problem is 
 - `json.message`: `'Attempting to access IP restricted group'`
 - `json.allowed`: `false`
 
-In viewing the log entries, compare the `remote.ip` with the list of
-[allowed IPs](#restrict-group-access-by-ip-address) for the group.
+In viewing the log entries, compare the `remote.ip` with the list of [allowed IP addresses](#restrict-access-to-groups-by-ip-address) for the group.

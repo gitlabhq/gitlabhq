@@ -19,10 +19,10 @@ module Gitlab
       }
 
       job_arguments :base_type, :base_type_id
+      operation_name :update_all
 
       def perform
         each_sub_batch(
-          operation_name: :update_all,
           batching_scope: -> (relation) { relation.where(work_item_type_id: nil) }
         ) do |sub_batch|
           first, last = sub_batch.pick(Arel.sql('min(id), max(id)'))

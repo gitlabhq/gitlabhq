@@ -88,7 +88,7 @@ hit our 404 page. We can then use [`browser.getUrl`](http://v4.webdriver.io/api/
 to verify that the current page is indeed at the location we specified. To interact with the page,
 we can pass CSS selectors to
 [`browser.element`](http://v4.webdriver.io/api/protocol/element.html) to get access to elements on the
-page and to interact with them - for example, to click on the link back to the home page.
+page and to interact with them - for example, to select the link back to the home page.
 
 The simple test shown above
 can already give us a lot of confidence if it passes: we know our deployment has succeeded, that the

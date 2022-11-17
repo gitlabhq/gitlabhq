@@ -212,12 +212,20 @@ It's possible that this limit changes to a lower number in the future.
 
 ## Size of commit titles and descriptions
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292039) in GitLab 13.9
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/292039) in GitLab 13.9.
 
-Commits with arbitrarily large messages may be pushed to GitLab, but when
-displaying commits, titles (the first line of the commit message)
-limits to 1KiB, and descriptions (the rest of the message) limits to
-1MiB.
+Commits with arbitrarily large messages may be pushed to GitLab, but the following
+display limits apply:
+
+- **Title** - The first line of the commit message. Limited to 1 KiB.
+- **Description** - The rest of the commit message. Limited to 1 MiB.
+
+When a commit is pushed, GitLab processes the title and description to replace
+references to issues (`#123`) and merge requests (`!123`) with links to the
+issues and merge requests.
+
+When a branch with a large number of commits is pushed, only the last 100 commits
+are processed.
 
 ## Number of issues in the milestone overview
 
@@ -359,7 +367,7 @@ header. Such emails don't create comments on issues or merge requests.
 
 ## Amount of data sent from Sentry through Error Tracking
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14926) in GitLab 12.6.
+> [Limiting all Sentry responses](https://gitlab.com/gitlab-org/gitlab/-/issues/356448) introduced in GitLab 15.6.
 
 Sentry payloads sent to GitLab have a 1 MB maximum limit, both for security reasons
 and to limit memory consumption.

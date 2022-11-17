@@ -43,15 +43,14 @@ If your merge request description does not include these items, the review is re
 
 #### Migrations
 
-If new migrations are introduced, in the MR **you are required to provide**:
-
-- The output of both migrating (`db:migrate`) and rolling back (`db:rollback`) for all migrations.
+If new migrations are introduced, database reviewers must review the output of both migrating (`db:migrate`)
+and rolling back (`db:rollback`) for all migrations.
 
 We have automated tooling for
 [GitLab](https://gitlab.com/gitlab-org/gitlab) (provided by the
-[`db:check-migrations`](database/dbcheck-migrations-job.md) pipeline job) that provides this output for migrations on
-~database merge requests. You do not need to provide this information manually
-if the bot can do it for you. The bot also checks that migrations are correctly
+[`db:check-migrations`](database/dbcheck-migrations-job.md) pipeline job) that provides this output in the CI job logs.
+It is not required for the author to provide this output in the merge request description,
+but doing so may be helpful for reviewers. The bot also checks that migrations are correctly
 reversible.
 
 #### Queries
@@ -176,7 +175,7 @@ Include in the MR description:
 - The query plan for each raw SQL query included in the merge request along with the link to the query plan following each raw SQL snippet.
 - Provide a public link to the plan from either:
   - [postgres.ai](https://postgres.ai/): Follow the link in `#database-lab` and generate a shareable, public link
-    by clicking **Share** in the upper right corner.
+    by selecting **Share** in the upper right corner.
   - [explain.depesz.com](https://explain.depesz.com) or [explain.dalibo.com](https://explain.dalibo.com): Paste both the plan and the query used in the form.
 - When providing query plans, make sure it hits enough data:
   - You can use a GitLab production replica to test your queries on a large scale,

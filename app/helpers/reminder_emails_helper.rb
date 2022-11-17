@@ -41,7 +41,7 @@ module ReminderEmailsHelper
 
     body = invitation_reminder_body_text(reminder_index)
 
-    (format == :html ? html_escape(body) : body ) % options
+    (format == :html ? html_escape(body) : body) % options
   end
 
   def invitation_reminder_accept_link(token, format: nil)

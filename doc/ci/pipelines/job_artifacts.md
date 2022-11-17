@@ -309,60 +309,49 @@ for [parent and child pipelines](downstream_pipelines.md#parent-child-pipelines)
 order from parent to child. For example, if both parent and child pipelines have a
 job with the same name, the job artifact from the parent pipeline is returned.
 
-## Access the latest job artifacts by URL
+## Access the latest job artifacts
 
-You can download job artifacts from the latest successful pipeline by using a URL.
+You can download job artifacts from the latest successful pipeline by using [the job artifacts API](../../api/job_artifacts.md).
+You cannot download [artifact reports](../yaml/artifacts_reports.md) with the job artifacts API,
+unless the report is added as a regular artifact with `artifacts:paths`.
 
-To download the whole artifacts archive:
+### Download the whole artifacts archive for a specific job
 
-```plaintext
-https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/download?job=<job_name>
-```
+You can download the artifacts archive for a specific job with [the job artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
 
-To download a single file from the artifacts:
-
-```plaintext
-https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/raw/<path_to_file>?job=<job_name>
-```
-
-For example, to download the latest artifacts of the job named `coverage` in
-the `main` branch of the `gitlab` project in the `gitlab-org`
-namespace:
+For example, to download the latest artifacts of a job named `build` in the `main` branch of a project on GitLab.com:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/download?job=coverage
+https://gitlab.com/api/v4/projects/<project-id>/jobs/artifacts/main/download?job=build
 ```
 
-To download the file `review/index.html` from the same artifacts:
+Replace `<project-id>` with a valid project ID, found at the top of the project details page.
+
+### Download a single file from the artifacts
+
+You can download a specific file from the artifacts archive for a specific job with [the job artifacts API](../../api/job_artifacts.md#download-a-single-artifact-file-by-job-id).
+
+For example, to download the file `review/index.html` from the latest job named `build` in the `main` branch of the `gitlab` project in the `gitlab-org` namespace:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/raw/review/index.html?job=coverage
+https://gitlab.com/api/v4/projects/27456355/jobs/artifacts/main/raw/review/index.html?job=build
 ```
 
-To browse the latest job artifacts:
+### Browse job artifacts
+
+To browse the job artifacts of the latest successful pipeline for a specific job you can use the following URL:
 
 ```plaintext
 https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/browse?job=<job_name>
 ```
 
-For example:
+For example, to browse the latest artifacts of a job named `build` in the `main` branch of a project on GitLab.com:
 
 ```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/browse?job=coverage
+https://gitlab.com/<full-project-path>/-/jobs/artifacts/main/browse?job=build
 ```
 
-To download specific files, including HTML files that
-are shown in [GitLab Pages](../../administration/pages/index.md):
-
-```plaintext
-https://example.com/<namespace>/<project>/-/jobs/artifacts/<ref>/file/<path>?job=<job_name>
-```
-
-For example, when a job `coverage` creates the artifact `htmlcov/index.html`:
-
-```plaintext
-https://gitlab.com/gitlab-org/gitlab/-/jobs/artifacts/main/file/htmlcov/index.html?job=coverage
-```
+Replace `<full-project-path>` with a valid project path, you can find it in the URL for your project.
 
 ## When job artifacts are deleted
 
@@ -396,7 +385,24 @@ a project, you can disable this behavior to save space:
 You can disable this behavior for all projects on a self-managed instance in the
 [instance's CI/CD settings](../../user/admin_area/settings/continuous_integration.md#keep-the-latest-artifacts-for-all-jobs-in-the-latest-successful-pipelines).
 
-## Troubleshooting job artifacts
+## Troubleshooting
+
+### Job does not retrieve certain artifacts
+
+By default, jobs fetch all artifacts from previous stages, but jobs using `dependencies`
+or `needs` do not fetch artifacts from all jobs by default.
+
+If you use these keywords, artifacts are fetched from only a subset of jobs. Review
+the keyword reference for information on how to fetch artifacts with these keywords:
+
+- [`dependencies`](../yaml/index.md#dependencies)
+- [`needs`](../yaml/index.md#needs)
+- [`needs:artifacts`](../yaml/index.md#needsartifacts)
+
+### Job artifacts using too much disk space
+
+There are a number of potential causes for this.
+[Read more in the job artifacts administration documentation](../../administration/job_artifacts.md#job-artifacts-using-too-much-disk-space).
 
 ### Error message `No files to upload`
 

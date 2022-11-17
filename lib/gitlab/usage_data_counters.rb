@@ -2,9 +2,7 @@
 
 module Gitlab
   module UsageDataCounters
-    COUNTERS = [].freeze
-
-    COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES = [
+    COUNTERS = [
       PackageEventCounter,
       MergeRequestCounter,
       DesignsCounter,
@@ -26,12 +24,8 @@ module Gitlab
     UnknownEvent = Class.new(UsageDataCounterError)
 
     class << self
-      def unmigrated_counters
-        self::COUNTERS
-      end
-
       def counters
-        unmigrated_counters + migrated_counters
+        COUNTERS
       end
 
       def count(event_name)
@@ -42,12 +36,6 @@ module Gitlab
         end
 
         raise UnknownEvent, "Cannot find counter for event #{event_name}"
-      end
-
-      private
-
-      def migrated_counters
-        COUNTERS_MIGRATED_TO_INSTRUMENTATION_CLASSES
       end
     end
   end

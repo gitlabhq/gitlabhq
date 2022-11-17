@@ -8,9 +8,9 @@
 # Commands, like `git clone` must use backticks, and must not be added to the
 # exceptions.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: spelling
-message: 'Spelling check: "%s"?'
+message: "Check the spelling of '%s'. If the spelling is correct, add this word to the spelling exception list."
 level: warning
 ignore:
   - gitlab/spelling-exceptions.txt

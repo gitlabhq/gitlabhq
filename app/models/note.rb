@@ -60,7 +60,7 @@ class Note < ApplicationRecord
   # Attribute used to determine whether keep_around_commits will be skipped for diff notes.
   attr_accessor :skip_keep_around_commits
 
-  default_value_for :system, false
+  attribute :system, default: false
 
   attr_mentionable :note, pipeline: :note
   participant :author
@@ -359,14 +359,6 @@ class Note < ApplicationRecord
   #        For more information visit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(noteable_type)
     super(noteable_type.to_s.classify.constantize.base_class.to_s)
-  end
-
-  def noteable_assignee_or_author?(user)
-    return false unless user
-    return false unless noteable.respond_to?(:author_id)
-    return noteable.assignee_or_author?(user) if [MergeRequest, Issue].include?(noteable.class)
-
-    noteable.author_id == user.id
   end
 
   def contributor?
@@ -756,7 +748,8 @@ class Note < ApplicationRecord
 
     if user_visible_reference_count.present? && total_reference_count.present?
       # if they are not equal, then there are private/confidential references as well
-      user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
+      total_reference_count == 0 ||
+        user_visible_reference_count > 0 && user_visible_reference_count == total_reference_count
     else
       refs = all_references(user)
       refs.all.any? && refs.all_visible?

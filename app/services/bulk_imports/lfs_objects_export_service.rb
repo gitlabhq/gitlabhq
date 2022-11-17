@@ -60,7 +60,7 @@ module BulkImports
     def write_lfs_json
       filepath = File.join(export_path, "#{BulkImports::FileTransfer::ProjectConfig::LFS_OBJECTS_RELATION}.json")
 
-      File.write(filepath, lfs_json.to_json)
+      File.write(filepath, Gitlab::Json.dump(lfs_json))
     end
   end
 end

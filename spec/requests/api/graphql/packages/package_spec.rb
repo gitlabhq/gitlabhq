@@ -206,5 +206,25 @@ RSpec.describe 'package details' do
         expect(graphql_data_at(:package, :composer_config_repository_url)).to eq("localhost/#{group.id}")
       end
     end
+
+    context 'web_path' do
+      before do
+        subject
+      end
+
+      it 'returns web_path correctly' do
+        expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/packages/#{composer_package.id}")
+      end
+
+      context 'with terraform module' do
+        let_it_be(:terraform_package) { create(:terraform_module_package, project: project) }
+
+        let(:package_global_id) { global_id_of(terraform_package) }
+
+        it 'returns web_path correctly' do
+          expect(graphql_data_at(:package, :_links, :web_path)).to eq("/#{project.full_path}/-/infrastructure_registry/#{terraform_package.id}")
+        end
+      end
+    end
   end
 end

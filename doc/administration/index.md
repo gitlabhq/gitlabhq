@@ -185,7 +185,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 ## Git configuration options
 
-- [Server hooks](server_hooks.md): Server hooks (on the file system) for when webhooks aren't enough.
+- [Git server hooks](server_hooks.md): Git server hooks (on the file system) for when webhooks aren't enough. Previously called server hooks.
 - [Git LFS configuration](lfs/index.md): Learn how to configure LFS for GitLab.
 - [Housekeeping](housekeeping.md): Keep your Git repositories tidy and fast.
 - [Configuring Git Protocol v2](git_protocol.md): Git protocol version 2 support.
@@ -232,12 +232,9 @@ who are aware of the risks.
 - [Troubleshooting Kubernetes](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html)
 - [Troubleshooting PostgreSQL](troubleshooting/postgresql.md)
 - [Guide to test environments](troubleshooting/test_environments.md) (for Support Engineers)
-- [GitLab Rails console commands](troubleshooting/gitlab_rails_cheat_sheet.md) (for Support Engineers)
 - [Troubleshooting SSL](troubleshooting/ssl.md)
 - Related links:
   - [GitLab Developer Documentation](../development/index.md)
   - [Repairing and recovering broken Git repositories](https://git.seveas.net/repairing-and-recovering-broken-git-repositories.html)
   - [Testing with OpenSSL](https://www.feistyduck.com/library/openssl-cookbook/online/testing-with-openssl/index.html)
   - [`strace` zine](https://wizardzines.com/zines/strace/)
-- GitLab.com-specific resources:
-  - [Example group SAML and SCIM configurations](../user/group/saml_sso/example_saml_config.md)

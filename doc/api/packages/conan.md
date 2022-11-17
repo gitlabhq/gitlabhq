@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -494,7 +494,7 @@ Upload a recipe file to the package registry. You must use an upload URL that th
 returned.
 
 ```plaintext
-GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
+PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/export/:file_name
 ```
 
 | Attribute | Type | Required | Description |
@@ -509,7 +509,8 @@ GET packages/conan/v1/files/:package_name/:package_version/:package_username/:pa
 Provide the file context in the request body:
 
 ```shell
-curl --header "Authorization: Bearer <authenticate_token>" \
+curl --request PUT \
+     --user <username>:<personal_access_token> \
      --upload-file path/to/conanfile.py \
      "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/export/conanfile.py"
 ```
@@ -558,7 +559,7 @@ Upload a package file to the package registry. You must use an upload URL that t
 returned.
 
 ```plaintext
-GET packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
+PUT packages/conan/v1/files/:package_name/:package_version/:package_username/:package_channel/:recipe_revision/package/:conan_package_reference/:package_revision/:file_name
 ```
 
 | Attribute | Type | Required | Description |
@@ -575,9 +576,10 @@ GET packages/conan/v1/files/:package_name/:package_version/:package_username/:pa
 Provide the file context in the request body:
 
 ```shell
-curl --header "Authorization: Bearer <authenticate_token>" \
+curl --request PUT \
+     --user <username>:<personal_access_token> \
      --upload-file path/to/conaninfo.txt \
-     "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/packages/103f6067a947f366ef91fc1b7da351c588d1827f/0/conaninfo.txt"
+     "https://gitlab.example.com/api/v4/packages/conan/v1/files/my-package/1.0/my-group+my-project/stable/0/package/103f6067a947f366ef91fc1b7da351c588d1827f/0/conaninfo.txt"
 ```
 
 ## Delete a Package (delete a Conan recipe)

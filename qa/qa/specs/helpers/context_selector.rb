@@ -18,6 +18,7 @@ module QA
 
         def context_matches?(*options)
           return false unless Runtime::Scenario.attributes[:gitlab_address]
+          return false if Runtime::Scenario.attributes[:test_metadata_only]
 
           opts = {}
           opts[:domain] = '.+'

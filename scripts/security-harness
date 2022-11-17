@@ -75,6 +75,7 @@ end
 
 def delete_hook
   FileUtils.rm(HOOK_PATH)
+  system("git checkout master")
   puts "#{SHELL_YELLOW}Security harness removed -- you can now push to all remotes.#{SHELL_CLEAR}"
 end
 

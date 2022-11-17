@@ -81,6 +81,7 @@ describe('MembersTabs', () => {
       stubs: ['members-app'],
       provide: {
         canManageMembers: true,
+        canManageAccessRequests: true,
         canExportMembers: true,
         exportCsvPath: '',
         ...provide,
@@ -181,7 +182,9 @@ describe('MembersTabs', () => {
 
   describe('when `canManageMembers` is `false`', () => {
     it('shows all tabs except `Invited` and `Access requests`', async () => {
-      await createComponent({ provide: { canManageMembers: false } });
+      await createComponent({
+        provide: { canManageMembers: false, canManageAccessRequests: false },
+      });
 
       expect(findTabByText('Members')).not.toBeUndefined();
       expect(findTabByText('Groups')).not.toBeUndefined();

@@ -6,7 +6,7 @@ module API
     urgency :low
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       requires :alert_iid, type: Integer, desc: 'The IID of the Alert'
     end
 

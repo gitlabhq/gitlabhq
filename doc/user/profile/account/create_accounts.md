@@ -49,3 +49,19 @@ Users are:
 - Created when first signing with [Group SAML](../../group/saml_sso/index.md).
 - Automatically created by [SCIM](../../group/saml_sso/scim_setup.md) when the user is created in
   the identity provider.
+
+## Create users through the Rails console
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+To create a user through the Rails console:
+
+1. [Start a Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Run the following commands:
+
+   ```ruby
+   u = User.new(username: 'test_user', email: 'test@example.com', name: 'Test User', password: 'password', password_confirmation: 'password')
+   u.skip_confirmation! # Use it only if you wish user to be automatically confirmed. If skipped, user receives confirmation e-mail
+   u.save!
+   ```

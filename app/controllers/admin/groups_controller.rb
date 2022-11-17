@@ -38,12 +38,9 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def create
-    @group = Group.new(group_params)
-    @group.name = @group.path.dup unless @group.name
+    @group = ::Groups::CreateService.new(current_user, group_params).execute
 
-    if @group.save
-      @group.add_owner(current_user)
-      @group.create_namespace_settings
+    if @group.persisted?
       redirect_to [:admin, @group], notice: _('Group %{group_name} was successfully created.') % { group_name: @group.name }
     else
       render "new"

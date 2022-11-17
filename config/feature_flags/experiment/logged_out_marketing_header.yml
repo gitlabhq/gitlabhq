@@ -1,8 +1,0 @@
----
-name: logged_out_marketing_header
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76076
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/348525
-milestone: '14.7'
-type: experiment
-group: group::activation
-default_enabled: false

@@ -64,20 +64,14 @@ describe('ServiceDeskSetting', () => {
       });
     });
 
-    describe('when customEmailEnabled', () => {
-      beforeEach(() => {
-        wrapper = createComponent({
-          props: { customEmailEnabled: true },
-        });
-      });
+    describe('service desk email "from" name', () => {
+      it('service desk e-mail "from" name input appears', () => {
+        wrapper = createComponent();
 
-      it('should not display help text', () => {
-        expect(findSuffixFormGroup().text()).not.toContain(
-          'To add a custom suffix, set up a Service Desk email address',
-        );
-        expect(findSuffixFormGroup().text()).toContain(
-          'Add a suffix to Service Desk email address',
-        );
+        const input = wrapper.findByTestId('email-from-name');
+
+        expect(input.exists()).toBe(true);
+        expect(input.attributes('disabled')).toBeUndefined();
       });
     });
 

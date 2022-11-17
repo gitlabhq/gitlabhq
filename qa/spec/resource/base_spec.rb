@@ -87,10 +87,44 @@ RSpec.describe QA::Resource::Base do
     end
 
     context 'when resource supports fabrication via the API' do
-      it 'calls .fabricate_via_browser_ui!' do
+      it 'calls .fabricate_via_api!!' do
         expect(described_class).to receive(:fabricate_via_api!)
 
         described_class.fabricate!
+      end
+    end
+
+    context 'when FIPS mode is enabled' do
+      before do
+        stub_env('FIPS', '1')
+      end
+
+      it 'calls .fabricate_via_browser_ui!' do
+        expect(described_class).to receive(:fabricate_via_browser_ui!)
+
+        described_class.fabricate!
+      end
+    end
+  end
+
+  describe '.fabricate_via_api_unless_fips!' do
+    context 'when FIPS mode is not enabled' do
+      it 'calls .fabricate_via_api!!' do
+        expect(described_class).to receive(:fabricate_via_api!)
+
+        described_class.fabricate_via_api_unless_fips!
+      end
+    end
+
+    context 'when FIPS mode is enabled' do
+      before do
+        stub_env('FIPS', '1')
+      end
+
+      it 'calls .fabricate_via_browser_ui!' do
+        expect(described_class).to receive(:fabricate_via_browser_ui!)
+
+        described_class.fabricate_via_api_unless_fips!
       end
     end
   end

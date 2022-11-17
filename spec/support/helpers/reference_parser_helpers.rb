@@ -12,14 +12,14 @@ module ReferenceParserHelpers
   end
 
   RSpec.shared_examples 'no project N+1 queries' do
-    it 'avoids N+1 queries in #nodes_visible_to_user' do
+    it 'avoids N+1 queries in #nodes_visible_to_user', :use_sql_query_cache do
       context = Banzai::RenderContext.new(project, user)
 
       request = lambda do |links|
         described_class.new(context).nodes_visible_to_user(user, links)
       end
 
-      control = ActiveRecord::QueryRecorder.new { request.call(control_links) }
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { request.call(control_links) }
 
       create(:group_member, group: project.group) if project.group
       create(:project_member, project: project)

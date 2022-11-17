@@ -32,6 +32,10 @@ module Gitlab
             end
           end
 
+          def root_variables
+            @context.root_variables
+          end
+
           private
 
           def stage_seeds

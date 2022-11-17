@@ -14,5 +14,98 @@ metadata:
       name: private_token
       in: query
   tags:
+    # Keep in alphabetical order
+  - name: access_requests
+    description: Operations related to access requests
+  - name: ci_lint
+    description: Operations related to linting a CI config file
+  - name: ci_resource_groups
+    description: Operations to manage job concurrency with resource groups
+  - name: ci_variables
+    description: Operations related to CI/CD variables
+  - name: cluster_agents
+    description: Operations related to the GitLab agent for Kubernetes
+  - name: clusters
+    description: Operations related to clusters
+  - name: container_registry
+    description: Operations related to container registry
+  - name: dashboard_annotations
+    description: Operations related to dashboard annotations
+  - name: dependency_proxy
+    description: Operations to manage dependency proxy for a groups
+  - name: deploy_keys
+    description: Operations related to deploy keys
+  - name: deploy_tokens
+    description: Operations related to deploy tokens
+  - name: deployments
+    description: Operations related to deployments
+  - name: dora_metrics
+    description: Operations related to DevOps Research and Assessment (DORA) key metrics
+  - name: environments
+    description: Operations related to environments
+  - name: error_tracking_client_keys
+    description: Operations related to error tracking client keys
+  - name: error_tracking_project_settings
+    description: Operations related to error tracking project settings
+  - name: feature_flags_user_lists
+    description: Operations related to accessing GitLab feature flag user lists
+  - name: feature_flags
+    description: Operations related to feature flags
+  - name: features
+    description: Operations related to managing Flipper-based feature flags
+  - name: freeze_periods
+    description: Operations related to deploy freeze periods
+  - name: geo
+    description: Operations related to Geo
+  - name: geo_nodes
+    description: Operations related Geo Nodes
+  - name: go_proxy
+    description: Operations related to Go Proxy
+  - name: group_export
+    description: Operations related to exporting groups
+  - name: group_import
+    description: Operations related to importing groups
+  - name: group_packages
+    description: Operations related to group packages
+  - name: integrations
+    description: Operations related to integrations
+  - name: issue_links
+    description: Operations related to issue links
+  - name: merge_requests
+    description: Operations related to merge requests
   - name: metadata
     description: Operations related to metadata of the GitLab instance
+  - name: metrics_user_starred_dashboards
+    description: Operations related to User-starred metrics dashboards
+  - name: package_files
+    description: Operations about package files
+  - name: plan_limits
+    description: Operations related to plan limits
+  - name: project_export
+    description: Operations related to exporting projects
+  - name: project_hooks
+    description: Operations related to project hooks
+  - name: project_import
+    description: Operations related to importing projects
+  - name: project_import_bitbucket
+    description: Operations related to importing BitBucket projects
+  - name: project_import_github
+    description: Operations related to importing GitHub projects
+  - name: protected environments
+    description: Operations related to protected environments
+  - name: release_links
+    description: Operations related to release assets (links)
+  - name: releases
+    description: Operations related to releases
+  - name: resource_milestone_events
+    description: Operations about resource milestone events
+  - name: suggestions
+    description: Operations related to suggestions
+  - name: system_hooks
+    description: Operations related to system hooks
+  - name: terraform_state
+    description: Operations related to Terraform state files
+  - name: terraform_registry
+    description: Operations related to the Terraform module registry
+  - name: unleash_api
+    description: Operations related to Unleash API

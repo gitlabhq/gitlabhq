@@ -94,7 +94,7 @@
               = milestone.issues_visible_to_user(current_user).closed.count
 
     .block
-      #issuable-time-tracker{ data: { time_estimate: @milestone.total_time_estimate,
+      .js-sidebar-time-tracking-root{ data: { time_estimate: @milestone.total_time_estimate,
         time_spent: @milestone.total_time_spent,
         human_time_estimate: @milestone.human_total_time_estimate,
         human_time_spent: @milestone.human_total_time_spent,

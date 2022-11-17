@@ -21,6 +21,12 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
   it_behaves_like 'having unique enum values'
 
+  describe 'default values' do
+    let(:kubernetes) { create(:cluster_platform_kubernetes) }
+
+    it { expect(kubernetes.authorization_type).to eq("rbac") }
+  end
+
   describe 'before_validation' do
     let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
@@ -427,6 +433,55 @@ RSpec.describe Clusters::Platforms::Kubernetes do
         let(:cluster) { create(:cluster, :project, platform_kubernetes: service) }
 
         include_examples 'successful deployment request'
+
+        context 'when reading ingress raises NoMethodError' do
+          before do
+            allow_next_instance_of(Gitlab::Kubernetes::KubeClient) do |kube_client|
+              allow(kube_client).to receive(:get_pods).with(namespace: namespace).and_return([])
+              allow(kube_client).to receive(:get_deployments).with(namespace: namespace).and_return([])
+              allow(kube_client).to receive(:get_ingresses).with(namespace: namespace).and_raise(NoMethodError)
+            end
+          end
+
+          context 'when version request succeeds' do
+            before do
+              stub_server_min_version(min_server_version)
+            end
+
+            context 'when server min version is < 23' do
+              let(:min_server_version) { "18" }
+
+              it 'does not raise error', :unlimited_max_formatted_output_length do
+                expect { subject }.not_to raise_error
+              end
+
+              it 'returns empty array for the K8s component keys' do
+                expect(subject).to include({ pods: [], deployments: [], ingresses: [] })
+              end
+            end
+
+            context 'when server min version is >= 23' do
+              let(:min_server_version) { "23" }
+
+              it 'does raise error' do
+                expect { subject }.to raise_error(NoMethodError)
+              end
+            end
+          end
+
+          context 'when the version request fails' do
+            before do
+              stub_server_min_version_failed_request
+            end
+
+            it "tracks error and returns empty arrays" do
+              expect(Gitlab::ErrorTracking)
+                .to receive(:track_exception).with(kind_of(Clusters::Platforms::Kubernetes::FailedVersionCheckError))
+
+              expect(subject).to include({ pods: [], deployments: [], ingresses: [] })
+            end
+          end
+        end
       end
 
       context 'on a group level cluster' do
@@ -452,7 +507,7 @@ RSpec.describe Clusters::Platforms::Kubernetes do
 
     context 'when there are ignored K8s connections errors' do
       described_class::IGNORED_CONNECTION_EXCEPTIONS.each do |exception|
-        context "#{exception}" do
+        context exception.to_s do
           before do
             exception_args = ['arg1']
             exception_args.push('arg2', 'arg3') if exception.name == 'Kubeclient::HttpError'

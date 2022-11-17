@@ -52,6 +52,9 @@ describe('Timeline events form', () => {
     findMinuteInput().setValue(45);
   };
   const findTextarea = () => wrapper.findByTestId('input-note');
+  const findCountNumeric = (count) => wrapper.findByText(count);
+  const findCountVerbose = (count) => wrapper.findByText(`${count} characters remaining`);
+  const findCountHint = () => wrapper.findByText(timelineFormI18n.hint);
 
   const submitForm = async () => {
     findSubmitButton().vm.$emit('click');
@@ -133,6 +136,33 @@ describe('Timeline events form', () => {
 
       expect(findSubmitButton().props('disabled')).toBe(false);
       expect(findSubmitAndAddButton().props('disabled')).toBe(false);
+    });
+  });
+
+  describe('form character limit', () => {
+    beforeEach(() => {
+      mountComponent({ mountMethod: mountExtended });
+    });
+
+    it('sets a character limit hint', () => {
+      expect(findCountHint().exists()).toBe(true);
+    });
+
+    it('sets a character limit when text is entered', async () => {
+      await findTextarea().setValue('hello');
+
+      expect(findCountNumeric('275').text()).toBe('275');
+      expect(findCountVerbose('275').text()).toBe('275 characters remaining');
+    });
+
+    it('prevents form submission when text is beyond maximum length', async () => {
+      // 281 characters long
+      const longText =
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in volupte';
+      await findTextarea().setValue(longText);
+
+      expect(findSubmitButton().props('disabled')).toBe(true);
+      expect(findSubmitAndAddButton().props('disabled')).toBe(true);
     });
   });
 });

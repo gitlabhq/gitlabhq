@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', :smoke, :runner, quarantine: {
+  RSpec.describe 'Verify', :smoke, :runner, product_group: :pipeline_execution, quarantine: {
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/356295',
     type: :investigating
   } do

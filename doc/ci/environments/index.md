@@ -178,7 +178,7 @@ deploy_prod:
 The `when: manual` action:
 
 - Exposes a play button for the job in the GitLab UI, with the text **Can be manually deployed to &lt;environment&gt;**.
-- Means the `deploy_prod` job is only triggered when the play button is clicked.
+- Means the `deploy_prod` job is only triggered when the play button is selected.
 
 You can find the play button in the pipelines, environments, deployments, and jobs views.
 
@@ -382,6 +382,11 @@ To retry or rollback a deployment:
 1. To the right of the deployment name:
    - To retry a deployment, select **Re-deploy to environment**.
    - To roll back to a deployment, next to a previously successful deployment, select **Rollback environment**.
+
+NOTE:
+If you have [prevented outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) in your project,
+the rollback buttons might be hidden or disabled.
+In this case, see [how to rollback to an outdated deployment](deployment_safety.md#how-to-rollback-to-an-outdated-deployment).
 
 ### Environment URL
 
@@ -721,7 +726,7 @@ build:
 ```
 
 This gives you access to environment-scoped variables, and can be used to protect builds from unauthorized access. Also,
-it's effective to avoid the [skip outdated deployment jobs](deployment_safety.md#skip-outdated-deployment-jobs) feature.
+it's effective to avoid the [prevent outdated deployment jobs](deployment_safety.md#prevent-outdated-deployment-jobs) feature.
 
 ### Group similar environments
 
@@ -1063,8 +1068,8 @@ To fix this, use one of the following solutions:
 - Remove `environment` keyword from the deployment job. GitLab has already been
   ignoring the invalid keyword, therefore your deployment pipelines stay intact
   even after the keyword removal.
-- Ensure the variable exists in the pipeline. Please note that there is
-  [a limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- Ensure the variable exists in the pipeline. Review the
+  [limitation on supported variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 #### If you get this error on Review Apps
 
@@ -1107,6 +1112,6 @@ to execute the following command on Rails console:
 Project.find_by_full_path(<your-project-full-path>).deployments.where(archived: true).each(&:create_ref)
 ```
 
-Please note that GitLab could drop this support in the future for the performance concern.
+GitLab might drop this support in the future for the performance concern.
 You can open an issue in [GitLab Issue Tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
 to discuss the behavior of this feature.

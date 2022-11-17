@@ -221,7 +221,7 @@ table.supported-languages ul {
       <td>N</td>
     </tr>
     <tr>
-      <td rowspan="2">JavaScript</td>
+      <td rowspan="2">JavaScript and TypeScript</td>
       <td>All versions</td>
       <td><a href="https://www.npmjs.com/">npm</a></td>
       <td>
@@ -501,11 +501,11 @@ From GitLab 14.8 the `gemnasium` analyzer scans supported JavaScript projects fo
 
 #### Go
 
-When scanning a Go project, gemnasium invokes a builder and attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
-[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If a non-fatal error is encountered, the build process signals
-that the execution should proceed and falls back to parsing the available `go.sum` file.
+Multiple files are supported. When a `go.mod` file is detected, the analyzer attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
+[Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If a non-fatal error is encountered, the analyzer falls back to parsing the
+available `go.sum` file. The process is repeated for every detected `go.mod` and `go.sum` file.
 
-#### PHP, Go, C, C++, .NET, C&#35;, Ruby, JavaScript
+#### PHP, C, C++, .NET, C&#35;, Ruby, JavaScript
 
 The analyzer for these languages supports multiple lockfiles.
 
@@ -525,7 +525,7 @@ The [Security Scanner Integration](../../../development/integrations/secure.md) 
 
 To enable dependency scanning for GitLab 11.9 and later, you must
 [include](../../../ci/yaml/index.md#includetemplate) the
-[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/Dependency-Scanning.gitlab-ci.yml)
+[`Dependency-Scanning.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Dependency-Scanning.gitlab-ci.yml)
 that is provided as a part of your GitLab installation.
 For GitLab versions earlier than 11.9, you can copy and use the job as defined
 that template.
@@ -534,7 +534,7 @@ Add the following to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 ```
 
 The included template creates dependency scanning jobs in your CI/CD
@@ -624,7 +624,6 @@ The following variables allow configuration of global dependency scanning settin
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certs to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. See [Using a custom SSL CA certificate authority](#using-a-custom-ssl-ca-certificate-authority) for more details. |
 | `DS_EXCLUDED_ANALYZERS`      | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Dependency Scanning Analyzers](analyzers.md). |
-| `DS_DEFAULT_ANALYZERS`      | This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/287691) in GitLab 14.0 and [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/333299) in 15.0. Use `DS_EXCLUDED_ANALYZERS` instead. |
 | `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354796) in GitLab 14.10.) Automatically set to `"-fips"` when FIPS mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357922) in GitLab 15.0.) |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). Read more about [customizing analyzers](analyzers.md). |
@@ -641,6 +640,7 @@ The following variables are used for configuring specific analyzers (used for a 
 | `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the Gemnasium database. |
 | `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
 | `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
+| `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                       | Timeout for auto-remediation. |
 | `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries. For now, `gemnasium` leverages [`Retire.js`](https://github.com/RetireJS/retire.js) to do this job. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350512) in GitLab 14.8. |
 | `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `13`, `14`, `15`, `16`, `17`. Available versions in FIPS-enabled image: `8`, `11`, `17`. |
 | `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](../index.md#using-private-maven-repositories). |
@@ -1310,6 +1310,11 @@ gemnasium-python-dependency_scanning:
   before_script:
     - apt-get update && apt-get install -y libpq-dev
 ```
+
+### `NoSuchOptionException` when using `poetry config http-basic` with `CI_JOB_TOKEN`
+
+This error can occur when the automatically generated `CI_JOB_TOKEN` starts with a hyphen (`-`).
+To avoid this error, follow [Poetry's configuration advice](https://python-poetry.org/docs/repositories/#configuring-credentials).
 
 ### Error: Project has `<number>` unresolved dependencies
 

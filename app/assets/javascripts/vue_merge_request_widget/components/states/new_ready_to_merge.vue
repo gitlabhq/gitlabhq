@@ -8,7 +8,7 @@ export default {
     canMerge: {
       query: readyToMergeQuery,
       skip() {
-        return !this.mr || !window.gon?.features?.mergeRequestWidgetGraphql;
+        return !this.mr;
       },
       variables() {
         return this.mergeRequestQueryVariables;

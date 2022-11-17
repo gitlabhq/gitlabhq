@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :skip_live_env do
+  RSpec.describe 'Package', :orchestrated, :skip_live_env, product_group: :container_registry do
     describe 'Self-managed Container Registry' do
       include Support::Helpers::MaskToken
 
@@ -174,7 +174,7 @@ module QA
             Page::Project::Registry::Show.perform do |registry|
               expect(registry).to have_registry_repository(project.name)
 
-              registry.click_on_image(project.path_with_namespace)
+              registry.click_on_image(project.name)
               expect(registry).to have_tag('master')
             end
           end
@@ -232,7 +232,7 @@ module QA
           Page::Project::Registry::Show.perform do |registry|
             expect(registry).to have_registry_repository(project.name)
 
-            registry.click_on_image(project.path_with_namespace)
+            registry.click_on_image(project.name)
 
             expect(registry).to have_tag('master')
 

@@ -40,6 +40,7 @@ atlassian_identities: :gitlab_main
 audit_events_external_audit_event_destinations: :gitlab_main
 audit_events: :gitlab_main
 audit_events_streaming_headers: :gitlab_main
+audit_events_streaming_event_type_filters: :gitlab_main
 authentication_events: :gitlab_main
 award_emoji: :gitlab_main
 aws_roles: :gitlab_main
@@ -167,6 +168,7 @@ dast_site_profiles_pipelines: :gitlab_main
 dast_sites: :gitlab_main
 dast_site_tokens: :gitlab_main
 dast_site_validations: :gitlab_main
+dependency_proxy_blob_states: :gitlab_main
 dependency_proxy_blobs: :gitlab_main
 dependency_proxy_group_settings: :gitlab_main
 dependency_proxy_image_ttl_group_policies: :gitlab_main
@@ -206,7 +208,6 @@ events: :gitlab_main
 evidences: :gitlab_main
 experiments: :gitlab_main
 experiment_subjects: :gitlab_main
-experiment_users: :gitlab_main
 external_approval_rules: :gitlab_main
 external_approval_rules_protected_branches: :gitlab_main
 external_pull_requests: :gitlab_ci
@@ -342,6 +343,7 @@ namespace_limits: :gitlab_main
 namespace_package_settings: :gitlab_main
 namespace_root_storage_statistics: :gitlab_main
 namespace_ci_cd_settings: :gitlab_main
+namespace_commit_emails: :gitlab_main
 namespace_settings: :gitlab_main
 namespace_details: :gitlab_main
 namespaces: :gitlab_main
@@ -363,6 +365,7 @@ operations_scopes: :gitlab_main
 operations_strategies: :gitlab_main
 operations_strategies_user_lists: :gitlab_main
 operations_user_lists: :gitlab_main
+p_ci_builds_metadata: :gitlab_ci
 packages_build_infos: :gitlab_main
 packages_cleanup_policies: :gitlab_main
 packages_composer_cache_files: :gitlab_main
@@ -451,6 +454,7 @@ projects: :gitlab_main
 projects_sync_events: :gitlab_main
 project_statistics: :gitlab_main
 project_topics: :gitlab_main
+project_wiki_repositories: :gitlab_main
 project_wiki_repository_states: :gitlab_main
 prometheus_alert_events: :gitlab_main
 prometheus_alerts: :gitlab_main

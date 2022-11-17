@@ -10,14 +10,21 @@ export default {
     {
       key: 'project',
       label: __('Projects that can be accessed'),
-      tdClass: 'gl-p-5!',
-      columnClass: 'gl-w-85p',
+      thClass: 'gl-border-t-none!',
+      columnClass: 'gl-w-40p',
+    },
+    {
+      key: 'namespace',
+      label: __('Namespace'),
+      thClass: 'gl-border-t-none!',
+      columnClass: 'gl-w-40p',
     },
     {
       key: 'actions',
       label: '',
-      tdClass: 'gl-p-5! gl-text-right',
-      columnClass: 'gl-w-15p',
+      tdClass: 'gl-text-right',
+      thClass: 'gl-border-t-none!',
+      columnClass: 'gl-w-10p',
     },
   ],
   components: {
@@ -57,7 +64,11 @@ export default {
     </template>
 
     <template #cell(project)="{ item }">
-      {{ item.name }}
+      <span data-testid="token-access-project-name">{{ item.name }}</span>
+    </template>
+
+    <template #cell(namespace)="{ item }">
+      <span data-testid="token-access-project-namespace">{{ item.namespace.fullPath }}</span>
     </template>
 
     <template #cell(actions)="{ item }">

@@ -111,5 +111,16 @@ RSpec.describe ProtectedBranches::CacheService, :clean_gitlab_redis_cache do
       expect(service.fetch('not-found') { true }).to eq(true)
     end
   end
+
+  describe 'metrics' do
+    it 'records hit ratio metrics' do
+      expect_next_instance_of(Gitlab::Cache::Metrics) do |metrics|
+        expect(metrics).to receive(:increment_cache_miss).once
+        expect(metrics).to receive(:increment_cache_hit).exactly(4).times
+      end
+
+      5.times { service.fetch('main') { true } }
+    end
+  end
 end
 # rubocop:enable Style/RedundantFetchBlock

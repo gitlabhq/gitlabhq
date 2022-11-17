@@ -6,6 +6,8 @@ module Gitlab
     class SetLegacyOpenSourceLicenseAvailableForNonPublicProjects < ::Gitlab::BackgroundMigration::BatchedMigrationJob
       PUBLIC = 20
 
+      operation_name :set_legacy_open_source_license_available
+
       # Migration only version of `project_settings` table
       class ProjectSetting < ApplicationRecord
         self.table_name = 'project_settings'
@@ -13,7 +15,6 @@ module Gitlab
 
       def perform
         each_sub_batch(
-          operation_name: :set_legacy_open_source_license_available,
           batching_scope: ->(relation) { relation.where.not(visibility_level: PUBLIC) }
         ) do |sub_batch|
           ProjectSetting.where(project_id: sub_batch).update_all(legacy_open_source_license_available: false)

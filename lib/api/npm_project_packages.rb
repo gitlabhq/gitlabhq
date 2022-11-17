@@ -11,7 +11,7 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     namespace 'projects/:id/packages/npm' do
       desc 'Download the NPM tarball' do

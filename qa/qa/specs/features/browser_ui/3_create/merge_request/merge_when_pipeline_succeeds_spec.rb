@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :runner do
+  RSpec.describe 'Create', :runner, product_group: :code_review do
     describe 'Merge requests' do
       shared_examples 'merge when pipeline succeeds' do |repeat: 1|
         let(:runner_name) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }

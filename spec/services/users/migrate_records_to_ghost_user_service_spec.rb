@@ -146,24 +146,106 @@ RSpec.describe Users::MigrateRecordsToGhostUserService do
     end
 
     context 'for batched nullify' do
+      # rubocop:disable Layout/LineLength
+      def nullify_in_batches_regexp(table, column, user, batch_size: 100)
+        %r{^UPDATE "#{table}" SET "#{column}" = NULL WHERE "#{table}"."id" IN \(SELECT "#{table}"."id" FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id} LIMIT #{batch_size}\)}
+      end
+
+      def delete_in_batches_regexps(table, column, user, items, batch_size: 1000)
+        select_query = %r{^SELECT "#{table}".* FROM "#{table}" WHERE "#{table}"."#{column}" = #{user.id}.*ORDER BY "#{table}"."id" ASC LIMIT #{batch_size}}
+
+        [select_query] + items.map { |item| %r{^DELETE FROM "#{table}" WHERE "#{table}"."id" = #{item.id}} }
+      end
+      # rubocop:enable Layout/LineLength
+
       it 'nullifies related associations in batches' do
         expect(user).to receive(:nullify_dependent_associations_in_batches).and_call_original
 
         service.execute
       end
 
-      it 'nullifies last_updated_issues, closed_issues, resource_label_events' do
+      it 'nullifies associations marked as `dependent: :nullify` and'\
+         'destroys the associations marked as `dependent: :destroy`, in batches', :aggregate_failures do
+        # associations to be nullified
         issue = create(:issue, closed_by: user, updated_by: user)
         resource_label_event = create(:resource_label_event, user: user)
+        resource_state_event = create(:resource_state_event, user: user)
+        created_project = create(:project, creator: user)
 
-        service.execute
+        # associations to be destroyed
+        todos = create_list(:todo, 2, project: issue.project, user: user, author: user, target: issue)
+        event = create(:event, project: issue.project, author: user)
+
+        query_recorder = ActiveRecord::QueryRecorder.new do
+          service.execute
+        end
 
         issue.reload
         resource_label_event.reload
+        resource_state_event.reload
+        created_project.reload
 
         expect(issue.closed_by).to be_nil
-        expect(issue.updated_by).to be_nil
-        expect(resource_label_event.user).to be_nil
+        expect(issue.updated_by_id).to be_nil
+        expect(resource_label_event.user_id).to be_nil
+        expect(resource_state_event.user_id).to be_nil
+        expect(created_project.creator_id).to be_nil
+        expect(user.authored_todos).to be_empty
+        expect(user.todos).to be_empty
+        expect(user.authored_events).to be_empty
+
+        expected_queries = [
+          nullify_in_batches_regexp(:issues, :updated_by_id, user),
+          nullify_in_batches_regexp(:issues, :closed_by_id, user),
+          nullify_in_batches_regexp(:resource_label_events, :user_id, user),
+          nullify_in_batches_regexp(:resource_state_events, :user_id, user),
+          nullify_in_batches_regexp(:projects, :creator_id, user)
+        ]
+
+        expected_queries += delete_in_batches_regexps(:todos, :user_id, user, todos)
+        expected_queries += delete_in_batches_regexps(:todos, :author_id, user, todos)
+        expected_queries += delete_in_batches_regexps(:events, :author_id, user, [event])
+
+        expect(query_recorder.log).to include(*expected_queries)
+      end
+
+      it 'nullifies merge request associations', :aggregate_failures do
+        merge_request = create(:merge_request, source_project: project,
+                                               target_project: project,
+                                               assignee: user,
+                                               updated_by: user,
+                                               merge_user: user)
+        merge_request.metrics.update!(merged_by: user, latest_closed_by: user)
+        merge_request.reviewers = [user]
+        merge_request.assignees = [user]
+
+        query_recorder = ActiveRecord::QueryRecorder.new do
+          service.execute
+        end
+
+        merge_request.reload
+
+        expect(merge_request.updated_by).to be_nil
+        expect(merge_request.assignee).to be_nil
+        expect(merge_request.assignee_id).to be_nil
+        expect(merge_request.metrics.merged_by).to be_nil
+        expect(merge_request.metrics.latest_closed_by).to be_nil
+        expect(merge_request.reviewers).to be_empty
+        expect(merge_request.assignees).to be_empty
+
+        expected_queries = [
+          nullify_in_batches_regexp(:merge_requests, :updated_by_id, user),
+          nullify_in_batches_regexp(:merge_requests, :assignee_id, user),
+          nullify_in_batches_regexp(:merge_request_metrics, :merged_by_id, user),
+          nullify_in_batches_regexp(:merge_request_metrics, :latest_closed_by_id, user)
+        ]
+
+        expected_queries += delete_in_batches_regexps(:merge_request_assignees, :user_id, user,
+                                                      merge_request.assignees)
+        expected_queries += delete_in_batches_regexps(:merge_request_reviewers, :user_id, user,
+                                                      merge_request.reviewers)
+
+        expect(query_recorder.log).to include(*expected_queries)
       end
     end
 
@@ -235,7 +317,7 @@ RSpec.describe Users::MigrateRecordsToGhostUserService do
 
           aggregate_failures do
             expect { service.execute }.to(
-              raise_error(Users::MigrateRecordsToGhostUserService::DestroyError, 'foo' ))
+              raise_error(Users::MigrateRecordsToGhostUserService::DestroyError, 'foo'))
             expect(snippet.reload).not_to be_nil
             expect(
               gitlab_shell.repository_exists?(snippet.repository_storage,

@@ -169,7 +169,8 @@ export default class LazyLoader {
       delete img.dataset.src;
       img.classList.remove('lazy');
       img.classList.add('js-lazy-loaded');
-      img.classList.add('qa-js-lazy-loaded');
+      // eslint-disable-next-line no-param-reassign
+      img.dataset.qa_selector = 'js_lazy_loaded_content';
     }
   }
 }

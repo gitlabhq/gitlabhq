@@ -23,6 +23,10 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
     )
   end
 
+  it_behaves_like Integrations::BaseCi
+
+  it_behaves_like Integrations::ResetSecretFields
+
   include_context Integrations::EnableSslVerification
 
   describe 'Validations' do
@@ -74,48 +78,6 @@ RSpec.describe Integrations::Bamboo, :use_clean_rails_memory_store_caching do
       it { is_expected.not_to validate_presence_of(:bamboo_url) }
       it { is_expected.not_to validate_presence_of(:username) }
       it { is_expected.not_to validate_presence_of(:password) }
-    end
-  end
-
-  describe 'Callbacks' do
-    describe 'before_validation :reset_password' do
-      context 'when a password was previously set' do
-        it 'resets password if url changed' do
-          integration.bamboo_url = 'http://gitlab1.com'
-
-          expect(integration).not_to be_valid
-          expect(integration.password).to be_nil
-        end
-
-        it 'does not reset password if username changed' do
-          integration.username = 'some_name'
-
-          expect(integration).to be_valid
-          expect(integration.password).to eq('password')
-        end
-
-        it "does not reset password if new url is set together with password, even if it's the same password" do
-          integration.bamboo_url = 'http://gitlab_edited.com'
-          integration.password = 'password'
-
-          expect(integration).to be_valid
-          expect(integration.password).to eq('password')
-          expect(integration.bamboo_url).to eq('http://gitlab_edited.com')
-        end
-      end
-
-      it 'saves password if new url is set together with password when no password was previously set' do
-        integration.password = nil
-
-        integration.bamboo_url = 'http://gitlab_edited.com'
-        integration.password = 'password'
-        integration.save!
-
-        expect(integration.reload).to have_attributes(
-          bamboo_url: 'http://gitlab_edited.com',
-          password: 'password'
-        )
-      end
     end
   end
 

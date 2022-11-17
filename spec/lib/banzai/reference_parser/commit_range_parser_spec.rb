@@ -12,12 +12,30 @@ RSpec.describe Banzai::ReferenceParser::CommitRangeParser do
   let(:link) { empty_html_link }
 
   describe '#nodes_visible_to_user' do
-    context 'when the link has a data-issue attribute' do
+    context 'when the link has a data-project attribute' do
       before do
-        link['data-commit-range'] = '123..456'
+        link['data-project'] = project.id.to_s
       end
 
       it_behaves_like "referenced feature visibility", "repository"
+
+      it 'includes the link if can_read_reference? returns true' do
+        expect(subject).to receive(:can_read_reference?).with(user, project, link).and_return(true)
+
+        expect(subject.nodes_visible_to_user(user, [link])).to contain_exactly(link)
+      end
+
+      it 'excludes the link if can_read_reference? returns false' do
+        expect(subject).to receive(:can_read_reference?).with(user, project, link).and_return(false)
+
+        expect(subject.nodes_visible_to_user(user, [link])).to be_empty
+      end
+    end
+
+    context 'when the link does not have a data-project attribute' do
+      it 'returns the nodes' do
+        expect(subject.nodes_visible_to_user(user, [link])).to match_array([link])
+      end
     end
   end
 
@@ -135,5 +153,23 @@ RSpec.describe Banzai::ReferenceParser::CommitRangeParser do
         expect(subject.find_object(group, '123..456')).to be_nil
       end
     end
+  end
+
+  context 'when checking commits ranges on another projects', :request_store do
+    let!(:control_links) do
+      [commit_range_link]
+    end
+
+    let!(:actual_links) do
+      control_links + [commit_range_link, commit_range_link]
+    end
+
+    def commit_range_link
+      project = create(:project, :repository, :public)
+
+      Nokogiri::HTML.fragment(%(<a data-commit-range="123...456" data-project="#{project.id}"></a>)).children[0]
+    end
+
+    it_behaves_like 'no project N+1 queries'
   end
 end

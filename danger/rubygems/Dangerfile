@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+all_changed_files = helper.all_changed_files
+
+if all_changed_files.detect { |file| file == 'Gemfile' || file == 'Gemfile.lock' }
+  markdown <<~MSG
+   ## Rubygems
+
+   This merge request adds, or changes a Rubygems dependency. Please review the [Gemfile guidelines](https://docs.gitlab.com/ee/development/gemfile.html).
+  MSG
+end

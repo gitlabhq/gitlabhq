@@ -856,7 +856,7 @@ Working with archive files like `zip`, `tar`, `jar`, `war`, `cpio`, `apk`, `rar`
 
 ### Zip Slip
 
-In 2018, the security company Snyk [released a blog post](https://snyk.io/research/zip-slip-vulnerability) describing research into a widespread and critical vulnerability present in many libraries and applications which allows an attacker to overwrite arbitrary files on the server file system which, in many cases, can be leveraged to achieve remote code execution. The vulnerability was dubbed Zip Slip.
+In 2018, the security company Snyk [released a blog post](https://security.snyk.io/research/zip-slip-vulnerability) describing research into a widespread and critical vulnerability present in many libraries and applications which allows an attacker to overwrite arbitrary files on the server file system which, in many cases, can be leveraged to achieve remote code execution. The vulnerability was dubbed Zip Slip.
 
 A Zip Slip vulnerability happens when an application extracts an archive without validating and sanitizing the filenames inside the archive for directory traversal sequences that change the file location when the file is extracted.
 
@@ -1218,7 +1218,7 @@ GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-o
 
 **Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, though, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things _have_ changed between time of check and time of use).
 
-**Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly clicking upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
+**Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly selecting upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
 
 Here's some pseudocode showing an example of a potential TOCTOU bug:
 
@@ -1271,7 +1271,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
 - When credentials are required in a CI/CD job, use [masked variables](../ci/variables/index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/index.md#debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/index.md#protected-cicd-variables) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
-- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/engineering/security/security-engineering-and-research/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/engineering/security/data-classification-standard.html#data-classification-standards).
+- Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://about.gitlab.com/handbook/security/security-engineering-and-research/application-security/inventory.html#policies) and our [Data Classification Standards](https://about.gitlab.com/handbook/security/data-classification-standard.html#data-classification-standards).
 - To store and/or share credentials between teams, refer to [1Password for Teams](https://about.gitlab.com/handbook/security/#1password-for-teams) and follow [the 1Password Guidelines](https://about.gitlab.com/handbook/security/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
 
@@ -1281,7 +1281,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Avoid including credentials as part of an HTTP response unless it is absolutely necessary as part of the workflow. For example, generating a PAT for users.
 - Avoid sending credentials in URL parameters, as these can be more easily logged inadvertently during transit.
 
-In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/engineering/security/security-operations/sirt/#-engaging-sirt).
+In the event of credential leak through an MR, issue, or any other medium, [reach out to SIRT team](https://about.gitlab.com/handbook/security/security-operations/sirt/#-engaging-sirt).
 
 ## Serialization
 

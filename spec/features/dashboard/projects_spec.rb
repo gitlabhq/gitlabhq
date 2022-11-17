@@ -139,7 +139,7 @@ RSpec.describe 'Dashboard Projects' do
   end
 
   describe 'with a pipeline', :clean_gitlab_redis_shared_state do
-    let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
+    let!(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha, ref: project.default_branch) }
 
     before do
       # Since the cache isn't updated when a new pipeline is created
@@ -151,7 +151,7 @@ RSpec.describe 'Dashboard Projects' do
     it 'shows that the last pipeline passed' do
       visit dashboard_projects_path
 
-      page.within('.controls') do
+      page.within('[data-testid="project_controls"]') do
         expect(page).to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
         expect(page).to have_css('.ci-status-link')
         expect(page).to have_css('.ci-status-icon-success')
@@ -163,7 +163,7 @@ RSpec.describe 'Dashboard Projects' do
       it 'does not show the pipeline status' do
         visit dashboard_projects_path
 
-        page.within('.controls') do
+        page.within('[data-testid="project_controls"]') do
           expect(page).not_to have_xpath("//a[@href='#{pipelines_project_commit_path(project, project.commit, ref: pipeline.ref)}']")
           expect(page).not_to have_css('.ci-status-link')
           expect(page).not_to have_css('.ci-status-icon-success')

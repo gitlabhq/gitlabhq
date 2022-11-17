@@ -142,7 +142,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             end
           end
 
-          resource :repository, only: [:show], controller: :repository do
+          resource :repository, only: [:show, :update], controller: :repository do
             # TODO: Removed this "create_deploy_token" route after change was made in app/helpers/ci_variables_helper.rb:14
             # See MR comment for more detail: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27059#note_311585356
             post :create_deploy_token, path: 'deploy_token/create'
@@ -353,7 +353,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         resources :alert_management, only: [:index] do
-          get 'details', on: :member
+          member do
+            get 'details(/*page)', to: 'alert_management#details', as: 'details'
+          end
         end
 
         get 'alert_management/:id', to: 'alert_management#details', as: 'alert_management_alert'
@@ -377,14 +379,6 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         namespace :error_tracking do
           resources :projects, only: :index
-        end
-
-        resources :product_analytics, only: [:index] do
-          collection do
-            get :setup
-            get :test
-            get :graphs
-          end
         end
 
         resources :error_tracking, only: [:index], controller: :error_tracking do
@@ -477,6 +471,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
               resources :tags, only: [:index]
             end
           end
+        end
+
+        namespace :ml do
+          resources :experiments, only: [:index, :show], controller: 'experiments'
         end
       end
       # End of the /-/ scope.

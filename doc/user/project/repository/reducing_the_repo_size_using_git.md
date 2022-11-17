@@ -72,6 +72,12 @@ To purge files from a GitLab repository:
    cd project.git
    ```
 
+1. Because cloning from a bundle file sets the `origin` remote to the local bundle file, change it to the URL of your repository:
+
+   ```shell
+   git remote set-url origin https://gitlab.example.com/<namespace>/<project_name>.git
+   ```
+
 1. Using either `git filter-repo` or `git-sizer`, analyze your repository
    and review the results to determine which items you want to purge:
 
@@ -84,37 +90,38 @@ To purge files from a GitLab repository:
    git-sizer
    ```
 
-1. Proceed to purging any files from the history of your repository. Because we are
-   trying to remove internal refs, we rely on the `commit-map` produced by each run to tell us
-   which internal refs to remove.
+1. Purge the history of your repository using relevant `git filter-repo` options.
+   Two common options are:
 
-   NOTE:
-   `git filter-repo` creates a new `commit-map` file every run, and overwrites the `commit-map` from
-   the previous run. You need this file from **every** run. Do the next step every time you run
-   `git filter-repo`.
+   - `--path` and `--invert-paths` to purge specific files:
 
-   To purge specific files, the `--path` and `--invert-paths` options can be combined:
+     ```shell
+     git filter-repo --path path/to/file.ext --invert-paths
+     ```
 
-   ```shell
-   git filter-repo --path path/to/file.ext --invert-paths
-   ```
+   - `--strip-blobs-bigger-than` to purge all files larger than for example 10M:
 
-   To generally purge all files larger than 10M, the `--strip-blobs-bigger-than` option can be used:
-
-   ```shell
-   git filter-repo --strip-blobs-bigger-than 10M
-   ```
+     ```shell
+     git filter-repo --strip-blobs-bigger-than 10M
+     ```
 
    See the
    [`git filter-repo` documentation](https://htmlpreview.github.io/?https://github.com/newren/git-filter-repo/blob/docs/html/git-filter-repo.html#EXAMPLES)
    for more examples and the complete documentation.
 
-1. Because cloning from a bundle file sets the `origin` remote to the local bundle file, delete this `origin` remote, and set it to the URL to your repository:
+1. Because you are trying to remove internal refs,
+   you'll later rely on `commit-map` files produced by each run
+   to tell you which internal refs to remove.
+   Every `git filter-repo` run creates a new `commit-map`,
+   and overwrites the `commit-map` from the previous run.
+   You can use the following command to back up each `commit-map` file:
 
    ```shell
-   git remote remove origin
-   git remote add origin https://gitlab.example.com/<namespace>/<project_name>.git
+   cp .git/filter-repo/commit-map ./_filter_repo_commit_map_$(date +%s)
    ```
+
+   Repeat this step and all following steps (including the [repository cleanup](#repository-cleanup) step)
+   every time you run any `git filter-repo` command.
 
 1. Force push your changes to overwrite all branches on GitLab:
 

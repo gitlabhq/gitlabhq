@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify' do
-    describe 'Pipeline editor', :reliable do
+    describe 'Pipeline editor', :reliable, product_group: :pipeline_authoring do
       let(:project) do
         Resource::Project.fabricate_via_api! do |project|
           project.name = 'pipeline-editor-project'
@@ -34,6 +34,15 @@ module QA
             ]
           )
         end
+      end
+
+      let(:invalid_content) do
+        <<~YAML
+
+          job3:
+          stage: stage_foo
+          script: echo 'Done.'
+        YAML
       end
 
       before do
@@ -80,7 +89,7 @@ module QA
           invalid_msg = 'syntax is invalid'
 
           Page::Project::PipelineEditor::Show.perform do |show|
-            show.write_to_editor(SecureRandom.hex(10))
+            show.write_to_editor(invalid_content)
 
             aggregate_failures do
               show.go_to_visualize_tab
@@ -90,8 +99,14 @@ module QA
               show.simulate_pipeline
               expect(show.tab_alert_title).to have_content('Pipeline simulation completed with errors')
 
+              expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
+
               show.go_to_view_merged_yaml_tab
-              expect(show.tab_alert_message).to have_content(invalid_msg)
+
+              # TODO: remove this retry when
+              # https://gitlab.com/gitlab-org/gitlab/-/issues/378536 is resolved
+              show.retry_until(max_attempts: 2, reload: true, sleep_interval: 1) { show.has_no_alert? }
+              expect(show).to have_source_editor
 
               expect(show.ci_syntax_validate_message).to have_content('CI configuration is invalid')
             end

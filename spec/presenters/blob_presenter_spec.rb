@@ -252,6 +252,18 @@ RSpec.describe BlobPresenter do
     end
   end
 
+  describe '#highlight_and_trim' do
+    let(:git_blob) { blob.__getobj__ }
+
+    it 'returns trimmed content for longer line' do
+      trimmed_lines = git_blob.data.split("\n").map { |line| line[0, 55] }.join("\n")
+
+      expect(Gitlab::Highlight).to receive(:highlight).with('files/ruby/regex.rb', "#{trimmed_lines}\n", plain: nil, language: 'ruby', context: { ellipsis_svg: "svg_icon", ellipsis_indexes: [21, 26, 49] })
+
+      presenter.highlight_and_trim(ellipsis_svg: "svg_icon", trim_length: 55)
+    end
+  end
+
   describe '#blob_language' do
     subject { presenter.blob_language }
 

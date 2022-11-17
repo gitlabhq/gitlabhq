@@ -46,6 +46,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |
 | `CI_CONFIG_PATH`                         | 9.4    | 0.5    | The path to the CI/CD configuration file. Defaults to `.gitlab-ci.yml`. Read-only inside a running pipeline. |
 | `CI_DEBUG_TRACE`                         | all    | 1.7    | `true` if [debug logging (tracing)](index.md#debug-logging) is enabled. |
+| `CI_DEBUG_SERVICES`                      | 15.7   | 15.7   | `true` if [service container logging](../services/index.md#capturing-service-container-logs) is enabled. |
 | `CI_DEFAULT_BRANCH`                      | 12.4   | all    | The name of the project's default branch. |
 | `CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX` | 13.7   | all    | The top-level group image prefix for pulling images through the Dependency Proxy. |
 | `CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX` | 14.3   | all    | The direct group image prefix for pulling images through the Dependency Proxy. |
@@ -89,7 +90,6 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_PIPELINE_TRIGGERED`                  | all    | all    | `true` if the job was [triggered](../triggers/index.md). |
 | `CI_PIPELINE_URL`                        | 11.1   | 0.5    | The URL for the pipeline details. |
 | `CI_PIPELINE_CREATED_AT`                 | 13.10  | all    | The UTC datetime when the pipeline was created, in [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. |
-| `CI_PROJECT_CONFIG_PATH`                 | 13.8 to 13.12 | all    | [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/322807) in GitLab 14.0. Use `CI_CONFIG_PATH`. |
 | `CI_PROJECT_DIR`                         | all    | all    | The full path the repository is cloned to, and where the job runs from. If the GitLab Runner `builds_dir` parameter is set, this variable is set relative to the value of `builds_dir`. For more information, see the [Advanced GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section). |
 | `CI_PROJECT_ID`                          | all    | all    | The ID of the current project. This ID is unique across all projects on the GitLab instance. |
 | `CI_PROJECT_NAME`                        | 8.10   | 0.5    | The name of the directory for the project. For example if the project URL is `gitlab.example.com/group-name/project-1`, `CI_PROJECT_NAME` is `project-1`. |

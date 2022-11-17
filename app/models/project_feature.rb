@@ -25,6 +25,7 @@ class ProjectFeature < ApplicationRecord
     environments
     feature_flags
     releases
+    infrastructure
   ].freeze
 
   EXPORTABLE_FEATURES = (FEATURES - [:security_and_compliance, :pages]).freeze

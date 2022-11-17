@@ -41,6 +41,10 @@ To build your YAML file from the GitLab UI:
 1. Commit your `.gitlab-ci.yml` to your repository. This commit triggers your first
    GitLab Pages deployment.
 
+To view the HTMl and other assets that were created for the site,
+go to **CI/CD > Pipelines**, view the job, and on the right side,
+select **Download artifacts**.
+
 ## Troubleshooting
 
 ### If you can't see the "Get Started with Pages" interface

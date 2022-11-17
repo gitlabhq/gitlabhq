@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable do
+  RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage, :reliable, product_group: :package_registry do
     describe 'NuGet group level endpoint' do
       using RSpec::Parameterized::TableSyntax
       include Runtime::Fixtures
@@ -133,14 +133,14 @@ module QA
                   {
                       file_path: 'otherdotnet.csproj',
                       content: <<~EOF
-                            <Project Sdk="Microsoft.NET.Sdk">
+                        <Project Sdk="Microsoft.NET.Sdk">
 
-                              <PropertyGroup>
-                                <OutputType>Exe</OutputType>
-                                <TargetFramework>net5.0</TargetFramework>
-                              </PropertyGroup>
+                          <PropertyGroup>
+                            <OutputType>Exe</OutputType>
+                            <TargetFramework>net5.0</TargetFramework>
+                          </PropertyGroup>
 
-                            </Project>
+                        </Project>
                       EOF
                   }
                 ]

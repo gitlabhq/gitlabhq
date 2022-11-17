@@ -1,4 +1,5 @@
 <script>
+import { isEmpty } from 'lodash';
 import {
   GlAlert,
   GlSkeletonLoader,
@@ -11,6 +12,7 @@ import {
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
 import { s__ } from '~/locale';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -27,12 +29,13 @@ import {
   WIDGET_TYPE_ITERATION,
 } from '../constants';
 
-import workItemQuery from '../graphql/work_item.query.graphql';
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
 import workItemTitleSubscription from '../graphql/work_item_title.subscription.graphql';
 import workItemAssigneesSubscription from '../graphql/work_item_assignees.subscription.graphql';
+import workItemMilestoneSubscription from '../graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
+import { getWorkItemQuery } from '../utils';
 
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
@@ -72,6 +75,7 @@ export default {
     WorkItemMilestone,
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['fullPath'],
   props: {
     isModal: {
       type: Boolean,
@@ -79,6 +83,11 @@ export default {
       default: false,
     },
     workItemId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    iid: {
       type: String,
       required: false,
       default: null,
@@ -100,20 +109,26 @@ export default {
   },
   apollo: {
     workItem: {
-      query: workItemQuery,
+      query() {
+        return getWorkItemQuery(this.fetchByIid);
+      },
       variables() {
-        return {
-          id: this.workItemId,
-        };
+        return this.queryVariables;
       },
       skip() {
         return !this.workItemId;
       },
+      update(data) {
+        const workItem = this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+        return workItem ?? {};
+      },
       error() {
-        this.error = this.$options.i18n.fetchError;
-        document.title = s__('404|Not found');
+        this.setEmptyState();
       },
       result() {
+        if (isEmpty(this.workItem)) {
+          this.setEmptyState();
+        }
         if (!this.isModal && this.workItem.project) {
           const path = this.workItem.project?.fullPath
             ? ` · ${this.workItem.project.fullPath}`
@@ -127,30 +142,44 @@ export default {
           document: workItemTitleSubscription,
           variables() {
             return {
-              issuableId: this.workItemId,
+              issuableId: this.workItem.id,
             };
+          },
+          skip() {
+            return !this.workItem?.id;
           },
         },
         {
           document: workItemDatesSubscription,
           variables() {
             return {
-              issuableId: this.workItemId,
+              issuableId: this.workItem.id,
             };
           },
           skip() {
-            return !this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE);
+            return !this.isWidgetPresent(WIDGET_TYPE_START_AND_DUE_DATE) || !this.workItem?.id;
           },
         },
         {
           document: workItemAssigneesSubscription,
           variables() {
             return {
-              issuableId: this.workItemId,
+              issuableId: this.workItem.id,
             };
           },
           skip() {
-            return !this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES);
+            return !this.isWidgetPresent(WIDGET_TYPE_ASSIGNEES) || !this.workItem?.id;
+          },
+        },
+        {
+          document: workItemMilestoneSubscription,
+          variables() {
+            return {
+              issuableId: this.workItem.id,
+            };
+          },
+          skip() {
+            return !this.isWidgetPresent(WIDGET_TYPE_MILESTONE) || !this.workItem?.id;
           },
         },
       ],
@@ -212,7 +241,20 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
     },
     workItemMilestone() {
-      return this.workItem?.mockWidgets?.find((widget) => widget.type === WIDGET_TYPE_MILESTONE);
+      return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
+    },
+    fetchByIid() {
+      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(this.$route.query.iid_path);
+    },
+    queryVariables() {
+      return this.fetchByIid
+        ? {
+            fullPath: this.fullPath,
+            iid: this.iid,
+          }
+        : {
+            id: this.workItemId,
+          };
     },
   },
   beforeDestroy() {
@@ -231,7 +273,7 @@ export default {
       this.updateInProgress = true;
       let updateMutation = updateWorkItemMutation;
       let inputVariables = {
-        id: this.workItemId,
+        id: this.workItem.id,
         confidential: confidentialStatus,
       };
 
@@ -240,7 +282,7 @@ export default {
         inputVariables = {
           id: this.parentWorkItem.id,
           taskData: {
-            id: this.workItemId,
+            id: this.workItem.id,
             confidential: confidentialStatus,
           },
         };
@@ -274,6 +316,10 @@ export default {
         .finally(() => {
           this.updateInProgress = false;
         });
+    },
+    setEmptyState() {
+      this.error = this.$options.i18n.fetchError;
+      document.title = s__('404|Not found');
     },
   },
   WORK_ITEM_VIEWED_STORAGE_KEY,
@@ -352,7 +398,7 @@ export default {
           :can-update="canUpdate"
           :is-confidential="workItem.confidential"
           :is-parent-confidential="parentWorkItemConfidentiality"
-          @deleteWorkItem="$emit('deleteWorkItem', workItemType)"
+          @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
           @toggleWorkItemConfidentiality="toggleConfidentiality"
           @error="updateError = $event"
         />
@@ -406,6 +452,8 @@ export default {
         :work-item-id="workItem.id"
         :can-update="canUpdate"
         :full-path="fullPath"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
         @error="updateError = $event"
       />
       <work-item-due-date
@@ -421,8 +469,10 @@ export default {
         <work-item-milestone
           v-if="workItemMilestone"
           :work-item-id="workItem.id"
-          :work-item-milestone="workItemMilestone.nodes[0]"
+          :work-item-milestone="workItemMilestone.milestone"
           :work-item-type="workItemType"
+          :fetch-by-iid="fetchByIid"
+          :query-variables="queryVariables"
           :can-update="canUpdate"
           :full-path="fullPath"
           @error="updateError = $event"
@@ -435,6 +485,8 @@ export default {
         :weight="workItemWeight.weight"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
         @error="updateError = $event"
       />
       <template v-if="workItemsMvc2Enabled">
@@ -445,6 +497,9 @@ export default {
           :can-update="canUpdate"
           :work-item-id="workItem.id"
           :work-item-type="workItemType"
+          :fetch-by-iid="fetchByIid"
+          :query-variables="queryVariables"
+          :full-path="fullPath"
           @error="updateError = $event"
         />
       </template>
@@ -452,6 +507,8 @@ export default {
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"
         :full-path="fullPath"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
         class="gl-pt-5"
         @error="updateError = $event"
       />

@@ -160,6 +160,31 @@ module IntegrationsHelper
     !Gitlab.com?
   end
 
+  def integration_issue_type(issue_type)
+    issue_type_i18n_map = {
+      'issue' => _('Issue'),
+      'incident' => _('Incident'),
+      'test_case' => _('Test case'),
+      'requirement' => _('Requirement'),
+      'task' => _('Task')
+    }
+
+    issue_type_i18n_map[issue_type] || issue_type
+  end
+
+  def integration_todo_target_type(target_type)
+    target_type_i18n_map = {
+      'Commit' => _('Commit'),
+      'Issue' => _('Issue'),
+      'MergeRequest' => _('Merge Request'),
+      'Epic' => _('Epic'),
+      DesignManagement::Design.name => _('design'),
+      AlertManagement::Alert.name => _('alert')
+    }
+
+    target_type_i18n_map[target_type] || target_type
+  end
+
   extend self
 
   private

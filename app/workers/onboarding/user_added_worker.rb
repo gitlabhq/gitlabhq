@@ -19,6 +19,3 @@ module Onboarding
     end
   end
 end
-
-# remove in %15.6 as per https://gitlab.com/gitlab-org/gitlab/-/issues/372432
-Namespaces::OnboardingUserAddedWorker = Onboarding::UserAddedWorker

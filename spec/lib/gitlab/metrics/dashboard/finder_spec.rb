@@ -44,7 +44,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
       it_behaves_like 'valid dashboard service response'
     end
 
-    context 'when the self monitoring dashboard is specified' do
+    context 'when the self-monitoring dashboard is specified' do
       let(:dashboard_path) { self_monitoring_dashboard_path }
 
       it_behaves_like 'valid dashboard service response'
@@ -181,7 +181,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
       end
     end
 
-    context 'when the project is self monitoring' do
+    context 'when the project is self-monitoring' do
       let(:self_monitoring_dashboard) do
         {
           path: self_monitoring_dashboard_path,
@@ -199,7 +199,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Finder, :use_clean_rails_memory_store
         stub_application_setting(self_monitoring_project_id: project.id)
       end
 
-      it 'includes self monitoring and project dashboards' do
+      it 'includes self-monitoring and project dashboards' do
         project_dashboard = {
           path: dashboard_path,
           display_name: 'test.yml',

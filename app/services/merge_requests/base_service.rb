@@ -20,7 +20,7 @@ module MergeRequests
     end
 
     def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
-      merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
+      merge_data = Gitlab::Lazy.new { hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations) }
       merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
       merge_request.project.execute_integrations(merge_data, :merge_request_hooks)
 
@@ -248,6 +248,10 @@ module MergeRequests
 
     def trigger_merge_request_reviewers_updated(merge_request)
       GraphqlTriggers.merge_request_reviewers_updated(merge_request)
+    end
+
+    def trigger_merge_request_merge_status_updated(merge_request)
+      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
   end
 end

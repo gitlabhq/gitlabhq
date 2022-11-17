@@ -46,11 +46,11 @@ module Gitlab
         # 2. Don't sample data at the same interval two times in a row.
         def sleep_interval
           while step = @interval_steps.sample
-            if step != @last_step
-              @last_step = step
+            next if step == @last_step
 
-              return @interval + @last_step
-            end
+            @last_step = step
+
+            return @interval + @last_step
           end
         end
 

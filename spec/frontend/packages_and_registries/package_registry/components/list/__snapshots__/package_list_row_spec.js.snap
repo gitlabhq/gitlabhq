@@ -8,7 +8,14 @@ exports[`packages_list_row renders 1`] = `
   <div
     class="gl-display-flex gl-align-items-center gl-py-3"
   >
-    <!---->
+    <div
+      class="gl-w-7 gl-display-flex gl-justify-content-start gl-pl-2"
+    >
+      <gl-form-checkbox-stub
+        class="gl-m-0"
+        id="2"
+      />
+    </div>
      
     <div
       class="gl-display-flex gl-xs-flex-direction-column gl-justify-content-space-between gl-align-items-stretch gl-flex-grow-1"

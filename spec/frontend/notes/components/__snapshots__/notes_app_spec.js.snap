@@ -2,7 +2,7 @@
 
 exports[`note_app when sort direction is asc shows skeleton notes after the loaded discussions 1`] = `
 "<ul id=\\"notes-list\\" class=\\"notes main-notes-list timeline\\">
-  <noteable-discussion-stub discussion=\\"[object Object]\\" renderdifffile=\\"true\\" helppagepath=\\"\\" isoverviewtab=\\"true\\"></noteable-discussion-stub>
+  <noteable-discussion-stub discussion=\\"[object Object]\\" renderdifffile=\\"true\\" helppagepath=\\"\\" isoverviewtab=\\"true\\" shouldscrolltonote=\\"true\\"></noteable-discussion-stub>
   <skeleton-loading-container-stub class=\\"note-skeleton\\"></skeleton-loading-container-stub>
   <!---->
 </ul>"
@@ -11,7 +11,7 @@ exports[`note_app when sort direction is asc shows skeleton notes after the load
 exports[`note_app when sort direction is desc shows skeleton notes before the loaded discussions 1`] = `
 "<ul id=\\"notes-list\\" class=\\"notes main-notes-list timeline\\">
   <skeleton-loading-container-stub class=\\"note-skeleton\\"></skeleton-loading-container-stub>
-  <noteable-discussion-stub discussion=\\"[object Object]\\" renderdifffile=\\"true\\" helppagepath=\\"\\" isoverviewtab=\\"true\\"></noteable-discussion-stub>
+  <noteable-discussion-stub discussion=\\"[object Object]\\" renderdifffile=\\"true\\" helppagepath=\\"\\" isoverviewtab=\\"true\\" shouldscrolltonote=\\"true\\"></noteable-discussion-stub>
   <!---->
 </ul>"
 `;

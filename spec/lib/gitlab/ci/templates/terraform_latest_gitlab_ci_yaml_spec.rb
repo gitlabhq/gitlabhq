@@ -12,10 +12,10 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml' do
   describe 'the created pipeline' do
     let(:default_branch) { project.default_branch_or_main }
     let(:pipeline_branch) { default_branch }
-    let(:project) { create(:project, :custom_repo, files: { 'README.md' => '' }) }
-    let(:user) { project.first_owner }
+    let_it_be(:project) { create(:project, :repository, create_branch: 'patch-1') }
+    let_it_be(:user) { project.first_owner }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_branch ) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do
@@ -36,13 +36,37 @@ RSpec.describe 'Terraform.latest.gitlab-ci.yml' do
     context 'outside the master branch' do
       let(:pipeline_branch) { 'patch-1' }
 
-      before do
-        project.repository.create_branch(pipeline_branch, default_branch)
-      end
-
       it 'does not creates a deploy and a test job', :aggregate_failures do
         expect(pipeline.errors).to be_empty
         expect(build_names).not_to include('deploy')
+      end
+    end
+
+    context 'on merge request' do
+      let(:pipeline_branch) { 'patch-1' }
+      let(:mr_service) { MergeRequests::CreatePipelineService.new(project: project, current_user: user) }
+      let(:merge_request) { create(:merge_request, :simple, source_project: project, source_branch: pipeline_branch ) }
+      let(:mr_pipeline) { mr_service.execute(merge_request).payload }
+      let(:mr_build_names) { mr_pipeline.builds.pluck(:name) }
+      let(:branch_service) { Ci::CreatePipelineService.new(project, user, ref: merge_request.source_branch ) }
+      let(:branch_pipeline) { branch_service.execute(:push).payload }
+      let(:branch_build_names) { branch_pipeline.builds.pluck(:name) }
+
+      # This is needed so that the terraform artifacts and sast_iac artifacts
+      # are both available in the MR
+      it 'creates a pipeline with the terraform and sast_iac jobs' do
+        expect(mr_pipeline).to be_merge_request_event
+        expect(mr_pipeline.errors.full_messages).to be_empty
+        expect(mr_build_names).to include('kics-iac-sast', 'validate', 'build')
+      end
+
+      it 'does not creates a deploy', :aggregate_failures do
+        expect(mr_build_names).not_to include('deploy')
+      end
+
+      it 'does not create a branch pipeline', :aggregate_failures do
+        expect(branch_build_names).to be_empty
+        expect(branch_pipeline.errors.full_messages).to match_array(["No stages / jobs for this pipeline."])
       end
     end
   end

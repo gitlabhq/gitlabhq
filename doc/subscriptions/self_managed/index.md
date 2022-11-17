@@ -33,7 +33,7 @@ The cost of a GitLab self-managed subscription is determined by the following:
 Pricing is [tier-based](https://about.gitlab.com/pricing/), so you can choose
 the features that fit your budget. For information on the features available
 for each tier, see the
-[GitLab self-managed feature comparison](https://about.gitlab.com/pricing/self-managed/feature-comparison/).
+[GitLab self-managed feature comparison](https://about.gitlab.com/pricing/feature-comparison/).
 
 ## Subscription seats
 
@@ -212,7 +212,7 @@ Example of a license sync request:
 ### Troubleshoot automatic subscription sync
 
 If the sync job is not working, ensure you allow network traffic from your GitLab instance
-to IP address `104.18.26.123:443` (`customers.gitlab.com`).
+to IP addresses `172.64.146.11:443` and `104.18.41.245:443` (`customers.gitlab.com`).
 
 ## Manually sync your subscription details
 
@@ -460,3 +460,38 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
+
+### Check daily and historical billable users
+
+Administrators can get a list of daily and historical billable users in your GitLab instance.
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+### Update daily billable and historical users
+
+Administrators can trigger a manual update of the daily and historical billable users in your GitLab instance.
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```

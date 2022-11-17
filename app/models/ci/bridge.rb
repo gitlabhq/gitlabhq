@@ -21,7 +21,6 @@ module Ci
     has_many :sourced_pipelines, class_name: "::Ci::Sources::Pipeline",
                                  foreign_key: :source_job_id
 
-    has_one :sourced_pipeline, class_name: "::Ci::Sources::Pipeline", foreign_key: :source_job_id
     has_one :downstream_pipeline, through: :sourced_pipeline, source: :pipeline
 
     validates :ref, presence: true
@@ -58,11 +57,7 @@ module Ci
     end
 
     def retryable?
-      return false unless Feature.enabled?(:ci_recreate_downstream_pipeline, project)
-
-      return false if failed? && (pipeline_loop_detected? || reached_max_descendant_pipelines_depth?)
-
-      super
+      false
     end
 
     def self.with_preloads
@@ -183,7 +178,7 @@ module Ci
       false
     end
 
-    def prevent_rollback_deployment?
+    def outdated_deployment?
       false
     end
 
@@ -288,7 +283,11 @@ module Ci
       return [] unless forward_yaml_variables?
 
       yaml_variables.to_a.map do |hash|
-        { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
+        if hash[:raw] && ci_raw_variables_in_yaml_config_enabled?
+          { key: hash[:key], value: hash[:value], raw: true }
+        else
+          { key: hash[:key], value: ::ExpandVariables.expand(hash[:value], expand_variables) }
+        end
       end
     end
 
@@ -296,7 +295,11 @@ module Ci
       return [] unless forward_pipeline_variables?
 
       pipeline.variables.to_a.map do |variable|
-        { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        if variable.raw? && ci_raw_variables_in_yaml_config_enabled?
+          { key: variable.key, value: variable.value, raw: true }
+        else
+          { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        end
       end
     end
 
@@ -305,7 +308,11 @@ module Ci
       return [] unless pipeline.pipeline_schedule
 
       pipeline.pipeline_schedule.variables.to_a.map do |variable|
-        { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        if variable.raw? && ci_raw_variables_in_yaml_config_enabled?
+          { key: variable.key, value: variable.value, raw: true }
+        else
+          { key: variable.key, value: ::ExpandVariables.expand(variable.value, expand_variables) }
+        end
       end
     end
 
@@ -322,6 +329,12 @@ module Ci
         result = options&.dig(:trigger, :forward, :pipeline_variables)
 
         result.nil? ? FORWARD_DEFAULTS[:pipeline_variables] : result
+      end
+    end
+
+    def ci_raw_variables_in_yaml_config_enabled?
+      strong_memoize(:ci_raw_variables_in_yaml_config_enabled) do
+        ::Feature.enabled?(:ci_raw_variables_in_yaml_config, project)
       end
     end
   end

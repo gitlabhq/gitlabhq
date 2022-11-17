@@ -1,0 +1,5 @@
+@import 'mixins_and_variables_and_functions';
+
+.empty-state .svg-250 img {
+  max-width: $gl-spacing-scale-20;
+}

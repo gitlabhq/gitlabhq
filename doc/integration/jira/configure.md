@@ -52,7 +52,7 @@ To configure your project:
    can view all issues from the specified Jira project.
 
 1. To enable [issue creation for vulnerabilities](../../user/application_security/vulnerabilities/index.md#create-a-jira-issue-for-a-vulnerability), select **Enable Jira issue creation from vulnerabilities**.
-1. Select the **Jira issue type**. If the dropdown is empty, select refresh (**{retry}**) and try again.
+1. Select the **Jira issue type**. If the dropdown list is empty, select refresh (**{retry}**) and try again.
 1. To verify the Jira connection is working, select **Test settings**.
 1. Select **Save changes**.
 

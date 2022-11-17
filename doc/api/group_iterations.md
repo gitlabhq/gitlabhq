@@ -20,8 +20,8 @@ Returns a list of group iterations.
 GET /groups/:id/iterations
 GET /groups/:id/iterations?state=opened
 GET /groups/:id/iterations?state=closed
-GET /groups/:id/iterations?title=1.0
 GET /groups/:id/iterations?search=version
+GET /groups/:id/iterations?include_ancestors=false
 ```
 
 | Attribute           | Type    | Required | Description |

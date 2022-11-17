@@ -10,6 +10,12 @@ RSpec.describe Terraform::State do
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:project_id) }
+  it { is_expected.to validate_presence_of(:uuid) }
+
+  describe 'default values' do
+    it { expect(described_class.new.uuid).to be_present }
+    it { expect(described_class.new(uuid: 'test').uuid).to eq('test') }
+  end
 
   describe 'scopes' do
     describe '.ordered_by_name' do

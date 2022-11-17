@@ -78,11 +78,23 @@ go build -o analyzer
 ./analyzer convert test/fixtures/app/spotbugsXml.Xml > ./gl-sast-report.json
 ```
 
+### Execution criteria
+
+[Enabling SAST](../../user/application_security/sast/index.md#configure-sast-manually) requires including a pre-defined [template](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) to your GitLab CI/CD configuration.
+
+The following independent criteria determine which analyzer needs to be run on a project:
+
+1. The SAST template uses [`rules:exists`](../../ci/yaml/index.md#rulesexists) to determine which analyzer will be run based on the presence of certain files. For example, the Brakeman analyzer [runs when there are](https://gitlab.com/gitlab-org/gitlab/-/blob/ee4d473eb9a39f2f84b719aa0ca13d2b8e11dc7e/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml#L60) `.rb` files and a `Gemfile`.
+1. Each analyzer runs a customizable [match interface](https://gitlab.com/gitlab-org/security-products/analyzers/common/-/blob/master/search/search.go) before it performs the actual analysis. For example: [Flawfinder checks for C/C++ files](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder/-/blob/f972ac786268fb649553056a94cda05cdc1248b2/plugin/plugin.go#L14).
+1. For some analyzers that run on generic file extensions, there is a check based on a CI/CD variable. For example: Kubernetes manifests are written in YAML, so [Kubesec](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) runs only when [`SCAN_KUBERNETES_MANIFESTS` is set to true](../../user/application_security/sast/index.md#enabling-kubesec-analyzer).
+
+Step 1 helps prevent wastage of CI/CD minutes that would be spent running analyzers not suitable for the project. However, due to [technical limitations](https://gitlab.com/gitlab-org/gitlab/-/issues/227632), it cannot be used for large projects. Therefore, step 2 acts as final check to ensure a mismatched analyzer is able to exit early.
+
 ## How to test the analyzers
 
 Video walkthrough of how Dependency Scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
 
-[![How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](http://img.youtube.com/vi/KauRBlfUbDE/0.jpg)](http://www.youtube.com/watch?v=KauRBlfUbDE)
+[![How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://img.youtube.com/vi/KauRBlfUbDE/0.jpg)](https://www.youtube.com/watch?v=KauRBlfUbDE)
 
 ### Testing local changes
 
@@ -117,6 +129,12 @@ To use Docker with `replace` in the `go.mod` file:
 1. Add a copy statement in the analyzer's `Dockerfile`: `COPY command /command`.
 1. Update the `replace` statement to make sure it matches the destination of the `COPY` statement in the step above:
 `replace gitlab.com/gitlab-org/security-products/analyzers/command/v3 => /command`
+
+## Analyzer scripts
+
+The [analyzer-scripts](https://gitlab.com/gitlab-org/secure/tools/analyzer-scripts) repository contains scripts that can be used to interact with most analyzers. They enable you to build, run, and debug analyzers in a GitLab CI-like environment, and are particularly useful for locally validating changes to an analyzer.
+
+For more information, refer to the [project README](https://gitlab.com/gitlab-org/secure/tools/analyzer-scripts/-/blob/master/README.md).
 
 ## Versioning and release process
 

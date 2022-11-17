@@ -41,20 +41,6 @@ RSpec.describe DashboardController do
 
         expect(assigns[:issues].map(&:id)).to include(task.id)
       end
-
-      context 'when work_items is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        it 'does not include tasks in issue list' do
-          task = create(:work_item, :task, project: project, author: user)
-
-          get :issues, params: { author_id: user.id }
-
-          expect(assigns[:issues].map(&:id)).not_to include(task.id)
-        end
-      end
     end
 
     describe 'GET merge requests' do

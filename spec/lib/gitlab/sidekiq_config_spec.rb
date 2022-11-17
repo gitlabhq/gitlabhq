@@ -157,7 +157,7 @@ RSpec.describe Gitlab::SidekiqConfig do
       allow(::Gitlab::SidekiqConfig::WorkerRouter)
         .to receive(:global).and_return(::Gitlab::SidekiqConfig::WorkerRouter.new(test_routes))
 
-      allow(Sidekiq).to receive(:options).and_return(queues: %w[default background_migration])
+      allow(Sidekiq).to receive(:[]).with(:queues).and_return(%w[default background_migration])
 
       mappings = described_class.current_worker_queue_mappings
 

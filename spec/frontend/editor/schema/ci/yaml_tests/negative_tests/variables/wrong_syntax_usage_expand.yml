@@ -1,0 +1,4 @@
+variables:
+  RAW_VAR:
+    value: Hello $FOO
+    expand: okay

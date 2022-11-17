@@ -7,7 +7,6 @@ module ProtectedRef
     belongs_to :project, touch: true
 
     validates :name, presence: true
-    validates :project, presence: true
 
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
 

@@ -1,4 +1,4 @@
-import { __, s__ } from '~/locale';
+import { __, n__, s__ } from '~/locale';
 
 export const timelineTabI18n = Object.freeze({
   title: s__('Incident|Timeline'),
@@ -15,6 +15,8 @@ export const timelineFormI18n = Object.freeze({
   save: __('Save'),
   cancel: __('Cancel'),
   description: __('Description'),
+  hint: __('You can enter up to 280 characters'),
+  textRemaining: (count) => n__('%d character remaining', '%d characters remaining', count),
   saveAndAdd: s__('Incident|Save and add another event'),
   areaLabel: s__('Incident|Timeline text'),
 });
@@ -38,3 +40,5 @@ export const timelineItemI18n = Object.freeze({
   moreActions: __('More actions'),
   timeUTC: __('%{time} UTC'),
 });
+
+export const MAX_TEXT_LENGTH = 280;

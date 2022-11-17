@@ -58,10 +58,10 @@ Epic "1"*-- "0..*" Issue
 
 In an issue, you can view the parented epic above the issue in the right sidebar under **Epic**.
 
-![epics state dropdown](img/issue-view-parent-epic-in-sidebar_v14_6.png)
+![epics state dropdown list](img/issue-view-parent-epic-in-sidebar_v14_6.png)
 
 ## View ancestry of an epic
 
 In an epic, you can view the ancestors as parents in the right sidebar under **Ancestors**.
 
-![epics state dropdown](img/epic-view-ancestors-in-sidebar_v14_6.png)
+![epics state dropdown list](img/epic-view-ancestors-in-sidebar_v14_6.png)

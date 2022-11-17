@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def load
-        @access, @reason, @refreshed_at = ::Gitlab::Redis::Cache.with do |redis|
+        @access, @reason, @refreshed_at = with_redis do |redis|
           redis.hmget(cache_key, :access, :reason, :refreshed_at)
         end
 
@@ -19,7 +19,7 @@ module Gitlab
       end
 
       def store(new_access, new_reason, new_refreshed_at)
-        ::Gitlab::Redis::Cache.with do |redis|
+        with_redis do |redis|
           redis.pipelined do |pipeline|
             pipeline.mapped_hmset(
               cache_key,
@@ -57,6 +57,10 @@ module Gitlab
 
       def cache_key
         "external_authorization:user-#{@user.id}:label-#{@label}"
+      end
+
+      def with_redis(&block)
+        ::Gitlab::Redis::Cache.with(&block) # rubocop:disable CodeReuse/ActiveRecord
       end
     end
   end

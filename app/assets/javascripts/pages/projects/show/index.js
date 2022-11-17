@@ -10,14 +10,6 @@ import { initUploadFileTrigger } from '~/projects/upload_file';
 import initReadMore from '~/read_more';
 
 // Project show page loads different overview content based on user preferences
-if (document.querySelector('.js-upload-blob-form')) {
-  import(/* webpackChunkName: 'blobBundle' */ '~/blob_edit/blob_bundle')
-    .then(({ initUploadForm }) => {
-      initUploadForm();
-    })
-    .catch(() => {});
-}
-
 if (document.getElementById('js-tree-list')) {
   import(/* webpackChunkName: 'treeList' */ 'ee_else_ce/repository')
     .then(({ default: initTree }) => {

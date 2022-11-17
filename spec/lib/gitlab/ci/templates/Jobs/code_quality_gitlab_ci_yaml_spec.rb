@@ -12,7 +12,7 @@ RSpec.describe 'Jobs/Code-Quality.gitlab-ci.yml' do
     let(:default_branch) { 'master' }
     let(:pipeline_ref) { default_branch }
     let(:service) { Ci::CreatePipelineService.new(project, user, ref: pipeline_ref) }
-    let(:pipeline) { service.execute!(:push).payload }
+    let(:pipeline) { service.execute(:push).payload }
     let(:build_names) { pipeline.builds.pluck(:name) }
 
     before do
@@ -62,7 +62,8 @@ RSpec.describe 'Jobs/Code-Quality.gitlab-ci.yml' do
 
       context 'on master' do
         it 'has no jobs' do
-          expect { pipeline }.to raise_error(Ci::CreatePipelineService::CreateError)
+          expect(build_names).to be_empty
+          expect(pipeline.errors.full_messages).to match_array(["No stages / jobs for this pipeline."])
         end
       end
 
@@ -70,7 +71,8 @@ RSpec.describe 'Jobs/Code-Quality.gitlab-ci.yml' do
         let(:pipeline_ref) { 'feature' }
 
         it 'has no jobs' do
-          expect { pipeline }.to raise_error(Ci::CreatePipelineService::CreateError)
+          expect(build_names).to be_empty
+          expect(pipeline.errors.full_messages).to match_array(["No stages / jobs for this pipeline."])
         end
       end
 
@@ -78,7 +80,8 @@ RSpec.describe 'Jobs/Code-Quality.gitlab-ci.yml' do
         let(:pipeline_ref) { 'v1.0.0' }
 
         it 'has no jobs' do
-          expect { pipeline }.to raise_error(Ci::CreatePipelineService::CreateError)
+          expect(build_names).to be_empty
+          expect(pipeline.errors.full_messages).to match_array(["No stages / jobs for this pipeline."])
         end
       end
     end

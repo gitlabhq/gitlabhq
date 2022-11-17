@@ -157,7 +157,7 @@ If the scanner requires a fully functional Linux environment,
 it is recommended to use a [Debian](https://www.debian.org/intro/about) "slim" distribution or [Alpine Linux](https://www.alpinelinux.org/).
 If possible, it is recommended to build the image from scratch, using the `FROM scratch` instruction,
 and to compile the scanner with all the libraries it needs.
-[Multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/)
+[Multi-stage builds](https://docs.docker.com/build/building/multi-stage/)
 might also help with keeping the image small.
 
 To keep an image size small, consider using [dive](https://github.com/wagoodman/dive#dive) to analyze layers in a Docker image to
@@ -314,7 +314,7 @@ This documentation gives an overview of the report JSON format,
 as well as recommendations and examples to help integrators set its fields.
 The format is extensively described in the documentation of
 [SAST](../../user/application_security/sast/index.md#reports-json-format),
-[DAST](../../user/application_security/dast/index.md#reports),
+[DAST](../../user/application_security/dast/proxy-based.md#reports),
 [Dependency Scanning](../../user/application_security/dependency_scanning/index.md#reports-json-format),
 and [Container Scanning](../../user/application_security/container_scanning/index.md#reports-json-format)
 

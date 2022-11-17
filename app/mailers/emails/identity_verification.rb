@@ -2,14 +2,22 @@
 
 module Emails
   module IdentityVerification
-    def verification_instructions_email(user_id, token:, expires_in:)
+    def verification_instructions_email(email, token:)
       @token = token
-      @expires_in_minutes = expires_in
+      @expires_in_minutes = Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES
       @password_link = edit_profile_password_url
       @two_fa_link = help_page_url('user/profile/account/two_factor_authentication')
 
-      user = User.find(user_id)
-      email_with_layout(to: user.email, subject: s_('IdentityVerification|Verify your identity'))
+      headers = {
+        to: email,
+        subject: s_('IdentityVerification|Verify your identity'),
+        'X-Mailgun-Suppressions-Bypass' => 'true'
+      }
+
+      mail_with_locale(headers) do |format|
+        format.html { render layout: 'mailer' }
+        format.text
+      end
     end
   end
 end

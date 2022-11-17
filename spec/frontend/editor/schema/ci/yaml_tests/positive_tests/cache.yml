@@ -1,24 +1,124 @@
-stages:
-  - prepare
-
 # valid cache:when values
 job1:
-  stage: prepare
   script:
     - echo 'running job'
   cache:
     when: 'on_success'
 
 job2:
-  stage: prepare
   script:
     - echo 'running job'
   cache:
     when: 'on_failure'
 
 job3:
-  stage: prepare
   script:
     - echo 'running job'
   cache:
     when: 'always'
+
+# valid cache:paths
+cache-paths:
+  script: echo "This job uses a cache."
+  cache:
+    key: binaries-cache
+    paths:
+      - binaries/*.apk
+      - .config
+
+# valid cache:key
+cache-key-string:
+  script: echo "This job uses a cache."
+  cache:
+    key: random-string
+    paths:
+      - binaries/
+
+cache-key-string-with-dots:
+  script: echo "This job uses a cache."
+  cache:
+    key: random-..string
+    paths:
+      - binaries/
+
+cache-key-string-beginning-with-dot:
+  script: echo "This job uses a cache."
+  cache:
+    key: .random-string
+    paths:
+      - binaries/
+
+cache-key-string-ending-with-dot:
+  script: echo "This job uses a cache."
+  cache:
+    key: random-string.
+    paths:
+      - binaries/
+
+cache-key-predefined-variable:
+  script: echo "This job uses a cache."
+  cache:
+    key: $CI_COMMIT_REF_SLUG
+    paths:
+      - binaries/
+
+cache-key-combination:
+  script: echo "This job uses a cache."
+  cache:
+    key: binaries-cache-$CI_COMMIT_REF_SLUG
+    paths:
+      - binaries/
+
+# valid cache:key:files
+cache-key-files:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+        - package.json
+    paths:
+      - vendor/ruby
+      - node_modules
+
+# valide cache:key:prefix
+cache-key-prefix-string:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+      prefix: random-string
+    paths:
+      - binaries/
+
+cache-key-prefix-predefined-variable:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+      prefix: $CI_JOB_NAME
+    paths:
+      - binaries/
+
+cache-key-prefix-combination:
+  script: echo "This job uses a cache."
+  cache:
+    key:
+      files:
+        - Gemfile.lock
+      prefix: binaries-cache-$CI_JOB_NAME
+    paths:
+      - binaries/
+
+# valid cache:untracked
+cache-untracked-true:
+  script: test
+  cache:
+    untracked: true
+
+cache-untracked-false:
+  script: test
+  cache:
+    untracked: false

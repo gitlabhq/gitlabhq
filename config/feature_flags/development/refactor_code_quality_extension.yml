@@ -1,8 +1,0 @@
----
-name: refactor_code_quality_extension
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88865
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/363845
-milestone: '15.1'
-type: development
-group: group::secure
-default_enabled: false

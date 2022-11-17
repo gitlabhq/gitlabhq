@@ -1,0 +1,35 @@
+#import "~/ci/runner/graphql/list/group_runner_connection.fragment.graphql"
+
+query getGroupRunners(
+  $groupFullPath: ID!
+  $membership: CiRunnerMembershipFilter
+  $before: String
+  $after: String
+  $first: Int
+  $last: Int
+  $paused: Boolean
+  $status: CiRunnerStatus
+  $type: CiRunnerType
+  $tagList: [String!]
+  $search: String
+  $sort: CiRunnerSort
+) {
+  group(fullPath: $groupFullPath) {
+    id # Apollo required
+    runners(
+      membership: $membership
+      before: $before
+      after: $after
+      first: $first
+      last: $last
+      paused: $paused
+      status: $status
+      type: $type
+      tagList: $tagList
+      search: $search
+      sort: $sort
+    ) {
+      ...GroupRunnerConnection
+    }
+  }
+}

@@ -201,18 +201,20 @@ describe('RelatedIssuesRoot', () => {
         ]);
       });
 
-      it('displays a message from the backend upon error', async () => {
+      it('passes an error message from the backend upon error', async () => {
         const input = '#123';
         const message = 'error';
         mock.onPost(defaultProps.endpoint).reply(409, { message });
         wrapper.vm.store.setPendingReferences([issuable1.reference, issuable2.reference]);
 
-        expect(createAlert).not.toHaveBeenCalled();
+        expect(findRelatedIssuesBlock().props('hasError')).toBe(false);
+        expect(findRelatedIssuesBlock().props('itemAddFailureMessage')).toBe(null);
 
         findRelatedIssuesBlock().vm.$emit('addIssuableFormSubmit', input);
         await waitForPromises();
 
-        expect(createAlert).toHaveBeenCalledWith({ message });
+        expect(findRelatedIssuesBlock().props('hasError')).toBe(true);
+        expect(findRelatedIssuesBlock().props('itemAddFailureMessage')).toBe(message);
       });
     });
 

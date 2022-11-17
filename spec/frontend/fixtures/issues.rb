@@ -6,7 +6,7 @@ RSpec.describe Projects::IssuesController, '(JavaScript fixtures)', type: :contr
   include JavaScriptFixturesHelpers
 
   let(:user) { create(:user, feed_token: 'feedtoken:coldfeed') }
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'issues-project') }
 
   render_views

@@ -9,7 +9,7 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader do
   let_it_be(:content_type) { 'application/octet-stream' }
 
   let(:content_length) { 1000 }
-  let(:chunk_double) { instance_double(HTTParty::FragmentWithResponse, code: 200) }
+  let(:chunk_double) { instance_double(HTTParty::ResponseFragment, code: 200) }
   let(:headers_double) do
     instance_double(
       HTTParty::Response,

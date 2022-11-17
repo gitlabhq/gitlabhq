@@ -13,11 +13,19 @@ export const FILTER_NONE_ANY = [FILTER_NONE, FILTER_ANY];
 export const OPERATOR_IS = '=';
 export const OPERATOR_IS_TEXT = __('is');
 export const OPERATOR_IS_NOT = '!=';
-export const OPERATOR_IS_NOT_TEXT = __('is not');
+export const OPERATOR_IS_NOT_TEXT = __('is not one of');
+export const OPERATOR_OR = '||';
+export const OPERATOR_OR_TEXT = __('is one of');
 
 export const OPERATOR_IS_ONLY = [{ value: OPERATOR_IS, description: OPERATOR_IS_TEXT }];
 export const OPERATOR_IS_NOT_ONLY = [{ value: OPERATOR_IS_NOT, description: OPERATOR_IS_NOT_TEXT }];
+export const OPERATOR_OR_ONLY = [{ value: OPERATOR_OR, description: OPERATOR_OR_TEXT }];
 export const OPERATOR_IS_AND_IS_NOT = [...OPERATOR_IS_ONLY, ...OPERATOR_IS_NOT_ONLY];
+export const OPERATOR_IS_NOT_OR = [
+  ...OPERATOR_IS_ONLY,
+  ...OPERATOR_IS_NOT_ONLY,
+  ...OPERATOR_OR_ONLY,
+];
 
 export const DEFAULT_LABEL_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const DEFAULT_LABEL_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
@@ -55,10 +63,26 @@ export const TOKEN_TITLE_MILESTONE = __('Milestone');
 export const TOKEN_TITLE_MY_REACTION = __('My-Reaction');
 export const TOKEN_TITLE_ORGANIZATION = s__('Crm|Organization');
 export const TOKEN_TITLE_RELEASE = __('Release');
+export const TOKEN_TITLE_SOURCE_BRANCH = __('Source Branch');
+export const TOKEN_TITLE_STATUS = __('Status');
+export const TOKEN_TITLE_TARGET_BRANCH = __('Target Branch');
 export const TOKEN_TITLE_TYPE = __('Type');
 
+export const TOKEN_TYPE_ASSIGNEE = 'assignee';
+export const TOKEN_TYPE_AUTHOR = 'author';
+export const TOKEN_TYPE_CONFIDENTIAL = 'confidential';
+export const TOKEN_TYPE_CONTACT = 'contact';
+export const TOKEN_TYPE_EPIC = 'epic';
 // As health status gets reused between issue lists and boards
 // this is in the shared constants. Until we have not decoupled the EE filtered search bar
 // from the CE component, we need to keep this in the CE code.
 // https://gitlab.com/gitlab-org/gitlab/-/issues/377838
-export const TOKEN_TYPE_HEALTH = 'health_status';
+export const TOKEN_TYPE_HEALTH = 'health';
+export const TOKEN_TYPE_ITERATION = 'iteration';
+export const TOKEN_TYPE_LABEL = 'label';
+export const TOKEN_TYPE_MILESTONE = 'milestone';
+export const TOKEN_TYPE_MY_REACTION = 'my-reaction';
+export const TOKEN_TYPE_ORGANIZATION = 'organization';
+export const TOKEN_TYPE_RELEASE = 'release';
+export const TOKEN_TYPE_TYPE = 'type';
+export const TOKEN_TYPE_WEIGHT = 'weight';

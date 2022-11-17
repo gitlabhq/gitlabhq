@@ -1,8 +1,10 @@
 <script>
-import { GlAlert, GlModal, GlSprintf, GlKeysetPagination } from '@gitlab/ui';
-import { __, s__, sprintf } from '~/locale';
+import { GlAlert } from '@gitlab/ui';
+import { s__, sprintf, n__ } from '~/locale';
+import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -13,13 +15,13 @@ import { packageTypeToTrackCategory } from '~/packages_and_registries/package_re
 import Tracking from '~/tracking';
 
 export default {
+  name: 'PackagesList',
   components: {
     GlAlert,
-    GlKeysetPagination,
-    GlModal,
-    GlSprintf,
+    DeletePackageModal,
     PackagesListLoader,
     PackagesListRow,
+    RegistryList,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -46,11 +48,11 @@ export default {
     };
   },
   computed: {
+    listTitle() {
+      return n__('%d package', '%d packages', this.list.length);
+    },
     isListEmpty() {
       return !this.list || this.list.length === 0;
-    },
-    deletePackageName() {
-      return this.itemToBeDeleted?.name ?? '';
     },
     tracking() {
       const category = this.itemToBeDeleted
@@ -58,32 +60,6 @@ export default {
         : undefined;
       return {
         category,
-      };
-    },
-    showPagination() {
-      return this.pageInfo.hasPreviousPage || this.pageInfo.hasNextPage;
-    },
-    showDeleteModal: {
-      get() {
-        return Boolean(this.itemToBeDeleted);
-      },
-      set(value) {
-        if (!value) {
-          this.itemToBeDeleted = null;
-        }
-      },
-    },
-    deleteModalActionPrimaryProps() {
-      return {
-        text: this.$options.i18n.modalAction,
-        attributes: {
-          variant: 'danger',
-        },
-      };
-    },
-    deleteModalActionCancelProps() {
-      return {
-        text: __('Cancel'),
       };
     },
     errorTitleAlert() {
@@ -110,21 +86,28 @@ export default {
       this.itemToBeDeleted = { ...item };
       this.track(REQUEST_DELETE_PACKAGE_TRACKING_ACTION);
     },
+    setItemsToBeDeleted(items) {
+      if (items.length === 1) {
+        const [item] = items;
+        this.setItemToBeDeleted(item);
+        return;
+      }
+      this.$emit('delete', items);
+    },
     deleteItemConfirmation() {
       this.$emit('package:delete', this.itemToBeDeleted);
       this.track(DELETE_PACKAGE_TRACKING_ACTION);
+      this.itemToBeDeleted = null;
     },
     deleteItemCanceled() {
       this.track(CANCEL_DELETE_PACKAGE_TRACKING_ACTION);
+      this.itemToBeDeleted = null;
     },
     showConfirmationModal() {
       this.setItemToBeDeleted(this.errorPackages[0]);
     },
   },
   i18n: {
-    deleteModalContent: s__('PackageRegistry|You are about to delete %{name}, are you sure?'),
-    modalTitle: s__('PackageRegistry|Delete package'),
-    modalAction: s__('PackageRegistry|Permanently delete'),
     errorMessageBodyAlert: s__(
       'PackageRegistry|There was a timeout and the package was not published. Delete this package and try again.',
     ),
@@ -150,41 +133,32 @@ export default {
         @primaryAction="showConfirmationModal"
         >{{ $options.i18n.errorMessageBodyAlert }}</gl-alert
       >
-      <div data-testid="packages-table">
-        <packages-list-row
-          v-for="packageEntity in list"
-          :key="packageEntity.id"
-          :package-entity="packageEntity"
-          @packageToDelete="setItemToBeDeleted"
-        />
-      </div>
+      <registry-list
+        data-testid="packages-table"
+        :is-loading="isLoading"
+        :items="list"
+        :pagination="pageInfo"
+        :title="listTitle"
+        @delete="setItemsToBeDeleted"
+        @prev-page="$emit('prev-page')"
+        @next-page="$emit('next-page')"
+      >
+        <template #default="{ selectItem, isSelected, item, first }">
+          <packages-list-row
+            :first="first"
+            :package-entity="item"
+            :selected="isSelected(item)"
+            @delete="setItemToBeDeleted(item)"
+            @select="selectItem(item)"
+          />
+        </template>
+      </registry-list>
 
-      <div class="gl-display-flex gl-justify-content-center">
-        <gl-keyset-pagination
-          v-if="showPagination"
-          v-bind="pageInfo"
-          class="gl-mt-3"
-          @prev="$emit('prev-page')"
-          @next="$emit('next-page')"
-        />
-      </div>
-
-      <gl-modal
-        v-model="showDeleteModal"
-        modal-id="confirm-delete-package"
-        size="sm"
-        :action-primary="deleteModalActionPrimaryProps"
-        :action-cancel="deleteModalActionCancelProps"
+      <delete-package-modal
+        :item-to-be-deleted="itemToBeDeleted"
         @ok="deleteItemConfirmation"
         @cancel="deleteItemCanceled"
-      >
-        <template #modal-title>{{ $options.i18n.modalTitle }}</template>
-        <gl-sprintf :message="$options.i18n.deleteModalContent">
-          <template #name>
-            <strong>{{ deletePackageName }}</strong>
-          </template>
-        </gl-sprintf>
-      </gl-modal>
+      />
     </template>
   </div>
 </template>

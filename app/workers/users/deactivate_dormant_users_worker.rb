@@ -8,7 +8,7 @@ module Users
 
     include CronjobQueue
 
-    feature_category :utilization
+    feature_category :subscription_cost_management
 
     def perform
       return if Gitlab.com?

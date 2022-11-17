@@ -3,15 +3,15 @@
 #
 # Suggests shorter versions of wordy phrases.
 #
-# For a list of all options, see https://docs.errata.ai/vale/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
-message: '%s "%s".'
+message: "%s"
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 level: suggestion
 ignorecase: true
 swap:
-  in order to: "Be concise: use 'to' rather than"
-  needs? to: "Rewrite the sentence, or use 'must', instead of"
-  note that: "Be concise: rewrite the sentence to not use"
-  please: "Remove this word from the sentence: "
-  respectively: "Rewrite the sentence to be more precise, instead of using "
+  note that: "Remove the phrase 'note that'."
+  please: "Use 'please' only if we've inconvenienced the user."
+  respectively: "Remove 'respectively' and list each option instead."
+  and so on: "Remove 'and so on'. Try to use 'like' and provide examples instead."
+  in order to: "Remove 'in order' and leave 'to'."

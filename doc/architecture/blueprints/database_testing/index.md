@@ -1,9 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Database Testing'
+status: accepted
+creation-date: "2021-02-08"
+authors: [ "@abrandl" ]
+coach: "@glopezfernandez"
+approvers: [ "@fabian", "@craig-gomes" ]
+owning-stage: "~devops::data_stores"
+participating-stages: []
 ---
 
 # Database Testing
@@ -122,26 +124,3 @@ An alternative approach we have discussed and abandoned is to "scrub" and anonym
 - Annotating data as "sensitive" is error prone, with the wrong anonymization approach used for a data type or one sensitive attribute accidentally not marked as such possibly leading to a data breach.
 - Scrubbing not only removes sensitive data, but it also changes data distribution, which greatly affects performance of migrations and queries.
 - Scrubbing heavily changes the database contents, potentially updating a lot of data, which leads to different data storage details (think MVC bloat), affecting performance of migrations and queries.
-
-## Who
-
-<!-- vale gitlab.Spelling = NO -->
-
-This effort is owned and driven by the [GitLab Database Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/database/) with support from the [GitLab.com Reliability Datastores](https://about.gitlab.com/handbook/engineering/infrastructure/team/reliability/) team.
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |    Andreas Brandl       |
-| Architecture Evolution Coach | Gerardo Lopez-Fernandez |
-| Engineering Leader           |    Craig Gomes          |
-| Domain Expert                |    Yannis Roussos       |
-| Domain Expert                |    Pat Bair             |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      |    Fabian Zimmer       |
-| Engineering                  |    Andreas Brandl      |
-
-<!-- vale gitlab.Spelling = YES -->

@@ -7,7 +7,7 @@ RSpec.describe Projects::DeployKeysController, '(JavaScript fixtures)', type: :c
   include AdminModeHelper
 
   let(:admin) { create(:admin) }
-  let(:namespace) { create(:namespace, name: 'frontend-fixtures' ) }
+  let(:namespace) { create(:namespace, name: 'frontend-fixtures') }
   let(:project) { create(:project_empty_repo, namespace: namespace, path: 'todos-project') }
   let(:project2) { create(:project, :internal) }
   let(:project3) { create(:project, :internal) }

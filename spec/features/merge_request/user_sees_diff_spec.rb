@@ -38,6 +38,20 @@ RSpec.describe 'Merge request > User sees diff', :js do
     end
   end
 
+  context 'when linking to a line' do
+    let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }
+    let(:line) { note.diff_file.highlighted_diff_lines.last }
+    let(:line_code) { line.line_code }
+
+    before do
+      visit "#{diffs_project_merge_request_path(project, merge_request)}##{line_code}"
+    end
+
+    it 'shows the linked line' do
+      expect(page).to have_selector("[id='#{line_code}']", visible: true, obscured: false)
+    end
+  end
+
   context 'when merge request has overflow' do
     it 'displays warning' do
       allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)

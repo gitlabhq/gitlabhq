@@ -313,5 +313,21 @@ RSpec.shared_examples 'edits content using the content editor' do
 
       expect(page).not_to have_css(suggestions_dropdown)
     end
+
+    it 'scrolls selected item into view when navigating with keyboard' do
+      type_in_content_editor ':'
+
+      expect(find(suggestions_dropdown)).to have_text('hundred points symbol')
+
+      expect(dropdown_scroll_top).to be 0
+
+      send_keys :arrow_up
+
+      expect(dropdown_scroll_top).to be > 100
+    end
+
+    def dropdown_scroll_top
+      evaluate_script("document.querySelector('#{suggestions_dropdown} .gl-new-dropdown-inner').scrollTop")
+    end
   end
 end

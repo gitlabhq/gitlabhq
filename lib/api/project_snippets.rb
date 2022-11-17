@@ -9,7 +9,7 @@ module API
     feature_category :snippets
 
     params do
-      requires :id, type: String, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       helpers Helpers::SnippetsHelpers
@@ -34,6 +34,11 @@ module API
 
       desc 'Get all project snippets' do
         success Entities::ProjectSnippet
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[project_snippets]
+        is_array true
       end
       params do
         use :pagination
@@ -46,6 +51,10 @@ module API
 
       desc 'Get a single project snippet' do
         success Entities::ProjectSnippet
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[project_snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -60,6 +69,12 @@ module API
 
       desc 'Create a new project snippet' do
         success Entities::ProjectSnippet
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags %w[project_snippets]
       end
       params do
         requires :title, type: String, allow_blank: false, desc: 'The title of the snippet'
@@ -91,6 +106,12 @@ module API
 
       desc 'Update an existing project snippet' do
         success Entities::ProjectSnippet
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' },
+          { code: 422, message: 'Unprocessable entity' }
+        ]
+        tags %w[project_snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
@@ -132,7 +153,14 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Delete a project snippet'
+      desc 'Delete a project snippet' do
+        success code: 204
+        failure [
+          { code: 400, message: 'Validation error' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[project_snippets]
+      end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
@@ -156,7 +184,13 @@ module API
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
-      desc 'Get a raw project snippet'
+      desc 'Get a raw project snippet' do
+        success Entities::ProjectSnippet
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[project_snippets]
+      end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'
       end
@@ -168,7 +202,13 @@ module API
         present content_for(snippet)
       end
 
-      desc 'Get raw project snippet file contents from the repository'
+      desc 'Get raw project snippet file contents from the repository' do
+        success Entities::ProjectSnippet
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[project_snippets]
+      end
       params do
         use :raw_file_params
       end
@@ -182,6 +222,10 @@ module API
 
       desc 'Get the user agent details for a project snippet' do
         success Entities::UserAgentDetail
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[project_snippets]
       end
       params do
         requires :snippet_id, type: Integer, desc: 'The ID of a project snippet'

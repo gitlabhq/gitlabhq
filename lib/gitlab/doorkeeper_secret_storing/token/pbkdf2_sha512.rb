@@ -12,8 +12,6 @@ module Gitlab
         SALT = ''
 
         def self.transform_secret(plain_secret)
-          return plain_secret unless Feature.enabled?(:hash_oauth_tokens)
-
           Devise::Pbkdf2Encryptable::Encryptors::Pbkdf2Sha512.digest(plain_secret, STRETCHES, SALT)
         end
 

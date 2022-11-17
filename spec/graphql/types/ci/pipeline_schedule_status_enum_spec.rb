@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Types::Ci::PipelineScheduleStatusEnum do
-  specify { expect(described_class.graphql_name ).to eq('PipelineScheduleStatus') }
+  specify { expect(described_class.graphql_name).to eq('PipelineScheduleStatus') }
 
   it 'exposes the status of a pipeline schedule' do
     expect(described_class.values.keys).to match_array(%w[ACTIVE INACTIVE])

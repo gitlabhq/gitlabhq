@@ -9,6 +9,18 @@ import {
 
 const LINE_CODE = 'abc123';
 
+function problemsClone({
+  brokenSymlink = false,
+  brokenLineCode = false,
+  fileOnlyMoved = false,
+} = {}) {
+  return {
+    brokenSymlink,
+    brokenLineCode,
+    fileOnlyMoved,
+  };
+}
+
 describe('isHighlighted', () => {
   it('should return true if line is highlighted', () => {
     const line = { line_code: LINE_CODE };
@@ -137,9 +149,12 @@ describe('classNameMapCell', () => {
 
 describe('addCommentTooltip', () => {
   const brokenSymLinkTooltip =
-    'Commenting on symbolic links that replace or are replaced by files is currently not supported.';
+    'Commenting on symbolic links that replace or are replaced by files is not supported';
   const brokenRealTooltip =
-    'Commenting on files that replace or are replaced by symbolic links is currently not supported.';
+    'Commenting on files that replace or are replaced by symbolic links is not supported';
+  const lineMovedOrRenamedFileTooltip =
+    'Commenting on files that are only moved or renamed is not supported';
+  const lineWithNoLineCodeTooltip = 'Commenting on this line is not supported';
   const dragTooltip = 'Add a comment to this line or drag for multiple lines';
 
   it('should return default tooltip', () => {
@@ -147,24 +162,38 @@ describe('addCommentTooltip', () => {
   });
 
   it('should return drag comment tooltip when dragging is enabled', () => {
-    expect(utils.addCommentTooltip({})).toEqual(dragTooltip);
+    expect(utils.addCommentTooltip({ problems: problemsClone() })).toEqual(dragTooltip);
   });
 
   it('should return broken symlink tooltip', () => {
-    expect(utils.addCommentTooltip({ commentsDisabled: { wasSymbolic: true } })).toEqual(
-      brokenSymLinkTooltip,
-    );
-    expect(utils.addCommentTooltip({ commentsDisabled: { isSymbolic: true } })).toEqual(
-      brokenSymLinkTooltip,
-    );
+    expect(
+      utils.addCommentTooltip({
+        problems: problemsClone({ brokenSymlink: { wasSymbolic: true } }),
+      }),
+    ).toEqual(brokenSymLinkTooltip);
+    expect(
+      utils.addCommentTooltip({ problems: problemsClone({ brokenSymlink: { isSymbolic: true } }) }),
+    ).toEqual(brokenSymLinkTooltip);
   });
 
   it('should return broken real tooltip', () => {
-    expect(utils.addCommentTooltip({ commentsDisabled: { wasReal: true } })).toEqual(
-      brokenRealTooltip,
+    expect(
+      utils.addCommentTooltip({ problems: problemsClone({ brokenSymlink: { wasReal: true } }) }),
+    ).toEqual(brokenRealTooltip);
+    expect(
+      utils.addCommentTooltip({ problems: problemsClone({ brokenSymlink: { isReal: true } }) }),
+    ).toEqual(brokenRealTooltip);
+  });
+
+  it('reports a tooltip when the line is in a file that has only been moved or renamed', () => {
+    expect(utils.addCommentTooltip({ problems: problemsClone({ fileOnlyMoved: true }) })).toEqual(
+      lineMovedOrRenamedFileTooltip,
     );
-    expect(utils.addCommentTooltip({ commentsDisabled: { isReal: true } })).toEqual(
-      brokenRealTooltip,
+  });
+
+  it("reports a tooltip when the line doesn't have a line code to leave a comment on", () => {
+    expect(utils.addCommentTooltip({ problems: problemsClone({ brokenLineCode: true }) })).toEqual(
+      lineWithNoLineCodeTooltip,
     );
   });
 });
@@ -211,6 +240,7 @@ describe('mapParallel', () => {
       discussions: [{}],
       discussionsExpanded: true,
       hasForm: true,
+      problems: problemsClone(),
     };
     const content = {
       diffFile: {},

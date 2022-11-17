@@ -21,22 +21,9 @@ describe('MergeRequestStore', () => {
   });
 
   describe('setData', () => {
-    it('should set isSHAMismatch when the diff SHA changes', () => {
-      store.setData({ ...mockData, diff_head_sha: 'a-different-string' });
-
-      expect(store.isSHAMismatch).toBe(true);
-    });
-
-    it('should not set isSHAMismatch when other data changes', () => {
-      store.setData({ ...mockData, work_in_progress: !mockData.work_in_progress });
-
-      expect(store.isSHAMismatch).toBe(false);
-    });
-
     it('should update cached sha after rebasing', () => {
       store.setData({ ...mockData, diff_head_sha: 'abc123' }, true);
 
-      expect(store.isSHAMismatch).toBe(false);
       expect(store.sha).toBe('abc123');
     });
 

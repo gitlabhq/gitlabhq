@@ -210,11 +210,23 @@ module Noteable
   # Synthetic system notes don't have discussion IDs because these are generated dynamically
   # in Ruby. These are always root notes anyway so we don't need to group by discussion ID.
   def synthetic_note_ids_relations
-    [
-      resource_label_events.select("'resource_label_events'", "'NULL'", :id, :created_at),
-      resource_milestone_events.select("'resource_milestone_events'", "'NULL'", :id, :created_at),
-      resource_state_events.select("'resource_state_events'", "'NULL'", :id, :created_at)
-    ]
+    relations = []
+
+    # currently multiple models include Noteable concern, but not all of them support
+    # all resource events, so we check if given model supports given resource event.
+    if respond_to?(:resource_label_events)
+      relations << resource_label_events.select("'resource_label_events'", "'NULL'", :id, :created_at)
+    end
+
+    if respond_to?(:resource_state_events)
+      relations << resource_state_events.select("'resource_state_events'", "'NULL'", :id, :created_at)
+    end
+
+    if respond_to?(:resource_milestone_events)
+      relations << resource_milestone_events.select("'resource_milestone_events'", "'NULL'", :id, :created_at)
+    end
+
+    relations
   end
 end
 

@@ -9,7 +9,6 @@ import eventHub from '~/vue_merge_request_widget/event_hub';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
 let wrapper;
-let mergeRequestWidgetGraphqlEnabled = false;
 
 function convertPropsToGraphqlState(props) {
   return {
@@ -30,12 +29,6 @@ function convertPropsToGraphqlState(props) {
 }
 
 function factory(propsData, stateOverride = {}) {
-  let state = {};
-
-  if (mergeRequestWidgetGraphqlEnabled) {
-    state = { ...convertPropsToGraphqlState(propsData), ...stateOverride };
-  }
-
   wrapper = extendedWrapper(
     mount(autoMergeEnabledComponent, {
       propsData: {
@@ -43,9 +36,8 @@ function factory(propsData, stateOverride = {}) {
         service: new MRWidgetService({}),
       },
       data() {
-        return { state };
+        return { ...convertPropsToGraphqlState(propsData), ...stateOverride };
       },
-      provide: { glFeatures: { mergeRequestWidgetGraphql: mergeRequestWidgetGraphqlEnabled } },
       mocks: {
         $apollo: {
           queries: {
@@ -95,130 +87,88 @@ describe('MRWidgetAutoMergeEnabled', () => {
     wrapper = null;
   });
 
-  [true, false].forEach((mergeRequestWidgetGraphql) => {
-    describe(`when graphql is ${mergeRequestWidgetGraphql ? 'enabled' : 'disabled'}`, () => {
-      beforeEach(() => {
-        mergeRequestWidgetGraphqlEnabled = mergeRequestWidgetGraphql;
+  describe('computed', () => {
+    describe('cancelButtonText', () => {
+      it('should return "Cancel" if MWPS is selected', () => {
+        factory({
+          ...defaultMrProps(),
+          autoMergeStrategy: MWPS_MERGE_STRATEGY,
+        });
+
+        expect(wrapper.findByTestId('cancelAutomaticMergeButton').text()).toBe('Cancel auto-merge');
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('cancelAutomaticMerge', () => {
+      it('should set flag and call service then tell main component to update the widget with data', async () => {
+        factory({
+          ...defaultMrProps(),
+        });
+        const mrObj = {
+          is_new_mr_data: true,
+        };
+        jest.spyOn(wrapper.vm.service, 'cancelAutomaticMerge').mockReturnValue(
+          new Promise((resolve) => {
+            resolve({
+              data: mrObj,
+            });
+          }),
+        );
+
+        wrapper.vm.cancelAutomaticMerge();
+
+        await waitForPromises();
+
+        expect(wrapper.vm.isCancellingAutoMerge).toBe(true);
+        expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+      });
+    });
+  });
+
+  describe('template', () => {
+    it('should have correct elements', () => {
+      factory({
+        ...defaultMrProps(),
       });
 
-      describe('computed', () => {
-        describe('cancelButtonText', () => {
-          it('should return "Cancel" if MWPS is selected', () => {
-            factory({
-              ...defaultMrProps(),
-              autoMergeStrategy: MWPS_MERGE_STRATEGY,
-            });
+      expect(wrapper.element).toMatchSnapshot();
+    });
 
-            expect(wrapper.findByTestId('cancelAutomaticMergeButton').text()).toBe(
-              'Cancel auto-merge',
-            );
-          });
-        });
+    it('should disable cancel auto merge button when the action is in progress', async () => {
+      factory({
+        ...defaultMrProps(),
+      });
+      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
+      // eslint-disable-next-line no-restricted-syntax
+      wrapper.setData({
+        isCancellingAutoMerge: true,
       });
 
-      describe('methods', () => {
-        describe('cancelAutomaticMerge', () => {
-          it('should set flag and call service then tell main component to update the widget with data', async () => {
-            factory({
-              ...defaultMrProps(),
-            });
-            const mrObj = {
-              is_new_mr_data: true,
-            };
-            jest.spyOn(wrapper.vm.service, 'cancelAutomaticMerge').mockReturnValue(
-              new Promise((resolve) => {
-                resolve({
-                  data: mrObj,
-                });
-              }),
-            );
+      await nextTick();
 
-            wrapper.vm.cancelAutomaticMerge();
+      expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
+    });
 
-            await waitForPromises();
-
-            expect(wrapper.vm.isCancellingAutoMerge).toBe(true);
-            if (mergeRequestWidgetGraphql) {
-              expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
-            } else {
-              expect(eventHub.$emit).toHaveBeenCalledWith('UpdateWidgetData', mrObj);
-            }
-          });
-        });
-
-        describe('removeSourceBranch', () => {
-          it('should set flag and call service then request main component to update the widget', async () => {
-            factory({
-              ...defaultMrProps(),
-            });
-            jest.spyOn(wrapper.vm.service, 'merge').mockReturnValue(
-              Promise.resolve({
-                data: {
-                  status: MWPS_MERGE_STRATEGY,
-                },
-              }),
-            );
-
-            wrapper.vm.removeSourceBranch();
-
-            await waitForPromises();
-
-            expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
-            expect(wrapper.vm.service.merge).toHaveBeenCalledWith({
-              sha,
-              auto_merge_strategy: MWPS_MERGE_STRATEGY,
-              should_remove_source_branch: true,
-            });
-          });
-        });
+    it('should render the status text as "...to merged automatically" if MWPS is selected', () => {
+      factory({
+        ...defaultMrProps(),
+        autoMergeStrategy: MWPS_MERGE_STRATEGY,
       });
 
-      describe('template', () => {
-        it('should have correct elements', () => {
-          factory({
-            ...defaultMrProps(),
-          });
+      expect(getStatusText()).toContain('to be merged automatically when the pipeline succeeds');
+    });
 
-          expect(wrapper.element).toMatchSnapshot();
-        });
-
-        it('should disable cancel auto merge button when the action is in progress', async () => {
-          factory({
-            ...defaultMrProps(),
-          });
-          // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-          // eslint-disable-next-line no-restricted-syntax
-          wrapper.setData({
-            isCancellingAutoMerge: true,
-          });
-
-          await nextTick();
-
-          expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
-        });
-
-        it('should render the status text as "...to merged automatically" if MWPS is selected', () => {
-          factory({
-            ...defaultMrProps(),
-            autoMergeStrategy: MWPS_MERGE_STRATEGY,
-          });
-
-          expect(getStatusText()).toContain(
-            'to be merged automatically when the pipeline succeeds',
-          );
-        });
-
-        it('should render the cancel button as "Cancel" if MWPS is selected', () => {
-          factory({
-            ...defaultMrProps(),
-            autoMergeStrategy: MWPS_MERGE_STRATEGY,
-          });
-
-          const cancelButtonText = trimText(wrapper.find('.js-cancel-auto-merge').text());
-
-          expect(cancelButtonText).toBe('Cancel auto-merge');
-        });
+    it('should render the cancel button as "Cancel" if MWPS is selected', () => {
+      factory({
+        ...defaultMrProps(),
+        autoMergeStrategy: MWPS_MERGE_STRATEGY,
       });
+
+      const cancelButtonText = trimText(wrapper.find('.js-cancel-auto-merge').text());
+
+      expect(cancelButtonText).toBe('Cancel auto-merge');
     });
   });
 });

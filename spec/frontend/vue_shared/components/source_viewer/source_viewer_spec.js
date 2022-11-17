@@ -10,6 +10,7 @@ import {
   EVENT_LABEL_VIEWER,
   EVENT_LABEL_FALLBACK,
   ROUGE_TO_HLJS_LANGUAGE_MAP,
+  LINES_PER_CHUNK,
 } from '~/vue_shared/components/source_viewer/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import LineHighlighter from '~/blob/line_highlighter';
@@ -121,6 +122,7 @@ describe('Source Viewer component', () => {
 
     it('highlights the first chunk', () => {
       expect(hljs.highlight).toHaveBeenCalledWith(chunk1.trim(), { language: mappedLanguage });
+      expect(findChunks().at(0).props('isFirstChunk')).toBe(true);
     });
 
     describe('auto-detects if a language cannot be loaded', () => {
@@ -133,45 +135,27 @@ describe('Source Viewer component', () => {
   });
 
   describe('rendering', () => {
-    it('renders the first chunk', async () => {
-      const firstChunk = findChunks().at(0);
+    it.each`
+      chunkIndex | chunkContent    | totalChunks
+      ${0}       | ${chunk1}       | ${0}
+      ${1}       | ${chunk2}       | ${3}
+      ${2}       | ${chunk3Result} | ${3}
+    `('renders chunk $chunkIndex', ({ chunkIndex, chunkContent, totalChunks }) => {
+      const chunk = findChunks().at(chunkIndex);
 
-      expect(firstChunk.props('content')).toContain(chunk1);
+      expect(chunk.props('content')).toContain(chunkContent.trim());
 
-      expect(firstChunk.props()).toMatchObject({
-        totalLines: 70,
-        startingFrom: 0,
+      expect(chunk.props()).toMatchObject({
+        totalLines: LINES_PER_CHUNK,
+        startingFrom: LINES_PER_CHUNK * chunkIndex,
+        totalChunks,
       });
     });
 
-    it('renders the second chunk', async () => {
-      const secondChunk = findChunks().at(1);
-
-      expect(secondChunk.props('content')).toContain(chunk2.trim());
-
-      expect(secondChunk.props()).toMatchObject({
-        totalLines: 70,
-        startingFrom: 70,
-      });
+    it('emits showBlobInteractionZones on the eventHub when chunk appears', () => {
+      findChunks().at(0).vm.$emit('appear');
+      expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', path);
     });
-
-    it('renders the third chunk', async () => {
-      const thirdChunk = findChunks().at(2);
-
-      expect(thirdChunk.props('content')).toContain(chunk3Result.trim());
-
-      expect(chunk3Result).toEqual(chunk3.replace(/\r?\n/g, '\n'));
-
-      expect(thirdChunk.props()).toMatchObject({
-        totalLines: 70,
-        startingFrom: 140,
-      });
-    });
-  });
-
-  it('emits showBlobInteractionZones on the eventHub when chunk appears', () => {
-    findChunks().at(0).vm.$emit('appear');
-    expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', path);
   });
 
   describe('LineHighlighter', () => {

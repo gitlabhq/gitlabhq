@@ -57,21 +57,6 @@ The process for setting up Gitaly on its own server is:
 1. [Configure Gitaly clients](#configure-gitaly-clients).
 1. [Disable Gitaly where not required](#disable-gitaly-where-not-required-optional) (optional).
 
-When running Gitaly on its own server, note the following regarding GitLab versions:
-
-- From GitLab 11.4, Gitaly was able to serve all Git requests without requiring a shared NFS mount
-  for Git repository data, except for the
-  [Elasticsearch indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer).
-- From GitLab 11.8, the Elasticsearch indexer also uses Gitaly for data access. NFS can still be
-  leveraged for redundancy on block-level Git data, but should be mounted only on the Gitaly
-  servers.
-- From GitLab 11.8 to 12.2, it is possible to use Elasticsearch in a Gitaly setup that doesn't use
-  NFS. To use Elasticsearch in these versions, the
-  [repository indexer](../../integration/advanced_search/elasticsearch.md#elasticsearch-repository-indexer)
-  must be enabled in your GitLab configuration.
-- [In GitLab 12.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/6481), the new indexer is
-  the default and no configuration is required.
-
 ### Network architecture
 
 The following list depicts the network architecture of Gitaly:
@@ -1100,8 +1085,8 @@ benefit from it. It is orthogonal to:
 
 - The transport (HTTP or SSH).
 - Git protocol version (v0 or v2).
-- The type of fetch (full clones, incremental fetches, shallow clones,
-  partial clones, and so on).
+- The type of fetch, such as full clones, incremental fetches, shallow clones,
+  or partial clones.
 
 The strength of this cache is its ability to deduplicate concurrent
 identical fetches. It:
@@ -1309,18 +1294,38 @@ following keys (in this example, to disable the `hasDotgit` consistency check):
 - In [GitLab 15.3](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/6800) and later:
 
   ```ruby
+  ignored_blobs = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
   gitaly['gitconfig'] = [
+
+   # Populate a file with one unabbreviated SHA-1 per line.
+   # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
+   { key: "fsck.skipList", value: ignored_blobs },
+   { key: "fetch.fsck.skipList", value: ignored_blobs },
+   { key: "receive.fsck.skipList", value: ignored_blobs },
+
    { key: "fsck.hasDotgit", value: "ignore" },
    { key: "fetch.fsck.hasDotgit", value: "ignore" },
-   { key: "receive.fsck.hasDotgit", value: "ignore "},
+   { key: "receive.fsck.hasDotgit", value: "ignore" },
+   { key: "fsck.missingSpaceBeforeEmail", value: "ignore" },
   ]
   ```
 
 - In GitLab 15.2 and earlier (legacy method):
 
   ```ruby
-  ignored_git_errors = ["hasDotgit = ignore"]
+  ignored_git_errors = [
+    "hasDotgit = ignore",
+    "missingSpaceBeforeEmail = ignore",
+  ]
   omnibus_gitconfig['system'] = {
+
+   # Populate a file with one unabbreviated SHA-1 per line.
+   # See https://git-scm.com/docs/git-config#Documentation/git-config.txt-fsckskipList
+    "fsck.skipList" => ignored_blobs
+    "fetch.fsck.skipList" => ignored_blobs,
+    "receive.fsck.skipList" => ignored_blobs,
+
     "fsck" => ignored_git_errors,
     "fetch.fsck" => ignored_git_errors,
     "receive.fsck" => ignored_git_errors,
@@ -1342,6 +1347,30 @@ value = "ignore"
 [[git.config]]
 key = "receive.fsck.hasDotgit"
 value = "ignore"
+
+[[git.config]]
+key = "fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "fetch.fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "receive.fsck.missingSpaceBeforeEmail"
+value = "ignore"
+
+[[git.config]]
+key = "fsck.skipList"
+value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
+[[git.config]]
+key = "fetch.fsck.skipList"
+value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
+
+[[git.config]]
+key = "receive.fsck.skipList"
+value = "/etc/gitlab/instance_wide_ignored_git_blobs.txt"
 ```
 
 ## Configure commit signing for GitLab UI commits

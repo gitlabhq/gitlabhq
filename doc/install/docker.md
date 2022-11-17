@@ -31,7 +31,7 @@ to community resources (such as IRC or forums) to seek help from other users.
 
 ## Prerequisites
 
-Docker is required. See the [official installation documentation](https://docs.docker.com/install/).
+Docker is required. See the [official installation documentation](https://docs.docker.com/get-docker/).
 
 ## Set up the volumes location
 
@@ -138,7 +138,7 @@ With [Docker Compose](https://docs.docker.com/compose/) you can easily configure
 install, and upgrade your Docker-based GitLab installation:
 
 1. [Install Docker Compose](https://docs.docker.com/compose/install/).
-1. Create a `docker-compose.yml` file (or [download an example](https://gitlab.com/gitlab-org/omnibus-gitlab/raw/master/docker/docker-compose.yml)):
+1. Create a `docker-compose.yml` file:
 
    ```yaml
    version: '3.6'
@@ -211,7 +211,7 @@ and [Docker configurations](https://docs.docker.com/engine/swarm/configs/) to ef
 Secrets can be used to securely pass your initial root password without exposing it as an environment variable.
 Configurations can help you to keep your GitLab image as generic as possible.
 
-Here's an example that deploys GitLab with four runners as a [stack](https://docs.docker.com/get-started/part5/), using secrets and configurations:
+Here's an example that deploys GitLab with four runners as a [stack](https://docs.docker.com/get-started/swarm-deploy/#describe-apps-using-stack-files), using secrets and configurations:
 
 1. [Set up a Docker swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/).
 1. Create a `docker-compose.yml` file:

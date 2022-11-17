@@ -376,14 +376,3 @@ sudo -u git -H bundle exec rake gitlab:list_repos SINCE='2015-10-1 12:00 UTC' |\
     /home/git/repositories \
     /mnt/gitlab/repositories
 ```
-
-## Troubleshooting
-
-See the following for information on troubleshooting repository moves.
-
-### Repository move fails for archived projects
-
-Because of a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/363670),
-[archived projects](../../user/project/settings/index.md#advanced-project-settings) fail to move even though the data is cloned
-by Gitaly. Make sure archived projects are
-[unarchived](../../user/project/settings/index.md#unarchive-a-project) before initiating a move.

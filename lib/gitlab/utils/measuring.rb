@@ -31,7 +31,7 @@ module Gitlab
           gc_stats: gc_stats,
           time_to_finish: time_to_finish,
           number_of_sql_calls: sql_calls_count,
-          memory_usage: "#{Gitlab::Metrics::System.memory_usage_rss.to_f / 1024 / 1024} MiB",
+          memory_usage: "#{Gitlab::Metrics::System.memory_usage_rss[:total].to_f / 1024 / 1024} MiB",
           label: ::Prometheus::PidProvider.worker_id
         )
 

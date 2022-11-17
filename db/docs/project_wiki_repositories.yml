@@ -1,0 +1,9 @@
+---
+table_name: project_wiki_repositories
+classes:
+- Projects::WikiRepository
+feature_categories:
+- wiki
+description: Stores information about project wiki repositories.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103399
+milestone: '15.6'

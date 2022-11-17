@@ -1,0 +1,54 @@
+config:
+  test1:
+    script: exit 0
+
+  test2:
+    when: manual
+    script: exit 1
+
+init:
+  expect:
+    pipeline: pending
+    stages:
+      test: pending
+    jobs:
+      test1: pending
+      test2: manual
+
+transitions:
+  - event: success
+    jobs: [test1]
+    expect:
+      pipeline: success
+      stages:
+        test: success
+      jobs:
+        test1: success
+        test2: manual
+  - event: play
+    jobs: [test2]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+      jobs:
+        test1: success
+        test2: pending
+  - event: drop
+    jobs: [test2]
+    expect:
+      pipeline: success
+      stages:
+        test: success
+      jobs:
+        test1: success
+        test2: failed
+  - event: retry
+    jobs: [test2]
+    expect:
+      pipeline: running
+      stages:
+        test: running
+      jobs:
+        test1: success
+        test2: pending

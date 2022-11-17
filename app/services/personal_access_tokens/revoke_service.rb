@@ -4,7 +4,7 @@ module PersonalAccessTokens
   class RevokeService < BaseService
     attr_reader :token, :current_user, :group
 
-    def initialize(current_user = nil, token: nil, group: nil )
+    def initialize(current_user = nil, token: nil, group: nil)
       @current_user = current_user
       @token = token
       @group = group

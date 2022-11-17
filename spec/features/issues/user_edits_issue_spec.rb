@@ -101,6 +101,35 @@ RSpec.describe "Issues > User edits issue", :js do
         visit project_issue_path(project, issue)
       end
 
+      describe 'edit description' do
+        def click_edit_issue_description
+          click_on 'Edit title and description'
+        end
+
+        it 'places focus on the web editor' do
+          toggle_editing_mode_selector = '[data-testid="toggle-editing-mode-button"] label'
+          content_editor_focused_selector = '[data-testid="content-editor"].is-focused'
+          markdown_field_focused_selector = 'textarea:focus'
+          click_edit_issue_description
+
+          expect(page).to have_selector(markdown_field_focused_selector)
+
+          find(toggle_editing_mode_selector, text: 'Rich text').click
+
+          expect(page).not_to have_selector(content_editor_focused_selector)
+
+          refresh
+
+          click_edit_issue_description
+
+          expect(page).to have_selector(content_editor_focused_selector)
+
+          find(toggle_editing_mode_selector, text: 'Source').click
+
+          expect(page).not_to have_selector(markdown_field_focused_selector)
+        end
+      end
+
       describe 'update labels' do
         it 'will not send ajax request when no data is changed' do
           page.within '.labels' do
@@ -186,7 +215,7 @@ RSpec.describe "Issues > User edits issue", :js do
               visit project_issue_path(project, issue)
 
               page.within('.assignee') do
-                expect(page).to have_content "#{user.name}"
+                expect(page).to have_content user.name.to_s
 
                 click_link 'Edit'
                 click_link 'Unassigned'
@@ -261,7 +290,7 @@ RSpec.describe "Issues > User edits issue", :js do
               visit project_issue_path(project, issue)
 
               page.within('.assignee') do
-                expect(page).to have_content "#{user.name}"
+                expect(page).to have_content user.name.to_s
 
                 click_button('Edit')
                 wait_for_requests

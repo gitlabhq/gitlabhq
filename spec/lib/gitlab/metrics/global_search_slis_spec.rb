@@ -47,10 +47,10 @@ RSpec.describe Gitlab::Metrics::GlobalSearchSlis do
 
   describe '#record_apdex' do
     where(:search_type, :code_search, :duration_target) do
-      'basic'    | false | 7.031
-      'basic'    | true  | 21.903
-      'advanced' | false | 4.865
-      'advanced' | true  | 13.546
+      'basic'    | false | 8.812
+      'basic'    | true  | 27.538
+      'advanced' | false | 2.452
+      'advanced' | true  | 15.52
     end
 
     with_them do

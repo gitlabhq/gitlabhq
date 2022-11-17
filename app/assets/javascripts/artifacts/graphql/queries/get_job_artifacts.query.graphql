@@ -1,0 +1,57 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+
+query getJobArtifacts(
+  $projectPath: ID!
+  $firstPageSize: Int
+  $lastPageSize: Int
+  $prevPageCursor: String = ""
+  $nextPageCursor: String = ""
+) {
+  project(fullPath: $projectPath) {
+    id
+    jobs(
+      statuses: [SUCCESS, FAILED]
+      first: $firstPageSize
+      last: $lastPageSize
+      after: $nextPageCursor
+      before: $prevPageCursor
+    ) {
+      count
+      nodes {
+        id
+        name
+        webPath
+        detailedStatus {
+          id
+          group
+          icon
+          label
+        }
+        pipeline {
+          id
+          iid
+          path
+        }
+        refName
+        refPath
+        shortSha
+        commitPath
+        finishedAt
+        browseArtifactsPath
+        artifacts {
+          nodes {
+            id
+            name
+            fileType
+            downloadPath
+            size
+            expireAt
+          }
+        }
+      }
+      pageInfo {
+        ...PageInfo
+      }
+    }
+  }
+}

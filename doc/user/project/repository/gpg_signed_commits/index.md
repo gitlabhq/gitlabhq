@@ -253,3 +253,19 @@ If you must unverify both future and past commits,
   - [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
   - [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/) (advanced)
   - [Review existing GPG keys in your instance](../../../admin_area/credentials_inventory.md#review-existing-gpg-keys)
+
+## Troubleshooting
+
+### Fix verification problems with signed commits
+
+Commits can be signed with [X.509 certificates](../x509_signed_commits/index.md)
+or a GPG key. The verification process for both methods can fail for multiple reasons:
+
+| Value                       | Description | Possible Fixes |
+|-----------------------------|-------------|----------------|
+| `UNVERIFIED`                | The commit signature is not valid. | Sign the commit with a valid signature. |
+| `SAME_USER_DIFFERENT_EMAIL` | The GPG key used to sign the commit does not contain the committer email, but does contain a different valid email for the committer. | Amend the commit to use an email address that matches the GPG key, or update the GPG key [to include the email address](https://security.stackexchange.com/a/261468). |
+| `OTHER_USER`                | The signature and GPG key are valid, but the key belongs to a different user than the committer. | Amend the commit to use the correct email address, or amend the commit to use a GPG key associated with your user. |
+| `UNVERIFIED_KEY`            | The key associated with the GPG signature has no verified email address associated with the committer. | Add and verify the email to your GitLab profile, [update the GPG key to include the email address](https://security.stackexchange.com/a/261468), or amend the commit to use a different committer email address. |
+| `UNKNOWN_KEY`               | The GPG key associated with the GPG signature for this commit is unknown to GitLab. | [Add the GPG key](#add-a-gpg-key-to-your-account) to your GitLab profile. |
+| `MULTIPLE_SIGNATURES`       | Multiple GPG or X.509 signatures have been found for the commit. | Amend the commit to use only one GPG or X.509 signature. |

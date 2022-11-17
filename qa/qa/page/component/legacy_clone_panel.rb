@@ -28,7 +28,7 @@ module QA
         end
 
         def repository_location
-          Git::Location.new(find_element(:clone_url_content).text)
+          Git::Location.new(find_element(:clone_url_content).value)
         end
 
         private

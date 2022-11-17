@@ -152,7 +152,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'issue events' do
-      let_it_be(:issue) { create(:issue) }
+      let_it_be(:issue) { create(:issue, project: project) }
 
       let(:data) { issue.to_hook_data(user) }
 
@@ -192,7 +192,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'merge request events' do
-      let_it_be(:merge_request) { create(:merge_request) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
       let(:data) { merge_request.to_hook_data(user) }
 
@@ -210,7 +210,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'wiki page events' do
-      let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, message: 'user created page: Awesome wiki_page') }
+      let_it_be(:wiki_page) { create(:wiki_page, wiki: project.wiki, project: project, message: 'user created page: Awesome wiki_page') }
 
       let(:data) { Gitlab::DataBuilder::WikiPage.build(wiki_page, user, 'create') }
 
@@ -228,7 +228,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'deployment events' do
-      let_it_be(:deployment) { create(:deployment) }
+      let_it_be(:deployment) { create(:deployment, project: project) }
 
       let(:data) { Gitlab::DataBuilder::Deployment.build(deployment, 'created', Time.current) }
 
@@ -275,8 +275,8 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Push events' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_integration).to receive_messages(
@@ -327,7 +327,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'on a protected branch' do
-      before do
+      before(:all) do
         create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 
@@ -369,7 +369,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     end
 
     context 'on a protected branch with protected branches defined using wildcards' do
-      before do
+      before(:all) do
         create(:protected_branch, :create_branch_on_repository, repository_branch_name: '1-stable', project: project, name: '*-stable')
       end
 
@@ -450,8 +450,8 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Note events' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
 
     before do
       allow(chat_integration).to receive_messages(
@@ -519,8 +519,8 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
   end
 
   describe 'Pipeline events' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, :repository, creator: user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
     let(:pipeline) do
       create(:ci_pipeline,
              project: project, status: status,
@@ -582,7 +582,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       end
 
       context 'on a protected branch' do
-        before do
+        before(:all) do
           create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
         end
 
@@ -612,7 +612,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
       end
 
       context 'on a protected branch with protected branches defined usin wildcards' do
-        before do
+        before(:all) do
           create(:protected_branch, :create_branch_on_repository, repository_branch_name: '1-stable', project: project, name: '*-stable')
         end
 
@@ -673,7 +673,7 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
 
-    let(:deployment) do
+    let_it_be(:deployment) do
       create(:deployment, :success, project: project, sha: project.commit.sha, ref: project.default_branch)
     end
 
@@ -692,11 +692,11 @@ RSpec.shared_examples Integrations::SlackMattermostNotifier do |integration_name
     it_behaves_like "triggered #{integration_name} integration", event_type: "deployment"
 
     context 'on a protected branch' do
-      before do
+      before(:all) do
         create(:protected_branch, :create_branch_on_repository, project: project, name: 'a-protected-branch')
       end
 
-      let(:deployment) do
+      let_it_be(:deployment) do
         create(:deployment, :success, project: project, sha: project.commit.sha, ref: 'a-protected-branch')
       end
 

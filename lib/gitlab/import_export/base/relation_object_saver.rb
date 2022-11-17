@@ -81,11 +81,11 @@ module Gitlab
               subrelation = relation_object.public_send(definition)
               association = relation_object.class.reflect_on_association(definition)
 
-              if association&.collection? && subrelation.size > MIN_RECORDS_SIZE
-                collection_subrelations[definition] = subrelation.records
+              next unless association&.collection? && subrelation.size > MIN_RECORDS_SIZE
 
-                subrelation.clear
-              end
+              collection_subrelations[definition] = subrelation.records
+
+              subrelation.clear
             end
           end
         end

@@ -22,8 +22,20 @@ module QA
           new.tap(&prepare_block)
         end
 
+        def fabricate_via_api_unless_fips!
+          if QA::Support::FIPS.enabled?
+            fabricate!
+          else
+            fabricate_via_api!
+          end
+        end
+
         def fabricate!(*args, &prepare_block)
-          fabricate_via_api!(*args, &prepare_block)
+          if QA::Support::FIPS.enabled?
+            fabricate_via_browser_ui!(*args, &prepare_block)
+          else
+            fabricate_via_api!(*args, &prepare_block)
+          end
         rescue NotImplementedError
           fabricate_via_browser_ui!(*args, &prepare_block)
         end
@@ -95,7 +107,7 @@ module QA
 
             Support::FabricationTracker.save_fabrication(:"#{fabrication_method}_fabrication", fabrication_time)
 
-            unless resource.retrieved_from_cache
+            unless resource.retrieved_from_cache || QA::Support::FIPS.enabled?
               Tools::TestResourceDataProcessor.collect(
                 resource: resource,
                 info: resource.identifier,

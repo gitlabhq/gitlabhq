@@ -77,12 +77,8 @@ Users granted:
 ### Automatic member removal
 
 After a group sync, for GitLab subgroups, users who are not members of a mapped SAML
-group are removed from the group.
-
-FLAG:
-In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/364144), on GitLab.com, users in the top-level
-group are assigned the [default membership role](index.md#role) rather than removed. This setting is enabled with the
-`saml_group_sync_retain_default_membership` feature flag and can be configured by GitLab.com administrators only.
+group are removed from the group. Users in the top-level group are assigned the
+[default membership role](index.md#role).
 
 For example, in the following diagram:
 

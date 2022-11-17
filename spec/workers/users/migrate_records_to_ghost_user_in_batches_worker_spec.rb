@@ -38,16 +38,4 @@ RSpec.describe Users::MigrateRecordsToGhostUserInBatchesWorker do
       expect(issue.last_edited_by).to eq(User.ghost)
     end
   end
-
-  context 'when user_destroy_with_limited_execution_time_worker is disabled' do
-    before do
-      stub_feature_flags(user_destroy_with_limited_execution_time_worker: false)
-    end
-
-    it 'does not execute the service' do
-      expect(Users::MigrateRecordsToGhostUserInBatchesService).not_to receive(:new)
-
-      worker.perform
-    end
-  end
 end

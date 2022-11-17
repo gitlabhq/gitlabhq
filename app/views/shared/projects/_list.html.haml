@@ -32,7 +32,7 @@
   - if any_projects?(projects)
     - load_pipeline_status(projects) if pipeline_status
     - load_max_project_member_accesses(projects) # Prime cache used in shared/projects/project view rendered below
-    %ul.projects-list{ class: css_classes }
+    %ul.projects-list.gl-text-secondary.gl-w-full.gl-my-2{ class: css_classes }
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
         = render "shared/projects/project", project: project, skip_namespace: skip_namespace,

@@ -22,6 +22,8 @@ module Integrations
         'true'
       elsif field[:type] == 'checkbox'
         ActiveRecord::Type::Boolean.new.deserialize(value).to_s
+      elsif field[:name] == 'webhook' && integration.chat?
+        BaseChatNotification::SECRET_MASK if value.present?
       else
         value
       end

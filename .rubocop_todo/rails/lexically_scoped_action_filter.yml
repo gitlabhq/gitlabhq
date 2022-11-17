@@ -1,15 +1,13 @@
 ---
 Rails/LexicallyScopedActionFilter:
-  # Offense count: 73
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/controllers/admin/groups_controller.rb'
+    - 'app/controllers/admin/hooks_controller.rb'
     - 'app/controllers/clusters/base_controller.rb'
     - 'app/controllers/clusters/clusters_controller.rb'
     - 'app/controllers/concerns/enforces_two_factor_authentication.rb'
     - 'app/controllers/concerns/integrations/actions.rb'
-    - 'app/controllers/concerns/multiple_boards_actions.rb'
     - 'app/controllers/concerns/oauth_applications.rb'
     - 'app/controllers/concerns/spammable_actions/captcha_check/html_format_actions_support.rb'
     - 'app/controllers/confirmations_controller.rb'
@@ -17,14 +15,17 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/groups/group_members_controller.rb'
     - 'app/controllers/groups/milestones_controller.rb'
     - 'app/controllers/groups/runners_controller.rb'
+    - 'app/controllers/groups/settings/repository_controller.rb'
     - 'app/controllers/groups/uploads_controller.rb'
     - 'app/controllers/groups_controller.rb'
     - 'app/controllers/import/base_controller.rb'
     - 'app/controllers/oauth/applications_controller.rb'
     - 'app/controllers/passwords_controller.rb'
+    - 'app/controllers/projects/analytics/cycle_analytics/stages_controller.rb'
     - 'app/controllers/projects/badges_controller.rb'
     - 'app/controllers/projects/branches_controller.rb'
     - 'app/controllers/projects/environments_controller.rb'
+    - 'app/controllers/projects/hooks_controller.rb'
     - 'app/controllers/projects/incidents_controller.rb'
     - 'app/controllers/projects/issue_links_controller.rb'
     - 'app/controllers/projects/issues_controller.rb'
@@ -36,6 +37,8 @@ Rails/LexicallyScopedActionFilter:
     - 'app/controllers/projects/project_members_controller.rb'
     - 'app/controllers/projects/prometheus/alerts_controller.rb'
     - 'app/controllers/projects/releases_controller.rb'
+    - 'app/controllers/projects/settings/integration_hook_logs_controller.rb'
+    - 'app/controllers/projects/settings/merge_requests_controller.rb'
     - 'app/controllers/projects/snippets_controller.rb'
     - 'app/controllers/projects/tags_controller.rb'
     - 'app/controllers/projects/todos_controller.rb'

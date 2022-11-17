@@ -208,19 +208,26 @@ RSpec.describe Explore::ProjectsController do
         render_views
 
         # some N+1 queries still exist
-        it 'avoids N+1 queries' do
-          projects = create_list(:project, 3, :repository, :public)
-          projects.each do |project|
-            pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
-            create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
+        it 'avoids N+1 queries', :request_store do
+          # Because we enable the request store for this spec, Gitaly may report too many invocations.
+          # Allow N+1s here and when creating additional objects below because we're just creating test objects.
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            projects = create_list(:project, 3, :repository, :public)
+
+            projects.each do |project|
+              pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
+              create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
+            end
           end
 
           control = ActiveRecord::QueryRecorder.new { get endpoint }
 
-          new_projects = create_list(:project, 2, :repository, :public)
-          new_projects.each do |project|
-            pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
-            create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
+          Gitlab::GitalyClient.allow_n_plus_1_calls do
+            new_projects = create_list(:project, 2, :repository, :public)
+            new_projects.each do |project|
+              pipeline = create(:ci_pipeline, :success, project: project, sha: project.commit.id)
+              create(:commit_status, :success, pipeline: pipeline, ref: pipeline.ref)
+            end
           end
 
           expect { get endpoint }.not_to exceed_query_limit(control).with_threshold(8)

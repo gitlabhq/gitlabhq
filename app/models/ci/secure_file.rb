@@ -27,7 +27,7 @@ module Ci
 
     serialize :metadata, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
 
-    default_value_for(:file_store) { Ci::SecureFileUploader.default_store }
+    attribute :file_store, default: -> { Ci::SecureFileUploader.default_store }
 
     mount_file_store_uploader Ci::SecureFileUploader
 

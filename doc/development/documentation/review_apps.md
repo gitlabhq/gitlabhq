@@ -47,12 +47,11 @@ If you want to know the in-depth details, here's what's really happening:
 1. The preview URL is shown both at the job output and in the merge request
    widget. You also get the link to the remote pipeline.
 1. In the `gitlab-org/gitlab-docs` project, the pipeline is created and it
-   [skips the test jobs](https://gitlab.com/gitlab-org/gitlab-docs/blob/8d5d5c750c602a835614b02f9db42ead1c4b2f5e/.gitlab-ci.yml#L50-55)
+   [skips most test jobs](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/d41ca9323f762132780d2d072f845d28817a5383/.gitlab/ci/rules.gitlab-ci.yml#L101-103)
    to lower the build time.
-1. Once the docs site is built, the HTML files are uploaded as artifacts.
-1. A specific runner tied only to the docs project, runs the Review App job
-   that downloads the artifacts and uses `rsync` to transfer the files over
-   to a location where NGINX serves them.
+1. After the docs site is built, the HTML files are uploaded as artifacts to
+   a GCP bucket (see [issue `gitlab-com/gl-infra/reliability#11021`](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11021)
+   for the implementation details).
 
 The following GitLab features are used among others:
 
@@ -60,42 +59,26 @@ The following GitLab features are used among others:
 - [Multi project pipelines](../../ci/pipelines/downstream_pipelines.md#multi-project-pipelines)
 - [Review Apps](../../ci/review_apps/index.md)
 - [Artifacts](../../ci/yaml/index.md#artifacts)
-- [Specific runner](../../ci/runners/runners_scope.md#prevent-a-specific-runner-from-being-enabled-for-other-projects)
 - [Merge request pipelines](../../ci/pipelines/merge_request_pipelines.md)
 
 ## Troubleshooting review apps
 
-### Review app returns a 404 error
+### `NoSuchKey The specified key does not exist`
 
-If the review app URL returns a 404 error, either the site is not
-yet deployed, or something went wrong with the remote pipeline. You can:
+If you see the following message in a review app, either the site is not
+yet deployed, or something went wrong with the downstream pipeline in `gitlab-docs`.
 
-- Wait a few minutes and it should appear online.
-- Check the manual job's log and verify the URL. If the URL is different, try the
-  one from the job log.
+```plaintext
+NoSuchKeyThe specified key does not exist.No such object: <URL>
+```
+
+In that case, you can:
+
+- Wait a few minutes and the review app should appear online.
+- Check the `review-docs-deploy` job's log and verify the URL. If the URL shown in the merge
+  request UI is different than the job log, try the one from the job log.
 - Check the status of the remote pipeline from the link in the merge request's job output.
   If the pipeline failed or got stuck, GitLab team members can ask for help in the `#docs`
-  chat channel. Contributors can ping a technical writer in the merge request.
-
-### Not enough disk space
-
-Sometimes the review app server is full and there is no more disk space. Each review
-app takes about 570MB of disk space.
-
-A cron job to remove review apps older than 20 days runs hourly,
-but the disk space still occasionally fills up. To manually free up more space,
-a GitLab technical writing team member can:
-
-1. Navigate to the [`gitlab-docs` schedules page](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules).
-1. Select the play button for the `Remove old review apps from review app server`
-   schedule. By default, this cleans up review apps older than 14 days.
-1. Navigate to the [pipelines page](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines)
-   and start the manual job called `clean-pages`.
-
-If the job says no review apps were found in that period, edit the `CLEAN_REVIEW_APPS_DAYS`
-variable in the schedule, and repeat the process above. Gradually decrease the variable
-until the free disk space reaches an acceptable amount (for example, 3GB).
-Remember to set it to 14 again when you're done.
-
-There's an issue to [migrate from the DigitalOcean server to GCP buckets](https://gitlab.com/gitlab-org/gitlab-docs/-/issues/735)),
-which should solve the disk space problem.
+  internal Slack channel. Contributors can ping a
+  [technical writer](https://about.gitlab.com/handbook/product/ux/technical-writing/#designated-technical-writers)
+  in the merge request.

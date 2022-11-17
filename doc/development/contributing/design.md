@@ -24,7 +24,7 @@ screenshots (or videos) of your changes in the description, as explained in our
 [MR workflow](merge_request_workflow.md). These screenshots/videos are very helpful
 for all reviewers and can speed up the review process, especially if the changes
 are small.
-- Attach the ~UX label to any merge request that impacts the user experience. This will enable Product Designers to [review](https://about.gitlab.com/handbook/engineering/ux/product-designer/mr-reviews/#stage-group-mrs/) any user facing changes.  
+- Attach the ~UX label to any merge request that impacts the user experience. This will enable Product Designers to [review](https://about.gitlab.com/handbook/product/ux/product-designer/mr-reviews/#stage-group-mrs/) any user facing changes.  
 - Assign the Product Designer suggested by Reviewer Roulette as the reviewer of your merge request. The reviewer does not have to be the domain expert unless this is a community contribution.
 
 ## Checklist
@@ -64,7 +64,7 @@ Check visual design properties using your browser's _elements inspector_ ([Chrom
   guidelines.
 - _Optionally_ consider [dark mode](../../user/profile/preferences.md#dark-mode). [^1]
 
- [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is in [alpha](../../policy/alpha-beta-support.md#alpha-features). The [UX Foundations team](https://about.gitlab.com/direction/ecosystem/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
+ [^1]: You're not required to design for [dark mode](../../user/profile/preferences.md#dark-mode) while the feature is in [alpha](../../policy/alpha-beta-support.md#alpha-features). The [UX Foundations team](https://about.gitlab.com/direction/manage/foundations/) plans to improve the dark mode in the future. Until we integrate [Pajamas](https://design.gitlab.com/) components into the product and the underlying design strategy is in place to support dark mode, we cannot guarantee that we won't introduce bugs and debt to this mode. At your discretion, evaluate the need to create dark mode patches.
 
 ### States
 

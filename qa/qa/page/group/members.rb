@@ -5,7 +5,6 @@ module QA
     module Group
       class Members < Page::Base
         include Page::Component::InviteMembersModal
-        include Page::Component::UsersSelect
         include Page::Component::MembersFilter
 
         view 'app/assets/javascripts/members/components/modals/remove_member_modal.vue' do

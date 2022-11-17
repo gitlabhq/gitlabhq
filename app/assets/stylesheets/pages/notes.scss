@@ -6,7 +6,7 @@ $system-note-svg-size: 1rem;
     content: '';
     border-left: 2px solid var(--gray-10, $gray-10);
     position: absolute;
-    top: 0;
+    top: $gl-padding-6;
     bottom: 0;
     left: calc(#{$left} - 1px);
     height: calc(100% + 1.5rem);
@@ -421,7 +421,7 @@ $system-note-svg-size: 1rem;
       height: $system-note-icon-size;
       border: 1px solid $gray-10;
       border-radius: $system-note-icon-size;
-      margin: -8px 0 0;
+      margin: -6px 0 0;
 
       svg {
         width: $system-note-svg-size;
@@ -968,7 +968,7 @@ $system-note-svg-size: 1rem;
     height: 12px;
   }
 
-  &:hover,
+  &:hover:not([disabled]),
   &.inverted {
     &::before {
       background-color: $white;

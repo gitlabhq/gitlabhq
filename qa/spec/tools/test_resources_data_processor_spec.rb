@@ -1,7 +1,5 @@
 # frozen_string_literal: true
-
 require 'active_support/testing/time_helpers'
-
 RSpec.describe QA::Tools::TestResourceDataProcessor do
   include QA::Support::Helpers::StubEnv
   include ActiveSupport::Testing::TimeHelpers

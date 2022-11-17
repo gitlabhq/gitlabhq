@@ -6,9 +6,20 @@ import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import {
-  FILTERED_SEARCH_TERM,
   FILTER_ANY,
+  FILTERED_SEARCH_TERM,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_EPIC,
   TOKEN_TYPE_HEALTH,
+  TOKEN_TYPE_ITERATION,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
+  TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearch from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { AssigneeFilterType } from '~/boards/constants';
@@ -17,8 +28,6 @@ import eventHub from '../eventhub';
 export default {
   i18n: {
     search: __('Search'),
-    label: __('Label'),
-    author: __('Author'),
   },
   components: { FilteredSearch },
   inject: ['initialFilterParams'],
@@ -62,28 +71,28 @@ export default {
 
       if (authorUsername) {
         filteredSearchValue.push({
-          type: 'author',
+          type: TOKEN_TYPE_AUTHOR,
           value: { data: authorUsername, operator: '=' },
         });
       }
 
       if (assigneeUsername) {
         filteredSearchValue.push({
-          type: 'assignee',
+          type: TOKEN_TYPE_ASSIGNEE,
           value: { data: assigneeUsername, operator: '=' },
         });
       }
 
       if (assigneeId) {
         filteredSearchValue.push({
-          type: 'assignee',
+          type: TOKEN_TYPE_ASSIGNEE,
           value: { data: assigneeId, operator: '=' },
         });
       }
 
       if (types) {
         filteredSearchValue.push({
-          type: 'type',
+          type: TOKEN_TYPE_TYPE,
           value: { data: types, operator: '=' },
         });
       }
@@ -91,7 +100,7 @@ export default {
       if (labelName?.length) {
         filteredSearchValue.push(
           ...labelName.map((label) => ({
-            type: 'label',
+            type: TOKEN_TYPE_LABEL,
             value: { data: label, operator: '=' },
           })),
         );
@@ -99,7 +108,7 @@ export default {
 
       if (milestoneTitle) {
         filteredSearchValue.push({
-          type: 'milestone',
+          type: TOKEN_TYPE_MILESTONE,
           value: { data: milestoneTitle, operator: '=' },
         });
       }
@@ -116,42 +125,42 @@ export default {
 
       if (iterationData) {
         filteredSearchValue.push({
-          type: 'iteration',
+          type: TOKEN_TYPE_ITERATION,
           value: { data: iterationData, operator: '=' },
         });
       }
 
       if (weight) {
         filteredSearchValue.push({
-          type: 'weight',
+          type: TOKEN_TYPE_WEIGHT,
           value: { data: weight, operator: '=' },
         });
       }
 
       if (myReactionEmoji) {
         filteredSearchValue.push({
-          type: 'my-reaction',
+          type: TOKEN_TYPE_MY_REACTION,
           value: { data: myReactionEmoji, operator: '=' },
         });
       }
 
       if (releaseTag) {
         filteredSearchValue.push({
-          type: 'release',
+          type: TOKEN_TYPE_RELEASE,
           value: { data: releaseTag, operator: '=' },
         });
       }
 
       if (confidential !== undefined) {
         filteredSearchValue.push({
-          type: 'confidential',
+          type: TOKEN_TYPE_CONFIDENTIAL,
           value: { data: confidential },
         });
       }
 
       if (epicId) {
         filteredSearchValue.push({
-          type: 'epic',
+          type: TOKEN_TYPE_EPIC,
           value: { data: epicId, operator: '=' },
         });
       }
@@ -165,35 +174,35 @@ export default {
 
       if (this.filterParams['not[authorUsername]']) {
         filteredSearchValue.push({
-          type: 'author',
+          type: TOKEN_TYPE_AUTHOR,
           value: { data: this.filterParams['not[authorUsername]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[milestoneTitle]']) {
         filteredSearchValue.push({
-          type: 'milestone',
+          type: TOKEN_TYPE_MILESTONE,
           value: { data: this.filterParams['not[milestoneTitle]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[iterationId]']) {
         filteredSearchValue.push({
-          type: 'iteration',
+          type: TOKEN_TYPE_ITERATION,
           value: { data: this.filterParams['not[iterationId]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[weight]']) {
         filteredSearchValue.push({
-          type: 'weight',
+          type: TOKEN_TYPE_WEIGHT,
           value: { data: this.filterParams['not[weight]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[assigneeUsername]']) {
         filteredSearchValue.push({
-          type: 'assignee',
+          type: TOKEN_TYPE_ASSIGNEE,
           value: { data: this.filterParams['not[assigneeUsername]'], operator: '!=' },
         });
       }
@@ -201,7 +210,7 @@ export default {
       if (this.filterParams['not[labelName]']) {
         filteredSearchValue.push(
           ...this.filterParams['not[labelName]'].map((label) => ({
-            type: 'label',
+            type: TOKEN_TYPE_LABEL,
             value: { data: label, operator: '!=' },
           })),
         );
@@ -209,28 +218,28 @@ export default {
 
       if (this.filterParams['not[types]']) {
         filteredSearchValue.push({
-          type: 'type',
+          type: TOKEN_TYPE_TYPE,
           value: { data: this.filterParams['not[types]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[epicId]']) {
         filteredSearchValue.push({
-          type: 'epic',
+          type: TOKEN_TYPE_EPIC,
           value: { data: this.filterParams['not[epicId]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[myReactionEmoji]']) {
         filteredSearchValue.push({
-          type: 'my-reaction',
+          type: TOKEN_TYPE_MY_REACTION,
           value: { data: this.filterParams['not[myReactionEmoji]'], operator: '!=' },
         });
       }
 
       if (this.filterParams['not[releaseTag]']) {
         filteredSearchValue.push({
-          type: 'release',
+          type: TOKEN_TYPE_RELEASE,
           value: { data: this.filterParams['not[releaseTag]'], operator: '!=' },
         });
       }
@@ -302,7 +311,7 @@ export default {
           my_reaction_emoji: myReactionEmoji,
           release_tag: releaseTag,
           confidential,
-          [TOKEN_TYPE_HEALTH]: healthStatus,
+          health_status: healthStatus,
         },
         (value) => {
           if (value || value === false) {
@@ -361,44 +370,44 @@ export default {
 
       filters.forEach((filter) => {
         switch (filter.type) {
-          case 'author':
+          case TOKEN_TYPE_AUTHOR:
             filterParams.authorUsername = filter.value.data;
             break;
-          case 'assignee':
+          case TOKEN_TYPE_ASSIGNEE:
             if (Object.values(AssigneeFilterType).includes(filter.value.data)) {
               filterParams.assigneeId = filter.value.data;
             } else {
               filterParams.assigneeUsername = filter.value.data;
             }
             break;
-          case 'type':
+          case TOKEN_TYPE_TYPE:
             filterParams.types = filter.value.data;
             break;
-          case 'label':
+          case TOKEN_TYPE_LABEL:
             labels.push(filter.value.data);
             break;
-          case 'milestone':
+          case TOKEN_TYPE_MILESTONE:
             filterParams.milestoneTitle = filter.value.data;
             break;
-          case 'iteration':
+          case TOKEN_TYPE_ITERATION:
             filterParams.iterationId = filter.value.data;
             break;
-          case 'weight':
+          case TOKEN_TYPE_WEIGHT:
             filterParams.weight = filter.value.data;
             break;
-          case 'epic':
+          case TOKEN_TYPE_EPIC:
             filterParams.epicId = filter.value.data;
             break;
-          case 'my-reaction':
+          case TOKEN_TYPE_MY_REACTION:
             filterParams.myReactionEmoji = filter.value.data;
             break;
-          case 'release':
+          case TOKEN_TYPE_RELEASE:
             filterParams.releaseTag = filter.value.data;
             break;
-          case 'confidential':
+          case TOKEN_TYPE_CONFIDENTIAL:
             filterParams.confidential = filter.value.data;
             break;
-          case 'filtered-search-term':
+          case FILTERED_SEARCH_TERM:
             if (filter.value.data) plainText.push(filter.value.data);
             break;
           case TOKEN_TYPE_HEALTH:

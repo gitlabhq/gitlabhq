@@ -10,7 +10,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
     include_context 'dependency proxy helpers context'
 
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, group: group) }
+    let_it_be_with_reload(:project) { create(:project, group: group) }
     let_it_be_with_reload(:package_setting) { create(:namespace_package_setting, namespace: group) }
 
     let(:target) { project }
@@ -76,19 +76,6 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
         end
       end
 
-      context 'when cascade_package_forwarding_settings is disabled' do
-        let(:package_type) { forwardable_package_type }
-        let(:forward_to_registry) { true }
-
-        before do
-          stub_feature_flags(cascade_package_forwarding_settings: false)
-          allow_fetch_cascade_application_setting(attribute: "#{forwardable_package_type}_package_requests_forwarding", return_value: true)
-          package_setting.update!("#{forwardable_package_type}_package_requests_forwarding" => false)
-        end
-
-        it_behaves_like 'executing redirect'
-      end
-
       context 'when no target is present' do
         let(:package_type) { forwardable_package_type }
         let(:forward_to_registry) { true }
@@ -133,7 +120,7 @@ RSpec.describe API::Helpers::Packages::DependencyProxyHelpers do
       end
 
       Packages::Package.package_types.keys.without('maven', 'npm', 'pypi').each do |pkg_type|
-        context "#{pkg_type}" do
+        context pkg_type.to_s do
           let(:package_type) { pkg_type.to_sym }
 
           it 'raises an error' do

@@ -15,7 +15,7 @@ watch this [introduction video](https://youtu.be/akRhUbvtnmo).
 
 ## Browse components with Lookbook
 
-We have a [Lookbook](https://github.com/allmarkedup/lookbook) in [http://gdk.test:3000/rails/lookbook](http://gdk.test:3000/rails/lookbook) (only available in development mode) to browse and interact with ViewComponent previews.
+We have a [Lookbook](https://github.com/allmarkedup/lookbook) in `http://gdk.test:3000/rails/lookbook` (only available in development mode) to browse and interact with ViewComponent previews.
 
 ## Pajamas components
 
@@ -24,12 +24,12 @@ available as a ViewComponent in `app/components/pajamas`.
 
 NOTE:
 We are still in the process of creating these components, so not every Pajamas component is available as ViewComponent.
-Reach out to the [Foundations team](https://about.gitlab.com/handbook/engineering/development/dev/ecosystem/foundations/)
+Reach out to the [Foundations team](https://about.gitlab.com/handbook/engineering/development/dev/manage/foundations/)
 if the component you are looking for is not yet available.
 
 ### Available components
 
-Consider this list a best effort. The full list can be found in [`app/components/pajamas`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/components/pajamas). Also see [our Lookbook](http://gdk.test:3000/rails/lookbook) for a more interactive way to browse our components.
+Consider this list a best effort. The full list can be found in [`app/components/pajamas`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/app/components/pajamas). Also see our Lookbook (`http://gdk.test:3000/rails/lookbook`) for a more interactive way to browse our components.
 
 #### Alert
 
@@ -155,7 +155,7 @@ For the full list of options, see its
 
 #### Checkbox tag
 
-The `Pajamas::CheckboxTagComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox) specification.
+The `Pajamas::CheckboxTagComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox/) specification.
 
 The `name` argument and `label` slot are required.
 
@@ -176,7 +176,7 @@ For the full list of options, see its
 
 #### Checkbox
 
-The `Pajamas::CheckboxComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox) specification.
+The `Pajamas::CheckboxComponent` follows the [Pajamas Checkbox](https://design.gitlab.com/components/checkbox/) specification.
 
 NOTE:
 `Pajamas::CheckboxComponent` is used internally by the [GitLab UI form builder](haml.md#use-the-gitlab-ui-form-builder) and requires an instance of [ActionView::Helpers::FormBuilder](https://api.rubyonrails.org/v6.1.0/classes/ActionView/Helpers/FormBuilder.html) to be passed as the `form` argument.

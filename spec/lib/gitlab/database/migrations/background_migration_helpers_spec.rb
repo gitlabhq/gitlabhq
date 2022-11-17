@@ -14,9 +14,6 @@ RSpec.describe Gitlab::Database::Migrations::BackgroundMigrationHelpers do
   shared_examples_for 'helpers that enqueue background migrations' do |worker_class, connection_class, tracking_database|
     before do
       allow(model).to receive(:tracking_database).and_return(tracking_database)
-
-      # Due to lib/gitlab/database/load_balancing/configuration.rb:92 requiring RequestStore
-      # we cannot use stub_feature_flags(force_no_sharing_primary_model: true)
       allow(connection_class.connection.load_balancer.configuration)
         .to receive(:use_dedicated_connection?).and_return(true)
 

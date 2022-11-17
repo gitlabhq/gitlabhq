@@ -16,8 +16,14 @@ class WorkItem < Issue
 
   scope :inc_relations_for_permission_check, -> { includes(:author, project: :project_feature) }
 
-  def self.assignee_association_name
-    'issue'
+  class << self
+    def assignee_association_name
+      'issue'
+    end
+
+    def test_reports_join_column
+      'issues.id'
+    end
   end
 
   def noteable_target_type_name

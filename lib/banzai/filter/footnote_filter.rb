@@ -44,25 +44,25 @@ module Banzai
           node_xpath = Gitlab::Utils::Nokogiri.css_to_xpath(css)
           footnote_node = doc.at_xpath(node_xpath)
 
-          if footnote_node || modified_footnotes[ref_num]
-            link_node[:href] += rand_suffix
-            link_node[:id]   += rand_suffix
+          next unless footnote_node || modified_footnotes[ref_num]
 
-            # Sanitization stripped off class - add it back in
-            link_node.parent.append_class('footnote-ref')
+          link_node[:href] += rand_suffix
+          link_node[:id]   += rand_suffix
 
-            unless modified_footnotes[ref_num]
-              footnote_node[:id] += rand_suffix
-              backref_node        = footnote_node.at_css("a[href=\"##{fnref_id(ref_num)}\"]")
+          # Sanitization stripped off class - add it back in
+          link_node.parent.append_class('footnote-ref')
 
-              if backref_node
-                backref_node[:href] += rand_suffix
-                backref_node.append_class('footnote-backref')
-              end
+          next if modified_footnotes[ref_num]
 
-              modified_footnotes[ref_num] = true
-            end
+          footnote_node[:id] += rand_suffix
+          backref_node        = footnote_node.at_css("a[href=\"##{fnref_id(ref_num)}\"]")
+
+          if backref_node
+            backref_node[:href] += rand_suffix
+            backref_node.append_class('footnote-backref')
           end
+
+          modified_footnotes[ref_num] = true
         end
 
         doc

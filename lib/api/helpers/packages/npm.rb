@@ -19,7 +19,7 @@ module API
           strong_memoize(:project) do
             case endpoint_scope
             when :project
-              user_project
+              user_project(action: :read_package)
             when :instance
               # Simulate the same behavior as #user_project by re-using #find_project!
               # but take care if the project_id is nil as #find_project! is not designed

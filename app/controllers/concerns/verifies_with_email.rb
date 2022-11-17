@@ -8,7 +8,7 @@ module VerifiesWithEmail
   include ActionView::Helpers::DateHelper
 
   included do
-    prepend_before_action :verify_with_email, only: :create, unless: -> { two_factor_enabled? }
+    prepend_before_action :verify_with_email, only: :create, unless: -> { skip_verify_with_email? }
     skip_before_action :required_signup_info, only: :successful_verification
   end
 
@@ -55,6 +55,10 @@ module VerifiesWithEmail
 
   private
 
+  def skip_verify_with_email?
+    two_factor_enabled? || Gitlab::Qa.request?(request.user_agent)
+  end
+
   def find_verification_user
     return unless session[:verification_user_id]
 
@@ -84,10 +88,7 @@ module VerifiesWithEmail
   def send_verification_instructions_email(user, token)
     return unless user.can?(:receive_notifications)
 
-    Notify.verification_instructions_email(
-      user.id,
-      token: token,
-      expires_in: Users::EmailVerification::ValidateTokenService::TOKEN_VALID_FOR_MINUTES).deliver_later
+    Notify.verification_instructions_email(user.email, token: token).deliver_later
 
     log_verification(user, :instructions_sent)
   end

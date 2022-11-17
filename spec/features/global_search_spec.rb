@@ -2,14 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Global search' do
+RSpec.describe 'Global search', :js do
   include AfterNextHelpers
 
-  let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project, namespace: user.namespace) }
 
   before do
-    stub_feature_flags(search_page_vertical_nav: false)
     project.add_maintainer(user)
     sign_in(user)
   end
@@ -42,7 +41,7 @@ RSpec.describe 'Global search' do
       end
     end
 
-    it 'closes the dropdown on blur', :js do
+    it 'closes the dropdown on blur' do
       find('#search').click
       fill_in 'search', with: "a"
 
@@ -59,7 +58,7 @@ RSpec.describe 'Global search' do
       expect(page).to have_no_selector('#js-header-search')
     end
 
-    it 'focuses search input when shortcut "s" is pressed', :js do
+    it 'focuses search input when shortcut "s" is pressed' do
       expect(page).not_to have_selector('#search:focus')
 
       find('body').native.send_key('s')
@@ -74,7 +73,7 @@ RSpec.describe 'Global search' do
       stub_feature_flags(new_header_search: true)
       visit dashboard_projects_path
 
-      # intialize javascript loaded input search input field
+      # initialize javascript loaded input search input field
       find('#search').click
       find('body').click
     end
@@ -84,7 +83,7 @@ RSpec.describe 'Global search' do
       expect(page).to have_selector('#js-header-search')
     end
 
-    it 'focuses search input when shortcut "s" is pressed', :js do
+    it 'focuses search input when shortcut "s" is pressed' do
       expect(page).not_to have_selector('#search:focus')
 
       find('body').native.send_key('s')

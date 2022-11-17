@@ -8,20 +8,7 @@ module Gitlab
           include Gitlab::Usage::TimeFrame
 
           def initialize(recorded_at)
-            @aggregated_metrics = load_metrics(AGGREGATED_METRICS_PATH)
             @recorded_at = recorded_at
-          end
-
-          def all_time_data
-            aggregated_metrics_data(Gitlab::Usage::TimeFrame::ALL_TIME_TIME_FRAME_NAME)
-          end
-
-          def monthly_data
-            aggregated_metrics_data(Gitlab::Usage::TimeFrame::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME)
-          end
-
-          def weekly_data
-            aggregated_metrics_data(Gitlab::Usage::TimeFrame::SEVEN_DAYS_TIME_FRAME_NAME)
           end
 
           def calculate_count_for_aggregation(aggregation:, time_frame:)
@@ -40,16 +27,7 @@ module Gitlab
 
           private
 
-          attr_accessor :aggregated_metrics, :recorded_at
-
-          def aggregated_metrics_data(time_frame)
-            aggregated_metrics.each_with_object({}) do |aggregation, data|
-              next if aggregation[:feature_flag] && Feature.disabled?(aggregation[:feature_flag], type: :development)
-              next unless aggregation[:time_frame].include?(time_frame)
-
-              data[aggregation[:name]] = calculate_count_for_aggregation(aggregation: aggregation, time_frame: time_frame)
-            end
-          end
+          attr_accessor :recorded_at
 
           def with_validate_configuration(aggregation, time_frame)
             source = aggregation[:source]
@@ -83,16 +61,6 @@ module Gitlab
             Gitlab::Utils::UsageData::FALLBACK
           end
 
-          def load_metrics(wildcard)
-            Dir[wildcard].each_with_object([]) do |path, metrics|
-              metrics.push(*load_yaml_from_path(path))
-            end
-          end
-
-          def load_yaml_from_path(path)
-            YAML.safe_load(File.read(path), aliases: true)&.map(&:with_indifferent_access)
-          end
-
           def time_constraints(time_frame)
             case time_frame
             when Gitlab::Usage::TimeFrame::TWENTY_EIGHT_DAYS_TIME_FRAME_NAME
@@ -108,5 +76,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Usage::Metrics::Aggregates::Aggregate.prepend_mod_with('Gitlab::Usage::Metrics::Aggregates::Aggregate')

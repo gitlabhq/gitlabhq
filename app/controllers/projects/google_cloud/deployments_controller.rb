@@ -11,7 +11,7 @@ class Projects::GoogleCloud::DeploymentsController < Projects::GoogleCloud::Base
       enableCloudRunUrl: project_google_cloud_deployments_cloud_run_path(project),
       enableCloudStorageUrl: project_google_cloud_deployments_cloud_storage_path(project)
     }
-    @js_data = js_data.to_json
+    @js_data = Gitlab::Json.dump(js_data)
     track_event(:render_page)
   end
 

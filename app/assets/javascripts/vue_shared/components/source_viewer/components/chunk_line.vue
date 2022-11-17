@@ -1,6 +1,7 @@
 <script>
 import { GlSafeHtmlDirective } from '@gitlab/ui';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { getPageParamValue, getPageSearchString } from '~/blob/utils';
 
 export default {
   directives: {
@@ -25,6 +26,13 @@ export default {
       required: true,
     },
   },
+  computed: {
+    pageSearchString() {
+      if (!this.glFeatures.fileLineBlame) return '';
+      const page = getPageParamValue(this.number);
+      return getPageSearchString(this.blamePath, page);
+    },
+  },
 };
 </script>
 <template>
@@ -35,7 +43,7 @@ export default {
       <a
         v-if="glFeatures.fileLineBlame"
         class="gl-user-select-none gl-shadow-none! file-line-blame"
-        :href="`${blamePath}#L${number}`"
+        :href="`${blamePath}${pageSearchString}#L${number}`"
       ></a>
       <a
         :id="`L${number}`"

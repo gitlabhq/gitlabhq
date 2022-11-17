@@ -39,6 +39,7 @@ class Project < ApplicationRecord
   include BulkUsersByEmailLoad
   include RunnerTokenExpirationInterval
   include BlocksUnsafeSerialization
+  include Subquery
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -222,6 +223,7 @@ class Project < ApplicationRecord
   has_one :youtrack_integration, class_name: 'Integrations::Youtrack'
   has_one :zentao_integration, class_name: 'Integrations::Zentao'
 
+  has_one :wiki_repository, class_name: 'Projects::WikiRepository', inverse_of: :project
   has_one :root_of_fork_network,
           foreign_key: 'root_project_id',
           inverse_of: :root_project,
@@ -451,7 +453,7 @@ class Project < ApplicationRecord
            :metrics_dashboard_access_level, :analytics_access_level,
            :operations_access_level, :security_and_compliance_access_level,
            :container_registry_access_level, :environments_access_level, :feature_flags_access_level,
-           :monitor_access_level, :releases_access_level,
+           :monitor_access_level, :releases_access_level, :infrastructure_access_level,
            to: :project_feature, allow_nil: true
 
   delegate :show_default_award_emojis, :show_default_award_emojis=,
@@ -491,6 +493,7 @@ class Project < ApplicationRecord
     to: :project_setting
   delegate :merge_commit_template, :merge_commit_template=, to: :project_setting, allow_nil: true
   delegate :squash_commit_template, :squash_commit_template=, to: :project_setting, allow_nil: true
+  delegate :issue_branch_template, :issue_branch_template=, to: :project_setting, allow_nil: true
 
   delegate :log_jira_dvcs_integration_usage, :jira_dvcs_server_last_sync_at, :jira_dvcs_cloud_last_sync_at, to: :feature_usage
 
@@ -1616,7 +1619,7 @@ class Project < ApplicationRecord
   end
 
   def all_clusters
-    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto } )
+    group_clusters = Clusters::Cluster.joins(:groups).where(cluster_groups: { group_id: ancestors_upto })
     instance_clusters = Clusters::Cluster.instance_type
 
     Clusters::Cluster.from_union([clusters, group_clusters, instance_clusters])
@@ -1705,7 +1708,11 @@ class Project < ApplicationRecord
   end
 
   def has_active_integrations?(hooks_scope = :push_hooks)
-    integrations.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
+    @has_active_integrations ||= {} # rubocop: disable Gitlab/PredicateMemoization
+
+    return @has_active_integrations[hooks_scope] if @has_active_integrations.key?(hooks_scope)
+
+    @has_active_integrations[hooks_scope] = integrations.public_send(hooks_scope).any? # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def feature_usage
@@ -2729,11 +2736,6 @@ class Project < ApplicationRecord
     ci_config_path.blank? || ci_config_path == Gitlab::FileDetector::PATTERNS[:gitlab_ci]
   end
 
-  # DO NOT USE. This method will be deprecated soon
-  def uses_external_project_ci_config?
-    !!(ci_config_path =~ %r{@.+/.+})
-  end
-
   def limited_protected_branches(limit)
     protected_branches.limit(limit)
   end
@@ -2784,7 +2786,7 @@ class Project < ApplicationRecord
     return unless service_desk_enabled?
 
     config = Gitlab.config.incoming_email
-    wildcard = Gitlab::IncomingEmail::WILDCARD_PLACEHOLDER
+    wildcard = Gitlab::Email::Common::WILDCARD_PLACEHOLDER
 
     config.address&.gsub(wildcard, "#{full_path_slug}-#{default_service_desk_suffix}")
   end
@@ -2854,11 +2856,6 @@ class Project < ApplicationRecord
     repository.gitlab_ci_yml_for(sha, ci_config_path_or_default)
   end
 
-  # DO NOT USE. This method will be deprecated soon
-  def ci_config_external_project
-    Project.find_by_full_path(ci_config_path.split('@', 2).last)
-  end
-
   def enabled_group_deploy_keys
     return GroupDeployKey.none unless group
 
@@ -2925,10 +2922,6 @@ class Project < ApplicationRecord
     return false unless ci_cd_settings
 
     ci_cd_settings.keep_latest_artifact?
-  end
-
-  def runner_token_expiration_interval
-    ci_cd_settings&.runner_token_expiration_interval
   end
 
   def group_runners_enabled?
@@ -3006,7 +2999,7 @@ class Project < ApplicationRecord
   end
 
   def work_items_create_from_markdown_feature_flag_enabled?
-    work_items_feature_flag_enabled? && (group&.work_items_create_from_markdown_feature_flag_enabled? || Feature.enabled?(:work_items_create_from_markdown))
+    group&.work_items_create_from_markdown_feature_flag_enabled? || Feature.enabled?(:work_items_create_from_markdown)
   end
 
   def enqueue_record_project_target_platforms

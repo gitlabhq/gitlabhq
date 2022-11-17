@@ -431,7 +431,7 @@ see the `group_saml` option and `provisioned_by_group_id` parameter:
 }
 ```
 
-Administrators can use the `created_by` parameter to see if a user account was created: 
+Administrators can use the `created_by` parameter to see if a user account was created:
 
 - [Manually by an administrator](../user/profile/account/create_accounts.md#create-users-in-admin-area).
 - As a [project bot user](../user/project/settings/project_access_tokens.md#bot-users-for-projects).
@@ -509,6 +509,8 @@ Parameters:
 > - Ability to modify an auditor user was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3.
 
 Modifies an existing user. Only administrators can change attributes of a user.
+
+The `email` field is the user's primary email address. You can only change this field to an already-added secondary email address for that user. To add more email addresses to the same user, use the [add email function](#add-email).
 
 ```plaintext
 PUT /users/:id
@@ -965,6 +967,33 @@ Example response:
 ## List user projects
 
 Please refer to the [List of user projects](projects.md#list-user-projects).
+
+## List associations count for user
+
+Get a list of a specified user's count of projects, groups, issues and merge requests.
+
+Administrators can query any user, but non-administrators can only query themselves.
+
+```plaintext
+GET /users/:id/associations_count
+```
+
+Parameters:
+
+| Attribute | Type    | Required | Description      |
+|-----------|---------|----------|------------------|
+| `id`      | integer | yes      | ID of a user |
+
+Example response:
+
+```json
+{
+  "groups_count": 2,
+  "projects_count": 3,
+  "issues_count": 8,
+  "merge_requests_count": 5
+}
+```
 
 ## List SSH keys
 
@@ -1486,6 +1515,7 @@ Parameters:
 
 Deletes email owned by currently authenticated user.
 This returns a `204 No Content` status code if the operation was successfully or `404` if the resource was not found.
+This cannot delete a primary email address.
 
 ```plaintext
 DELETE /user/emails/:email_id
@@ -1499,7 +1529,11 @@ Parameters:
 
 ## Delete email for given user **(FREE SELF)**
 
-Deletes email owned by a specified user. Available only for administrator.
+Prerequisite:
+
+- You must be an administrator of a self-managed GitLab instance.
+
+Deletes an email address owned by a specified user. This cannot delete a primary email address.
 
 ```plaintext
 DELETE /users/:id/emails/:email_id
@@ -1573,7 +1607,7 @@ Returns:
 - `404 User Not Found` if user cannot be found.
 - `403 Forbidden` when trying to deactivate a user:
   - Blocked by administrator or by LDAP synchronization.
-  - That has any activity in past 90 days. These users cannot be deactivated.
+  - That is not [dormant](../user/admin_area/moderate_users.md#automatically-deactivate-dormant-users).
   - That is internal.
 
 ## Activate user **(FREE SELF)**

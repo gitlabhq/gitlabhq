@@ -17,12 +17,12 @@ module Banzai
           img_tag = Nokogiri::HTML::DocumentFragment.parse(
             Asciidoctor::PlantUml::Processor.plantuml_content(node.content, {})).css('img').first
 
-          unless img_tag.nil?
-            img_tag.set_attribute('data-diagram', 'plantuml')
-            img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
+          next if img_tag.nil?
 
-            node.parent.replace(img_tag)
-          end
+          img_tag.set_attribute('data-diagram', 'plantuml')
+          img_tag.set_attribute('data-diagram-src', "data:text/plain;base64,#{Base64.strict_encode64(node.content)}")
+
+          node.parent.replace(img_tag)
         end
 
         doc

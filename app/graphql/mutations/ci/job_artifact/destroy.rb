@@ -20,7 +20,7 @@ module Mutations
               null: true,
               description: 'Deleted artifact.'
 
-        def find_object(id: )
+        def find_object(id:)
           GlobalID::Locator.locate(id)
         end
 

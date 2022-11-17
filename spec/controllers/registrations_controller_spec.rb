@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe RegistrationsController do
   include TermsHelper
+  include FullNameHelper
 
   before do
     stub_application_setting(require_admin_approval_after_user_signup: false)
@@ -18,6 +19,8 @@ RSpec.describe RegistrationsController do
       expect(response).to have_gitlab_http_status(:ok)
       expect(assigns(:resource)).to be_a(User)
     end
+
+    it_behaves_like "switches to user preferred language", 'Sign up'
   end
 
   describe '#create' do
@@ -463,7 +466,7 @@ RSpec.describe RegistrationsController do
 
       expect(User.last.first_name).to eq(base_user_params[:first_name])
       expect(User.last.last_name).to eq(base_user_params[:last_name])
-      expect(User.last.name).to eq("#{base_user_params[:first_name]} #{base_user_params[:last_name]}")
+      expect(User.last.name).to eq full_name(base_user_params[:first_name], base_user_params[:last_name])
     end
 
     it 'sets the caller_id in the context' do
@@ -475,28 +478,6 @@ RSpec.describe RegistrationsController do
       end
 
       subject
-    end
-
-    describe 'logged_out_marketing_header experiment', :experiment do
-      before do
-        stub_experiments(logged_out_marketing_header: :candidate)
-      end
-
-      it 'tracks signed_up event' do
-        expect(experiment(:logged_out_marketing_header)).to track(:signed_up).on_next_instance
-
-        subject
-      end
-
-      context 'when registration fails' do
-        let_it_be(:user_params) { { user: base_user_params.merge({ username: '' }) } }
-
-        it 'does not track signed_up event' do
-          expect(experiment(:logged_out_marketing_header)).not_to track(:signed_up)
-
-          subject
-        end
-      end
     end
 
     context 'when the password is weak' do
@@ -513,6 +494,16 @@ RSpec.describe RegistrationsController do
           expect(response).to render_template(:new)
           expect(response.body).to include(_('Password must not contain commonly used combinations of words and letters'))
         end
+
+        it 'tracks the error' do
+          subject
+          expect_snowplow_event(
+            category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+            action: 'track_weak_password_error',
+            controller: 'RegistrationsController',
+            method: 'create'
+          )
+        end
       end
 
       context 'when block_weak_passwords is disabled' do
@@ -522,6 +513,42 @@ RSpec.describe RegistrationsController do
 
         it 'permits weak passwords' do
           expect { subject }.to change(User, :count).by(1)
+        end
+      end
+    end
+
+    context 'when the password is not weak' do
+      it 'does not track a weak password error' do
+        subject
+        expect_no_snowplow_event(
+          category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+          action: 'track_weak_password_error'
+        )
+      end
+    end
+
+    context 'with preferred language' do
+      let(:user_preferred_language) { nil }
+
+      before do
+        cookies['preferred_language'] = user_preferred_language
+
+        post :create, params: { new_user: base_user_params }
+      end
+
+      subject { User.last.preferred_language }
+
+      context 'with default behavior' do
+        it 'sets preferred language to default' do
+          is_expected.to eq(Gitlab::CurrentSettings.default_preferred_language)
+        end
+      end
+
+      context 'when user sets preferred language' do
+        let(:user_preferred_language) { 'zh_CN' }
+
+        it 'sets name from first and last name' do
+          is_expected.to eq(user_preferred_language)
         end
       end
     end

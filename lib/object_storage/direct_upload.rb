@@ -66,6 +66,8 @@ module ObjectStorage
         workhorse_aws_hash
       elsif config.azure?
         workhorse_azure_hash
+      elsif Feature.enabled?(:workhorse_google_client) && config.google?
+        workhorse_google_hash
       else
         {}
       end
@@ -111,12 +113,38 @@ module ObjectStorage
       url
     end
 
+    def workhorse_google_hash
+      {
+        UseWorkhorseClient: use_workhorse_google_client?,
+        RemoteTempObjectID: object_name,
+        ObjectStorage: {
+          Provider: 'Google',
+          GoCloudConfig: {
+            URL: google_gocloud_url
+          }
+        }
+      }
+    end
+
+    def google_gocloud_url
+      "gs://#{bucket_name}"
+    end
+
     def use_workhorse_s3_client?
       return false unless config.use_iam_profile? || config.consolidated_settings?
       # The Golang AWS SDK does not support V2 signatures
       return false unless credentials.fetch(:aws_signature_version, 4).to_i >= 4
 
       true
+    end
+
+    def use_workhorse_google_client?
+      return false unless config.consolidated_settings?
+      return true if credentials[:google_application_default]
+      return true if credentials[:google_json_key_location]
+      return true if credentials[:google_json_key_string]
+
+      false
     end
 
     def provider

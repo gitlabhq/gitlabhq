@@ -21,8 +21,8 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
     - [Query performance guidelines](database/query_performance.md)
     - [Pagination performance guidelines](../development/database/pagination_performance_guidelines.md)
     - [Keyset pagination performance](../development/database/keyset_pagination.md#performance)
-  - [Troubleshooting import/export performance issues](../development/import_export.md#troubleshooting-performance-issues)
-  - [Pipelines performance in the `gitlab` project](../development/pipelines.md#performance)
+  - [Troubleshooting import/export performance issues](../user/project/settings/import_export_troubleshooting.md#troubleshooting-performance-issues)
+  - [Pipelines performance in the `gitlab` project](pipelines/performance.md)
 - Frontend:
   - [Performance guidelines and monitoring](../development/fe_guide/performance.md)
   - [Browser performance testing guidelines](../ci/testing/browser_performance_testing.md)

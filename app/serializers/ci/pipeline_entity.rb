@@ -4,12 +4,13 @@ class Ci::PipelineEntity < Grape::Entity
   include RequestAwareEntity
   include Gitlab::Utils::StrongMemoize
 
-  delegate :name, :failure_reason, :coverage, to: :presented_pipeline
+  delegate :event_type_name, :failure_reason, :coverage, to: :presented_pipeline
 
   expose :id
   expose :iid
   expose :user, using: UserEntity
   expose :active?, as: :active
+  expose :name, if: -> (pipeline, _) { Feature.enabled?(:pipeline_name, pipeline.project) }
 
   # Coverage isn't always necessary (e.g. when displaying project pipelines in
   # the UI). Instead of creating an entirely different entity we just allow the
@@ -40,7 +41,8 @@ class Ci::PipelineEntity < Grape::Entity
     expose :stages, using: StageEntity
     expose :duration
     expose :finished_at
-    expose :name
+    expose :event_type_name
+    expose :event_type_name, as: :name # To be removed in 15.7
   end
 
   expose :merge_request, if: -> (*) { has_presentable_merge_request? }, with: MergeRequestForPipelineEntity do |pipeline|

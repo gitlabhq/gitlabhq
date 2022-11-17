@@ -34,9 +34,13 @@ class LicenseTemplateFinder
 
   private
 
+  def available_licenses
+    Licensee::License.all(featured: popular_only?)
+  end
+
   def vendored_licenses
     strong_memoize(:vendored_licenses) do
-      Licensee::License.all(featured: popular_only?).map do |license|
+      available_licenses.map do |license|
         LicenseTemplate.new(
           key: license.key,
           name: license.name,

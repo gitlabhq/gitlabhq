@@ -4,9 +4,8 @@
 class Iteration < ApplicationRecord
   include IgnorableColumns
 
-  # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/372125
   # TODO https://gitlab.com/gitlab-org/gitlab/-/issues/372126
-  ignore_column :project_id, remove_with: '15.6', remove_after: '2022-09-17'
+  ignore_column :project_id, remove_with: '15.7', remove_after: '2022-11-18'
 
   self.table_name = 'sprints'
 

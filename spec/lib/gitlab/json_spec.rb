@@ -2,6 +2,10 @@
 
 require "spec_helper"
 
+# We can disable the cop that enforces the use of this class
+# as we need to test around it.
+#
+# rubocop: disable Gitlab/Json
 RSpec.describe Gitlab::Json do
   before do
     stub_feature_flags(json_wrapper_legacy_mode: true)
@@ -429,4 +433,56 @@ RSpec.describe Gitlab::Json do
       end
     end
   end
+
+  describe Gitlab::Json::RailsEncoder do
+    let(:obj) do
+      { foo: "<span>bar</span>" }
+    end
+
+    it "is used by ActiveSupport::JSON" do
+      expect_next_instance_of(described_class) do |encoder|
+        expect(encoder).to receive(:encode).with(obj)
+      end
+
+      ActiveSupport::JSON.encode(obj)
+    end
+
+    it "is used by .to_json calls" do
+      expect_next_instance_of(described_class) do |encoder|
+        expect(encoder).to receive(:encode).with(obj)
+      end
+
+      obj.to_json
+    end
+
+    it "is consistent with the original JSON implementation" do
+      default_encoder = ActiveSupport::JSON::Encoding::JSONGemEncoder
+
+      original_result = ActiveSupport::JSON::Encoding.use_encoder(default_encoder) do
+        ActiveSupport::JSON.encode(obj)
+      end
+
+      new_result = ActiveSupport::JSON::Encoding.use_encoder(described_class) do
+        ActiveSupport::JSON.encode(obj)
+      end
+
+      expect(new_result).to eq(original_result)
+    end
+
+    it "behaves the same when processing invalid unicode data" do
+      invalid_obj = { test: "Gr\x80\x81e" }
+      default_encoder = ActiveSupport::JSON::Encoding::JSONGemEncoder
+
+      original_result = ActiveSupport::JSON::Encoding.use_encoder(default_encoder) do
+        expect { ActiveSupport::JSON.encode(invalid_obj) }.to raise_error(JSON::GeneratorError)
+      end
+
+      new_result = ActiveSupport::JSON::Encoding.use_encoder(described_class) do
+        expect { ActiveSupport::JSON.encode(invalid_obj) }.to raise_error(JSON::GeneratorError)
+      end
+
+      expect(new_result).to eq(original_result)
+    end
+  end
 end
+# rubocop: enable Gitlab/Json

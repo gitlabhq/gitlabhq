@@ -14,6 +14,7 @@ RSpec.describe API::Validations::Validators::EmailOrEmailList do
       expect_no_validation_error('test' => 'test@example.org')
       expect_no_validation_error('test' => 'test1@example.com,test2@example.org')
       expect_no_validation_error('test' => 'test1@example.com,test2@example.org,test3@example.co.uk')
+      expect_no_validation_error('test' => %w[test1@example.com test2@example.org test3@example.co.uk])
     end
   end
 
@@ -23,6 +24,7 @@ RSpec.describe API::Validations::Validators::EmailOrEmailList do
       expect_validation_error('test' => '@example.com')
       expect_validation_error('test' => 'test1@example.com,asdf')
       expect_validation_error('test' => 'asdf,testa1@example.com,asdf')
+      expect_validation_error('test' => %w[asdf testa1@example.com asdf])
     end
   end
 end

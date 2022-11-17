@@ -40,6 +40,6 @@ class LastGroupOwnerAssigner
   end
 
   def owners
-    @owners ||= group.all_owners_excluding_project_bots.load
+    @owners ||= group.member_owners_excluding_project_bots.load
   end
 end

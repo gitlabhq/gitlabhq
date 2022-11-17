@@ -70,8 +70,8 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::CheckResult do
     let(:payload) { { test: 'test' } }
     let(:hash) do
       {
-        'status' => status,
-        'payload' => payload
+        status: status,
+        payload: payload
       }
     end
 

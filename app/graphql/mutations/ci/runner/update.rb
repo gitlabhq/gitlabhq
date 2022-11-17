@@ -68,7 +68,7 @@ module Mutations
 
           response = { runner: runner, errors: [] }
           ::Ci::Runner.transaction do
-            associate_runner_projects(response, runner, associated_projects_ids) if associated_projects_ids.present?
+            associate_runner_projects(response, runner, associated_projects_ids) unless associated_projects_ids.nil?
             update_runner(response, runner, runner_attrs)
           end
 

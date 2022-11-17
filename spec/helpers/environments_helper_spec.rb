@@ -33,7 +33,7 @@ RSpec.describe EnvironmentsHelper do
         'default_branch' => 'master',
         'project_path' => project_path(project),
         'tags_path' => project_tags_path(project),
-        'has_metrics' => "#{environment.has_metrics?}",
+        'has_metrics' => environment.has_metrics?.to_s,
         'external_dashboard_url' => nil,
         'environment_state' => environment.state,
         'custom_metrics_path' => project_prometheus_metrics_path(project),

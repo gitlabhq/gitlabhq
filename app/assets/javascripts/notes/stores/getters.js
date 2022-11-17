@@ -94,9 +94,9 @@ export const getUserDataByProp = (state) => (prop) => state.userData && state.us
 export const descriptionVersions = (state) => state.descriptionVersions;
 
 export const canUserAddIncidentTimelineEvents = (state) => {
-  return (
-    state.userData.can_add_timeline_events &&
-    state.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident
+  return Boolean(
+    state.userData?.can_add_timeline_events &&
+      state.noteableData.type === constants.NOTEABLE_TYPE_MAPPING.Incident,
   );
 };
 

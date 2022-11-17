@@ -329,11 +329,12 @@ class TodoService
       commit_id: nil
     }
 
-    if target.is_a?(Commit)
+    case target
+    when Commit
       attributes.merge!(target_id: nil, commit_id: target.id)
-    elsif target.is_a?(Issue)
+    when Issue
       attributes[:issue_type] = target.issue_type
-    elsif target.is_a?(Discussion)
+    when Discussion
       attributes.merge!(target_type: nil, target_id: nil, discussion: target)
     end
 

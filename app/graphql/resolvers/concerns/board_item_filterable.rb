@@ -14,6 +14,16 @@ module BoardItemFilterable
       set_filter_values(filters[:not])
     end
 
+    if filters[:or]
+      if ::Feature.disabled?(:or_issuable_queries, resource_parent)
+        raise ::Gitlab::Graphql::Errors::ArgumentError,
+              "'or' arguments are only allowed when the `or_issuable_queries` feature flag is enabled."
+      end
+
+      rewrite_param_name(filters[:or], :author_usernames, :author_username)
+      rewrite_param_name(filters[:or], :assignee_usernames, :assignee_username)
+    end
+
     filters
   end
 
@@ -29,6 +39,14 @@ module BoardItemFilterable
     if filters[:assignee_wildcard_id]
       filters[:assignee_id] = filters.delete(:assignee_wildcard_id)
     end
+  end
+
+  def rewrite_param_name(filters, old_name, new_name)
+    filters[new_name] = filters.delete(old_name) if filters[old_name].present?
+  end
+
+  def resource_parent
+    respond_to?(:board) ? board.resource_parent : list.board.resource_parent
   end
 end
 

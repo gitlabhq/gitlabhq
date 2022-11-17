@@ -925,6 +925,7 @@ export default {
     locked: false,
   },
   name: 'test',
+  stage: 'build',
   build_path: '/root/ci-mock/-/jobs/4757',
   retry_path: '/root/ci-mock/-/jobs/4757/retry',
   cancel_path: '/root/ci-mock/-/jobs/4757/cancel',
@@ -1083,6 +1084,29 @@ export default {
   },
   raw_path: '/root/ci-mock/builds/4757/raw',
   has_trace: true,
+};
+
+export const failedJobStatus = {
+  icon: 'status_warning',
+  text: 'failed',
+  label: 'failed (allowed to fail)',
+  group: 'failed-with-warnings',
+  tooltip: 'failed - (unknown failure) (allowed to fail)',
+  has_details: true,
+  details_path: '/gitlab-org/gitlab-shell/-/jobs/454',
+  illustration: {
+    image: 'illustrations/skipped-job_empty.svg',
+    size: 'svg-430',
+    title: 'This job does not have a trace.',
+  },
+  favicon:
+    '/assets/ci_favicons/favicon_status_failed-41304d7f7e3828808b0c26771f0309e55296819a9beea3ea9fbf6689d9857c12.png',
+  action: {
+    icon: 'retry',
+    title: 'Retry',
+    path: '/gitlab-org/gitlab-shell/-/jobs/454/retry',
+    method: 'post',
+  },
 };
 
 export const jobsInStage = {

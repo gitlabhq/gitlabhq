@@ -1,183 +1,72 @@
-import Vue, { nextTick } from 'vue';
-import VueApollo from 'vue-apollo';
-import { GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import { createAlert } from '~/flash';
-import { resolvers } from '~/ci_variable_list/graphql/settings';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 
 import ciGroupVariables from '~/ci_variable_list/components/ci_group_variables.vue';
-import ciVariableSettings from '~/ci_variable_list/components/ci_variable_settings.vue';
-import ciVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
-import getGroupVariables from '~/ci_variable_list/graphql/queries/group_variables.query.graphql';
+import ciVariableShared from '~/ci_variable_list/components/ci_variable_shared.vue';
 
-import addGroupVariable from '~/ci_variable_list/graphql/mutations/group_add_variable.mutation.graphql';
-import deleteGroupVariable from '~/ci_variable_list/graphql/mutations/group_delete_variable.mutation.graphql';
-import updateGroupVariable from '~/ci_variable_list/graphql/mutations/group_update_variable.mutation.graphql';
-
-import { genericMutationErrorText, variableFetchErrorText } from '~/ci_variable_list/constants';
-
-import { mockGroupVariables, newVariable } from '../mocks';
-
-jest.mock('~/flash');
-
-Vue.use(VueApollo);
+import { GRAPHQL_GROUP_TYPE } from '~/ci_variable_list/constants';
 
 const mockProvide = {
-  endpoint: '/variables',
-  groupPath: '/namespace/group',
-  groupId: 1,
+  glFeatures: {
+    groupScopedCiVariables: false,
+  },
+  groupPath: '/group',
+  groupId: 12,
 };
 
-describe('Ci Group Variable list', () => {
+describe('Ci Group Variable wrapper', () => {
   let wrapper;
 
-  let mockApollo;
-  let mockVariables;
+  const findCiShared = () => wrapper.findComponent(ciVariableShared);
 
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findCiTable = () => wrapper.findComponent(GlTable);
-  const findCiSettings = () => wrapper.findComponent(ciVariableSettings);
-
-  // eslint-disable-next-line consistent-return
-  const createComponentWithApollo = async ({ isLoading = false } = {}) => {
-    const handlers = [[getGroupVariables, mockVariables]];
-
-    mockApollo = createMockApollo(handlers, resolvers);
-
+  const createComponent = ({ provide = {} } = {}) => {
     wrapper = shallowMount(ciGroupVariables, {
-      provide: mockProvide,
-      apolloProvider: mockApollo,
-      stubs: { ciVariableSettings, ciVariableTable },
+      provide: { ...mockProvide, ...provide },
     });
-
-    if (!isLoading) {
-      return waitForPromises();
-    }
   };
-
-  beforeEach(() => {
-    mockVariables = jest.fn();
-  });
 
   afterEach(() => {
     wrapper.destroy();
   });
 
-  describe('while queries are being fetch', () => {
+  describe('Props', () => {
     beforeEach(() => {
-      createComponentWithApollo({ isLoading: true });
+      createComponent();
     });
 
-    it('shows a loading icon', () => {
-      expect(findLoadingIcon().exists()).toBe(true);
-      expect(findCiTable().exists()).toBe(false);
-    });
-  });
-
-  describe('when queries are resolved', () => {
-    describe('successfuly', () => {
-      beforeEach(async () => {
-        mockVariables.mockResolvedValue(mockGroupVariables);
-
-        await createComponentWithApollo();
-      });
-
-      it('passes down the expected environments as props', () => {
-        expect(findCiSettings().props('environments')).toEqual([]);
-      });
-
-      it('passes down the expected variables as props', () => {
-        expect(findCiSettings().props('variables')).toEqual(
-          mockGroupVariables.data.group.ciVariables.nodes,
-        );
-      });
-
-      it('createAlert was not called', () => {
-        expect(createAlert).not.toHaveBeenCalled();
-      });
-    });
-
-    describe('with an error for variables', () => {
-      beforeEach(async () => {
-        mockVariables.mockRejectedValue();
-
-        await createComponentWithApollo();
-      });
-
-      it('calls createAlert with the expected error message', () => {
-        expect(createAlert).toHaveBeenCalledWith({ message: variableFetchErrorText });
+    it('are passed down the correctly to ci_variable_shared', () => {
+      expect(findCiShared().props()).toEqual({
+        id: convertToGraphQLId(GRAPHQL_GROUP_TYPE, mockProvide.groupId),
+        areScopedVariablesAvailable: false,
+        componentName: 'GroupVariables',
+        fullPath: mockProvide.groupPath,
+        hideEnvironmentScope: false,
+        mutationData: wrapper.vm.$options.mutationData,
+        queryData: wrapper.vm.$options.queryData,
+        refetchAfterMutation: false,
       });
     });
   });
 
-  describe('mutations', () => {
-    beforeEach(async () => {
-      mockVariables.mockResolvedValue(mockGroupVariables);
+  describe('feature flag', () => {
+    describe('When enabled', () => {
+      beforeEach(() => {
+        createComponent({ provide: { glFeatures: { groupScopedCiVariables: true } } });
+      });
 
-      await createComponentWithApollo();
+      it('Passes down `true` to variable shared component', () => {
+        expect(findCiShared().props('areScopedVariablesAvailable')).toBe(true);
+      });
     });
-    it.each`
-      actionName  | mutation               | event
-      ${'add'}    | ${addGroupVariable}    | ${'add-variable'}
-      ${'update'} | ${updateGroupVariable} | ${'update-variable'}
-      ${'delete'} | ${deleteGroupVariable} | ${'delete-variable'}
-    `(
-      'calls the right mutation when user performs $actionName variable',
-      async ({ event, mutation }) => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockResolvedValue();
-        await findCiSettings().vm.$emit(event, newVariable);
 
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalledWith({
-          mutation,
-          variables: {
-            endpoint: mockProvide.endpoint,
-            fullPath: mockProvide.groupPath,
-            groupId: convertToGraphQLId('Group', mockProvide.groupId),
-            variable: newVariable,
-          },
-        });
-      },
-    );
+    describe('When disabled', () => {
+      beforeEach(() => {
+        createComponent({ provide: { glFeatures: { groupScopedCiVariables: false } } });
+      });
 
-    it.each`
-      actionName  | event                | mutationName
-      ${'add'}    | ${'add-variable'}    | ${'addGroupVariable'}
-      ${'update'} | ${'update-variable'} | ${'updateGroupVariable'}
-      ${'delete'} | ${'delete-variable'} | ${'deleteGroupVariable'}
-    `(
-      'throws with the specific graphql error if present when user performs $actionName variable',
-      async ({ event, mutationName }) => {
-        const graphQLErrorMessage = 'There is a problem with this graphQL action';
-        jest
-          .spyOn(wrapper.vm.$apollo, 'mutate')
-          .mockResolvedValue({ data: { [mutationName]: { errors: [graphQLErrorMessage] } } });
-        await findCiSettings().vm.$emit(event, newVariable);
-        await nextTick();
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
-        expect(createAlert).toHaveBeenCalledWith({ message: graphQLErrorMessage });
-      },
-    );
-
-    it.each`
-      actionName  | event
-      ${'add'}    | ${'add-variable'}
-      ${'update'} | ${'update-variable'}
-      ${'delete'} | ${'delete-variable'}
-    `(
-      'throws generic error when the mutation fails with no graphql errors and user performs $actionName variable',
-      async ({ event }) => {
-        jest.spyOn(wrapper.vm.$apollo, 'mutate').mockImplementationOnce(() => {
-          throw new Error();
-        });
-        await findCiSettings().vm.$emit(event, newVariable);
-
-        expect(wrapper.vm.$apollo.mutate).toHaveBeenCalled();
-        expect(createAlert).toHaveBeenCalledWith({ message: genericMutationErrorText });
-      },
-    );
+      it('Passes down `false` to variable shared component', () => {
+        expect(findCiShared().props('areScopedVariablesAvailable')).toBe(false);
+      });
+    });
   });
 });

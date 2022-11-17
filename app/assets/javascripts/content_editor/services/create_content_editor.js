@@ -29,6 +29,7 @@ import Gapcursor from '../extensions/gapcursor';
 import HardBreak from '../extensions/hard_break';
 import Heading from '../extensions/heading';
 import History from '../extensions/history';
+import Highlight from '../extensions/highlight';
 import HorizontalRule from '../extensions/horizontal_rule';
 import HTMLMarks from '../extensions/html_marks';
 import HTMLNodes from '../extensions/html_nodes';
@@ -118,6 +119,7 @@ export const createContentEditor = ({
     HardBreak,
     Heading,
     History,
+    Highlight,
     HorizontalRule,
     ...HTMLMarks,
     ...HTMLNodes,

@@ -17,7 +17,7 @@ function createSuggestionPlugin({
   char,
   dataSource,
   search,
-  limit = Infinity,
+  limit = 15,
   nodeType,
   nodeProps = {},
 }) {

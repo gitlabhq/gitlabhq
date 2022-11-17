@@ -6,6 +6,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Remote Development **(FREE)**
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95169) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `vscode_web_ide`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is available. The feature is not ready for production use.
+
+WARNING:
+This feature is in [Alpha](../../../policy/alpha-beta-support.md#alpha-features) and subject to change without notice.
+
 DISCLAIMER:
 This page contains information related to upcoming products, features, and functionality.
 It is important to note that the information presented is for informational purposes only.
@@ -43,7 +51,7 @@ To point a domain to your remote machine, create an `A` record from `example.rem
 
 #### Install Certbot
 
-[Certbot](https://certbot.eff.org/) is a free and open-source software tool that automatically uses Let's Encrypt certificates on manually administrated websites to enable HTTPS.
+[Certbot](https://certbot.eff.org/) is a free and open-source software tool that automatically uses Let's Encrypt certificates on manually administered websites to enable HTTPS.
 
 To install Certbot, run the following command:
 
@@ -89,7 +97,7 @@ docker run -d \
   -v "${CERTS_DIR}/fullchain.pem:/gitlab-rd-web-ide/certs/fullchain.pem" \
   -v "${CERTS_DIR}/privkey.pem:/gitlab-rd-web-ide/certs/privkey.pem" \
   -v "${PROJECTS_DIR}:/projects" \
-  registry.gitlab.com/gitlab-com/create-stage/editor-poc/remote-development/gitlab-rd-web-ide-docker:0.1 \
+  registry.gitlab.com/gitlab-com/create-stage/editor-poc/remote-development/gitlab-rd-web-ide-docker:0.1-alpha \
   --log-level warn --domain "${DOMAIN}" --ignore-version-mismatch
 ```
 

@@ -42,10 +42,10 @@ module Gitlab
         @references[type] ||= references(type)
       end
 
-      if %w(mentioned_user mentioned_group mentioned_project).include?(type.to_s)
-        define_method("#{type}_ids") do
-          @references[type] ||= references(type, ids_only: true)
-        end
+      next unless %w(mentioned_user mentioned_group mentioned_project).include?(type.to_s)
+
+      define_method("#{type}_ids") do
+        @references[type] ||= references(type, ids_only: true)
       end
     end
 

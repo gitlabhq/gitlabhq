@@ -16,8 +16,10 @@ export default class EditBlob {
   constructor(options) {
     this.options = options;
     this.configureMonacoEditor();
+    this.isMarkdown = this.options.isMarkdown;
+    this.markdownLivePreviewOpened = false;
 
-    if (this.options.isMarkdown) {
+    if (this.isMarkdown) {
       this.fetchMarkdownExtension();
     }
 
@@ -104,6 +106,13 @@ export default class EditBlob {
     this.$editModeLinks.on('click', (e) => this.editModeLinkClickHandler(e));
   }
 
+  toggleMarkdownPreview(toOpen) {
+    if (toOpen !== this.markdownLivePreviewOpened) {
+      this.editor.markdownPreview?.eventEmitter.fire();
+      this.markdownLivePreviewOpened = !this.markdownLivePreviewOpened;
+    }
+  }
+
   editModeLinkClickHandler(e) {
     e.preventDefault();
 
@@ -115,25 +124,29 @@ export default class EditBlob {
 
     currentLink.parent().addClass('active hover');
 
-    this.$editModePanes.hide();
+    if (this.isMarkdown) {
+      this.toggleMarkdownPreview(paneId === '#preview');
+    } else {
+      this.$editModePanes.hide();
 
-    currentPane.show();
+      currentPane.show();
 
-    if (paneId === '#preview') {
-      this.$toggleButton.hide();
-      axios
-        .post(currentLink.data('previewUrl'), {
-          content: this.editor.getValue(),
-        })
-        .then(({ data }) => {
-          currentPane.empty().append(data);
-          currentPane.renderGFM();
-        })
-        .catch(() =>
-          createAlert({
-            message: BLOB_PREVIEW_ERROR,
-          }),
-        );
+      if (paneId === '#preview') {
+        this.$toggleButton.hide();
+        axios
+          .post(currentLink.data('previewUrl'), {
+            content: this.editor.getValue(),
+          })
+          .then(({ data }) => {
+            currentPane.empty().append(data);
+            currentPane.renderGFM();
+          })
+          .catch(() =>
+            createAlert({
+              message: BLOB_PREVIEW_ERROR,
+            }),
+          );
+      }
     }
 
     this.$toggleButton.show();

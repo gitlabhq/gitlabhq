@@ -52,13 +52,22 @@ To create an issue:
 The issue is created. You can view it by going to **Issues > List**.
 ```
 
-## Task headings
+## Task topic titles
 
-For the heading text, use the structure `active verb` + `noun`.
+For the title text, use the structure `active verb` + `noun`.
 For example, `Create an issue`.
 
 If you have several tasks on a page that share prerequisites, you can use the title
 `Prerequisites` and link to it.
+
+## Task introductions
+
+To start the task topic, use the structure `active verb` + `noun`, and
+provide context about the action.
+For example, `Create an issue when you want to track bugs or future work`.
+
+To start the task steps, use a succinct action followed by a colon.
+For example, `To create an issue:`
 
 ## Related topics
 

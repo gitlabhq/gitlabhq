@@ -35,6 +35,11 @@ export default {
     retryButtonCategory() {
       return this.job.status && this.job.recoverable ? 'primary' : 'secondary';
     },
+    buttonTitle() {
+      return this.job.status && this.job.status.text === 'passed'
+        ? this.$options.i18n.runAgainJobButtonLabel
+        : this.$options.i18n.retryJobButtonLabel;
+    },
   },
   methods: {
     ...mapActions(['toggleSidebar']),
@@ -66,8 +71,8 @@ export default {
       <job-sidebar-retry-button
         v-if="job.retry_path"
         v-gl-tooltip.left
-        :title="$options.i18n.retryJobButtonLabel"
-        :aria-label="$options.i18n.retryJobButtonLabel"
+        :title="buttonTitle"
+        :aria-label="buttonTitle"
         :category="retryButtonCategory"
         :href="job.retry_path"
         :modal-id="$options.forwardDeploymentFailureModalId"

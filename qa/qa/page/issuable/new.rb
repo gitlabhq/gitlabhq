@@ -12,9 +12,8 @@ module QA
           element :issuable_form_description_field
         end
 
-        view 'app/views/shared/issuable/_milestone_dropdown.html.haml' do
+        view 'app/assets/javascripts/sidebar/components/milestone/milestone_dropdown.vue' do
           element :issuable_milestone_dropdown
-          element :issuable_milestone_dropdown_content
         end
 
         view 'app/views/shared/issuable/_label_dropdown.html.haml' do
@@ -38,9 +37,9 @@ module QA
         end
 
         def choose_milestone(milestone)
-          click_element :issuable_milestone_dropdown
-          within_element(:issuable_milestone_dropdown_content) do
-            click_on milestone.title
+          within_element(:issuable_milestone_dropdown) do
+            click_button 'Select milestone'
+            click_button milestone.title
           end
         end
 

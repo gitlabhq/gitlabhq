@@ -72,7 +72,7 @@ export default {
         :display="appButtonText"
         :link="deploymentExternalUrl"
         size="small"
-        css-class="deploy-link js-deploy-url inline gl-ml-3"
+        css-class="deploy-link js-deploy-url inline"
       />
       <modal-copy-button
         v-else
@@ -116,7 +116,7 @@ export default {
         :display="appButtonText"
         :link="deploymentExternalUrl"
         size="small"
-        css-class="deploy-link js-deploy-url inline gl-ml-3"
+        css-class="deploy-link js-deploy-url inline"
       />
       <modal-copy-button
         v-else

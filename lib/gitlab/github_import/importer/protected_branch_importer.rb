@@ -37,16 +37,34 @@ module Gitlab
             name: protected_branch.id,
             push_access_levels_attributes: [{ access_level: push_access_level }],
             merge_access_levels_attributes: [{ access_level: merge_access_level }],
-            allow_force_push: allow_force_push?
+            allow_force_push: allow_force_push?,
+            code_owner_approval_required: code_owner_approval_required?
           }
         end
 
         def allow_force_push?
-          if ProtectedBranch.protected?(project, protected_branch.id)
-            ProtectedBranch.allow_force_push?(project, protected_branch.id) && protected_branch.allow_force_pushes
+          return false unless protected_branch.allow_force_pushes
+
+          if protected_on_gitlab?
+            ProtectedBranch.allow_force_push?(project, protected_branch.id)
+          elsif default_branch?
+            !default_branch_protection.any?
           else
-            protected_branch.allow_force_pushes
+            true
           end
+        end
+
+        def code_owner_approval_required?
+          return false unless project.licensed_feature_available?(:code_owner_approval_required)
+
+          return protected_branch.require_code_owner_reviews unless protected_on_gitlab?
+
+          # Gets the strictest require_code_owner rule between GitHub and GitLab
+          protected_branch.require_code_owner_reviews ||
+            ProtectedBranch.branch_requires_code_owner_approval?(
+              project,
+              protected_branch.id
+            )
         end
 
         def default_branch?

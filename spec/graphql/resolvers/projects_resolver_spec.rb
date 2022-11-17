@@ -142,7 +142,7 @@ RSpec.describe Resolvers::ProjectsResolver do
 
           context 'when no sort is provided' do
             it 'returns projects in descending order by id' do
-              is_expected.to match_array((visible_projecs + named_projects).sort_by { |p| p[:id] }.reverse )
+              is_expected.to match_array((visible_projecs + named_projects).sort_by { |p| p[:id] }.reverse)
             end
           end
         end

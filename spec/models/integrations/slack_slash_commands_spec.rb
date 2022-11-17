@@ -7,7 +7,7 @@ RSpec.describe Integrations::SlackSlashCommands do
 
   describe '#trigger' do
     context 'when an auth url is generated' do
-      let(:project) { create(:project) }
+      let_it_be(:project) { create(:project) }
       let(:params) do
         {
           team_domain: 'http://domain.tld',

@@ -1,14 +1,11 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 status: proposed
 creation-date: yyyy-mm-dd
 authors: [ "@username" ]
 coach: "@username"
-owning-section: "~section::<section>"
-participating-sections: []
 approvers: [ "@product-manager", "@engineering-manager" ]
+owning-stage: "~devops::<stage>"
+participating-stages: []
 ---
 
 <!--

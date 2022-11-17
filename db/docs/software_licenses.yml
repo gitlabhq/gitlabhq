@@ -3,7 +3,7 @@ table_name: software_licenses
 classes:
 - SoftwareLicense
 feature_categories:
-- license_compliance
+- security_policy_management
 description: Normalized software licenses to use in conjunction with License Compliance features (like software license policies)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6246
 milestone: '11.2'

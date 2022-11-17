@@ -13,7 +13,7 @@ module GoogleCloud
       get_instance_response = google_api_client.get_cloudsql_instance(gcp_project_id, instance_name)
 
       if get_instance_response.state != INSTANCE_STATE_RUNNABLE
-        return error("CloudSQL instance not RUNNABLE: #{get_instance_response.to_json}")
+        return error("CloudSQL instance not RUNNABLE: #{Gitlab::Json.dump(get_instance_response)}")
       end
 
       save_instance_ci_vars(get_instance_response)
@@ -42,7 +42,7 @@ module GoogleCloud
 
       success
     rescue Google::Apis::Error => err
-      error(message: err.to_json)
+      error(message: Gitlab::Json.dump(err))
     end
 
     private
@@ -97,7 +97,7 @@ module GoogleCloud
       database_response = google_api_client.create_cloudsql_database(gcp_project_id, instance_name, database_name)
 
       if database_response.status != OPERATION_STATE_DONE
-        return error("Database creation failed: #{database_response.to_json}")
+        return error("Database creation failed: #{Gitlab::Json.dump(database_response)}")
       end
 
       success
@@ -109,7 +109,7 @@ module GoogleCloud
       user_response = google_api_client.create_cloudsql_user(gcp_project_id, instance_name, username, password)
 
       if user_response.status != OPERATION_STATE_DONE
-        return error("User creation failed: #{user_response.to_json}")
+        return error("User creation failed: #{Gitlab::Json.dump(user_response)}")
       end
 
       success

@@ -3,16 +3,5 @@
 query workItem($id: WorkItemID!) {
   workItem(id: $id) {
     ...WorkItem
-    mockWidgets @client {
-      ... on LocalWorkItemMilestone {
-        type
-        nodes {
-          id
-          title
-          expired
-          dueDate
-        }
-      }
-    }
   }
 }

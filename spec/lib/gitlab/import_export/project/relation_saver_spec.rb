@@ -28,14 +28,14 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
       it 'serializes the root node as a json file in the export path' do
         relation_saver.save # rubocop:disable Rails/SaveBang
 
-        json = read_json(File.join(shared.export_path, 'project.json'))
+        json = read_json(File.join(shared.export_path, 'tree', 'project.json'))
         expect(json).to include({ 'description' => 'Project description' })
       end
 
       it 'serializes only allowed attributes' do
         relation_saver.save # rubocop:disable Rails/SaveBang
 
-        json = read_json(File.join(shared.export_path, 'project.json'))
+        json = read_json(File.join(shared.export_path, 'tree', 'project.json'))
         expect(json).to include({ 'description' => 'Project description' })
         expect(json.keys).not_to include('name')
       end
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
       it 'serializes the child node as a ndjson file in the export path inside the project folder' do
         relation_saver.save # rubocop:disable Rails/SaveBang
 
-        ndjson = read_ndjson(File.join(shared.export_path, 'project', "#{relation}.ndjson"))
+        ndjson = read_ndjson(File.join(shared.export_path, 'tree', 'project', "#{relation}.ndjson"))
         expect(ndjson.first).to include({ 'title' => 'Label 1' })
         expect(ndjson.second).to include({ 'title' => 'Label 2' })
       end
@@ -62,7 +62,7 @@ RSpec.describe Gitlab::ImportExport::Project::RelationSaver do
       it 'serializes only allowed attributes' do
         relation_saver.save # rubocop:disable Rails/SaveBang
 
-        ndjson = read_ndjson(File.join(shared.export_path, 'project', "#{relation}.ndjson"))
+        ndjson = read_ndjson(File.join(shared.export_path, 'tree', 'project', "#{relation}.ndjson"))
         expect(ndjson.first.keys).not_to include('description_html')
       end
 

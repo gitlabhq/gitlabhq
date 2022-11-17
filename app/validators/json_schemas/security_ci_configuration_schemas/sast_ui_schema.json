@@ -1,176 +1,135 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "global": [
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "global": [
+    {
+      "field": "SECURE_ANALYZERS_PREFIX",
+      "label": "Image prefix",
+      "type": "string",
+      "default_value": "",
+      "value": "",
+      "size": "LARGE",
+      "description": "Analyzer image's registry prefix (or name of the registry providing the analyzers' image)"
+    },
+    {
+      "field": "SAST_EXCLUDED_PATHS",
+      "label": "Excluded Paths",
+      "type": "string",
+      "default_value": "",
+      "value": "",
+      "size": "MEDIUM",
+      "description": "Comma-separated list of paths to be excluded from analyzer output. Patterns can be globs, file paths, or folder paths."
+    }
+  ],
+  "pipeline": [
+    {
+      "field": "stage",
+      "label": "Stage",
+      "type": "string",
+      "default_value": "",
+      "value": "",
+      "size": "MEDIUM",
+      "description": "Pipeline stage in which the scan jobs run"
+    },
+    {
+      "field": "SEARCH_MAX_DEPTH",
+      "label": "Search maximum depth",
+      "type": "string",
+      "default_value": "",
+      "value": "",
+      "size": "SMALL",
+      "description": "Maximum depth of language and framework detection"
+    }
+  ],
+  "analyzers": [
+    {
+      "name": "brakeman",
+      "label": "Brakeman",
+      "enabled": true,
+      "description": "Ruby on Rails",
+      "variables": [
         {
-            "field": "SECURE_ANALYZERS_PREFIX",
-            "label": "Image prefix",
-            "type": "string",
-            "default_value": "",
-            "value": "",
-            "size": "LARGE",
-            "description": "Analyzer image's registry prefix (or name of the registry providing the analyzers' image)"
-        },
-        {
-            "field" : "SAST_EXCLUDED_PATHS",
-            "label" : "Excluded Paths",
-            "type": "string",
-            "default_value": "",
-            "value": "",
-            "size": "MEDIUM",
-            "description": "Comma-separated list of paths to be excluded from analyzer output. Patterns can be globs, file paths, or folder paths."
+          "field": "SAST_BRAKEMAN_LEVEL",
+          "label": "Brakeman confidence level",
+          "type": "string",
+          "default_value": "1",
+          "value": "",
+          "size": "SMALL",
+          "description": "Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low, 2=Medium, 3=High."
         }
-    ],
-    "pipeline": [
+      ]
+    },
+    {
+      "name": "flawfinder",
+      "label": "Flawfinder",
+      "enabled": true,
+      "description": "C, C++",
+      "variables": [
         {
-            "field" : "stage",
-            "label" : "Stage",
-            "type": "string",
-            "default_value": "",
-            "value": "",
-            "size": "MEDIUM",
-            "description": "Pipeline stage in which the scan jobs run"
-        },
-        {
-            "field" : "SEARCH_MAX_DEPTH",
-            "label" : "Search maximum depth",
-            "type": "string",
-            "default_value": "",
-            "value": "",
-            "size": "SMALL",
-            "description": "Maximum depth of language and framework detection"
+          "field": "SAST_FLAWFINDER_LEVEL",
+          "label": "Flawfinder risk level",
+          "type": "string",
+          "default_value": "1",
+          "value": "",
+          "size": "SMALL",
+          "description": "Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk."
         }
-    ],
-    "analyzers": [
-        {
-            "name": "bandit",
-            "label": "Bandit",
-            "enabled" : true,
-            "description": "Python",
-            "variables": [
-                {
-                    "field" : "SAST_BANDIT_EXCLUDED_PATHS",
-                    "label" : "Paths to exclude from scan",
-                    "type": "string",
-                    "default_value": "",
-                    "value": "",
-                    "size": "SMALL",
-                    "description": "Comma-separated list of paths to exclude from scan. Uses Python’s 'fnmatch' syntax; For example: '*/tests/*, */venv/*'"
-                }
-            ]
-        },
-        {
-            "name": "brakeman",
-            "label": "Brakeman",
-            "enabled" : true,
-            "description": "Ruby on Rails",
-            "variables": [
-                {
-                    "field" : "SAST_BRAKEMAN_LEVEL",
-                    "label" : "Brakeman confidence level",
-                    "type": "string",
-                    "default_value": "1",
-                    "value": "",
-                    "size": "SMALL",
-                    "description": "Ignore Brakeman vulnerabilities under given confidence level. Integer, 1=Low, 2=Medium, 3=High."
-                }
-            ]
-        },
-        {
-            "name": "eslint",
-            "label": "ESLint",
-            "enabled" : true,
-            "description": "JavaScript, TypeScript, React",
-            "variables": []
-        },
-        {
-            "name": "flawfinder",
-            "label": "Flawfinder",
-            "enabled" : true,
-            "description": "C, C++",
-            "variables": [
-                {
-                    "field" : "SAST_FLAWFINDER_LEVEL",
-                    "label" : "Flawfinder risk level",
-                    "type": "string",
-                    "default_value": "1",
-                    "value": "",
-                    "size": "SMALL",
-                    "description": "Ignore Flawfinder vulnerabilities under given risk level. Integer, 0=No risk, 5=High risk."
-                }
-            ]
-        },
-        {
-            "name": "gosec",
-            "label": "Gosec",
-            "enabled" : true,
-            "description": "Go",
-            "variables": [
-                {
-                    "field" : "SAST_GOSEC_LEVEL",
-                    "label" : "Gosec confidence level",
-                    "type": "string",
-                    "default_value": "0",
-                    "value": "",
-                    "size": "SMALL",
-                    "description": "Ignore Gosec vulnerabilities under given confidence level. Integer, 0=Undefined, 1=Low, 2=Medium, 3=High."
-                }
-            ]
-        },
-        {
-            "name": "kubesec",
-            "label": "Kubesec",
-            "enabled" : true,
-            "description": "Kubernetes manifests, Helm Charts",
-            "variables": []
-        },
-        {
-            "name": "nodejs-scan",
-            "label": "Node.js Scan",
-            "enabled" : true,
-            "description": "Node.js",
-            "variables": []
-        },
-        {
-            "name": "phpcs-security-audit",
-            "label": "PHP Security Audit",
-            "enabled" : true,
-            "description": "PHP",
-            "variables": []
-        },
-        {
-            "name": "pmd-apex",
-            "label": "PMD APEX",
-            "enabled" : true,
-            "description": "Apex (Salesforce)",
-            "variables": []
-        },
-        {
-            "name": "security-code-scan",
-            "label": "Security Code Scan",
-            "enabled" : true,
-            "description": ".NET Core, .NET Framework",
-            "variables": []
-        },
-        {
-            "name": "semgrep",
-            "label": "Semgrep",
-            "enabled": true,
-            "description": "Multi-language scanning",
-            "variables": []
-        },
-        {
-            "name": "sobelow",
-            "label": "Sobelow",
-            "enabled" : true,
-            "description": "Elixir (Phoenix)",
-            "variables": []
-        },
-        {
-            "name": "spotbugs",
-            "label": "Spotbugs",
-            "enabled" : true,
-            "description": "Groovy, Java, Scala",
-            "variables": []
-        }
-    ]
+      ]
+    },
+    {
+      "name": "kubesec",
+      "label": "Kubesec",
+      "enabled": true,
+      "description": "Kubernetes manifests, Helm Charts",
+      "variables": []
+    },
+    {
+      "name": "nodejs-scan",
+      "label": "Node.js Scan",
+      "enabled": true,
+      "description": "Node.js",
+      "variables": []
+    },
+    {
+      "name": "phpcs-security-audit",
+      "label": "PHP Security Audit",
+      "enabled": true,
+      "description": "PHP",
+      "variables": []
+    },
+    {
+      "name": "pmd-apex",
+      "label": "PMD APEX",
+      "enabled": true,
+      "description": "Apex (Salesforce)",
+      "variables": []
+    },
+    {
+      "name": "security-code-scan",
+      "label": "Security Code Scan",
+      "enabled": true,
+      "description": ".NET Core, .NET Framework",
+      "variables": []
+    },
+    {
+      "name": "semgrep",
+      "label": "Semgrep",
+      "enabled": true,
+      "description": "Multi-language scanning",
+      "variables": []
+    },
+    {
+      "name": "sobelow",
+      "label": "Sobelow",
+      "enabled": true,
+      "description": "Elixir (Phoenix)",
+      "variables": []
+    },
+    {
+      "name": "spotbugs",
+      "label": "Spotbugs",
+      "enabled": true,
+      "description": "Groovy, Java, Scala",
+      "variables": []
+    }
+  ]
 }

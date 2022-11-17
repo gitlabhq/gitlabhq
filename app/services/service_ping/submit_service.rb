@@ -63,7 +63,7 @@ module ServicePing
     def submit_payload(payload, path: USAGE_DATA_PATH)
       Gitlab::HTTP.post(
         URI.join(base_url, path),
-        body: payload.to_json,
+        body: Gitlab::Json.dump(payload),
         allow_local_requests: true,
         headers: { 'Content-type' => 'application/json' }
       )

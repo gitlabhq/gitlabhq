@@ -24,7 +24,7 @@ module DiffHelper
   end
 
   def show_only_context_commits?
-    !!params[:only_context_commits] || @merge_request&.commits&.empty?
+    !!params[:only_context_commits] || @merge_request.has_no_commits?
   end
 
   def diff_options
@@ -109,11 +109,11 @@ module DiffHelper
   end
 
   def inline_diff_btn
-    diff_btn('Inline', 'inline', diff_view == :inline)
+    diff_btn(s_('Diffs|Inline'), 'inline', diff_view == :inline)
   end
 
   def parallel_diff_btn
-    diff_btn('Side-by-side', 'parallel', diff_view == :parallel)
+    diff_btn(s_('Diffs|Side-by-side'), 'parallel', diff_view == :parallel)
   end
 
   def submodule_link(blob, ref, repository = @repository)
@@ -227,7 +227,6 @@ module DiffHelper
   end
 
   def conflicts(allow_tree_conflicts: false)
-    return unless options[:merge_ref_head_diff]
     return unless merge_request.cannot_be_merged?
 
     conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
@@ -242,6 +241,10 @@ module DiffHelper
     #
     # Return empty hash to indicate that there are no conflicts.
     {}
+  end
+
+  def params_with_whitespace
+    hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
   end
 
   private
@@ -277,13 +280,10 @@ module DiffHelper
     params[:w] == '1'
   end
 
-  def params_with_whitespace
-    hide_whitespace? ? request.query_parameters.except(:w) : request.query_parameters.merge(w: 1)
-  end
-
   def toggle_whitespace_link(url, options)
     options[:class] = [*options[:class], 'btn gl-button btn-default'].join(' ')
-    link_to "#{hide_whitespace? ? 'Show' : 'Hide'} whitespace changes", url, class: options[:class]
+    toggle_text = hide_whitespace? ? s_('Diffs|Show whitespace changes') : s_('Diffs|Hide whitespace changes')
+    link_to toggle_text, url, class: options[:class]
   end
 
   def code_navigation_path(diffs)

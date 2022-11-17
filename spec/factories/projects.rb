@@ -41,6 +41,7 @@ FactoryBot.define do
       environments_access_level { ProjectFeature::ENABLED }
       feature_flags_access_level { ProjectFeature::ENABLED }
       releases_access_level { ProjectFeature::ENABLED }
+      infrastructure_access_level { ProjectFeature::ENABLED }
 
       # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
       # `#ci_cd_settings` relation needs to be created first
@@ -251,6 +252,7 @@ FactoryBot.define do
       transient do
         create_templates { nil }
         create_branch { nil }
+        create_tag { nil }
       end
 
       after :create do |project, evaluator|
@@ -285,6 +287,13 @@ FactoryBot.define do
             message: 'Add README.md',
             branch_name: evaluator.create_branch)
 
+        end
+
+        if evaluator.create_tag
+          project.repository.add_tag(
+            project.creator,
+            evaluator.create_tag,
+            project.repository.commit.sha)
         end
 
         project.track_project_repository
@@ -465,6 +474,10 @@ FactoryBot.define do
       issue = create(:issue, project: project)
       create(:design, project: project, issue: issue)
     end
+  end
+
+  trait :in_group do
+    namespace factory: [:group]
   end
 
   trait :in_subgroup do

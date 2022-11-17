@@ -1,9 +1,11 @@
 ---
-stage: Package
-group: Package
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
-comments: false
-description: 'Container Registry metadata database'
+status: implemented
+creation-date: "2020-09-29"
+authors: [ "@jdrpereira" ]
+coach: "@glopezfernandez"
+approvers: [ "@trizzi", "@hswimelar" ]
+owning-stage: "~devops::package"
+participating-stages: []
 ---
 
 # Container Registry Metadata Database
@@ -344,24 +346,3 @@ A more detailed list of all tasks, as well as periodic progress updates can be f
 - [Gradual migration proposal for the GitLab.com container registry](https://gitlab.com/gitlab-org/container-registry/-/issues/191)
 - [Create a self-serve registry deployment](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/316)
 - [Database cluster for container registry](https://gitlab.com/gitlab-com/gl-infra/reliability/-/issues/11154)
-
-## Who
-
-Proposal:
-
-<!-- vale gitlab.Spelling = NO -->
-
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       |      João Pereira       |
-| Architecture Evolution Coach | Gerardo Lopez-Fernandez |
-| Engineering Leader           |                         |
-| Domain Expert                |          Hayley Swimelar               |
-
-DRIs:
-
-| Role                         | Who
-|------------------------------|------------------------|
-| Product                      |    Tim Rizzi                     |
-| Leadership                   |                        |
-| Engineering                  |              João Pereira           |

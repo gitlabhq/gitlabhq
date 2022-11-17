@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Systems' do
+  RSpec.describe 'Systems', product_group: :gitaly do
     describe 'Changing Gitaly repository storage', :requires_admin, except: { job: 'review-qa-*' } do
       praefect_manager = Service::PraefectManager.new
 

@@ -38,9 +38,9 @@ class Projects::ApplicationController < ApplicationController
     if build.debug_mode?
       access_denied!(
         _('You must have developer or higher permissions in the associated project to view job logs when debug trace ' \
-          "is enabled. To disable debug trace, set the 'CI_DEBUG_TRACE' variable to 'false' in your pipeline " \
-          'configuration or CI/CD settings. If you need to view this job log, a project maintainer or owner must add ' \
-          'you to the project with developer permissions or higher.')
+          "is enabled. To disable debug trace, set the 'CI_DEBUG_TRACE' and 'CI_DEBUG_SERVICES' variables to 'false' " \
+          'in your pipeline configuration or CI/CD settings. If you must view this job log, a project maintainer ' \
+          'or owner must add you to the project with developer permissions or higher.')
       )
     else
       access_denied!(_('The current user is not authorized to access the job log.'))

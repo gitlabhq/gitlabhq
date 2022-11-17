@@ -30,7 +30,7 @@ To create a new epic board:
 
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics > Boards**.
-1. In the upper left corner, select the dropdown with the current board name.
+1. In the upper left corner, select the dropdown list with the current board name.
 1. Select **Create new board**.
 1. Enter the new board's title.
 1. Optional. To hide the Open or Closed lists, clear the **Show the Open list** and
@@ -54,7 +54,7 @@ Prerequisites:
 
 To delete the active epic board:
 
-1. Select the dropdown with the current board name in the upper left corner of the epic boards page.
+1. Select the dropdown list with the current board name in the upper left corner of the epic boards page.
 1. Select **Delete board**.
 1. Select **Delete**.
 
@@ -80,7 +80,7 @@ To create a new list:
 1. On the top bar, select **Main menu > Groups** and find your group.
 1. On the left sidebar, select **Epics > Boards**.
 1. In the upper-right corner, select **Create list**.
-1. In the **New list** column expand the **Select a label** dropdown and select the label to use as
+1. In the **New list** column expand the **Select a label** dropdown list and select the label to use as
    list scope.
 1. Select **Add to board**.
 

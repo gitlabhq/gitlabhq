@@ -10,16 +10,6 @@ RSpec.describe Gitlab::DoorkeeperSecretStoring::Token::Pbkdf2Sha512 do
       expect(described_class.transform_secret(plaintext_token))
         .to eq("$pbkdf2-sha512$20000$$.c0G5XJVEew1TyeJk5TrkvB0VyOaTmDzPrsdNRED9vVeZlSyuG3G90F0ow23zUCiWKAVwmNnR/ceh.nJG3MdpQ") # rubocop:disable Layout/LineLength
     end
-
-    context 'when hash_oauth_tokens is disabled' do
-      before do
-        stub_feature_flags(hash_oauth_tokens: false)
-      end
-
-      it 'returns a plaintext token' do
-        expect(described_class.transform_secret(plaintext_token)).to eq(plaintext_token)
-      end
-    end
   end
 
   describe 'STRETCHES' do

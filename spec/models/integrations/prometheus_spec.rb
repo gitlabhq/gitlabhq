@@ -12,6 +12,8 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
 
   let(:integration) { project.prometheus_integration }
 
+  it_behaves_like Integrations::BaseMonitoring
+
   context 'redirects' do
     it 'does not follow redirects' do
       redirect_to = 'https://redirected.example.com'
@@ -217,7 +219,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         expect(integration.prometheus_client).to be_nil
       end
 
-      context 'with self monitoring project and internal Prometheus URL' do
+      context 'with self-monitoring project and internal Prometheus URL' do
         before do
           stub_application_setting(allow_local_requests_from_web_hooks_and_services: false)
           stub_application_setting(self_monitoring_project_id: project.id)
@@ -308,7 +310,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
       end
 
       context 'cluster belongs to project' do
-        let(:cluster) { create(:cluster, projects: [project]) }
+        let_it_be(:cluster) { create(:cluster, projects: [project]) }
 
         it 'returns true' do
           expect(integration.prometheus_available?).to be(true)
@@ -319,7 +321,7 @@ RSpec.describe Integrations::Prometheus, :use_clean_rails_memory_store_caching, 
         let_it_be(:group) { create(:group) }
 
         let(:project) { create(:project, :with_prometheus_integration, group: group) }
-        let(:cluster) { create(:cluster_for_group, groups: [group]) }
+        let_it_be(:cluster) { create(:cluster_for_group, groups: [group]) }
 
         it 'returns true' do
           expect(integration.prometheus_available?).to be(true)

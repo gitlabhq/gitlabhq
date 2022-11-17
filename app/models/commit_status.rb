@@ -9,11 +9,9 @@ class CommitStatus < Ci::ApplicationRecord
   include EnumWithNil
   include BulkInsertableAssociations
   include TaggableQueries
-  include IgnorableColumns
 
   self.table_name = 'ci_builds'
   partitionable scope: :pipeline
-  ignore_column :trace, remove_with: '15.6', remove_after: '2022-10-22'
 
   belongs_to :user
   belongs_to :project
@@ -23,7 +21,12 @@ class CommitStatus < Ci::ApplicationRecord
 
   has_many :needs, class_name: 'Ci::BuildNeed', foreign_key: :build_id, inverse_of: :build
 
+  attribute :retried, default: false
+
   enum scheduling_type: { stage: 0, dag: 1 }, _prefix: true
+  # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
+  # extend this `Hash` with new values.
+  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
 
   delegate :commit, to: :pipeline
   delegate :sha, :short_sha, :before_sha, to: :pipeline
@@ -97,12 +100,6 @@ class CommitStatus < Ci::ApplicationRecord
 
     merge(or_conditions)
   end
-
-  # We use `Enums::Ci::CommitStatus.failure_reasons` here so that EE can more easily
-  # extend this `Hash` with new values.
-  enum_with_nil failure_reason: Enums::Ci::CommitStatus.failure_reasons
-
-  default_value_for :retried, false
 
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.

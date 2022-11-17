@@ -4,37 +4,22 @@ group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Audit Events **(PREMIUM)**
+# Audit events **(PREMIUM)**
 
-GitLab offers a way to view the changes made within the GitLab server for owners and administrators
-on a [paid plan](https://about.gitlab.com/pricing/).
+Use audit events to track important events, including who performed the related action and when.
+You can use audit events to track, for example:
 
-GitLab system administrators can also view all audit events by accessing the [`audit_json.log` file](logs/index.md#audit_jsonlog).
-The JSON audit log does not include events that are [only streamed](../development/audit_event_guide/index.md#event-streaming).
+- Who changed the permission level of a particular user for a GitLab project, and when.
+- Who added a new user or removed a user, and when.
 
-You can:
+The GitLab API, database, and `audit_json.log` record many audit events. Some audit events are only available through
+[streaming audit events](audit_event_streaming.md).
 
-- Generate an [audit report](audit_reports.md) of audit events.
-- [Stream audit events](audit_event_streaming.md) to an external endpoint.
+You can also generate an [audit report](audit_reports.md) of audit events.
 
-## Overview
-
-**Audit Events** is a tool for GitLab owners and administrators
-to track important events such as who performed certain actions and the
-time they happened. For example, these actions could be a change to a user
-permission level, who added a new user, or who removed a user.
-
-## Use cases
-
-- Check who changed the permission level of a particular
-  user for a GitLab project.
-- Track which users have access to a certain group of projects
-  in GitLab, and who gave them that permission level.
-
-## Retention policy
-
-There is no retention policy in place for audit events.
-See the [Specify a retention period for audit events](https://gitlab.com/groups/gitlab-org/-/epics/7917) for more information.
+NOTE:
+You can't configure a retention policy for audit events, but epic
+[7917](https://gitlab.com/groups/gitlab-org/-/epics/7917) proposes to change this.
 
 ## List of events
 
@@ -115,7 +100,7 @@ From there, you can see the following actions:
 - Instance administrator started or stopped impersonation of a group member. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/300961) in GitLab 14.8.
 - Group deploy token was successfully created, revoked, or deleted. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
 - Failed attempt to create a group deploy token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353452) in GitLab 14.9.
-- [IP restrictions](../user/group/access_and_permissions.md#restrict-group-access-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
+- [IP restrictions](../user/group/access_and_permissions.md#restrict-access-to-groups-by-ip-address) changed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/358986) in GitLab 15.0.
 - Changes to push rules. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227629) in GitLab 15.0.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356152) in GitLab 15.1, changes to the following merge request approvals settings:
   - Prevent approval by author.
@@ -124,6 +109,7 @@ From there, you can see the following actions:
   - Require user password to approve.
   - Remove all approvals when commits are added to the source branch.
 - Changes to streaming audit destination custom HTTP headers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
+- Group had a security policy project linked, changed, or unlinked. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6)
 
 Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
 
@@ -194,6 +180,7 @@ From there, you can see the following actions:
 - Squash commit message template is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
 - Default description template for merge requests is updated ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355805) in GitLab 15.0)
 - Project was scheduled for deletion due to inactivity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0)
+- Project had a security policy project linked, changed, or unlinked ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6)
 
 Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 

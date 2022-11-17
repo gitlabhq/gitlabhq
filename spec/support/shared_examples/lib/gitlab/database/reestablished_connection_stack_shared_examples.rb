@@ -3,9 +3,6 @@
 RSpec.shared_context 'reconfigures connection stack' do |db_config_name|
   before do
     skip_if_multiple_databases_not_setup
-
-    # Due to lib/gitlab/database/load_balancing/configuration.rb:92 requiring RequestStore
-    # we cannot use stub_feature_flags(force_no_sharing_primary_model: true)
     Gitlab::Database.database_base_models.each do |_, model_class|
       allow(model_class.load_balancer.configuration).to receive(:use_dedicated_connection?).and_return(true)
     end

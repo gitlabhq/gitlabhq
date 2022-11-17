@@ -92,7 +92,7 @@ RSpec.describe API::Issues do
   describe 'GET /issues/:id' do
     context 'when unauthorized' do
       it 'returns unauthorized' do
-        get api("/issues/#{issue.id}" )
+        get api("/issues/#{issue.id}")
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -101,7 +101,7 @@ RSpec.describe API::Issues do
     context 'when authorized' do
       context 'as a normal user' do
         it 'returns forbidden' do
-          get api("/issues/#{issue.id}", user )
+          get api("/issues/#{issue.id}", user)
 
           expect(response).to have_gitlab_http_status(:forbidden)
         end

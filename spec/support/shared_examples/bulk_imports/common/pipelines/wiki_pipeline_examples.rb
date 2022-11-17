@@ -35,7 +35,7 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
       it 'does not import wiki' do
         expect(subject).to receive(:source_wiki_exists?).and_return(false)
 
-        expect(parent.wiki).not_to receive(:ensure_repository)
+        expect(parent.wiki).not_to receive(:create_wiki_repository)
         expect(parent.wiki.repository).not_to receive(:ensure_repository)
 
         expect { subject.run }.not_to raise_error
@@ -75,7 +75,7 @@ RSpec.shared_examples 'wiki pipeline imports a wiki for an entity' do
       describe 'unsuccessful response' do
         shared_examples 'does not raise an error' do
           it 'does not raise an error' do
-            expect(parent.wiki).not_to receive(:ensure_repository)
+            expect(parent.wiki).not_to receive(:create_wiki_repository)
             expect(parent.wiki.repository).not_to receive(:ensure_repository)
 
             expect { subject.run }.not_to raise_error

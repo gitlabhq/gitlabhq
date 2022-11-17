@@ -1,7 +1,9 @@
 {
   "karma": {
     "inherit": {
-      "default": ["secrets"]
+      "default": [
+        "secrets"
+      ]
     },
     "script": "karma"
   }

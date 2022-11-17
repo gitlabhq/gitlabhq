@@ -55,22 +55,8 @@ RSpec.describe Gitlab::Diff::File do
     let(:commit) { project.commit("532c837") }
 
     context 'when file is ipynb' do
-      let(:ipynb_semantic_diff) { false }
-
-      before do
-        stub_feature_flags(ipynb_semantic_diff: ipynb_semantic_diff)
-      end
-
-      subject { diff_file.rendered }
-
-      context 'when ipynb_semantic_diff is off' do
-        it { is_expected.to be_nil }
-      end
-
-      context 'and rendered_viewer is on' do
-        let(:ipynb_semantic_diff) { true }
-
-        it { is_expected.not_to be_nil }
+      it 'creates a rendered diff file' do
+        expect(diff_file.rendered).not_to be_nil
       end
     end
   end
@@ -148,20 +134,6 @@ RSpec.describe Gitlab::Diff::File do
       context 'when not modified' do
         it 'is nil' do
           expect(diff_file).to receive(:modified_file?).and_return(false)
-
-          expect(diff_file.rendered).to be_nil
-        end
-      end
-
-      context 'when semantic ipynb is off' do
-        before do
-          stub_feature_flags(ipynb_semantic_diff: false)
-        end
-
-        it 'returns nil' do
-          expect(diff_file).not_to receive(:modified_file?)
-          expect(diff_file).not_to receive(:ipynb?)
-          expect(diff).not_to receive(:too_large?)
 
           expect(diff_file.rendered).to be_nil
         end

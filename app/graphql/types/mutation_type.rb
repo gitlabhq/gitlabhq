@@ -47,10 +47,11 @@ module Types
     mount_mutation Mutations::DependencyProxy::ImageTtlGroupPolicy::Update
     mount_mutation Mutations::DependencyProxy::GroupSettings::Update
     mount_mutation Mutations::Environments::CanaryIngress::Update
-    mount_mutation Mutations::IncidentManagement::TimelineEvent::Create
+    mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, alpha: { milestone: '15.6' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Destroy
+    mount_mutation Mutations::IncidentManagement::TimelineEventTag::Create
     mount_mutation Mutations::Issues::Create
     mount_mutation Mutations::Issues::SetAssignees
     mount_mutation Mutations::Issues::SetCrmContacts
@@ -115,6 +116,7 @@ module Types
     mount_mutation Mutations::Ci::Pipeline::Destroy
     mount_mutation Mutations::Ci::Pipeline::Retry
     mount_mutation Mutations::Ci::PipelineSchedule::Delete
+    mount_mutation Mutations::Ci::PipelineSchedule::TakeOwnership
     mount_mutation Mutations::Ci::CiCdSettingsUpdate, deprecated: {
       reason: :renamed,
       replacement: 'ProjectCiCdSettingsUpdate',

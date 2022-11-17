@@ -75,3 +75,8 @@ mapping:
   - source: ee/app/mailers/ee/preview/.+\.rb
     test: spec/mailers/previews_spec.rb
 
+  ## GLFM spec and config files for CE and EE should map to respective markdown snapshot specs
+  - source: glfm_specification/.+
+    test: spec/requests/api/markdown_snapshot_spec.rb
+  - source: glfm_specification/.+
+    test: ee/spec/requests/api/markdown_snapshot_spec.rb

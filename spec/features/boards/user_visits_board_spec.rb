@@ -21,7 +21,7 @@ RSpec.describe 'User visits issue boards', :js do
 
   let_it_be(:label1) { create(:group_label, group: group, name: label_name1) }
   let_it_be(:label2) { create(:group_label, group: group, name: label_name2) }
-  let_it_be(:assignee) { create_default(:group_member, :maintainer, user: create(:user, username: assignee_username), group: group ).user }
+  let_it_be(:assignee) { create_default(:group_member, :maintainer, user: create(:user, username: assignee_username), group: group).user }
   let_it_be(:milestone) { create_default(:milestone, project: project, start_date: Date.today - 1, due_date: 7.days.from_now) }
 
   before_all do
@@ -44,6 +44,7 @@ RSpec.describe 'User visits issue boards', :js do
 
     with_them do
       before do
+        stub_feature_flags(apollo_boards: false)
         visit board_path
 
         wait_for_requests
@@ -59,6 +60,7 @@ RSpec.describe 'User visits issue boards', :js do
   end
 
   context "project boards" do
+    stub_feature_flags(apollo_boards: false)
     let_it_be(:board) { create_default(:board, project: project) }
     let_it_be(:backlog_list) { create_default(:backlog_list, board: board) }
 
@@ -68,6 +70,7 @@ RSpec.describe 'User visits issue boards', :js do
   end
 
   context "group boards" do
+    stub_feature_flags(apollo_boards: false)
     let_it_be(:board) { create_default(:board, group: group) }
     let_it_be(:backlog_list) { create_default(:backlog_list, board: board) }
 

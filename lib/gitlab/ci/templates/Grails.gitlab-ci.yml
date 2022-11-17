@@ -26,7 +26,7 @@ variables:
 before_script:
   - apt-get update -qq && apt-get install -y -qq unzip
   - curl -sSL https://get.sdkman.io | bash
-  - echo sdkman_auto_answer=true > ~/.sdkman/etc/config
+  - echo sdkman_auto_answer=true >> ~/.sdkman/etc/config
   - source ~/.sdkman/bin/sdkman-init.sh
   - sdk install gradle $GRADLE_VERSION < /dev/null
   - sdk use gradle $GRADLE_VERSION

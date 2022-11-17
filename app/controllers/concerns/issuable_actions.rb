@@ -142,43 +142,21 @@ module IssuableActions
     end
   end
 
-  # rubocop:disable CodeReuse/ActiveRecord
   def discussions
-    notes = NotesFinder.new(current_user, finder_params_for_issuable).execute
-                .inc_relations_for_view
-                .includes(:noteable)
-                .fresh
+    finder = Issuable::DiscussionsListService.new(current_user, issuable, finder_params_for_issuable)
+    discussion_notes = finder.execute
 
-    if paginated_discussions
-      paginated_discussions_by_type = paginated_discussions.records.group_by(&:table_name)
+    response.headers['X-Next-Page-Cursor'] = finder.paginator.cursor_for_next_page if finder.paginator.present? && finder.paginator.has_next_page?
 
-      notes = if paginated_discussions_by_type['notes'].present?
-                notes.with_discussion_ids(paginated_discussions_by_type['notes'].map(&:discussion_id))
-              else
-                notes.none
-              end
-
-      response.headers['X-Next-Page-Cursor'] = paginated_discussions.cursor_for_next_page if paginated_discussions.has_next_page?
-    end
-
-    if notes_filter != UserPreference::NOTES_FILTERS[:only_comments]
-      notes = ResourceEvents::MergeIntoNotesService.new(issuable, current_user, paginated_notes: paginated_discussions_by_type).execute(notes)
-    end
-
-    notes = prepare_notes_for_rendering(notes)
-    notes = notes.select { |n| n.readable_by?(current_user) }
-
-    discussions = Discussion.build_collection(notes, issuable)
-
-    if issuable.is_a?(MergeRequest)
-      render_mr_discussions(discussions, discussion_serializer, discussion_cache_context)
-    elsif issuable.is_a?(Issue)
-      render json: discussion_serializer.represent(discussions, context: self) if stale?(etag: [discussion_cache_context, discussions])
+    case issuable
+    when MergeRequest
+      render_mr_discussions(discussion_notes, discussion_serializer, discussion_cache_context)
+    when Issue
+      render json: discussion_serializer.represent(discussion_notes, context: self) if stale?(etag: [discussion_cache_context, discussion_notes])
     else
-      render json: discussion_serializer.represent(discussions, context: self)
+      render json: discussion_serializer.represent(discussion_notes, context: self)
     end
   end
-  # rubocop:enable CodeReuse/ActiveRecord
 
   private
 
@@ -197,17 +175,6 @@ module IssuableActions
                   with: serializer,
                   cache_context: -> (_) { cache_context },
                   context: self)
-  end
-
-  def paginated_discussions
-    return if params[:per_page].blank?
-    return if issuable.instance_of?(MergeRequest) && Feature.disabled?(:paginated_mr_discussions, project)
-
-    strong_memoize(:paginated_discussions) do
-      issuable
-        .discussion_root_note_ids(notes_filter: notes_filter)
-        .keyset_paginate(cursor: params[:cursor], per_page: params[:per_page].to_i)
-    end
   end
 
   def notes_filter
@@ -325,9 +292,10 @@ module IssuableActions
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def finder_params_for_issuable
     {
-        target: @issuable,
-        notes_filter: notes_filter
-    }.tap { |new_params| new_params[:project] = project if respond_to?(:project, true) }
+      notes_filter: notes_filter,
+      cursor: params[:cursor],
+      per_page: params[:per_page]
+    }
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

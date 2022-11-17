@@ -1,49 +1,40 @@
 ---
 stage: Verify
-group: Pipeline Execution
+group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 type: reference
 ---
 
-# Get started with GitLab CI/CD **(FREE)**
+# Tutorial: Create and run your first GitLab CI/CD pipeline **(FREE)**
 
-Use this document to get started with [GitLab CI/CD](../index.md).
+This tutorial shows you how to configure and run your first CI/CD pipeline in GitLab.
+
+## Prerequisites
 
 Before you start, make sure you have:
 
 - A project in GitLab that you would like to use CI/CD for.
 - The Maintainer or Owner role for the project.
 
-If you are migrating from another CI/CD tool, view this documentation:
+If you don't have a project, you can create a public project for free on <https://gitlab.com>.
 
-- [Migrate from CircleCI](../migration/circleci.md).
-- [Migrate from Jenkins](../migration/jenkins.md).
+## Steps
 
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s). This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project, running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities and offers more exercises for asynchronous practice.
-> - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s). This workshop uses the Web IDE to quickly get going with building source code using CI/CD, and run unit tests.
-
-## CI/CD process overview
-
-To use GitLab CI/CD:
+To create and run your first pipeline:
 
 1. [Ensure you have runners available](#ensure-you-have-runners-available) to run your jobs.
-   GitLab SaaS provides runners, so if you're using GitLab.com, you can skip this step.
 
-   If you don't have a runner, [install GitLab Runner](https://docs.gitlab.com/runner/install/)
-   and [register a runner](https://docs.gitlab.com/runner/register/) for your instance, project, or group.
+   If you're using GitLab.com, you can skip this step. GitLab.com provides shared runners for you.
+
 1. [Create a `.gitlab-ci.yml` file](#create-a-gitlab-ciyml-file)
-   at the root of your repository. This file is where you define your CI/CD jobs.
+   at the root of your repository. This file is where you define the CI/CD jobs.
 
 When you commit the file to your repository, the runner runs your jobs.
 The job results [are displayed in a pipeline](#view-the-status-of-your-pipeline-and-jobs).
 
-### Ensure you have runners available
+## Ensure you have runners available
 
 In GitLab, runners are agents that run your CI/CD jobs.
-
-You might already have runners available for your project, including
-[shared runners](../runners/runners_scope.md), which are
-available to all projects in your GitLab instance.
 
 To view available runners:
 
@@ -52,34 +43,32 @@ To view available runners:
 As long as you have at least one runner that's active, with a green circle next to it,
 you have a runner available to process your jobs.
 
-If no runners are listed on the **Runners** page in the UI, you or an administrator
-must [install GitLab Runner](https://docs.gitlab.com/runner/install/) and
-[register](https://docs.gitlab.com/runner/register/) at least one runner.
+### If you don't have a runner
 
-If you are testing CI/CD, you can install GitLab Runner and register runners on your local machine.
-When your CI/CD jobs run, they run on your local machine.
+If you don't have a runner:
 
-### Create a `.gitlab-ci.yml` file
+1. [Install GitLab Runner](https://docs.gitlab.com/runner/install/) on your local machine.
+1. [Register the runner](https://docs.gitlab.com/runner/register/) for your project.
+   Choose the `shell` executor.
 
-The `.gitlab-ci.yml` file is a [YAML](https://en.wikipedia.org/wiki/YAML) file where
-you configure specific instructions for GitLab CI/CD.
+When your CI/CD jobs run, in a later step, they will run on your local machine.
+
+## Create a `.gitlab-ci.yml` file
+
+Now create a `.gitlab-ci.yml` file. It is a [YAML](https://en.wikipedia.org/wiki/YAML) file where
+you specify instructions for GitLab CI/CD.
 
 In this file, you define:
 
 - The structure and order of jobs that the runner should execute.
 - The decisions the runner should make when specific conditions are encountered.
 
-For example, you might want to run a suite of tests when you commit to
-any branch except the default branch. When you commit to the default branch, you want
-to run the same suite, but also publish your application.
-
-All of this is defined in the `.gitlab-ci.yml` file.
-
 To create a `.gitlab-ci.yml` file:
 
-1. On the left sidebar, select **Project information > Details**.
-1. Above the file list, select the branch you want to commit to,
-   select the plus icon, then select **New file**:
+1. On the left sidebar, select **Repository > Files**.
+1. Above the file list, select the branch you want to commit to.
+   If you're not sure, leave `master` or `main`.
+   Then select the plus icon (**{plus}**) and **New file**:
 
    ![New file](img/new_file_v13_6.png)
 
@@ -112,46 +101,50 @@ To create a `.gitlab-ci.yml` file:
      environment: production
    ```
 
-   `$GITLAB_USER_LOGIN` and `$CI_COMMIT_BRANCH` are
-   [predefined variables](../variables/predefined_variables.md)
-   that populate when the job runs.
+   This example shows four jobs: `build-job`, `test-job1`, `test-job2`, and `deploy-prod`.
+   The comments listed in the `echo` commands are displayed in the UI when you view the jobs.
+   The values for the [predefined variables](../variables/predefined_variables.md)
+   `$GITLAB_USER_LOGIN` and `$CI_COMMIT_BRANCH` are populated when the jobs run.
 
 1. Select **Commit changes**.
 
-The pipeline starts when the commit is committed.
+The pipeline starts and runs the jobs you defined in the `.gitlab-ci.yml` file.
 
-#### `.gitlab-ci.yml` tips
+## View the status of your pipeline and jobs
 
-- After you create your first `.gitlab-ci.yml` file, use the [pipeline editor](../pipeline_editor/index.md)
-  for all future edits to the file. With the pipeline editor, you can:
-  - Edit the pipeline configuration with automatic syntax highlighting and validation.
-  - View the [CI/CD configuration visualization](../pipeline_editor/index.md#visualize-ci-configuration),
-    a graphical representation of your `.gitlab-ci.yml` file.
-- If you want the runner to [use a Docker container to run the jobs](../docker/using_docker_images.md),
-  edit the `.gitlab-ci.yml` file
-  to include an image name:
+Now take a look at your pipeline and the jobs within.
 
-  ```yaml
-  default:
-    image: ruby:2.7.5
-  ```
+1. Go to **CI/CD > Pipelines**. A pipeline with three stages should be displayed:
 
-  This command tells the runner to use a Ruby image from Docker Hub
-  and to run the jobs in a container that's generated from the image.
+   ![Three stages](img/three_stages_v13_6.png)
 
-  This process is different than
-  [building an application as a Docker container](../docker/using_docker_build.md).
-  Your application does not need to be built as a Docker container to
-  run CI/CD jobs in Docker containers.
+1. View a visual representation of your pipeline by selecting the pipeline ID:
 
-- Each job contains scripts and stages:
+   ![Pipeline graph](img/pipeline_graph_v13_6.png)
+
+1. View details of a job by selecting the job name. For example, `deploy-prod`:
+
+   ![Job details](img/job_details_v13_6.png)
+
+You have successfully created your first CI/CD pipeline in GitLab. Congratulations!
+
+Now you can get started customizing your `.gitlab-ci.yml` and defining more advanced jobs.
+
+## `.gitlab-ci.yml` tips
+
+Here are some tips to get started working with the `.gitlab-ci.yml` file.
+
+For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` keyword reference](../yaml/index.md).
+
+- Use the [pipeline editor](../pipeline_editor/index.md) to edit your `.gitlab-ci.yml` file.
+- Each job contains a script section and belongs to a stage:
   - The [`default`](../yaml/index.md#default) keyword is for
     custom defaults, for example with [`before_script`](../yaml/index.md#before_script)
     and [`after_script`](../yaml/index.md#after_script).
   - [`stage`](../yaml/index.md#stage) describes the sequential execution of jobs.
     Jobs in a single stage run in parallel as long as there are available runners.
-  - Use [Directed Acyclic Graphs (DAG)](../directed_acyclic_graph/index.md) keywords
-    to run jobs out of stage order.
+  - Use the [`needs` keyword](../yaml/index.md#needs) to run jobs out of stage order.
+    This creates a [Directed Acyclic Graph (DAG)](../directed_acyclic_graph/index.md).
 - You can set additional configuration to customize how your jobs and stages perform:
   - Use the [`rules`](../yaml/index.md#rules) keyword to specify when to run or skip jobs.
     The `only` and `except` legacy keywords are still supported, but can't be used
@@ -159,26 +152,10 @@ The pipeline starts when the commit is committed.
   - Keep information across jobs and stages persistent in a pipeline with [`cache`](../yaml/index.md#cache)
     and [`artifacts`](../yaml/index.md#artifacts). These keywords are ways to store
     dependencies and job output, even when using ephemeral runners for each job.
-- For the complete `.gitlab-ci.yml` syntax, see [the full `.gitlab-ci.yml` reference topic](../yaml/index.md).
 
-### View the status of your pipeline and jobs
+## Related topics
 
-When you committed your changes, a pipeline started.
-
-To view your pipeline:
-
-- Go to **CI/CD > Pipelines**.
-
-  A pipeline with three stages should be displayed:
-
-  ![Three stages](img/three_stages_v13_6.png)
-
-- To view a visual representation of your pipeline, select the pipeline ID.
-
-  ![Pipeline graph](img/pipeline_graph_v13_6.png)
-
-- To view details of a job, select the job name, for example, `deploy-prod`.
-
-  ![Job details](img/job_details_v13_6.png)
-
-If the job status is `stuck`, check to ensure a runner is properly configured for the project.
+- [Follow this guide to migrate from CircleCI](../migration/circleci.md).
+- [Follow this guide to migrate from Jenkins](../migration/jenkins.md).
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [First time GitLab & CI/CD](https://www.youtube.com/watch?v=kTNfi5z6Uvk&t=553s). This includes a quick introduction to GitLab, the first steps with CI/CD, building a Go project, running tests, using the CI/CD pipeline editor, detecting secrets and security vulnerabilities and offers more exercises for asynchronous practice.
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>&nbsp;Watch [Intro to GitLab CI](https://www.youtube.com/watch?v=l5705U8s_nQ&t=358s). This workshop uses the Web IDE to quickly get going with building source code using CI/CD, and run unit tests.

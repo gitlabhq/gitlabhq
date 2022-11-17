@@ -15,7 +15,7 @@ RSpec.shared_examples 'with cross-reference system notes' do
     new_merge_request.project.add_developer(user)
 
     hidden_merge_request = create(:merge_request)
-    new_cross_reference = "test commit #{hidden_merge_request.project.commit}"
+    new_cross_reference = "test commit #{hidden_merge_request.project.commit.to_reference(project)}"
     new_note = create(:system_note, noteable: merge_request, project: project, note: new_cross_reference)
     create(:system_note_metadata, note: new_note, action: 'cross_reference')
   end

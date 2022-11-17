@@ -1,0 +1,8 @@
+---
+name: jira_connect_oauth_self_managed_setting
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100725
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377679
+milestone: '15.6'
+type: development
+group: group::integrations
+default_enabled: false

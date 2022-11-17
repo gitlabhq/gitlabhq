@@ -76,7 +76,7 @@ RSpec.describe Projects::EnvironmentsController do
         it 'handles search option properly' do
           get :index, params: environment_params(format: :json, search: 'staging/r')
 
-          expect(environments.map { |env| env['name'] } ).to contain_exactly('staging/review-1', 'staging/review-2')
+          expect(environments.map { |env| env['name'] }).to contain_exactly('staging/review-1', 'staging/review-2')
           expect(json_response['available_count']).to eq 2
           expect(json_response['stopped_count']).to eq 1
         end
@@ -84,7 +84,7 @@ RSpec.describe Projects::EnvironmentsController do
         it 'ignores search option if is shorter than a minimum' do
           get :index, params: environment_params(format: :json, search: 'st')
 
-          expect(environments.map { |env| env['name'] } ).to contain_exactly('production',
+          expect(environments.map { |env| env['name'] }).to contain_exactly('production',
                                                                              'staging/review-1',
                                                                              'staging/review-2')
           expect(json_response['available_count']).to eq 3
@@ -233,7 +233,7 @@ RSpec.describe Projects::EnvironmentsController do
           search: 'staging-1.0/z'
         }, format: :json)
 
-        expect(environments.map { |env| env['name'] } ).to eq(['staging-1.0/zzz'])
+        expect(environments.map { |env| env['name'] }).to eq(['staging-1.0/zzz'])
         expect(json_response['available_count']).to eq 1
         expect(json_response['stopped_count']).to eq 0
       end
@@ -705,7 +705,7 @@ RSpec.describe Projects::EnvironmentsController do
 
         expect(json_response).to have_key('all_dashboards')
         expect(json_response['all_dashboards']).to be_an_instance_of(Array)
-        expect(json_response['all_dashboards']).to all( include('path', 'default', 'display_name') )
+        expect(json_response['all_dashboards']).to all(include('path', 'default', 'display_name'))
       end
     end
 

@@ -125,6 +125,14 @@ $dark-il: #de935f;
 }
 
 .code.dark {
+  // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
+  // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)
+  @include hljs-override('title\\.class', $dark-nc);
+  @include hljs-override('title\\.class\\.inherited', $dark-no);
+  @include hljs-override('variable\\.constant', $dark-no);
+  @include hljs-override('title\\.function', $dark-nf);
+  
+
   // Line numbers
   .file-line-num {
     @include line-link($white, 'link');

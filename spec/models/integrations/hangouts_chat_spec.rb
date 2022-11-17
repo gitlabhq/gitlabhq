@@ -46,7 +46,7 @@ RSpec.describe Integrations::HangoutsChat do
     end
 
     context 'with issue events' do
-      let(:issues_sample_data) { create(:issue).to_hook_data(user) }
+      let(:issues_sample_data) { create(:issue, project: project).to_hook_data(user) }
 
       it "adds thread key for issue events" do
         expect(chat_integration.execute(issues_sample_data)).to be(true)
@@ -58,7 +58,7 @@ RSpec.describe Integrations::HangoutsChat do
     end
 
     context 'with merge events' do
-      let(:merge_sample_data) { create(:merge_request).to_hook_data(user) }
+      let(:merge_sample_data) { create(:merge_request, source_project: project).to_hook_data(user) }
 
       it "adds thread key for merge events" do
         expect(chat_integration.execute(merge_sample_data)).to be(true)
@@ -71,7 +71,7 @@ RSpec.describe Integrations::HangoutsChat do
 
     context 'with wiki page events' do
       let(:wiki_page_sample_data) do
-        Gitlab::DataBuilder::WikiPage.build(create(:wiki_page, message: 'foo'), user, 'create')
+        Gitlab::DataBuilder::WikiPage.build(create(:wiki_page, project: project, message: 'foo'), user, 'create')
       end
 
       it "adds thread key for wiki page events" do

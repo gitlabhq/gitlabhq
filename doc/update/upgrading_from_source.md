@@ -107,11 +107,11 @@ Download and install Go (for Linux, 64-bit):
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.17.10.linux-amd64.tar.gz"
-echo '87fc728c9c731e2f74e4a999ef53cf07302d7ed3504b0839027bd9c10edaa3fd  go1.17.10.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.17.10.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.18.8.linux-amd64.tar.gz"
+echo '4d854c7bad52d53470cf32f1b287a5c0c441dc6b98306dea27358e099698142a  go1.18.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.18.8.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.17.10.linux-amd64.tar.gz
+rm go1.18.8.linux-amd64.tar.gz
 ```
 
 ### 6. Update Git
@@ -309,9 +309,6 @@ sudo -u git -H bundle clean
 
 # Run database migrations
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
-
-# Compile GetText PO files
-sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 # Update node dependencies and recompile assets
 sudo -u git -H bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile RAILS_ENV=production NODE_ENV=production NODE_OPTIONS="--max_old_space_size=4096"

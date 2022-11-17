@@ -43,6 +43,7 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
   context 'list partitioning conversion helpers' do
     shared_examples_for 'delegates to ConvertTableToFirstListPartition' do
+      let(:extra_options) { {} }
       it 'throws an error if in a transaction' do
         allow(migration).to receive(:transaction_open?).and_return(true)
         expect { migrate }.to raise_error(/cannot be run inside a transaction/)
@@ -54,7 +55,8 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
                                 table_name: source_table,
                                 parent_table_name: partitioned_table,
                                 partitioning_column: partition_column,
-                                zero_partition_value: min_date) do |converter|
+                                zero_partition_value: min_date,
+                                **extra_options) do |converter|
           expect(converter).to receive(expected_method)
         end
 
@@ -64,12 +66,15 @@ RSpec.describe Gitlab::Database::PartitioningMigrationHelpers::TableManagementHe
 
     describe '#convert_table_to_first_list_partition' do
       it_behaves_like 'delegates to ConvertTableToFirstListPartition' do
+        let(:lock_tables) { [source_table] }
+        let(:extra_options) { { lock_tables: lock_tables } }
         let(:expected_method) { :partition }
         let(:migrate) do
           migration.convert_table_to_first_list_partition(table_name: source_table,
                                                           partitioning_column: partition_column,
                                                           parent_table_name: partitioned_table,
-                                                          initial_partitioning_value: min_date)
+                                                          initial_partitioning_value: min_date,
+                                                          lock_tables: lock_tables)
         end
       end
     end

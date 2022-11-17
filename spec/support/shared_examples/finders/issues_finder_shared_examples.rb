@@ -585,7 +585,7 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
         end
 
         context 'when full-text search is disabled' do
-          let(:search_term) { 'somet' }
+          let(:search_term) { 'ometh' }
 
           before do
             stub_feature_flags(issues_full_text_search: false)

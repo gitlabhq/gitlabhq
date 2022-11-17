@@ -1,0 +1,215 @@
+@import 'mixins_and_variables_and_functions';
+
+$design-pin-diameter: 28px;
+$design-pin-diameter-sm: 24px;
+$t-gray-a-16-design-pin: rgba($black, 0.16);
+
+.design-card-header {
+  background: transparent;
+}
+
+.design-checkbox {
+  position: absolute;
+  top: $gl-padding;
+  left: 30px;
+}
+
+.layout-page.design-detail-layout {
+  max-height: 100vh;
+}
+
+.design-detail {
+  background-color: rgba($modal-backdrop-bg, $modal-backdrop-opacity);
+
+  .with-performance-bar & {
+    top: 35px;
+  }
+
+  .comment-indicator {
+    border-radius: 50%;
+  }
+
+  .comment-indicator,
+  .frame .design-note-pin {
+    &:active {
+      cursor: grabbing;
+    }
+  }
+}
+
+.design-list-item {
+  height: 280px;
+  text-decoration: none;
+
+  .icon-version-status {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+
+  .card-body {
+    height: 230px;
+  }
+}
+
+// This is temporary class to be removed after feature flag removal: https://gitlab.com/gitlab-org/gitlab/-/issues/223197
+.design-list-item-new {
+  height: 210px;
+}
+
+.design-note-pin {
+  display: flex;
+  height: $design-pin-diameter;
+  width: $design-pin-diameter;
+  box-sizing: content-box;
+  background-color: var(--purple-500, $purple-500);
+  color: var(--white, $white);
+  font-weight: $gl-font-weight-bold;
+  border-radius: 50%;
+  z-index: 1;
+  padding: 0;
+  border: 0;
+
+  &.draft {
+    background-color: var(--orange-500, $orange-500);
+  }
+
+  &.resolved {
+    background-color: var(--gray-500, $gray-500);
+  }
+
+  &.on-image {
+    box-shadow: 0 2px 4px $t-gray-a-08, 0 0 1px $t-gray-a-24;
+    border: var(--white, $white) 2px solid;
+    will-change: transform, box-shadow, opacity;
+    // NOTE: verbose transition property required for Safari
+    transition: transform $general-hover-transition-duration linear, box-shadow $general-hover-transition-duration linear, opacity $general-hover-transition-duration linear;
+    transform-origin: 0 0;
+    transform: translate(-50%, -50%);
+
+    &:hover {
+      transform: scale(1.2) translate(-50%, -50%);
+    }
+
+    &:active {
+      box-shadow: 0 0 4px $t-gray-a-16-design-pin, 0 4px 12px $t-gray-a-16-design-pin;
+    }
+
+    &.inactive {
+      @include gl-opacity-5;
+
+      &:hover {
+        @include gl-opacity-10;
+      }
+    }
+  }
+
+  &.small {
+    position: absolute;
+    border: 1px solid var(--white, $white);
+    height: $design-pin-diameter-sm;
+    width: $design-pin-diameter-sm;
+  }
+
+  &.user-avatar {
+    top: 25px;
+    right: 8px;
+  }
+}
+
+.design-scaler-wrapper {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.image-notes {
+  overflow-y: scroll;
+  padding: $gl-padding;
+  padding-top: 50px;
+  background-color: var(--white, $white);
+  flex-shrink: 0;
+  min-width: 400px;
+  flex-basis: 28%;
+
+  .link-inherit-color {
+    &:hover,
+    &:active,
+    &:focus {
+      color: inherit;
+      text-decoration: none;
+    }
+  }
+
+  .toggle-comments {
+    line-height: 20px;
+    border-top: 1px solid var(--border-color, $border-color);
+
+    &.expanded {
+      border-bottom: 1px solid var(--border-color, $border-color);
+    }
+
+    .toggle-comments-button:focus {
+      text-decoration: none;
+      color: var(--blue-600, $blue-600);
+    }
+  }
+
+  .design-note-pin {
+    margin-left: $gl-padding;
+  }
+
+  .design-discussion {
+    margin: $gl-padding 0;
+
+    &::before {
+      content: '';
+      border-left: 1px solid var(--gray-100, $gray-100);
+      position: absolute;
+      left: 28px;
+      top: -17px;
+      height: 17px;
+    }
+
+    .design-note {
+      padding: $gl-padding;
+      list-style: none;
+      transition: background $gl-transition-duration-medium $general-hover-transition-curve;
+      border-top-left-radius: $border-radius-default; // same border radius used by .bordered-box
+      border-top-right-radius: $border-radius-default;
+
+      a {
+        color: inherit;
+      }
+
+      .note-text a {
+        color: var(--blue-600, $blue-600);
+      }
+    }
+
+    .reply-wrapper {
+      padding: $gl-padding;
+    }
+  }
+
+  .reply-wrapper {
+    border-top: 1px solid var(--border-color, $border-color);
+  }
+
+  .new-discussion-disclaimer {
+    line-height: 20px;
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, lg)) {
+  .design-detail {
+    overflow-y: scroll;
+  }
+
+  .image-notes {
+    overflow-y: auto;
+    min-width: 100%;
+    flex-grow: 1;
+    flex-basis: auto;
+  }
+}

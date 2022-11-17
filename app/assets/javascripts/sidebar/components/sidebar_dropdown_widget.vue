@@ -1,17 +1,5 @@
 <script>
-import {
-  GlLink,
-  GlDropdown,
-  GlDropdownItem,
-  GlDropdownText,
-  GlSearchBoxByType,
-  GlDropdownDivider,
-  GlLoadingIcon,
-  GlIcon,
-  GlTooltipDirective,
-  GlPopover,
-  GlButton,
-} from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlPopover, GlTooltipDirective } from '@gitlab/ui';
 import { kebabCase, snakeCase } from 'lodash';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -22,19 +10,15 @@ import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue'
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   dropdowni18nText,
-  Tracking,
-  IssuableAttributeState,
-  IssuableAttributeType,
   LocalizedIssuableAttributeType,
   IssuableAttributeTypeKeyMap,
   issuableAttributesQueries,
-  noAttributeId,
-  defaultEpicSort,
-  epicIidPattern,
+  IssuableAttributeType,
+  Tracking,
 } from 'ee_else_ce/sidebar/constants';
+import SidebarDropdown from './sidebar_dropdown.vue';
 
 export default {
-  noAttributeId,
   i18n: {
     expired: __('(expired)'),
     none: __('None'),
@@ -43,17 +27,12 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   components: {
-    SidebarEditableItem,
     GlLink,
-    GlDropdown,
-    GlDropdownItem,
-    GlDropdownText,
-    GlDropdownDivider,
-    GlSearchBoxByType,
     GlIcon,
-    GlLoadingIcon,
     GlPopover,
     GlButton,
+    SidebarDropdown,
+    SidebarEditableItem,
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -63,9 +42,6 @@ export default {
     issuableAttributesQueries: {
       default: issuableAttributesQueries,
     },
-    issuableAttributesState: {
-      default: IssuableAttributeState,
-    },
     widgetTitleText: {
       default: {
         [IssuableAttributeType.Milestone]: __('Milestone'),
@@ -74,7 +50,6 @@ export default {
       },
     },
   },
-
   props: {
     issuableAttribute: {
       type: String,
@@ -134,67 +109,14 @@ export default {
         });
       },
     },
-    attributesList: {
-      query() {
-        const { list } = this.issuableAttributeQuery;
-        const { query } = list[this.issuableType];
-
-        return query;
-      },
-      skip() {
-        if (this.isEpic && this.searchTerm.startsWith('&') && this.searchTerm.length < 2) {
-          return true;
-        }
-
-        return !this.editing;
-      },
-      debounce: 250,
-      variables() {
-        if (!this.isEpic) {
-          return {
-            fullPath: this.attrWorkspacePath,
-            title: this.searchTerm,
-            state: this.issuableAttributesState[this.issuableAttribute],
-          };
-        }
-
-        const variables = {
-          fullPath: this.attrWorkspacePath,
-          state: this.issuableAttributesState[this.issuableAttribute],
-          sort: defaultEpicSort,
-        };
-
-        if (epicIidPattern.test(this.searchTerm)) {
-          const matches = this.searchTerm.match(epicIidPattern);
-          variables.iidStartsWith = matches.groups.iid;
-        } else if (this.searchTerm !== '') {
-          variables.in = 'TITLE';
-          variables.title = this.searchTerm;
-        }
-
-        return variables;
-      },
-      update(data) {
-        if (data?.workspace) {
-          return data?.workspace?.attributes.nodes;
-        }
-        return [];
-      },
-      error(error) {
-        createAlert({ message: this.i18n.listFetchError, captureError: true, error });
-      },
-    },
   },
   data() {
     return {
-      searchTerm: '',
-      editing: false,
       updating: false,
       selectedTitle: null,
       currentAttribute: null,
       hasCurrentAttribute: false,
       editConfirmation: false,
-      attributesList: [],
       tracking: {
         event: Tracking.editEvent,
         label: Tracking.rightSidebarLabel,
@@ -212,14 +134,8 @@ export default {
     attributeUrl() {
       return this.currentAttribute?.webUrl;
     },
-    dropdownText() {
-      return this.currentAttribute ? this.currentAttribute?.title : this.attributeTypeTitle;
-    },
     loading() {
       return this.$apollo.queries.currentAttribute.loading;
-    },
-    emptyPropsList() {
-      return this.attributesList.length === 0;
     },
     attributeTypeTitle() {
       return this.widgetTitleText[this.issuableAttribute];
@@ -256,15 +172,11 @@ export default {
     },
   },
   methods: {
-    updateAttribute(attributeId) {
-      if (this.currentAttribute === null && attributeId === null) return;
-      if (attributeId === this.currentAttribute?.id) return;
+    updateAttribute({ id }) {
+      if (this.currentAttribute === null && id === null) return;
+      if (id === this.currentAttribute?.id) return;
 
       this.updating = true;
-
-      const selectedAttribute =
-        Boolean(attributeId) && this.attributesList.find((p) => p.id === attributeId);
-      this.selectedTitle = selectedAttribute ? selectedAttribute.title : this.widgetTitleText.none;
 
       const { current } = this.issuableAttributeQuery;
       const { mutation } = current[this.issuableType];
@@ -277,8 +189,8 @@ export default {
             attributeId:
               this.issuableAttribute === IssuableAttributeType.Milestone &&
               this.issuableType === IssuableType.Issue
-                ? getIdFromGraphQLId(attributeId)
-                : attributeId,
+                ? getIdFromGraphQLId(id)
+                : id,
             iid: this.iid,
           },
         })
@@ -298,14 +210,8 @@ export default {
         })
         .finally(() => {
           this.updating = false;
-          this.searchTerm = '';
           this.selectedTitle = null;
         });
-    },
-    isAttributeChecked(attributeId = undefined) {
-      return (
-        attributeId === this.currentAttribute?.id || (!this.currentAttribute?.id && !attributeId)
-      );
     },
     isAttributeOverdue(attribute) {
       return this.issuableAttribute === IssuableAttributeType.Milestone
@@ -313,17 +219,7 @@ export default {
         : false;
     },
     showDropdown() {
-      this.$refs.newDropdown.show();
-    },
-    handleOpen() {
-      this.editing = true;
-      this.showDropdown();
-    },
-    handleClose() {
-      this.editing = false;
-    },
-    setFocus() {
-      this.$refs.search.focusInput();
+      this.$refs.dropdown.show();
     },
     handlePopoverClose() {
       this.$refs.popover.$emit('close');
@@ -349,8 +245,7 @@ export default {
     :tracking="tracking"
     :should-show-confirmation-popover="shouldShowConfirmationPopover"
     :loading="updating || loading"
-    @open="handleOpen"
-    @close="handleClose"
+    @open="showDropdown"
     @edit-confirm="handleEditConfirmation"
   >
     <template #collapsed>
@@ -432,58 +327,24 @@ export default {
       </gl-popover>
     </template>
     <template v-else #default>
-      <gl-dropdown
-        ref="newDropdown"
-        lazy
-        :header-text="i18n.assignAttribute"
-        :text="dropdownText"
-        :loading="loading"
-        class="gl-w-full"
-        toggle-class="gl-max-w-100"
-        block
-        @shown="setFocus"
+      <sidebar-dropdown
+        ref="dropdown"
+        :attr-workspace-path="attrWorkspacePath"
+        :current-attribute="currentAttribute"
+        :issuable-attribute="issuableAttribute"
+        :issuable-type="issuableType"
+        @change="updateAttribute"
       >
-        <gl-search-box-by-type ref="search" v-model="searchTerm" />
-        <gl-dropdown-item
-          :data-testid="`no-${formatIssuableAttribute.kebab}-item`"
-          is-check-item
-          :is-checked="isAttributeChecked($options.noAttributeId)"
-          @click="updateAttribute($options.noAttributeId)"
-        >
-          {{ i18n.noAttribute }}
-        </gl-dropdown-item>
-        <gl-dropdown-divider />
-        <gl-loading-icon
-          v-if="$apollo.queries.attributesList.loading"
-          size="sm"
-          class="gl-py-4"
-          data-testid="loading-icon-dropdown"
-        />
-        <template v-else>
-          <gl-dropdown-text v-if="emptyPropsList">
-            {{ i18n.noAttributesFound }}
-          </gl-dropdown-text>
+        <template #list="{ attributesList, isAttributeChecked, updateAttribute: update }">
           <slot
-            v-else
             name="list"
             :attributes-list="attributesList"
             :is-attribute-checked="isAttributeChecked"
-            :update-attribute="updateAttribute"
+            :update-attribute="update"
           >
-            <gl-dropdown-item
-              v-for="attrItem in attributesList"
-              :key="attrItem.id"
-              is-check-item
-              :is-checked="isAttributeChecked(attrItem.id)"
-              :data-testid="`${formatIssuableAttribute.kebab}-items`"
-              @click="updateAttribute(attrItem.id)"
-            >
-              {{ attrItem.title }}
-              <span v-if="isAttributeOverdue(attrItem)">{{ $options.i18n.expired }}</span>
-            </gl-dropdown-item>
           </slot>
         </template>
-      </gl-dropdown>
+      </sidebar-dropdown>
     </template>
   </sidebar-editable-item>
 </template>

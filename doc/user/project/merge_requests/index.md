@@ -250,6 +250,28 @@ This feature works only when a merge request is merged. Selecting **Remove sourc
 after merging does not retarget open merge requests. This improvement is
 [proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
 
+## Move sidebar actions
+
+<!-- When the `moved_mr_sidebar` feature flag is removed, delete this topic and update the steps for these actions
+like in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87727/diffs?diff_id=522279685#5d9afba799c4af9920dab533571d7abb8b9e9163 -->
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85584) in GitLab 14.10 [with a flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `moved_mr_sidebar`.
+On GitLab.com, this feature is not available.
+
+When this feature flag is enabled, you can find the following actions in
+**Merge request actions** (**{ellipsis_v}**) on the top right:
+
+- The [notifications](../../profile/notifications.md#edit-notification-settings-for-issues-merge-requests-and-epics) toggle
+- Mark merge request as ready or [draft](../merge_requests/drafts.md)
+- Close merge request
+- [Lock discussion](../../discussions/index.md#prevent-comments-by-locking-the-discussion)
+- Copy reference
+
+When this feature flag is disabled, these actions are in the right sidebar.
+
 ## Merge request workflows
 
 For a software developer working in a team:
@@ -289,3 +311,76 @@ For a web developer writing a webpage for your company's website:
 - [Commits](commits.md)
 - [CI/CD pipelines](../../../ci/index.md)
 - [Push options](../push_options.md) for merge requests
+
+## Troubleshooting
+
+### Rebase a merge request from the Rails console **(FREE SELF)**
+
+In addition to the `/rebase` [quick action](../quick_actions.md#issues-merge-requests-and-epics),
+users with access to the [Rails console](../../../administration/operations/rails_console.md)
+can rebase a merge request from the Rails console. Replace `<username>`,
+`<namespace/project>`, and `<iid>` with appropriate values:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly,
+or under the right conditions. We highly recommend running them in a test environment
+with a backup of the instance ready to be restored, just in case.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::RebaseService.new(project: m.target_project, current_user: u).execute(m)
+```
+
+### Fix incorrect merge request status **(FREE SELF)**
+
+If a merge request remains **Open** after its changes are merged,
+users with access to the [Rails console](../../../administration/operations/rails_console.md)
+can correct the merge request's status. Replace `<username>`, `<namespace/project>`,
+and `<iid>` with appropriate values:
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly,
+or under the right conditions. We highly recommend running them in a test environment
+with a backup of the instance ready to be restored, just in case.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::PostMergeService.new(project: p, current_user: u).execute(m)
+```
+
+Running this command against a merge request with unmerged changes causes the
+merge request to display an incorrect message: `merged into <branch-name>`.
+
+### Close a merge request from the Rails console **(FREE SELF)**
+
+If closing a merge request doesn't work through the UI or API, you may want to attempt to close it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+MergeRequests::CloseService.new(project: p, current_user: u).execute(m)
+```
+
+### Delete a merge request from the Rails console **(FREE SELF)**
+
+If deleting a merge request doesn't work through the UI or API, you may want to attempt to delete it in a [Rails console session](../../../administration/operations/rails_console.md#starting-a-rails-console-session):
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly,
+or under the right conditions. We highly recommend running them in a test environment
+with a backup of the instance ready to be restored, just in case.
+
+```ruby
+u = User.find_by_username('<username>')
+p = Project.find_by_full_path('<namespace/project>')
+m = p.merge_requests.find_by(iid: <iid>)
+Issuable::DestroyService.new(project: m.project, current_user: u).execute(m)
+```

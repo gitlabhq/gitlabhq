@@ -39,17 +39,6 @@ review-docs-cleanup:
   script:
     - ./scripts/trigger-build.rb docs cleanup
 
-docs-lint markdown:
-  extends:
-    - .default-retry
-    - .docs:rules:docs-lint
-  # When updating the image version here, update it in /scripts/lint-doc.sh too.
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.16-vale-2.20.1-markdownlint-0.32.2
-  stage: lint
-  needs: []
-  script:
-    - scripts/lint-doc.sh
-
 docs-lint links:
   extends:
     - .docs:rules:docs-lint
@@ -66,6 +55,35 @@ docs-lint links:
     - bundle exec nanoc
     # Check the internal links and anchors (in parallel)
     - "parallel time bundle exec nanoc check ::: internal_links internal_anchors"
+
+.docs-markdown-lint-image:
+  # When updating the image version here, update it in /scripts/lint-doc.sh too.
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-docs/lint-markdown:alpine-3.16-vale-2.20.1-markdownlint-0.32.2
+
+docs-lint markdown:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-lint
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  script:
+    - scripts/lint-doc.sh
+
+docs-code-quality:
+  extends:
+    - .docs:rules:docs-code-quality
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  script:
+    - vale --output=doc/.vale/vale-json.tmpl --minAlertLevel warning doc > gl-code-quality-report-docs.json || exit_code=$?
+  artifacts:
+    reports:
+      codequality: gl-code-quality-report-docs.json
+    paths:
+      - gl-code-quality-report-docs.json
+    expire_in: 1 week
 
 ui-docs-links lint:
   extends:

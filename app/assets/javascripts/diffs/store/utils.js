@@ -324,15 +324,24 @@ function cleanRichText(text) {
 }
 
 function prepareLine(line, file) {
+  const problems = {
+    brokenSymlink: file.brokenSymlink,
+    brokenLineCode: !line.line_code,
+    fileOnlyMoved: file.renamed_file && file.added_lines === 0 && file.removed_lines === 0,
+  };
+
   if (!line.alreadyPrepared) {
     Object.assign(line, {
-      commentsDisabled: file.brokenSymlink,
+      commentsDisabled: Boolean(
+        problems.brokenSymlink || problems.fileOnlyMoved || problems.brokenLineCode,
+      ),
       rich_text: cleanRichText(line.rich_text),
       discussionsExpanded: true,
       discussions: [],
       hasForm: false,
       text: undefined,
       alreadyPrepared: true,
+      problems,
     });
   }
 }

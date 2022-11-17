@@ -12,6 +12,10 @@ module Gitlab
             @errors = []
           end
 
+          def valid?
+            errors.empty?
+          end
+
           def add_error(error)
             errors << error
           end

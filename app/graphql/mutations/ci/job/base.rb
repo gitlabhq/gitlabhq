@@ -10,7 +10,7 @@ module Mutations
                  required: true,
                  description: 'ID of the job to mutate.'
 
-        def find_object(id: )
+        def find_object(id:)
           GlobalID::Locator.locate(id)
         end
       end

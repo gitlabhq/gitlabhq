@@ -63,8 +63,20 @@ RSpec.describe Gitlab::Utils do
       expect(check_path_traversal!('dir/.foo.rb')).to eq('dir/.foo.rb')
     end
 
-    it 'does nothing for a non-string' do
+    it 'does nothing for nil' do
       expect(check_path_traversal!(nil)).to be_nil
+    end
+
+    it 'does nothing for safe HashedPath' do
+      expect(check_path_traversal!(Gitlab::HashedPath.new('tmp', root_hash: 1))).to eq '6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b/tmp'
+    end
+
+    it 'raises for unsafe HashedPath' do
+      expect { check_path_traversal!(Gitlab::HashedPath.new('tmp', '..', 'etc', 'passwd', root_hash: 1)) }.to raise_error(/Invalid path/)
+    end
+
+    it 'raises for other non-strings' do
+      expect { check_path_traversal!(%w[/tmp /tmp/../etc/passwd]) }.to raise_error(/Invalid path/)
     end
   end
 

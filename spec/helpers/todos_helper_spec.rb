@@ -127,10 +127,22 @@ RSpec.describe TodosHelper do
     context 'when given a task' do
       let(:todo) { task_todo }
 
-      it 'responds with an appropriate path' do
+      context 'when the use_iid_in_work_items_path feature flag is disabled' do
+        before do
+          stub_feature_flags(use_iid_in_work_items_path: false)
+        end
+
+        it 'responds with an appropriate path' do
+          path = helper.todo_target_path(todo)
+
+          expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.id}")
+        end
+      end
+
+      it 'responds with an appropriate path using iid' do
         path = helper.todo_target_path(todo)
 
-        expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.id}")
+        expect(path).to eq("/#{todo.project.full_path}/-/work_items/#{todo.target.iid}?iid_path=true")
       end
     end
 
@@ -308,6 +320,35 @@ RSpec.describe TodosHelper do
       end
 
       it { expect(helper.todos_filter_params[:state]).to eq(result) }
+    end
+  end
+
+  describe '#todo_action_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:action, :self_added?, :expected_action_name) do
+      Todo::ASSIGNED            | false | s_('Todos|assigned you')
+      Todo::ASSIGNED            | true  | s_('Todos|assigned')
+      Todo::REVIEW_REQUESTED    | true  | s_('Todos|requested a review of')
+      Todo::MENTIONED           | true  | format(s_("Todos|mentioned %{who} on"), who: s_('Todos|yourself'))
+      Todo::MENTIONED           | false | format(s_("Todos|mentioned %{who} on"), who: _('you'))
+      Todo::DIRECTLY_ADDRESSED  | true  | format(s_("Todos|mentioned %{who} on"), who: s_('Todos|yourself'))
+      Todo::DIRECTLY_ADDRESSED  | false | format(s_("Todos|mentioned %{who} on"), who: _('you'))
+      Todo::BUILD_FAILED        | true  | s_('Todos|The pipeline failed in')
+      Todo::MARKED              | true  | s_('Todos|added a todo for')
+      Todo::APPROVAL_REQUIRED   | true  | format(s_("Todos|set %{who} as an approver for"), who: s_('Todos|yourself'))
+      Todo::APPROVAL_REQUIRED   | false | format(s_("Todos|set %{who} as an approver for"), who: _('you'))
+      Todo::UNMERGEABLE         | true  | s_('Todos|Could not merge')
+      Todo::MERGE_TRAIN_REMOVED | true  | s_("Todos|Removed from Merge Train:")
+    end
+
+    with_them do
+      before do
+        alert_todo.action = action
+        alert_todo.user = self_added? ? alert_todo.author : user
+      end
+
+      it { expect(helper.todo_action_name(alert_todo)).to eq(expected_action_name) }
     end
   end
 end

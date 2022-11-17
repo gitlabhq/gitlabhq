@@ -9,22 +9,24 @@ module API
         MarkupHelper.markdown_field(entity, :description, current_user: options[:current_user])
       end
       expose :author, using: Entities::UserBasic, if: -> (release, _) { release.author.present? }
-      expose :commit, using: Entities::Commit, if: ->(_, _) { can_download_code? }
+      expose :commit, using: Entities::Commit, if: ->(_, _) { can_read_code? }
       expose :milestones,
              using: Entities::MilestoneWithStats,
              if: -> (release, _) { release.milestones.present? && can_read_milestone? } do |release, _|
                release.milestones.order_by_dates_and_title
              end
 
-      expose :commit_path, expose_nil: false
-      expose :tag_path, expose_nil: false
+      expose :commit_path,
+        documentation: { type: 'string', example: '/root/app/commit/588440f66559714280628a4f9799f0c4eb880a4a' },
+        expose_nil: false
+      expose :tag_path, documentation: { type: 'string', example: '/root/app/-/tags/v1.0' }, expose_nil: false
 
       expose :assets do
-        expose :assets_count, as: :count
-        expose :sources, using: Entities::Releases::Source, if: ->(_, _) { can_download_code? }
+        expose :assets_count, documentation: { type: 'integer', example: 2 }, as: :count
+        expose :sources, using: Entities::Releases::Source, if: ->(_, _) { can_read_code? }
         expose :sorted_links, as: :links, using: Entities::Releases::Link
       end
-      expose :evidences, using: Entities::Releases::Evidence, expose_nil: false, if: ->(_, _) { can_download_code? }
+      expose :evidences, using: Entities::Releases::Evidence, expose_nil: false, if: ->(_, _) { can_read_code? }
       expose :_links do
         expose :self_url, as: :self, expose_nil: false
         expose :edit_url, expose_nil: false
@@ -32,8 +34,8 @@ module API
 
       private
 
-      def can_download_code?
-        Ability.allowed?(options[:current_user], :download_code, object.project)
+      def can_read_code?
+        Ability.allowed?(options[:current_user], :read_code, object.project)
       end
 
       def can_read_milestone?

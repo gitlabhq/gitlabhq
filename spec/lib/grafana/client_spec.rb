@@ -54,7 +54,7 @@ RSpec.describe Grafana::Client do
     }
 
     exceptions.each do |exception, message|
-      context "#{exception}" do
+      context exception.to_s do
         before do
           stub_request(:get, grafana_api_url).to_raise(exception)
         end

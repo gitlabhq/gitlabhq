@@ -74,7 +74,7 @@ describe('Grouped Issues List', () => {
       createComponent({
         propsData: {
           resolvedIssues: [{ name: 'foo' }],
-          component: 'TestIssueBody',
+          component: 'CodequalityIssueBody',
         },
         stubs: {
           ReportItem,

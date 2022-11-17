@@ -24,6 +24,16 @@ FactoryBot.define do
 
     project { pipeline.project }
 
+    trait :with_token do
+      transient do
+        generate_token { true }
+      end
+
+      after(:build) do |build, evaluator|
+        build.ensure_token if evaluator.generate_token
+      end
+    end
+
     trait :degenerated do
       options { nil }
       yaml_variables { nil }
@@ -93,6 +103,7 @@ FactoryBot.define do
     end
 
     trait :pending do
+      with_token
       queued_at { 'Di 29. Okt 09:50:59 CET 2013' }
 
       status { 'pending' }
@@ -100,6 +111,7 @@ FactoryBot.define do
 
     trait :created do
       status { 'created' }
+      generate_token { false }
     end
 
     trait :preparing do
@@ -303,14 +315,11 @@ FactoryBot.define do
         # Build deployment/environment relations if environment name is set
         # to the job. If `build.deployment` has already been set, it doesn't
         # build a new instance.
-        environment = Gitlab::Ci::Pipeline::Seed::Environment.new(build).to_resource
+        Environments::CreateForBuildService.new.execute(build)
+      end
 
-        build.assign_attributes(
-          deployment: Gitlab::Ci::Pipeline::Seed::Deployment.new(build, environment).to_resource,
-          metadata_attributes: {
-            expanded_environment_name: environment.name
-          }
-        )
+      after(:create) do |build, evaluator|
+        Deployments::CreateForBuildService.new.execute(build)
       end
     end
 
@@ -716,7 +725,7 @@ FactoryBot.define do
 
     trait :with_runner_session do
       after(:build) do |build|
-        build.build_runner_session(url: 'https://localhost')
+        build.build_runner_session(url: 'https://gitlab.example.com')
       end
     end
 

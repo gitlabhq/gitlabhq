@@ -85,6 +85,18 @@ To import these metrics, you can run:
 bundle exec rake 'gitlab:seed:development_metrics[your_project_id]'
 ```
 
+#### Seed a project with vulnerabilities
+
+You can seed a project with [security vulnerabilities](../user/application_security/vulnerabilities/index.md).
+
+```shell
+# Seed all projects
+bin/rake 'gitlab:seed:vulnerabilities'
+
+# Seed a specific project
+bin/rake 'gitlab:seed:vulnerabilities[group-path/project-path]'
+```
+
 ### Automation
 
 If you're very sure that you want to **wipe the current database** and refill
@@ -208,7 +220,7 @@ bundle exec rake rubocop:todo:generate\[Gitlab/NamespacedClass,Lint/Syntax\]
 
 Some shells require brackets to be escaped or quoted.
 
-See [Resolving RuboCop exceptions](contributing/style_guides.md#resolving-rubocop-exceptions)
+See [Resolving RuboCop exceptions](../development/rubocop_development_guide.md#resolving-rubocop-exceptions)
 on how to proceed from here.
 
 ### Run RuboCop in graceful mode

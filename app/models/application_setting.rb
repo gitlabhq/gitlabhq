@@ -20,6 +20,7 @@ class ApplicationSetting < ApplicationRecord
     'Admin Area > Settings > General > Kroki'
 
   enum whats_new_variant: { all_tiers: 0, current_tier: 1, disabled: 2 }, _prefix: true
+  enum email_confirmation_setting: { off: 0, soft: 1, hard: 2 }
 
   add_authentication_token_field :runners_registration_token, encrypted: -> { Feature.enabled?(:application_settings_tokens_optional_encryption) ? :optional : :required }
   add_authentication_token_field :health_check_access_token
@@ -74,9 +75,9 @@ class ApplicationSetting < ApplicationRecord
   cache_markdown_field :shared_runners_text, pipeline: :plain_markdown
   cache_markdown_field :after_sign_up_text
 
-  default_value_for :id, 1
-  default_value_for :repository_storages_weighted, {}
-  default_value_for :kroki_formats, {}
+  attribute :id, default: 1
+  attribute :repository_storages_weighted, default: -> { {} }
+  attribute :kroki_formats, default: -> { {} }
 
   chronic_duration_attr_writer :archive_builds_in_human_readable, :archive_builds_in_seconds
 
@@ -317,6 +318,7 @@ class ApplicationSetting < ApplicationRecord
                             less_than_or_equal_to: Commit::MAX_DIFF_LINES_SETTING_UPPER_BOUND }
 
   validates :user_default_internal_regex, js_regex: true, allow_nil: true
+  validates :default_preferred_language, presence: true, inclusion: { in: Gitlab::I18n.available_locales }
 
   validates :personal_access_token_prefix,
             format: { with: %r{\A[a-zA-Z0-9_+=/@:.-]+\z},
@@ -527,6 +529,11 @@ class ApplicationSetting < ApplicationRecord
             length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
             allow_blank: true
 
+  validates :jira_connect_proxy_url,
+            length: { maximum: 255, message: N_('is too long (maximum is %{count} characters)') },
+            allow_blank: true,
+            public_url: true
+
   with_options(presence: true, numericality: { only_integer: true, greater_than: 0 }) do
     validates :throttle_unauthenticated_api_requests_per_period
     validates :throttle_unauthenticated_api_period_in_seconds
@@ -632,10 +639,6 @@ class ApplicationSetting < ApplicationRecord
   validates :inactive_projects_send_warning_email_after_months,
             numericality: { only_integer: true, greater_than: 0, less_than: :inactive_projects_delete_after_months }
 
-  validates :cube_api_base_url,
-            addressable_url: { allow_localhost: true, allow_local_network: false },
-            allow_blank: true
-
   attr_encrypted :asset_proxy_secret_key,
                  mode: :per_attribute_iv,
                  key: Settings.attr_encrypted_db_key_base_truncated,
@@ -675,8 +678,13 @@ class ApplicationSetting < ApplicationRecord
   attr_encrypted :arkose_labs_private_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
   attr_encrypted :cube_api_key, encryption_options_base_32_aes_256_gcm
   attr_encrypted :jitsu_administrator_password, encryption_options_base_32_aes_256_gcm
+  attr_encrypted :telesign_customer_xid, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
+  attr_encrypted :telesign_api_key, encryption_options_base_32_aes_256_gcm.merge(encode: false, encode_iv: false)
 
   validates :disable_feed_token,
+            inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
+  validates :disable_admin_oauth_scopes,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
   before_validation :ensure_uuid!

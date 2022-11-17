@@ -39,12 +39,13 @@ class GroupChildSerializer < BaseSerializer
   def represent_hierarchy(hierarchy, opts)
     serializer = self.class.new(params)
 
-    if hierarchy.is_a?(Hash)
+    case hierarchy
+    when Hash
       hierarchy.map do |parent, children|
         serializer.represent(parent, opts)
           .merge(children: Array.wrap(serializer.represent_hierarchy(children, opts)))
       end
-    elsif hierarchy.is_a?(Array)
+    when Array
       hierarchy.flat_map { |child| serializer.represent_hierarchy(child, opts) }
     else
       serializer.represent(hierarchy, opts)

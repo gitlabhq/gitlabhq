@@ -43,7 +43,7 @@ RSpec.describe RendersCommits do
   context 'rendering commits' do
     render_views
 
-    it 'avoids N + 1' do
+    it 'avoids N + 1', :request_store do
       stub_const("MergeRequestDiff::COMMITS_SAFE_SIZE", 5)
 
       control_count = ActiveRecord::QueryRecorder.new do
@@ -59,7 +59,7 @@ RSpec.describe RendersCommits do
   end
 
   describe '.prepare_commits_for_rendering' do
-    it 'avoids N+1' do
+    it 'avoids N+1', :request_store do
       control = ActiveRecord::QueryRecorder.new do
         subject.prepare_commits_for_rendering(merge_request.commits.take(1))
       end

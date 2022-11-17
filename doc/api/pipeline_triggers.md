@@ -170,7 +170,7 @@ Supported attributes:
 | `id`        | integer/string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `ref`       | string         | **{check-circle}** Yes | The branch or tag to run the pipeline on. |
 | `token`     | string         | **{check-circle}** Yes | The trigger token or CI/CD job token. |
-| `variables` | array          | **{dotted-circle}** No | An [array of hashes](index.md#array-of-hashes) containing the variables available in the pipeline, matching the structure `[{ 'key': 'UPLOAD_TO_S3', 'variable_type': 'file', 'value': 'true' }, {'key': 'TEST', 'value': 'test variable'}]`. If `variable_type` is excluded, it defaults to `env_var`. |
+| `variables` | hash           | **{dotted-circle}** No | A map of key-valued strings containing the pipeline variables. For example: `{ VAR1: "value1", VAR2: "value2" }`. |
 
 Example request:
 

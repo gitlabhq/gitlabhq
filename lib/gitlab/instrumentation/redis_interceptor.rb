@@ -5,14 +5,6 @@ module Gitlab
     module RedisInterceptor
       APDEX_EXCLUDE = %w[brpop blpop brpoplpush bzpopmin bzpopmax xread xreadgroup].freeze
 
-      class MysteryRedisDurationError < StandardError
-        attr_reader :backtrace
-
-        def initialize(backtrace)
-          @backtrace = backtrace
-        end
-      end
-
       def call(command)
         instrument_call([command]) do
           super
@@ -41,8 +33,7 @@ module Gitlab
       def instrument_call(commands)
         start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
         instrumentation_class.instance_count_request(commands.size)
-
-        commands.each { |c| instrumentation_class.redis_cluster_validate!(c) }
+        instrumentation_class.redis_cluster_validate!(commands)
 
         yield
       rescue ::Redis::BaseError => ex

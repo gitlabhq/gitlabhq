@@ -7,8 +7,8 @@
     = render 'shared/web_hooks/title_and_docs', hook: @hook
 
   .col-lg-8.gl-mb-3
-    = gitlab_ui_form_for @hook, as: :hook, url: polymorphic_path([@project, :hooks]) do |f|
+    = gitlab_ui_form_for @hook, as: :hook, url: polymorphic_path([@project, :hooks]), html: { class: 'js-webhook-form' } do |f|
       = render partial: 'shared/web_hooks/form', locals: { form: f, hook: @hook }
-      = f.submit 'Add webhook', pajamas_button: true
+      = f.submit _('Add webhook'), pajamas_button: true, data: { qa_selector: "create_webhook_button" }
 
     = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class

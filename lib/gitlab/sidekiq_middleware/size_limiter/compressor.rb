@@ -33,7 +33,7 @@ module Gitlab
           validate_args!(job)
 
           job.except!(ORIGINAL_SIZE_KEY, COMPRESSED_KEY)
-          job['args'] = Sidekiq.load_json(Zlib::Inflate.inflate(Base64.strict_decode64(job['args'].first)))
+          job['args'] = Gitlab::Json.load(Zlib::Inflate.inflate(Base64.strict_decode64(job['args'].first)))
         rescue Zlib::Error
           raise PayloadDecompressionError, 'Fail to decompress Sidekiq job payload'
         end

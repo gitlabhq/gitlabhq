@@ -15,11 +15,12 @@ module Gitlab
     #   We use the provided primary_key column to perform the update.
     class CopyColumnUsingBackgroundMigrationJob < BatchedMigrationJob
       job_arguments :copy_from, :copy_to
+      operation_name :update_all
 
       def perform
         assignment_clauses = build_assignment_clauses(copy_from, copy_to)
 
-        each_sub_batch(operation_name: :update_all) do |relation|
+        each_sub_batch do |relation|
           relation.update_all(assignment_clauses)
         end
       end

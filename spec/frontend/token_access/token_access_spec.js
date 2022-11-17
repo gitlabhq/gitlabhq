@@ -19,7 +19,8 @@ import {
 } from './mock_data';
 
 const projectPath = 'root/my-repo';
-const error = new Error('Error');
+const message = 'An error occurred';
+const error = new Error(message);
 
 Vue.use(VueApollo);
 
@@ -144,7 +145,7 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(createAlert).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalledWith({ message });
     });
   });
 
@@ -187,7 +188,7 @@ describe('TokenAccess component', () => {
 
       await waitForPromises();
 
-      expect(createAlert).toHaveBeenCalled();
+      expect(createAlert).toHaveBeenCalledWith({ message });
     });
   });
 });

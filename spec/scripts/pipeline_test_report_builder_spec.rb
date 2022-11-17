@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require 'fast_spec_helper'
 require_relative '../../scripts/pipeline_test_report_builder'
 
 RSpec.describe PipelineTestReportBuilder do

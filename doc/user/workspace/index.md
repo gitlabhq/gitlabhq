@@ -15,7 +15,7 @@ The development, release, and timing of any products, features, or functionality
 sole discretion of GitLab Inc.
 
 NOTE:
-Workspace is currently in development.
+Workspace is in development.
 
 Workspace will be above the [top-level namespaces](../namespace/index.md) for you to manage
 everything you do as a GitLab administrator, including:

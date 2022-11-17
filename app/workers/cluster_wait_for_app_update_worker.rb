@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# DEPRECATED
+#
+# To be removed by https://gitlab.com/gitlab-org/gitlab/-/issues/366573
 class ClusterWaitForAppUpdateWorker # rubocop:disable Scalability/IdempotentWorker
   include ApplicationWorker
 
@@ -14,9 +17,5 @@ class ClusterWaitForAppUpdateWorker # rubocop:disable Scalability/IdempotentWork
 
   loggable_arguments 0
 
-  def perform(app_name, app_id)
-    find_application(app_name, app_id) do |app|
-      ::Clusters::Applications::CheckUpgradeProgressService.new(app).execute
-    end
-  end
+  def perform(app_name, app_id); end
 end

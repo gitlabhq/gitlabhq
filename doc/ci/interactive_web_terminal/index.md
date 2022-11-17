@@ -65,7 +65,7 @@ for the current job.
 
 ![Example of job running with terminal available](img/interactive_web_terminal_running_job.png)
 
-When clicked, a new tab opens to the terminal page where you can access
+When selected, a new tab opens to the terminal page where you can access
 the terminal and type commands like a normal shell.
 
 ![terminal of the job](img/interactive_web_terminal_page.png)

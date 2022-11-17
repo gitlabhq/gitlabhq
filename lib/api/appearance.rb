@@ -22,6 +22,7 @@ module API
 
     desc 'Modify appearance' do
       success Entities::Appearance
+      consumes ['multipart/form-data']
     end
     params do
       optional :title, type: String, desc: 'Instance title on the sign in / sign up page'

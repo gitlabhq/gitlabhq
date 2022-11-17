@@ -3,9 +3,9 @@
 #
 # Verifies that single-item version notes don't have a hyphen.
 #
-# For a list of all options, see https://errata-ai.gitbook.io/vale/getting-started/styles
+# For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
-message: 'Version text with only a single item must not start with a hyphen.'
+message: "Do not use a hyphen '-' in version text if there is only a single item."
 link: https://docs.gitlab.com/ee/development/documentation/versions.html#add-a-version-history-item
 level: error
 scope: raw

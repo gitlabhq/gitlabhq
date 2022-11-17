@@ -3,7 +3,7 @@ table_name: software_license_policies
 classes:
 - SoftwareLicensePolicy
 feature_categories:
-- license_compliance
+- security_policy_management
 description: Allows user to approve or deny the use certain software licenses in their project.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6246
 milestone: '11.2'

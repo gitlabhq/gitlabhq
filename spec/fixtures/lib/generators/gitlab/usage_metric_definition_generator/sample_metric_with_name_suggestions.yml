@@ -15,7 +15,7 @@ time_frame: 7d
 data_source:
 data_category: optional
 instrumentation_class: Count
-performance_indicator_type:
+performance_indicator_type: []
 distribution:
 - ce
 - ee

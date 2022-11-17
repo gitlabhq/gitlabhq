@@ -17,6 +17,7 @@ query getIssuesCount(
   $crmContactId: String
   $crmOrganizationId: String
   $not: NegatedIssueFilterInput
+  $or: UnionedIssueFilterInput
 ) {
   group(fullPath: $fullPath) @skip(if: $isProject) {
     id
@@ -37,6 +38,7 @@ query getIssuesCount(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
     ) {
       count
     }
@@ -57,6 +59,7 @@ query getIssuesCount(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
     ) {
       count
     }
@@ -77,6 +80,7 @@ query getIssuesCount(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
     ) {
       count
     }
@@ -101,6 +105,7 @@ query getIssuesCount(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
     ) {
       count
     }
@@ -122,6 +127,7 @@ query getIssuesCount(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
     ) {
       count
     }
@@ -143,6 +149,7 @@ query getIssuesCount(
       crmContactId: $crmContactId
       crmOrganizationId: $crmOrganizationId
       not: $not
+      or: $or
     ) {
       count
     }

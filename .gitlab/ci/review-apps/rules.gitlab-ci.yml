@@ -15,9 +15,9 @@
 .app-changes: &app-changes
   if: $APP_CHANGE_TRIGGER == "true"
 
-# QA framework changes present
-.qa-framework-changes: &qa-framework-changes
-  if: $QA_FRAMEWORK_CHANGES == "true"
+# Run all tests when framework changes present or explicitly enabled full suite execution
+.qa-run-all-tests: &qa-run-all-tests
+  if: $QA_FRAMEWORK_CHANGES == "true" || $QA_RUN_ALL_TESTS == "true"
 
 .default-branch: &default-branch
   if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
@@ -28,19 +28,19 @@
   variables:
     QA_TESTS: ""
 
-.never-when-qa-framework-changes-or-no-specific-specs:
-  - <<: *qa-framework-changes
+.never-when-qa-run-all-tests-or-no-specific-specs:
+  - <<: *qa-run-all-tests
     when: never
   - <<: *all-specs
     when: never
 
-.never-when-specific-specs-always-when-qa-framework-changes:
+.never-when-specific-specs-always-when-qa-run-all-tests:
+  - *qa-run-all-tests
   - <<: *specific-specs
     when: manual
     allow_failure: true
     variables:
       QA_TESTS: ""
-  - *qa-framework-changes
 
 # ------------------------------------------
 # Prepare
@@ -61,8 +61,8 @@
     # always trigger smoke suite if review pipeline got triggered by specific changes in application code
     - <<: *app-changes
       variables:
-        QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
-    - *qa-framework-changes
+        QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
+    - *qa-run-all-tests
     - if: $QA_SUITES =~ /Test::Instance::Smoke/
     - *qa-manual
 
@@ -70,25 +70,25 @@
   rules:
     - <<: *app-changes
       when: never
-    - !reference [.never-when-qa-framework-changes-or-no-specific-specs]
+    - !reference [.never-when-qa-run-all-tests-or-no-specific-specs]
     - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
 .rules:qa-blocking-parallel:
   rules:
     # always trigger blocking suite if review pipeline got triggered by specific changes in application code
     - <<: *app-changes
       variables:
-        QA_TESTS: "" # unset QA_TESTS even if specific tests were inferred from stage label
-    - !reference [.never-when-specific-specs-always-when-qa-framework-changes]
+        QA_TESTS: ""  # unset QA_TESTS even if specific tests were inferred from stage label
+    - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
     - if: $QA_SUITES =~ /Test::Instance::ReviewBlocking/
 
 .rules:qa-non-blocking:
   rules:
-    - !reference [.never-when-qa-framework-changes-or-no-specific-specs]
+    - !reference [.never-when-qa-run-all-tests-or-no-specific-specs]
     - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
 .rules:qa-non-blocking-parallel:
   rules:
-    - !reference [.never-when-specific-specs-always-when-qa-framework-changes]
-    - *all-specs-mr # set full suite to manual when no specific specs passed in mr
+    - !reference [.never-when-specific-specs-always-when-qa-run-all-tests]
+    - *all-specs-mr  # set full suite to manual when no specific specs passed in mr
     - if: $QA_SUITES =~ /Test::Instance::ReviewNonBlocking/
 
 # ------------------------------------------
@@ -98,7 +98,6 @@
   rules:
     - when: always
 
-.rules:notify-slack:
+.rules:main-run:
   rules:
-    - <<: *default-branch
-      when: on_failure
+    - *default-branch

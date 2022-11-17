@@ -34,7 +34,8 @@ module GoogleCloud
     end
 
     def generate_commit_attributes
-      if action == ACTION_DEPLOY_TO_CLOUD_RUN
+      case action
+      when ACTION_DEPLOY_TO_CLOUD_RUN
         branch_name = "deploy-to-cloud-run-#{SecureRandom.hex(8)}"
         {
           commit_message: 'Enable Cloud Run deployments',
@@ -43,7 +44,7 @@ module GoogleCloud
           branch_name: branch_name,
           start_branch: branch_name
         }
-      elsif action == ACTION_DEPLOY_TO_CLOUD_STORAGE
+      when ACTION_DEPLOY_TO_CLOUD_STORAGE
         branch_name = "deploy-to-cloud-storage-#{SecureRandom.hex(8)}"
         {
           commit_message: 'Enable Cloud Storage deployments',
@@ -73,7 +74,7 @@ module GoogleCloud
       includes << { 'remote' => include_url }
       gitlab_ci_yml['include'] = includes.uniq
 
-      gitlab_ci_yml.to_yaml
+      gitlab_ci_yml.deep_stringify_keys.to_yaml
     end
   end
 end

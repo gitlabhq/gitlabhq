@@ -125,6 +125,18 @@ RSpec.describe Gitlab::Kas do
     end
   end
 
+  describe '.version_info' do
+    let(:version) { '15.6.0-rc1' }
+
+    before do
+      allow(described_class).to receive(:version).and_return(version)
+    end
+
+    it 'returns gitlab_kas version config, including suffix' do
+      expect(described_class.version_info.to_s).to eq(version)
+    end
+  end
+
   describe '.ensure_secret!' do
     context 'secret file exists' do
       before do

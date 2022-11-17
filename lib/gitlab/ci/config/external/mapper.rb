@@ -8,12 +8,14 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           FILE_CLASSES = [
-            External::File::Remote,
-            External::File::Template,
             External::File::Local,
             External::File::Project,
+            External::File::Remote,
+            External::File::Template,
             External::File::Artifact
           ].freeze
+
+          FILE_SUBKEYS = FILE_CLASSES.map { |f| f.name.demodulize.downcase }.freeze
 
           Error = Class.new(StandardError)
           AmbigiousSpecificationError = Class.new(Error)
@@ -120,9 +122,13 @@ module Gitlab
               file_class.new(location, context)
             end.select(&:matching?)
 
-            raise AmbigiousSpecificationError, "Include `#{masked_location(location.to_json)}` needs to match exactly one accessor!" unless matching.one?
-
-            matching.first
+            if matching.one?
+              matching.first
+            elsif matching.empty?
+              raise AmbigiousSpecificationError, "`#{masked_location(location.to_json)}` does not have a valid subkey for include. Valid subkeys are: `#{FILE_SUBKEYS.join('`, `')}`"
+            else
+              raise AmbigiousSpecificationError, "Each include must use only one of: `#{FILE_SUBKEYS.join('`, `')}`"
+            end
           end
 
           def verify!(location_object)

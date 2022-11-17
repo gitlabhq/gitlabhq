@@ -1,8 +1,0 @@
----
-name: agent_authorization_include_descendants
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95774
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371310
-milestone: '15.5'
-type: development
-group: group::configure
-default_enabled: false

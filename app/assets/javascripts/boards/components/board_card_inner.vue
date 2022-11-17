@@ -15,7 +15,6 @@ import { updateHistory } from '~/lib/utils/url_utility';
 import { sprintf, __, n__ } from '~/locale';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssuableBlockedIcon from '~/vue_shared/components/issuable_blocked_icon/issuable_blocked_icon.vue';
 import { ListType } from '../constants';
@@ -36,7 +35,6 @@ export default {
     IssueCardWeight: () => import('ee_component/boards/components/issue_card_weight.vue'),
     IssuableBlockedIcon,
     GlSprintf,
-    BoardCardMoveToPosition,
     WorkItemTypeIcon,
     IssueHealthStatus: () =>
       import('ee_component/related_items_tree/components/issue_health_status.vue'),
@@ -45,7 +43,7 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   mixins: [boardCardInner],
-  inject: ['rootPath', 'scopedLabelsAvailable'],
+  inject: ['rootPath', 'scopedLabelsAvailable', 'isEpicBoard'],
   props: {
     item: {
       type: Object,
@@ -80,7 +78,7 @@ export default {
   },
   computed: {
     ...mapState(['isShowingLabels', 'issuableType', 'allowSubEpics']),
-    ...mapGetters(['isEpicBoard', 'isProjectBoard']),
+    ...mapGetters(['isProjectBoard']),
     cappedAssignees() {
       // e.g. maxRender is 4,
       // Render up to all 4 assignees if there are only 4 assigness
@@ -250,8 +248,7 @@ export default {
           >{{ item.title }}</a
         >
       </h4>
-      <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
-      <board-card-move-to-position v-if="!isEpicBoard" :item="item" :list="list" :index="index" />
+      <slot></slot>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">

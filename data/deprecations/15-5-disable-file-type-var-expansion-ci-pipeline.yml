@@ -1,0 +1,13 @@
+- name: "File Type variable expansion in `.gitlab-ci.yml`"  # (required) The name of the feature to be deprecated
+  announcement_milestone: "15.5"  # (required) The milestone when this feature was first announced as deprecated.
+  announcement_date: "2022-10-22"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  removal_milestone: "15.7"  # (required) The milestone when this feature is planned to be removed
+  removal_date:  # (required) The date of the milestone release when this feature is planned to be removed. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
+  breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
+  reporter: DarrenEastman  # (required) GitLab username of the person reporting the deprecation
+  stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/29407  # (required) Link to the deprecation issue in GitLab
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Previously, variables that referenced or applied alias file variables expanded the value of the `File` type variable. For example, the file contents. This behavior was incorrect because it did not comply with typical shell variable expansion rules. To leak secrets or sensitive information stored in `File` type variables, a user could run an $echo command with the variable as an input parameter.
+
+    This breaking change fixes this issue but could disrupt user workflows that work around the behavior. With this change, job variable expansions that reference or apply alias file variables, expand to the file name or path of the `File` type variable, instead of its value, such as the file contents.

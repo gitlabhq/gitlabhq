@@ -63,7 +63,7 @@ To associate a cluster management project with your cluster:
      page.
    - [Instance-level cluster](../instance/clusters/index.md), on the top bar, select **Main menu > Admin > Kubernetes**.
 1. Expand **Advanced settings**.
-1. From the **Cluster management project** dropdown, select the cluster management project
+1. From the **Cluster management project** dropdown list, select the cluster management project
 you created in the previous step.
 
 ### Configuring your pipeline

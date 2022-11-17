@@ -137,7 +137,7 @@ module AuthenticatesWithTwoFactor
 
       session[:credentialRequestOptions] = get_options
       session[:challenge] = get_options.challenge
-      gon.push(webauthn: { options: get_options.to_json })
+      gon.push(webauthn: { options: Gitlab::Json.dump(get_options) })
     end
   end
   # rubocop: enable CodeReuse/ActiveRecord

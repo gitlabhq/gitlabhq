@@ -1,19 +1,19 @@
 - merged = local_assigns.fetch(:merged, false)
 - commit = @repository.commit(branch.dereferenced_target)
 - merge_project = merge_request_source_project_for_project(@project)
-%li{ class: "branch-item gl-display-flex! gl-align-items-center! js-branch-item js-branch-#{branch.name}", data: { name: branch.name } }
+%li{ class: "branch-item gl-display-flex! gl-align-items-center! js-branch-item js-branch-#{branch.name}", data: { name: branch.name, qa_selector: 'branch_container', qa_name: branch.name } }
   .branch-info
     .gl-display-flex.gl-align-items-center
       = sprite_icon('branch', size: 12, css_class: 'gl-flex-shrink-0')
-      = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name gl-ml-3 qa-branch-name' do
+      = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated-100 ref-name gl-ml-3', data: { qa_selector: 'branch_link' } do
         = branch.name
       = clipboard_button(text: branch.name, title: _("Copy branch name"))
       - if branch.name == @repository.root_ref
-        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2', data: { qa_selector: 'badge_content' } }
       - elsif merged
-        = gl_badge_tag s_('Branches|merged'), { variant: :info, size: :sm }, { class: 'gl-ml-2', title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref }, data: { toggle: 'tooltip', container: 'body' } }
+        = gl_badge_tag s_('Branches|merged'), { variant: :info, size: :sm }, { class: 'gl-ml-2', title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref }, data: { toggle: 'tooltip', container: 'body', qa_selector: 'badge_content' } }
       - if protected_branch?(@project, branch)
-        = gl_badge_tag s_('Branches|protected'), { variant: :success, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('Branches|protected'), { variant: :success, size: :sm }, { class: 'gl-ml-2', data: { qa_selector: 'badge_content' } }
 
       = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
 
@@ -46,4 +46,5 @@
 
     = render 'projects/buttons/download', project: @project, ref: branch.name, pipeline: @refs_pipelines[branch.name], class: 'gl-vertical-align-top'
 
-    = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged
+    - if can?(current_user, :push_code, @project)
+      = render 'projects/branches/delete_branch_modal_button', project: @project, branch: branch, merged: merged

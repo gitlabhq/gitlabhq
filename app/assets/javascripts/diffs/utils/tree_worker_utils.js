@@ -62,10 +62,15 @@ export const generateTreeList = (files) => {
       const split = file.new_path.split('/');
 
       split.forEach((name, i) => {
-        const parent = acc.treeEntries[split.slice(0, i).join('/')];
+        let parent = acc.treeEntries[split.slice(0, i).join('/')];
         const path = `${parent ? `${parent.path}/` : ''}${name}`;
+        const child = acc.treeEntries[path];
 
-        if (!acc.treeEntries[path]) {
+        if (parent && !parent.tree) {
+          parent = null;
+        }
+
+        if (!child || !child.tree) {
           const type = path === file.new_path ? 'blob' : 'tree';
           acc.treeEntries[path] = {
             key: path,

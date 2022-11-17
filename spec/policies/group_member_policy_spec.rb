@@ -83,6 +83,31 @@ RSpec.describe GroupMemberPolicy do
     specify { expect_allowed(:read_group) }
   end
 
+  context 'for access requests' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:user) { create(:user) }
+
+    let(:current_user) { user }
+
+    context 'for own access request' do
+      let(:membership) { create(:group_member, :access_request, group: group, user: user) }
+
+      specify { expect_allowed(:withdraw_member_access_request) }
+    end
+
+    context "for another user's access request" do
+      let(:membership) { create(:group_member, :access_request, group: group, user: create(:user)) }
+
+      specify { expect_disallowed(:withdraw_member_access_request) }
+    end
+
+    context 'for own, valid membership' do
+      let(:membership) { create(:group_member, :developer, group: group, user: user) }
+
+      specify { expect_disallowed(:withdraw_member_access_request) }
+    end
+  end
+
   context 'with bot user' do
     let(:current_user) { create(:user, :project_bot) }
 
@@ -100,74 +125,83 @@ RSpec.describe GroupMemberPolicy do
     specify { expect_disallowed(:read_group, :destroy_project_bot_member) }
   end
 
-  context 'with one owner' do
+  context 'with owner' do
     let(:current_user) { owner }
 
-    specify { expect_disallowed(*member_related_permissions) }
-    specify { expect_allowed(:read_group) }
+    context 'with group with one owner' do
+      specify { expect_disallowed(*member_related_permissions) }
+      specify { expect_allowed(:read_group) }
+    end
+
+    context 'with group with bot user owner' do
+      before do
+        group.add_owner(create(:user, :project_bot))
+      end
+
+      specify { expect_disallowed(*member_related_permissions) }
+    end
+
+    context 'with group with more than one owner' do
+      before do
+        group.add_owner(create(:user))
+      end
+
+      specify { expect_allowed(*member_related_permissions) }
+      specify { expect_disallowed(:destroy_project_bot_member) }
+    end
+
+    context 'with group with owners from a parent' do
+      context 'when top-level group' do
+        context 'with group sharing' do
+          let!(:subgroup) { create(:group, :private, parent: group) }
+
+          before do
+            create(:group_group_link, :owner, shared_group: group, shared_with_group: subgroup)
+            create(:group_member, :owner, group: subgroup)
+          end
+
+          specify { expect_disallowed(*member_related_permissions) }
+          specify { expect_allowed(:read_group) }
+        end
+      end
+
+      context 'when subgroup' do
+        let(:current_user) { create :user }
+
+        let!(:subgroup) { create(:group, :private, parent: group) }
+
+        before do
+          subgroup.add_owner(current_user)
+        end
+
+        specify { expect_allowed(*member_related_permissions) }
+        specify { expect_allowed(:read_group) }
+      end
+    end
   end
 
-  context 'with one blocked owner' do
+  context 'with blocked owner' do
     let(:owner) { create(:user, :blocked) }
     let(:current_user) { owner }
 
     specify { expect_disallowed(*member_related_permissions) }
     specify { expect_disallowed(:read_group) }
-  end
 
-  context 'with more than one owner' do
-    let(:current_user) { owner }
+    context 'with group with bot user owner' do
+      before do
+        group.add_owner(create(:user, :project_bot))
+      end
 
-    before do
-      group.add_owner(create(:user))
+      specify { expect_disallowed(*member_related_permissions) }
+      specify { expect_disallowed(:read_group) }
     end
 
-    specify { expect_allowed(*member_related_permissions) }
-    specify { expect_disallowed(:destroy_project_bot_member) }
-  end
+    context 'with group with more than one blocked owner' do
+      before do
+        group.add_owner(create(:user, :blocked))
+      end
 
-  context 'with the group parent' do
-    let(:current_user) { create :user }
-    let(:subgroup) { create(:group, :private, parent: group) }
-
-    before do
-      group.add_owner(owner)
-      subgroup.add_owner(current_user)
-    end
-
-    it do
-      expect_allowed(:destroy_group_member)
-      expect_allowed(:update_group_member)
-    end
-  end
-
-  context 'without group parent' do
-    let(:current_user) { create :user }
-    let(:subgroup) { create(:group, :private) }
-
-    before do
-      subgroup.add_owner(current_user)
-    end
-
-    it do
-      expect_disallowed(:destroy_group_member)
-      expect_disallowed(:update_group_member)
-    end
-  end
-
-  context 'without group parent with two owners' do
-    let(:current_user) { create :user }
-    let(:other_user) { create :user }
-    let(:subgroup) { create(:group, :private) }
-
-    before do
-      subgroup.add_owner(current_user)
-      subgroup.add_owner(other_user)
-    end
-
-    it do
-      expect_allowed(:destroy_group_member)
-      expect_allowed(:update_group_member)
+      specify { expect_allowed(:destroy_group_member) }
     end
   end
 end

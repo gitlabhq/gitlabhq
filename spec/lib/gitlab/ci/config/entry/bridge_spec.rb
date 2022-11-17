@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
-  subject { described_class.new(config, name: :my_bridge) }
+  subject(:entry) { described_class.new(config, name: :my_bridge) }
 
   it_behaves_like 'with inheritable CI config' do
     let(:inheritable_key) { 'default' }
@@ -377,6 +377,40 @@ RSpec.describe Gitlab::Ci::Config::Entry::Bridge do
         let(:config) { { script: 'deploy', allow_failure: false } }
 
         it { is_expected.not_to be_ignored }
+      end
+    end
+  end
+
+  describe '#when' do
+    context 'when bridge is a manual action' do
+      let(:config) { { script: 'deploy', when: 'manual' } }
+
+      it { expect(entry.when).to eq('manual') }
+    end
+
+    context 'when bridge has no `when` attribute' do
+      let(:config) { { script: 'deploy' } }
+
+      it { expect(entry.when).to be_nil }
+    end
+
+    context 'when the `when` keyword is not a string' do
+      context 'when it is an array' do
+        let(:config) { { script: 'exit 0', when: ['always'] } }
+
+        it 'returns error' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'bridge when should be a string'
+        end
+      end
+
+      context 'when it is a boolean' do
+        let(:config) { { script: 'exit 0', when: true } }
+
+        it 'returns error' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'bridge when should be a string'
+        end
       end
     end
   end

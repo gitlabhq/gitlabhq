@@ -30,7 +30,6 @@ module Gitlab
       deployment_minimum_id
       deployment_maximum_id
       auth_providers
-      aggregated_metrics
       recorded_at
     ).freeze
 
@@ -157,11 +156,9 @@ module Gitlab
           }.merge(
             runners_usage,
             integrations_usage,
-            usage_counters,
             user_preferences_usage,
             container_expiration_policies_usage,
-            service_desk_counts,
-            email_campaign_counts
+            service_desk_counts
           ).tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
           end
@@ -261,16 +258,6 @@ module Gitlab
         }
       end
 
-      # @return [Hash<Symbol, Integer>]
-      def usage_counters
-        usage_data_counters.map { |counter| redis_usage_data(counter) }.reduce({}, :merge)
-      end
-
-      # @return [Array<#totals>] An array of objects that respond to `#totals`
-      def usage_data_counters
-        Gitlab::UsageDataCounters.unmigrated_counters
-      end
-
       def components_usage_data
         {
           git: { version: alt_usage_data(fallback: { major: -1 }) { Gitlab::Git.version } },
@@ -349,17 +336,13 @@ module Gitlab
         # rubocop: disable UsageData/LargeTable
         base = ::ContainerExpirationPolicy.active
         # rubocop: enable UsageData/LargeTable
-        results[:projects_with_expiration_policy_enabled] = distinct_count(base, :project_id, start: start, finish: finish)
 
         # rubocop: disable UsageData/LargeTable
-        %i[keep_n cadence older_than].each do |option|
-          ::ContainerExpirationPolicy.public_send("#{option}_options").keys.each do |value| # rubocop: disable GitlabSecurity/PublicSend
-            results["projects_with_expiration_policy_enabled_with_#{option}_set_to_#{value}".to_sym] = distinct_count(base.where(option => value), :project_id, start: start, finish: finish)
-          end
+        ::ContainerExpirationPolicy.older_than_options.keys.each do |value|
+          results["projects_with_expiration_policy_enabled_with_older_than_set_to_#{value}".to_sym] = distinct_count(base.where(older_than: value), :project_id, start: start, finish: finish)
         end
         # rubocop: enable UsageData/LargeTable
 
-        results[:projects_with_expiration_policy_enabled_with_keep_n_unset] = distinct_count(base.where(keep_n: nil), :project_id, start: start, finish: finish)
         results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
 
         results
@@ -632,21 +615,16 @@ module Gitlab
         { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
       end
 
-      def aggregated_metrics_data
-        {
-          counts_weekly: { aggregated_metrics: aggregated_metrics.weekly_data },
-          counts_monthly: { aggregated_metrics: aggregated_metrics.monthly_data },
-          counts: aggregated_metrics
-                    .all_time_data
-                    .to_h { |key, value| ["aggregate_#{key}".to_sym, value.round] }
-        }
-      end
-
       def action_monthly_active_users(time_period)
+        counter = Gitlab::UsageDataCounters::EditorUniqueCounter
         date_range = { date_from: time_period[:created_at].first, date_to: time_period[:created_at].last }
 
-        event_monthly_active_users(date_range)
-          .merge!(ide_monthly_active_users(date_range))
+        {
+          action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
+          action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
+          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) },
+          action_monthly_active_users_ide_edit: redis_usage_data { counter.count_edit_using_editor(**date_range) }
+        }
       end
 
       def with_duration
@@ -688,7 +666,6 @@ module Gitlab
           .merge(usage_activity_by_stage)
           .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
           .merge(redis_hll_counters)
-          .deep_merge(aggregated_metrics_data)
       end
 
       def metric_time_period(time_period)
@@ -703,34 +680,6 @@ module Gitlab
 
           result['value'].last.to_f
         end
-      end
-
-      def aggregated_metrics
-        @aggregated_metrics ||= ::Gitlab::Usage::Metrics::Aggregates::Aggregate.new(recorded_at)
-      end
-
-      def event_monthly_active_users(date_range)
-        data = {
-          action_monthly_active_users_project_repo: Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION,
-          action_monthly_active_users_design_management: Gitlab::UsageDataCounters::TrackUniqueEvents::DESIGN_ACTION,
-          action_monthly_active_users_wiki_repo: Gitlab::UsageDataCounters::TrackUniqueEvents::WIKI_ACTION,
-          action_monthly_active_users_git_write: Gitlab::UsageDataCounters::TrackUniqueEvents::GIT_WRITE_ACTION
-        }
-
-        data.each do |key, event|
-          data[key] = redis_usage_data { Gitlab::UsageDataCounters::TrackUniqueEvents.count_unique_events(event_action: event, **date_range) }
-        end
-      end
-
-      def ide_monthly_active_users(date_range)
-        counter = Gitlab::UsageDataCounters::EditorUniqueCounter
-
-        {
-          action_monthly_active_users_web_ide_edit: redis_usage_data { counter.count_web_ide_edit_actions(**date_range) },
-          action_monthly_active_users_sfe_edit: redis_usage_data { counter.count_sfe_edit_actions(**date_range) },
-          action_monthly_active_users_snippet_editor_edit: redis_usage_data { counter.count_snippet_editor_edit_actions(**date_range) },
-          action_monthly_active_users_ide_edit: redis_usage_data { counter.count_edit_using_editor(**date_range) }
-        }
       end
 
       def distinct_count_service_desk_enabled_projects(time_period)
@@ -757,37 +706,6 @@ module Gitlab
         }
       end
       # rubocop: enable CodeReuse/ActiveRecord
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def email_campaign_counts
-        # rubocop:disable UsageData/LargeTable
-        sent_emails = count(Users::InProductMarketingEmail.group(:track, :series))
-        clicked_emails = count(Users::InProductMarketingEmail.where.not(cta_clicked_at: nil).group(:track, :series))
-
-        Users::InProductMarketingEmail::ACTIVE_TRACKS.keys.each_with_object({}) do |track, result|
-          series_amount = Namespaces::InProductMarketingEmailsService.email_count_for_track(track)
-          # rubocop: enable UsageData/LargeTable:
-
-          0.upto(series_amount - 1).map do |series|
-            sent_count = sent_in_product_marketing_email_count(sent_emails, track, series)
-            clicked_count = clicked_in_product_marketing_email_count(clicked_emails, track, series)
-
-            result["in_product_marketing_email_#{track}_#{series}_sent"] = sent_count
-            result["in_product_marketing_email_#{track}_#{series}_cta_clicked"] = clicked_count unless track == 'experience'
-          end
-        end
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def sent_in_product_marketing_email_count(sent_emails, track, series)
-        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
-        sent_emails.is_a?(Hash) ? sent_emails.fetch([track, series], 0) : sent_emails
-      end
-
-      def clicked_in_product_marketing_email_count(clicked_emails, track, series)
-        # When there is an error with the query and it's not the Hash we expect, we return what we got from `count`.
-        clicked_emails.is_a?(Hash) ? clicked_emails.fetch([track, series], 0) : clicked_emails
-      end
 
       def total_alert_issues
         # Remove prometheus table queries once they are deprecated

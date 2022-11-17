@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Alerts are a critical entity in your incident management workflow. They represent a notable event that might indicate a service outage or disruption. GitLab provides a list view for triage and detail view for deeper investigation of what happened.
 
-## Alert List
+## Alert list
 
 Users with at least the Developer role can
 access the Alert list at **Monitor > Alerts** in your project's
@@ -103,31 +103,6 @@ When you upload an image, you can add text to the image and link it to the origi
 
 If you add a link, it is shown above the uploaded image.
 
-#### View an alert's logs
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201846) in GitLab Ultimate 12.8.
-> - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/217768) in GitLab 13.3.
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25455) from GitLab Ultimate to GitLab Free in 12.9.
-
-Viewing logs from a metrics panel can be useful if you're triaging an
-application incident and need to [explore logs](../metrics/dashboards/index.md#chart-context-menu)
-from across your application. These logs help you understand what's affecting
-your application's performance and how to resolve any problems.
-
-Prerequisite:
-
-- You must have at least the Developer role.
-
-To view the logs for an alert:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Monitor > Alerts**.
-1. Select the alert you want to view.
-1. Below the title of the alert, select the **Metrics** tab.
-1. Select the [menu](../metrics/dashboards/index.md#chart-context-menu) of
-   the metric chart to view options.
-1. Select **View logs**.
-
 ### Activity feed tab
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
@@ -137,7 +112,7 @@ timeline of the alert's investigation and assignment history.
 
 The following actions result in a system note:
 
-- [Updating the status of an alert](#update-an-alerts-status)
+- [Updating the status of an alert](#change-an-alerts-status)
 - [Creating an incident based on an alert](#create-an-incident-from-an-alert)
 - [Assignment of an alert to a user](#assign-an-alert)
 - [Escalation of an alert to on-call responders](paging.md#escalating-an-alert)
@@ -148,25 +123,55 @@ The following actions result in a system note:
 
 There are different actions available in GitLab to help triage and respond to alerts.
 
-### Update an alert's status
+### Change an alert's status
 
-**Triggered** is the default status for new alerts. For users with the Developer role or higher, the
-alert status can be updated from these locations:
+You can change the status of an alert.
 
-- [Alert list](#alert-list): select the status dropdown corresponding to an alert, then select an
-  alternate status.
-- [Alert details page](#alert-details-page): select **Edit** in the right-hand side bar, then select
-  an alternate status.
+The available statuses are:
+
+- Triggered (default for new alerts)
+- Acknowledged
+- Resolved
+
+Prerequisites:
+
+- You must have at least the Developer role.
+
+To change an alert's status:
+
+- From the [alert list](#alert-list):
+
+  1. In the **Status** column, next to an alert, select the status dropdown list.
+  1. Select a status.
+
+- From the [alert details page](#alert-details-page):
+
+  1. On the right sidebar, select **Edit**.
+  1. Select a status.
 
 To stop email notifications for alert reoccurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
-[change the alert's status](alerts.md#update-an-alerts-status) away from **Triggered**.
+change the alert's status away from **Triggered**.
 
-In projects with GitLab Premium, on-call responders can respond to [alert pages](paging.md#escalating-an-alert)
-by changing the status. Setting the status to:
+#### Resolve an alert by closing the linked incident
 
-- **Resolved** silences all on-call pages for the alert.
-- **Acknowledged** limits on-call pages based on the project's [escalation policy](escalation_policies.md).
-- **Triggered** from **Resolved** restarts the alert escalating from the beginning.
+Prerequisites:
+
+- You must have at least the Reporter role.
+
+When you close an [incident](incidents.md) that is linked to an alert,
+the linked alert's status changes to **Resolved**.
+You are then credited with the alert's status change.
+
+#### As an on-call responder **(PREMIUM)**
+
+On-call responders can respond to [alert pages](paging.md#escalating-an-alert)
+by changing the alert status.
+
+Changing the status has the following effects:
+
+- To **Acknowledged**: limits on-call pages based on the project's [escalation policy](escalation_policies.md).
+- To **Resolved**: silences all on-call pages for the alert.
+- From **Resolved** to **Triggered**: restarts the alert escalating.
 
 In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](alerts.md#create-an-incident-from-an-alert)
 also updates the incident status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
@@ -183,7 +188,7 @@ alert by selecting the **View Issue** button.
 
 You can also [create incidents for alerts automatically](incidents.md#create-incidents-automatically).
 
-Closing a GitLab issue associated with an alert [changes the alert's status](#update-an-alerts-status) to
+Closing a GitLab issue associated with an alert [changes the alert's status](#change-an-alerts-status) to
 **Resolved**. See [Alert List](#alert-list) for more details
 about alert statuses.
 
@@ -213,7 +218,7 @@ To assign an alert:
    GitLab creates a [to-do item](../../user/todos.md) for each user.
 
 After completing their portion of investigating or fixing the alert, users can
-unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown menu
+unassign themselves from the alert. To remove an assignee, select **Edit** next to the **Assignee** dropdown list
 and clear the user from the list of assignees, or select **Unassigned**.
 
 ### Create a to-do item from an alert

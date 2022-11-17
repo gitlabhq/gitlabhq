@@ -20,33 +20,6 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
   end
 
-  shared_examples 'Snowplow event' do
-    let(:label) { nil }
-
-    it 'is not emitted if FF is disabled' do
-      stub_feature_flags(feature_flag_name => false)
-
-      subject
-
-      expect_no_snowplow_event
-    end
-
-    it 'is emitted' do
-      params = {
-        category: category,
-        action: action,
-        namespace: namespace,
-        user: user,
-        project: project,
-        label: label
-      }.compact
-
-      subject
-
-      expect_snowplow_event(**params)
-    end
-  end
-
   describe 'Issues' do
     describe '#open_issue' do
       let(:issue) { create(:issue) }
@@ -95,14 +68,17 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
 
-      it_behaves_like 'Snowplow event' do
-        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
-        let(:label) { 'merge_requests_users' }
-        let(:action) { 'create' }
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { described_class.name }
+        let(:action) { 'created' }
+        let(:label) { 'usage_activity_by_stage_monthly.create.merge_requests_users' }
         let(:namespace) { project.namespace }
         let(:project) { merge_request.project }
         let(:user) { merge_request.author }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:context) do
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'merge_requests_users').to_context]
+        end
       end
     end
 
@@ -121,14 +97,17 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
 
-      it_behaves_like 'Snowplow event' do
-        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
-        let(:label) { 'merge_requests_users' }
-        let(:action) { 'close' }
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { described_class.name }
+        let(:action) { 'closed' }
+        let(:label) { 'usage_activity_by_stage_monthly.create.merge_requests_users' }
         let(:namespace) { project.namespace }
         let(:project) { merge_request.project }
         let(:user) { merge_request.author }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:context) do
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'merge_requests_users').to_context]
+        end
       end
     end
 
@@ -147,14 +126,17 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
         let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION }
       end
 
-      it_behaves_like 'Snowplow event' do
-        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
-        let(:label) { 'merge_requests_users' }
-        let(:action) { 'merge' }
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:category) { described_class.name }
+        let(:action) { 'merged' }
+        let(:label) { 'usage_activity_by_stage_monthly.create.merge_requests_users' }
         let(:namespace) { project.namespace }
         let(:project) { merge_request.project }
         let(:user) { merge_request.author }
-        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:context) do
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'merge_requests_users').to_context]
+        end
       end
     end
 
@@ -330,11 +312,16 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
 
-    it_behaves_like 'Snowplow event' do
+    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
       let(:category) { described_class.to_s }
-      let(:action) { 'action_active_users_project_repo' }
+      let(:action) { :push }
       let(:namespace) { project.namespace }
       let(:feature_flag_name) { :route_hll_to_snowplow }
+      let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
+      let(:context) do
+        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                  event: 'action_active_users_project_repo').to_context]
+      end
     end
   end
 
@@ -355,11 +342,16 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:event_action) { Gitlab::UsageDataCounters::TrackUniqueEvents::PUSH_ACTION }
     end
 
-    it_behaves_like 'Snowplow event' do
+    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
       let(:category) { described_class.to_s }
-      let(:action) { 'action_active_users_project_repo' }
+      let(:action) { :push }
       let(:namespace) { project.namespace }
       let(:feature_flag_name) { :route_hll_to_snowplow }
+      let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
+      let(:context) do
+        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                  event: 'action_active_users_project_repo').to_context]
+      end
     end
   end
 
@@ -495,7 +487,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
           stub_feature_flags(route_hll_to_snowplow_phase2: false)
         end
 
-        it 'doesnt emit snowwplow events', :snowplow do
+        it 'doesnt emit snowplow events', :snowplow do
           subject
 
           expect_no_snowplow_event
@@ -518,19 +510,22 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
     end
 
     context 'when it is a diff note' do
-      it_behaves_like "it records the event in the event counter" do
-        let(:note) { create(:diff_note_on_merge_request) }
-      end
+      let(:note) { create(:diff_note_on_merge_request) }
 
-      it_behaves_like 'Snowplow event' do
-        let(:note) { create(:diff_note_on_merge_request) }
-        let(:category) { Gitlab::UsageDataCounters::TrackUniqueEvents::MERGE_REQUEST_ACTION.to_s }
-        let(:label) { 'merge_requests_users' }
-        let(:action) { 'comment' }
-        let(:project) { note.project }
-        let(:namespace) { project.namespace }
+      it_behaves_like "it records the event in the event counter"
+
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
         let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:note) { create(:diff_note_on_merge_request) }
+        let(:category) { described_class.name }
+        let(:action) { 'commented' }
+        let(:label) { 'usage_activity_by_stage_monthly.create.merge_requests_users' }
+        let(:namespace) { project.namespace }
+        let(:project) { note.project }
         let(:user) { author }
+        let(:context) do
+          [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'merge_requests_users').to_context]
+        end
       end
     end
 

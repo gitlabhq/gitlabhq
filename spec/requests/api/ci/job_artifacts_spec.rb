@@ -389,8 +389,7 @@ RSpec.describe API::Ci::JobArtifacts do
             end
           end
 
-          context 'when Google CDN is enabled' do
-            let(:cdn_enabled) { true }
+          context 'when Google CDN is configured' do
             let(:cdn_config) do
               {
                 'provider' => 'Google',
@@ -401,7 +400,6 @@ RSpec.describe API::Ci::JobArtifacts do
             end
 
             before do
-              stub_feature_flags(ci_job_artifacts_cdn: cdn_enabled)
               stub_object_storage_uploader(config: Gitlab.config.artifacts.object_store,
                                            uploader: JobArtifactUploader,
                                            proxy_download: proxy_download,
@@ -417,18 +415,6 @@ RSpec.describe API::Ci::JobArtifacts do
               subject
 
               expect(response.redirect_url).to start_with("https://cdn.example.org/#{artifact.file.path}")
-            end
-
-            context 'when ci_job_artifacts_cdn feature flag is disabled' do
-              let(:cdn_enabled) { false }
-
-              it 'returns the file remote URL' do
-                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: false).and_call_original
-
-                subject
-
-                expect(response).to redirect_to(artifact.file.url)
-              end
             end
           end
 

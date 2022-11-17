@@ -2,6 +2,7 @@ import {
   number,
   percent,
   percentHundred,
+  days,
   seconds,
   milliseconds,
   decimalBytes,
@@ -70,6 +71,11 @@ describe('unit_format', () => {
 
     expect(percentHundred(200)).toBe('200%');
     expect(percentHundred(1000)).toBe('1,000%');
+  });
+
+  it('days', () => {
+    expect(days(1)).toBe('1d');
+    expect(days(1, undefined, { unitSeparator: '/' })).toBe('1/d');
   });
 
   it('seconds', () => {

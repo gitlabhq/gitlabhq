@@ -126,6 +126,63 @@ RSpec.shared_context 'ProjectPolicyTable context' do
   end
 
   # This table is based on permission_table_for_guest_feature_access,
+  # but takes into account note confidentiality. It is required on the context
+  # to have one regular note and one confidential note.
+  #
+  # project_level, :feature_access_level, :membership, :admin_mode, :expected_count
+  def permission_table_for_notes_feature_access
+    :public   | :enabled  | :admin      | true  | 2
+    :public   | :enabled  | :admin      | false | 1
+    :public   | :enabled  | :reporter   | nil   | 2
+    :public   | :enabled  | :guest      | nil   | 1
+    :public   | :enabled  | :non_member | nil   | 1
+    :public   | :enabled  | :anonymous  | nil   | 1
+
+    :public   | :private  | :admin      | true  | 2
+    :public   | :private  | :admin      | false | 0
+    :public   | :private  | :reporter   | nil   | 2
+    :public   | :private  | :guest      | nil   | 1
+    :public   | :private  | :non_member | nil   | 0
+    :public   | :private  | :anonymous  | nil   | 0
+
+    :public   | :disabled | :reporter   | nil   | 0
+    :public   | :disabled | :guest      | nil   | 0
+    :public   | :disabled | :non_member | nil   | 0
+    :public   | :disabled | :anonymous  | nil   | 0
+
+    :internal | :enabled  | :admin      | true  | 2
+    :internal | :enabled  | :admin      | false | 1
+    :internal | :enabled  | :reporter   | nil   | 2
+    :internal | :enabled  | :guest      | nil   | 1
+    :internal | :enabled  | :non_member | nil   | 1
+    :internal | :enabled  | :anonymous  | nil   | 0
+
+    :internal | :private  | :admin      | true  | 2
+    :internal | :private  | :admin      | false | 0
+    :internal | :private  | :reporter   | nil   | 2
+    :internal | :private  | :guest      | nil   | 1
+    :internal | :private  | :non_member | nil   | 0
+    :internal | :private  | :anonymous  | nil   | 0
+
+    :internal | :disabled | :reporter   | nil   | 0
+    :internal | :disabled | :guest      | nil   | 0
+    :internal | :disabled | :non_member | nil   | 0
+    :internal | :disabled | :anonymous  | nil   | 0
+
+    :private  | :private  | :admin      | true  | 2
+    :private  | :private  | :admin      | false | 0
+    :private  | :private  | :reporter   | nil   | 2
+    :private  | :private  | :guest      | nil   | 1
+    :private  | :private  | :non_member | nil   | 0
+    :private  | :private  | :anonymous  | nil   | 0
+
+    :private  | :disabled | :reporter   | nil   | 0
+    :private  | :disabled | :guest      | nil   | 0
+    :private  | :disabled | :non_member | nil   | 0
+    :private  | :disabled | :anonymous  | nil   | 0
+  end
+
+  # This table is based on permission_table_for_guest_feature_access,
   # but with a slight twist.
   # Some features can be hidden away to GUEST, when project is private.
   # (see ProjectFeature::PRIVATE_FEATURES_MIN_ACCESS_LEVEL_FOR_PRIVATE_PROJECT)

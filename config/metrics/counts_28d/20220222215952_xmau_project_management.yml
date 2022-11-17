@@ -22,6 +22,8 @@ options:
     - users_updating_work_item_dates
     - users_updating_work_item_labels
     - users_updating_work_item_iteration
+    - users_updating_weight_estimate
+    - users_updating_work_item_milestone
 data_category: optional
 distribution:
 - ce

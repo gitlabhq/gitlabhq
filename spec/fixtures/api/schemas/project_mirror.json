@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "url",
+    "update_status",
+    "last_update_at",
+    "last_update_started_at",
+    "last_successful_update_at",
+    "last_error"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "url": {
+      "type": "string"
+    },
+    "update_status": {
+      "type": "string"
+    },
+    "last_update_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_update_started_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_successful_update_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "last_error": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

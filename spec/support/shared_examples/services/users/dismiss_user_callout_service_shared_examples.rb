@@ -20,7 +20,7 @@ RSpec.shared_examples_for 'dismissing user callout' do |model|
       old_time = 1.day.ago
       new_time = Time.current
       attributes = params.merge(dismissed_at: old_time, user: user)
-      existing_callout = create("#{model.name.split('::').last.underscore}".to_sym, attributes)
+      existing_callout = create(model.name.split('::').last.underscore.to_s.to_sym, attributes)
 
       expect { execute }.to change { existing_callout.reload.dismissed_at }.from(old_time).to(new_time)
     end

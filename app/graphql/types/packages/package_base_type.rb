@@ -12,6 +12,8 @@ module Types
 
       field :id, ::Types::GlobalIDType[::Packages::Package], null: false, description: 'ID of the package.'
 
+      field :_links, Types::Packages::PackageLinksType, null: false, method: :itself,
+                                                        description: 'Map of links to perform actions on the package.'
       field :can_destroy, GraphQL::Types::Boolean, null: false, description: 'Whether the user can destroy the package.'
       field :created_at, Types::TimeType, null: false, description: 'Date of creation.'
       field :metadata, Types::Packages::MetadataType,

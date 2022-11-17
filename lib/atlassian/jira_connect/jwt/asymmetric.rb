@@ -12,7 +12,8 @@ module Atlassian
         KeyFetchError = Class.new(StandardError)
 
         ALGORITHM = 'RS256'
-        PUBLIC_KEY_CDN_URL = 'https://connect-install-keys.atlassian.com/'
+        DEFAULT_PUBLIC_KEY_CDN_URL = 'https://connect-install-keys.atlassian.com'
+        PROXY_PUBLIC_KEY_PATH = '/-/jira_connect/public_keys'
         UUID4_REGEX = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/.freeze
 
         def initialize(token, verification_claims)
@@ -60,7 +61,7 @@ module Atlassian
         def retrieve_public_key(key_id)
           raise KeyFetchError unless UUID4_REGEX.match?(key_id)
 
-          public_key = Gitlab::HTTP.try_get(PUBLIC_KEY_CDN_URL + key_id).try(:body)
+          public_key = Gitlab::HTTP.try_get("#{public_key_cdn_url}/#{key_id}").try(:body)
 
           raise KeyFetchError if public_key.blank?
 
@@ -73,6 +74,21 @@ module Atlassian
 
         def verification_qsh
           @verification_claims[:qsh]
+        end
+
+        def public_key_cdn_url
+          if public_key_cdn_url_setting.blank? || Feature.disabled?(:jira_connect_oauth_self_managed)
+            return DEFAULT_PUBLIC_KEY_CDN_URL
+          end
+
+          public_key_cdn_url_setting
+        end
+
+        def public_key_cdn_url_setting
+          @public_key_cdn_url_setting ||=
+            if Gitlab::CurrentSettings.jira_connect_proxy_url
+              Gitlab::Utils.append_path(Gitlab::CurrentSettings.jira_connect_proxy_url, PROXY_PUBLIC_KEY_PATH)
+            end
         end
       end
     end

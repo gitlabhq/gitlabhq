@@ -13,6 +13,12 @@ module ResourceEvents
 
     private
 
+    def track_event
+      return unless resource.is_a?(WorkItem)
+
+      Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter.track_work_item_milestone_changed_action(author: user)
+    end
+
     def create_event
       ResourceMilestoneEvent.create(build_resource_args)
     end

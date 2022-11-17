@@ -11,6 +11,16 @@ RSpec.describe Rouge::Formatters::HTMLGitlab do
     let(:tokens) { lexer.lex("def hello", continue: false) }
     let(:options) { { tag: lang } }
 
+    context 'when svg and indexes are present to trim' do
+      let(:options) { { tag: lang, ellipsis_indexes: [0], ellipsis_svg: "svg_icon" } }
+
+      it 'returns highlighted ruby code with svg' do
+        code = %q{<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span><span class="gl-px-2 gl-rounded-base gl-mx-2 gl-bg-gray-100 gl-cursor-help has-tooltip" title="Content has been trimmed">svg_icon</span></span>}
+
+        is_expected.to eq(code)
+      end
+    end
+
     it 'returns highlighted ruby code' do
       code = %q{<span id="LC1" class="line" lang="ruby"><span class="k">def</span> <span class="nf">hello</span></span>}
 

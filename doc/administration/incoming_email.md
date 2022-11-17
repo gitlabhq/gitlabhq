@@ -41,7 +41,7 @@ in the mailbox for `user@example.com` . It is supported by providers such as
 Gmail, Google Apps, Yahoo! Mail, Outlook.com, and iCloud, as well as the
 [Postfix mail server](reply_by_email_postfix_setup.md), which you can run on-premises.
 Microsoft Exchange Server [does not support sub-addressing](#microsoft-exchange-server),
-and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365)
+and Microsoft Office 365 [does not support sub-addressing by default](#microsoft-office-365).
 
 NOTE:
 If your provider or server supports email sub-addressing, we recommend using it.

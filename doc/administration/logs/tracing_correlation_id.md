@@ -103,7 +103,7 @@ sudo gitlab-ctl tail gitlab-rails/production_json.log | grep '"username":"bob"' 
 
 ## Searching your logs for the correlation ID
 
-Once you have the correlation ID you can start searching for relevant log
+When you have the correlation ID you can start searching for relevant log
 entries. You can filter the lines by the correlation ID itself.
 Combining a `find` and `grep` should be sufficient to find the entries you are looking for.
 

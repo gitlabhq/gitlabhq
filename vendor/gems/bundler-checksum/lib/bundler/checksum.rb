@@ -19,7 +19,8 @@ module Bundler
         cached_checksum = fetch_checksum_from_file(spec)
 
         if cached_checksum.nil?
-          raise SecurityError, "Cached checksum for #{spec.full_name} not found. Please (re-)generate Gemfile.checksum"
+          raise SecurityError, "Cached checksum for #{spec.full_name} not found. Please (re-)generate Gemfile.checksum with " \
+            "`bundle exec bundler-checksum init`. See https://docs.gitlab.com/ee/development/gemfile.html#updating-the-checksum-file."
         end
 
         validate_file_checksum(cached_checksum)

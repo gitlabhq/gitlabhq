@@ -36,10 +36,10 @@ To override the general user and IP rate limits for requests to the Repository f
 1. Select the checkboxes for the types of rate limits you want to enable:
    - **Unauthenticated API request rate limit**
    - **Authenticated API request rate limit**
-1. _If you enabled unauthenticated API request rate limits:_
+1. If you selected **unauthenticated**:
    1. Select the **Max unauthenticated API requests per period per IP**.
    1. Select the **Unauthenticated API rate limit period in seconds**.
-1. _If you enabled authenticated API request rate limits:_
+1. If you selected **authenticated**:
    1. Select the **Max authenticated API requests per period per user**.
    1. Select the **Authenticated API rate limit period in seconds**.
 

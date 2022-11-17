@@ -1,6 +1,15 @@
 - return unless show_version_check?
 
-%a{ class: 'gl-display-flex! gl-flex-direction-column gl-px-4! gl-py-3! gl-line-height-24!', href: help_page_path('update/index'), 'data-testid': 'gitlab-version-container' }
+%a{
+    class: 'gl-display-flex! gl-flex-direction-column gl-px-4! gl-py-3! gl-line-height-24!',
+    href: help_page_path('update/index'),
+    data: {
+      testid: 'gitlab-version-container',
+      track_action: 'click_link',
+      track_label: 'version_help_dropdown',
+      track_property: "#{Gitlab.version_info.major}.#{Gitlab.version_info.minor}"
+    }
+  }
   %span
     = s_("VersionCheck|Your GitLab Version")
     = emoji_icon('rocket')
@@ -8,4 +17,4 @@
     %span.gl-font-sm.gl-text-gray-500
       #{Gitlab.version_info.major}.#{Gitlab.version_info.minor}
     %span.gl-ml-2
-      .js-gitlab-version-check{ data: { "size": "sm" } }
+      .js-gitlab-version-check-badge{ data: { "size": "sm" } }

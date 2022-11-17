@@ -10,7 +10,7 @@ module API
                      MergeRequest, Note, Snippet, Key, Milestone].freeze
 
     desc 'Get the current application statistics' do
-      success Entities::ApplicationStatistics
+      success code: 200, model: Entities::ApplicationStatistics
     end
     get "application/statistics", urgency: :low do
       counts = Gitlab::Database::Count.approximate_counts(COUNTED_ITEMS)

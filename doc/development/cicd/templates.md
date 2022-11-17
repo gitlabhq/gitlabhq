@@ -418,7 +418,7 @@ is updated in a major version GitLab release.
 
 Every CI/CD template must also have metrics defined to track their use. The CI/CD template monthly usage report
 can be found in [Sisense (GitLab team members only)](https://app.periscopedata.com/app/gitlab/785953/Pipeline-Authoring-Dashboard?widget=13440051&udv=0).
-Double click a template to see the graph for that single template.
+Select a template to see the graph for that single template.
 
 To add a metric definition for a new template:
 

@@ -5,10 +5,10 @@ require 'spec_helper'
 RSpec.describe Topics::MergeService do
   let_it_be(:source_topic) { create(:topic, name: 'source_topic') }
   let_it_be(:target_topic) { create(:topic, name: 'target_topic') }
-  let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name ) }
-  let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name ) }
-  let_it_be(:project_3) { create(:project, :public, topic_list: target_topic.name ) }
-  let_it_be(:project_4) { create(:project, :public, topic_list: [source_topic.name, target_topic.name] ) }
+  let_it_be(:project_1) { create(:project, :public, topic_list: source_topic.name) }
+  let_it_be(:project_2) { create(:project, :private, topic_list: source_topic.name) }
+  let_it_be(:project_3) { create(:project, :public, topic_list: target_topic.name) }
+  let_it_be(:project_4) { create(:project, :public, topic_list: [source_topic.name, target_topic.name]) }
 
   subject { described_class.new(source_topic, target_topic).execute }
 

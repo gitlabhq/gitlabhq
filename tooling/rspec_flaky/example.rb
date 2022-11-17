@@ -38,13 +38,18 @@ module RspecFlaky
       rspec_example.respond_to?(:attempts) ? rspec_example.attempts : 1
     end
 
+    def feature_category
+      metadata[:feature_category]
+    end
+
     def to_h
       {
         example_id: example_id,
         file: file,
         line: line,
         description: description,
-        last_attempts_count: attempts
+        last_attempts_count: attempts,
+        feature_category: feature_category
       }
     end
 

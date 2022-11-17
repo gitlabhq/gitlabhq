@@ -76,7 +76,12 @@ module Gitlab
             # | /builds/foo/test/something  | something  |
             # | /builds/foo/test/           | nil        |
             # | /builds/foo/test            | nil        |
-            node.split("#{project_path}/", 2)[1]
+            # | D:\builds\foo\bar\app\      | app\       |
+            unixify(node).split("#{project_path}/", 2)[1]
+          end
+
+          def unixify(path)
+            path.tr('\\', '/')
           end
 
           def remove_matched_filenames

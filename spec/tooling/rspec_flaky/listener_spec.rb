@@ -128,6 +128,7 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
           first_flaky_at: 1234,
           last_attempts_count: 2,
           flaky_reports: 2,
+          feature_category: nil,
           last_flaky_job: nil
         }
       end
@@ -154,6 +155,7 @@ RSpec.describe RspecFlaky::Listener, :aggregate_failures do
           description: 'hello GitLab',
           last_attempts_count: 2,
           flaky_reports: 1,
+          feature_category: nil,
           last_flaky_job: nil
         }
       end

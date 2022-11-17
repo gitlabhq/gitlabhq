@@ -77,11 +77,12 @@ module BroadcastMessagesHelper
     return unless current_user.present?
 
     strong_memoize(:current_user_access_level_for_project_or_group) do
-      if controller.is_a? Projects::ApplicationController
+      case controller
+      when Projects::ApplicationController
         next unless @project
 
         @project.team.max_member_access(current_user.id)
-      elsif controller.is_a? Groups::ApplicationController
+      when Groups::ApplicationController
         next unless @group
 
         @group.max_member_access_for_user(current_user)

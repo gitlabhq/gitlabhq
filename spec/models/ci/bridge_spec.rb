@@ -27,6 +27,8 @@ RSpec.describe Ci::Bridge do
 
   it_behaves_like 'has ID tokens', :ci_bridge
 
+  it_behaves_like 'a retryable job'
+
   it 'has one downstream pipeline' do
     expect(bridge).to have_one(:sourced_pipeline)
     expect(bridge).to have_one(:downstream_pipeline)
@@ -35,18 +37,8 @@ RSpec.describe Ci::Bridge do
   describe '#retryable?' do
     let(:bridge) { create(:ci_bridge, :success) }
 
-    it 'returns true' do
-      expect(bridge.retryable?).to eq(true)
-    end
-
-    context 'without ci_recreate_downstream_pipeline ff' do
-      before do
-        stub_feature_flags(ci_recreate_downstream_pipeline: false)
-      end
-
-      it 'returns false' do
-        expect(bridge.retryable?).to eq(false)
-      end
+    it 'returns false' do
+      expect(bridge.retryable?).to eq(false)
     end
   end
 
@@ -204,6 +196,8 @@ RSpec.describe Ci::Bridge do
   end
 
   describe '#downstream_variables' do
+    subject(:downstream_variables) { bridge.downstream_variables }
+
     it 'returns variables that are going to be passed downstream' do
       expect(bridge.downstream_variables)
         .to include(key: 'BRIDGE', value: 'cross')
@@ -309,7 +303,7 @@ RSpec.describe Ci::Bridge do
       end
 
       context 'when the pipeline runs from a pipeline schedule' do
-        let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
+        let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
         let(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
 
         let(:options) do
@@ -324,6 +318,79 @@ RSpec.describe Ci::Bridge do
           expect(bridge.downstream_variables).to contain_exactly(
             { key: 'BRIDGE', value: 'cross' },
             { key: 'schedule_var_key', value: 'schedule var value' }
+          )
+        end
+      end
+    end
+
+    context 'when using raw variables' do
+      let(:options) do
+        {
+          trigger: {
+            project: 'my/project',
+            branch: 'master',
+            forward: { yaml_variables: true,
+                       pipeline_variables: true }.compact
+          }
+        }
+      end
+
+      let(:yaml_variables) do
+        [
+          {
+            key: 'VAR6',
+            value: 'value6 $VAR1'
+          },
+          {
+            key: 'VAR7',
+            value: 'value7 $VAR1',
+            raw: true
+          }
+        ]
+      end
+
+      let(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
+      let(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
+
+      before do
+        create(:ci_pipeline_variable, pipeline: pipeline, key: 'VAR1', value: 'value1')
+        create(:ci_pipeline_variable, pipeline: pipeline, key: 'VAR2', value: 'value2 $VAR1')
+        create(:ci_pipeline_variable, pipeline: pipeline, key: 'VAR3', value: 'value3 $VAR1', raw: true)
+
+        pipeline_schedule.variables.create!(key: 'VAR4', value: 'value4 $VAR1')
+        pipeline_schedule.variables.create!(key: 'VAR5', value: 'value5 $VAR1', raw: true)
+
+        bridge.yaml_variables.concat(yaml_variables)
+      end
+
+      it 'expands variables according to their raw attributes' do
+        expect(downstream_variables).to contain_exactly(
+          { key: 'BRIDGE', value: 'cross' },
+          { key: 'VAR1', value: 'value1' },
+          { key: 'VAR2', value: 'value2 value1' },
+          { key: 'VAR3', value: 'value3 $VAR1', raw: true },
+          { key: 'VAR4', value: 'value4 value1' },
+          { key: 'VAR5', value: 'value5 $VAR1', raw: true },
+          { key: 'VAR6', value: 'value6 value1' },
+          { key: 'VAR7', value: 'value7 $VAR1', raw: true }
+        )
+      end
+
+      context 'when the FF ci_raw_variables_in_yaml_config is disabled' do
+        before do
+          stub_feature_flags(ci_raw_variables_in_yaml_config: false)
+        end
+
+        it 'ignores the raw attribute' do
+          expect(downstream_variables).to contain_exactly(
+            { key: 'BRIDGE', value: 'cross' },
+            { key: 'VAR1', value: 'value1' },
+            { key: 'VAR2', value: 'value2 value1' },
+            { key: 'VAR3', value: 'value3 value1' },
+            { key: 'VAR4', value: 'value4 value1' },
+            { key: 'VAR5', value: 'value5 value1' },
+            { key: 'VAR6', value: 'value6 value1' },
+            { key: 'VAR7', value: 'value7 value1' }
           )
         end
       end

@@ -37,12 +37,17 @@ describe('Create work item component', () => {
     props = {},
     queryHandler = querySuccessHandler,
     mutationHandler = createWorkItemSuccessHandler,
+    fetchByIid = false,
   } = {}) => {
-    fakeApollo = createMockApollo([
-      [projectWorkItemTypesQuery, queryHandler],
-      [createWorkItemMutation, mutationHandler],
-      [createWorkItemFromTaskMutation, mutationHandler],
-    ]);
+    fakeApollo = createMockApollo(
+      [
+        [projectWorkItemTypesQuery, queryHandler],
+        [createWorkItemMutation, mutationHandler],
+        [createWorkItemFromTaskMutation, mutationHandler],
+      ],
+      {},
+      { typePolicies: { Project: { merge: true } } },
+    );
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: fakeApollo,
       data() {
@@ -61,6 +66,9 @@ describe('Create work item component', () => {
       },
       provide: {
         fullPath: 'full-path',
+        glFeatures: {
+          useIidInWorkItemsPath: fetchByIid,
+        },
       },
     });
   };
@@ -99,7 +107,12 @@ describe('Create work item component', () => {
       wrapper.find('form').trigger('submit');
       await waitForPromises();
 
-      expect(wrapper.vm.$router.push).toHaveBeenCalled();
+      expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+        name: 'workItem',
+        params: {
+          id: '1',
+        },
+      });
     });
 
     it('adds right margin for create button', () => {
@@ -196,5 +209,19 @@ describe('Create work item component', () => {
     expect(findAlert().text()).toBe(
       'Something went wrong when creating work item. Please try again.',
     );
+  });
+
+  it('performs a correct redirect when `useIidInWorkItemsPath` feature flag is enabled', async () => {
+    createComponent({ fetchByIid: true });
+    findTitleInput().vm.$emit('title-input', 'Test title');
+
+    wrapper.find('form').trigger('submit');
+    await waitForPromises();
+
+    expect(wrapper.vm.$router.push).toHaveBeenCalledWith({
+      name: 'workItem',
+      params: { id: '1' },
+      query: { iid_path: 'true' },
+    });
   });
 });

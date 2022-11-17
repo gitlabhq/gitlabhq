@@ -19,12 +19,12 @@ RSpec.describe Backup::DatabaseBackupError do
   it { is_expected.to respond_to :db_file_name }
 
   it 'expects exception message to include database file' do
-    expect(subject.message).to include("#{db_file_name}")
+    expect(subject.message).to include(db_file_name.to_s)
   end
 
   it 'expects exception message to include database paths being back-up' do
-    expect(subject.message).to include("#{config[:host]}")
-    expect(subject.message).to include("#{config[:port]}")
-    expect(subject.message).to include("#{config[:database]}")
+    expect(subject.message).to include(config[:host].to_s)
+    expect(subject.message).to include(config[:port].to_s)
+    expect(subject.message).to include(config[:database].to_s)
   end
 end

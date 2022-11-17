@@ -48,6 +48,7 @@ module Gitlab
         #                      forcefully disconnected.
         # use_tcp - Use TCP instaed of UDP to look up resources
         # load_balancer - The load balancer instance to use
+        # rubocop:disable Metrics/ParameterLists
         def initialize(
           load_balancer,
           nameserver:,
@@ -56,7 +57,8 @@ module Gitlab
           record_type: 'A',
           interval: 60,
           disconnect_timeout: 120,
-          use_tcp: false
+          use_tcp: false,
+          max_replica_pools: nil
         )
           @nameserver = nameserver
           @port = port
@@ -66,7 +68,9 @@ module Gitlab
           @disconnect_timeout = disconnect_timeout
           @use_tcp = use_tcp
           @load_balancer = load_balancer
+          @max_replica_pools = max_replica_pools
         end
+        # rubocop:enable Metrics/ParameterLists
 
         def start
           Thread.new do
@@ -170,6 +174,8 @@ module Gitlab
               addresses_from_srv_record(response)
             end
 
+          addresses = sampler.sample(addresses)
+
           raise EmptyDnsResponse if addresses.empty?
 
           # Addresses are sorted so we can directly compare the old and new
@@ -220,6 +226,11 @@ module Gitlab
 
         def addresses_from_a_record(resources)
           resources.map { |r| Address.new(r.address.to_s) }
+        end
+
+        def sampler
+          @sampler ||= ::Gitlab::Database::LoadBalancing::ServiceDiscovery::Sampler
+            .new(max_replica_pools: @max_replica_pools)
         end
       end
     end

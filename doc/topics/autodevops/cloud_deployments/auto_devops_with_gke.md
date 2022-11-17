@@ -101,13 +101,12 @@ or manually with Google Cloud Shell:
 1. After the Cloud Shell starts, run these commands to install NGINX Ingress Controller:
 
    ```shell
-   kubectl create ns gitlab-managed-apps
-   helm repo add stable https://charts.helm.sh/stable
-   helm repo update
-   helm install ingress stable/nginx-ingress -n gitlab-managed-apps
+   helm upgrade --install ingress-nginx ingress-nginx \
+   --repo https://kubernetes.github.io/ingress-nginx \
+   --namespace gitlab-managed-apps --create-namespace
 
    # Check that the ingress controller is installed successfully
-   kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps
+   kubectl get service ingress-nginx-controller -n gitlab-managed-apps
    ```
 
 ## Configure Auto DevOps
@@ -118,7 +117,7 @@ Follow these steps to configure the base domain and other settings required for 
    get the external IP address with the following command:
 
    ```shell
-   kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -ojson | jq -r '.status.loadBalancer.ingress[].ip'
+   kubectl get service ingress-nginx-controller -n gitlab-managed-apps -ojson | jq -r '.status.loadBalancer.ingress[].ip'
    ```
 
    Replace `gitlab-managed-apps` if you have overwritten your namespace.

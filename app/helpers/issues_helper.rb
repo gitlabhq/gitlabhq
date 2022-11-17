@@ -10,7 +10,6 @@ module IssuesHelper
   def issue_css_classes(issue)
     classes = ["issue"]
     classes << "closed" if issue.closed?
-    classes << "today" if issue.new?
     classes << "gl-cursor-grab" if @sort == 'relative_position'
     classes.join(' ')
   end
@@ -108,9 +107,10 @@ module IssuesHelper
 
   def awards_sort(awards)
     awards.sort_by do |award, award_emojis|
-      if award == "thumbsup"
+      case award
+      when "thumbsup"
         0
-      elsif award == "thumbsdown"
+      when "thumbsdown"
         1
       else
         2

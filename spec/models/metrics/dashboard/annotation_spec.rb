@@ -63,7 +63,7 @@ RSpec.describe Metrics::Dashboard::Annotation do
     end
 
     context 'annotation with shared ownership' do
-      subject { build(:metrics_dashboard_annotation, :with_cluster, environment: build(:environment) ) }
+      subject { build(:metrics_dashboard_annotation, :with_cluster, environment: build(:environment)) }
 
       it 'reports error about both shared ownership' do
         subject.valid?

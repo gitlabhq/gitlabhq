@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Configure' do
-    describe 'AutoDevOps Templates', only: { subdomain: %i[staging staging-canary] } do
+    describe 'AutoDevOps Templates', only: { subdomain: %i[staging staging-canary] }, product_group: :configure do
       using RSpec::Parameterized::TableSyntax
 
       # specify jobs to be disabled in the pipeline.

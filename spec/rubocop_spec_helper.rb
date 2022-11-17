@@ -12,10 +12,7 @@ require_relative './support/shared_contexts/rubocop_default_rspec_language_confi
 
 RSpec.configure do |config|
   config.define_derived_metadata(file_path: %r{spec/rubocop}) do |metadata|
-    # TODO: move DuplicateSpecLocation cop to RSpec::DuplicateSpecLocation
-    unless metadata[:type] == :rubocop_rspec
-      metadata[:type] = :rubocop
-    end
+    metadata[:type] = :rubocop
   end
 
   config.define_derived_metadata(file_path: %r{spec/rubocop/cop/rspec}) do |metadata|

@@ -21,7 +21,7 @@
 
             .form-group.has-feedback
               = label_tag :url, _('Git repository URL'), class: 'label-light'
-              = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url qa-mirror-repository-url-input', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password'
+              = text_field_tag :url, nil, class: 'form-control gl-form-input js-mirror-url js-repo-url', placeholder: _('Input the remote repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", autocomplete: 'new-password', data: { qa_selector: 'mirror_repository_url_field' }
 
             = render 'projects/mirrors/instructions'
 
@@ -35,7 +35,7 @@
                 = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index.md', anchor: 'mirror-only-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
 
           .panel-footer
-            = f.submit _('Mirror repository'), class: 'js-mirror-submit qa-mirror-repository-button', name: :update_remote_mirror, pajamas_button: true
+            = f.submit _('Mirror repository'), class: 'js-mirror-submit', name: :update_remote_mirror, pajamas_button: true, data: { qa_selector: 'mirror_repository_button' }
     - else
       = render Pajamas::AlertComponent.new(dismissible: false) do |c|
         = c.body do

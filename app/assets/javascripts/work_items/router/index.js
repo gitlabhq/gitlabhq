@@ -9,7 +9,7 @@ Vue.use(VueRouter);
 
 export function createRouter(fullPath) {
   return new VueRouter({
-    routes,
+    routes: routes(),
     mode: 'history',
     base: joinPaths(fullPath, '-', 'work_items'),
   });

@@ -18,6 +18,10 @@ module Mutations
                  required: true,
                  description: 'Timestamp of when the event occurred.'
 
+        argument :timeline_event_tag_names, [GraphQL::Types::String],
+                 required: false,
+                 description: copy_field_description(Types::IncidentManagement::TimelineEventType, :timeline_event_tags)
+
         def resolve(incident_id:, **args)
           incident = authorized_find!(id: incident_id)
 

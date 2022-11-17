@@ -16,12 +16,12 @@ request diffs.
 ## Selecting a version
 
 By default, the latest version of changes is shown. However, you
-can select an older one from version dropdown.
+can select an older one from version dropdown list.
 
-![Merge request versions dropdown](img/versions_dropdown.png)
+![Merge request versions dropdown list](img/versions_dropdown.png)
 
 Merge request versions are based on push not on commit. So, if you pushed 5
-commits in a single push, it displays as a single option in the dropdown. If you
+commits in a single push, it displays as a single option in the dropdown list. If you
 pushed 5 times, that counts for 5 options.
 
 You can also compare the merge request version with an older one to see what has
@@ -76,6 +76,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

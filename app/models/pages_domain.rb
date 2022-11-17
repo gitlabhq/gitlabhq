@@ -10,8 +10,8 @@ class PagesDomain < ApplicationRecord
   SSL_RENEWAL_THRESHOLD = 30.days.freeze
 
   enum certificate_source: { user_provided: 0, gitlab_provided: 1 }, _prefix: :certificate
-  enum scope: { instance: 0, group: 1, project: 2 }, _prefix: :scope
-  enum usage: { pages: 0, serverless: 1 }, _prefix: :usage
+  enum scope: { instance: 0, group: 1, project: 2 }, _prefix: :scope, _default: :project
+  enum usage: { pages: 0, serverless: 1 }, _prefix: :usage, _default: :pages
 
   belongs_to :project
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
@@ -35,10 +35,8 @@ class PagesDomain < ApplicationRecord
   validate :validate_intermediates, if: ->(domain) { domain.certificate.present? && domain.certificate_changed? }
   validate :validate_custom_domain_count_per_project, on: :create
 
-  default_value_for(:auto_ssl_enabled, allows_nil: false) { ::Gitlab::LetsEncrypt.enabled? }
-  default_value_for :scope, allows_nil: false, value: :project
-  default_value_for :wildcard, allows_nil: false, value: false
-  default_value_for :usage, allows_nil: false, value: :pages
+  attribute :auto_ssl_enabled, default: -> { ::Gitlab::LetsEncrypt.enabled? }
+  attribute :wildcard, default: false
 
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,
@@ -50,7 +48,7 @@ class PagesDomain < ApplicationRecord
 
   scope :for_project, ->(project) { where(project: project) }
 
-  scope :enabled, -> { where('enabled_until >= ?', Time.current ) }
+  scope :enabled, -> { where('enabled_until >= ?', Time.current) }
   scope :needs_verification, -> do
     verified_at = arel_table[:verified_at]
     enabled_until = arel_table[:enabled_until]

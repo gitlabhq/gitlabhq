@@ -2,6 +2,7 @@
 - add_to_breadcrumbs _("Issues"), project_issues_path(@project)
 - breadcrumb_title @issue.to_reference
 - page_title "#{@issue.title} (#{@issue.to_reference})", _("Issues")
+- add_page_specific_style 'page_bundles/design_management'
 - add_page_specific_style 'page_bundles/incidents'
 - add_page_specific_style 'page_bundles/issues_show'
 - add_page_specific_style 'page_bundles/work_items'

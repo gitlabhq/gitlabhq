@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Create' do
-    describe 'Sharing snippets', :reliable do
+    describe 'Sharing snippets', :reliable, product_group: :editor do
       let(:snippet) do
         Resource::Snippet.fabricate! do |snippet|
           snippet.title = 'Shared snippet'
@@ -14,10 +14,6 @@ module QA
 
       before do
         Flow::Login.sign_in
-      end
-
-      after do
-        snippet&.remove_via_api!
       end
 
       context 'when the snippet is public' do

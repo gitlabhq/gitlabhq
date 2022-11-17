@@ -18,10 +18,7 @@ import {
   CANCEL_BUTTON_TEXT,
   INVITE_BUTTON_TEXT_DISABLED,
   INVITE_BUTTON_TEXT,
-  CANCEL_BUTTON_TEXT_DISABLED,
   ON_SHOW_TRACK_LABEL,
-  ON_CLOSE_TRACK_LABEL,
-  ON_SUBMIT_TRACK_LABEL,
 } from '~/invite_members/constants';
 
 import { propsData, membersPath, purchasePath } from '../mock_data/modal_base';
@@ -131,7 +128,9 @@ describe('InviteModalBase', () => {
     it('renders description', () => {
       createComponent({}, { GlFormGroup });
 
-      expect(findMembersFormGroup().text()).toContain(propsData.formGroupDescription);
+      expect(findMembersFormGroup().attributes('description')).toContain(
+        propsData.formGroupDescription,
+      );
     });
 
     describe('when users limit is reached', () => {
@@ -145,30 +144,13 @@ describe('InviteModalBase', () => {
 
       beforeEach(() => {
         createComponent(
-          { usersLimitDataset: { membersPath, purchasePath }, reachedLimit: true },
+          { usersLimitDataset: { membersPath, purchasePath, reachedLimit: true } },
           { GlModal, GlFormGroup },
         );
       });
 
-      it('renders correct blocks', () => {
-        expect(findIcon().exists()).toBe(true);
-        expect(findDisabledInput().exists()).toBe(true);
-        expect(findDropdown().exists()).toBe(false);
-        expect(findDatepicker().exists()).toBe(false);
-      });
-
-      it('renders correct buttons', () => {
-        const cancelButton = findCancelButton();
-        const actionButton = findActionButton();
-
-        expect(cancelButton.attributes('href')).toBe(purchasePath);
-        expect(cancelButton.text()).toBe(CANCEL_BUTTON_TEXT_DISABLED);
-        expect(actionButton.attributes('href')).toBe(membersPath);
-        expect(actionButton.text()).toBe(INVITE_BUTTON_TEXT_DISABLED);
-      });
-
       it('tracks actions', () => {
-        createComponent({ reachedLimit: true }, { GlFormGroup, GlModal });
+        createComponent({ usersLimitDataset: { reachedLimit: true } }, { GlFormGroup, GlModal });
         trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
 
         const modal = wrapper.findComponent(GlModal);
@@ -176,27 +158,7 @@ describe('InviteModalBase', () => {
         modal.vm.$emit('shown');
         expectTracking('render', ON_SHOW_TRACK_LABEL);
 
-        modal.vm.$emit('cancel', { preventDefault: jest.fn() });
-        expectTracking('click_button', ON_CLOSE_TRACK_LABEL);
-
-        modal.vm.$emit('primary', { preventDefault: jest.fn() });
-        expectTracking('click_button', ON_SUBMIT_TRACK_LABEL);
-
         unmockTracking();
-      });
-
-      describe('when free user namespace', () => {
-        it('hides cancel button', () => {
-          createComponent(
-            {
-              usersLimitDataset: { membersPath, purchasePath, userNamespace: true },
-              reachedLimit: true,
-            },
-            { GlModal, GlFormGroup },
-          );
-
-          expect(findCancelButton().exists()).toBe(false);
-        });
       });
     });
 
@@ -204,9 +166,12 @@ describe('InviteModalBase', () => {
       beforeEach(() => {
         createComponent(
           {
-            closeToLimit: true,
-            reachedLimit: false,
-            usersLimitDataset: { membersPath, userNamespace: true },
+            usersLimitDataset: {
+              membersPath,
+              userNamespace: true,
+              closeToDashboardLimit: true,
+              reachedLimit: false,
+            },
           },
           { GlModal, GlFormGroup },
         );

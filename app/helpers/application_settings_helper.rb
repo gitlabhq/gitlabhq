@@ -221,6 +221,7 @@ module ApplicationSettingsHelper
       :default_projects_limit,
       :default_snippet_visibility,
       :delete_inactive_projects,
+      :disable_admin_oauth_scopes,
       :disable_feed_token,
       :disabled_oauth_sign_in_sources,
       :domain_denylist,
@@ -241,6 +242,7 @@ module ApplicationSettingsHelper
       :eks_access_key_id,
       :eks_secret_access_key,
       :email_author_in_body,
+      :email_confirmation_setting,
       :enabled_git_access_protocol,
       :enforce_terms,
       :error_tracking_enabled,
@@ -278,6 +280,7 @@ module ApplicationSettingsHelper
       :inactive_projects_send_warning_email_after_months,
       :invisible_captcha_enabled,
       :jira_connect_application_key,
+      :jira_connect_proxy_url,
       :max_artifacts_size,
       :max_attachment_size,
       :max_export_size,
@@ -543,6 +546,7 @@ module ApplicationSettingsHelper
       signup_enabled: @application_setting[:signup_enabled].to_s,
       require_admin_approval_after_user_signup: @application_setting[:require_admin_approval_after_user_signup].to_s,
       send_user_confirmation_email: @application_setting[:send_user_confirmation_email].to_s,
+      email_confirmation_setting: @application_setting[:email_confirmation_setting].to_s,
       minimum_password_length: @application_setting[:minimum_password_length],
       minimum_password_length_min: ApplicationSetting::DEFAULT_MINIMUM_PASSWORD_LENGTH,
       minimum_password_length_max: Devise.password_length.max,
@@ -558,7 +562,9 @@ module ApplicationSettingsHelper
       supported_syntax_link_url: 'https://github.com/google/re2/wiki/Syntax',
       email_restrictions: @application_setting.email_restrictions.to_s,
       after_sign_up_text: @application_setting[:after_sign_up_text].to_s,
-      pending_user_count: pending_user_count
+      pending_user_count: pending_user_count,
+      project_sharing_help_link: help_page_path('user/group/access_and_permissions', anchor: 'prevent-a-project-from-being-shared-with-groups'),
+      group_sharing_help_link: help_page_path('user/group/access_and_permissions', anchor: 'prevent-group-sharing-outside-the-group-hierarchy')
     }
   end
 end

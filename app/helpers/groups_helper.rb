@@ -112,16 +112,6 @@ module GroupsHelper
     s_("GroupSettings|Available only on the top-level group. Applies to all subgroups. Groups already shared with a group outside %{group} are still shared unless removed manually.").html_safe % { group: link_to_group(group) }
   end
 
-  def parent_group_options(current_group)
-    exclude_groups = current_group.self_and_descendants.pluck_primary_key
-    exclude_groups << current_group.parent_id if current_group.parent_id
-    groups = GroupsFinder.new(current_user, min_access_level: Gitlab::Access::OWNER, exclude_group_ids: exclude_groups).execute.sort_by(&:human_name).map do |group|
-      { id: group.id, text: group.human_name }
-    end
-
-    groups.to_json
-  end
-
   def render_setting_to_allow_project_access_token_creation?(group)
     group.root? && current_user.can?(:admin_setting_to_allow_project_access_token_creation, group)
   end
@@ -158,8 +148,13 @@ module GroupsHelper
     }
   end
 
-  def subgroups_and_projects_list_app_data(group)
+  def group_overview_tabs_app_data(group)
     {
+      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      shared_projects_endpoint: group_shared_projects_path(group, format: :json),
+      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      current_group_visibility: group.visibility,
+      initial_sort: project_list_sort_by,
       show_schema_markup: 'true',
       new_subgroup_path: new_group_path(parent_id: group.id, anchor: 'create-group-pane'),
       new_project_path: new_project_path(namespace_id: group.id),
@@ -170,16 +165,6 @@ module GroupsHelper
       can_create_subgroups: can?(current_user, :create_subgroup, group).to_s,
       can_create_projects: can?(current_user, :create_projects, group).to_s
     }
-  end
-
-  def group_overview_tabs_app_data(group)
-    {
-      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
-      shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      archived_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
-      current_group_visibility: group.visibility,
-      initial_sort: project_list_sort_by
-    }.merge(subgroups_and_projects_list_app_data(group))
   end
 
   def enabled_git_access_protocol_options_for_group

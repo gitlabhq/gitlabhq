@@ -6,7 +6,7 @@
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded_by_default? ? _('Collapse') : _('Expand')
       %p
-        = _("Control how the GitLab Package Registry functions.")
+        = s_('PackageRegistry|Configure package forwarding and package file size limits.')
 
     = render_if_exists 'admin/application_settings/ee_package_registry'
 

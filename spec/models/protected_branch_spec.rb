@@ -7,11 +7,54 @@ RSpec.describe ProtectedBranch do
 
   describe 'Associations' do
     it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
   end
 
   describe 'Validation' do
-    it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_presence_of(:name) }
+
+    describe '#validate_either_project_or_top_group' do
+      context 'when protected branch does not have project or group association' do
+        it 'validate failed' do
+          subject.assign_attributes(project: nil, group: nil)
+          subject.validate
+
+          expect(subject.errors).to include(:base)
+        end
+      end
+
+      context 'when protected branch is associated with both project and group' do
+        it 'validate failed' do
+          subject.assign_attributes(project: build(:project), group: build(:group))
+          subject.validate
+
+          expect(subject.errors).to include(:base)
+        end
+      end
+
+      context 'when protected branch is associated with a subgroup' do
+        it 'validate failed' do
+          subject.assign_attributes(project: nil, group: build(:group, :nested))
+          subject.validate
+
+          expect(subject.errors).to include(:base)
+        end
+      end
+    end
+  end
+
+  describe 'set a group' do
+    context 'when associated with group' do
+      it 'create successfully' do
+        expect { subject.group = build(:group) }.not_to raise_error
+      end
+    end
+
+    context 'when associated with other namespace' do
+      it 'create failed with `ActiveRecord::AssociationTypeMismatch`' do
+        expect { subject.group = build(:namespace) }.to raise_error(ActiveRecord::AssociationTypeMismatch)
+      end
+    end
   end
 
   describe "#matches?" do

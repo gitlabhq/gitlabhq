@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     ...mapGetters(['isInheriting']),
-    placeholder() {
+    defaultPlaceholder() {
       return placeholderForType[this.type];
     },
   },
@@ -55,7 +55,7 @@ export default {
           v-if="event.field"
           v-model="event.field.value"
           :name="fieldName(event.field.name)"
-          :placeholder="placeholder"
+          :placeholder="event.field.placeholder || defaultPlaceholder"
           :readonly="isInheriting"
         />
       </gl-form-group>

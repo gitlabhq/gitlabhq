@@ -1,4 +1,6 @@
-function addBlameLink(containerSelector, linkClass) {
+import { getPageParamValue, getPageSearchString } from './utils';
+
+export function addBlameLink(containerSelector, linkClass) {
   const containerEl = document.querySelector(containerSelector);
 
   if (!containerEl) {
@@ -13,10 +15,14 @@ function addBlameLink(containerSelector, linkClass) {
       lineLinkCopy.classList.remove(linkClass, 'diff-line-num');
 
       const { lineNumber } = lineLink.dataset;
-      const { blamePath } = document.querySelector('.line-numbers').dataset;
       const blameLink = document.createElement('a');
+      const { blamePath } = document.querySelector('.line-numbers').dataset;
       blameLink.classList.add('file-line-blame');
-      blameLink.href = `${blamePath}#L${lineNumber}`;
+      const blamePerPage = document.querySelector('.js-per-page')?.dataset?.blamePerPage;
+      const pageNumber = getPageParamValue(lineNumber, blamePerPage);
+      const searchString = getPageSearchString(blamePath, pageNumber);
+
+      blameLink.href = `${blamePath}${searchString}#L${lineNumber}`;
 
       const wrapper = document.createElement('div');
       wrapper.classList.add('line-links', 'diff-line-num');
@@ -27,5 +33,3 @@ function addBlameLink(containerSelector, linkClass) {
     }
   });
 }
-
-export default addBlameLink;

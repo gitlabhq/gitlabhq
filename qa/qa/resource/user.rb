@@ -79,11 +79,22 @@ module QA
         defined?(@username) && defined?(@password)
       end
 
+      def has_user?(user)
+        Flow::Login.while_signed_in_as_admin do
+          Page::Main::Menu.perform(&:go_to_admin_area)
+          Page::Admin::Menu.perform(&:go_to_users_overview)
+          Page::Admin::Overview::Users::Index.perform do |index|
+            index.search_user(user.username)
+            index.has_username?(user.username)
+          end
+        end
+      end
+
       def fabricate!
         # Don't try to log-out if we're not logged-in
         Page::Main::Menu.perform(&:sign_out) if Page::Main::Menu.perform { |p| p.has_personal_area?(wait: 0) }
 
-        if credentials_given?
+        if credentials_given? || has_user?(self)
           Page::Main::Login.perform do |login|
             login.sign_in_using_credentials(user: self)
           end
@@ -144,7 +155,7 @@ module QA
       end
 
       def self.fabricate_or_use(username = nil, password = nil)
-        if Runtime::Env.signup_disabled?
+        if Runtime::Env.signup_disabled? || !QA::Support::FIPS.enabled?
           fabricate_via_api! do |user|
             user.username = username
             user.password = password

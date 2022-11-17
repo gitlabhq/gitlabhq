@@ -41,7 +41,8 @@ RSpec.describe Projects::ProjectMembersHelper do
       it 'returns expected json' do
         expected = {
           source_id: project.id,
-          can_manage_members: true
+          can_manage_members: true,
+          can_manage_access_requests: true
         }.as_json
 
         expect(subject).to include(expected)

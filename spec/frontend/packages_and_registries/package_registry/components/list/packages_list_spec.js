@@ -1,8 +1,10 @@
-import { GlAlert, GlKeysetPagination, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import PackagesListRow from '~/packages_and_registries/package_registry/components/list/package_list_row.vue';
 import PackagesListLoader from '~/packages_and_registries/shared/components/packages_list_loader.vue';
+import DeletePackageModal from '~/packages_and_registries/shared/components/delete_package_modal.vue';
+import RegistryList from '~/packages_and_registries/shared/components/registry_list.vue';
 import {
   DELETE_PACKAGE_TRACKING_ACTION,
   REQUEST_DELETE_PACKAGE_TRACKING_ACTION,
@@ -35,16 +37,11 @@ describe('packages_list', () => {
   };
 
   const EmptySlotStub = { name: 'empty-slot-stub', template: '<div>bar</div>' };
-  const GlModalStub = {
-    name: GlModal.name,
-    template: '<div><slot></slot></div>',
-    methods: { show: jest.fn() },
-  };
 
   const findPackagesListLoader = () => wrapper.findComponent(PackagesListLoader);
-  const findPackageListPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findPackageListDeleteModal = () => wrapper.findComponent(GlModalStub);
+  const findPackageListDeleteModal = () => wrapper.findComponent(DeletePackageModal);
   const findEmptySlot = () => wrapper.findComponent(EmptySlotStub);
+  const findRegistryList = () => wrapper.findComponent(RegistryList);
   const findPackagesListRow = () => wrapper.findComponent(PackagesListRow);
   const findErrorPackageAlert = () => wrapper.findComponent(GlAlert);
 
@@ -55,18 +52,15 @@ describe('packages_list', () => {
         ...props,
       },
       stubs: {
-        GlModal: GlModalStub,
+        DeletePackageModal,
         GlSprintf,
+        RegistryList,
       },
       slots: {
         'empty-state': EmptySlotStub,
       },
     });
   };
-
-  beforeEach(() => {
-    GlModalStub.methods.show.mockReset();
-  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -81,12 +75,12 @@ describe('packages_list', () => {
       expect(findPackagesListLoader().exists()).toBe(true);
     });
 
-    it('does not show the rows', () => {
-      expect(findPackagesListRow().exists()).toBe(false);
+    it('does not show the registry list', () => {
+      expect(findRegistryList().exists()).toBe(false);
     });
 
-    it('does not show the pagination', () => {
-      expect(findPackageListPagination().exists()).toBe(false);
+    it('does not show the rows', () => {
+      expect(findPackagesListRow().exists()).toBe(false);
     });
   });
 
@@ -99,22 +93,29 @@ describe('packages_list', () => {
       expect(findPackagesListLoader().exists()).toBe(false);
     });
 
+    it('shows the registry list', () => {
+      expect(findRegistryList().exists()).toBe(true);
+    });
+
+    it('shows the registry list with the right props', () => {
+      expect(findRegistryList().props()).toMatchObject({
+        title: '2 packages',
+        items: defaultProps.list,
+        pagination: defaultProps.pageInfo,
+        isLoading: false,
+      });
+    });
+
     it('shows the rows', () => {
       expect(findPackagesListRow().exists()).toBe(true);
     });
   });
 
   describe('layout', () => {
-    it('contains a pagination component', () => {
-      mountComponent({ pageInfo: { hasPreviousPage: true } });
-
-      expect(findPackageListPagination().exists()).toBe(true);
-    });
-
-    it('contains a modal component', () => {
+    it("doesn't contain a visible modal component", () => {
       mountComponent();
 
-      expect(findPackageListDeleteModal().exists()).toBe(true);
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
     });
 
     it('does not have an error alert displayed', () => {
@@ -125,31 +126,46 @@ describe('packages_list', () => {
   });
 
   describe('when the user can destroy the package', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       mountComponent();
-      findPackagesListRow().vm.$emit('packageToDelete', firstPackage);
-      return nextTick();
+      await findPackagesListRow().vm.$emit('delete', firstPackage);
     });
 
-    it('deleting a package opens the modal', () => {
-      expect(findPackageListDeleteModal().text()).toContain(firstPackage.name);
+    it('passes itemToBeDeleted to the modal', () => {
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(firstPackage);
     });
 
-    it('confirming on the modal emits package:delete', async () => {
-      findPackageListDeleteModal().vm.$emit('ok');
-
-      await nextTick();
+    it('emits package:delete when modal confirms', async () => {
+      await findPackageListDeleteModal().vm.$emit('ok');
 
       expect(wrapper.emitted('package:delete')[0]).toEqual([firstPackage]);
     });
 
-    it('closing the modal resets itemToBeDeleted', async () => {
-      // triggering the v-model
-      findPackageListDeleteModal().vm.$emit('input', false);
+    it.each(['ok', 'cancel'])('resets itemToBeDeleted when modal emits %s', async (event) => {
+      await findPackageListDeleteModal().vm.$emit(event);
 
-      await nextTick();
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toBeNull();
+    });
+  });
 
-      expect(findPackageListDeleteModal().text()).not.toContain(firstPackage.name);
+  describe('when the user can bulk destroy packages', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('passes itemToBeDeleted to the modal when there is only one package', async () => {
+      await findRegistryList().vm.$emit('delete', [firstPackage]);
+
+      expect(findPackageListDeleteModal().props('itemToBeDeleted')).toStrictEqual(firstPackage);
+      expect(wrapper.emitted('delete')).toBeUndefined();
+    });
+
+    it('emits delete when there is more than one package', () => {
+      const items = [firstPackage, secondPackage];
+      findRegistryList().vm.$emit('delete', items);
+
+      expect(wrapper.emitted('delete')).toHaveLength(1);
+      expect(wrapper.emitted('delete')[0]).toEqual([items]);
     });
   });
 
@@ -196,15 +212,15 @@ describe('packages_list', () => {
     });
 
     it('emits prev-page events when the prev event is fired', () => {
-      findPackageListPagination().vm.$emit('prev');
+      findRegistryList().vm.$emit('prev-page');
 
-      expect(wrapper.emitted('prev-page')).toEqual([[]]);
+      expect(wrapper.emitted('prev-page')).toHaveLength(1);
     });
 
     it('emits next-page events when the next event is fired', () => {
-      findPackageListPagination().vm.$emit('next');
+      findRegistryList().vm.$emit('next-page');
 
-      expect(wrapper.emitted('next-page')).toEqual([[]]);
+      expect(wrapper.emitted('next-page')).toHaveLength(1);
     });
   });
 
@@ -215,7 +231,7 @@ describe('packages_list', () => {
     beforeEach(() => {
       eventSpy = jest.spyOn(Tracking, 'event');
       mountComponent();
-      findPackagesListRow().vm.$emit('packageToDelete', firstPackage);
+      findPackagesListRow().vm.$emit('delete', firstPackage);
       return nextTick();
     });
 

@@ -1,3 +1,4 @@
+- add_page_specific_style 'page_bundles/branches'
 - page_title _('Branches')
 - add_to_breadcrumbs(_('Repository'), project_tree_path(@project))
 
@@ -6,21 +7,16 @@
     = gl_tab_link_to s_('Branches|Overview'), project_branches_path(@project), { item_active: @mode == 'overview', title: s_('Branches|Show overview of the branches') }
     = gl_tab_link_to s_('Branches|Active'), project_branches_filtered_path(@project, state: 'active'), { title: s_('Branches|Show active branches') }
     = gl_tab_link_to s_('Branches|Stale'), project_branches_filtered_path(@project, state: 'stale'), { title: s_('Branches|Show stale branches') }
-    = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: !%w[overview active stale].include?(@mode), title: s_('Branches|Show all branches') }
+    = gl_tab_link_to s_('Branches|All'), project_branches_filtered_path(@project, state: 'all'), { item_active: %w[overview active stale].exclude?(@mode), title: s_('Branches|Show all branches') }
 
   .nav-controls
     #js-branches-sort-dropdown{ data: { project_branches_filtered_path: project_branches_path(@project, state: 'all'), sort_options: branches_sort_options_hash.to_json, mode: @mode } }
 
     - if can? current_user, :push_code, @project
-      = link_to project_merged_branches_path(@project),
-        class: 'gl-button btn btn-danger btn-danger-secondary has-tooltip qa-delete-merged-branches',
-        title: s_("Branches|Delete all branches that are merged into '%{default_branch}'") % { default_branch: @project.repository.root_ref },
-        method: :delete,
-        aria: { label: s_('Branches|Delete merged branches') },
-        data: { confirm: s_('Branches|Deleting the merged branches cannot be undone. Are you sure?'),
-          confirm_btn_variant: 'danger',
-          container: 'body' } do
-        = s_('Branches|Delete merged branches')
+      .js-delete-merged-branches{ data: {
+          default_branch: @project.repository.root_ref,
+          form_path: project_merged_branches_path(@project) }
+        }
       = link_to new_project_branch_path(@project), class: 'gl-button btn btn-confirm' do
         = s_('Branches|New branch')
 

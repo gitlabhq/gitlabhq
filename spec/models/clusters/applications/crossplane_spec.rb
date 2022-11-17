@@ -14,6 +14,11 @@ RSpec.describe Clusters::Applications::Crossplane do
     it { is_expected.to validate_presence_of(:stack) }
   end
 
+  describe 'default values' do
+    it { expect(subject.version).to eq(described_class::VERSION) }
+    it { expect(subject.stack).to be_empty }
+  end
+
   describe '#can_uninstall?' do
     subject { crossplane.can_uninstall? }
 

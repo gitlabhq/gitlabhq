@@ -194,6 +194,7 @@ export default {
     ref="dropdown"
     :text="buttonText"
     class="gl-w-full"
+    block
     data-testid="labels-select-dropdown-contents"
     data-qa-selector="labels_dropdown_content"
     @hide="handleDropdownHide"

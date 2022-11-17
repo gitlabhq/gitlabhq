@@ -27,14 +27,6 @@ RSpec.describe Resolvers::WorkItemResolver do
         end
       end
     end
-
-    context 'when the work_items feature flag is disabled' do
-      before do
-        stub_feature_flags(work_items: false)
-      end
-
-      it { is_expected.to be_nil }
-    end
   end
 
   private

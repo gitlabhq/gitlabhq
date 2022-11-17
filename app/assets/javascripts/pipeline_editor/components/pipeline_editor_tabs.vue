@@ -219,7 +219,6 @@ export default {
       :empty-message="$options.i18n.empty.merge"
       :keep-component-mounted="false"
       :is-empty="isEmpty"
-      :is-invalid="isInvalid"
       :is-unavailable="isLintUnavailable"
       :title="$options.i18n.tabMergedYaml"
       lazy

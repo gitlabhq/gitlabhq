@@ -25,7 +25,8 @@ module Packages
           epoch: package_tags[:epoch] || '0',
           changelogs: build_changelogs,
           requirements: build_requirements,
-          provides: build_provides
+          provides: build_provides,
+          directories: package_tags[:dirnames]
         }.merge(extract_static_attributes)
       end
 

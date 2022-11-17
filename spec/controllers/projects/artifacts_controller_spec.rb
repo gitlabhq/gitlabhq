@@ -30,28 +30,10 @@ RSpec.describe Projects::ArtifactsController do
         stub_feature_flags(artifacts_management_page: true)
       end
 
-      it 'sets the artifacts variable' do
+      it 'renders the page' do
         subject
 
-        expect(assigns(:artifacts)).to contain_exactly(*project.job_artifacts)
-      end
-
-      it 'sets the total size variable' do
-        subject
-
-        expect(assigns(:total_size)).to eq(project.job_artifacts.total_size)
-      end
-
-      describe 'pagination' do
-        before do
-          stub_const("#{described_class}::MAX_PER_PAGE", 1)
-        end
-
-        it 'paginates artifacts' do
-          subject
-
-          expect(assigns(:artifacts)).to contain_exactly(project.reload.job_artifacts.last)
-        end
+        expect(response).to have_gitlab_http_status(:ok)
       end
     end
 
@@ -64,18 +46,6 @@ RSpec.describe Projects::ArtifactsController do
         subject
 
         expect(response).to have_gitlab_http_status(:no_content)
-      end
-
-      it 'does not set the artifacts variable' do
-        subject
-
-        expect(assigns(:artifacts)).to eq(nil)
-      end
-
-      it 'does not set the total size variable' do
-        subject
-
-        expect(assigns(:total_size)).to eq(nil)
       end
     end
   end
@@ -183,12 +153,17 @@ RSpec.describe Projects::ArtifactsController do
         end
 
         context 'when file is stored remotely' do
+          let(:cdn_config) {}
+
           before do
-            stub_artifacts_object_storage
+            stub_artifacts_object_storage(cdn: cdn_config)
             create(:ci_job_artifact, :remote_store, :codequality, job: job)
+            allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
           end
 
           it 'sends the codequality report' do
+            expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
+
             expect(controller).to receive(:redirect_to).and_call_original
 
             download_artifact(file_type: file_type)
@@ -199,6 +174,30 @@ RSpec.describe Projects::ArtifactsController do
               expect(Gitlab::Workhorse).to receive(:send_url).and_call_original
 
               download_artifact(file_type: file_type, proxy: true)
+            end
+          end
+
+          context 'when Google CDN is configured' do
+            let(:cdn_config) do
+              {
+                'provider' => 'Google',
+                'url' => 'https://cdn.example.org',
+                'key_name' => 'some-key',
+                'key' => Base64.urlsafe_encode64(SecureRandom.hex)
+              }
+            end
+
+            before do
+              request.env['action_dispatch.remote_ip'] = '18.245.0.42'
+            end
+
+            it 'redirects to a Google CDN request' do
+              expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).and_call_original
+              expect(Gitlab::ApplicationContext).to receive(:push).with(artifact_used_cdn: true).and_call_original
+
+              download_artifact(file_type: file_type)
+
+              expect(response.redirect_url).to start_with("https://cdn.example.org/")
             end
           end
         end
@@ -228,8 +227,9 @@ RSpec.describe Projects::ArtifactsController do
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(response.body).to include(
             'You must have developer or higher permissions in the associated project to view job logs when debug trace is enabled. ' \
-            'To disable debug trace, set the &#39;CI_DEBUG_TRACE&#39; variable to &#39;false&#39; in your pipeline configuration or CI/CD settings. ' \
-            'If you need to view this job log, a project maintainer or owner must add you to the project with developer permissions or higher.'
+            'To disable debug trace, set the &#39;CI_DEBUG_TRACE&#39; and &#39;CI_DEBUG_SERVICES&#39; variables to &#39;false&#39; ' \
+            'in your pipeline configuration or CI/CD settings. If you must view this job log, a project maintainer or owner must ' \
+            'add you to the project with developer permissions or higher.'
           )
         end
       end

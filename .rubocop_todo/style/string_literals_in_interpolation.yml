@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/StringLiteralsInInterpolation:
-  Details: grace period
   Exclude:
     - 'app/graphql/mutations/base_mutation.rb'
     - 'app/helpers/colors_helper.rb'

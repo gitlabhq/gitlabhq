@@ -21,6 +21,10 @@ module Tooling
         %r{\Aglfm_specification/.+prosemirror_json\.yml} => [:frontend],
         %r{\Aglfm_specification/.+\.yml} => [:frontend, :backend],
 
+        # API auto generated doc files and schema (must come before generic docs regex)
+        %r{\Adoc/api/graphql/reference/} => [:docs, :backend],
+        %r{\Adoc/api/openapi/.*\.yaml\z} => [:docs, :backend],
+
         [%r{usage_data\.rb}, %r{^(\+|-).*\s+(count|distinct_count|estimate_batch_distinct_count)\(.*\)(.*)$}] => [:database, :backend, :product_intelligence],
 
         %r{\A((ee|jh)/)?config/feature_flags/} => :feature_flag,
@@ -165,9 +169,6 @@ module Tooling
         # Files that don't fit into any category are marked with :none
         %r{\A((ee|jh)/)?changelogs/} => :none,
         %r{\Alocale/gitlab\.pot\z} => :none,
-
-        # GraphQL auto generated doc files and schema
-        %r{\Adoc/api/graphql/reference/} => :backend,
 
         # Fallbacks in case the above patterns miss anything
         %r{\.rb\z} => :backend,

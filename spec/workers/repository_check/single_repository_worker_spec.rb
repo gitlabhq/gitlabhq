@@ -6,12 +6,18 @@ require 'fileutils'
 RSpec.describe RepositoryCheck::SingleRepositoryWorker do
   subject(:worker) { described_class.new }
 
+  before do
+    allow(::Gitlab::Git::Repository).to receive(:new).and_call_original
+  end
+
   it 'skips when the project has no push events' do
     project = create(:project, :repository, :wiki_disabled)
     project.events.destroy_all # rubocop: disable Cop/DestroyAll
-    break_project(project)
 
-    expect(worker).not_to receive(:git_fsck)
+    repository = instance_double(::Gitlab::Git::Repository)
+    allow(::Gitlab::Git::Repository).to receive(:new)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
+      .and_return(repository)
 
     worker.perform(project.id)
 
@@ -21,7 +27,12 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
   it 'fails when the project has push events and a broken repository' do
     project = create(:project, :repository)
     create_push_event(project)
-    break_project(project)
+
+    repository = project.repository.raw
+    expect(repository).to receive(:fsck).and_raise(::Gitlab::Git::Repository::GitError)
+    expect(::Gitlab::Git::Repository).to receive(:new)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
+      .and_return(repository)
 
     worker.perform(project.id)
 
@@ -32,7 +43,11 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     project = create(:project, :repository, :wiki_disabled)
     create_push_event(project)
 
-    expect(worker).to receive(:git_fsck).and_call_original
+    repository = project.repository.raw
+    expect(repository).to receive(:fsck).and_call_original
+    expect(::Gitlab::Git::Repository).to receive(:new)
+      .with(project.repository_storage, "#{project.disk_path}.git", anything, anything, container: project)
+      .and_return(repository)
 
     expect do
       worker.perform(project.id)
@@ -50,7 +65,12 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
     worker.perform(project.id)
     expect(project.reload.last_repository_check_failed).to eq(false)
 
-    break_wiki(project)
+    repository = project.wiki.repository.raw
+    expect(repository).to receive(:fsck).and_raise(::Gitlab::Git::Repository::GitError)
+    expect(::Gitlab::Git::Repository).to receive(:new)
+      .with(project.repository_storage, "#{project.disk_path}.wiki.git", anything, anything, container: project.wiki)
+      .and_return(repository)
+
     worker.perform(project.id)
 
     expect(project.reload.last_repository_check_failed).to eq(true)
@@ -59,7 +79,10 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
   it 'skips wikis when disabled' do
     project = create(:project, :wiki_disabled)
     # Make sure the test would fail if the wiki repo was checked
-    break_wiki(project)
+    repository = instance_double(::Gitlab::Git::Repository)
+    allow(::Gitlab::Git::Repository).to receive(:new)
+      .with(project.repository_storage, "#{project.disk_path}.wiki.git", anything, anything, container: project)
+      .and_return(repository)
 
     subject.perform(project.id)
 
@@ -87,32 +110,5 @@ RSpec.describe RepositoryCheck::SingleRepositoryWorker do
 
   def create_push_event(project)
     project.events.create!(action: :pushed, author_id: create(:user).id)
-  end
-
-  def break_wiki(project)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      break_repo(wiki_path(project))
-    end
-  end
-
-  def wiki_path(project)
-    project.wiki.repository.path_to_repo
-  end
-
-  def break_project(project)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      break_repo(project.repository.path_to_repo)
-    end
-  end
-
-  def break_repo(repo)
-    # Create or replace blob ffffffffffffffffffffffffffffffffffffffff with an empty file
-    # This will make the repo invalid, _and_ 'git init' cannot fix it.
-    path = File.join(repo, 'objects', 'ff')
-    file = File.join(path, 'ffffffffffffffffffffffffffffffffffffff')
-
-    FileUtils.mkdir_p(path)
-    FileUtils.rm_f(file)
-    FileUtils.touch(file)
   end
 end

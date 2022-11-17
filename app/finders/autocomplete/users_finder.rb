@@ -12,7 +12,7 @@ module Autocomplete
 
     attr_reader :current_user, :project, :group, :search, :skip_users,
                 :author_id, :todo_filter, :todo_state_filter,
-                :filter_by_current_user
+                :filter_by_current_user, :states
 
     def initialize(params:, current_user:, project:, group:)
       @current_user = current_user
@@ -24,6 +24,7 @@ module Autocomplete
       @todo_filter = params[:todo_filter]
       @todo_state_filter = params[:todo_state_filter]
       @filter_by_current_user = params[:current_user]
+      @states = params[:states] || ['active']
     end
 
     def execute
@@ -60,7 +61,8 @@ module Autocomplete
       # reorder_by_name() is called _before_ optionally_search(), otherwise
       # reorder_by_name will break the ORDER BY applied in optionally_search().
       find_users
-        .active
+        .where(state: states)
+        .non_internal
         .reorder_by_name
         .optionally_search(search, use_minimum_char_limit: use_minimum_char_limit)
         .where_not_in(skip_users)

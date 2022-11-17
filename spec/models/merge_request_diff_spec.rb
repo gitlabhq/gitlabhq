@@ -1097,6 +1097,19 @@ RSpec.describe MergeRequestDiff do
     it 'returns a non-empty CommitCollection' do
       expect(mr.merge_request_diff.commits.commits.size).to be > 0
     end
+
+    context 'with a page' do
+      it 'returns a limited number of commits for page' do
+        expect(mr.merge_request_diff.commits(limit: 1, page: 1).map(&:sha)).to eq(
+          %w[
+            b83d6e391c22777fca1ed3012fce84f633d7fed0
+          ])
+        expect(mr.merge_request_diff.commits(limit: 1, page: 2).map(&:sha)).to eq(
+          %w[
+            498214de67004b1da3d820901307bed2a68a8ef6
+          ])
+      end
+    end
   end
 
   describe '.latest_diff_for_merge_requests' do

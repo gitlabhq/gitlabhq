@@ -15,6 +15,16 @@ RSpec.describe Clusters::Integrations::Prometheus do
     it { is_expected.not_to allow_value(nil).for(:enabled) }
   end
 
+  describe 'default values' do
+    subject(:integration) { build(:clusters_integrations_prometheus) }
+
+    before do
+      allow(SecureRandom).to receive(:hex).and_return('randomtoken')
+    end
+
+    it { expect(integration.alert_manager_token).to eq('randomtoken') }
+  end
+
   describe 'after_destroy' do
     subject(:integration) { create(:clusters_integrations_prometheus, cluster: cluster, enabled: true) }
 

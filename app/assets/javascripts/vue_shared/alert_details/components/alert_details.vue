@@ -145,11 +145,14 @@ export default {
     },
     currentTabIndex: {
       get() {
-        return this.$options.tabsConfig.findIndex((tab) => tab.id === this.activeTab);
+        const tabIndex = this.$options.tabsConfig.findIndex((tab) => tab.id === this.activeTab);
+        return tabIndex >= 0 ? tabIndex : 0;
       },
       set(tabIdx) {
         const tabId = this.$options.tabsConfig[tabIdx].id;
-        this.$router.replace({ name: 'tab', params: { tabId } });
+        if (this.$route.params?.tabId !== tabId) {
+          this.$router.push({ name: 'tab', params: { tabId } });
+        }
       },
     },
     environmentName() {

@@ -490,13 +490,13 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter do
     let_it_be(:project_milestone2) { create(:milestone, project: project) }
     let_it_be(:project2_milestone) { create(:milestone, project: project2) }
     let_it_be(:group2_milestone)   { create(:milestone, group: group2) }
-    let_it_be(:project_reference)  { "#{project_milestone.to_reference}" }
-    let_it_be(:project_reference2) { "#{project_milestone2.to_reference}" }
-    let_it_be(:project2_reference) { "#{project2_milestone.to_reference(full: true)}" }
+    let_it_be(:project_reference)  { project_milestone.to_reference.to_s }
+    let_it_be(:project_reference2) { project_milestone2.to_reference.to_s }
+    let_it_be(:project2_reference) { project2_milestone.to_reference(full: true).to_s }
     let_it_be(:group2_reference)   { "#{project2.full_path}%\"#{group2_milestone.name}\"" }
 
     it 'does not have N+1 per multiple references per project', :use_sql_query_cache do
-      markdown = "#{project_reference}"
+      markdown = project_reference.to_s
       control_count = 4
 
       expect do
@@ -511,7 +511,7 @@ RSpec.describe Banzai::Filter::References::MilestoneReferenceFilter do
     end
 
     it 'has N+1 for multiple unique project/group references', :use_sql_query_cache do
-      markdown = "#{project_reference}"
+      markdown = project_reference.to_s
       control_count = 4
 
       expect do

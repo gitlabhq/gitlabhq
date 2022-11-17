@@ -72,8 +72,8 @@ RSpec.shared_examples 'processes one firing and one resolved prometheus alerts' 
       .and change(Note, :count).by(1)
 
     expect(subject).to be_success
-    expect(subject.payload[:alerts]).to all(be_a_kind_of(AlertManagement::Alert))
-    expect(subject.payload[:alerts].size).to eq(1)
+    expect(subject.payload).to eq({})
+    expect(subject.http_status).to eq(:created)
   end
 
   it_behaves_like 'processes incident issues'

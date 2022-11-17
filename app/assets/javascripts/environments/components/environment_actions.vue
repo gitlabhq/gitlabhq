@@ -57,7 +57,8 @@ export default {
       this.isLoading = true;
 
       if (this.graphql) {
-        this.$apollo.mutate({ mutation: actionMutation, variables: { action } });
+        await this.$apollo.mutate({ mutation: actionMutation, variables: { action } });
+        this.isLoading = false;
       } else {
         eventHub.$emit('postAction', { endpoint: action.playPath });
       }

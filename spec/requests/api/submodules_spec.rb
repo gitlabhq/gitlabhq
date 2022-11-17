@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::Submodules do
   let(:user) { create(:user) }
-  let!(:project) { create(:project, :repository, namespace: user.namespace ) }
+  let!(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:guest) { create(:user) { |u| project.add_guest(u) } }
   let(:submodule) { 'six' }
   let(:commit_sha) { 'e25eda1fece24ac7a03624ed1320f82396f35bd8' }

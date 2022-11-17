@@ -201,7 +201,7 @@ RSpec.describe API::Deployments do
           }
         )
 
-        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(response).to have_gitlab_http_status(:bad_request)
       end
 
       it 'links any merged merge requests to the deployment', :sidekiq_inline do
@@ -325,7 +325,7 @@ RSpec.describe API::Deployments do
     context 'as non member' do
       it 'returns a 404 status code' do
         post(
-          api( "/projects/#{project.id}/deployments", non_member),
+          api("/projects/#{project.id}/deployments", non_member),
           params: {
             environment: 'production',
             sha: '123',

@@ -7,6 +7,7 @@ module QA
       include Integrations::Project
       include Members
       include Visibility
+      include ApprovalConfiguration
 
       attr_accessor :initialize_with_readme,
                     :auto_devops_enabled,
@@ -476,6 +477,16 @@ module QA
           # Retry on transient errors that are likely to be due to race conditions between concurrent delete operations
           # when parts of a resource are stored in multiple tables
           false
+        end
+      end
+
+      def remove_via_browser_ui!
+        Page::Project::Menu.perform(&:go_to_general_settings)
+
+        Page::Project::Settings::Main.perform(&:expand_advanced_settings)
+
+        Page::Project::Settings::Advanced.perform do |advanced|
+          advanced.delete_project!(full_path)
         end
       end
 

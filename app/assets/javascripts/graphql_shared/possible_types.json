@@ -9,6 +9,10 @@
     "CiManualVariable",
     "CiProjectVariable"
   ],
+  "CommitSignature": [
+    "GpgSignature",
+    "X509Signature"
+  ],
   "CurrentUserTodos": [
     "BoardEpic",
     "Design",
@@ -143,6 +147,7 @@
     "WorkItemWidgetHierarchy",
     "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
+    "WorkItemWidgetMilestone",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetWeight"

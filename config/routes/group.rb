@@ -121,7 +121,11 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resource :dependency_proxy, only: [:show, :update]
     resources :email_campaigns, only: :index
 
-    resources :observability, only: :index
+    namespace :observability do
+      get 'dashboards'
+      get 'explore'
+      get 'manage'
+    end
 
     namespace :harbor do
       resources :repositories, only: [:index, :show], constraints: { id: %r{[a-zA-Z./:0-9_\-]+} } do

@@ -67,7 +67,7 @@ listed here that also do not work properly in FIPS mode:
 - [Static Application Security Testing (SAST)](../user/application_security/sast/index.md)
   supports a reduced set of [analyzers](../user/application_security/sast/index.md#fips-enabled-images)
   when operating in FIPS-compliant mode.
-- Advanced Search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.  
+- Advanced Search is currently not included in FIPS mode. It must not be enabled to be FIPS-compliant.
 - [Gravatar or Libravatar-based profile images](../administration/libravatar.md) are not FIPS-compliant.
 
 Additionally, these package repositories are disabled in FIPS mode:
@@ -203,7 +203,7 @@ This [GitHub pull request](https://github.com/awslabs/amazon-eks-ami/pull/898) m
 it possible to create an Amazon Linux 2 EKS AMI with FIPS enabled for Kubernetes v1.21.
 To build an image:
 
-1. [Install Packer](https://learn.hashicorp.com/tutorials/packer/get-started-install-cli).
+1. [Install Packer](https://developer.hashicorp.com/packer/tutorials/docker-get-started/get-started-install-cli).
 1. Run the following:
 
    ```shell

@@ -9,7 +9,7 @@ module Preloaders
     end
 
     def execute
-      return if @projects.is_a?(ActiveRecord::NullRelation)
+      return unless @projects.is_a?(ActiveRecord::Relation)
       return unless ::Feature.enabled?(:use_traversal_ids)
 
       root_query = Namespace.joins("INNER JOIN (#{join_sql}) as root_query ON root_query.root_id = namespaces.id")

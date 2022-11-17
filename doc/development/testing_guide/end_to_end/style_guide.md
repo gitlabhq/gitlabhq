@@ -12,7 +12,7 @@ This document describes the conventions used at GitLab for writing End-to-end (E
 
 ### When to use `click_`?
 
-When clicking in a single link to navigate, use `click_`.
+When selecting a single link to navigate, use `click_`.
 
 For example:
 
@@ -24,9 +24,9 @@ def click_ci_cd_pipelines
 end
 ```
 
-From a testing perspective, if we want to check that clicking a link, or a button (a single interaction) is working as intended, we would want the test to read as:
+From a testing perspective, if we want to check that selecting a link, or a button (a single interaction) is working as intended, we would want the test to read as:
 
-- Click a certain element
+- Select a certain element
 - Verify the action took place
 
 ### When to use `go_to_`?
@@ -47,7 +47,7 @@ end
 
 `go_to_` fits the definition of interacting with multiple elements very well given it's more of a meta-navigation action that includes multiple interactions.
 
-Notice that in the above example, before clicking the `:operations_environments_link`, another element is hovered over.
+Notice that in the above example, before selecting the `:operations_environments_link`, another element is hovered over.
 
 > We can create these methods as helpers to abstract multi-step navigation.
 

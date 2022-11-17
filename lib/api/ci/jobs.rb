@@ -11,12 +11,12 @@ module API
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do
-          requires :id, type: String, desc: 'The ID of a project'
+          requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
         end
 
         helpers do
           params :optional_scope do
-            optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
+            optional :scope, type: Array[String], desc: 'The scope of builds to show',
                              values: ::CommitStatus::AVAILABLE_STATUSES,
                              coerce_with: ->(scope) {
                                case scope
@@ -29,12 +29,19 @@ module API
                                else
                                  ['unknown']
                                end
-                             }
+                             },
+                             documentation: { example: %w[pending running] }
           end
         end
 
         desc 'Get a projects jobs' do
-          success Entities::Ci::Job
+          success code: 200, model: Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+          is_array true
         end
         params do
           use :optional_scope
@@ -53,10 +60,15 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         desc 'Get a specific job of a project' do
-          success Entities::Ci::Job
+          success code: 200, model: Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
         get ':id/jobs/:job_id', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
@@ -69,9 +81,16 @@ module API
         # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
         #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
         #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
-        desc 'Get a trace of a specific job of a project'
+        desc 'Get a trace of a specific job of a project' do
+          success code: 200, model: Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
+        end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
         get ':id/jobs/:job_id/trace', urgency: :low, feature_category: :continuous_integration do
           authorize_read_builds!
@@ -90,10 +109,15 @@ module API
         end
 
         desc 'Cancel a specific job of a project' do
-          success Entities::Ci::Job
+          success code: 201, model: Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a job'
+          requires :job_id, type: Integer, desc: 'The ID of a job', documentation: { example: 88 }
         end
         post ':id/jobs/:job_id/cancel', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
@@ -107,10 +131,15 @@ module API
         end
 
         desc 'Retry a specific build of a project' do
-          success Entities::Ci::Job
+          success code: 201, model: Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a build'
+          requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
         end
         post ':id/jobs/:job_id/retry', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
@@ -128,10 +157,16 @@ module API
         end
 
         desc 'Erase job (remove artifacts and the trace)' do
-          success Entities::Ci::Job
+          success code: 201, model: Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' },
+            { code: 409, message: 'Conflict' }
+          ]
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a build'
+          requires :job_id, type: Integer, desc: 'The ID of a build', documentation: { example: 88 }
         end
         post ':id/jobs/:job_id/erase', urgency: :low, feature_category: :continuous_integration do
           authorize_update_builds!
@@ -148,15 +183,21 @@ module API
         end
 
         desc 'Trigger an actionable job (manual, delayed, etc)' do
-          success Entities::Ci::JobBasic
           detail 'This feature was added in GitLab 8.11'
+          success code: 200, model: Entities::Ci::JobBasic
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :job_id, type: Integer, desc: 'The ID of a Job'
+          requires :job_id, type: Integer, desc: 'The ID of a Job', documentation: { example: 88 }
           optional :job_variables_attributes,
                    type: Array, desc: 'User defined variables that will be included when running the job' do
-            requires :key, type: String, desc: 'The name of the variable'
-            requires :value, type: String, desc: 'The value of the variable'
+            requires :key, type: String, desc: 'The name of the variable', documentation: { example: 'foo' }
+            requires :value, type: String, desc: 'The value of the variable', documentation: { example: 'bar' }
           end
         end
 
@@ -183,7 +224,12 @@ module API
 
       resource :job do
         desc 'Get current job using job token' do
-          success Entities::Ci::Job
+          success code: 200, model: Entities::Ci::Job
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         route_setting :authentication, job_token_allowed: true
         get '', feature_category: :continuous_integration, urgency: :low do
@@ -194,6 +240,12 @@ module API
 
         desc 'Get current agents' do
           detail 'Retrieves a list of agents for the given job token'
+          success code: 200, model: Entities::Ci::Job
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         route_setting :authentication, job_token_allowed: true
         get '/allowed_agents', urgency: :low, feature_category: :kubernetes_management do
@@ -210,7 +262,7 @@ module API
             .select { |_role, role_access_level| role_access_level <= user_access_level }
             .map(&:first)
 
-          environment = if persisted_environment = current_authenticated_job.persisted_environment
+          environment = if persisted_environment = current_authenticated_job.actual_persisted_environment
                           { tier: persisted_environment.tier, slug: persisted_environment.slug }
                         end
 
@@ -244,6 +296,8 @@ module API
           # current_authenticated_job will be nil if user is using
           # a valid authentication (like PRIVATE-TOKEN) that is not CI_JOB_TOKEN
           not_found!('Job') unless current_authenticated_job
+
+          ::Gitlab::ApplicationContext.push(job: current_authenticated_job)
         end
       end
     end

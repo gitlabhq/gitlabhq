@@ -77,9 +77,9 @@ module Ci
       end
 
       def build_quality_mr_diff_report(mr_diff_report)
-        mr_diff_report.each_with_object({}) do |diff_report, hash|
+        Gitlab::Json.dump(mr_diff_report.each_with_object({}) do |diff_report, hash|
           hash[diff_report.first] = Ci::CodequalityMrDiffReportSerializer.new.represent(diff_report.second) # rubocop: disable CodeReuse/Serializer
-        end.to_json
+        end)
       end
     end
   end

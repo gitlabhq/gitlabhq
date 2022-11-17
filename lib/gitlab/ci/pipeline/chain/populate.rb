@@ -25,8 +25,6 @@ module Gitlab
               return error('Failed to build the pipeline!')
             end
 
-            set_pipeline_name
-
             raise Populate::PopulateError if pipeline.persisted?
           end
 
@@ -35,15 +33,6 @@ module Gitlab
           end
 
           private
-
-          def set_pipeline_name
-            return if Feature.disabled?(:pipeline_name, pipeline.project) ||
-              @command.yaml_processor_result.workflow_name.blank?
-
-            name = @command.yaml_processor_result.workflow_name
-
-            pipeline.build_pipeline_metadata(project: pipeline.project, title: name)
-          end
 
           def stage_names
             # We filter out `.pre/.post` stages, as they alone are not considered

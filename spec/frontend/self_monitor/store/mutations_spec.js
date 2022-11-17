@@ -1,7 +1,7 @@
 import mutations from '~/self_monitor/store/mutations';
 import createState from '~/self_monitor/store/state';
 
-describe('self monitoring mutations', () => {
+describe('self-monitoring mutations', () => {
   let localState;
 
   beforeEach(() => {

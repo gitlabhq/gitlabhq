@@ -41,7 +41,7 @@ RSpec.describe Ci::CompareTestReportsService do
       it 'returns a parsed TestReports success status and failure on the individual suite' do
         expect(comparison[:status]).to eq(:parsed)
         expect(comparison.dig(:data, 'status')).to eq('success')
-        expect(comparison.dig(:data, 'suites', 0, 'status') ).to eq('error')
+        expect(comparison.dig(:data, 'suites', 0, 'status')).to eq('error')
       end
     end
 

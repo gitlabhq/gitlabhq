@@ -86,7 +86,7 @@ describe('Description field component', () => {
           renderMarkdownPath: '/',
           markdownDocsPath: '/',
           quickActionsDocsPath: expect.any(String),
-          initOnAutofocus: true,
+          autofocus: true,
           supportsQuickActions: true,
           enableAutocomplete: true,
         }),

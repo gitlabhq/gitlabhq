@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Client, :clean_gitlab_redis_queues do
+RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Client, :clean_gitlab_redis_queues,
+:clean_gitlab_redis_shared_state do
   shared_context 'deduplication worker class' do |strategy, including_scheduled|
     let(:worker_class) do
       Class.new do

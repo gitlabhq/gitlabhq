@@ -26,31 +26,31 @@ RSpec.describe GitlabSchema.types['ReleaseLinks'] do
 
     describe 'openedMergeRequestsUrl' do
       it 'has valid authorization' do
-        expect(fetch_authorizations('openedMergeRequestsUrl')).to include(:download_code)
+        expect(fetch_authorizations('openedMergeRequestsUrl')).to include(:read_code)
       end
     end
 
     describe 'mergedMergeRequestsUrl' do
       it 'has valid authorization' do
-        expect(fetch_authorizations('mergedMergeRequestsUrl')).to include(:download_code)
+        expect(fetch_authorizations('mergedMergeRequestsUrl')).to include(:read_code)
       end
     end
 
     describe 'closedMergeRequestsUrl' do
       it 'has valid authorization' do
-        expect(fetch_authorizations('closedMergeRequestsUrl')).to include(:download_code)
+        expect(fetch_authorizations('closedMergeRequestsUrl')).to include(:read_code)
       end
     end
 
     describe 'openedIssuesUrl' do
       it 'has valid authorization' do
-        expect(fetch_authorizations('openedIssuesUrl')).to include(:download_code)
+        expect(fetch_authorizations('openedIssuesUrl')).to include(:read_code)
       end
     end
 
     describe 'closedIssuesUrl' do
       it 'has valid authorization' do
-        expect(fetch_authorizations('closedIssuesUrl')).to include(:download_code)
+        expect(fetch_authorizations('closedIssuesUrl')).to include(:read_code)
       end
     end
 

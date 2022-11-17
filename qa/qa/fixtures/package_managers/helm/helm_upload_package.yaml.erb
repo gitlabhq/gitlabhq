@@ -1,7 +1,6 @@
 deploy:
-  image: alpine:3
+  image: dtzar/helm-kubectl:latest
   script:
-    - apk add helm --repository=http://dl-cdn.alpinelinux.org/alpine/edge/testing
     - apk add curl
     - helm create <%= package_name %>
     - cp ./Chart.yaml <%= package_name %>

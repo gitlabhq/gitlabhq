@@ -8,10 +8,6 @@ module Groups
       before_action :verify_container_registry_enabled!
       before_action :authorize_read_container_image!
 
-      before_action do
-        push_frontend_feature_flag(:container_registry_show_shortened_path, group)
-      end
-
       feature_category :container_registry
       urgency :low
 

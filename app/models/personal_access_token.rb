@@ -11,8 +11,6 @@ class PersonalAccessToken < ApplicationRecord
 
   add_authentication_token_field :token, digest: true
 
-  REDIS_EXPIRY_TIME = 3.minutes
-
   # PATs are 20 characters + optional configurable settings prefix (0..20)
   TOKEN_LENGTH_RANGE = (20..40).freeze
 
@@ -34,8 +32,6 @@ class PersonalAccessToken < ApplicationRecord
   scope :for_user, -> (user) { where(user: user) }
   scope :for_users, -> (users) { where(user: users) }
   scope :preload_users, -> { preload(:user) }
-  scope :order_expires_at_asc, -> { reorder(expires_at: :asc) }
-  scope :order_expires_at_desc, -> { reorder(expires_at: :desc) }
   scope :order_expires_at_asc_id_desc, -> { reorder(expires_at: :asc, id: :desc) }
   scope :project_access_token, -> { includes(:user).where(user: { user_type: :project_bot }) }
   scope :owner_is_human, -> { includes(:user).where(user: { user_type: :human }) }
@@ -55,35 +51,10 @@ class PersonalAccessToken < ApplicationRecord
     !revoked? && !expired?
   end
 
-  def self.redis_getdel(user_id)
-    Gitlab::Redis::SharedState.with do |redis|
-      redis_key = redis_shared_state_key(user_id)
-      encrypted_token = redis.get(redis_key)
-      redis.del(redis_key)
-
-      begin
-        Gitlab::CryptoHelper.aes256_gcm_decrypt(encrypted_token)
-      rescue StandardError => e
-        logger.warn "Failed to decrypt #{self.name} value stored in Redis for key ##{redis_key}: #{e.class}"
-        encrypted_token
-      end
-    end
-  end
-
-  def self.redis_store!(user_id, token)
-    encrypted_token = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
-
-    Gitlab::Redis::SharedState.with do |redis|
-      redis.set(redis_shared_state_key(user_id), encrypted_token, ex: REDIS_EXPIRY_TIME)
-    end
-  end
-
   override :simple_sorts
   def self.simple_sorts
     super.merge(
       {
-        'expires_at_asc' => -> { order_expires_at_asc },
-        'expires_at_desc' => -> { order_expires_at_desc },
         'expires_at_asc_id_desc' => -> { order_expires_at_asc_id_desc }
       }
     )
@@ -120,10 +91,6 @@ class PersonalAccessToken < ApplicationRecord
     return unless has_attribute?(:scopes)
 
     self.scopes = Gitlab::Auth::DEFAULT_SCOPES if self.scopes.empty?
-  end
-
-  def self.redis_shared_state_key(user_id)
-    "gitlab:personal_access_token:#{user_id}"
   end
 end
 

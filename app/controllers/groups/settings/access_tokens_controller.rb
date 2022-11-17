@@ -3,6 +3,7 @@
 module Groups
   module Settings
     class AccessTokensController < Groups::ApplicationController
+      include RenderAccessTokens
       include AccessTokensActions
 
       layout 'group_settings'

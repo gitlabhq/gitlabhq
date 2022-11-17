@@ -25,7 +25,7 @@ Otherwise, to add your license:
 1. Select **Add license**.
 
 NOTE:
-For GitLab versions 14.1.x or newer, you can access the **Add License** page directly from the URL, `<YourGitLabURL>/admin/license/new`.
+In GitLab 14.1.x through 14.10.x, you can access the **Add License** page directly from the URL, `<YourGitLabURL>/admin/license/new`. In GitLab 15.0 and later, the path is `<YourGitLabURL>/admin/subscription`.
 
 ## Add your license file during installation
 
@@ -147,3 +147,81 @@ the license.
 ### `Start GitLab Ultimate trial` still displays after adding license
 
 To fix this issue, restart [Puma or your entire GitLab instance](../../administration/restart_gitlab.md).
+
+### License commands in the rails console
+
+The following commands can be run in the [rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+WARNING:
+Any command that changes data directly could be damaging if not run correctly, or under the right conditions.  
+We highly recommend running them in a test environment with a backup of the instance ready to be restored, just in case.
+
+#### See current license information
+
+```ruby
+# License information (name, company, email address)
+License.current.licensee
+
+# Plan:
+License.current.plan
+
+# Uploaded:
+License.current.created_at
+
+# Started:
+License.current.starts_at
+
+# Expires at:
+License.current.expires_at
+
+# Is this a trial license?
+License.current.trial?
+
+# License ID for lookup on CustomersDot
+License.current.license_id
+
+# License data in Base64-encoded ASCII format
+License.current.data
+```
+
+#### Check if a project feature is available on the instance
+
+Features listed in <https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb>.
+
+```ruby
+License.current.feature_available?(:jira_dev_panel_integration)
+```
+
+#### Check if a project feature is available in a project
+
+Features listed in [`license.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/license.rb).
+
+```ruby
+p = Project.find_by_full_path('<group>/<project>')
+p.feature_available?(:jira_dev_panel_integration)
+```
+
+#### Add a license through the console
+
+```ruby
+key = "<key>"
+license = License.new(data: key)
+license.save
+License.current # check to make sure it applied
+```
+
+This is needed for example in a known edge-case with
+[expired license and multiple LDAP servers](../../administration/auth/ldap/ldap-troubleshooting.md#expired-license-causes-errors-with-multiple-ldap-servers).
+
+#### Remove licenses
+
+To clean up the [License History table](../../user/admin_area/license_file.md#view-license-details-and-history):
+
+```ruby
+TYPE = :trial?
+# or :expired?
+
+License.select(&TYPE).each(&:destroy!)
+
+# or even License.all.each(&:destroy!)
+```

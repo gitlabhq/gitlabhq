@@ -3,11 +3,13 @@
 module API
   module Entities
     class BulkImport < Grape::Entity
-      expose :id
-      expose :status_name, as: :status
-      expose :source_type
-      expose :created_at
-      expose :updated_at
+      expose :id, documentation: { type: 'integer', example: 1 }
+      expose :status_name, as: :status, documentation: {
+        type: 'string', example: 'finished', values: %w[created started finished timeout failed]
+      }
+      expose :source_type, documentation: { type: 'string', example: 'gitlab' }
+      expose :created_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
+      expose :updated_at, documentation: { type: 'dateTime', example: '2012-05-28T04:42:42-07:00' }
     end
   end
 end

@@ -36,7 +36,7 @@ receive alert payloads in JSON format. You can always
 1. Sign in to GitLab as a user with the Maintainer role
    for a project.
 1. Navigate to **Settings > Monitor** in your project.
-1. Expand the **Alerts** section, and in the **Select integration type** dropdown menu,
+1. Expand the **Alerts** section, and in the **Select integration type** dropdown list,
    select **HTTP Endpoint**.
 1. Toggle the **Active** alert setting. The URL and Authorization Key for the webhook configuration
    are available in the **View credentials** tab after you save the integration. You must also input
@@ -57,7 +57,7 @@ and you can [customize the payload](#customize-the-alert-payload-outside-of-gitl
 1. For each endpoint you want to create:
 
    1. Select **Add new integration**.
-   1. In the **Select integration type** dropdown menu, select **HTTP Endpoint**.
+   1. In the **Select integration type** dropdown list, select **HTTP Endpoint**.
    1. Name the integration.
    1. Toggle the **Active** alert setting. The **URL** and **Authorization Key** for the webhook
       configuration are available in the **View credentials** tab after you save the integration.

@@ -39,8 +39,11 @@ RSpec.describe BulkImports::EntityWorker do
             hash_including(
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
+              'bulk_import_entity_type' => entity.source_type,
+              'source_full_path' => entity.source_full_path,
               'current_stage' => nil,
               'message' => 'Stage starting',
+              'source_version' => entity.bulk_import.source_version_info.to_s,
               'importer' => 'gitlab_migration'
             )
           )
@@ -71,7 +74,10 @@ RSpec.describe BulkImports::EntityWorker do
             hash_including(
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
+              'bulk_import_entity_type' => entity.source_type,
+              'source_full_path' => entity.source_full_path,
               'current_stage' => nil,
+              'source_version' => entity.bulk_import.source_version_info.to_s,
               'importer' => 'gitlab_migration'
             )
           )
@@ -82,9 +88,15 @@ RSpec.describe BulkImports::EntityWorker do
             hash_including(
               'bulk_import_entity_id' => entity.id,
               'bulk_import_id' => entity.bulk_import_id,
+              'bulk_import_entity_type' => entity.source_type,
+              'source_full_path' => entity.source_full_path,
               'current_stage' => nil,
-              'message' => 'Error!',
-              'importer' => 'gitlab_migration'
+              'message' => 'Entity failed',
+              'exception.backtrace' => anything,
+              'exception.class' => 'StandardError',
+              'exception.message' => 'Error!',
+              'importer' => 'gitlab_migration',
+              'source_version' => entity.bulk_import.source_version_info.to_s
             )
           )
       end
@@ -95,6 +107,9 @@ RSpec.describe BulkImports::EntityWorker do
                 exception,
                 bulk_import_entity_id: entity.id,
                 bulk_import_id: entity.bulk_import_id,
+                bulk_import_entity_type: entity.source_type,
+                source_full_path: entity.source_full_path,
+                source_version: entity.bulk_import.source_version_info.to_s,
                 importer: 'gitlab_migration'
               )
 
@@ -112,8 +127,11 @@ RSpec.describe BulkImports::EntityWorker do
               hash_including(
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
+                'bulk_import_entity_type' => entity.source_type,
+                'source_full_path' => entity.source_full_path,
                 'current_stage' => 0,
                 'message' => 'Stage running',
+                'source_version' => entity.bulk_import.source_version_info.to_s,
                 'importer' => 'gitlab_migration'
               )
             )
@@ -142,7 +160,10 @@ RSpec.describe BulkImports::EntityWorker do
               hash_including(
                 'bulk_import_entity_id' => entity.id,
                 'bulk_import_id' => entity.bulk_import_id,
+                'bulk_import_entity_type' => entity.source_type,
+                'source_full_path' => entity.source_full_path,
                 'current_stage' => 0,
+                'source_version' => entity.bulk_import.source_version_info.to_s,
                 'importer' => 'gitlab_migration'
               )
             )

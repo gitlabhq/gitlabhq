@@ -7,6 +7,10 @@ module AlertManagement
       ServiceResponse.success(payload: { alerts: Array(alerts) })
     end
 
+    def created
+      ServiceResponse.success(http_status: :created)
+    end
+
     def bad_request
       ServiceResponse.error(message: 'Bad Request', http_status: :bad_request)
     end

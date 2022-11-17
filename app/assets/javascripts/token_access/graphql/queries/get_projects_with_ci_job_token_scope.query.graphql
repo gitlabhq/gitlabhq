@@ -6,6 +6,10 @@ query getProjectsWithCIJobTokenScope($fullPath: ID!) {
         nodes {
           id
           name
+          namespace {
+            id
+            fullPath
+          }
           fullPath
         }
       }

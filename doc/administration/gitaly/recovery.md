@@ -11,39 +11,14 @@ recovery and has Praefect tracking database tools.
 
 ## Primary node failure
 
-Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the
-new primary.
+> - Introduced in GitLab 13.0, Gitaly Cluster, elects the secondary with the least unreplicated writes from the primary to be the new primary. There can still be some unreplicated writes, so [data loss can occur](#check-for-data-loss).
+> - Primary node failure recovery support added in GitLab 14.1.
 
-In GitLab 14.1 and later, Gitaly Cluster:
+Gitaly Cluster recovers from a failing primary Gitaly node by promoting a healthy secondary as the new primary. Gitaly
+Cluster:
 
 - Elects a healthy secondary with a fully up to date copy of the repository as the new primary.
 - Repository becomes unavailable if there are no fully up to date copies of it on healthy secondaries.
-
-To minimize data loss in GitLab 13.0 to 14.0, Gitaly Cluster:
-
-- Switches repositories that are outdated on the new primary to [read-only mode](#read-only-mode).
-- Elects the secondary with the least unreplicated writes from the primary to be the new
-  primary. Because there can still be some unreplicated writes,
-  [data loss can occur](#check-for-data-loss).
-
-### Read-only mode
-
-> - Introduced in GitLab 13.0 as [generally available](../../policy/alpha-beta-support.md#generally-available-ga).
-> - Between GitLab 13.0 and GitLab 13.2, read-only mode applied to the whole virtual storage and occurred whenever failover occurred.
-> - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitaly/-/issues/2862), read-only mode applies on a per-repository basis and only occurs if a new primary is out of date. If the failed primary contained unreplicated writes, [data loss can occur](#check-for-data-loss).
-> - Removed in GitLab 14.1. Instead, repositories [become unavailable](#unavailable-repositories).
-
-When Gitaly Cluster switches to a new primary in GitLab 13.0 to 14.0, repositories enter read-only mode if they are
-out-of-date. This can happen after failing over to an outdated secondary. Read-only mode eases data recovery efforts by
-preventing writes that may conflict with the unreplicated writes on other nodes.
-
-To enable writes again in GitLab 13.0 to 14.0, an administrator can:
-
-1. [Check](#check-for-data-loss) for data loss.
-1. Attempt to [recover](#data-recovery) missing data.
-1. Either [enable writes](#enable-writes-or-accept-data-loss) in the virtual storage or
-   [accept data loss](#enable-writes-or-accept-data-loss) if necessary, depending on the version of
-   GitLab.
 
 ### Unavailable repositories
 
@@ -144,9 +119,7 @@ Virtual storage: default
 
 #### Unavailable replicas of available repositories
 
-NOTE:
-In GitLab 14.0 and earlier, the flag is `-partially-replicated` and the output shows any repositories with assigned nodes with outdated
-copies.
+> Introduced in GitLab 14.0, flag renamed from `-partially-replicated` and behavior changed.
 
 To also list information of repositories which are available but are unavailable from some of the assigned nodes,
 use the `-partially-unavailable` flag.
@@ -209,26 +182,17 @@ WARNING:
 `accept-dataloss` causes permanent data loss by overwriting other versions of the repository.
 Data [recovery efforts](#data-recovery) must be performed before using it.
 
-Praefect provides the following subcommands to re-enable writes or accept data loss:
+Praefect provides the following subcommands to re-enable writes or accept data loss. If it is not possible to bring one
+of the up-to-date nodes back online, you might have to accept data loss:
 
-- In GitLab 13.2 and earlier, `enable-writes` to re-enable virtual storage for writes after
-  data recovery attempts:
+```shell
+sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
+```
 
-  ```shell
-  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml enable-writes -virtual-storage <virtual-storage>
-  ```
+When accepting data loss, Praefect:
 
-- In GitLab 13.3 and later, if it is not possible to bring one of the up to date nodes back
-  online, you may have to accept data loss:
-
-  ```shell
-  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -repository <relative-path> -authoritative-storage <storage-name>
-  ```
-
-  When accepting data loss, Praefect:
-
-  1. Marks the chosen copy of the repository as the latest version.
-  1. Replicates the copy to the other assigned Gitaly nodes.
+1. Marks the chosen copy of the repository as the latest version.
+1. Replicates the copy to the other assigned Gitaly nodes.
 
   This process overwrites any other copy of the repository so care must be taken.
 

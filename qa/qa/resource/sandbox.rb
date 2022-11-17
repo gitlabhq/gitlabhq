@@ -10,7 +10,9 @@ module QA
       class << self
         # Force top level group creation via UI if test is executed on dot_com environment
         def fabricate!(*args, &prepare_block)
-          return fabricate_via_browser_ui!(*args, &prepare_block) if Specs::Helpers::ContextSelector.dot_com?
+          if Specs::Helpers::ContextSelector.dot_com? || QA::Support::FIPS.enabled?
+            return fabricate_via_browser_ui!(*args, &prepare_block)
+          end
 
           fabricate_via_api!(*args, &prepare_block)
         rescue NotImplementedError

@@ -19,7 +19,7 @@ module API
       prepend_mod_with('API::Ci::JobArtifacts') # rubocop: disable Cop/InjectEnterpriseEditionModule
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Download the artifacts archive from a job' do
@@ -38,7 +38,7 @@ module API
           latest_build = user_project.latest_successful_build_for_ref!(params[:job], params[:ref_name])
           authorize_read_job_artifacts!(latest_build)
 
-          present_artifacts_file!(latest_build.artifacts_file, project: latest_build.project)
+          present_artifacts_file!(latest_build.artifacts_file)
         end
 
         desc 'Download a specific file from artifacts archive from a ref' do
@@ -80,7 +80,7 @@ module API
           build = find_build!(params[:job_id])
           authorize_read_job_artifacts!(build)
 
-          present_artifacts_file!(build.artifacts_file, project: build.project)
+          present_artifacts_file!(build.artifacts_file)
         end
 
         desc 'Download a specific file from artifacts archive' do

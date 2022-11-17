@@ -3,7 +3,7 @@
 require 'parallel'
 
 module QA
-  RSpec.describe 'Systems' do
+  RSpec.describe 'Systems', product_group: :gitaly do
     describe 'Gitaly distributed reads', :orchestrated, :gitaly_cluster, :skip_live_env, :requires_admin do
       let(:number_of_reads_per_loop) { 9 }
       let(:praefect_manager) { Service::PraefectManager.new }
@@ -45,7 +45,11 @@ module QA
         end
 
         it 'does not read from the unhealthy node',
-           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347834' do
+           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347834',
+           quarantine: {
+             issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/378174',
+             type: :flaky
+           } do
           pre_read_data = praefect_manager.query_read_distribution
 
           read_from_project(project, number_of_reads_per_loop * 10)

@@ -13,8 +13,10 @@ module Gitlab
         relation.where(system_note_metadata: { action: :task })
       }
 
+      operation_name :update_all
+
       def perform
-        each_sub_batch(operation_name: :update_all) do |sub_batch|
+        each_sub_batch do |sub_batch|
           ApplicationRecord.connection.execute <<~SQL
             UPDATE notes
             SET note = REGEXP_REPLACE(notes.note,'#{REPLACE_REGEX}', '#{TEXT_REPLACEMENT}')

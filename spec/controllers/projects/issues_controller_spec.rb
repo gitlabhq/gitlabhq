@@ -168,75 +168,56 @@ RSpec.describe Projects::IssuesController do
 
       let_it_be(:task) { create(:issue, :task, project: project) }
 
-      context 'when work_items feature flag is enabled' do
-        shared_examples 'redirects to show work item page' do
+      shared_examples 'redirects to show work item page' do
+        context 'when use_iid_in_work_items_path feature flag is disabled' do
+          before do
+            stub_feature_flags(use_iid_in_work_items_path: false)
+          end
+
           it 'redirects to work item page' do
+            make_request
+
             expect(response).to redirect_to(project_work_items_path(project, task.id, query))
           end
         end
 
-        context 'show action' do
-          let(:query) { { query: 'any' } }
+        it 'redirects to work item page using iid' do
+          make_request
 
-          before do
-            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
-          end
-
-          it_behaves_like 'redirects to show work item page'
-        end
-
-        context 'edit action' do
-          let(:query) { { query: 'any' } }
-
-          before do
-            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
-          end
-
-          it_behaves_like 'redirects to show work item page'
-        end
-
-        context 'update action' do
-          before do
-            put :update, params: { namespace_id: project.namespace, project_id: project, id: task.iid, issue: { title: 'New title' } }
-          end
-
-          it_behaves_like 'redirects to show work item page'
+          expect(response).to redirect_to(project_work_items_path(project, task.iid, query.merge(iid_path: true)))
         end
       end
 
-      context 'when work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
+      context 'show action' do
+        let(:query) { { query: 'any' } }
 
-        shared_examples 'renders 404' do
-          it 'renders 404 for show action' do
-            expect(response).to have_gitlab_http_status(:not_found)
+        it_behaves_like 'redirects to show work item page' do
+          subject(:make_request) do
+            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
           end
         end
+      end
 
-        context 'show action' do
-          before do
-            get :show, params: { namespace_id: project.namespace, project_id: project, id: task.iid }
+      context 'edit action' do
+        let(:query) { { query: 'any' } }
+
+        it_behaves_like 'redirects to show work item page' do
+          subject(:make_request) do
+            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid, **query }
           end
-
-          it_behaves_like 'renders 404'
         end
+      end
 
-        context 'edit action' do
-          before do
-            get :edit, params: { namespace_id: project.namespace, project_id: project, id: task.iid }
+      context 'update action' do
+        it_behaves_like 'redirects to show work item page' do
+          subject(:make_request) do
+            put :update, params: {
+              namespace_id: project.namespace,
+              project_id: project,
+              id: task.iid,
+              issue: { title: 'New title' }
+            }
           end
-
-          it_behaves_like 'renders 404'
-        end
-
-        context 'update action' do
-          before do
-            put :update, params: { namespace_id: project.namespace, project_id: project, id: task.iid, issue: { title: 'New title' } }
-          end
-
-          it_behaves_like 'renders 404'
         end
       end
     end
@@ -1107,6 +1088,24 @@ RSpec.describe Projects::IssuesController do
       end
     end
 
+    context 'when trying to create a objective' do
+      it 'defaults to issue type' do
+        issue = post_new_issue(issue_type: 'objective')
+
+        expect(issue.issue_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('issue')
+      end
+    end
+
+    context 'when trying to create a key_result' do
+      it 'defaults to issue type' do
+        issue = post_new_issue(issue_type: 'key_result')
+
+        expect(issue.issue_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('issue')
+      end
+    end
+
     context 'when create service return an unrecoverable error with http_status' do
       let(:http_status) { 403 }
 
@@ -1291,7 +1290,7 @@ RSpec.describe Projects::IssuesController do
           let!(:last_spam_log) { spam_logs.last }
 
           def post_verified_issue
-            post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' } )
+            post_new_issue({}, { spam_log_id: last_spam_log.id, 'g-recaptcha-response': 'abc123' })
           end
 
           before do
@@ -1311,7 +1310,7 @@ RSpec.describe Projects::IssuesController do
           it 'does not mark spam log as recaptcha_verified when it does not belong to current_user' do
             spam_log = create(:spam_log)
 
-            expect { post_new_issue({}, { spam_log_id: spam_log.id, 'g-recaptcha-response': true } ) }
+            expect { post_new_issue({}, { spam_log_id: spam_log.id, 'g-recaptcha-response': true }) }
               .not_to change { last_spam_log.recaptcha_verified }
           end
         end
@@ -1708,19 +1707,6 @@ RSpec.describe Projects::IssuesController do
 
         expect(response).to redirect_to(project_issues_path(project))
         expect(controller).to set_flash[:notice].to match(/\AYour CSV export has started/i)
-      end
-
-      context 'when work_items is disabled' do
-        before do
-          stub_feature_flags(work_items: false)
-        end
-
-        it 'does not include tasks in CSV export' do
-          expect(IssuableExportCsvWorker).to receive(:perform_async)
-            .with(:issue, viewer.id, project.id, hash_including('issue_types' => Issue::TYPES_FOR_LIST.excluding('task')))
-
-          request_csv
-        end
       end
     end
 

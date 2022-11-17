@@ -1,10 +1,9 @@
-- @no_container = true
 - page_title _('Artifacts')
 
 %div{ class: container_class }
-  .top-area.py-3
-    .align-self-center
-      = _('Total artifacts size: %{total_size}') % { total_size: number_to_human_size(@total_size, precicion: 2) }
-
-  .content-list.builds-content-list
-    = render "table", artifacts: @artifacts, project: @project
+  %h1.page-title.gl-font-size-h-display.gl-mb-0
+    = s_('Artifacts|Artifacts')
+  .gl-mb-6
+    %strong= s_('Artifacts|Total artifacts size')
+    = number_to_human_size(@total_size, precicion: 2)
+  #js-artifact-management{ data: { "project-path" => @project.full_path } }

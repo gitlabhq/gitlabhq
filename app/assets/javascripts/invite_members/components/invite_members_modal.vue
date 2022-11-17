@@ -18,7 +18,8 @@ import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { n__, sprintf } from '~/locale';
 import {
-  CLOSE_TO_LIMIT_COUNT,
+  CLOSE_TO_LIMIT_VARIANT,
+  REACHED_LIMIT_VARIANT,
   USERS_FILTER_ALL,
   INVITE_MEMBERS_FOR_TASK,
   MEMBER_MODAL_LABELS,
@@ -174,27 +175,11 @@ export default {
     isOnLearnGitlab() {
       return this.source === LEARN_GITLAB;
     },
-    closeToLimit() {
-      if (this.usersLimitDataset.freeUsersLimit && this.usersLimitDataset.membersCount) {
-        return (
-          this.usersLimitDataset.membersCount >=
-          this.usersLimitDataset.freeUsersLimit - CLOSE_TO_LIMIT_COUNT
-        );
-      }
-
-      return false;
+    showUserLimitNotification() {
+      return this.usersLimitDataset.reachedLimit || this.usersLimitDataset.closeToDashboardLimit;
     },
-    reachedLimit() {
-      if (this.usersLimitDataset.freeUsersLimit && this.usersLimitDataset.membersCount) {
-        return this.usersLimitDataset.membersCount >= this.usersLimitDataset.freeUsersLimit;
-      }
-
-      return false;
-    },
-    formGroupDescription() {
-      return this.reachedLimit
-        ? this.$options.labels.placeHolderDisabled
-        : this.$options.labels.placeHolder;
+    limitVariant() {
+      return this.usersLimitDataset.reachedLimit ? REACHED_LIMIT_VARIANT : CLOSE_TO_LIMIT_VARIANT;
     },
     errorList() {
       return Object.entries(this.invalidMembers).map(([member, error]) => {
@@ -385,13 +370,11 @@ export default {
     :help-link="helpLink"
     :label-intro-text="labelIntroText"
     :label-search-field="$options.labels.searchField"
-    :form-group-description="formGroupDescription"
+    :form-group-description="$options.labels.placeHolder"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
-    :close-to-limit="closeToLimit"
-    :reached-limit="reachedLimit"
     :users-limit-dataset="usersLimitDataset"
     @reset="resetFields"
     @submit="sendInvite"
@@ -448,9 +431,8 @@ export default {
         </template>
       </gl-alert>
       <user-limit-notification
-        v-else
-        :close-to-limit="closeToLimit"
-        :reached-limit="reachedLimit"
+        v-else-if="showUserLimitNotification"
+        :limit-variant="limitVariant"
         :users-limit-dataset="usersLimitDataset"
       />
     </template>

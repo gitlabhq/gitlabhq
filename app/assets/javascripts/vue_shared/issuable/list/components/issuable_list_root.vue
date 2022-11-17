@@ -7,6 +7,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
+import issuableEventHub from '~/issues/list/eventhub';
 import { DEFAULT_SKELETON_COUNT, PAGE_SIZE_STORAGE_KEY } from '../constants';
 import IssuableBulkEditSidebar from './issuable_bulk_edit_sidebar.vue';
 import IssuableItem from './issuable_item.vue';
@@ -177,6 +178,11 @@ export default {
       required: false,
       default: false,
     },
+    showFilteredSearchFriendlyText: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showPageSizeChangeControls: {
       type: Boolean,
       required: false,
@@ -266,6 +272,7 @@ export default {
     handleIssuableCheckedInput(issuable, value) {
       this.checkedIssuables[this.issuableId(issuable)].checked = value;
       this.$emit('update-legacy-bulk-edit');
+      issuableEventHub.$emit('issuables:issuableChecked', issuable, value);
     },
     handleAllIssuablesCheckedInput(value) {
       Object.keys(this.checkedIssuables).forEach((issuableId) => {
@@ -308,6 +315,7 @@ export default {
       :sync-filter-and-sort="syncFilterAndSort"
       :show-checkbox="showBulkEditSidebar"
       :checkbox-checked="allIssuablesChecked"
+      :show-friendly-text="showFilteredSearchFriendlyText"
       class="gl-flex-grow-1 gl-border-t-none row-content-block"
       data-qa-selector="issuable_search_container"
       @checked-input="handleAllIssuablesCheckedInput"

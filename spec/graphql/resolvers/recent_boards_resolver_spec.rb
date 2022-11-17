@@ -53,7 +53,7 @@ RSpec.describe Resolvers::RecentBoardsResolver do
     end
 
     context 'when project boards' do
-      let_it_be(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace ) }
+      let_it_be(:board_parent) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
 
       it_behaves_like 'group and project recent boards resolver'
     end

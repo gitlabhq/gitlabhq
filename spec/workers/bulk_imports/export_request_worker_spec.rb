@@ -20,7 +20,7 @@ RSpec.describe BulkImports::ExportRequestWorker do
     end
 
     shared_examples 'requests relations export for api resource' do
-      include_examples 'an idempotent worker' do
+      it_behaves_like 'an idempotent worker' do
         it 'requests relations export & schedules entity worker' do
           expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
             expect(client).to receive(:post).with(expected).twice
@@ -44,18 +44,22 @@ RSpec.describe BulkImports::ExportRequestWorker do
             it 'logs retry request and reenqueues' do
               allow(exception).to receive(:retriable?).twice.and_return(true)
 
-              expect(Gitlab::Import::Logger).to receive(:error).with(
-                hash_including(
-                  'bulk_import_entity_id' => entity.id,
-                  'pipeline_class' => 'ExportRequestWorker',
-                  'exception_class' => 'BulkImports::NetworkError',
-                  'exception_message' => 'Export error',
-                  'bulk_import_id' => bulk_import.id,
-                  'bulk_import_entity_type' => entity.source_type,
-                  'importer' => 'gitlab_migration',
-                  'message' => 'Retrying export request'
-                )
-              ).twice
+              expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+                expect(logger).to receive(:error).with(
+                  a_hash_including(
+                    'bulk_import_entity_id' => entity.id,
+                    'bulk_import_id' => entity.bulk_import_id,
+                    'bulk_import_entity_type' => entity.source_type,
+                    'source_full_path' => entity.source_full_path,
+                    'exception.backtrace' => anything,
+                    'exception.class' => 'BulkImports::NetworkError',
+                    'exception.message' => 'Export error',
+                    'message' => 'Retrying export request',
+                    'importer' => 'gitlab_migration',
+                    'source_version' => entity.bulk_import.source_version_info.to_s
+                  )
+                ).twice
+              end
 
               expect(described_class).to receive(:perform_in).twice.with(2.seconds, entity.id)
 
@@ -65,18 +69,24 @@ RSpec.describe BulkImports::ExportRequestWorker do
 
           context 'when error is not retriable' do
             it 'logs export failure and marks entity as failed' do
-              expect(Gitlab::Import::Logger).to receive(:error).with(
-                hash_including(
-                  'bulk_import_entity_id' => entity.id,
-                  'pipeline_class' => 'ExportRequestWorker',
-                  'exception_class' => 'BulkImports::NetworkError',
-                  'exception_message' => 'Export error',
-                  'correlation_id_value' => anything,
-                  'bulk_import_id' => bulk_import.id,
-                  'bulk_import_entity_type' => entity.source_type,
-                  'importer' => 'gitlab_migration'
-                )
-              ).twice
+              allow(exception).to receive(:retriable?).twice.and_return(false)
+
+              expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+                expect(logger).to receive(:error).with(
+                  a_hash_including(
+                    'bulk_import_entity_id' => entity.id,
+                    'bulk_import_id' => entity.bulk_import_id,
+                    'bulk_import_entity_type' => entity.source_type,
+                    'source_full_path' => entity.source_full_path,
+                    'exception.backtrace' => anything,
+                    'exception.class' => 'BulkImports::NetworkError',
+                    'exception.message' => 'Export error',
+                    'message' => "Request to export #{entity.source_type} failed",
+                    'importer' => 'gitlab_migration',
+                    'source_version' => entity.bulk_import.source_version_info.to_s
+                  )
+                ).twice
+              end
 
               perform_multiple(job_args)
 
@@ -119,25 +129,30 @@ RSpec.describe BulkImports::ExportRequestWorker do
             let(:entity_source_id) { 'invalid' }
 
             it 'logs the error & requests relations export using full path url' do
+              allow(BulkImports::EntityWorker).to receive(:perform_async)
+
               expect_next_instance_of(BulkImports::Clients::HTTP) do |client|
                 expect(client).to receive(:post).with(full_path_url).twice
               end
 
               entity.update!(source_xid: nil)
 
-              expect(Gitlab::Import::Logger).to receive(:error).with(
-                a_hash_including(
-                  'message' => 'Failed to fetch source entity id',
-                  'bulk_import_entity_id' => entity.id,
-                  'pipeline_class' => 'ExportRequestWorker',
-                  'exception_class' => 'NoMethodError',
-                  'exception_message' => "undefined method `model_id' for nil:NilClass",
-                  'correlation_id_value' => anything,
-                  'bulk_import_id' => bulk_import.id,
-                  'bulk_import_entity_type' => entity.source_type,
-                  'importer' => 'gitlab_migration'
-                )
-              ).twice
+              expect_next_instance_of(Gitlab::Import::Logger) do |logger|
+                expect(logger).to receive(:error).with(
+                  a_hash_including(
+                    'bulk_import_entity_id' => entity.id,
+                    'bulk_import_id' => entity.bulk_import_id,
+                    'bulk_import_entity_type' => entity.source_type,
+                    'source_full_path' => entity.source_full_path,
+                    'exception.backtrace' => anything,
+                    'exception.class' => 'NoMethodError',
+                    'exception.message' => "undefined method `model_id' for nil:NilClass",
+                    'message' => 'Failed to fetch source entity id',
+                    'importer' => 'gitlab_migration',
+                    'source_version' => entity.bulk_import.source_version_info.to_s
+                  )
+                ).twice
+              end
 
               perform_multiple(job_args)
 
@@ -153,7 +168,7 @@ RSpec.describe BulkImports::ExportRequestWorker do
       let(:expected) { "/groups/#{entity.source_xid}/export_relations" }
       let(:full_path_url) { '/groups/foo%2Fbar/export_relations' }
 
-      include_examples 'requests relations export for api resource'
+      it_behaves_like 'requests relations export for api resource'
     end
 
     context 'when entity is project' do
@@ -161,7 +176,7 @@ RSpec.describe BulkImports::ExportRequestWorker do
       let(:expected) { "/projects/#{entity.source_xid}/export_relations" }
       let(:full_path_url) { '/projects/foo%2Fbar/export_relations' }
 
-      include_examples 'requests relations export for api resource'
+      it_behaves_like 'requests relations export for api resource'
     end
   end
 end

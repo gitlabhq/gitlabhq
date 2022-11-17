@@ -10,8 +10,8 @@ RSpec.shared_examples 'a correct instrumented metric value' do |params|
   end
 
   before do
-    if described_class.respond_to?(:relation) && described_class.relation.respond_to?(:connection)
-      allow(described_class.relation.connection).to receive(:transaction_open?).and_return(false)
+    if metric.respond_to?(:relation, true) && metric.send(:relation).respond_to?(:connection)
+      allow(metric.send(:relation).connection).to receive(:transaction_open?).and_return(false)
     end
   end
 

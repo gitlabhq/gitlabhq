@@ -1,6 +1,8 @@
 <script>
+import { isEmpty } from 'lodash';
 import { GlButton, GlFormGroup, GlFormInput } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { MASK_ITEM_VALUE_HIDDEN } from '../constants';
 
 export default {
   components: {
@@ -24,6 +26,21 @@ export default {
       required: false,
       default: null,
     },
+    isEditing: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    keyInvalidFeedback: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    valueInvalidFeedback: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   computed: {
     keyInputId() {
@@ -31,6 +48,15 @@ export default {
     },
     valueInputId() {
       return this.inputId('value');
+    },
+    keyState() {
+      return isEmpty(this.keyInvalidFeedback);
+    },
+    valueState() {
+      return isEmpty(this.valueInvalidFeedback);
+    },
+    displayValue() {
+      return this.isEditing ? MASK_ITEM_VALUE_HIDDEN : this.itemValue;
     },
   },
   methods: {
@@ -58,23 +84,29 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-flex-end gl-gap-3 gl-mb-3">
+  <div class="gl-display-flex gl-align-items-flex-start gl-gap-3 gl-mb-3">
     <gl-form-group
       :label="$options.i18n.valueLabel"
       :label-for="valueInputId"
+      :invalid-feedback="valueInvalidFeedback"
+      :state="valueState"
       class="gl-flex-grow-1 gl-mb-0"
       data-testid="mask-item-value"
     >
       <gl-form-input
         :id="valueInputId"
         :name="inputName('value')"
-        :value="itemValue"
+        :value="displayValue"
+        :disabled="isEditing"
+        :state="valueState"
         @input="onValueInput"
       />
     </gl-form-group>
     <gl-form-group
       :label="$options.i18n.keyLabel"
       :label-for="keyInputId"
+      :invalid-feedback="keyInvalidFeedback"
+      :state="keyState"
       class="gl-flex-grow-1 gl-mb-0"
       data-testid="mask-item-key"
     >
@@ -82,9 +114,17 @@ export default {
         :id="keyInputId"
         :name="inputName('key')"
         :value="itemKey"
+        :disabled="isEditing"
+        :state="keyState"
         @input="onKeyInput"
       />
     </gl-form-group>
-    <gl-button icon="remove" :aria-label="__('Remove')" @click="onRemoveClick" />
+    <gl-button
+      icon="remove"
+      :aria-label="__('Remove')"
+      :disabled="isEditing"
+      class="gl-mt-6"
+      @click="onRemoveClick"
+    />
   </div>
 </template>

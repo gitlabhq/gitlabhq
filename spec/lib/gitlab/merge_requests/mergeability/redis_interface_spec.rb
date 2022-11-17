@@ -6,7 +6,7 @@ RSpec.describe Gitlab::MergeRequests::Mergeability::RedisInterface, :clean_gitla
   subject(:redis_interface) { described_class.new }
 
   let(:merge_check) { double(cache_key: '13') }
-  let(:result_hash) { { 'test' => 'test' } }
+  let(:result_hash) { { test: 'test' } }
   let(:expected_key) { "#{merge_check.cache_key}:#{described_class::VERSION}" }
 
   describe '#save_check' do

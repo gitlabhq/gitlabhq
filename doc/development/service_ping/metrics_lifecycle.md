@@ -25,6 +25,10 @@ Any such changes lead to inconsistent reports from multiple GitLab instances.
 If there is a problem with an existing metric, it's best to deprecate the existing metric,
 and use it, side by side, with the desired new metric.
 
+If you do need to change a metric, please notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) teams by `@` mentioning those groups in a comment on the MR.
+Many Service Ping metrics are relied upon for health score and XMAU reporting and
+unexpected changes to those metrics could break reporting.
+
 Example:
 Consider following change. Before GitLab 12.6, the `example_metric` was implemented as:
 
@@ -135,3 +139,6 @@ To remove a metric:
 1. Remove any other records related to the metric:
    - The feature flag YAML file at [`config/feature_flags/*/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/config/feature_flags).
    - The entry in the known events YAML file at [`lib/gitlab/usage_data_counters/known_events/*.yaml`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/usage_data_counters/known_events).
+
+1. Notify the Customer Success Ops team (`@csops-team`), Analytics Engineers (`@gitlab-data/analytics-engineers`), and Product Analysts (`@gitlab-data/product-analysts`) by `@` mentioning those groups in a comment on the MR.
+   Many Service Ping metrics are relied upon for health score and XMAU reporting and unexpected changes to those metrics could break reporting.

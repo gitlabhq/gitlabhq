@@ -83,7 +83,10 @@ class User < ApplicationRecord
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-         :validatable, :omniauthable, :confirmable, :registerable, :pbkdf2_encryptable
+         :validatable, :omniauthable, :confirmable, :registerable
+
+  # Must be included after `devise`
+  include EncryptedUserPassword
 
   include AdminChangedPasswordNotifier
 
@@ -185,7 +188,7 @@ class User < ApplicationRecord
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :project_members, -> { where(requested_at: nil) }
   has_many :projects,                 through: :project_members
-  has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project', dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects_with_active_memberships, -> { where(members: { state: ::Member::STATE_ACTIVE }) }, through: :project_members, source: :project
   has_many :users_star_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :starred_projects, through: :users_star_projects, source: :project
@@ -257,6 +260,8 @@ class User < ApplicationRecord
   has_many :resource_label_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :resource_state_events, dependent: :nullify # rubocop:disable Cop/ActiveRecordDependent
   has_many :authored_events, class_name: 'Event', dependent: :destroy, foreign_key: :author_id # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :namespace_commit_emails
 
   #
   # Validations
@@ -420,10 +425,6 @@ class User < ApplicationRecord
     end
 
     # rubocop: disable CodeReuse/ServiceClass
-    # Ideally we should not call a service object here but user.block
-    # is also called by Users::MigrateToGhostUserService which references
-    # this state transition object in order to do a rollback.
-    # For this reason the tradeoff is to disable this cop.
     after_transition any => :blocked do |user|
       user.run_after_commit do
         Ci::DropPipelineService.new.execute_async_for_all(user.pipelines, :user_blocked, user)
@@ -446,6 +447,14 @@ class User < ApplicationRecord
 
     after_transition banned: :active do |user|
       user.banned_user&.destroy
+    end
+
+    after_transition any => :active do |user|
+      user.starred_projects.update_counters(star_count: 1)
+    end
+
+    after_transition active: any do |user|
+      user.starred_projects.update_counters(star_count: -1)
     end
   end
 
@@ -693,6 +702,8 @@ class User < ApplicationRecord
     #
     # Returns an ActiveRecord::Relation.
     def search(query, **options)
+      return none unless query.is_a?(String)
+
       query = query&.delete_prefix('@')
       return none if query.blank?
 
@@ -937,26 +948,14 @@ class User < ApplicationRecord
     reset_password_sent_at.present? && reset_password_sent_at >= 1.minute.ago
   end
 
-  def authenticatable_salt
-    return encrypted_password[0, 29] unless Feature.enabled?(:pbkdf2_password_encryption)
-    return super if password_strategy == :pbkdf2_sha512
-
-    encrypted_password[0, 29]
-  end
-
   # Overwrites valid_password? from Devise::Models::DatabaseAuthenticatable
   # In constant-time, check both that the password isn't on a denylist AND
   # that the password is the user's password
   def valid_password?(password)
     return false unless password_allowed?(password)
     return false if password_automatically_set?
-    return super if Feature.enabled?(:pbkdf2_password_encryption)
 
-    Devise::Encryptor.compare(self.class, encrypted_password, password)
-  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-    validate_and_migrate_bcrypt_password(password)
-  rescue ::BCrypt::Errors::InvalidHash
-    false
+    super
   end
 
   def generate_otp_backup_codes!
@@ -972,27 +971,6 @@ class User < ApplicationRecord
       invalidate_otp_backup_code_pdkdf2!(code)
     else
       super(code)
-    end
-  end
-
-  # This method should be removed once the :pbkdf2_password_encryption feature flag is removed.
-  def password=(new_password)
-    if Feature.enabled?(:pbkdf2_password_encryption) && Feature.enabled?(:pbkdf2_password_encryption_write, self)
-      super
-    else
-      # Copied from Devise DatabaseAuthenticatable.
-      @password = new_password
-      self.encrypted_password = Devise::Encryptor.digest(self.class, new_password) if new_password.present?
-    end
-  end
-
-  def password_strategy
-    super
-  rescue Devise::Pbkdf2Encryptable::Encryptors::InvalidHash
-    begin
-      return :bcrypt if BCrypt::Password.new(encrypted_password)
-    rescue BCrypt::Errors::InvalidHash
-      :unknown
     end
   end
 
@@ -1222,6 +1200,10 @@ class User < ApplicationRecord
   # This logic is duplicated from `Ability#project_abilities` into a SQL form.
   def projects_where_can_admin_issues
     authorized_projects(Gitlab::Access::REPORTER).non_archived.with_issues_enabled
+  end
+
+  def preloaded_member_roles_for_projects(projects)
+    # overridden in EE
   end
 
   # rubocop: disable CodeReuse/ServiceClass
@@ -1786,7 +1768,7 @@ class User < ApplicationRecord
   end
 
   def owns_runner?(runner)
-    ci_owned_runners.exists?(runner.id)
+    ci_owned_runners.include?(runner)
   end
 
   def notification_email_for(notification_group)
@@ -2439,15 +2421,6 @@ class User < ApplicationRecord
       .shortest_traversal_ids_prefixes
 
     Ci::NamespaceMirror.contains_traversal_ids(traversal_ids)
-  end
-
-  def validate_and_migrate_bcrypt_password(password)
-    return false unless Devise::Encryptor.compare(self.class, encrypted_password, password)
-    return true unless Feature.enabled?(:pbkdf2_password_encryption_write, self)
-
-    update_attribute(:password, password)
-  rescue ::BCrypt::Errors::InvalidHash
-    false
   end
 end
 

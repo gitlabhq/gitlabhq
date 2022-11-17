@@ -1,7 +1,6 @@
 ---
 # Cop supports --auto-correct.
 Style/KeywordParametersOrder:
-  Details: grace period
   Exclude:
     - 'app/controllers/concerns/product_analytics_tracking.rb'
     - 'app/finders/group_descendants_finder.rb'
@@ -50,7 +49,6 @@ Style/KeywordParametersOrder:
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/file_locking_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/push_rules_spec.rb'
     - 'qa/spec/runtime/env_spec.rb'
-    - 'spec/features/projects/branches_spec.rb'
     - 'spec/graphql/types/ci/pipeline_counts_type_spec.rb'
     - 'spec/lib/gitlab/background_migration/populate_vulnerability_reads_spec.rb'
     - 'spec/lib/gitlab/background_migration/recalculate_vulnerabilities_occurrences_uuid_spec.rb'

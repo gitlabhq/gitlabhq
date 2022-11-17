@@ -6,7 +6,7 @@ RSpec.describe 'Pipeline Schedules', :js do
   include Spec::Support::Helpers::ModalHelpers
 
   let!(:project) { create(:project, :repository) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project ) }
+  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project) }
   let!(:pipeline) { create(:ci_pipeline, pipeline_schedule: pipeline_schedule) }
   let(:scope) { nil }
   let!(:user) { create(:user) }
@@ -45,7 +45,7 @@ RSpec.describe 'Pipeline Schedules', :js do
         description = find_field('schedule_description').value
         expect(description).to eq('pipeline schedule')
         expect(page).to have_button('master')
-        expect(page).to have_button('UTC')
+        expect(page).to have_button('Select timezone')
       end
 
       it 'edits the scheduled pipeline' do
@@ -164,7 +164,7 @@ RSpec.describe 'Pipeline Schedules', :js do
 
       it 'sets defaults for timezone and target branch' do
         expect(page).to have_button('master')
-        expect(page).to have_button('UTC')
+        expect(page).to have_button('Select timezone')
       end
 
       it 'creates a new scheduled pipeline' do
@@ -314,8 +314,8 @@ RSpec.describe 'Pipeline Schedules', :js do
   end
 
   def select_timezone
-    find('.js-timezone-dropdown').click
-    click_link 'American Samoa'
+    find('[data-testid="schedule-timezone"] .dropdown-toggle').click
+    find("button", text: "Arizona").click
   end
 
   def select_target_branch

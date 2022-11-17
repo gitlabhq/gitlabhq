@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Runtime do
     before do
       stub_const('::Sidekiq', sidekiq_type)
       allow(sidekiq_type).to receive(:server?).and_return(true)
-      allow(sidekiq_type).to receive(:options).and_return(concurrency: 2)
+      allow(sidekiq_type).to receive(:[]).with(:concurrency).and_return(2)
     end
 
     it_behaves_like "valid runtime", :sidekiq, 5

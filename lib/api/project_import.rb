@@ -40,6 +40,7 @@ module API
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Workhorse authorize the project import upload' do
         detail 'This feature was introduced in GitLab 12.9'
+        tags ['project_import']
       end
       post 'import/authorize' do
         require_gitlab_workhorse!
@@ -77,7 +78,16 @@ module API
       end
       desc 'Create a new project import' do
         detail 'This feature was introduced in GitLab 10.6.'
-        success Entities::ProjectImportStatus
+        success code: 201, model: Entities::ProjectImportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags ['project_import']
+        consumes ['multipart/form-data']
       end
       post 'import' do
         require_gitlab_workhorse!
@@ -108,11 +118,19 @@ module API
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       desc 'Get a project import status' do
         detail 'This feature was introduced in GitLab 10.6.'
-        success Entities::ProjectImportStatus
+        success code: 200, model: Entities::ProjectImportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 503, message: 'Service unavailable' }
+        ]
+        tags ['project_import']
       end
       route_setting :skip_authentication, true
       get ':id/import' do
@@ -133,7 +151,17 @@ module API
       end
       desc 'Create a new project import using a remote object storage path' do
         detail 'This feature was introduced in GitLab 13.2.'
-        success Entities::ProjectImportStatus
+        consumes ['multipart/form-data']
+        tags ['project_import']
+        success code: 201, model: Entities::ProjectImportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 429, message: 'Too many requests' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       post 'remote-import' do
         check_rate_limit! :project_import, scope: [current_user, :project_import]
@@ -176,7 +204,17 @@ module API
       end
       desc 'Create a new project import using a file from AWS S3' do
         detail 'This feature was introduced in GitLab 14.9.'
-        success Entities::ProjectImportStatus
+        consumes ['multipart/form-data']
+        tags ['project_import']
+        success code: 201, model: Entities::ProjectImportStatus
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' },
+          { code: 429, message: 'Too many requests' },
+          { code: 503, message: 'Service unavailable' }
+        ]
       end
       post 'remote-import-s3' do
         not_found! unless ::Feature.enabled?(:import_project_from_remote_file_s3)

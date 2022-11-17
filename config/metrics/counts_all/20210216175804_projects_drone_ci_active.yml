@@ -3,7 +3,7 @@ data_category: operational
 key_path: counts.projects_drone_ci_active
 description: Count of projects with active integrations for Drone CI
 product_section: dev
-product_stage: ecosystem
+product_stage: manage
 product_group: integrations
 product_category: integrations
 value_type: number

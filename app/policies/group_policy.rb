@@ -22,7 +22,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   condition(:share_with_group_locked, scope: :subject) { @subject.share_with_group_lock? }
   condition(:parent_share_with_group_locked, scope: :subject) { @subject.parent&.share_with_group_lock? }
   condition(:can_change_parent_share_with_group_lock) { can?(:change_share_with_group_lock, @subject.parent) }
-  condition(:migration_bot, scope: :user) { @user.migration_bot? }
+  condition(:migration_bot, scope: :user) { @user&.migration_bot? }
   condition(:can_read_group_member) { can_read_group_member? }
 
   desc "User is a project bot"
@@ -281,6 +281,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
 
   rule { can?(:project_bot_access) }.policy do
     prevent :create_resource_access_tokens
+  end
+
+  rule { can?(:admin_group_member) }.policy do
+    # ability to read, approve or reject member access requests of other users
+    enable :admin_member_access_request
   end
 
   rule { support_bot & has_project_with_service_desk_enabled }.policy do

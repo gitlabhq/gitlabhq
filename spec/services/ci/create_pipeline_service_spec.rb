@@ -135,7 +135,7 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         execute_service
 
         expect(histogram).to have_received(:observe)
-          .with({ source: 'push' }, 5)
+          .with({ source: 'push', plan: project.actual_plan_name }, 5)
       end
 
       it 'tracks included template usage' do
@@ -1864,51 +1864,6 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
           expect(pipeline).to be_persisted
           expect(pipeline.builds.pluck(:name)).to contain_exactly("deploy")
         end
-      end
-    end
-  end
-
-  describe '#execute!' do
-    subject { service.execute!(*args) }
-
-    let(:service) { described_class.new(project, user, ref: ref_name) }
-    let(:args) { [:push] }
-
-    context 'when user has a permission to create a pipeline' do
-      let(:user) { create(:user) }
-
-      before do
-        project.add_developer(user)
-      end
-
-      it 'does not raise an error' do
-        expect { subject }.not_to raise_error
-      end
-
-      it 'creates a pipeline' do
-        expect { subject }.to change { Ci::Pipeline.count }.by(1)
-      end
-    end
-
-    context 'when user does not have a permission to create a pipeline' do
-      let(:user) { create(:user) }
-
-      it 'raises an error' do
-        expect { subject }
-          .to raise_error(described_class::CreateError)
-          .with_message('Insufficient permissions to create a new pipeline')
-      end
-    end
-
-    context 'when a user with permissions has been blocked' do
-      before do
-        user.block!
-      end
-
-      it 'raises an error' do
-        expect { subject }
-          .to raise_error(described_class::CreateError)
-          .with_message('Insufficient permissions to create a new pipeline')
       end
     end
   end

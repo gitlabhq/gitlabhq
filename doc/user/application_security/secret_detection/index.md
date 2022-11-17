@@ -15,18 +15,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   `secret_detection_default_branch` and `secret_detection` were consolidated into one job,
 >   `secret_detection`.
 
-People may accidentally commit secrets to
-remote Git repositories. Secrets include keys, passwords, API tokens, and other sensitive
-information. Anyone with access to the repository could use the secrets for malicious purposes.
-Exposed secrets are compromised and must be replaced, which can be costly.
+People may accidentally commit secrets (such as keys, passwords, and API tokens) to remote Git repositories.
 
-To help prevent secrets from being committed to a Git repository, you can use Secret Detection
-to scan your repository for secrets. Scanning is language
-and framework agnostic, but does not support scanning binary files.
+Anyone with access to the repository could use the secrets for malicious purposes. Exposed secrets
+must be considered compromised and be replaced, which can be costly.
 
-Secret Detection uses a specific analyzer containing the
-[Gitleaks](https://github.com/zricethezav/gitleaks) tool to scan the repository for secrets, in a
-`secret-detection` job. The results are saved as a
+To help prevent secrets from being committed to a Git repository, you can use Secret Detection to
+scan your repository for secrets. Scanning is language and framework agnostic, but does not support
+scanning binary files.
+
+Secret Detection uses an analyzer containing the [Gitleaks](https://github.com/zricethezav/gitleaks)
+tool to scan the repository for secrets. Detection occurs in the `secret-detection` job. The results
+are saved as a
 [Secret Detection report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection)
 that you can later download and analyze. Due to implementation limitations, we always take the
 latest Secret Detection artifact available.
@@ -38,7 +38,7 @@ All identified secrets are reported in the:
 
 - Merge request widget
 - Pipelines' **Security** tab
-- [Security Dashboard](../security_dashboard/index.md)
+- [Vulnerability Report](../vulnerability_report/index.md)
 
 ![Secret Detection in merge request widget](img/secret_detection_v13_2.png)
 
@@ -61,7 +61,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | Download [JSON Report](../sast/index.md#reports-json-format)     | **{check-circle}** Yes | **{check-circle}** Yes |
 | See new findings in the merge request widget                     | **{dotted-circle}** No | **{check-circle}** Yes |
 | View identified secrets in the pipelines' **Security** tab       | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Manage vulnerabilities](../vulnerabilities/index.md)            | **{dotted-circle}** No | **{check-circle}** Yes |
+| [Manage vulnerabilities](../vulnerability_report/index.md)       | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Access the Security Dashboard](../security_dashboard/index.md)  | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Customize Secret Detection rulesets](#custom-rulesets)          | **{dotted-circle}** No | **{check-circle}** Yes |
 
@@ -88,13 +88,13 @@ To enable Secret Detection, either:
 
 ### Enable Secret Detection by including the template
 
-We recommend this method if you have an existing GitLab CI/CD configuration file.
+You should use this method if you have an existing GitLab CI/CD configuration file.
 
 Add the following extract to your `.gitlab-ci.yml` file:
 
 ```yaml
 include:
-  - template: Security/Secret-Detection.gitlab-ci.yml
+  - template: Jobs/Secret-Detection.gitlab-ci.yml
 ```
 
 Pipelines now include a Secret Detection job, and the results are included in the merge request
@@ -122,7 +122,34 @@ widget.
 
 ## Responding to a leaked secret
 
-If the scanner detects a secret we recommend you rotate it immediately. [Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history) may not be effective in removing all references to the file. Also, the secret remains in any forks of the repository.
+If the scanner detects a secret you should rotate it immediately. [Purging a file from the repository's history](../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history) may not be effective in removing all references to the file. Also, the secret remains in any forks of the repository.
+
+## Pinning to specific analyzer version
+
+The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest analyzer release within that major version.
+
+In some cases, you may need to use a specific version.
+For example, you might need to avoid a regression in a later release.
+
+To override the automatic update behavior, set the `SECRETS_ANALYZER_VERSION` CI/CD variable
+in your CI/CD configuration file after you include the [`Secret-Detection.gitlab-ci.yml` template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Secret-Detection.gitlab-ci.yml).
+
+You can set the tag to:
+
+- A major version, like `4`. Your pipelines will use any minor or patch updates that are released within this major version.
+- A minor version, like `4.5`. Your pipelines will use any patch updates that are released within this minor version.
+- A patch version, like `4.5.0`. Your pipelines won't receive any updates.
+
+This example uses a specific minor version of the analyzer:
+
+```yaml
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
+secret_detection:
+  variables:
+    SECRETS_ANALYZER_VERSION: "4.5"
+```
 
 ## Configure scan settings
 
@@ -154,11 +181,13 @@ secret_detection:
     SECRET_DETECTION_HISTORIC_SCAN: "true"
 ```
 
-### Ignoring Secrets
+### Ignore secrets
 
-You might want to add a fake secret to your code base. For instance, you can use a fake secret as an example in your documentation or test suite.
+In some instances, you might want to ignore a secret. For example, you may have a fake secret in an
+example or a test suite. In these instances, you want to ignore the secret, instead of having it
+reported as a vulnerability.
 
-In these cases, Secret Detection can ignore the fake secret and not report it as a vulnerability. To ignore a secret, add `gitleaks:allow` as a comment to the line that contains the secret.
+To ignore a secret, add `gitleaks:allow` as a comment to the line that contains the secret.
 
 For example:
 
@@ -172,7 +201,7 @@ Secret Detection can be customized by defining available CI/CD variables:
 
 | CI/CD variable                    | Default value | Description |
 |-----------------------------------|---------------|-------------|
-| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. This is a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
+| `SECRET_DETECTION_EXCLUDED_PATHS` | ""            | Exclude vulnerabilities from output based on the paths. The paths are a comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec` ). Parent directories also match patterns. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/225273) in GitLab 13.3. |
 | `SECRET_DETECTION_HISTORIC_SCAN`  | false         | Flag to enable a historic Gitleaks scan. |
 | `SECRET_DETECTION_IMAGE_SUFFIX`   | "" | Suffix added to the image name. If set to `-fips`, `FIPS-enabled` images are used for scan. See [Use FIPS-enabled images](#use-fips-enabled-images) for more details. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355519) in GitLab 14.10. |
 | `SECRET_DETECTION_LOG_OPTIONS`  | ""         | [`git log`](https://git-scm.com/docs/git-log) options used to define commit ranges. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/350660) in GitLab 15.1.|
@@ -214,7 +243,7 @@ By default, Secret Detection scans only the current state of the Git repository.
 contained in the repository's history are not detected. To address this, Secret Detection can
 scan the Git repository's full history.
 
-We recommend you do a full history scan only once, after enabling Secret Detection. A full history
+You should do a full history scan only once, after enabling Secret Detection. A full history
 can take a long time, especially for larger repositories with lengthy Git histories. After
 completing an initial full history scan, use only standard Secret Detection as part of your
 pipeline.
@@ -349,15 +378,15 @@ In the `secret-detection-ruleset.toml` file, do one of the following:
 
 ## Running Secret Detection in an offline environment **(PREMIUM SELF)**
 
-For self-managed GitLab instances in an environment with limited, restricted, or intermittent access
-to external resources through the internet, some configuration changes are required for the Secret
-Detection job to run successfully. The instructions in this section must be completed together with
-the instructions detailed in [offline environments](../offline_deployments/index.md).
+An offline environment has limited, restricted, or intermittent access to external resources through
+the internet. For self-managed GitLab instances in such an environment, Secret Detection requires
+some configuration changes. The instructions in this section must be completed together with the
+instructions detailed in [offline environments](../offline_deployments/index.md).
 
 ### Configure GitLab Runner
 
 By default, a runner tries to pull Docker images from the GitLab container registry even if a local
-copy is available. We recommend using this default setting, to ensure Docker images remain current.
+copy is available. You should use this default setting, to ensure Docker images remain current.
 However, if no network connectivity is available, you must change the default GitLab Runner
 `pull_policy` variable.
 
@@ -379,11 +408,11 @@ Prerequisites:
    [local Docker container registry](../../packages/container_registry/index.md):
 
    ```plaintext
-   registry.gitlab.com/security-products/secret-detection:3
+   registry.gitlab.com/security-products/secrets:4
    ```
 
    The Secret Detection analyzer's image is [periodically updated](../index.md#vulnerability-scanner-maintenance)
-   so you may need to periodically update the local copy.
+   so you should periodically update the local copy.
 
 1. Set the CI/CD variable `SECURE_ANALYZERS_PREFIX` to the local Docker container registry.
 
@@ -454,14 +483,14 @@ secrets. If the number of commits in a merge request is greater than the value o
 [`GIT_DEPTH` CI/CD variable](../../../ci/runners/configure_runners.md#shallow-cloning), Secret
 Detection [fails to detect secrets](#error-couldnt-run-the-gitleaks-command-exit-status-2).
 
-For example, if a pipeline is triggered from a merge request containing 60 commits and the
-`GIT_DEPTH` variable's value is less than 60, the Secret Detection job fails as the clone is not
-deep enough to contain all of the relevant commits. To veridy the current value, see
+For example, you could have a pipeline triggered from a merge request containing 60 commits and the
+`GIT_DEPTH` variable set to less than 60. In that case the Secret Detection job fails because the
+clone is not deep enough to contain all of the relevant commits. To verify the current value, see
 [pipeline configuration](../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone).
 
-To confirm this as the cause of the error, set the [logging level](#set-the-logging-level) to `debug`, then
-rerun the pipeline. The logs should look similar to the following example. The text "object not
-found" is a symptom of this error.
+To confirm this as the cause of the error, set the [logging level](#set-the-logging-level) to
+`debug`, then rerun the pipeline. The logs should look similar to the following example. The text
+"object not found" is a symptom of this error.
 
 ```plaintext
 ERRO[2020-11-18T18:05:52Z] object not found

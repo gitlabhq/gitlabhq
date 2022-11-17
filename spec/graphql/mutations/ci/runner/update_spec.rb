@@ -7,8 +7,10 @@ RSpec.describe Mutations::Ci::Runner::Update do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project1) { create(:project) }
-  let_it_be(:runner) do
-    create(:ci_runner, :project, projects: [project1], active: true, locked: false, run_untagged: true)
+  let_it_be(:project2) { create(:project) }
+
+  let(:runner) do
+    create(:ci_runner, :project, projects: [project1, project2], active: true, locked: false, run_untagged: true)
   end
 
   let(:current_ctx) { { current_user: user } }
@@ -79,14 +81,14 @@ RSpec.describe Mutations::Ci::Runner::Update do
       end
 
       context 'with associatedProjects argument' do
-        let_it_be(:project2) { create(:project) }
+        let_it_be(:project3) { create(:project) }
 
         context 'with id set to project runner' do
           let(:mutation_params) do
             {
               id: runner.to_global_id,
               description: 'updated description',
-              associated_projects: [project2.to_global_id.to_s]
+              associated_projects: [project3.to_global_id.to_s]
             }
           end
 
@@ -96,7 +98,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
               {
                 runner: runner,
                 current_user: admin_user,
-                project_ids: [project2.id]
+                project_ids: [project3.id]
               }
             ) do |service|
               expect(service).to receive(:execute).and_call_original
@@ -110,7 +112,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
             expect(response[:runner]).to be_an_instance_of(Ci::Runner)
             expect(response[:runner]).to have_attributes(expected_attributes)
             expect(runner.reload).to have_attributes(expected_attributes)
-            expect(runner.projects).to match_array([project1, project2])
+            expect(runner.projects).to match_array([project1, project3])
           end
 
           context 'with user not allowed to assign runner' do
@@ -124,7 +126,7 @@ RSpec.describe Mutations::Ci::Runner::Update do
                 {
                   runner: runner,
                   current_user: admin_user,
-                  project_ids: [project2.id]
+                  project_ids: [project3.id]
                 }
               ) do |service|
                 expect(service).to receive(:execute).and_call_original
@@ -137,8 +139,36 @@ RSpec.describe Mutations::Ci::Runner::Update do
               expect(response[:errors]).to match_array(['user not allowed to assign runner'])
               expect(response[:runner]).to be_nil
               expect(runner.reload).not_to have_attributes(expected_attributes)
-              expect(runner.projects).to match_array([project1])
+              expect(runner.projects).to match_array([project1, project2])
             end
+          end
+        end
+
+        context 'with an empty list of projects' do
+          let(:mutation_params) do
+            {
+              id: runner.to_global_id,
+              associated_projects: []
+            }
+          end
+
+          it 'removes project relationships', :aggregate_failures do
+            expect_next_instance_of(
+              ::Ci::Runners::SetRunnerAssociatedProjectsService,
+              {
+                runner: runner,
+                current_user: admin_user,
+                project_ids: []
+              }
+            ) do |service|
+              expect(service).to receive(:execute).and_call_original
+            end
+
+            response
+
+            expect(response[:errors]).to be_empty
+            expect(response[:runner]).to be_an_instance_of(Ci::Runner)
+            expect(runner.reload.projects).to contain_exactly(project1)
           end
         end
 

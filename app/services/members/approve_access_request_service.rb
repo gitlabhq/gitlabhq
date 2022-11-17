@@ -16,7 +16,7 @@ module Members
     private
 
     def validate_access!(access_requester)
-      raise Gitlab::Access::AccessDeniedError unless can_update_access_requester?(access_requester)
+      raise Gitlab::Access::AccessDeniedError unless can_approve_access_requester?(access_requester)
 
       if approving_member_with_owner_access_level?(access_requester) &&
         cannot_assign_owner_responsibilities_to_member_in_project?(access_requester)
@@ -24,8 +24,8 @@ module Members
       end
     end
 
-    def can_update_access_requester?(access_requester)
-      can?(current_user, update_member_permission(access_requester), access_requester)
+    def can_approve_access_requester?(access_requester)
+      can?(current_user, :admin_member_access_request, access_requester.source)
     end
 
     def approving_member_with_owner_access_level?(access_requester)

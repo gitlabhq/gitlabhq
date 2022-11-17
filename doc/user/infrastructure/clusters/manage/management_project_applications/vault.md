@@ -36,17 +36,17 @@ Vault application causes downtime.
 To optimally use Vault in a production environment, it's ideal to have a good understanding
 of the internals of Vault and how to configure it. This can be done by reading
 the [Vault Configuration guide](../../../../../ci/secrets/index.md#configure-your-vault-server),
-the [Vault documentation](https://www.vaultproject.io/docs/internals) and
+the [Vault documentation](https://developer.hashicorp.com/vault/docs/internals) and
 the Vault Helm chart [`values.yaml` file](https://github.com/hashicorp/vault-helm/blob/v0.3.3/values.yaml).
 
 At a minimum, most users set up:
 
-- A [seal](https://www.vaultproject.io/docs/configuration/seal) for extra encryption
+- A [seal](https://developer.hashicorp.com/vault/docs/configuration/seal) for extra encryption
   of the main key.
-- A [storage backend](https://www.vaultproject.io/docs/configuration/storage) that's
+- A [storage backend](https://developer.hashicorp.com/vault/docs/configuration/storage) that's
   suitable for environment and storage security requirements.
-- [HA Mode](https://www.vaultproject.io/docs/concepts/ha).
-- The [Vault UI](https://www.vaultproject.io/docs/configuration/ui).
+- [HA Mode](https://developer.hashicorp.com/vault/docs/concepts/ha).
+- The [Vault UI](https://developer.hashicorp.com/vault/docs/configuration/ui).
 
 The following is an example values file (`applications/vault/values.yaml`)
 that configures Google Key Management Service for auto-unseal, using a Google Cloud Storage backend, enabling
@@ -86,7 +86,7 @@ server:
 ```
 
 After you have successfully installed Vault, you must
-[initialize the Vault](https://learn.hashicorp.com/tutorials/vault/getting-started-deploy#initializing-the-vault)
+[initialize the Vault](https://developer.hashicorp.com/vault/tutorials/getting-started/getting-started-deploy#initializing-the-vault)
 and obtain the initial root token. You need access to your Kubernetes cluster that
 Vault has been deployed into to do this. To initialize the Vault, get a
 shell to one of the Vault pods running inside Kubernetes (typically this is done

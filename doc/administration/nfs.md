@@ -10,7 +10,7 @@ type: reference
 NFS can be used as an alternative for object storage but this isn't typically
 recommended for performance reasons.
 
-For data objects such as LFS, Uploads, Artifacts, and so on, an [Object Storage service](object_storage.md)
+For data objects such as LFS, Uploads, and Artifacts, an [Object Storage service](object_storage.md)
 is recommended over NFS where possible, due to better performance.
 When eliminating the usage of NFS, there are [additional steps you need to take](object_storage.md#other-alternatives-to-file-system-storage)
 in addition to moving to Object Storage.
@@ -44,7 +44,7 @@ GitLab support is unable to continue with the investigation if both:
 - The date of the request is on or after the release of GitLab version 15.6.
 - Support Engineers and Management determine that all reasonable non-NFS root causes have been exhausted.
 
-If the issue is reproducible, or if it happens intermittently but regularly, GitLab Support can investigate providing the issue reproduces without the use of NFS. In order to reproduce without NFS, the affected repositories should be migrated to a different Gitaly shard, such as Gitaly cluster or a standalone Gitaly VM, backed with block storage.
+If the issue is reproducible, or if it happens intermittently but regularly, GitLab Support can investigate providing the issue reproduces without the use of NFS. To reproduce without NFS, the affected repositories should be migrated to a different Gitaly shard, such as Gitaly cluster or a standalone Gitaly VM, backed with block storage.
 
 ### Why remove NFS for Git repository data
 
@@ -52,7 +52,7 @@ If the issue is reproducible, or if it happens intermittently but regularly, Git
 
 NFS is not well-suited to a workload consisting of many small files, like Git repositories. NFS does provide a number of configuration options designed to improve performance. However, over time, a number of these mount options have proven to result in inconsistencies across multiple nodes mounting the NFS volume, up to and including data loss. Addressing these inconsistencies consume extraordinary development and support engineer time that hamper our ability to develop [Gitaly Cluster](gitaly/praefect.md), our purpose-built solution to addressing the deficiencies of NFS in this environment.
 
-Please note that Gitaly Cluster provides highly-available Git repository storage. If this is not a requirement, single-node Gitaly backed by block storage is a suitable substitute.
+Gitaly Cluster provides highly-available Git repository storage. If this is not a requirement, single-node Gitaly backed by block storage is a suitable substitute.
 
 Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
 unavailable from GitLab 15.0. No further enhancements are planned for this feature.
@@ -338,7 +338,7 @@ following are the 4 locations need to be shared:
 | -------- | ----------- | --------------------- |
 | `/var/opt/gitlab/git-data` | Git repository data. This accounts for a large portion of your data | `git_data_dirs({"default" => { "path" => "/var/opt/gitlab/git-data"} })`
 | `/var/opt/gitlab/gitlab-rails/uploads` | User uploaded attachments | `gitlab_rails['uploads_directory'] = '/var/opt/gitlab/gitlab-rails/uploads'`
-| `/var/opt/gitlab/gitlab-rails/shared` | Build artifacts, GitLab Pages, LFS objects, temp files, and so on. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
+| `/var/opt/gitlab/gitlab-rails/shared` | Objects such as build artifacts, GitLab Pages, LFS objects, and temp files. If you're using LFS this may also account for a large portion of your data | `gitlab_rails['shared_path'] = '/var/opt/gitlab/gitlab-rails/shared'`
 | `/var/opt/gitlab/gitlab-ci/builds` | GitLab CI/CD build traces | `gitlab_ci['builds_directory'] = '/var/opt/gitlab/gitlab-ci/builds'`
 
 Other GitLab directories should not be shared between nodes. They contain
@@ -352,7 +352,7 @@ are empty before attempting a restore. Read more about the
 
 ## Testing NFS
 
-Once you've set up the NFS server and client, you can verify NFS is configured correctly
+When you've set up the NFS server and client, you can verify NFS is configured correctly
 by testing the following commands:
 
 ```shell

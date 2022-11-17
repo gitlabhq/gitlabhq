@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe API::ProjectMilestones do
   let_it_be(:user) { create(:user) }
-  let_it_be_with_reload(:project) { create(:project, namespace: user.namespace ) }
+  let_it_be_with_reload(:project) { create(:project, namespace: user.namespace) }
   let_it_be(:closed_milestone) { create(:closed_milestone, project: project, title: 'version1', description: 'closed milestone') }
   let_it_be(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
   let_it_be(:route) { "/projects/#{project.id}/milestones" }

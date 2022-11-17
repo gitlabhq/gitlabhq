@@ -39,6 +39,7 @@ module QA
           add_failure_issues_link(example)
           add_ci_job_link(example)
           set_flaky_status(example)
+          set_behaviour_categories(example)
         end
 
         private
@@ -97,6 +98,19 @@ module QA
           log(:error, "Failed to add spec pass rate data for example '#{example.description}', error: #{e}")
         end
 
+        # Add behaviour categories to report
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [void]
+        def set_behaviour_categories(example)
+          file_path = example.file_path.gsub('./qa/specs/features', '')
+          devops_stage = file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
+          product_group = example.metadata[:product_group]
+
+          example.epic(devops_stage) if devops_stage
+          example.feature(product_group) if product_group
+        end
+
         # Flaky specs with pass rate below 98%
         #
         # @return [Array]
@@ -107,7 +121,7 @@ module QA
 
             runs = records.count
             failed = records.count { |r| r.values["status"] == "failed" }
-            pass_rate = 100 - ((failed.to_f / runs.to_f) * 100)
+            pass_rate = 100 - ((failed.to_f / runs) * 100)
 
             # Consider spec with a pass rate less than 98% as flaky
             result[records.last.values["testcase"]] = pass_rate if pass_rate < 98

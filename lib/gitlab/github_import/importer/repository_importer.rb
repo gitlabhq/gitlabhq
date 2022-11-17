@@ -80,7 +80,7 @@ module Gitlab
         end
 
         def update_clone_time
-          project.touch(:last_repository_updated_at) # rubocop: disable Rails/SkipsModelValidations
+          project.touch(:last_repository_updated_at)
         end
 
         private

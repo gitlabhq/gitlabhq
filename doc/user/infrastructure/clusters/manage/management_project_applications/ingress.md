@@ -22,5 +22,5 @@ of your cluster.
 You can customize the installation of Ingress by updating the
 `applications/ingress/values.yaml` file in your cluster
 management project. Refer to the
-[chart](https://github.com/helm/charts/tree/master/stable/nginx-ingress)
+[chart](https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx)
 for the available configuration options.

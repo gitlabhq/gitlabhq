@@ -127,7 +127,7 @@ RSpec.describe Groups::UpdateSharedRunnersService do
         end
 
         context 'when parent does not allow' do
-          let_it_be(:parent) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false ) }
+          let_it_be(:parent) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false) }
           let_it_be(:group) { create(:group, :shared_runners_disabled, allow_descendants_override_disabled_shared_runners: false, parent: parent) }
 
           it 'results error' do

@@ -26,7 +26,7 @@ under the `TOP_LEVEL_ROUTES`, `PROJECT_WILDCARD_ROUTES` and `GROUP_ROUTES` lists
 
 ## Reserved project names
 
-It is currently not possible to create a project with the following names:
+It is not possible to create a project with the following names:
 
 - `\-`
 - `badges`
@@ -52,7 +52,7 @@ It is currently not possible to create a project with the following names:
 
 ## Reserved group names
 
-Currently, the following names are reserved as top level groups:
+The following names are reserved as top level groups:
 
 - `\-`
 - `.well-known`

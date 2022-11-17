@@ -275,7 +275,7 @@ module Gitlab
                 ).revert_preparation_for_partitioning
         end
 
-        def convert_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
+        def convert_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, lock_tables: [])
           validate_not_in_transaction!(:convert_table_to_first_list_partition)
 
           Gitlab::Database::Partitioning::ConvertTableToFirstListPartition
@@ -283,7 +283,8 @@ module Gitlab
                  table_name: table_name,
                  parent_table_name: parent_table_name,
                  partitioning_column: partitioning_column,
-                 zero_partition_value: initial_partitioning_value
+                 zero_partition_value: initial_partitioning_value,
+                 lock_tables: lock_tables
                 ).partition
         end
 

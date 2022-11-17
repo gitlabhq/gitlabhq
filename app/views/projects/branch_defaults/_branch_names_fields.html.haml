@@ -1,0 +1,14 @@
+- if @project.project_feature.issues_access_level > 0
+  %fieldset#branch-names-settings
+    .form-group
+      = f.label :issue_branch_template, _('Branch name template'), class: 'label-bold'
+      %p= s_('ProjectSettings|Branches created from issues follow this pattern.')
+
+    .form-group
+      .gl-mb-2
+        = f.text_field :issue_branch_template, class: 'form-control gl-mb-2', placeholder: "%{id}-%{title}"
+        %p.form-text.text-muted
+          = s_('ProjectSettings|Leave empty to use default template.')
+          = sprintf(s_('ProjectSettings|Maximum %{maxLength} characters.'), { maxLength: Issue::MAX_BRANCH_TEMPLATE })
+          - branch_name_help_link = help_page_path('user/project/repository/web_editor.md', anchor: 'create-a-new-branch-from-an-issue')
+          = link_to _('What variables can I use?'), branch_name_help_link, target: "_blank"

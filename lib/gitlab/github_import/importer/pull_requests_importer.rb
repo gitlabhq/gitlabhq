@@ -38,7 +38,7 @@ module Gitlab
           # deliberate. If we were to update this column after the fetch we may
           # miss out on changes pushed during the fetch or between the fetch and
           # updating the timestamp.
-          project.touch(:last_repository_updated_at) # rubocop: disable Rails/SkipsModelValidations
+          project.touch(:last_repository_updated_at)
 
           project.repository.fetch_remote(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true)
 

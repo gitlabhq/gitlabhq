@@ -315,7 +315,7 @@ module ApplicationHelper
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << system_message_class
-    class_names << marketing_header_experiment_class
+    class_names << 'logged-out-marketing-header' unless current_user
     class_names
   end
 
@@ -377,13 +377,13 @@ module ApplicationHelper
   end
 
   def client_class_list
-    "gl-browser-#{browser.id} gl-platform-#{browser.platform.id}"
+    "gl-browser-#{browser_id} gl-platform-#{platform_id}"
   end
 
   def client_js_flags
     {
-      "is#{browser.id.to_s.titlecase}": true,
-      "is#{browser.platform.id.to_s.titlecase}": true
+      "is#{browser_id.titlecase}": true,
+      "is#{platform_id.titlecase}": true
     }
   end
 
@@ -453,20 +453,16 @@ module ApplicationHelper
 
   private
 
-  def appearance
-    ::Appearance.current
+  def browser_id
+    browser.unknown? ? 'generic' : browser.id.to_s
   end
 
-  def marketing_header_experiment_class
-    return if current_user
+  def platform_id
+    browser.platform.unknown? ? 'other' : browser.platform.id.to_s
+  end
 
-    experiment(:logged_out_marketing_header, actor: nil) do |e|
-      html_class = 'logged-out-marketing-header-candidate'
-      e.candidate { html_class }
-      e.variant(:trial_focused) { html_class }
-      e.control {}
-      e.run
-    end
+  def appearance
+    ::Appearance.current
   end
 end
 

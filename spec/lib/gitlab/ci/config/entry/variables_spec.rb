@@ -66,6 +66,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
         )
       end
     end
+
+    describe '#value_with_prefill_data' do
+      it 'returns variable with prefill data' do
+        expect(entry.value_with_prefill_data).to eq(
+          'VARIABLE_1' => { value: 'value 1' },
+          'VARIABLE_2' => { value: 'value 2' }
+        )
+      end
+    end
   end
 
   context 'with numeric keys and values in the config' do
@@ -119,6 +128,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
       describe '#value_with_data' do
         it 'returns variable with data' do
           expect(entry.value_with_data).to eq(
+            'VARIABLE_1' => { value: 'value' }
+          )
+        end
+      end
+
+      describe '#value_with_prefill_data' do
+        it 'returns variable with prefill data' do
+          expect(entry.value_with_prefill_data).to eq(
             'VARIABLE_1' => { value: 'value', description: 'variable 1' }
           )
         end
@@ -147,6 +164,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
       describe '#value_with_data' do
         it 'returns variable with data' do
           expect(entry.value_with_data).to eq(
+            'VARIABLE_1' => { value: 'value1' }
+          )
+        end
+      end
+
+      describe '#value_with_prefill_data' do
+        it 'returns variable with prefill data' do
+          expect(entry.value_with_prefill_data).to eq(
             'VARIABLE_1' => { value: 'value1', value_options: %w[value1 value2], description: 'variable 1' }
           )
         end
@@ -174,6 +199,15 @@ RSpec.describe Gitlab::Ci::Config::Entry::Variables do
       describe '#value_with_data' do
         it 'returns variable with data' do
           expect(entry.value_with_data).to eq(
+            'VARIABLE_1' => { value: 'value 1' },
+            'VARIABLE_2' => { value: 'value 2' }
+          )
+        end
+      end
+
+      describe '#value_with_prefill_data' do
+        it 'returns variable with prefill data' do
+          expect(entry.value_with_prefill_data).to eq(
             'VARIABLE_1' => { value: 'value 1', description: 'variable 1' },
             'VARIABLE_2' => { value: 'value 2' }
           )

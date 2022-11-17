@@ -1,11 +1,7 @@
 - milestone_url = @milestone.project_milestone? ? project_milestone_path(@project, @milestone) : group_milestone_path(@group, @milestone)
 
-%button.js-delete-milestone-button.btn.gl-button.btn-grouped.btn-danger{ data: { milestone_id: @milestone.id,
-  milestone_title: markdown_field(@milestone, :title),
-  milestone_url: milestone_url,
-  milestone_issue_count: @milestone.issues.count,
-  milestone_merge_request_count: @milestone.merge_requests.count },
-  disabled: true }
+= render Pajamas::ButtonComponent.new(variant: :danger,
+  button_options: { class: 'js-delete-milestone-button btn-grouped', data: { milestone_id: @milestone.id, milestone_title: markdown_field(@milestone, :title), milestone_url: milestone_url, milestone_issue_count: @milestone.issues.count, milestone_merge_request_count: @milestone.merge_requests.count }, disabled: true }) do
   = gl_loading_icon(inline: true, css_class: "gl-mr-2 js-loading-icon hidden")
   = _('Delete')
 

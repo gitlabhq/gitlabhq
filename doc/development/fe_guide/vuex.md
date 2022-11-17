@@ -22,7 +22,7 @@ official [Vuex documentation](https://vuex.vuejs.org).
 
 Vuex is composed of State, Getters, Mutations, Actions, and Modules.
 
-When a user clicks on an action, we need to `dispatch` it. This action `commits` a mutation that changes the state. The action itself does not update the state; only a mutation should update the state.
+When a user selects an action, we need to `dispatch` it. This action `commits` a mutation that changes the state. The action itself does not update the state; only a mutation should update the state.
 
 ## File structure
 

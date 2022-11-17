@@ -60,9 +60,11 @@ export const initLegacyWebIDE = (el, options = {}) => {
         committedStateSvgPath: el.dataset.committedStateSvgPath,
         pipelinesEmptyStateSvgPath: el.dataset.pipelinesEmptyStateSvgPath,
         promotionSvgPath: el.dataset.promotionSvgPath,
+        switchEditorSvgPath: el.dataset.switchEditorSvgPath,
       });
       this.setLinks({
         webIDEHelpPagePath: el.dataset.webIdeHelpPagePath,
+        newWebIDEHelpPagePath: el.dataset.newWebIdeHelpPagePath,
         forkInfo: el.dataset.forkInfo ? JSON.parse(el.dataset.forkInfo) : null,
       });
       this.init({
@@ -72,6 +74,8 @@ export const initLegacyWebIDE = (el, options = {}) => {
         codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
         environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
         previewMarkdownPath: el.dataset.previewMarkdownPath,
+        canUseNewWebIde: parseBoolean(el.dataset.canUseNewWebIde),
+        userPreferencesPath: el.dataset.userPreferencesPath,
       });
     },
     beforeDestroy() {

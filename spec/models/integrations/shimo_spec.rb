@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::Integrations::Shimo do
   describe '#fields' do
-    let(:shimo_integration) { create(:shimo_integration) }
+    let(:shimo_integration) { build(:shimo_integration) }
 
     it 'returns custom fields' do
       expect(shimo_integration.fields.pluck(:name)).to eq(%w[external_wiki_url])
@@ -12,7 +12,7 @@ RSpec.describe ::Integrations::Shimo do
   end
 
   describe '#create' do
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
     let(:external_wiki_url) { 'https://shimo.example.com/desktop' }
     let(:params) { { active: true, project: project, external_wiki_url: external_wiki_url } }
 
@@ -40,7 +40,7 @@ RSpec.describe ::Integrations::Shimo do
   end
 
   describe 'Caching has_shimo on project_settings' do
-    let(:project) { create(:project) }
+    let_it_be(:project) { create(:project) }
 
     subject { project.project_setting.has_shimo? }
 

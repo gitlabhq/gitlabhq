@@ -14,7 +14,7 @@ GitLab can also send events (for example, `issue created`) to Slack as notificat
 The [Slack notifications service](slack.md) is configured separately.
 
 NOTE:
-For GitLab.com, use the [GitLab Slack app](gitlab_slack_application.md) instead.
+For GitLab.com, use the [GitLab for Slack app](gitlab_slack_application.md) instead.
 
 ## Configure GitLab and Slack
 

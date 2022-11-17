@@ -13,7 +13,7 @@
   #js-code-owners{ data: { blob_path: blob.path, project_path: @project.full_path, branch: @ref } }
   = render "projects/blob/auxiliary_viewer", blob: blob
 
-#blob-content-holder.blob-content-holder
+#blob-content-holder.blob-content-holder.js-per-page{ data: { blame_per_page: Projects::BlameService::PER_PAGE } }
   - if @code_navigation_path
     #js-code-navigation{ data: { code_navigation_path: @code_navigation_path, blob_path: blob.path, definition_path_prefix: project_blob_path(@project, @ref) } }
   - if !expanded

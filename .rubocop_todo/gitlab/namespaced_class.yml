@@ -1283,7 +1283,6 @@ Gitlab/NamespacedClass:
     - 'spec/models/concerns/batch_destroy_dependent_associations_spec.rb'
     - 'spec/models/concerns/bulk_insertable_associations_spec.rb'
     - 'spec/models/concerns/triggerable_hooks_spec.rb'
-    - 'spec/support/helpers/bare_repo_operations.rb'
     - 'spec/support/helpers/ci_artifact_metadata_generator.rb'
     - 'spec/support/helpers/fake_migration_classes.rb'
     - 'spec/support/helpers/fake_u2f_device.rb'

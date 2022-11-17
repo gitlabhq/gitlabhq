@@ -1,6 +1,6 @@
 ---
 stage: Package
-group: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -61,8 +61,8 @@ PUT projects/:id/packages/debian/:file_name
 
 ```shell
 curl --request PUT \
+     --user <username>:<personal_access_token> \
      --upload-file path/to/mypkg.deb \
-     --header "Private-Token: <personal_access_token>" \
      "https://gitlab.example.com/api/v4/projects/1/packages/debian/mypkg.deb"
 ```
 

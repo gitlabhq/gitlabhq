@@ -12,7 +12,11 @@ import {
 import Protection from '~/projects/settings/branch_rules/components/view/protection.vue';
 import branchRulesQuery from '~/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { sprintf } from '~/locale';
-import { branchProtectionsMockResponse } from './mock_data';
+import {
+  branchProtectionsMockResponse,
+  approvalRulesMock,
+  statusChecksRulesMock,
+} from './mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   getParameterByName: jest.fn().mockReturnValue('main'),
@@ -34,6 +38,7 @@ describe('View branch rules', () => {
   const projectPath = 'test/testing';
   const protectedBranchesPath = 'protected/branches';
   const approvalRulesPath = 'approval/rules';
+  const statusChecksPath = 'status/checks';
   const branchProtectionsMockRequestHandler = jest
     .fn()
     .mockResolvedValue(branchProtectionsMockResponse);
@@ -43,7 +48,7 @@ describe('View branch rules', () => {
 
     wrapper = shallowMountExtended(RuleView, {
       apolloProvider: fakeApollo,
-      provide: { projectPath, protectedBranchesPath, approvalRulesPath },
+      provide: { projectPath, protectedBranchesPath, approvalRulesPath, statusChecksPath },
     });
 
     await waitForPromises();
@@ -59,6 +64,7 @@ describe('View branch rules', () => {
   const findBranchProtections = () => wrapper.findAllComponents(Protection);
   const findForcePushTitle = () => wrapper.findByText(I18N.allowForcePushDescription);
   const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
+  const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
 
   it('gets the branch param from url and renders it in the view', () => {
     expect(util.getParameterByName).toHaveBeenCalledWith('branch');
@@ -105,9 +111,21 @@ describe('View branch rules', () => {
     expect(findApprovalsTitle().exists()).toBe(true);
 
     expect(findBranchProtections().at(2).props()).toMatchObject({
-      header: sprintf(I18N.approvalsHeader, { total: 0 }),
+      header: sprintf(I18N.approvalsHeader, { total: 3 }),
       headerLinkHref: approvalRulesPath,
       headerLinkTitle: I18N.manageApprovalsLinkTitle,
+      approvals: approvalRulesMock,
+    });
+  });
+
+  it('renders a branch protection component for status checks', () => {
+    expect(findStatusChecksTitle().exists()).toBe(true);
+
+    expect(findBranchProtections().at(3).props()).toMatchObject({
+      header: sprintf(I18N.statusChecksHeader, { total: 2 }),
+      headerLinkHref: statusChecksPath,
+      headerLinkTitle: I18N.statusChecksLinkTitle,
+      statusChecks: statusChecksRulesMock,
     });
   });
 });

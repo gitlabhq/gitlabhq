@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', :reliable do
+  RSpec.describe 'Create', :reliable, product_group: :editor do
     describe 'Multiple file snippet' do
       let(:snippet) do
         Resource::ProjectSnippet.fabricate_via_browser_ui! do |snippet|
@@ -22,10 +22,6 @@ module QA
 
       before do
         Flow::Login.sign_in
-      end
-
-      after do
-        snippet.remove_via_api!
       end
 
       it 'creates a project snippet with multiple files', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347725' do

@@ -18,10 +18,11 @@ RSpec.describe ResourceEvents::ChangeStateService do
 
         event = resource.resource_state_events.last
 
-        if resource.is_a?(Issue)
+        case resource
+        when Issue
           expect(event.issue).to eq(resource)
           expect(event.merge_request).to be_nil
-        elsif resource.is_a?(MergeRequest)
+        when MergeRequest
           expect(event.issue).to be_nil
           expect(event.merge_request).to eq(resource)
         end
@@ -91,10 +92,11 @@ RSpec.describe ResourceEvents::ChangeStateService do
   end
 
   def expect_event_source(event, source)
-    if source.is_a?(MergeRequest)
+    case source
+    when MergeRequest
       expect(event.source_commit).to be_nil
       expect(event.source_merge_request).to eq(source)
-    elsif source.is_a?(Commit)
+    when Commit
       expect(event.source_commit).to eq(source.id)
       expect(event.source_merge_request).to be_nil
     else

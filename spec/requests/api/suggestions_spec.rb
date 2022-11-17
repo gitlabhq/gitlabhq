@@ -91,7 +91,7 @@ RSpec.describe API::Suggestions do
     end
 
     context 'when suggestion is not found' do
-      let(:url) { "/suggestions/foo-123/apply" }
+      let(:url) { "/suggestions/9999/apply" }
 
       it 'renders a not found error and returns json content' do
         project.add_maintainer(user)
@@ -100,6 +100,19 @@ RSpec.describe API::Suggestions do
 
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response).to eq({ 'message' => 'Suggestion is not applicable as the suggestion was not found.' })
+      end
+    end
+
+    context 'when suggestion ID is not valid' do
+      let(:url) { "/suggestions/foo-123/apply" }
+
+      it 'renders a not found error and returns json content' do
+        project.add_maintainer(user)
+
+        put api(url, user)
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({ 'error' => 'id is invalid' })
       end
     end
 

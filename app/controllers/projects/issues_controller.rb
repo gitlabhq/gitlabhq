@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Projects::IssuesController < Projects::ApplicationController
-  include RendersNotes
   include ToggleSubscriptionAction
   include IssuableActions
   include ToggleAwardEmoji
@@ -49,11 +48,14 @@ class Projects::IssuesController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
   end
 
+  before_action only: :index do
+    push_frontend_feature_flag(:or_issuable_queries, project)
+  end
+
   before_action only: :show do
     push_frontend_feature_flag(:issue_assignees_widget, project)
-    push_frontend_feature_flag(:realtime_labels, project)
+    push_frontend_feature_flag(:work_items_mvc, project&.group)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
-    push_frontend_feature_flag(:work_items_hierarchy, project)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_force_frontend_feature_flag(:work_items_create_from_markdown, project&.work_items_create_from_markdown_feature_flag_enabled?)
   end
@@ -405,7 +407,6 @@ class Projects::IssuesController < Projects::ApplicationController
     options = super
 
     options[:issue_types] = Issue::TYPES_FOR_LIST
-    options[:issue_types] = options[:issue_types].excluding('task') unless project.work_items_feature_flag_enabled?
 
     if service_desk?
       options.reject! { |key| key == 'author_username' || key == 'author_id' }
@@ -432,10 +433,13 @@ class Projects::IssuesController < Projects::ApplicationController
   def create_vulnerability_issue_feedback(issue); end
 
   def redirect_if_task
-    return render_404 if issue.task? && !project.work_items_feature_flag_enabled?
     return unless issue.task?
 
-    redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
+    if Feature.enabled?(:use_iid_in_work_items_path, project.group)
+      redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
+    else
+      redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
+    end
   end
 end
 

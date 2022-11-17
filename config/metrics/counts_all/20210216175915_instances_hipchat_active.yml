@@ -3,7 +3,7 @@ data_category: optional
 key_path: counts.instances_hipchat_active
 description: Count of active instance-level integrations for HipChat
 product_section: dev
-product_stage: ecosystem
+product_stage: manage
 product_group: integrations
 product_category: integrations
 value_type: number

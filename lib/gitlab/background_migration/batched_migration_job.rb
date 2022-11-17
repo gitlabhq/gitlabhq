@@ -36,6 +36,12 @@ module Gitlab
         0
       end
 
+      def self.operation_name(operation)
+        define_method('operation_name') do
+          operation
+        end
+      end
+
       def self.job_arguments(*args)
         args.each.with_index do |arg, index|
           define_method(arg) do
@@ -70,7 +76,7 @@ module Gitlab
 
       attr_reader :start_id, :end_id, :batch_table, :batch_column, :sub_batch_size, :pause_ms, :connection
 
-      def each_sub_batch(operation_name: :default, batching_arguments: {}, batching_scope: nil)
+      def each_sub_batch(batching_arguments: {}, batching_scope: nil)
         all_batching_arguments = { column: batch_column, of: sub_batch_size }.merge(batching_arguments)
 
         relation = filter_batch(base_relation)
@@ -85,7 +91,7 @@ module Gitlab
         end
       end
 
-      def distinct_each_batch(operation_name: :default, batching_arguments: {})
+      def distinct_each_batch(batching_arguments: {})
         if base_relation != filter_batch(base_relation)
           raise 'distinct_each_batch can not be used when additional filters are defined with scope_to'
         end
@@ -110,6 +116,10 @@ module Gitlab
         return relation unless batching_scope
 
         batching_scope.call(relation)
+      end
+
+      def operation_name
+        raise('Operation name is required, please define it with `operation_name`')
       end
     end
   end

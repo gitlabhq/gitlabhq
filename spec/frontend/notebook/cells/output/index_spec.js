@@ -1,12 +1,15 @@
 import { mount } from '@vue/test-utils';
 import json from 'test_fixtures/blob/notebook/basic.json';
 import Output from '~/notebook/cells/output/index.vue';
+import MarkdownOutput from '~/notebook/cells/output/markdown.vue';
+import { relativeRawPath, markdownCellContent } from '../../mock_data';
 
 describe('Output component', () => {
   let wrapper;
 
   const createComponent = (output) => {
     wrapper = mount(Output, {
+      provide: { relativeRawPath },
       propsData: {
         outputs: [].concat(output),
         count: 1,
@@ -92,6 +95,17 @@ describe('Output component', () => {
       expect(iframe.exists()).toBe(true);
       expect(iframe.element.getAttribute('sandbox')).toBe('');
       expect(iframe.element.getAttribute('srcdoc')).toBe('<svg></svg>');
+    });
+  });
+
+  describe('Markdown output', () => {
+    beforeEach(() => {
+      const markdownType = { data: { 'text/markdown': markdownCellContent } };
+      createComponent(markdownType);
+    });
+
+    it('renders a markdown component', () => {
+      expect(wrapper.findComponent(MarkdownOutput).props('rawCode')).toBe(markdownCellContent);
     });
   });
 

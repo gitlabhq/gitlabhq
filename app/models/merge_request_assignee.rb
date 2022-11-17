@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class MergeRequestAssignee < ApplicationRecord
-  include IgnorableColumns
-  ignore_column %i[state updated_state_by_user_id], remove_with: '15.6', remove_after: '2022-10-22'
-
   belongs_to :merge_request, touch: true
   belongs_to :assignee, class_name: "User", foreign_key: :user_id, inverse_of: :merge_request_assignees
 

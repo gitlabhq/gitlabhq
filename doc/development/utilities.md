@@ -199,9 +199,25 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
     end
     strong_memoize_attr :result
 
-    strong_memoize_attr :enabled?, :enabled
     def enabled?
       Feature.enabled?(:some_feature)
+    end
+    strong_memoize_attr :enabled?, :enabled
+  end
+  ```
+
+  There's also `strong_memoize_with` to help memoize methods that take arguments.
+  This should be used for methods that have a low number of possible values
+  as arguments or with consistent repeating arguments in a loop.
+
+  ```ruby
+  class Find
+    include Gitlab::Utils::StrongMemoize
+
+    def result(basic: true)
+      strong_memoize_with(:result, basic) do
+        search(basic)
+      end
     end
   end
   ```

@@ -169,7 +169,11 @@ RSpec::Matchers.define :have_graphql_type do |expected, opts = {}|
   include GraphQLTypeHelpers
 
   match do |object|
-    expect(object.type).to eq(nullified(expected, opts[:null]))
+    if object.type.list?
+      expect(object.type.unwrap).to eq(nullified(expected, opts[:null]))
+    else
+      expect(object.type).to eq(nullified(expected, opts[:null]))
+    end
   end
 
   failure_message do |object|

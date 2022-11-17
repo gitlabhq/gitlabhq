@@ -188,7 +188,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'does not hide the milestone select' do
-        expect(page).to have_selector('[data-testid="issuable-milestone-dropdown"]')
+        expect(page).to have_button 'Select milestone'
       end
     end
 
@@ -204,7 +204,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'shows the milestone select' do
-        expect(page).to have_selector('[data-testid="issuable-milestone-dropdown"]')
+        expect(page).to have_button 'Select milestone'
       end
 
       it 'hides the incident help text' do
@@ -265,7 +265,7 @@ RSpec.describe "User creates issue" do
       end
 
       it 'shows the milestone select' do
-        expect(page).to have_selector('[data-testid="issuable-milestone-dropdown"]')
+        expect(page).to have_button 'Select milestone'
       end
 
       it 'hides the weight input' do

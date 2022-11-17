@@ -27,7 +27,7 @@ describe('GL Style Field Errors', () => {
     expect(testContext.fieldErrors).toBeDefined();
     const { inputs } = testContext.fieldErrors.state;
 
-    expect(inputs.length).toBe(4);
+    expect(inputs.length).toBe(5);
   });
 
   it('should ignore elements with custom error handling', () => {

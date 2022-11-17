@@ -25,6 +25,7 @@ module PgFullTextSearchable
   TSVECTOR_MAX_LENGTH = 1.megabyte.freeze
   TEXT_SEARCH_DICTIONARY = 'english'
   URL_SCHEME_REGEX = %r{(?<=\A|\W)\w+://(?=\w+)}.freeze
+  TSQUERY_DISALLOWED_CHARACTERS_REGEX = %r{[^a-zA-Z0-9 .@/\-_"]}.freeze
 
   def update_search_data!
     tsvector_sql_nodes = self.class.pg_full_text_searchable_columns.map do |column, weight|
@@ -102,21 +103,16 @@ module PgFullTextSearchable
       end
     end
 
-    def pg_full_text_search(search_term)
+    def pg_full_text_search(query, matched_columns: [])
       search_data_table = reflect_on_association(:search_data).klass.arel_table
-
-      # This fixes an inconsistency with how to_tsvector and websearch_to_tsquery process URLs
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/354784#note_905431920
-      search_term = remove_url_scheme(search_term)
-      search_term = ActiveSupport::Inflector.transliterate(search_term)
 
       joins(:search_data).where(
         Arel::Nodes::InfixOperation.new(
           '@@',
           search_data_table[:search_vector],
           Arel::Nodes::NamedFunction.new(
-            'websearch_to_tsquery',
-            [Arel::Nodes.build_quoted(TEXT_SEARCH_DICTIONARY), Arel::Nodes.build_quoted(search_term)]
+            'to_tsquery',
+            [Arel::Nodes.build_quoted(TEXT_SEARCH_DICTIONARY), build_tsquery(query, matched_columns)]
           )
         )
       )
@@ -124,8 +120,39 @@ module PgFullTextSearchable
 
     private
 
-    def remove_url_scheme(search_term)
-      search_term.gsub(URL_SCHEME_REGEX, '')
+    def build_tsquery(query, matched_columns)
+      # URLs get broken up into separate words when : is removed below, so we just remove the whole scheme.
+      query = remove_url_scheme(query)
+      # Remove accents from search term to match indexed data
+      query = ActiveSupport::Inflector.transliterate(query)
+      # Prevent users from using tsquery operators that can cause syntax errors.
+      query = filter_allowed_characters(query)
+
+      weights = matched_columns.map do |column_name|
+        pg_full_text_searchable_columns[column_name]
+      end.compact.join
+      prefix_search_suffix = ":*#{weights}"
+
+      tsquery = Gitlab::SQL::Pattern.split_query_to_search_terms(query).map do |search_term|
+        case search_term
+        when /\A\d+\z/ # Handles https://gitlab.com/gitlab-org/gitlab/-/issues/375337
+          "(#{search_term + prefix_search_suffix} | -#{search_term + prefix_search_suffix})"
+        when /\s/
+          search_term.split.map { |t| "#{t}:#{weights}" }.join(' <-> ')
+        else
+          search_term + prefix_search_suffix
+        end
+      end.join(' & ')
+
+      Arel::Nodes.build_quoted(tsquery)
+    end
+
+    def remove_url_scheme(query)
+      query.gsub(URL_SCHEME_REGEX, '')
+    end
+
+    def filter_allowed_characters(query)
+      query.gsub(TSQUERY_DISALLOWED_CHARACTERS_REGEX, ' ')
     end
   end
 end

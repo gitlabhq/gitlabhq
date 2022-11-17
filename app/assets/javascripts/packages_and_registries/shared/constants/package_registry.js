@@ -39,6 +39,12 @@ export const DELETE_PACKAGE_FILE_SUCCESS_MESSAGE = s__(
   'PackageRegistry|Package asset deleted successfully',
 );
 
+export const DELETE_PACKAGE_MODAL_CONTENT_MESSAGE = s__(
+  'PackageRegistry|You are about to delete %{name}, are you sure?',
+);
+export const DELETE_PACKAGE_MODAL_TITLE = s__('PackageRegistry|Delete package');
+export const DELETE_PACKAGE_MODAL_ACTION = s__('PackageRegistry|Permanently delete');
+
 export const PACKAGE_ERROR_STATUS = 'error';
 export const PACKAGE_DEFAULT_STATUS = 'default';
 export const PACKAGE_HIDDEN_STATUS = 'hidden';

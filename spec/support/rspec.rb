@@ -11,6 +11,9 @@ require_relative "helpers/fast_rails_root"
 RSpec::Expectations.configuration.on_potential_false_positives = :raise
 
 RSpec.configure do |config|
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/379686
+  config.threadsafe = false
+
   # Re-run failures locally with `--only-failures`
   config.example_status_persistence_file_path = ENV.fetch('RSPEC_LAST_RUN_RESULTS_FILE', './spec/examples.txt')
 

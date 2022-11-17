@@ -258,6 +258,19 @@ RSpec.describe GroupPolicy do
     it_behaves_like 'deploy token does not get confused with user' do
       let(:user_id) { migration_bot.id }
     end
+
+    context 'with no user' do
+      let(:current_user) { nil }
+
+      it :aggregate_failures do
+        expect_disallowed(:read_resource_access_tokens, :destroy_resource_access_tokens)
+        expect_disallowed(*guest_permissions)
+        expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
+        expect_disallowed(*maintainer_permissions)
+        expect_disallowed(*owner_permissions)
+      end
+    end
   end
 
   describe 'private nested group use the highest access level from the group and inherited permissions' do

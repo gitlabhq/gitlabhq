@@ -5,7 +5,7 @@ module QA
     module Project
       module Settings
         class DefaultBranch < Page::Base
-          view 'app/views/projects/default_branch/_show.html.haml' do
+          view 'app/views/projects/branch_defaults/_show.html.haml' do
             element :save_changes_button
           end
 
@@ -18,8 +18,8 @@ module QA
           end
 
           def set_default_branch(branch)
-            click_button :default_branch_dropdown
-            fill_in :ref_selector_searchbox, with: branch
+            find_element(:default_branch_dropdown, visible: false).click
+            find_element(:ref_selector_searchbox, visible: false).fill_in(with: branch)
             click_button branch
           end
 

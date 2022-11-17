@@ -13,6 +13,6 @@
   %p
     = s_('409|Please contact your GitLab administrator if you think this is a mistake.')
   .action-container.js-go-back{ hidden: true }
-    %button{ type: 'button', class: 'gl-button btn btn-primary' }
+    = render Pajamas::ButtonComponent.new(variant: :confirm) do
       = _('Go Back')
 = render "errors/footer"

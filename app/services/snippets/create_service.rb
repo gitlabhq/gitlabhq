@@ -34,7 +34,7 @@ module Snippets
 
         move_temporary_files
 
-        ServiceResponse.success(payload: { snippet: @snippet } )
+        ServiceResponse.success(payload: { snippet: @snippet })
       else
         snippet_error_response(@snippet, 400)
       end

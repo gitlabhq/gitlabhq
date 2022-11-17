@@ -190,14 +190,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
                target_branch: 'conflict-start')
       end
 
-      it 'does not change the merge ref HEAD' do
-        expect(merge_request.merge_ref_head).to be_nil
-
-        subject
-
-        expect(merge_request.reload.merge_ref_head).not_to be_nil
-      end
-
       it 'returns ServiceResponse.error and keeps merge status as cannot_be_merged' do
         result = subject
 
@@ -346,28 +338,6 @@ RSpec.describe MergeRequests::MergeabilityCheckService, :clean_gitlab_redis_shar
 
         it 'does not reload merge head diff' do
           expect(MergeRequests::ReloadMergeHeadDiffService).not_to receive(:new)
-
-          subject
-        end
-      end
-    end
-
-    context 'merge with conflicts' do
-      it 'calls MergeToRefService with true allow_conflicts param' do
-        expect(MergeRequests::MergeToRefService).to receive(:new)
-          .with(project: project, current_user: merge_request.author, params: { allow_conflicts: true }).and_call_original
-
-        subject
-      end
-
-      context 'when display_merge_conflicts_in_diff is disabled' do
-        before do
-          stub_feature_flags(display_merge_conflicts_in_diff: false)
-        end
-
-        it 'calls MergeToRefService with false allow_conflicts param' do
-          expect(MergeRequests::MergeToRefService).to receive(:new)
-            .with(project: project, current_user: merge_request.author, params: { allow_conflicts: false }).and_call_original
 
           subject
         end

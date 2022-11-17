@@ -55,7 +55,7 @@ Memory requirements are dependent on the number of users and expected workload. 
 The following is the recommended minimum Memory hardware guidance for a handful of example GitLab user base sizes.
 
 - **4GB RAM** is the **required** minimum memory size and supports up to 500 users
-  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/memory/) is working to reduce the memory requirement.
+  - Our [Memory Team](https://about.gitlab.com/handbook/engineering/development/enablement/data_stores/application_performance/) is working to reduce the memory requirement.
 - 8GB RAM supports up to 1000 users
 - More users? Consult the [reference architectures page](../administration/reference_architectures/index.md)
 
@@ -299,7 +299,7 @@ GitLab supports the following web browsers:
 - [Google Chrome](https://www.google.com/chrome/)
 - [Chromium](https://www.chromium.org/getting-involved/dev-channel/)
 - [Apple Safari](https://www.apple.com/safari/)
-- [Microsoft Edge](https://www.microsoft.com/en-us/edge)
+- [Microsoft Edge](https://www.microsoft.com/en-us/edge?form=MA13FJ)
 
 For the listed web browsers, GitLab supports:
 
@@ -322,6 +322,6 @@ important to describe those, too. Think of things that may go wrong and include 
 This is important to minimize requests for support, and to avoid doc comments with
 questions that you know someone might ask.
 
-Each scenario can be a third-level heading, e.g. `### Getting error message X`.
+Each scenario can be a third-level heading, for example `### Getting error message X`.
 If you have none to add when creating a doc, leave this section in place
 but commented out to help encourage others to add to it in the future. -->

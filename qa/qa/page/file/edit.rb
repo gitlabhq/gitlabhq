@@ -12,10 +12,6 @@ module QA
           element :editor_toolbar_button
         end
 
-        view 'app/views/projects/blob/_editor.html.haml' do
-          element :source_editor_preview_container
-        end
-
         def has_markdown_preview?(component, content)
           within_element(:source_editor_preview_container) do
             has_css?(component, exact_text: content)

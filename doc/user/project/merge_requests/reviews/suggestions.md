@@ -12,7 +12,7 @@ type: index, reference
 
 As a reviewer, you're able to suggest code changes with a Markdown syntax in merge request
 diff threads. Then, the merge request author (or other users with appropriate
-[permission](../../../permissions.md)) can apply these suggestions with a click.
+[permission](../../../permissions.md)) can apply these suggestions.
 This action generates a commit in the merge request, authored by the user that suggested the changes.
 
 1. Choose a line of code to be changed, add a new comment, then select
@@ -47,8 +47,11 @@ After the author applies a suggestion:
 
 ## Multi-line suggestions
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/232339) in GitLab 13.11: suggestions in multi-line comments also become multi-line.
+
 Reviewers can also suggest changes to multiple lines with a single suggestion
-within merge request diff threads by adjusting the range offsets. The
+within merge request diff threads by selecting and dragging selection to all
+relevant line numbers or by adjusting the range offsets. The
 offsets are relative to the position of the diff thread, and specify the
 range to be replaced by the suggestion when it is applied.
 

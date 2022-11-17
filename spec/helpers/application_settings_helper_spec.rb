@@ -95,7 +95,7 @@ RSpec.describe ApplicationSettingsHelper do
   end
 
   describe '.self_monitoring_project_data' do
-    context 'when self monitoring project does not exist' do
+    context 'when self-monitoring project does not exist' do
       it 'returns create_self_monitoring_project_path' do
         expect(helper.self_monitoring_project_data).to include(
           'create_self_monitoring_project_path' =>
@@ -137,7 +137,7 @@ RSpec.describe ApplicationSettingsHelper do
       end
     end
 
-    context 'when self monitoring project exists' do
+    context 'when self-monitoring project exists' do
       let(:project) { build(:project) }
 
       before do

@@ -1,0 +1,64 @@
+trigger-minimal-empty:
+  trigger: ''
+
+trigger-minimal-invalid-variable:
+  trigger: 'slug#'
+
+trigger-minimal-leading-slash:
+  trigger: '/slug'
+
+trigger-minimal-no-slash:
+  trigger: 'slug'
+
+trigger-minimal-trailing-slash:
+  trigger: 'slug/'
+
+trigger-project-empty:
+  trigger:
+    project: ''
+
+trigger-project-invalid-variable:
+  trigger:
+    project: 'slug#'
+
+trigger-project-leading-slash:
+  trigger:
+    project: '/slug'
+
+trigger-project-no-slash:
+  trigger:
+  project: 'slug'
+
+trigger-project-trailing-slash:
+  trigger:
+  project: 'slug/'
+
+trigger-include-empty:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: ''
+
+trigger-include-invalid:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug#'
+
+trigger-include-leading-slash:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: '/slug'
+
+trigger-include-no-slash:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug'
+
+trigger-include-trailing-slash:
+  trigger:
+    include:
+      - file: '/path/to/child-pipeline.yml'
+        project: 'slug/'

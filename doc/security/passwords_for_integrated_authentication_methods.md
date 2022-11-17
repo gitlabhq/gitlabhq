@@ -14,4 +14,4 @@ However, to maintain data consistency, GitLab requires passwords for all user ac
 
 For such accounts, we use the [`friendly_token`](https://github.com/heartcombo/devise/blob/f26e05c20079c9acded3c0ee16da0df435a28997/lib/devise.rb#L492) method provided by the Devise gem to generate a random, unique and secure password and sets it as the account password during sign up.
 
-The length of the generated password is the set based on the value of [maximum password length](password_length_limits.md#modify-maximum-password-length-using-configuration-file) as set in the Device configuration. The default value is 128 characters.
+The length of the generated password is [128 characters](password_length_limits.md).

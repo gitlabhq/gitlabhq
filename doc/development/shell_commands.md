@@ -71,6 +71,8 @@ FileUtils.touch myfile
 
 This coding style could have prevented CVE-2013-4546.
 
+See also <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93030>, and <https://starlabs.sg/blog/2022/07-gitlab-project-import-rce-analysis-cve-2022-2185/> for another example.
+
 ## Separate options from arguments with --
 
 Make the difference between options and arguments clear to the argument parsers of system commands with `--`. This is supported by many but not all Unix commands.

@@ -13,10 +13,11 @@ class CommitCollection
   # container - The object the commits belong to.
   # commits - The Commit instances to store.
   # ref - The name of the ref (e.g. "master").
-  def initialize(container, commits, ref = nil)
+  def initialize(container, commits, ref = nil, page: nil, per_page: nil, count: nil)
     @container = container
     @commits = commits
     @ref = ref
+    @pagination = Gitlab::PaginationDelegate.new(page: page, per_page: per_page, count: count)
   end
 
   def each(&block)
@@ -112,5 +113,9 @@ class CommitCollection
   # rubocop:disable GitlabSecurity/PublicSend
   def method_missing(message, *args, &block)
     commits.public_send(message, *args, &block)
+  end
+
+  def next_page
+    @pagination.next_page
   end
 end

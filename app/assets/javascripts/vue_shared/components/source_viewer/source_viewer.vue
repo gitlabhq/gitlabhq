@@ -65,6 +65,9 @@ export default {
         !supportedLanguages.includes(this.blob.language?.toLowerCase())
       );
     },
+    totalChunks() {
+      return Object.keys(this.chunks).length;
+    },
   },
   async created() {
     addBlobLinksTracking();
@@ -200,6 +203,7 @@ export default {
       :content="firstChunk.content"
       :starting-from="firstChunk.startingFrom"
       :is-highlighted="firstChunk.isHighlighted"
+      is-first-chunk
       :language="firstChunk.language"
       :blame-path="blob.blamePath"
     />
@@ -217,6 +221,7 @@ export default {
       :chunk-index="index"
       :language="chunk.language"
       :blame-path="blob.blamePath"
+      :total-chunks="totalChunks"
       @appear="highlightChunk"
     />
   </div>

@@ -468,9 +468,10 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
           payload = event.payload
 
           assert =
-            if payload[:name] == 'SCHEMA'
+            case payload[:name]
+            when 'SCHEMA'
               false
-            elsif payload[:name] == 'SQL' # Custom query
+            when 'SQL' # Custom query
               true
             else
               keywords = %w[_test_load_balancing_test]

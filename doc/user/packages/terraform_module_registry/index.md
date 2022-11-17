@@ -1,6 +1,6 @@
 ---
-stage: Configure
-group: Configure
+stage: Package
+group: Package Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -24,9 +24,11 @@ When you publish a Terraform Module, if it does not exist, it is created.
 
 Prerequisites:
 
-- A package with the same name and version must not already exist in the top-level namespace.
+- The package name and version [must be unique in the top-level namespace](../infrastructure_registry/index.md#how-module-resolution-works).
 - Your project and group names must not include a dot (`.`). For example, `source = "gitlab.example.com/my.group/project.name"`.
 - You must [authenticate with the API](../../../api/index.md#authentication). If authenticating with a deploy token, it must be configured with the `write_package_registry` scope.
+- The name of a module [must be unique within the scope of its group](../infrastructure_registry/index.md#how-module-resolution-works), otherwise an
+  [error occurs](#troubleshooting).
 
 ```plaintext
 PUT /projects/:id/packages/terraform/modules/:module-name/:module-system/:module-version/file
@@ -141,3 +143,7 @@ For examples of the Terraform module registry, check the projects below:
 
 - The [_GitLab local file_ project](https://gitlab.com/mattkasa/gitlab-local-file) creates a minimal Terraform module and uploads it into the Terraform module registry using GitLab CI/CD.
 - The [_Terraform module test_ project](https://gitlab.com/mattkasa/terraform-module-test) uses the module from the previous example.
+
+## Troubleshooting
+
+- Publishing a module with a duplicate name results in a `{"message":"Access Denied"}` error. There's an ongoing discussion about allowing duplicate module names [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/368040).

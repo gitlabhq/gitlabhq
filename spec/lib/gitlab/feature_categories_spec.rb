@@ -5,12 +5,34 @@ require 'spec_helper'
 RSpec.describe Gitlab::FeatureCategories do
   let(:fake_categories) { %w(foo bar) }
 
-  subject { described_class.new(fake_categories) }
+  subject(:feature_categories) { described_class.new(fake_categories) }
 
   describe "#valid?" do
     it "returns true if category is known", :aggregate_failures do
       expect(subject.valid?('foo')).to be(true)
       expect(subject.valid?('zzz')).to be(false)
+    end
+  end
+
+  describe '#get!' do
+    subject { feature_categories.get!(category) }
+
+    let(:category) { 'foo' }
+
+    it { is_expected.to eq('foo') }
+
+    context 'when category does not exist' do
+      let(:category) { 'zzz' }
+
+      it { expect { subject }.to raise_error(RuntimeError) }
+
+      context 'when on production' do
+        before do
+          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        it { is_expected.to eq('unknown') }
+      end
     end
   end
 

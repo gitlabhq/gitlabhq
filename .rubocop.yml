@@ -289,11 +289,6 @@ Rails/InverseOf:
 Rails/UniqueValidationWithoutIndex:
   Enabled: false
 
-Rails/HasManyOrHasOneDependent:
-  Include:
-    - app/models/**/*.rb
-    - ee/app/models/**/*.rb
-
 Rails/HelperInstanceVariable:
   Include:
     - app/helpers/**/*.rb
@@ -306,6 +301,26 @@ Rails/MailerName:
 
 Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
+  Enabled: false
+
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94064#note_1157289970
+Rails/SquishedSQLHeredocs:
+  Enabled: false
+
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96675#note_1094403693
+Rails/WhereExists:
+  Enabled: false
+
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94061#note_1160343775
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/378105#note_1138487716
+Rails/HasManyOrHasOneDependent:
+  Enabled: false
+
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94019#note_1139714728
+Rails/CreateTableWithTimestamps:
   Enabled: false
 
 # GitLab ###################################################################
@@ -384,7 +399,13 @@ Database/MultipleDatabases:
     - 'spec/lib/gitlab/background_migration/**/*.rb'
     - 'spec/lib/gitlab/database/**/*.rb'
 
-Gitlab/DuplicateSpecLocation:
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
+Gitlab/RSpec/AvoidSetup:
+  Enabled: true
+  Include:
+    - 'ee/spec/features/registrations/saas/**/*'
+
+RSpec/DuplicateSpecLocation:
   Enabled: true
 
 Gitlab/PolicyRuleBoolean:
@@ -465,8 +486,16 @@ RSpec/FactoriesInMigrationSpecs:
 RSpec/FactoryBot/AvoidCreate:
   Enabled: true
   Include:
+    - 'spec/presenters/**/*.rb'
     - 'spec/serializers/**/*.rb'
+    - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
+
+RSpec/FactoryBot/StrategyInCallback:
+  Enabled: true
+  Include:
+    - 'spec/factories/**/*.rb'
+    - 'ee/spec/factories/**/*.rb'
 
 Cop/IncludeSidekiqWorker:
   Enabled: true
@@ -578,6 +607,18 @@ Scalability/FileUploads:
 Graphql/Descriptions:
   Enabled: true
   AutoCorrect: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+
+Graphql/EnumNames:
+  Enabled: true
+  Include:
+    - 'app/graphql/**/*'
+    - 'ee/app/graphql/**/*'
+
+Graphql/EnumValues:
+  Enabled: true
   Include:
     - 'app/graphql/**/*'
     - 'ee/app/graphql/**/*'
@@ -704,12 +745,17 @@ Migration/PreventIndexCreation:
     - !ruby/regexp /\Adb\/(post_)?migrate\/2020.*\.rb\z/
     - !ruby/regexp /\Adb\/(post_)?migrate\/20210[1-6].*\.rb\z/
 
+Migration/SchemaAdditionMethodsNoPost:
+  Enabled: true
+  Include:
+    - db/post_migrate/*.rb
+  EnforcedSince: 20221024034228
+
 Gitlab/RailsLogger:
   Exclude:
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
 
-# WIP See https://gitlab.com/gitlab-org/gitlab/-/issues/267606
 RSpec/FactoryBot/InlineAssociation:
   Include:
     - 'spec/factories/**/*.rb'
@@ -760,6 +806,10 @@ Style/RegexpLiteralMixedPreserve:
     - mixed
     - mixed_preserve
   EnforcedStyle: mixed_preserve
+
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94317#note_1139610896
+Style/Lambda:
+  EnforcedStyle: literal
 
 RSpec/TopLevelDescribePath:
   Exclude:
@@ -831,3 +881,8 @@ Cop/SidekiqApiUsage:
     - 'lib/gitlab/sidekiq_queue.rb'
     - 'config/initializers/sidekiq.rb'
     - 'config/initializers/forbid_sidekiq_in_transactions.rb'
+
+Rake/Require:
+  Include:
+    - '{,ee/,jh/}lib/**/*.rake'
+    - 'qa/tasks/**/*.rake'

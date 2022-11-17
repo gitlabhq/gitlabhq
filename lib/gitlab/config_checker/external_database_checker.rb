@@ -9,19 +9,23 @@ module Gitlab
         '<a href="https://docs.gitlab.com/ee/install/requirements.html#database">database requirements</a>'
 
       def check
-        unsupported_database = Gitlab::Database
+        unsupported_databases = Gitlab::Database
           .database_base_models
-          .map { |_, model| Gitlab::Database::Reflection.new(model) }
-          .reject(&:postgresql_minimum_supported_version?)
+          .each_with_object({}) do |(database_name, base_model), databases|
+            database = Gitlab::Database::Reflection.new(base_model)
 
-        unsupported_database.map do |database|
+            databases[database_name] = database unless database.postgresql_minimum_supported_version?
+          end
+
+        unsupported_databases.map do |database_name, database|
           {
             type: 'warning',
-            message: _('You are using PostgreSQL %{pg_version_current}, but PostgreSQL ' \
-                       '%{pg_version_minimum} is required for this version of GitLab. ' \
+            message: _('Database \'%{database_name}\' is using PostgreSQL %{pg_version_current}, ' \
+                       'but PostgreSQL %{pg_version_minimum} is required for this version of GitLab. ' \
                        'Please upgrade your environment to a supported PostgreSQL version, ' \
                        'see %{pg_requirements_url} for details.') % \
               {
+                database_name: database_name,
                 pg_version_current: database.version,
                 pg_version_minimum: Gitlab::Database::MINIMUM_POSTGRES_VERSION,
                 pg_requirements_url: PG_REQUIREMENTS_LINK
