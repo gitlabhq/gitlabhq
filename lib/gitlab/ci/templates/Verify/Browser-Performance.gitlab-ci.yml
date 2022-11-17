@@ -17,10 +17,10 @@ browser_performance:
   variables:
     URL: ''
     SITESPEED_IMAGE: sitespeedio/sitespeed.io
-    SITESPEED_VERSION: 14.1.0
+    SITESPEED_VERSION: 26.1.0
     SITESPEED_OPTIONS: ''
   services:
-    - docker:stable-dind
+    - docker:dind
   script:
     - mkdir gitlab-exporter
     # Busybox wget does not support proxied HTTPS, get the real thing.

@@ -92,7 +92,6 @@ RSpec.describe Namespaces::RootStatisticsWorker, '#perform' do
 
   it_behaves_like 'worker with data consistency',
                   described_class,
-                  feature_flag: :root_statistics_worker_read_replica,
                   data_consistency: :sticky
 
   it 'has the `until_executed` deduplicate strategy' do

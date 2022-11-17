@@ -4,8 +4,8 @@ load_performance:
   allow_failure: true
   variables:
     DOCKER_TLS_CERTDIR: ""
-    K6_IMAGE: loadimpact/k6
-    K6_VERSION: 0.27.0
+    K6_IMAGE: grafana/k6
+    K6_VERSION: 0.41.0
     K6_TEST_FILE: raw.githubusercontent.com/grafana/k6/master/samples/http_get.js
     K6_OPTIONS: ''
     K6_DOCKER_OPTIONS: ''

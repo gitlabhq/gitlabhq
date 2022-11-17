@@ -26,10 +26,10 @@ class UserPreference < ApplicationRecord
 
   ignore_columns :experience_level, remove_with: '14.10', remove_after: '2021-03-22'
 
-  default_value_for :tab_width, value: Gitlab::TabWidth::DEFAULT, allows_nil: false
-  default_value_for :time_display_relative, value: true, allows_nil: false
-  default_value_for :time_format_in_24h, value: false, allows_nil: false
-  default_value_for :render_whitespace_in_code, value: false, allows_nil: false
+  attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
+  attribute :time_display_relative, default: true
+  attribute :time_format_in_24h, default: false
+  attribute :render_whitespace_in_code, default: false
 
   class << self
     def notes_filters
@@ -57,6 +57,67 @@ class UserPreference < ApplicationRecord
   # or issuable type.
   def notes_filter_for(resource)
     self[notes_filter_field_for(resource)]
+  end
+
+  def tab_width
+    read_attribute(:tab_width) || self.class.column_defaults['tab_width']
+  end
+
+  def tab_width=(value)
+    if value.nil?
+      default = self.class.column_defaults['tab_width']
+      super(default)
+    else
+      super(value)
+    end
+  end
+
+  def time_display_relative
+    value = read_attribute(:time_display_relative)
+    return value unless value.nil?
+
+    self.class.column_defaults['time_display_relative']
+  end
+
+  def time_display_relative=(value)
+    if value.nil?
+      default = self.class.column_defaults['time_display_relative']
+      super(default)
+    else
+      super(value)
+    end
+  end
+
+  def time_format_in_24h
+    value = read_attribute(:time_format_in_24h)
+    return value unless value.nil?
+
+    self.class.column_defaults['time_format_in_24h']
+  end
+
+  def time_format_in_24h=(value)
+    if value.nil?
+      default = self.class.column_defaults['time_format_in_24h']
+      super(default)
+    else
+      super(value)
+    end
+  end
+
+  def render_whitespace_in_code
+    value = read_attribute(:render_whitespace_in_code)
+    return value unless value.nil?
+
+    self.class.column_defaults['render_whitespace_in_code']
+  end
+
+  def render_whitespace_in_code=(value)
+    if value.nil?
+      default = self.class.column_defaults['render_whitespace_in_code']
+      super(default)
+    else
+      super(value)
+    end
   end
 
   private

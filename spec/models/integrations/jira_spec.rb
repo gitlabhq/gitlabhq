@@ -466,39 +466,14 @@ RSpec.describe Integrations::Jira do
   end
 
   describe '#client' do
-    subject do
+    it 'uses the default GitLab::HTTP timeouts' do
+      timeouts = Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS
       stub_request(:get, 'http://jira.example.com/foo')
 
       expect(Gitlab::HTTP).to receive(:httparty_perform_request)
         .with(Net::HTTP::Get, '/foo', hash_including(timeouts)).and_call_original
 
       jira_integration.client.get('/foo')
-    end
-
-    context 'when the FF :jira_raise_timeouts is enabled' do
-      let(:timeouts) do
-        {
-          open_timeout: 2.minutes,
-          read_timeout: 2.minutes,
-          write_timeout: 2.minutes
-        }
-      end
-
-      it 'uses custom timeouts' do
-        subject
-      end
-    end
-
-    context 'when the FF :jira_raise_timeouts is disabled' do
-      before do
-        stub_feature_flags(jira_raise_timeouts: false)
-      end
-
-      let(:timeouts) { Gitlab::HTTP::DEFAULT_TIMEOUT_OPTIONS }
-
-      it 'uses the default GitLab::HTTP timeouts' do
-        subject
-      end
     end
   end
 

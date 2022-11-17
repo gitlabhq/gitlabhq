@@ -38,7 +38,7 @@ variables:
     DOCKER_DRIVER: overlay2
     DOCKER_TLS_CERTDIR: ""
   services:
-    - docker:stable-dind
+    - docker:dind
   script:
     - docker info
     - env
