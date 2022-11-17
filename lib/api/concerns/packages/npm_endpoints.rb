@@ -26,6 +26,24 @@ module API
             authenticate_non_get!
           end
 
+          helpers do
+            def redirect_or_present_audit_report
+              redirect_registry_request(
+                forward_to_registry: true,
+                package_type: :npm,
+                path: options[:path][0],
+                body: Gitlab::Json.dump(request.POST),
+                target: project_or_nil,
+                method: route.request_method
+              ) do
+                authorize_read_package!(project)
+
+                status :ok
+                present []
+              end
+            end
+          end
+
           params do
             requires :package_name, type: String, desc: 'Package name'
           end
@@ -129,6 +147,22 @@ module API
               present ::Packages::Npm::PackagePresenter.new(package_name, packages),
                 with: ::API::Entities::NpmPackage
             end
+          end
+
+          desc 'NPM registry bulk advisory endpoint' do
+            detail 'This feature was introduced in GitLab 15.6'
+          end
+          route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+          post '-/npm/v1/security/advisories/bulk' do
+            redirect_or_present_audit_report
+          end
+
+          desc 'NPM registry quick audit endpoint' do
+            detail 'This feature was introduced in GitLab 15.6'
+          end
+          route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
+          post '-/npm/v1/security/audits/quick' do
+            redirect_or_present_audit_report
           end
         end
       end

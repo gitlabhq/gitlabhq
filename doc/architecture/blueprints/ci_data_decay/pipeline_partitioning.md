@@ -248,10 +248,9 @@ smart enough to move rows between partitions on its own.
 A partitioned table is called a **routing** table and it will use the `p_`
 prefix which should help us with building automated tooling for query analysis.
 
-A table partition will be called **partition** and it can use the a
-physical partition ID as suffix, leaded by a `p` letter, for example
-`ci_builds_p101`. Existing CI tables will become **zero partitions** of the
-new routing tables. Depending on the chosen
+A table partition will be called **partition** and it can use the a physical
+partition ID as suffix, for example `ci_builds_101`. Existing CI tables will
+become **zero partitions** of the new routing tables. Depending on the chosen
 [partitioning strategy](#how-do-we-want-to-partition-cicd-data) for a given
 table, it is possible to have many logical partitions per one physical partition.
 

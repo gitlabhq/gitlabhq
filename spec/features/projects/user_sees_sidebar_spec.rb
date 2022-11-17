@@ -220,7 +220,7 @@ RSpec.describe 'Projects > User sees sidebar' do
     it 'does not show fork button' do
       visit project_path(project)
 
-      within('.count-buttons') do
+      within('.project-repo-buttons') do
         expect(page).not_to have_link 'Fork'
       end
     end

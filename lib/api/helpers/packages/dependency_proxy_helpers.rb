@@ -19,7 +19,9 @@ module API
         def redirect_registry_request(forward_to_registry: false, package_type: nil, target: nil, **options)
           if forward_to_registry && redirect_registry_request_available?(package_type, target) && maven_forwarding_ff_enabled?(package_type, target)
             ::Gitlab::Tracking.event(self.options[:for].name, "#{package_type}_request_forward")
-            redirect(registry_url(package_type, options))
+            redirect(registry_url(package_type, options), body: options[:body])
+            # For the requests with POST methods we need to set status 307 in order to keep request's method
+            status :temporary_redirect if options[:method] == 'POST'
           else
             yield
           end
@@ -32,7 +34,7 @@ module API
 
           case package_type
           when :npm
-            "#{base_url}#{options[:package_name]}"
+            "#{base_url}#{[options[:path], options[:package_name]].compact.join('/')}"
           when :pypi
             "#{base_url}#{options[:package_name]}/"
           when :maven

@@ -97,7 +97,9 @@ module Gitlab
       end
 
       def file_name(extension, filename_label)
-        [FILENAME_PREFIX, $$, filename_label, Time.current.to_i, extension].reject(&:blank?).join('.')
+        timestamp = Time.current.strftime('%Y-%m-%d.%H:%M:%S:%L')
+
+        [FILENAME_PREFIX, timestamp, filename_label, extension].reject(&:blank?).join('.')
       end
     end
   end

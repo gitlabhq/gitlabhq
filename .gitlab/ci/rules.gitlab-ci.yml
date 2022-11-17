@@ -95,11 +95,14 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
-.if-default-branch-schedule-maintenance: &if-default-branch-schedule-maintenance
-  if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
+.if-schedule-maintenance: &if-schedule-maintenance
+  if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-default-branch-schedule-nightly: &if-default-branch-schedule-nightly
   if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+
+.if-ruby3-branch-schedule-nightly: &if-ruby3-branch-schedule-nightly
+  if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
 
 .if-security-schedule: &if-security-schedule
   if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security" && $CI_PIPELINE_SOURCE == "schedule"'
@@ -107,14 +110,8 @@
 .if-dot-com-gitlab-org-schedule: &if-dot-com-gitlab-org-schedule
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_PIPELINE_SOURCE == "schedule"'
 
-.if-dot-com-ee-schedule: &if-dot-com-ee-schedule
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule"'
-
-.if-dot-com-ee-schedule-maintenance: &if-dot-com-ee-schedule-maintenance
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
-
-.if-dot-com-ee-schedule-nightly: &if-dot-com-ee-schedule-nightly
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "nightly"'
+.if-dot-com-ee-schedule-default-branch-maintenance: &if-dot-com-ee-schedule-default-branch-maintenance
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-dot-com-ee-schedule-nightly-child-pipeline: &if-dot-com-ee-schedule-nightly-child-pipeline
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_PIPELINE_SOURCE == "parent_pipeline" && $SCHEDULE_TYPE == "nightly"'
@@ -660,7 +657,7 @@
 ################
 .shared:rules:update-cache:
   rules:
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-security-schedule
     - <<: *if-merge-request-labels-update-caches
 
@@ -709,7 +706,7 @@
   rules:
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: ["workhorse/**/*"]
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -726,7 +723,7 @@
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *assets-compilation-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -744,7 +741,7 @@
       when: never
     # That would run for any project that has a "maintenance" pipeline schedule
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - ".gitlab/ci/caching.gitlab-ci.yml"
@@ -1062,7 +1059,7 @@
 ###############
 .pages:rules:
   rules:
-    - <<: *if-dot-com-ee-schedule-maintenance
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
 
 ############
 # QA rules #
@@ -1545,6 +1542,7 @@
     - <<: *if-not-ee
       when: never
     - <<: *if-default-branch-schedule-nightly
+    - <<: *if-ruby3-branch-schedule-nightly
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-coverage:
@@ -1555,7 +1553,7 @@
       when: never
     - <<: *if-merge-request
       changes: *code-backstage-patterns
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-all-rspec
 
 .rails:rules:rspec-undercoverage:
@@ -1845,7 +1843,7 @@
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-merge-request
       changes: ["yarn.lock"]
 
@@ -1853,7 +1851,7 @@
   rules:
     - if: "$PACKAGE_HUNTER_USER == null || $PACKAGE_HUNTER_USER == ''"
       when: never
-    - <<: *if-default-branch-schedule-maintenance
+    - <<: *if-schedule-maintenance
     - <<: *if-merge-request
       changes: ["Gemfile.lock"]
 
@@ -2057,7 +2055,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-ee-schedule-maintenance
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     - <<: *if-default-refs
       changes:
         - ".gitlab/ci/setup.gitlab-ci.yml"
@@ -2079,7 +2077,7 @@
   rules:
     - <<: *if-not-ee
       when: never
-    - <<: *if-dot-com-ee-schedule-maintenance
+    - <<: *if-dot-com-ee-schedule-default-branch-maintenance
     - <<: *if-default-refs
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"

@@ -1,0 +1,9 @@
+---
+table_name: pm_package_version_licenses
+classes:
+- PackageMetadata::PackageVersionLicense
+feature_categories:
+  - license_compliance
+description: Tracks licenses under which a given package version has been published.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102794
+milestone: '15.6'

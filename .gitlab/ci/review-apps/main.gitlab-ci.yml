@@ -96,7 +96,7 @@ review-build-cng:
     name: review/${CI_COMMIT_REF_SLUG}${SCHEDULE_TYPE}  # No separator for SCHEDULE_TYPE so it's compatible as before and looks nice without it
     url: https://gitlab-${CI_ENVIRONMENT_SLUG}.${REVIEW_APPS_DOMAIN}
     on_stop: review-stop
-    auto_stop_in: 48 hours
+    auto_stop_in: 6 hours
 
 review-deploy:
   extends:
@@ -160,7 +160,8 @@ review-deploy-sample-projects:
     # See https://gitlab.com/gitlab-org/gitlab/issues/191273
     GIT_DEPTH: 1
   before_script:
-    - *base-before_script
+    - source ./scripts/utils.sh
+    - source ./scripts/review_apps/review-apps.sh
 
 review-delete-deployment:
   extends:

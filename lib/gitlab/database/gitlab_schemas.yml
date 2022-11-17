@@ -409,6 +409,10 @@ path_locks: :gitlab_main
 personal_access_tokens: :gitlab_main
 plan_limits: :gitlab_main
 plans: :gitlab_main
+pm_licenses: :gitlab_pm
+pm_packages: :gitlab_pm
+pm_package_versions: :gitlab_pm
+pm_package_version_licenses: :gitlab_pm
 pool_repositories: :gitlab_main
 postgres_async_indexes: :gitlab_shared
 postgres_autovacuum_activity: :gitlab_shared

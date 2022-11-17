@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Memory::Reports::JemallocStats do
   let_it_be(:outdir) { Dir.mktmpdir }
 
-  let(:jemalloc_stats) { described_class.new(reports_path: outdir) }
+  let(:filename_label) { SecureRandom.uuid }
+  let(:jemalloc_stats) { described_class.new(reports_path: outdir, filename_label: filename_label) }
 
   after do
     FileUtils.rm_f(outdir)
@@ -26,14 +27,14 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
           .to receive(:dump_stats)
           .with(path: outdir,
                 tmp_dir: File.join(outdir, '/tmp'),
-                filename_label: worker_id)
+                filename_label: filename_label)
           .and_return(report_path)
 
         expect(jemalloc_stats.run).to eq(report_path)
       end
 
       describe 'reports cleanup' do
-        let(:jemalloc_stats) { described_class.new(reports_path: outdir) }
+        let(:jemalloc_stats) { described_class.new(reports_path: outdir, filename_label: filename_label) }
 
         before do
           stub_env('GITLAB_DIAGNOSTIC_REPORTS_JEMALLOC_MAX_REPORTS_STORED', 3)

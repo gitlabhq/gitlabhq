@@ -39,18 +39,19 @@ module API
       end
 
       def project_or_group
-        authorized_user_project
+        authorized_user_project(action: :read_package)
       end
 
       def snowplow_gitlab_standard_context
-        { project: authorized_user_project, namespace: authorized_user_project.namespace }
+        { project: project_or_group, namespace: project_or_group.namespace }
       end
 
       def authorize_nuget_upload
+        project = project_or_group
         authorize_workhorse!(
-          subject: project_or_group,
+          subject: project,
           has_length: false,
-          maximum_size: project_or_group.actual_limits.nuget_max_file_size
+          maximum_size: project.actual_limits.nuget_max_file_size
         )
       end
 
@@ -67,8 +68,9 @@ module API
       end
 
       def upload_nuget_package_file(symbol_package: false)
-        authorize_upload!(project_or_group)
-        bad_request!('File is too large') if project_or_group.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
+        project = project_or_group
+        authorize_upload!(project)
+        bad_request!('File is too large') if project.actual_limits.exceeded?(:nuget_max_file_size, params[:package].size)
 
         file_params = params.merge(
           file: params[:package],
@@ -76,7 +78,7 @@ module API
         )
 
         package = ::Packages::CreateTemporaryPackageService.new(
-          project_or_group, current_user, declared_params.merge(build: current_authenticated_job)
+          project, current_user, declared_params.merge(build: current_authenticated_job)
         ).execute(:nuget, name: temp_file_name(symbol_package))
 
         package_file = ::Packages::CreatePackageFileService.new(package, file_params.merge(build: current_authenticated_job))

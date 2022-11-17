@@ -45,15 +45,20 @@ Deployments show up in this list only after a deployment job has created them.
 
 ## Search environments
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10754) in GitLab 15.5.
+> - [Searching environments within a folder](https://gitlab.com/gitlab-org/gitlab/-/issues/373850) was introduced in GitLab 15.7 with [Feature flag `enable_environments_search_within_folder`](https://gitlab.com/gitlab-org/gitlab/-/issues/382108). Disabled by default.
 
 To search environments by name:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Environments**.
-1. In the search bar, enter your search term. Matching applies from the
-   beginning of the environment name. For example, `devel` matches the
-   environment name `development`, but `elop` does not.
+1. In the search bar, enter your search term.
+   - The length of your **search term should be 3 or more characters**.
+   - Matching applies from the beginning of the environment name.
+     - For example, `devel` matches the environment name `development`, but `elop` does not.
+   - For environments with a folder name format, matching applies after the base folder name.
+     - For example when the name is `review/test-app`, search term `test` matches `review/test-app`.
+     - Also searching with the folder name prefixed like `review/test` matches `review/test-app`.
 
 ## Types of environments
 

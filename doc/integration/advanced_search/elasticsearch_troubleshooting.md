@@ -248,7 +248,7 @@ sudo gitlab-rake gitlab:elastic:clear_locked_projects
 If `ElasticCommitIndexerWorker` Sidekiq workers are failing with this error during indexing, it usually means that Elasticsearch is unable to keep up with the concurrency of indexing request. To address change the following settings:
 
 - To decrease the indexing throughput you can decrease `Bulk request concurrency` (see [Advanced Search settings](elasticsearch.md#advanced-search-configuration)). This is set to `10` by default, but you change it to as low as 1 to reduce the number of concurrent indexing operations.
-- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/sidekiq/extra_sidekiq_processes.md#queue-selector) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
+- If changing `Bulk request concurrency` didn't help, you can use the [queue selector](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors) option to [limit indexing jobs only to specific Sidekiq nodes](elasticsearch.md#index-large-instances-with-dedicated-sidekiq-nodes-or-processes), which should reduce the number of indexing requests.
 
 ### Indexing is very slow or fails with `rejected execution of coordinating operation` messages
 

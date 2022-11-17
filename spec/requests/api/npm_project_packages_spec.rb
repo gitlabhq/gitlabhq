@@ -42,6 +42,18 @@ RSpec.describe API::NpmProjectPackages do
     end
   end
 
+  describe 'POST /api/v4/projects/:id/packages/npm/-/npm/v1/security/advisories/bulk' do
+    it_behaves_like 'handling audit request', path: 'advisories/bulk', scope: :project do
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/advisories/bulk") }
+    end
+  end
+
+  describe 'POST /api/v4/projects/:id/packages/npm/-/npm/v1/security/audits/quick' do
+    it_behaves_like 'handling audit request', path: 'audits/quick', scope: :project do
+      let(:url) { api("/projects/#{project.id}/packages/npm/-/npm/v1/security/audits/quick") }
+    end
+  end
+
   describe 'GET /api/v4/projects/:id/packages/npm/*package_name/-/*file_name' do
     let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
     let(:package_file) { package.package_files.first }

@@ -4,7 +4,18 @@ module Gitlab
   module Middleware
     class CompressedJson
       COLLECTOR_PATH = '/api/v4/error_tracking/collector'
+      PACKAGES_PATH = %r{
+        \A/api/v4/ (?# prefix)
+        (?:projects/
+          (?<project_id>
+            .+ (?# at least one character)
+          )/
+        )? (?# projects segment)
+       packages/npm/-/npm/v1/security/
+       (?:(?:advisories/bulk)|(?:audits/quick))\z (?# end)
+      }xi.freeze
       MAXIMUM_BODY_SIZE = 200.kilobytes.to_i
+      UNSAFE_CHARACTERS = %r{[!"#&'()*+,./:;<>=?@\[\]^`{}|~$]}xi.freeze
 
       def initialize(app)
         @app = app
@@ -60,7 +71,21 @@ module Gitlab
       end
 
       def match_path?(env)
-        env['PATH_INFO'].start_with?((File.join(relative_url, COLLECTOR_PATH)))
+        env['PATH_INFO'].start_with?((File.join(relative_url, COLLECTOR_PATH))) ||
+          match_packages_path?(env)
+      end
+
+      def match_packages_path?(env)
+        match_data = env['PATH_INFO'].delete_prefix(relative_url).match(PACKAGES_PATH)
+        return false unless match_data
+
+        return true unless match_data[:project_id] # instance level endpoint was matched
+
+        url_encoded?(match_data[:project_id])
+      end
+
+      def url_encoded?(project_id)
+        project_id !~ UNSAFE_CHARACTERS
       end
     end
   end

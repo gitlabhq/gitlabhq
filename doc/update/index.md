@@ -477,7 +477,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 ### 15.5.0
 
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/extra_sidekiq_processes.md#queue-selector), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.5.4, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -490,7 +490,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - GitLab 15.4.0 includes a [batched background migration](#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
 - By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`, [configure the `NTP_HOST` variable](../administration/gitaly/praefect.md#customize-time-server-setting).
-- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/extra_sidekiq_processes.md#queue-selector), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
+- GitLab 15.4.0 introduced a default [Sidekiq routing rule](../administration/sidekiq/extra_sidekiq_routing.md) that routes all jobs to the `default` queue. For instances using [queue selectors](../administration/sidekiq/processing_specific_job_classes.md#queue-selectors), this will cause [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.4.5, so upgrading to that version or later will return to the previous behavior.
   - If a GitLab instance now listens only to the `default` queue (which is not currently recommended), it will be required to add this routing rule back in `/etc/gitlab/gitlab.rb`:
 
@@ -514,7 +514,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   [upgraded to 15.1](#1510) before upgrading to 15.2 (and later) due to a
   configuration change in Rails that can result in inconsistent ETag key
   generation.
-- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../administration/sidekiq/sidekiq_job_migration.md#future-jobs) before starting the upgrade to GitLab 15.2.0.
+- Some Sidekiq workers were renamed in this release. To avoid any disruption, [run the Rake tasks to migrate any pending jobs](../administration/sidekiq/sidekiq_job_migration.md#migrate-queued-and-future-jobs) before starting the upgrade to GitLab 15.2.0.
 - Gitaly now executes its binaries in a [runtime location](https://gitlab.com/gitlab-org/gitaly/-/merge_requests/4670). By default on Omnibus GitLab,
   this path is `/var/opt/gitlab/gitaly/run/`. If this location is mounted with `noexec`, merge requests generate the following error:
 

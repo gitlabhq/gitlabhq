@@ -4,17 +4,16 @@
 - cache_enabled = Feature.enabled?(:cache_home_panel, @project, type: :development)
 
 .project-home-panel.js-show-on-project-root.gl-my-5{ class: [("empty-project" if empty_repo)] }
-  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3
-    .home-panel-title-row.gl-display-flex
+  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-sm-flex-direction-column.gl-mb-3.gl-gap-5
+    .home-panel-title-row.gl-display-flex.gl-align-items-center
       %div{ class: 'avatar-container rect-avatar s64 home-panel-avatar gl-flex-shrink-0 gl-w-11 gl-h-11 gl-mr-3! float-none' }
         = project_icon(@project, alt: @project.name, class: 'avatar avatar-tile s64', width: 64, height: 64, itemprop: 'image')
-      .d-flex.flex-column.flex-wrap.align-items-baseline
-        .d-inline-flex.align-items-baseline
-          %h1.home-panel-title.gl-mt-3.gl-mb-2.gl-font-size-h1{ data: { qa_selector: 'project_name_content' }, itemprop: 'name' }
-            = @project.name
-            %span.visibility-icon.gl-text-secondary.gl-ml-2.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
-              = visibility_level_icon(@project.visibility_level, options: { class: 'icon' })
-            = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project
+      %div
+        %h1.home-panel-title.gl-font-size-h1.gl-mt-3.gl-mb-2.gl-display-flex{ data: { qa_selector: 'project_name_content' }, itemprop: 'name' }
+          = @project.name
+          %span.visibility-icon.gl-text-secondary.has-tooltip.gl-ml-2{ data: { container: 'body' }, title: visibility_icon_description(@project) }
+            = visibility_level_icon(@project.visibility_level, options: { class: 'icon' })
+          = render_if_exists 'compliance_management/compliance_framework/compliance_framework_badge', project: @project, additional_classes: 'gl-align-self-center gl-ml-2'
         .home-panel-metadata.gl-font-sm.gl-text-secondary.gl-font-base.gl-font-weight-normal.gl-line-height-normal{ data: { qa_selector: 'project_id_content' }, itemprop: 'identifier' }
           - if can?(current_user, :read_project, @project)
             %span.gl-display-inline-block.gl-vertical-align-middle
@@ -25,19 +24,17 @@
               = render 'shared/members/access_request_links', source: @project
 
     = cache_if(cache_enabled, [@project, @project.star_count, @project.forks_count, :buttons, current_user, @notification_setting], expires_in: 1.day) do
-      .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-start.gl-flex-wrap.gl-mt-5
+      .project-repo-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3
         - if current_user
           - if current_user.admin?
-            = link_to [:admin, @project], class: 'btn gl-button btn-icon gl-align-self-start gl-py-2! gl-mr-3', title: _('View project in admin area'),
+            = link_to [:admin, @project], class: 'btn btn-default gl-button btn-icon', title: _('View project in admin area'),
               data: {toggle: 'tooltip', placement: 'top', container: 'body'} do
               = sprite_icon('admin')
-          .gl-display-flex.gl-align-items-start.gl-mr-3
-            - if @notification_setting
-              .js-vue-notification-dropdown{ data: { button_size: "small", disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
+          - if @notification_setting
+            .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), project_id: @project.id, no_flip: 'true' } }
 
-        .count-buttons.gl-display-flex.gl-align-items-flex-start
-          = render 'projects/buttons/star'
-          = render 'projects/buttons/fork'
+        = render 'projects/buttons/star'
+        = render 'projects/buttons/fork'
 
   - if can?(current_user, :download_code, @project)
     = cache_if(cache_enabled, [@project, :download_code], expires_in: 1.minute) do

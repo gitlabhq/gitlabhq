@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Memory::Jemalloc do
         it 'writes stats JSON file' do
           file_path = described_class.dump_stats(path: outdir, tmp_dir: tmp_outdir, format: format)
 
-          file = Dir.entries(outdir).find { |e| e.match(/jemalloc_stats\.#{$$}\.\d+\.json$/) }
+          file = Dir.entries(outdir).find { |e| e.match(/jemalloc_stats\..*\.json$/) }
           expect(file).not_to be_nil
           expect(file_path).to eq(File.join(outdir, file))
           expect(File.read(file_path)).to eq(output)
@@ -68,11 +68,13 @@ RSpec.describe Gitlab::Memory::Jemalloc do
         end
 
         context 'when custom filename label is passed' do
-          include_examples 'writes stats text file', 'puma_0', /jemalloc_stats\.#{$$}\.puma_0\.\d+\.txt$/
+          include_examples 'writes stats text file',
+                           'puma_0.some-uuid',
+                           /jemalloc_stats\..*\.puma_0\.some-uuid\.txt$/
         end
 
         context 'when custom filename label is not passed' do
-          include_examples 'writes stats text file', nil, /jemalloc_stats\.#{$$}\.\d+\.txt$/
+          include_examples 'writes stats text file', nil, /jemalloc_stats\..*\.txt$/
         end
       end
     end

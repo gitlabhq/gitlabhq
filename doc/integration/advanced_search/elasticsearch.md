@@ -783,8 +783,8 @@ additional process dedicated to indexing a set of queues (or queue group). This 
 ensure that indexing queues always have a dedicated worker, while the rest of the queues have
 another dedicated worker to avoid contention.
 
-For this purpose, use the [queue selector](../../administration/sidekiq/extra_sidekiq_processes.md#queue-selector)
-option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/extra_sidekiq_routing.md#worker-matching-query).
+For this purpose, use the [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors)
+option that allows a more general selection of queue groups using a [worker matching query](../../administration/sidekiq/processing_specific_job_classes.md#worker-matching-query).
 
 To handle these two queue groups, we generally recommend one of the following two options. You can either:
 
@@ -804,8 +804,8 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    ```ruby
    sidekiq['enable'] = true
-    sidekiq['queue_selector'] = true
-    sidekiq['queue_groups'] = [
+   sidekiq['queue_selector'] = true
+   sidekiq['queue_groups'] = [
       "feature_category=global_search",
       "feature_category!=global_search"
     ]

@@ -38,6 +38,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
         hash_including(
           :duration_s,
           :cpu_s,
+          :perf_report_worker_uuid,
           perf_report_size_bytes: file_size,
           message: 'finished',
           pid: Process.pid,

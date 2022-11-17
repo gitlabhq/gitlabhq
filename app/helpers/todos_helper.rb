@@ -222,7 +222,12 @@ module TodosHelper
       end
 
     content = content_tag(:span, class: css_class) do
-      "Due #{is_due_today ? "today" : todo.target.due_date.to_s(:medium)}"
+      format(s_("Todos|Due %{due_date}"), due_date: if is_due_today
+                                                      _("today")
+                                                    else
+                                                      l(todo.target.due_date,
+                                                    format: Date::DATE_FORMATS[:medium])
+                                                    end)
     end
 
     "&middot; #{content}".html_safe

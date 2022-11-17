@@ -351,4 +351,32 @@ RSpec.describe TodosHelper do
       it { expect(helper.todo_action_name(alert_todo)).to eq(expected_action_name) }
     end
   end
+
+  describe '#todo_due_date' do
+    subject(:result) { helper.todo_due_date(todo) }
+
+    context 'due date is today' do
+      let_it_be(:issue_with_today_due_date) do
+        create(:issue, title: 'Issue 1', project: project, due_date: Date.current)
+      end
+
+      let(:todo) do
+        create(:todo, project: issue_with_today_due_date.project, target: issue_with_today_due_date, note: note)
+      end
+
+      it { expect(result).to match('Due today') }
+    end
+
+    context 'due date is not today' do
+      let_it_be(:issue_with_tomorrow_due_date) do
+        create(:issue, title: 'Issue 1', project: project, due_date: Date.tomorrow)
+      end
+
+      let(:todo) do
+        create(:todo, project: issue_with_tomorrow_due_date.project, target: issue_with_tomorrow_due_date, note: note)
+      end
+
+      it { expect(result).to match("Due #{l(Date.tomorrow, format: Date::DATE_FORMATS[:medium])}") }
+    end
+  end
 end

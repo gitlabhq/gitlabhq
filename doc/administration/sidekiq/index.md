@@ -398,7 +398,7 @@ sudo gitlab-rake gitlab:features:disable_rugged
 ## Related topics
 
 - [Extra Sidekiq processes](extra_sidekiq_processes.md)
-- [Extra Sidekiq routing](extra_sidekiq_routing.md)
+- [Processing specific job classes](processing_specific_job_classes.md)
 - [Sidekiq health checks](sidekiq_health_check.md)
 - [Using the GitLab-Sidekiq chart](https://docs.gitlab.com/charts/charts/gitlab/sidekiq/)
 

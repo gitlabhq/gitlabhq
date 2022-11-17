@@ -19466,6 +19466,58 @@ CREATE SEQUENCE plans_id_seq
 
 ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
+CREATE TABLE pm_licenses (
+    id bigint NOT NULL,
+    spdx_identifier text NOT NULL,
+    CONSTRAINT check_c1eb81d1ba CHECK ((char_length(spdx_identifier) <= 50))
+);
+
+CREATE SEQUENCE pm_licenses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_licenses_id_seq OWNED BY pm_licenses.id;
+
+CREATE TABLE pm_package_version_licenses (
+    pm_package_version_id bigint NOT NULL,
+    pm_license_id bigint NOT NULL
+);
+
+CREATE TABLE pm_package_versions (
+    id bigint NOT NULL,
+    pm_package_id bigint,
+    version text NOT NULL,
+    CONSTRAINT check_2d8a88cfcc CHECK ((char_length(version) <= 255))
+);
+
+CREATE SEQUENCE pm_package_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_package_versions_id_seq OWNED BY pm_package_versions.id;
+
+CREATE TABLE pm_packages (
+    id bigint NOT NULL,
+    purl_type smallint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_3a3aedb8ba CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE pm_packages_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_packages_id_seq OWNED BY pm_packages.id;
+
 CREATE TABLE pool_repositories (
     id bigint NOT NULL,
     shard_id integer NOT NULL,
@@ -24168,6 +24220,12 @@ ALTER TABLE ONLY plan_limits ALTER COLUMN id SET DEFAULT nextval('plan_limits_id
 
 ALTER TABLE ONLY plans ALTER COLUMN id SET DEFAULT nextval('plans_id_seq'::regclass);
 
+ALTER TABLE ONLY pm_licenses ALTER COLUMN id SET DEFAULT nextval('pm_licenses_id_seq'::regclass);
+
+ALTER TABLE ONLY pm_package_versions ALTER COLUMN id SET DEFAULT nextval('pm_package_versions_id_seq'::regclass);
+
+ALTER TABLE ONLY pm_packages ALTER COLUMN id SET DEFAULT nextval('pm_packages_id_seq'::regclass);
+
 ALTER TABLE ONLY pool_repositories ALTER COLUMN id SET DEFAULT nextval('pool_repositories_id_seq'::regclass);
 
 ALTER TABLE ONLY postgres_async_indexes ALTER COLUMN id SET DEFAULT nextval('postgres_async_indexes_id_seq'::regclass);
@@ -26333,6 +26391,18 @@ ALTER TABLE ONLY plan_limits
 ALTER TABLE ONLY plans
     ADD CONSTRAINT plans_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY pm_licenses
+    ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY pm_package_version_licenses
+    ADD CONSTRAINT pm_package_version_licenses_pkey PRIMARY KEY (pm_package_version_id, pm_license_id);
+
+ALTER TABLE ONLY pm_package_versions
+    ADD CONSTRAINT pm_package_versions_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY pm_packages
+    ADD CONSTRAINT pm_packages_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY pool_repositories
     ADD CONSTRAINT pool_repositories_pkey PRIMARY KEY (id);
 
@@ -27869,6 +27939,12 @@ CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONL
 CREATE UNIQUE INDEX i_ci_job_token_project_scope_links_on_source_and_target_project ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id);
 
 CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
+
+CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
+
+CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
+
+CREATE UNIQUE INDEX i_pm_packages_purl_type_and_name ON pm_packages USING btree (purl_type, name);
 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
 
@@ -30147,6 +30223,12 @@ CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens U
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 
 CREATE UNIQUE INDEX index_plans_on_name ON plans USING btree (name);
+
+CREATE INDEX index_pm_package_version_licenses_on_pm_license_id ON pm_package_version_licenses USING btree (pm_license_id);
+
+CREATE INDEX index_pm_package_version_licenses_on_pm_package_version_id ON pm_package_version_licenses USING btree (pm_package_version_id);
+
+CREATE INDEX index_pm_package_versions_on_pm_package_id ON pm_package_versions USING btree (pm_package_id);
 
 CREATE UNIQUE INDEX index_pool_repositories_on_disk_path ON pool_repositories USING btree (disk_path);
 
@@ -33992,6 +34074,9 @@ ALTER TABLE ONLY issuable_severities
 ALTER TABLE ONLY saml_providers
     ADD CONSTRAINT fk_rails_306d459be7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY pm_package_version_licenses
+    ADD CONSTRAINT fk_rails_30ddb7f837 FOREIGN KEY (pm_package_version_id) REFERENCES pm_package_versions(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY resource_state_events
     ADD CONSTRAINT fk_rails_3112bba7dc FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -34438,6 +34523,9 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY group_crm_settings
     ADD CONSTRAINT fk_rails_74fdf2f13d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pm_package_version_licenses
+    ADD CONSTRAINT fk_rails_7520ea026d FOREIGN KEY (pm_license_id) REFERENCES pm_licenses(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY clusters_applications_ingress
     ADD CONSTRAINT fk_rails_753a7b41c1 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
@@ -35002,6 +35090,9 @@ ALTER TABLE ONLY resource_iteration_events
 
 ALTER TABLE ONLY member_roles
     ADD CONSTRAINT fk_rails_cf0ee35814 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY pm_package_versions
+    ADD CONSTRAINT fk_rails_cf94c3e601 FOREIGN KEY (pm_package_id) REFERENCES pm_packages(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY upload_states
     ADD CONSTRAINT fk_rails_d00f153613 FOREIGN KEY (upload_id) REFERENCES uploads(id) ON DELETE CASCADE;

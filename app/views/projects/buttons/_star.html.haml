@@ -3,15 +3,15 @@
   - icon = starred ? 'star' : 'star-o'
   - button_text =  starred ? s_('ProjectOverview|Unstar') : s_('ProjectOverview|Star')
   - button_text_classes = starred ? 'starred' : ''
-  .count-badge.d-inline-flex.align-item-stretch.gl-mr-3.btn-group
-    = render Pajamas::ButtonComponent.new(size: :small, icon: icon, button_text_classes: button_text_classes, button_options: { class: 'star-btn toggle-star', data: { endpoint: toggle_star_project_path(@project, :json) } }) do
+  .count-badge.d-inline-flex.align-item-stretch.btn-group
+    = render Pajamas::ButtonComponent.new(size: :medium, icon: icon, button_text_classes: button_text_classes, button_options: { class: 'star-btn toggle-star', data: { endpoint: toggle_star_project_path(@project, :json) } }) do
       - button_text
-    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm has-tooltip star-count count' do
+    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default has-tooltip star-count count' do
       = @project.star_count
 - else
-  .count-badge.d-inline-flex.align-item-stretch.gl-mr-3.btn-group
-    = link_to new_user_session_path, class: 'gl-button btn btn-default btn-sm has-tooltip star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
+  .count-badge.d-inline-flex.align-item-stretch.btn-group
+    = link_to new_user_session_path, class: 'gl-button btn btn-default has-tooltip star-btn', title: s_('ProjectOverview|You must sign in to star a project') do
       = sprite_icon('star-o', css_class: 'icon')
       %span= s_('ProjectOverview|Star')
-    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default btn-sm has-tooltip star-count count' do
+    = link_to project_starrers_path(@project), title: n_(s_('ProjectOverview|Starrer'), s_('ProjectOverview|Starrers'), @project.star_count), class: 'gl-button btn btn-default has-tooltip star-count count' do
       = @project.star_count

@@ -24,7 +24,15 @@ module Gitlab
         @reports_path =
           ENV["GITLAB_DIAGNOSTIC_REPORTS_PATH"] || DEFAULT_REPORTS_PATH
 
-        @reports = [Gitlab::Memory::Reports::JemallocStats.new(reports_path: reports_path)]
+        # Set unique uuid for every ReportsDaemon instance.
+        # Because we spawn a single instance of it per process, it will also uniquely identify the worker.
+        # Unlike `::Prometheus::PidProvider.worker_id`, this uuid will remain unique across all Puma clusters.
+        # This way, we can identify reports that were produced from the same worker process during its lifetime.
+        @worker_uuid = SecureRandom.uuid
+
+        @reports = [
+          Gitlab::Memory::Reports::JemallocStats.new(reports_path: reports_path, filename_label: filename_label)
+        ]
 
         init_prometheus_metrics
       end
@@ -54,7 +62,11 @@ module Gitlab
 
       private
 
-      attr_reader :alive, :reports
+      attr_reader :alive, :reports, :worker_uuid
+
+      def filename_label
+        [worker_id, worker_uuid].join(".")
+      end
 
       # Returns the sleep interval with a random adjustment.
       # The random adjustment is put in place to ensure continued availability.
@@ -70,7 +82,8 @@ module Gitlab
           perf_report: label,
           duration_s: duration_s.round(2),
           cpu_s: cpu_s.round(2),
-          perf_report_size_bytes: size
+          perf_report_size_bytes: size,
+          perf_report_worker_uuid: worker_uuid
         )
       end
 

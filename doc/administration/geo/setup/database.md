@@ -519,6 +519,9 @@ data before running `pg_basebackup`.
      add `--force` to the command line.
    - When not in a production machine you can disable backup step if you
      really sure this is what you want by adding `--skip-backup`
+   - If you are using PgBouncer, you need to target the database host directly.
+   - If you are using Patroni on your primary site, you must target the current leader host.
+   - If you are using a load balancer proxy (for example HAProxy) and it is targeting the Patroni leader for the primary, you should target the load balancer proxy instead.
 
 The replication process is now complete.
 

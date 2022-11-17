@@ -2,7 +2,7 @@
   - if current_user
     .count-badge.btn-group
       - if current_user.already_forked?(@project) && current_user.forkable_namespaces.size < 2
-        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: s_('ProjectOverview|Go to your fork'), class: 'gl-button btn btn-default btn-sm has-tooltip fork-btn' do
+        = link_to namespace_project_path(current_user, current_user.fork_of(@project)), title: s_('ProjectOverview|Go to your fork'), class: 'gl-button btn btn-default has-tooltip fork-btn' do
           = sprite_icon('fork', css_class: 'icon')
           %span= s_('ProjectOverview|Fork')
       - else
@@ -11,8 +11,8 @@
         - button_class = 'disabled' if disabled_tooltip
 
         %span.btn-group{ class: ('has-tooltip' if disabled_tooltip), title: disabled_tooltip }
-          = link_to new_project_fork_path(@project), class: "gl-button btn btn-default btn-sm fork-btn #{button_class}" do
+          = link_to new_project_fork_path(@project), class: "gl-button btn btn-default fork-btn #{button_class}" do
             = sprite_icon('fork', css_class: 'icon')
             %span= s_('ProjectOverview|Fork')
-      = link_to project_forks_path(@project), title: n_(s_('ProjectOverview|Forks'), s_('ProjectOverview|Forks'), @project.forks_count), class: "gl-button btn btn-default btn-sm count has-tooltip fork-count #{count_class}" do
+      = link_to project_forks_path(@project), title: n_(s_('ProjectOverview|Forks'), s_('ProjectOverview|Forks'), @project.forks_count), class: "gl-button btn btn-default count has-tooltip fork-count #{count_class}" do
         = @project.forks_count

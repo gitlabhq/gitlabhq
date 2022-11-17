@@ -33,4 +33,16 @@ RSpec.describe API::NpmInstancePackages do
       let(:url) { api("/packages/npm/-/package/#{package_name}/dist-tags/#{tag_name}") }
     end
   end
+
+  describe 'POST /api/v4/packages/npm/-/npm/v1/security/advisories/bulk' do
+    it_behaves_like 'handling audit request', path: 'advisories/bulk', scope: :instance do
+      let(:url) { api('/packages/npm/-/npm/v1/security/advisories/bulk') }
+    end
+  end
+
+  describe 'POST /api/v4/packages/npm/-/npm/v1/security/audits/quick' do
+    it_behaves_like 'handling audit request', path: 'audits/quick', scope: :instance do
+      let(:url) { api('/packages/npm/-/npm/v1/security/audits/quick') }
+    end
+  end
 end
