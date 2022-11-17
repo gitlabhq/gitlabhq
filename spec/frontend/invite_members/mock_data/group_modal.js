@@ -7,6 +7,7 @@ export const propsData = {
   accessLevels: { Guest: 10, Reporter: 20, Developer: 30, Maintainer: 40, Owner: 50 },
   defaultAccessLevel: 10,
   helpLink: 'https://example.com',
+  fullPath: 'project',
 };
 
 export const sharedGroup = { id: '981' };

@@ -21,8 +21,7 @@
     %ul.content-list
       = render partial: "table"
   - else
-    = render Pajamas::CardComponent.new(card_options: { class: 'bg-light gl-mt-3 gl-text-center' }) do |c|
-      - c.body do
-        = _("No schedules")
+    .nothing-here-block
+      = _("No schedules")
 
   #pipeline-take-ownership-modal

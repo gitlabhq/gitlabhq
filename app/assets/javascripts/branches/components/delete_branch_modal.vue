@@ -76,7 +76,9 @@ export default {
       this.$refs.modal.show();
     },
     submitForm() {
-      this.$refs.form.submit();
+      if (!this.deleteButtonDisabled) {
+        this.$refs.form.submit();
+      }
     },
     closeModal() {
       this.$refs.modal.hide();
@@ -127,7 +129,7 @@ export default {
       </div>
     </gl-alert>
 
-    <form ref="form" :action="deletePath" method="post">
+    <form ref="form" :action="deletePath" method="post" @submit.prevent>
       <div v-if="isProtectedBranch" class="gl-mt-4">
         <p>
           <gl-sprintf :message="undoneWarning">
@@ -150,6 +152,7 @@ export default {
             class="gl-mt-4"
             aria-labelledby="input-label"
             autocomplete="off"
+            @keyup.enter="submitForm"
           />
         </p>
       </div>

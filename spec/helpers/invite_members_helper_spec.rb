@@ -21,7 +21,8 @@ RSpec.describe InviteMembersHelper do
         invalid_groups: project.related_group_ids,
         help_link: help_page_url('user/permissions'),
         is_project: 'true',
-        access_levels: ProjectMember.access_level_roles.to_json
+        access_levels: ProjectMember.access_level_roles.to_json,
+        full_path: project.full_path
       }
 
       expect(helper.common_invite_group_modal_data(project, ProjectMember, 'true')).to include(attributes)
@@ -56,7 +57,8 @@ RSpec.describe InviteMembersHelper do
         id: project.id,
         root_id: project.root_ancestor.id,
         name: project.name,
-        default_access_level: Gitlab::Access::GUEST
+        default_access_level: Gitlab::Access::GUEST,
+        full_path: project.full_path
       }
 
       expect(helper.common_invite_modal_dataset(project)).to include(attributes)

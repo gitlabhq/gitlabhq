@@ -31,6 +31,10 @@ export default {
       type: String,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     accessLevels: {
       type: Object,
       required: true,
@@ -155,6 +159,7 @@ export default {
     :root-group-id="rootId"
     :invalid-feedback-message="invalidFeedbackMessage"
     :is-loading="isLoading"
+    :full-path="fullPath"
     @reset="resetFields"
     @submit="sendInvite"
   >

@@ -205,7 +205,7 @@ export default {
             <tr v-for="line in lines" v-once :key="line.line_code" class="line_holder">
               <td
                 :class="line.type"
-                class="diff-line-num old_line gl-border-bottom-0! gl-border-top-0!"
+                class="diff-line-num old_line gl-border-bottom-0! gl-border-top-0! gl-border-0! gl-rounded-0!"
               >
                 {{ line.old_line }}
               </td>
@@ -217,7 +217,7 @@ export default {
               </td>
               <td
                 :class="line.type"
-                class="line_content gl-display-table-cell!"
+                class="line_content gl-display-table-cell! gl-border-0! gl-rounded-0!"
                 v-html="line.rich_text /* eslint-disable-line vue/no-v-html */"
               ></td>
             </tr>

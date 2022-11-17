@@ -14,6 +14,8 @@ module Spec
               submit_invites
             end
 
+            wait_for_all_requests
+
             page.refresh if refresh
           end
 

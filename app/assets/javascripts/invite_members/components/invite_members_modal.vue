@@ -98,6 +98,10 @@ export default {
       type: Array,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     usersLimitDataset: {
       type: Object,
       required: false,
@@ -376,6 +380,7 @@ export default {
     :new-users-to-invite="newUsersToInvite"
     :root-group-id="rootId"
     :users-limit-dataset="usersLimitDataset"
+    :full-path="fullPath"
     @reset="resetFields"
     @submit="sendInvite"
     @access-level="onAccessLevelUpdate"

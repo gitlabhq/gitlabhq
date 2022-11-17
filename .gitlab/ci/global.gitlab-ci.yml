@@ -82,19 +82,6 @@
   <<: *node-modules-cache
   policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
 
-.assets-cache: &assets-cache
-  key: "assets-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v5"
-  # This list should match GITLAB_ASSETS_PATHS_LIST from scripts/gitlab_component_helpers.sh
-  paths:
-    - cached-assets-hash.txt
-    - app/assets/javascripts/locale/**/app.js
-    - public/assets/
-  policy: pull
-
-.assets-cache-push: &assets-cache-push
-  <<: *assets-cache
-  policy: push  # We want to rebuild the cache from scratch to ensure stale dependencies are cleaned up.
-
 .assets-tmp-cache: &assets-tmp-cache
   key: "assets-tmp-debian-${DEBIAN_VERSION}-ruby-${RUBY_VERSION}-node-${NODE_ENV}-v1"
   paths:

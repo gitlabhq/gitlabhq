@@ -57,6 +57,7 @@ describe('InviteMembersModal', () => {
       },
       propsData: {
         usersLimitDataset: {},
+        fullPath: 'project',
         ...propsData,
         ...props,
       },
