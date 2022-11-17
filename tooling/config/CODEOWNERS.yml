@@ -56,6 +56,9 @@
         - 'token_access/'
         - 'pipelines/'
         - 'ci/runner/'
+        - 'config/events/'
+        - 'config/audit_events/'
+        - 'runner_token_expiration/'
       patterns:
         - '%{keyword}'
 

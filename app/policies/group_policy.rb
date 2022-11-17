@@ -193,6 +193,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :admin_group_member
     enable :change_visibility_level
 
+    enable :read_usage_quotas
     enable :read_group_runners
     enable :admin_group_runners
     enable :register_group_runners

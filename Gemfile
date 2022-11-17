@@ -397,7 +397,7 @@ group :development, :test do
   gem 'spring', '~> 2.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 9.0.0', require: false
+  gem 'gitlab-styles', '~> 9.1.0', require: false
 
   gem 'haml_lint', '~> 0.40.0', require: false
   gem 'bundler-audit', '~> 0.7.0.1', require: false

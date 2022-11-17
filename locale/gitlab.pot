@@ -11325,9 +11325,6 @@ msgstr ""
 msgid "Create issue to resolve all threads"
 msgstr ""
 
-msgid "Create iteration"
-msgstr ""
-
 msgid "Create label"
 msgstr ""
 
@@ -22994,9 +22991,6 @@ msgstr ""
 msgid "Iterations|Iteration cadences"
 msgstr ""
 
-msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
-msgstr ""
-
 msgid "Iterations|Iterations are scheduled to start on %{weekday}s."
 msgstr ""
 
@@ -27271,9 +27265,6 @@ msgid "No issues found"
 msgstr ""
 
 msgid "No iteration"
-msgstr ""
-
-msgid "No iterations to show"
 msgstr ""
 
 msgid "No job log"

@@ -7,8 +7,7 @@ require 'fast_spec_helper'
 # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/47008
 require 'rubocop'
 require 'rubocop/rspec/support'
-
-require_relative './support/shared_contexts/rubocop_default_rspec_language_config_context'
+require 'rubocop/rspec/shared_contexts/default_rspec_language_config_context'
 
 RSpec.configure do |config|
   config.define_derived_metadata(file_path: %r{spec/rubocop}) do |metadata|

@@ -9,6 +9,9 @@ info: "See the Technical Writers assigned to Development Guidelines: https://abo
 In each release, GitLab removes features that were deprecated in an earlier release.
 Some features cause breaking changes when they are removed.
 
+**{rss}** **To be notified of upcoming breaking changes**,
+add this URL to your RSS feed reader: `https://about.gitlab.com/breaking-changes.xml`
+
 <!-- vale off -->
 
 <!--

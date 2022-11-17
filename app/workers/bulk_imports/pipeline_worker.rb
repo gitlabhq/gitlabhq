@@ -63,6 +63,7 @@ module BulkImports
 
       raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?
       raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
+      raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
 
       return re_enqueue if export_empty? || export_started?
 
@@ -144,7 +145,11 @@ module BulkImports
     def job_timeout?
       return false unless file_extraction_pipeline?
 
-      (Time.zone.now - entity.created_at) > Pipeline::NDJSON_EXPORT_TIMEOUT
+      time_since_entity_created > Pipeline::NDJSON_EXPORT_TIMEOUT
+    end
+
+    def empty_export_timeout?
+      export_empty? && time_since_entity_created > Pipeline::EMPTY_EXPORT_STATUS_TIMEOUT
     end
 
     def export_failed?
@@ -204,6 +209,10 @@ module BulkImports
     def log_exception(exception, payload)
       Gitlab::ExceptionLogFormatter.format!(exception, payload)
       logger.error(structured_payload(payload))
+    end
+
+    def time_since_entity_created
+      Time.zone.now - entity.created_at
     end
   end
 end

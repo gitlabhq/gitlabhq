@@ -113,4 +113,40 @@ RSpec.describe ObjectStorage::BackgroundMoveWorker do
       end
     end
   end
+
+  context 'with invalid input' do
+    before do
+      stub_lfs_object_storage(background_upload: true)
+      stub_artifacts_object_storage(background_upload: true)
+      stub_uploads_object_storage(AvatarUploader, background_upload: true)
+    end
+
+    context 'with a file_field argument that is not an upload mount' do
+      it 'does nothing' do
+        expect(subject).not_to receive(:build_uploader)
+        expect(LfsObject).not_to receive(:find)
+        expect(Ci::JobArtifact).not_to receive(:find)
+        expect(AvatarUploader).not_to receive(:find)
+
+        expect { subject.perform('LfsObjectUploader', 'LfsObject', 'avatar', 1) }
+          .to raise_error(ArgumentError, 'avatar not allowed for LfsObject in ObjectStorage::BackgroundMoveWorker')
+
+        expect { subject.perform('JobArtifactUploader', 'Ci::JobArtifact', 'id', 2) }
+          .to raise_error(ArgumentError, 'id not allowed for Ci::JobArtifact in ObjectStorage::BackgroundMoveWorker')
+
+        expect { subject.perform('AvatarUploader', 'User', 'file', 3) }
+          .to raise_error(ArgumentError, 'file not allowed for User in ObjectStorage::BackgroundMoveWorker')
+      end
+    end
+
+    context 'with an uploader that does not match the given subject' do
+      it 'raises ArgumentError' do
+        expect(subject).not_to receive(:build_uploader)
+        expect(LfsObject).not_to receive(:find)
+
+        expect { subject.perform('AvatarUploader', 'LfsObject', 'file', 1) }
+          .to raise_error(ArgumentError, 'file not allowed for LfsObject in ObjectStorage::BackgroundMoveWorker')
+      end
+    end
+  end
 end

@@ -1213,6 +1213,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/services/ee/auth/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/ee/resource_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
+/ee/app/services/ee/users/authorized_build_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/personal_access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/services/security/token_revocation_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /ee/app/validators/password/ @gitlab-org/manage/authentication-and-authorization/approvers
