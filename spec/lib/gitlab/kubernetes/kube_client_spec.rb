@@ -132,6 +132,14 @@ RSpec.describe Gitlab::Kubernetes::KubeClient do
       it_behaves_like 'local address'
     end
 
+    context 'when a non HTTP/HTTPS URL is provided' do
+      let(:api_url) { 'ssh://192.168.1.2' }
+
+      it 'raises an error' do
+        expect { client }.to raise_error(Gitlab::UrlBlocker::BlockedUrlError)
+      end
+    end
+
     it 'falls back to default options, but allows overriding' do
       client = described_class.new(api_url)
       defaults = Gitlab::Kubernetes::KubeClient::DEFAULT_KUBECLIENT_OPTIONS

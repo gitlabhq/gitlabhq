@@ -4228,7 +4228,8 @@ deploy_review_job:
 
 #### `variables:description`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30101) in GitLab 13.7.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5, `variables:value` can contain an array of values.
 
 Use the `description` keyword to define a [pipeline-level (global) variable that is prefilled](../pipelines/index.md#prefill-variables-in-manual-pipelines)
 when [running a pipeline manually](../pipelines/index.md#run-a-pipeline-manually).
@@ -4240,6 +4241,7 @@ If used with `value`, the variable value is also prefilled when running a pipeli
 **Possible inputs**:
 
 - A string.
+- An array of strings.
 
 **Example of `variables:description`**:
 
@@ -4254,6 +4256,7 @@ variables:
 
 - A global variable defined with `value` but no `description` behaves the same as
   [`variables`](#variables).
+- `variables:value` can [contain an array of selectable values](../pipelines/index.md#configure-a-list-of-selectable-values-for-a-prefilled-variable).
 
 #### `variables:expand`
 

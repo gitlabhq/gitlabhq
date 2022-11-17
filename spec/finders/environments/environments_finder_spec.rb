@@ -51,15 +51,35 @@ RSpec.describe Environments::EnvironmentsFinder do
     end
 
     context 'with search and states' do
+      let_it_be(:environment_available_b) { create(:environment, :available, name: 'test/foldered-env', project: project) }
+
       it 'searches environments by name and state' do
         result = described_class.new(project, user, search: 'test', states: :available).execute
 
-        expect(result).to contain_exactly(environment_available)
+        expect(result).to contain_exactly(environment_available, environment_available_b)
+      end
+
+      it 'searches environments by name inside folder and state' do
+        result = described_class.new(project, user, search: 'folder', states: :available).execute
+
+        expect(result).to contain_exactly(environment_available_b)
+      end
+
+      context 'when enable_environments_search_within_folder FF is disabled' do
+        before do
+          stub_feature_flags(enable_environments_search_within_folder: false)
+        end
+
+        it 'ignores name inside folder' do
+          result = described_class.new(project, user, search: 'folder', states: :available).execute
+
+          expect(result).to be_empty
+        end
       end
     end
 
     context 'with id' do
-      it 'searches environments by name and state' do
+      it 'searches environments by name and id' do
         result = described_class.new(project, user, search: 'test', environment_ids: [environment_available.id]).execute
 
         expect(result).to contain_exactly(environment_available)

@@ -91,6 +91,34 @@ RSpec.describe Projects::EnvironmentsController do
           expect(json_response['stopped_count']).to eq 1
         end
 
+        it 'supports search within environment folder name' do
+          create(:environment, project: project, name: 'review-app', state: :available)
+
+          get :index, params: environment_params(format: :json, search: 'review')
+
+          expect(environments.map { |env| env['name'] }).to contain_exactly('review-app',
+                                                                            'staging/review-1',
+                                                                            'staging/review-2')
+          expect(json_response['available_count']).to eq 3
+          expect(json_response['stopped_count']).to eq 1
+        end
+
+        context 'when enable_environments_search_within_folder FF is disabled' do
+          before do
+            stub_feature_flags(enable_environments_search_within_folder: false)
+          end
+
+          it 'ignores name inside folder' do
+            create(:environment, project: project, name: 'review-app', state: :available)
+
+            get :index, params: environment_params(format: :json, search: 'review')
+
+            expect(environments.map { |env| env['name'] }).to contain_exactly('review-app')
+            expect(json_response['available_count']).to eq 1
+            expect(json_response['stopped_count']).to eq 0
+          end
+        end
+
         it 'sets the polling interval header' do
           subject
 

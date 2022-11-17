@@ -90,6 +90,50 @@ If you are unable to use either method, contact customer support for restoration
 
 Contact customer support for immediate help in restoration or recovery.
 
+## Disk requirements
+
+Gitaly and Gitaly Cluster require fast local storage to perform effectively because they are heavy I/O-based processes. Therefore,
+we strongly recommend that all Gitaly nodes use solid-state drives (SSDs).
+
+These SSDs should have a throughput of at least:
+
+- 8,000 input/output operations per second (IOPS) for read operations.
+- 2,000 IOPS for write operations.
+
+These IOPS values are initial recommendations, and may be adjusted to greater or lesser values
+depending on the scale of your environment's workload. If you’re running the environment on a
+cloud provider, refer to their documentation about how to configure IOPS correctly.
+
+For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons. Alternatives such as
+[NFS](#moving-beyond-nfs) or [cloud-based systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.
+
+### Moving beyond NFS
+
+Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
+November 22, 2022. See our [statement of support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
+for more details.
+
+[Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
+is not well suited to Git workloads which are CPU and IOPS sensitive.
+Specifically:
+
+- Git is sensitive to file system latency. Some operations require many
+  read operations. Operations that are fast on block storage can become an order of
+  magnitude slower. This significantly impacts GitLab application performance.
+- NFS performance optimizations that prevent the performance gap between
+  block storage and NFS being even wider are vulnerable to race conditions. We have observed
+  [data inconsistencies](https://gitlab.com/gitlab-org/gitaly/-/issues/2589)
+  in production environments caused by simultaneous writes to different NFS
+  clients. Data corruption is not an acceptable risk.
+
+Gitaly Cluster is purpose built to provide reliable, high performance, fault
+tolerant Git storage.
+
+Further reading:
+
+- Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
+- Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
+
 ## Directly accessing repositories
 
 GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client or any other tool,
@@ -404,33 +448,6 @@ The leftover state is eventually cleaned up.
 
 Unlike Gitaly, Gitaly Cluster doesn't move the repositories in the storages but only virtually moves the repository by updating the
 relative path of the repository in the metadata store.
-
-### Moving beyond NFS
-
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
-November 22, 2022. See our [statement of support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
-for more details.
-
-[Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
-is not well suited to Git workloads which are CPU and IOPS sensitive.
-Specifically:
-
-- Git is sensitive to file system latency. Some operations require many
-  read operations. Operations that are fast on block storage can become an order of
-  magnitude slower. This significantly impacts GitLab application performance.
-- NFS performance optimizations that prevent the performance gap between
-  block storage and NFS being even wider are vulnerable to race conditions. We have observed
-  [data inconsistencies](https://gitlab.com/gitlab-org/gitaly/-/issues/2589)
-  in production environments caused by simultaneous writes to different NFS
-  clients. Data corruption is not an acceptable risk.
-
-Gitaly Cluster is purpose built to provide reliable, high performance, fault
-tolerant Git storage.
-
-Further reading:
-
-- Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
-- Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
 
 ### Components
 

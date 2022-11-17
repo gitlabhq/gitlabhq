@@ -161,7 +161,7 @@ module Gitlab
       def validate_url!
         return if Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
 
-        Gitlab::UrlBlocker.validate!(api_prefix, allow_local_network: false)
+        Gitlab::UrlBlocker.validate!(api_prefix, allow_local_network: false, schemes: %w[http https])
       end
 
       def service_account_exists?(resource)

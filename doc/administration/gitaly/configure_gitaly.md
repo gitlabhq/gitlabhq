@@ -49,6 +49,9 @@ NOTE:
 When configured to run on their own servers, Gitaly servers must be
 [upgraded](../../update/package/index.md) before Gitaly clients in your cluster.
 
+NOTE:
+[Disk requirements](index.md#disk-requirements) apply to Gitaly nodes.
+
 The process for setting up Gitaly on its own server is:
 
 1. [Install Gitaly](#install-gitaly).

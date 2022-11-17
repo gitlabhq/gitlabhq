@@ -282,6 +282,72 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '.for_name_like_within_folder' do
+    subject { project.environments.for_name_like_within_folder(query, limit: limit) }
+
+    let!(:environment) { create(:environment, name: 'review/test-app', project: project) }
+    let!(:environment_a) { create(:environment, name: 'test-app', project: project) }
+    let(:query) { 'test' }
+    let(:limit) { 5 }
+
+    it 'returns a found name' do
+      is_expected.to contain_exactly(environment)
+    end
+
+    it 'does not return environment without folder' do
+      is_expected.not_to include(environment_a)
+    end
+
+    context 'when query is test-app' do
+      let(:query) { 'test-app' }
+
+      it 'returns a found name' do
+        is_expected.to include(environment)
+      end
+    end
+
+    context 'when query is test-app-a' do
+      let(:query) { 'test-app-a' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when query is empty string' do
+      let(:query) { '' }
+      let!(:environment_b) { create(:environment, name: 'review/test-app-1', project: project) }
+
+      it 'returns only the foldered environments' do
+        is_expected.to contain_exactly(environment, environment_b)
+      end
+    end
+
+    context 'when query is nil' do
+      let(:query) {}
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(NoMethodError)
+      end
+    end
+
+    context 'when query is partially matched in the middle of environment name' do
+      let(:query) { 'app' }
+
+      it 'returns empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when query contains a wildcard character' do
+      let(:query) { 'test%' }
+
+      it 'prevents wildcard injection' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.auto_stoppable' do
     subject { described_class.auto_stoppable(limit) }
 

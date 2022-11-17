@@ -6,6 +6,7 @@ class Environment < ApplicationRecord
   include FastDestroyAll::Helpers
   include Presentable
   include NullifyIfBlank
+  include FromUnion
 
   self.reactive_cache_refresh_interval = 1.minute
   self.reactive_cache_lifetime = 55.seconds
@@ -96,7 +97,16 @@ class Environment < ApplicationRecord
   # Search environments which have names like the given query.
   # Do not set a large limit unless you've confirmed that it works on gitlab.com scale.
   scope :for_name_like, -> (query, limit: 5) do
-    where('LOWER(environments.name) LIKE LOWER(?) || \'%\'', sanitize_sql_like(query)).limit(limit)
+    top_level = 'LOWER(environments.name) LIKE LOWER(?) || \'%\''
+
+    where(top_level, sanitize_sql_like(query)).limit(limit)
+  end
+
+  scope :for_name_like_within_folder, -> (query, limit: 5) do
+    within_folder = 'LOWER(ltrim(environments.name, environments.environment_type'\
+      ' || \'/\')) LIKE LOWER(?) || \'%\''
+
+    where(within_folder, sanitize_sql_like(query)).limit(limit)
   end
 
   scope :for_project, -> (project) { where(project_id: project) }
