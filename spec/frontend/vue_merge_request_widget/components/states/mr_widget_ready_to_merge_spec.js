@@ -812,14 +812,30 @@ describe('ReadyToMerge', () => {
         );
       });
 
-      it('shows the diverged commits text when the source branch is behind the target', () => {
-        createComponent({
-          mr: { divergedCommitsCount: 9001, userPermissions: { canMerge: false }, canMerge: false },
+      describe('shows the diverged commits text when the source branch is behind the target', () => {
+        it('when the MR can be merged', () => {
+          createComponent({
+            mr: { divergedCommitsCount: 9001 },
+          });
+
+          expect(wrapper.text()).toEqual(
+            expect.stringContaining('The source branch is 9001 commits behind the target branch'),
+          );
         });
 
-        expect(wrapper.text()).toEqual(
-          expect.stringContaining('The source branch is 9001 commits behind the target branch'),
-        );
+        it('when the MR cannot be merged', () => {
+          createComponent({
+            mr: {
+              divergedCommitsCount: 9001,
+              userPermissions: { canMerge: false },
+              canMerge: false,
+            },
+          });
+
+          expect(wrapper.text()).toEqual(
+            expect.stringContaining('The source branch is 9001 commits behind the target branch'),
+          );
+        });
       });
     });
   });

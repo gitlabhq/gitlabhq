@@ -28,6 +28,10 @@ export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 
+export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
+
+export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
+
 export const i18n = {
   fetchErrorTitle: s__('WorkItem|Work item not found'),
   fetchError: s__(
@@ -99,6 +103,17 @@ export const WORK_ITEMS_TYPE_MAP = {
   [WORK_ITEM_TYPE_ENUM_REQUIREMENTS]: {
     icon: `issue-type-requirements`,
     name: s__('WorkItem|Requirements'),
+  },
+  [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
+    icon: `issue-type-issue`,
+    name: s__('WorkItem|Objective'),
+  },
+};
+
+export const WORK_ITEMS_TREE_TEXT_MAP = {
+  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: {
+    title: s__('WorkItem|Child objectives and key results'),
+    empty: s__('WorkItem|No objectives or key results are currently assigned.'),
   },
 };
 

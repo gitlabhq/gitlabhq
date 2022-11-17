@@ -10,11 +10,18 @@ module API
     end
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+      requires :id, types: [String, Integer],
+                    desc: 'The ID or URL-encoded path of the project owned by the authenticated user'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Unpublish pages' do
-        detail 'This feature was introduced in GitLab 12.6'
+        detail 'Remove pages. The user must have administrator access. This feature was introduced in GitLab 12.6'
+        success code: 204
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[pages]
       end
       delete ':id/pages' do
         authorize! :remove_pages, user_project

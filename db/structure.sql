@@ -14369,6 +14369,24 @@ CREATE SEQUENCE customer_relations_organizations_id_seq
 
 ALTER SEQUENCE customer_relations_organizations_id_seq OWNED BY customer_relations_organizations.id;
 
+CREATE TABLE dast_pre_scan_verifications (
+    id bigint NOT NULL,
+    dast_profile_id bigint NOT NULL,
+    ci_pipeline_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
+);
+
+CREATE SEQUENCE dast_pre_scan_verifications_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dast_pre_scan_verifications_id_seq OWNED BY dast_pre_scan_verifications.id;
+
 CREATE TABLE dast_profile_schedules (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -23720,6 +23738,8 @@ ALTER TABLE ONLY customer_relations_contacts ALTER COLUMN id SET DEFAULT nextval
 
 ALTER TABLE ONLY customer_relations_organizations ALTER COLUMN id SET DEFAULT nextval('customer_relations_organizations_id_seq'::regclass);
 
+ALTER TABLE ONLY dast_pre_scan_verifications ALTER COLUMN id SET DEFAULT nextval('dast_pre_scan_verifications_id_seq'::regclass);
+
 ALTER TABLE ONLY dast_profile_schedules ALTER COLUMN id SET DEFAULT nextval('dast_profile_schedules_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_profiles ALTER COLUMN id SET DEFAULT nextval('dast_profiles_id_seq'::regclass);
@@ -25550,6 +25570,9 @@ ALTER TABLE ONLY customer_relations_contacts
 
 ALTER TABLE ONLY customer_relations_organizations
     ADD CONSTRAINT customer_relations_organizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dast_pre_scan_verifications
+    ADD CONSTRAINT dast_pre_scan_verifications_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dast_profile_schedules
     ADD CONSTRAINT dast_profile_schedules_pkey PRIMARY KEY (id);
@@ -28776,6 +28799,10 @@ CREATE UNIQUE INDEX index_customer_relations_contacts_on_unique_email_per_group 
 CREATE UNIQUE INDEX index_cycle_analytics_stage_event_hashes_on_hash_sha_256 ON analytics_cycle_analytics_stage_event_hashes USING btree (hash_sha256);
 
 CREATE UNIQUE INDEX index_daily_build_group_report_results_unique_columns ON ci_daily_build_group_report_results USING btree (project_id, ref_path, date, group_name);
+
+CREATE UNIQUE INDEX index_dast_pre_scan_verifications_on_ci_pipeline_id ON dast_pre_scan_verifications USING btree (ci_pipeline_id);
+
+CREATE INDEX index_dast_pre_scan_verifications_on_dast_profile_id ON dast_pre_scan_verifications USING btree (dast_profile_id);
 
 CREATE INDEX index_dast_profile_schedules_active_next_run_at ON dast_profile_schedules USING btree (active, next_run_at);
 
@@ -35185,6 +35212,9 @@ ALTER TABLE ONLY fork_network_members
 
 ALTER TABLE ONLY security_orchestration_policy_rule_schedules
     ADD CONSTRAINT fk_rails_efe1d9b133 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dast_pre_scan_verifications
+    ADD CONSTRAINT fk_rails_f08d9312a8 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY prometheus_alerts
     ADD CONSTRAINT fk_rails_f0e8db86aa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

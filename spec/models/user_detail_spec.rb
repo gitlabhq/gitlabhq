@@ -48,6 +48,23 @@ RSpec.describe UserDetail do
 
     describe '#website_url' do
       it { is_expected.to validate_length_of(:website_url).is_at_most(500) }
+
+      it 'only validates the website_url if it is changed' do
+        user_detail = create(:user_detail)
+        # `update_attribute` required to bypass current validations
+        # Validations on `User#website_url` were added after
+        # there was already data in the database and `UserDetail#website_url` is
+        # derived from `User#website_url` so this reproduces the state of some of
+        # our production data
+        user_detail.update_attribute(:website_url, 'NotAUrl')
+
+        expect(user_detail).to be_valid
+
+        user_detail.website_url = 'AlsoNotAUrl'
+
+        expect(user_detail).not_to be_valid
+        expect(user_detail.errors.full_messages).to match_array(["Website url is not a valid URL"])
+      end
     end
   end
 

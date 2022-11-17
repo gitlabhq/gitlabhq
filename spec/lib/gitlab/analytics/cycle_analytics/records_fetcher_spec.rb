@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::RecordsFetcher do
-  around do |example|
-    freeze_time { example.run }
+  before_all do
+    freeze_time
   end
 
   let(:params) { { from: 1.year.ago, current_user: user } }

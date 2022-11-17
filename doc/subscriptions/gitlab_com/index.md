@@ -102,9 +102,16 @@ To view a list of seats being used:
 1. On the left sidebar, select **Settings > Usage Quotas**.
 1. On the **Seats** tab, view usage information.
 
-The seat usage listing is updated live, but the usage statistics on the billing page are updated
-only once per day. For this reason there can be a minor difference between the seat usage listing
-and the billing page.
+The data in seat usage listing, **Seats in use**, and **Seats in subscription** are updated live.
+The counts for **Max seats used** and **Seats owed** are updated once per day.
+
+To view your subscription information and a summary of seat counts:
+
+1. On the top bar, select **Main menu > Groups** and find your group.
+1. On the left sidebar, select **Settings > Billing**.
+
+The usage statistics are updated once per day, which may cause
+a difference between the information in the **Usage Quotas** page and the **Billing page**.
 
 ### Search seat usage
 

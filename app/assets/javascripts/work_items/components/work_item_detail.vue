@@ -27,6 +27,7 @@ import {
   WORK_ITEM_VIEWED_STORAGE_KEY,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '../constants';
 
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
@@ -37,6 +38,7 @@ import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql
 import updateWorkItemTaskMutation from '../graphql/update_work_item_task.mutation.graphql';
 import { getWorkItemQuery } from '../utils';
 
+import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
 import WorkItemState from './work_item_state.vue';
 import WorkItemTitle from './work_item_title.vue';
@@ -73,6 +75,7 @@ export default {
     WorkItemTypeIcon,
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemMilestone,
+    WorkItemTree,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
@@ -323,6 +326,7 @@ export default {
     },
   },
   WORK_ITEM_VIEWED_STORAGE_KEY,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 };
 </script>
 
@@ -511,6 +515,10 @@ export default {
         :query-variables="queryVariables"
         class="gl-pt-5"
         @error="updateError = $event"
+      />
+      <work-item-tree
+        v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
+        :work-item-type="workItemType"
       />
       <gl-empty-state
         v-if="error"

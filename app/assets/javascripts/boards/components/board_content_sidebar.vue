@@ -32,6 +32,8 @@ export default {
     SidebarTodoWidget,
     SidebarSeverity,
     MountingPortal,
+    SidebarHealthStatusWidget: () =>
+      import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue'),
     SidebarWeightWidget: () =>
       import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue'),
     IterationSidebarDropdownWidget: () =>
@@ -49,6 +51,9 @@ export default {
       default: false,
     },
     weightFeatureAvailable: {
+      default: false,
+    },
+    healthStatusFeatureAvailable: {
       default: false,
     },
     allowLabelEdit: {
@@ -115,6 +120,7 @@ export default {
       'setActiveItemConfidential',
       'setActiveBoardItemLabels',
       'setActiveItemWeight',
+      'setActiveItemHealthStatus',
     ]),
     handleClose() {
       this.toggleBoardItem({ boardItem: this.activeBoardItem, sidebarType: this.sidebarType });
@@ -235,6 +241,13 @@ export default {
           :full-path="fullPath"
           :issuable-type="issuableType"
           @weightUpdated="setActiveItemWeight($event)"
+        />
+        <sidebar-health-status-widget
+          v-if="healthStatusFeatureAvailable"
+          :iid="activeBoardItem.iid"
+          :full-path="fullPath"
+          :issuable-type="issuableType"
+          @statusUpdated="setActiveItemHealthStatus($event)"
         />
         <sidebar-confidentiality-widget
           :iid="activeBoardItem.iid"

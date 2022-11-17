@@ -11190,6 +11190,9 @@ msgstr ""
 msgid "Couldn't assign policy to project or group"
 msgstr ""
 
+msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"
+msgstr ""
+
 msgid "Country"
 msgstr ""
 
@@ -23660,6 +23663,9 @@ msgstr ""
 msgid "Key (PEM)"
 msgstr ""
 
+msgid "Key result"
+msgstr ""
+
 msgid "Key:"
 msgstr ""
 
@@ -28030,7 +28036,22 @@ msgstr ""
 msgid "OK"
 msgstr ""
 
+msgid "OKR|Existing key result"
+msgstr ""
+
+msgid "OKR|Existing objective"
+msgstr ""
+
+msgid "OKR|New key result"
+msgstr ""
+
+msgid "OKR|New objective"
+msgstr ""
+
 msgid "Object does not exist on the server or you don't have permissions to access it"
+msgstr ""
+
+msgid "Objective"
 msgstr ""
 
 msgid "Observability"
@@ -46326,6 +46347,9 @@ msgstr[1] ""
 msgid "WorkItem|Cancel"
 msgstr ""
 
+msgid "WorkItem|Child objectives and key results"
+msgstr ""
+
 msgid "WorkItem|Child removed"
 msgstr ""
 
@@ -46386,10 +46410,16 @@ msgstr ""
 msgid "WorkItem|No milestone"
 msgstr ""
 
+msgid "WorkItem|No objectives or key results are currently assigned."
+msgstr ""
+
 msgid "WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts."
 msgstr ""
 
 msgid "WorkItem|None"
+msgstr ""
+
+msgid "WorkItem|Objective"
 msgstr ""
 
 msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task."

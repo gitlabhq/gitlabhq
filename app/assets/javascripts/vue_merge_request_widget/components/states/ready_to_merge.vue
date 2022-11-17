@@ -556,6 +556,16 @@ export default {
                 </ul>
               </div>
               <div class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5">
+                <template v-if="sourceHasDivergedFromTarget">
+                  <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
+                    <template #link>
+                      <gl-link :href="mr.targetBranchPath">{{
+                        $options.i18n.divergedCommits(mr.divergedCommitsCount)
+                      }}</gl-link>
+                    </template>
+                  </gl-sprintf>
+                  &middot;
+                </template>
                 <added-commit-message
                   :is-squash-enabled="squashBeforeMerge"
                   :is-fast-forward-enabled="!shouldShowMergeEdit"

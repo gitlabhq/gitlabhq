@@ -10,6 +10,7 @@ module Gitlab
       include Migrations::TimeoutHelpers
       include Migrations::ConstraintsHelpers
       include Migrations::ExtensionHelpers
+      include Migrations::SidekiqHelpers
       include DynamicModelHelpers
       include RenameTableHelpers
       include AsyncIndexes::MigrationHelpers
@@ -1025,38 +1026,6 @@ module Gitlab
       def remove_foreign_key_without_error(*args, **kwargs)
         remove_foreign_key(*args, **kwargs)
       rescue ArgumentError
-      end
-
-      # Remove any instances of deprecated job classes lingering in queues.
-      #
-      # rubocop:disable Cop/SidekiqApiUsage
-      def sidekiq_remove_jobs(job_klass:)
-        Sidekiq::Queue.new(job_klass.queue).each do |job|
-          job.delete if job.klass == job_klass.to_s
-        end
-
-        Sidekiq::RetrySet.new.each do |retri|
-          retri.delete if retri.klass == job_klass.to_s
-        end
-
-        Sidekiq::ScheduledSet.new.each do |scheduled|
-          scheduled.delete if scheduled.klass == job_klass.to_s
-        end
-      end
-      # rubocop:enable Cop/SidekiqApiUsage
-
-      def sidekiq_queue_migrate(queue_from, to:)
-        while sidekiq_queue_length(queue_from) > 0
-          Sidekiq.redis do |conn|
-            conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
-          end
-        end
-      end
-
-      def sidekiq_queue_length(queue_name)
-        Sidekiq.redis do |conn|
-          conn.llen("queue:#{queue_name}")
-        end
       end
 
       def check_trigger_permissions!(table)

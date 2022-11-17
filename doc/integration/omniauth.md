@@ -53,7 +53,7 @@ To change these settings:
 
   ::Tabs
 
-  :::TabTitle Omnibus
+  :::TabTitle Linux package (Omnibus)
 
   1. Edit `/etc/gitlab/gitlab.rb` and update the following section:
 
@@ -73,7 +73,7 @@ To change these settings:
      sudo gitlab-ctl reconfigure
      ```
 
-  :::TabTitle Helm chart
+  :::TabTitle Helm chart (Kubernetes)
 
   1. Export the Helm values:
 
@@ -102,7 +102,7 @@ To change these settings:
      helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
      ```
 
-  :::TabTitle Source
+  :::TabTitle Self-compiled (Source)
 
   1. Open the configuration file:
 

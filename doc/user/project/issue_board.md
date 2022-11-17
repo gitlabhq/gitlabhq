@@ -463,6 +463,7 @@ You can edit the following issue attributes in the right sidebar:
 - Confidentiality
 - Due date
 - [Epic](../group/epics/index.md)
+- [Health status](issues/managing_issues.md#health-status)
 - [Iteration](../group/iterations/index.md)
 - Labels
 - Milestone

@@ -1,0 +1,9 @@
+---
+table_name: dast_pre_scan_verifications
+classes:
+- Dast::PreScanVerifications
+feature_categories:
+- dynamic_application_security_testing
+description: Verification status for DAST Profiles
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103063
+milestone: '15.6'

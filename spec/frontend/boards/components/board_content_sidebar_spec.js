@@ -146,6 +146,20 @@ describe('BoardContentSidebar', () => {
     expect(wrapper.findComponent(SidebarSeverity).exists()).toBe(false);
   });
 
+  it('does not render SidebarHealthStatusWidget', async () => {
+    const SidebarHealthStatusWidget = (
+      await import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue')
+    ).default;
+    expect(wrapper.findComponent(SidebarHealthStatusWidget).exists()).toBe(false);
+  });
+
+  it('does not render SidebarWeightWidget', async () => {
+    const SidebarWeightWidget = (
+      await import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue')
+    ).default;
+    expect(wrapper.findComponent(SidebarWeightWidget).exists()).toBe(false);
+  });
+
   describe('when we emit close', () => {
     let toggleBoardItem;
 

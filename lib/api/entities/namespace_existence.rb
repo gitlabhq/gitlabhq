@@ -3,7 +3,8 @@
 module API
   module Entities
     class NamespaceExistence < Grape::Entity
-      expose :exists, :suggests
+      expose :exists, documentation: { type: 'boolean' }
+      expose :suggests, documentation: { type: 'string', is_array: true, example: 'my-group1' }
     end
   end
 end
