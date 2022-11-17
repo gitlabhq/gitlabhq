@@ -520,46 +520,39 @@ Example response:
 
 ```json
 {
-  "allowed_agents":
-    [
-      {
+  "allowed_agents": [
+    {
+      "id": 1,
+      "config_project": {
         "id": 1,
-        "config_project": {
-          "id": 1,
-          "description": null,
-          "name": "project1",
-          "name_with_namespace": "John Doe2 / project1",
-          "path": "project1",
-          "path_with_namespace": "namespace1/project1",
-          "created_at": "2021-03-26T14:51:50.579Z"
-        }
+        "description": null,
+        "name": "project1",
+        "name_with_namespace": "John Doe2 / project1",
+        "path": "project1",
+        "path_with_namespace": "namespace1/project1",
+        "created_at": "2022-11-16T14:51:50.579Z"
       }
-    ],
+    }
+  ],
   "job": {
-    "id": 1,
-    "name": "test",
-    "stage": "test",
-    "project_id": 1,
-    "project_name": "project1"
+    "id": 1
   },
   "pipeline": {
-    "id": 1,
-    "project_id": 1,
-    "sha": "b83d6e391c22777fca1ed3012fce84f633d7fed0",
-    "ref": "main",
-    "status": "pending",
-    "created_at": "2021-03-26T14:51:51.107Z",
-    "updated_at": "2021-03-26T14:51:51.107Z",
-    "web_url": "http://localhost/namespace1/project1/-/pipelines/1"
+    "id": 2
   },
   "project": {
     "id": 1,
-    "description": null,
-    "name": "project1",
-    "name_with_namespace": "John Doe2 / project1",
-    "path": "project1",
-    "path_with_namespace": "namespace1/project1",
-    "created_at": "2021-03-26T14:51:50.579Z"
+    "groups": [
+      {
+        "id": 1
+      },
+      {
+        "id": 2
+      },
+      {
+        "id": 3
+      }
+    ]
   },
   "user": {
     "id": 2,

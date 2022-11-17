@@ -1382,10 +1382,12 @@ Here's some other content in tab two.
 For tab titles, be brief and consistent. Ensure they are parallel, and start each with a capital letter.
 For example:
 
-- `Omnibus package`, `Helm chart`, `Source`
+- `Linux package (Omnibus)`, `Helm chart (Kubernetes)` (when documenting configuration edits, follow the
+  [configuration edits guide](#configuration-documentation-for-different-installation-methods))
 - `15.1 and earlier`, `15.2 and later`
 
-See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for details.
+See [Pajamas](https://design.gitlab.com/components/tabs/#guidelines) for more
+details on tabs.
 
 ## Terms
 
@@ -1487,21 +1489,32 @@ we install Ruby from source. To update the guide for a new Ruby version:
 - Replace the sha256sum. It's available on the
   [downloads page](https://www.ruby-lang.org/en/downloads/) of the Ruby website.
 
-### Configuration documentation for source and Omnibus installations
+### Configuration documentation for different installation methods
 
-GitLab supports two installation methods: installations from source, and Omnibus
-packages. Possible configuration settings include:
+GitLab supports four installation methods:
 
-- Settings that touch configuration files in `config/`.
-- NGINX settings.
-- Other settings in `lib/support/`.
+- Linux package (Omnibus)
+- Helm chart (Kubernetes)
+- Docker
+- Self-compiled (Source)
 
 Configuration procedures can require users to edit configuration files, reconfigure
-GitLab, or restart GitLab. Use these styles to document these steps, replacing
-`PATH/TO` with the appropriate path:
+GitLab, or restart GitLab. In this case:
 
+- Use [tabs](#tabs) to differentiate among the various installation methods.
+- Use them in the order described below.
+- Indent the code blocks to line up with the list item they belong to.
+- Use the appropriate syntax highlighting for each code block (`ruby`, `shell`, or `yaml`).
+- For the YAML files, always include the parent settings.
+
+You can copy and paste the following snippet when describing a configuration
+edit:
+
+<!-- markdownlint-disable tabs-blank-lines -->
 ````markdown
-**For Omnibus installations**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -1509,32 +1522,159 @@ GitLab, or restart GitLab. Use these styles to document these steps, replacing
    external_url "https://gitlab.example.com"
    ```
 
-1. Save the file and [reconfigure](PATH/TO/administration/restart_gitlab.md#omnibus-gitlab-reconfigure)
-   GitLab for the changes to take effect.
+1. Save the file and reconfigure GitLab:
 
----
-
-**For installations from source**
-
-1. Edit `config/gitlab.yml`:
-
-   ```yaml
-   gitlab:
-     host: "gitlab.example.com"
+   ```shell
+   sudo gitlab-ctl reconfigure
    ```
 
-1. Save the file and [restart](PATH/TO/administration/restart_gitlab.md#installations-from-source)
-   GitLab for the changes to take effect.
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     hosts:
+       gitlab:
+         name: gitlab.example.com
+   ```
+
+1. Apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           external_url "https://gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (Source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     gitlab:
+       host: "gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 ````
+<!-- markdownlint-enable tabs-blank-lines -->
 
-In this case:
+It renders as:
 
-- Bold the installation method's name.
-- Separate the methods with three dashes (`---`) to create a horizontal line.
-- Indent the code blocks to line up with the list item they belong to..
-- Use the appropriate syntax highlighting for each code block.
-- Use the [GitLab Restart](#gitlab-restart) section to explain any required
-  restart or reconfigure of GitLab.
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   external_url "https://gitlab.example.com"
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     hosts:
+       gitlab:
+         name: gitlab.example.com
+   ```
+
+1. Apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           external_url "https://gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (Source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     gitlab:
+       host: "gitlab.example.com"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Feature flags
 

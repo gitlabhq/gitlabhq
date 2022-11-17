@@ -67,12 +67,6 @@ module UsageDataHelpers
       projects_with_repositories_enabled
       projects_with_error_tracking_enabled
       projects_with_enabled_alert_integrations
-      projects_with_expiration_policy_enabled_with_older_than_unset
-      projects_with_expiration_policy_enabled_with_older_than_set_to_7d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_14d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_30d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_60d
-      projects_with_expiration_policy_enabled_with_older_than_set_to_90d
       projects_with_terraform_reports
       projects_with_terraform_states
       pages_domains

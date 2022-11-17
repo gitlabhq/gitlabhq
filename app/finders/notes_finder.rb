@@ -65,7 +65,7 @@ class NotesFinder
 
     @target =
       if target_type == "commit"
-        if Ability.allowed?(@current_user, :download_code, @project)
+        if Ability.allowed?(@current_user, :read_code, @project)
           @project.commit(target_id)
         end
       else
@@ -126,7 +126,7 @@ class NotesFinder
   # rubocop: disable CodeReuse/ActiveRecord
   def notes_for_type(noteable_type)
     if noteable_type == "commit"
-      if Ability.allowed?(@current_user, :download_code, @project)
+      if Ability.allowed?(@current_user, :read_code, @project)
         @project.notes.where(noteable_type: 'Commit')
       else
         Note.none

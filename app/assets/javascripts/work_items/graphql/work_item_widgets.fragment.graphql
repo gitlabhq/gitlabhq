@@ -47,6 +47,14 @@ fragment WorkItemWidgets on WorkItemWidget {
     children {
       nodes {
         id
+        confidential
+        workItemType {
+          id
+        }
+        title
+        state
+        createdAt
+        closedAt
       }
     }
   }

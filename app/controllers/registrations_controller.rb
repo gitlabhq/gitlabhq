@@ -15,6 +15,7 @@ class RegistrationsController < Devise::RegistrationsController
   layout 'devise'
 
   prepend_before_action :check_captcha, only: :create
+  before_action :ensure_first_name_and_last_name_not_empty, only: :create
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :init_preferred_language, only: :new
   before_action :load_recaptcha, only: :new
@@ -169,6 +170,14 @@ class RegistrationsController < Devise::RegistrationsController
     flash[:alert] = _('There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.')
     flash.delete :recaptcha_error
     add_gon_variables
+    render action: 'new'
+  end
+
+  def ensure_first_name_and_last_name_not_empty
+    return if params[resource_name][:first_name].present? && params[resource_name][:last_name].present?
+
+    resource.errors.add(_('First name'), _("cannot be blank")) if params[resource_name][:first_name].blank?
+    resource.errors.add(_('Last name'), _("cannot be blank")) if params[resource_name][:last_name].blank?
     render action: 'new'
   end
 

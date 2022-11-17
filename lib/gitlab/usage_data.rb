@@ -157,7 +157,6 @@ module Gitlab
             runners_usage,
             integrations_usage,
             user_preferences_usage,
-            container_expiration_policies_usage,
             service_desk_counts
           ).tap do |data|
             data[:snippets] = add(data[:personal_snippets], data[:project_snippets])
@@ -328,26 +327,6 @@ module Gitlab
       end
 
       # rubocop: disable CodeReuse/ActiveRecord
-      def container_expiration_policies_usage
-        results = {}
-        start = minimum_id(Project)
-        finish = maximum_id(Project)
-
-        # rubocop: disable UsageData/LargeTable
-        base = ::ContainerExpirationPolicy.active
-        # rubocop: enable UsageData/LargeTable
-
-        # rubocop: disable UsageData/LargeTable
-        ::ContainerExpirationPolicy.older_than_options.keys.each do |value|
-          results["projects_with_expiration_policy_enabled_with_older_than_set_to_#{value}".to_sym] = distinct_count(base.where(older_than: value), :project_id, start: start, finish: finish)
-        end
-        # rubocop: enable UsageData/LargeTable
-
-        results[:projects_with_expiration_policy_enabled_with_older_than_unset] = distinct_count(base.where(older_than: nil), :project_id, start: start, finish: finish)
-
-        results
-      end
-
       def integrations_usage
         # rubocop: disable UsageData/LargeTable:
         Integration.available_integration_names(include_dev: false).each_with_object({}) do |name, response|

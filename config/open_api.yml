@@ -71,6 +71,8 @@ metadata:
     description: Operations related to integrations
   - name: issue_links
     description: Operations related to issue links
+  - name: jira_connect_subscriptions
+    description: Operations related to JiraConnect subscriptions
   - name: merge_requests
     description: Operations related to merge requests
   - name: metadata

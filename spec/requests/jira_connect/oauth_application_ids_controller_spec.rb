@@ -38,9 +38,9 @@ RSpec.describe JiraConnect::OauthApplicationIdsController do
       end
     end
 
-    context 'when jira_connect_oauth_self_managed disabled' do
+    context 'when jira_connect_oauth_self_managed_setting disabled' do
       before do
-        stub_feature_flags(jira_connect_oauth_self_managed: false)
+        stub_feature_flags(jira_connect_oauth_self_managed_setting: false)
       end
 
       it 'renders not found' do

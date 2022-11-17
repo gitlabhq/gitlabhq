@@ -38,7 +38,7 @@ describe('WorkItemDescription', () => {
   const subscriptionHandler = jest.fn().mockResolvedValue(workItemDescriptionSubscriptionResponse);
   const workItemByIidResponseHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
   let workItemResponseHandler;
-  let workItemsMvc2;
+  let workItemsMvc;
 
   const findMarkdownField = () => wrapper.findComponent(MarkdownField);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
@@ -46,7 +46,7 @@ describe('WorkItemDescription', () => {
   const findEditedAt = () => wrapper.findComponent(EditedAt);
 
   const editDescription = (newText) => {
-    if (workItemsMvc2) {
+    if (workItemsMvc) {
       return findMarkdownEditor().vm.$emit('input', newText);
     }
     return wrapper.find('textarea').setValue(newText);
@@ -82,7 +82,7 @@ describe('WorkItemDescription', () => {
       },
       provide: {
         glFeatures: {
-          workItemsMvc2,
+          workItemsMvc,
         },
       },
       stubs: {
@@ -104,11 +104,11 @@ describe('WorkItemDescription', () => {
   });
 
   describe.each([true, false])(
-    'editing description with workItemsMvc2 %workItemsMvc2Enabled',
-    (workItemsMvc2Enabled) => {
+    'editing description with workItemsMvc %workItemsMvcEnabled',
+    (workItemsMvcEnabled) => {
       beforeEach(() => {
         beforeEach(() => {
-          workItemsMvc2 = workItemsMvc2Enabled;
+          workItemsMvc = workItemsMvcEnabled;
         });
       });
 

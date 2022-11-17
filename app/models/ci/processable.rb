@@ -172,7 +172,7 @@ module Ci
 
     def needs_attributes
       strong_memoize(:needs_attributes) do
-        needs.map { |need| need.attributes.except('id', 'build_id') }
+        needs.map { |need| need.attributes.except('id', 'build_id', 'partition_id') }
       end
     end
 

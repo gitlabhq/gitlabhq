@@ -224,7 +224,7 @@ export default {
       label-for="work-item-description"
     >
       <markdown-editor
-        v-if="glFeatures.workItemsMvc2"
+        v-if="glFeatures.workItemsMvc"
         class="gl-my-3 common-note-form"
         :value="descriptionText"
         :render-markdown-path="markdownPreviewPath"

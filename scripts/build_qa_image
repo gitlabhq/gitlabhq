@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 QA_IMAGE_NAME="gitlab-ee-qa"
 
-if [[ "${CI_PROJECT_NAME}" == "gitlabhq" || "${CI_PROJECT_NAME}" == "gitlab-foss" ]]; then
+if [ "${CI_PROJECT_NAME}" == "gitlabhq" ] || [ "${CI_PROJECT_NAME}" == "gitlab-foss" ]; then
   QA_IMAGE_NAME="gitlab-ce-qa"
 fi
 
@@ -15,29 +15,24 @@ IMAGE_TAG=${CI_COMMIT_TAG#v}
 IMAGE_TAG=${IMAGE_TAG:-$CI_COMMIT_REF_SLUG}
 
 QA_IMAGE_BRANCH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${IMAGE_TAG}"
-QA_IMAGE_MASTER="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:master"
 
-DESTINATIONS="--tag ${QA_IMAGE} --tag ${QA_IMAGE_BRANCH}"
+DESTINATIONS="--destination=${QA_IMAGE} --destination=${QA_IMAGE_BRANCH}"
 
 # Auto-deploy tag format uses first 12 letters of commit SHA. Tag with that
 # reference also for EE images.
 if [ "${QA_IMAGE_NAME}" == "gitlab-ee-qa" ]; then
   QA_IMAGE_FOR_AUTO_DEPLOY="${CI_REGISTRY}/${CI_PROJECT_PATH}/${QA_IMAGE_NAME}:${CI_COMMIT_SHA:0:11}"
-  DESTINATIONS="${DESTINATIONS} --tag $QA_IMAGE_FOR_AUTO_DEPLOY"
+  DESTINATIONS="${DESTINATIONS} --destination=$QA_IMAGE_FOR_AUTO_DEPLOY"
 fi
 
 echo "Building QA image for destinations: ${DESTINATIONS}"
 
-docker buildx build \
-  --cache-to=type=inline \
-  --cache-from="$QA_IMAGE_BRANCH" \
-  --cache-from="$QA_IMAGE_MASTER" \
-  --platform=${ARCH:-amd64} \
+/kaniko/executor \
+  --context="${CI_PROJECT_DIR}" \
+  --dockerfile="${CI_PROJECT_DIR}/qa/Dockerfile" \
   --build-arg=CHROME_VERSION="${CHROME_VERSION}" \
   --build-arg=DOCKER_VERSION="${DOCKER_VERSION}" \
   --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
   --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET:-qa}" \
-  --file="${CI_PROJECT_DIR}/qa/Dockerfile" \
-  --push \
-  ${DESTINATIONS} \
-  ${CI_PROJECT_DIR}
+  --cache=true \
+  ${DESTINATIONS}

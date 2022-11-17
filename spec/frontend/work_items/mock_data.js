@@ -97,6 +97,12 @@ export const workItemQueryResponse = {
                 id: 'gid://gitlab/WorkItem/444',
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                confidential: false,
+                title: '123',
+                state: 'OPEN',
+                workItemType: {
+                  id: '1',
+                },
               },
             ],
           },
@@ -142,6 +148,14 @@ export const updateWorkItemMutationResponse = {
               nodes: [
                 {
                   id: 'gid://gitlab/WorkItem/444',
+                  createdAt: '2022-08-03T12:41:54Z',
+                  closedAt: null,
+                  confidential: false,
+                  title: '123',
+                  state: 'OPEN',
+                  workItemType: {
+                    id: '1',
+                  },
                 },
               ],
             },
@@ -318,6 +332,12 @@ export const workItemResponseFactory = ({
                 id: 'gid://gitlab/WorkItem/444',
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                confidential: false,
+                title: '123',
+                state: 'OPEN',
+                workItemType: {
+                  id: '1',
+                },
               },
             ],
           },

@@ -33,7 +33,10 @@ module Integrations
 
     boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
-    validates :webhook, presence: true, public_url: true, if: :activated?
+    validates :webhook,
+              presence: true,
+              public_url: true,
+              if: -> (integration) { integration.activated? && integration.requires_webhook? }
     validates :labels_to_be_notified_behavior, inclusion: { in: LABEL_NOTIFICATION_BEHAVIOURS }, allow_blank: true
 
     def initialize_properties
@@ -73,8 +76,6 @@ module Integrations
 
     def default_fields
       [
-        { type: 'text', name: 'webhook', help: "#{webhook_help}", required: true }.freeze,
-        { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze,
         { type: 'checkbox', name: 'notify_only_broken_pipelines', help: 'Do not send notifications for successful pipelines.' }.freeze,
         {
           type: 'select',
@@ -96,7 +97,14 @@ module Integrations
             ['Match all of the labels', MATCH_ALL_LABELS]
           ]
         }.freeze
-      ].freeze
+      ].tap do |fields|
+        next unless requires_webhook?
+
+        fields.unshift(
+          { type: 'text', name: 'webhook', help: "#{webhook_help}", required: true }.freeze,
+          { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze
+        )
+      end.freeze
     end
 
     def execute(data)
@@ -166,6 +174,10 @@ module Integrations
     def event_channel_value(event)
       field_name = event_channel_name(event)
       self.public_send(field_name) # rubocop:disable GitlabSecurity/PublicSend
+    end
+
+    def requires_webhook?
+      true
     end
 
     private

@@ -109,7 +109,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewRequestsImpor
       expect(Gitlab::GithubImport::PullRequests::ImportReviewRequestWorker)
         .to receive(:bulk_perform_in).with(
           1.second,
-          expected_worker_payload,
+          match_array(expected_worker_payload),
           batch_size: 1000,
           batch_delay: 1.minute
         )

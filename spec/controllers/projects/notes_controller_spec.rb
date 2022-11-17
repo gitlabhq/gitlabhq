@@ -150,7 +150,7 @@ RSpec.describe Projects::NotesController do
         context 'when user cannot read commit' do
           before do
             allow(Ability).to receive(:allowed?).and_call_original
-            allow(Ability).to receive(:allowed?).with(user, :download_code, project).and_return(false)
+            allow(Ability).to receive(:allowed?).with(user, :read_code, project).and_return(false)
           end
 
           it 'renders 404' do

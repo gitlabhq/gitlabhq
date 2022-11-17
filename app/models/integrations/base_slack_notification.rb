@@ -32,13 +32,15 @@ module Integrations
       true
     end
 
+    private
+
     override :log_usage
     def log_usage(event, user_id)
       return unless user_id
 
       return unless SUPPORTED_EVENTS_FOR_USAGE_LOG.include?(event)
 
-      key = "i_ecosystem_slack_service_#{event}_notification"
+      key = "#{metrics_key_prefix}_#{event}_notification"
 
       Gitlab::UsageDataCounters::HLLRedisCounter.track_event(key, values: user_id)
 
@@ -57,6 +59,10 @@ module Integrations
         user: User.find(user_id),
         **optional_arguments
       )
+    end
+
+    def metrics_key_prefix
+      raise NotImplementedError
     end
   end
 end

@@ -1,13 +1,7 @@
 .base-image-build:
   extends: .use-kaniko
   variables:
-    GIT_LFS_SKIP_SMUDGE: 1 # disable pulling objects from lfs
-  retry: 2
-
-.base-image-build-buildx:
-  extends: .use-buildx
-  variables:
-    GIT_LFS_SKIP_SMUDGE: 1 # disable pulling objects from lfs
+    GIT_LFS_SKIP_SMUDGE: 1
   retry: 2
 
 # This image is used by:
@@ -16,12 +10,12 @@
 # See https://docs.gitlab.com/ee/development/testing_guide/end_to_end/index.html#testing-code-in-merge-requests for more details.
 build-qa-image:
   extends:
-    - .base-image-build-buildx
+    - .base-image-build
     - .build-images:rules:build-qa-image
   stage: build-images
   needs: []
   script:
-    - run_timed_command "scripts/build_qa_image"
+    - ./scripts/build_qa_image
 
 # This image is used by:
 # - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335

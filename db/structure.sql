@@ -12582,7 +12582,8 @@ CREATE TABLE ci_build_needs (
     name text NOT NULL,
     artifacts boolean DEFAULT true NOT NULL,
     optional boolean DEFAULT false NOT NULL,
-    build_id bigint NOT NULL
+    build_id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_build_needs_id_seq
@@ -12602,7 +12603,8 @@ CREATE TABLE ci_build_pending_states (
     state smallint,
     failure_reason smallint,
     trace_checksum bytea,
-    trace_bytesize bigint
+    trace_bytesize bigint,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_build_pending_states_id_seq
@@ -12617,7 +12619,8 @@ ALTER SEQUENCE ci_build_pending_states_id_seq OWNED BY ci_build_pending_states.i
 CREATE TABLE ci_build_report_results (
     build_id bigint NOT NULL,
     project_id bigint NOT NULL,
-    data jsonb DEFAULT '{}'::jsonb NOT NULL
+    data jsonb DEFAULT '{}'::jsonb NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE TABLE ci_build_trace_chunks (
@@ -12627,7 +12630,8 @@ CREATE TABLE ci_build_trace_chunks (
     raw_data bytea,
     checksum bytea,
     lock_version integer DEFAULT 0 NOT NULL,
-    build_id bigint NOT NULL
+    build_id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_build_trace_chunks_id_seq
@@ -12646,7 +12650,8 @@ CREATE TABLE ci_build_trace_metadata (
     checksum bytea,
     remote_checksum bytea,
     last_archival_attempt_at timestamp with time zone,
-    archived_at timestamp with time zone
+    archived_at timestamp with time zone,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE TABLE ci_builds (
@@ -12758,7 +12763,8 @@ CREATE TABLE ci_builds_runner_session (
     url character varying NOT NULL,
     certificate character varying,
     "authorization" character varying,
-    build_id bigint NOT NULL
+    build_id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_builds_runner_session_id_seq
@@ -12946,7 +12952,8 @@ CREATE TABLE ci_job_variables (
     job_id bigint NOT NULL,
     variable_type smallint DEFAULT 1 NOT NULL,
     source smallint DEFAULT 0 NOT NULL,
-    raw boolean DEFAULT false NOT NULL
+    raw boolean DEFAULT false NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_job_variables_id_seq
@@ -13039,7 +13046,8 @@ CREATE TABLE ci_pending_builds (
     namespace_id bigint,
     minutes_exceeded boolean DEFAULT false NOT NULL,
     tag_ids integer[] DEFAULT '{}'::integer[],
-    namespace_traversal_ids integer[] DEFAULT '{}'::integer[]
+    namespace_traversal_ids integer[] DEFAULT '{}'::integer[],
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_pending_builds_id_seq
@@ -13430,7 +13438,8 @@ CREATE TABLE ci_running_builds (
     project_id bigint NOT NULL,
     runner_id bigint NOT NULL,
     created_at timestamp with time zone DEFAULT now() NOT NULL,
-    runner_type smallint NOT NULL
+    runner_type smallint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_running_builds_id_seq
@@ -13495,7 +13504,8 @@ CREATE TABLE ci_sources_pipelines (
     pipeline_id integer,
     source_project_id integer,
     source_pipeline_id integer,
-    source_job_id bigint
+    source_job_id bigint,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq
@@ -13603,7 +13613,8 @@ CREATE TABLE ci_unit_test_failures (
     id bigint NOT NULL,
     failed_at timestamp with time zone NOT NULL,
     unit_test_id bigint NOT NULL,
-    build_id bigint NOT NULL
+    build_id bigint NOT NULL,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_unit_test_failures_id_seq
@@ -29813,6 +29824,8 @@ CREATE INDEX index_namespaces_on_traversal_ids_for_groups ON namespaces USING gi
 CREATE INDEX index_namespaces_on_traversal_ids_for_groups_btree ON namespaces USING btree (traversal_ids) WHERE ((type)::text = 'Group'::text);
 
 CREATE INDEX index_namespaces_on_type_and_id ON namespaces USING btree (type, id);
+
+CREATE INDEX index_namespaces_on_type_and_visibility_and_parent_id ON namespaces USING btree (id) WHERE (((type)::text = 'Group'::text) AND (parent_id IS NULL) AND (visibility_level <> 20));
 
 CREATE INDEX index_namespaces_public_groups_name_id ON namespaces USING btree (name, id) WHERE (((type)::text = 'Group'::text) AND (visibility_level = 20));
 
