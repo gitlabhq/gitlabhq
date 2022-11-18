@@ -622,7 +622,7 @@ GitLab displays the results on-screen, but you can also
 
 ### Filter with the OR operator
 
-> OR filtering for assignees was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
+> OR filtering for author and assignee was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23532) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `or_issuable_queries`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available.

@@ -15,7 +15,7 @@ import {
 } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
 
 import {
-  DEFAULT_NONE_ANY,
+  OPTIONS_NONE_ANY,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -76,7 +76,7 @@ const mockProps = {
   active: false,
   suggestions: [],
   suggestionsLoading: false,
-  defaultSuggestions: DEFAULT_NONE_ANY,
+  defaultSuggestions: OPTIONS_NONE_ANY,
   getActiveTokenValue: (labels, data) => labels.find((label) => label.title === data),
   cursorPosition: 'start',
 };
@@ -307,7 +307,7 @@ describe('BaseToken', () => {
       `('when operator is $operator', ({ shouldRenderFilteredSearchSuggestion, operator }) => {
         beforeEach(() => {
           const props = {
-            defaultSuggestions: DEFAULT_NONE_ANY,
+            defaultSuggestions: OPTIONS_NONE_ANY,
             value: { data: '', operator },
           };
 
@@ -322,7 +322,7 @@ describe('BaseToken', () => {
 
           if (shouldRenderFilteredSearchSuggestion) {
             expect(filteredSearchSuggestions.map((c) => c.props())).toMatchObject(
-              DEFAULT_NONE_ANY.map((opt) => ({ value: opt.value })),
+              OPTIONS_NONE_ANY.map((opt) => ({ value: opt.value })),
             );
           } else {
             expect(filteredSearchSuggestions).toHaveLength(0);

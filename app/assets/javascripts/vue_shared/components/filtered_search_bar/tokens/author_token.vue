@@ -4,7 +4,7 @@ import { compact } from 'lodash';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
-import { DEFAULT_NONE_ANY } from '../constants';
+import { OPTIONS_NONE_ANY } from '../constants';
 
 import BaseToken from './base_token.vue';
 
@@ -36,7 +36,7 @@ export default {
   },
   computed: {
     defaultAuthors() {
-      return this.config.defaultAuthors || DEFAULT_NONE_ANY;
+      return this.config.defaultAuthors || OPTIONS_NONE_ANY;
     },
     preloadedAuthors() {
       return this.config.preloadedAuthors || [];

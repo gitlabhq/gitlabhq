@@ -59,7 +59,7 @@ If you don't have a group, create one:
 Before you move your project to a group:
 
 - You must have the Owner role for the project.
-- Remove any [container images](../user/packages/container_registry/index.md#limitations)
+- Remove any [container images](../user/packages/container_registry/index.md#known-issues)
   and [NPM packages](../user/packages/npm_registry/index.md#limitations).
 
 Now you're ready to move your project:

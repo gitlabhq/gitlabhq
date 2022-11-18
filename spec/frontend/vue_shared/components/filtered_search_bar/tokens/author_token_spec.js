@@ -11,7 +11,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-import { DEFAULT_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
+import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
@@ -243,7 +243,7 @@ describe('AuthorToken', () => {
     });
 
     it('renders provided defaultAuthors as suggestions', async () => {
-      const defaultAuthors = DEFAULT_NONE_ANY;
+      const defaultAuthors = OPTIONS_NONE_ANY;
       wrapper = createComponent({
         active: true,
         config: { ...mockAuthorToken, defaultAuthors, preloadedAuthors: mockPreloadedAuthors },
@@ -274,7 +274,7 @@ describe('AuthorToken', () => {
       expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_NONE_ANY` as default suggestions', async () => {
+    it('renders `OPTIONS_NONE_ANY` as default suggestions', async () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockAuthorToken, preloadedAuthors: mockPreloadedAuthors },
@@ -286,8 +286,8 @@ describe('AuthorToken', () => {
       const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(2 + currentUserLength);
-      expect(suggestions.at(0).text()).toBe(DEFAULT_NONE_ANY[0].text);
-      expect(suggestions.at(1).text()).toBe(DEFAULT_NONE_ANY[1].text);
+      expect(suggestions.at(0).text()).toBe(OPTIONS_NONE_ANY[0].text);
+      expect(suggestions.at(1).text()).toBe(OPTIONS_NONE_ANY[1].text);
     });
 
     it('emits listeners in the base-token', () => {

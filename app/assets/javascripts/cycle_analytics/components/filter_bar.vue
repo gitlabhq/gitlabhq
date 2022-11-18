@@ -2,7 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import {
   OPERATORS_IS,
-  DEFAULT_NONE_ANY,
+  OPTIONS_NONE_ANY,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_LABEL,
@@ -60,7 +60,7 @@ export default {
           title: TOKEN_TITLE_LABEL,
           type: 'labels',
           token: LabelToken,
-          defaultLabels: DEFAULT_NONE_ANY,
+          defaultLabels: OPTIONS_NONE_ANY,
           initialLabels: this.labelsData,
           unique: false,
           symbol: '~',

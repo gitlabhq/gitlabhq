@@ -169,6 +169,7 @@ export const filters = {
   [TOKEN_TYPE_AUTHOR]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'authorUsername',
+      [ALTERNATIVE_FILTER]: 'authorUsernames',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
@@ -176,6 +177,9 @@ export const filters = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[author_username]',
+      },
+      [OPERATOR_OR]: {
+        [ALTERNATIVE_FILTER]: 'or[author_username]',
       },
     },
   },

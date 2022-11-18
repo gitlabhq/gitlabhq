@@ -178,8 +178,11 @@ To download and install GitLab:
    # Debian/Ubuntu
    dpkg -i <package_name>
 
-   # CentOS/RHEL
+   # RHEL/CentOS 6 and 7 
    rpm -Uvh <package_name>
+
+   # RHEL/CentOS 8
+   dnf install <package_name>
 
    # SUSE
    zypper install <package_name>

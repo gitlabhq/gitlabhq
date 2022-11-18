@@ -12,9 +12,9 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import {
-  DEFAULT_LABEL_NONE,
-  DEFAULT_LABEL_ANY,
-  DEFAULT_NONE_ANY,
+  OPTION_NONE,
+  OPTION_ANY,
+  OPTIONS_NONE_ANY,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 
@@ -118,7 +118,7 @@ describe('EmojiToken', () => {
   });
 
   describe('template', () => {
-    const defaultEmojis = DEFAULT_NONE_ANY;
+    const defaultEmojis = OPTIONS_NONE_ANY;
 
     beforeEach(async () => {
       wrapper = createComponent({
@@ -181,7 +181,7 @@ describe('EmojiToken', () => {
       expect(wrapper.findComponent(GlDropdownDivider).exists()).toBe(false);
     });
 
-    it('renders `DEFAULT_LABEL_NONE` and `DEFAULT_LABEL_ANY` as default suggestions', async () => {
+    it('renders `OPTION_NONE` and `OPTION_ANY` as default suggestions', async () => {
       wrapper = createComponent({
         active: true,
         config: { ...mockReactionEmojiToken },
@@ -195,8 +195,8 @@ describe('EmojiToken', () => {
       const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
       expect(suggestions).toHaveLength(2);
-      expect(suggestions.at(0).text()).toBe(DEFAULT_LABEL_NONE.text);
-      expect(suggestions.at(1).text()).toBe(DEFAULT_LABEL_ANY.text);
+      expect(suggestions.at(0).text()).toBe(OPTION_NONE.text);
+      expect(suggestions.at(1).text()).toBe(OPTION_ANY.text);
     });
   });
 });

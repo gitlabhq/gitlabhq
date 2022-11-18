@@ -13,7 +13,7 @@ import RecentSearchesService from '~/filtered_search/services/recent_searches_se
 import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store';
 import {
   FILTERED_SEARCH_TERM,
-  SortDirection,
+  SORT_DIRECTION,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
@@ -87,7 +87,7 @@ describe('FilteredSearchBarRoot', () => {
     it('initializes `filterValue`, `selectedSortOption` and `selectedSortDirection` data props and displays the sort dropdown', () => {
       expect(wrapper.vm.filterValue).toEqual([]);
       expect(wrapper.vm.selectedSortOption).toBe(mockSortOptions[0]);
-      expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.descending);
+      expect(wrapper.vm.selectedSortDirection).toBe(SORT_DIRECTION.descending);
       expect(wrapper.findComponent(GlButtonGroup).exists()).toBe(true);
       expect(wrapper.findComponent(GlButton).exists()).toBe(true);
       expect(wrapper.findComponent(GlDropdown).exists()).toBe(true);
@@ -132,7 +132,7 @@ describe('FilteredSearchBarRoot', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
-          selectedSortDirection: SortDirection.ascending,
+          selectedSortDirection: SORT_DIRECTION.ascending,
         });
 
         expect(wrapper.vm.sortDirectionIcon).toBe('sort-lowest');
@@ -142,7 +142,7 @@ describe('FilteredSearchBarRoot', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
-          selectedSortDirection: SortDirection.descending,
+          selectedSortDirection: SORT_DIRECTION.descending,
         });
 
         expect(wrapper.vm.sortDirectionIcon).toBe('sort-highest');
@@ -154,7 +154,7 @@ describe('FilteredSearchBarRoot', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
-          selectedSortDirection: SortDirection.ascending,
+          selectedSortDirection: SORT_DIRECTION.ascending,
         });
 
         expect(wrapper.vm.sortDirectionTooltip).toBe('Sort direction: Ascending');
@@ -164,7 +164,7 @@ describe('FilteredSearchBarRoot', () => {
         // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
         // eslint-disable-next-line no-restricted-syntax
         wrapper.setData({
-          selectedSortDirection: SortDirection.descending,
+          selectedSortDirection: SORT_DIRECTION.descending,
         });
 
         expect(wrapper.vm.sortDirectionTooltip).toBe('Sort direction: Descending');
@@ -272,11 +272,11 @@ describe('FilteredSearchBarRoot', () => {
       });
 
       it('sets `selectedSortDirection` to be opposite of its current value', () => {
-        expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.descending);
+        expect(wrapper.vm.selectedSortDirection).toBe(SORT_DIRECTION.descending);
 
         wrapper.vm.handleSortDirectionClick();
 
-        expect(wrapper.vm.selectedSortDirection).toBe(SortDirection.ascending);
+        expect(wrapper.vm.selectedSortDirection).toBe(SORT_DIRECTION.ascending);
       });
 
       it('emits component event `onSort` with opposite of currently selected sort by value', () => {
@@ -384,7 +384,7 @@ describe('FilteredSearchBarRoot', () => {
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
         selectedSortOption: mockSortOptions[0],
-        selectedSortDirection: SortDirection.descending,
+        selectedSortDirection: SORT_DIRECTION.descending,
         recentSearches: mockHistoryItems,
       });
 

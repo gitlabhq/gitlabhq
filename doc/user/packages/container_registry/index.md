@@ -6,11 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Container Registry **(FREE)**
 
-> - The group-level Container Registry was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23315) in GitLab 12.10.
-> - Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
+> Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
 NOTE:
-If you pull container images from Docker Hub, you can also use the [GitLab Dependency Proxy](../dependency_proxy/index.md#use-the-dependency-proxy-for-docker-images) to avoid running into rate limits and speed up your pipelines.
+If you pull container images from Docker Hub, you can use the [GitLab Dependency Proxy](../dependency_proxy/index.md#use-the-dependency-proxy-for-docker-images) 
+to avoid rate limits and speed up your pipelines.
 
 With the Docker Container Registry integrated into GitLab, every GitLab project can
 have its own space to store its Docker images.
@@ -28,7 +28,7 @@ You can view the Container Registry for a project or group.
 1. Go to your project or group.
 1. Go to **Packages and registries > Container Registry**.
 
-You can search, sort, filter, and [delete](#delete-images-from-within-gitlab)
+You can search, sort, filter, and [delete](#delete-images-using-the-gitlab-ui)
 containers on this page. You can share a filtered view by copying the URL from your browser.
 
 Only members of the project or group can access a private project's Container Registry.
@@ -47,7 +47,7 @@ This brings up the Container Registry **Tag Details** page. You can view details
 such as when it was published, how much storage it consumes, and the manifest and configuration
 digests.
 
-You can search, sort (by tag name), filter, and [delete](#delete-images-from-within-gitlab)
+You can search, sort (by tag name), filter, and [delete](#delete-images-using-the-gitlab-ui)
 tags on this page. You can share a filtered view by copying the URL from your browser.
 
 ## Use images from the Container Registry
@@ -67,7 +67,7 @@ To download and run a container image hosted in the GitLab Container Registry:
    docker run [options] registry.example.com/group/project/image [arguments]
    ```
 
-[Authentication](#authenticate-with-the-container-registry) is needed to download images from private repository.
+[Authentication](#authenticate-with-the-container-registry) is needed to download images from a private repository.
 
 For more information on running Docker containers, visit the
 [Docker documentation](https://docs.docker.com/get-started/).
@@ -85,7 +85,7 @@ then your image must be named `gitlab.example.com/mynamespace/myproject` at a mi
 
 You can append additional names to the end of an image name, up to two levels deep.
 
-For example, these are all valid image names for images within the project named `myproject`:
+For example, these are all valid image names for images in the project named `myproject`:
 
 ```plaintext
 registry.example.com/mynamespace/myproject:some-tag
@@ -192,7 +192,7 @@ You can configure your `.gitlab-ci.yml` file to build and push images to the Con
 - Before building, use `docker build --pull` to fetch changes to base images. It takes slightly
   longer, but it ensures your image is up-to-date.
 - Before each `docker run`, do an explicit `docker pull` to fetch
-  the image that was just built. This is especially important if you are
+  the image that was just built. This step is especially important if you are
   using multiple runners that cache images locally.
 
   If you use the Git SHA in your image tag, each job is unique and you
@@ -234,12 +234,12 @@ build:
     - docker push $IMAGE_TAG
 ```
 
-Here, `$CI_REGISTRY_IMAGE` would be resolved to the address of the registry tied
-to this project. Since `$CI_COMMIT_REF_NAME` resolves to the branch or tag name,
-and your branch name can contain forward slashes (for example, `feature/my-feature`), it is
-safer to use `$CI_COMMIT_REF_SLUG` as the image tag. This is due to that image tags
-cannot contain forward slashes. We also declare our own variable, `$IMAGE_TAG`,
-combining the two to save us some typing in the `script` section.
+In this example, `$CI_REGISTRY_IMAGE` resolves to the address of the registry tied
+to this project. `$CI_COMMIT_REF_NAME` resolves to the branch or tag name, which
+can contain forward slashes. Image tags can't contain forward slashes. Use
+`$CI_COMMIT_REF_SLUG` as the image tag. You can declare the variable, `$IMAGE_TAG`,
+combining `$CI_REGISTRY_IMAGE` and `$CI_REGISTRY_IMAGE` to save some typing in the
+`script` section.
 
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
 including two tests that run in parallel. The `build` is stored in the container
@@ -385,17 +385,18 @@ unreferenced, administrators must run [garbage collection](../../../administrati
 
 On GitLab.com, the latest version of the Container Registry includes an automatic online garbage
 collector. For more information, see [this blog post](https://about.gitlab.com/blog/2021/10/25/gitlab-com-container-registry-update/).
-This is an instance-wide feature, rolling out gradually to a subset of the user base, so some new image repositories created
-from GitLab 14.5 onwards are served by this new version of the Container Registry. In this new
-version of the Container Registry, layers that aren't referenced by any image manifest, and image
-manifests that have no tags and aren't referenced by another manifest (such as multi-architecture
-images), are automatically scheduled for deletion after 24 hours if left unreferenced.
+The automatic online garbage collector is an instance-wide feature, rolling out gradually to a subset
+of the user base. Some new image repositories created from GitLab 14.5 onward are served by this
+new version of the Container Registry. In this new version of the Container Registry, layers that aren't
+referenced by any image manifest, and image manifests that have no tags and aren't referenced by another
+manifest (such as multi-architecture images), are automatically scheduled for deletion after 24 hours if
+left unreferenced.
 
-### Delete images from within GitLab
+### Delete images using the GitLab UI
 
-To delete images from within GitLab:
+To delete images using the GitLab UI:
 
-1. Navigate to your project's or group's **Packages and registries > Container Registry**.
+1. Go to your project's or group's **Packages and registries > Container Registry**.
 1. From the **Container Registry** page, you can select what you want to delete,
    by either:
 
@@ -419,7 +420,7 @@ information, see the following endpoints:
 ### Delete images using GitLab CI/CD
 
 WARNING:
-GitLab CI/CD doesn't provide a built-in way to remove your images, but this example
+GitLab CI/CD doesn't provide a built-in way to remove your images. This example
 uses a third-party tool called [reg](https://github.com/genuinetools/reg)
 that talks to the GitLab Registry API. You are responsible for your own actions.
 For assistance with this tool, see
@@ -487,16 +488,14 @@ defined in the `delete_image` job.
 You can create a per-project [cleanup policy](reduce_container_registry_storage.md#cleanup-policy) to ensure older tags and images are regularly removed from the
 Container Registry.
 
-## Limitations
+## Known issues
 
-- Moving or renaming existing Container Registry repositories is not supported
-  once you have pushed images, because the images are stored in a path that matches
-  the repository path. To move or rename a repository with a
-  Container Registry, you must delete all existing images.
-  Community suggestions to work around this limitation have been shared in
-  [issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround).
-- Prior to GitLab 12.10, any tags that use the same image ID as the `latest` tag
-  are not deleted by the cleanup policy.
+Moving or renaming existing Container Registry repositories is not supported
+after you have pushed images. The images are stored in a path that matches
+the repository path. To move or rename a repository with a
+Container Registry, you must delete all existing images.
+Community suggestions to work around this known issue have been shared in
+[issue 18383](https://gitlab.com/gitlab-org/gitlab/-/issues/18383#possible-workaround).
 
 ## Disable the Container Registry for a project
 
@@ -530,7 +529,7 @@ for more details about the permissions that this setting grants to users.
    is internal or private, the Container Registry is also internal or private.
 
    - **Only Project Members**: The Container Registry is visible only to project members with
-   Reporter role or higher. This is similar to the behavior of a private project with Container
+   Reporter role or higher. This visibility is similar to the behavior of a private project with Container
    Registry visibility set to **Everyone With Access**.
 
 1. Select **Save changes**.
@@ -541,7 +540,7 @@ The ability to view the Container Registry and pull images is controlled by the 
 visibility permissions. You can change this through the [visibility setting on the UI](#change-visibility-of-the-container-registry)
 or the [API](../../../api/container_registry.md#change-the-visibility-of-the-container-registry).
 [Other permissions](../../permissions.md)
-such as updating the Container Registry, pushing or deleting images, and so on are not affected by
+such as updating the Container Registry and pushing or deleting images are not affected by
 this setting. However, disabling the Container Registry disables all Container Registry operations.
 
 |                      |                       | Anonymous<br/>(Everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
@@ -585,7 +584,7 @@ For information on how to update your images, see the [Docker help](https://docs
 
 When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list)
 to the GitLab Container Registry, you may receive the error
-`manifest blob unknown: blob unknown to registry`. This is likely caused by having multiple images
+`manifest blob unknown: blob unknown to registry`. This error is likely caused by having multiple images
 with different architectures, spread out over several repositories instead of the same repository.
 
 For example, you may have two images, each representing an architecture:

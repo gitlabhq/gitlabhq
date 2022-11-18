@@ -12524,6 +12524,7 @@ CREATE TABLE bulk_imports (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     source_version text,
+    source_enterprise boolean DEFAULT true NOT NULL,
     CONSTRAINT check_ea4e58775a CHECK ((char_length(source_version) <= 63))
 );
 

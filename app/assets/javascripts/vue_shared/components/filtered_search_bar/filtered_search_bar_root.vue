@@ -15,7 +15,7 @@ import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store'
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 
-import { SortDirection } from './constants';
+import { SORT_DIRECTION } from './constants';
 import { filterEmptySearchTerm, stripQuotes, uniqueTokens } from './filtered_search_utils';
 
 export default {
@@ -107,7 +107,7 @@ export default {
       recentSearches: [],
       filterValue: this.initialFilterValue,
       selectedSortOption: this.sortOptions[0],
-      selectedSortDirection: SortDirection.descending,
+      selectedSortDirection: SORT_DIRECTION.descending,
     };
   },
   computed: {
@@ -130,12 +130,12 @@ export default {
       );
     },
     sortDirectionIcon() {
-      return this.selectedSortDirection === SortDirection.ascending
+      return this.selectedSortDirection === SORT_DIRECTION.ascending
         ? 'sort-lowest'
         : 'sort-highest';
     },
     sortDirectionTooltip() {
-      return this.selectedSortDirection === SortDirection.ascending
+      return this.selectedSortDirection === SORT_DIRECTION.ascending
         ? __('Sort direction: Ascending')
         : __('Sort direction: Descending');
     },
@@ -267,9 +267,9 @@ export default {
     },
     handleSortDirectionClick() {
       this.selectedSortDirection =
-        this.selectedSortDirection === SortDirection.ascending
-          ? SortDirection.descending
-          : SortDirection.ascending;
+        this.selectedSortDirection === SORT_DIRECTION.ascending
+          ? SORT_DIRECTION.descending
+          : SORT_DIRECTION.ascending;
       this.$emit('onSort', this.selectedSortOption.sortDirection[this.selectedSortDirection]);
     },
     handleHistoryItemSelected(filters) {

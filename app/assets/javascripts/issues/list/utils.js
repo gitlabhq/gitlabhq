@@ -7,6 +7,7 @@ import {
   OPERATOR_NOT,
   OPERATOR_OR,
   TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
@@ -14,9 +15,12 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
+  ALTERNATIVE_FILTER,
   API_PARAM,
   BLOCKING_ISSUES_ASC,
   BLOCKING_ISSUES_DESC,
+  CLOSED_ASC,
+  CLOSED_DESC,
   CREATED_ASC,
   CREATED_DESC,
   DUE_DATE_ASC,
@@ -44,8 +48,6 @@ import {
   urlSortParams,
   WEIGHT_ASC,
   WEIGHT_DESC,
-  CLOSED_ASC,
-  CLOSED_DESC,
 } from './constants';
 
 export const getInitialPageParams = (
@@ -223,13 +225,24 @@ export const getFilterTokens = (locationSearch) => {
   return tokens.length ? tokens : [createTerm()];
 };
 
-const getFilterType = (data, tokenType = '') => {
+const isSpecialFilter = (type, data) => {
   const isAssigneeIdParam =
-    tokenType === TOKEN_TYPE_ASSIGNEE &&
+    type === TOKEN_TYPE_ASSIGNEE &&
     isPositiveInteger(data) &&
     getParameterByName(PARAM_ASSIGNEE_ID) === data;
+  return specialFilterValues.includes(data) || isAssigneeIdParam;
+};
 
-  return specialFilterValues.includes(data) || isAssigneeIdParam ? SPECIAL_FILTER : NORMAL_FILTER;
+const getFilterType = ({ type, value: { data, operator } }) => {
+  const isUnionedAuthor = type === TOKEN_TYPE_AUTHOR && operator === OPERATOR_OR;
+
+  if (isUnionedAuthor) {
+    return ALTERNATIVE_FILTER;
+  }
+  if (isSpecialFilter(type, data)) {
+    return SPECIAL_FILTER;
+  }
+  return NORMAL_FILTER;
 };
 
 const wildcardTokens = [TOKEN_TYPE_ITERATION, TOKEN_TYPE_MILESTONE, TOKEN_TYPE_RELEASE];
@@ -258,7 +271,7 @@ export const convertToApiParams = (filterTokens) => {
   filterTokens
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .forEach((token) => {
-      const filterType = getFilterType(token.value.data, token.type);
+      const filterType = getFilterType(token);
       const field = filters[token.type][API_PARAM][filterType];
       let obj;
       if (token.value.operator === OPERATOR_NOT) {
@@ -289,7 +302,7 @@ export const convertToUrlParams = (filterTokens) =>
   filterTokens
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .reduce((acc, token) => {
-      const filterType = getFilterType(token.value.data, token.type);
+      const filterType = getFilterType(token);
       const param = filters[token.type][URL_PARAM][token.value.operator]?.[filterType];
       return Object.assign(acc, {
         [param]: acc[param] ? [acc[param], token.value.data].flat() : token.value.data,

@@ -3,7 +3,7 @@ import { GlFilteredSearchSuggestion } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
-import { DEFAULT_NONE_ANY } from '../constants';
+import { OPTIONS_NONE_ANY } from '../constants';
 import { stripQuotes } from '../filtered_search_utils';
 
 export default {
@@ -33,7 +33,7 @@ export default {
   },
   computed: {
     defaultEmojis() {
-      return this.config.defaultEmojis || DEFAULT_NONE_ANY;
+      return this.config.defaultEmojis || OPTIONS_NONE_ANY;
     },
   },
   methods: {

@@ -132,6 +132,8 @@ export const locationSearch = [
   '?search=find+issues',
   'author_username=homer',
   'not[author_username]=marge',
+  'or[author_username]=burns',
+  'or[author_username]=smithers',
   'assignee_username[]=bart',
   'assignee_username[]=lisa',
   'assignee_username[]=5',
@@ -185,6 +187,8 @@ export const locationSearchWithSpecialValues = [
 export const filteredTokens = [
   { type: TOKEN_TYPE_AUTHOR, value: { data: 'homer', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_AUTHOR, value: { data: 'marge', operator: OPERATOR_NOT } },
+  { type: TOKEN_TYPE_AUTHOR, value: { data: 'burns', operator: OPERATOR_OR } },
+  { type: TOKEN_TYPE_AUTHOR, value: { data: 'smithers', operator: OPERATOR_OR } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'bart', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: 'lisa', operator: OPERATOR_IS } },
   { type: TOKEN_TYPE_ASSIGNEE, value: { data: '5', operator: OPERATOR_IS } },
@@ -264,6 +268,7 @@ export const apiParams = {
     weight: '3',
   },
   or: {
+    authorUsernames: ['burns', 'smithers'],
     assigneeUsernames: ['carl', 'lenny'],
   },
 };
@@ -283,6 +288,7 @@ export const apiParamsWithSpecialValues = {
 export const urlParams = {
   author_username: 'homer',
   'not[author_username]': 'marge',
+  'or[author_username]': ['burns', 'smithers'],
   'assignee_username[]': ['bart', 'lisa', '5'],
   'not[assignee_username][]': ['patty', 'selma'],
   'or[assignee_username][]': ['carl', 'lenny'],

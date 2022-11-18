@@ -236,7 +236,7 @@ Prerequisites:
 - You must have at least the Maintainer role for the [group](../../group/manage.md#create-a-group) to which you are transferring.
 - You must be the Owner of the project you transfer.
 - The group must allow creation of new projects.
-- The project must not contain any [container images](../../packages/container_registry/index.md#limitations).
+- The project must not contain any [container images](../../packages/container_registry/index.md#known-issues).
   - If you transfer a project to a different root namespace,
     the project must not contain any
     [NPM packages](../../packages/npm_registry/index.md#limitations).
