@@ -1,5 +1,6 @@
 <script>
-import { GlButtonGroup, GlButton, GlTooltipDirective, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButtonGroup, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -32,7 +33,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {

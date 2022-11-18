@@ -410,7 +410,7 @@ References:
 #### XSS mitigation and prevention in JavaScript and Vue
 
 - When updating the content of an HTML element using JavaScript, mark user-controlled values as `textContent` or `nodeValue` instead of `innerHTML`.
-- Avoid using `v-html` with user-controlled data, use [`v-safe-html`](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/directives-safe-html-directive--default) instead.
+- Avoid using `v-html` with user-controlled data, use [`v-safe-html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/vue_shared/directives/safe_html.js) instead.
 - Render unsafe or unsanitized content using [`dompurify`](fe_guide/security.md#sanitize-html-output).
 - Consider using [`gl-sprintf`](../../ee/development/i18n/externalization.md#interpolation) to interpolate translated strings securely.
 - Avoid `__()` with translations that contain user-controlled values.

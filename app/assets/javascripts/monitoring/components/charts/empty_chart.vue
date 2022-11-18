@@ -1,11 +1,11 @@
 <script>
 import chartEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/chart-empty-state.svg';
-import { GlSafeHtmlDirective } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { chartHeight } from '../../constants';
 
 export default {
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   data() {
     return {

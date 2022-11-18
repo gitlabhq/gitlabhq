@@ -1,5 +1,4 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import Prompt from '../prompt.vue';
 import Markdown from '../markdown.vue';
 
@@ -8,9 +7,6 @@ export default {
   components: {
     Prompt,
     Markdown,
-  },
-  directives: {
-    SafeHtml,
   },
   props: {
     count: {

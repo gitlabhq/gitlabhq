@@ -1,5 +1,6 @@
 <script>
-import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import NoteHeader from '~/notes/components/note_header.vue';
 
 export default {
@@ -8,7 +9,7 @@ export default {
     GlIcon,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     note: {

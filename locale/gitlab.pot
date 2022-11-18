@@ -38418,10 +38418,10 @@ msgstr ""
 msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr ""
 
-msgid "Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs."
+msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."
 msgstr ""
 
-msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
+msgid "Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs."
 msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."

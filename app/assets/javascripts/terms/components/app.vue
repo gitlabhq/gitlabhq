@@ -1,6 +1,7 @@
 <script>
 import $ from 'jquery';
-import { GlButton, GlIntersectionObserver, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlButton, GlIntersectionObserver } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 import { FLASH_TYPES, FLASH_CLOSED_EVENT } from '~/flash';
 import { isLoggedIn } from '~/lib/utils/common_utils';

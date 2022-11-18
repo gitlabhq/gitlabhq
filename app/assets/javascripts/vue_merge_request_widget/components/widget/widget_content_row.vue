@@ -1,7 +1,8 @@
 <script>
-import { GlSafeHtmlDirective, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import { generateText } from '../extensions/utils';
@@ -15,7 +16,7 @@ export default {
     ActionButtons,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     level: {

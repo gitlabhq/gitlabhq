@@ -1,12 +1,7 @@
 <script>
-import {
-  GlIntersectionObserver,
-  GlLink,
-  GlSprintf,
-  GlBadge,
-  GlSafeHtmlDirective,
-} from '@gitlab/ui';
+import { GlIntersectionObserver, GlLink, GlSprintf, GlBadge } from '@gitlab/ui';
 import { mapGetters, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -28,7 +23,7 @@ export default {
     ClipboardButton,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {

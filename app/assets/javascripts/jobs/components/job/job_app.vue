@@ -1,8 +1,9 @@
 <script>
-import { GlLoadingIcon, GlIcon, GlSafeHtmlDirective as SafeHtml, GlAlert } from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlAlert } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { throttle, isEmpty } from 'lodash';
 import { mapGetters, mapState, mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
 import CiHeader from '~/vue_shared/components/header_ci_component.vue';

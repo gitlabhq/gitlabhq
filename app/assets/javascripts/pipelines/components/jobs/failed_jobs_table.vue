@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlLink, GlSafeHtmlDirective, GlTableLite } from '@gitlab/ui';
+import { GlButton, GlLink, GlTableLite } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/flash';
 import { redirectTo } from '~/lib/utils/url_utility';
@@ -17,7 +18,7 @@ export default {
     GlTableLite,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     failedJobs: {

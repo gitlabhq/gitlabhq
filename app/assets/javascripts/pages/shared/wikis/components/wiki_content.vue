@@ -1,5 +1,5 @@
 <script>
-import { GlSkeletonLoader, GlSafeHtmlDirective, GlAlert } from '@gitlab/ui';
+import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
@@ -10,9 +10,6 @@ export default {
   components: {
     GlSkeletonLoader,
     GlAlert,
-  },
-  directives: {
-    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     getWikiContentUrl: {

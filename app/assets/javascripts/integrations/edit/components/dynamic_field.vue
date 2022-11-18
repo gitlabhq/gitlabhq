@@ -1,14 +1,8 @@
 <script>
-import {
-  GlFormGroup,
-  GlFormCheckbox,
-  GlFormInput,
-  GlFormSelect,
-  GlFormTextarea,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlFormGroup, GlFormCheckbox, GlFormInput, GlFormSelect, GlFormTextarea } from '@gitlab/ui';
 import { capitalize, lowerCase, isEmpty } from 'lodash';
 import { mapGetters } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 export default {
   name: 'DynamicField',

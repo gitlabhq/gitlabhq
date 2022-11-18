@@ -1,8 +1,9 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
+import { GlToast, GlTooltip, GlModalDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import Sortable from 'sortablejs';
 import Vue from 'vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import createFlash from '~/flash';

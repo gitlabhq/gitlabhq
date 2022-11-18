@@ -1,7 +1,8 @@
 <script>
-import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlLoadingIcon, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import { escape, debounce } from 'lodash';
 import { mapActions, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import createEmptyBadge from '../empty_badge';
@@ -19,7 +20,7 @@ export default {
     GlFormGroup,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     isEditing: {

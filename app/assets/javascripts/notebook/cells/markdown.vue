@@ -1,7 +1,7 @@
 <script>
 import katex from 'katex';
 import { marked } from 'marked';
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sanitize } from '~/lib/dompurify';
 import { hasContent, markdownConfig } from '~/lib/utils/text_utility';
 import Prompt from './prompt.vue';

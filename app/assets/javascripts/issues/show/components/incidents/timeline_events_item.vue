@@ -1,5 +1,6 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlSafeHtmlDirective, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlSprintf } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { timelineItemI18n } from './constants';
 import { getEventIcon } from './utils';
@@ -14,7 +15,7 @@ export default {
     GlSprintf,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   inject: ['canUpdateTimelineEvent'],
   props: {

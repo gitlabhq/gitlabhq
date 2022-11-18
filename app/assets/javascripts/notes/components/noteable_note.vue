@@ -1,8 +1,9 @@
 <script>
-import { GlSprintf, GlSafeHtmlDirective as SafeHtml, GlAvatarLink, GlAvatar } from '@gitlab/ui';
+import { GlSprintf, GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import $ from 'jquery';
 import { escape, isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { createAlert } from '~/flash';

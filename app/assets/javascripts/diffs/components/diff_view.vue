@@ -1,5 +1,4 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import { mapGetters, mapState, mapActions } from 'vuex';
 import { IdState } from 'vendor/vue-virtual-scroller';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -21,9 +20,6 @@ export default {
     DiffLine,
     DiffCommentCell,
     DraftNote,
-  },
-  directives: {
-    SafeHtml,
   },
   mixins: [
     draftCommentsMixin,

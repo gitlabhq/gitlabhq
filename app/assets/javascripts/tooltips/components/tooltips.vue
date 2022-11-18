@@ -1,6 +1,7 @@
 <script>
-import { GlTooltip, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlTooltip } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const getTooltipTitle = (element) => {
   return element.getAttribute('title') || element.dataset.title;

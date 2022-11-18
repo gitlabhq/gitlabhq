@@ -1,7 +1,8 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { s__, __, sprintf } from '~/locale';
 import NoteEditedText from './note_edited_text.vue';

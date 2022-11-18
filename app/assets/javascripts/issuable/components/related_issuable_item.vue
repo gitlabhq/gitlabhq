@@ -1,13 +1,7 @@
 <script>
 import '~/commons/bootstrap';
-import {
-  GlIcon,
-  GlLink,
-  GlTooltip,
-  GlTooltipDirective,
-  GlButton,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlIcon, GlLink, GlTooltip, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';

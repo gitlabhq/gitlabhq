@@ -7,8 +7,8 @@ import {
   GlSprintf,
   GlTooltip,
   GlTooltipDirective,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import PipelineArtifacts from '~/pipelines/components/pipelines_list/pipelines_artifacts.vue';
@@ -33,7 +33,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     pipeline: {

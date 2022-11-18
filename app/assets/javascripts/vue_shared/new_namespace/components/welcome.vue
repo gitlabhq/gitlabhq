@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 
 export default {

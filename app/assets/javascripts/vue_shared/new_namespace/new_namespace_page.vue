@@ -1,5 +1,6 @@
 <script>
-import { GlBreadcrumb, GlIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlBreadcrumb, GlIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import NewTopLevelGroupAlert from '~/groups/components/new_top_level_group_alert.vue';
 
 import LegacyContainer from './components/legacy_container.vue';

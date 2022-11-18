@@ -10,9 +10,9 @@ import {
   GlDropdownItem,
   GlSprintf,
   GlFormGroup,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import $ from 'jquery';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import * as Emoji from '~/emoji';
 import { s__ } from '~/locale';
@@ -33,7 +33,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     defaultEmoji: {

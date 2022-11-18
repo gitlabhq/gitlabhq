@@ -1,10 +1,6 @@
 <script>
-import {
-  GlAvatarLink,
-  GlAvatarLabeled,
-  GlBadge,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlAvatarLink, GlAvatarLabeled, GlBadge } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { generateBadges } from 'ee_else_ce/members/utils';
 import { glEmojiTag } from '~/emoji';
 import { __ } from '~/locale';

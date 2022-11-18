@@ -1,13 +1,8 @@
 <script>
-import {
-  GlButton,
-  GlLink,
-  GlTooltipDirective,
-  GlLoadingIcon,
-  GlSafeHtmlDirective,
-} from '@gitlab/ui';
+import { GlButton, GlLink, GlTooltipDirective, GlLoadingIcon } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
@@ -35,7 +30,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     /**

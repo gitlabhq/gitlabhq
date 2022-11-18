@@ -1,5 +1,6 @@
 <script>
-import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { HIGHLIGHT_CLASS_NAME } from './constants';
 import ViewerMixin from './mixins';
 
@@ -9,7 +10,7 @@ export default {
     GlIcon,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [ViewerMixin],
   inject: ['blobHash'],

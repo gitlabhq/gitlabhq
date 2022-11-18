@@ -1,6 +1,7 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlDrawer, GlAlert, GlSkeletonLoader } from '@gitlab/ui';
+import { GlDrawer, GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import $ from 'jquery';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import '~/behaviors/markdown/render_gfm';
 import { s__ } from '~/locale';
 import { contentTop } from '~/lib/utils/common_utils';

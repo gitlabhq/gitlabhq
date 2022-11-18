@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import MarkdownFieldView from '~/vue_shared/components/markdown/field_view.vue';
 
 export default {

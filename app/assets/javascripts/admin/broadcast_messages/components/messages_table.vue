@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlTableLite, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton, GlTableLite } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
@@ -12,7 +13,7 @@ export default {
     GlTableLite,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   i18n: {

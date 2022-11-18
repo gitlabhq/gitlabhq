@@ -1,9 +1,8 @@
 <script>
 import $ from 'jquery';
-import { GlSafeHtmlDirective } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
-
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import '~/behaviors/markdown/render_gfm';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
@@ -22,7 +21,7 @@ export default {
     Suggestions,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [autosave],
   props: {

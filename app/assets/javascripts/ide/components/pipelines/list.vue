@@ -1,15 +1,8 @@
 <script>
-import {
-  GlLoadingIcon,
-  GlIcon,
-  GlSafeHtmlDirective as SafeHtml,
-  GlTabs,
-  GlTab,
-  GlBadge,
-  GlAlert,
-} from '@gitlab/ui';
+import { GlLoadingIcon, GlIcon, GlTabs, GlTab, GlBadge, GlAlert } from '@gitlab/ui';
 import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import IDEServices from '~/ide/services';
 import { sprintf, __ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';

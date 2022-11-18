@@ -7,10 +7,10 @@ import {
   GlLoadingIcon,
   GlIcon,
   GlHoverLoadDirective,
-  GlSafeHtmlDirective,
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import { escapeRegExp } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import paginatedTreeQuery from 'shared_queries/repository/paginated_tree.query.graphql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
 import { TREE_PAGE_SIZE, ROW_APPEAR_DELAY } from '~/repository/constants';
@@ -35,7 +35,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     GlHoverLoad: GlHoverLoadDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   apollo: {
     commit: {

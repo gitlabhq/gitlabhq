@@ -1,5 +1,6 @@
 <script>
-import { GlEmptyState, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlEmptyState } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, sprintf } from '~/locale';
 import { metricStates } from '../constants';
 

@@ -1,7 +1,7 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
 import { isEmpty } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';

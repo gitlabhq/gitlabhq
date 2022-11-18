@@ -9,9 +9,9 @@ import {
   GlTabs,
   GlTab,
   GlButton,
-  GlSafeHtmlDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 import { fetchPolicies } from '~/lib/graphql';
 import { toggleContainerClasses } from '~/lib/utils/dom_utils';
@@ -41,7 +41,7 @@ export default {
     reportedAtWithTool: s__('AlertManagement|Reported %{when} by %{tool}'),
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   severityLabels: SEVERITY_LEVELS,
   tabsConfig: [

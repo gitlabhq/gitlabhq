@@ -1,6 +1,7 @@
 <script>
-import { GlBadge, GlLink, GlSafeHtmlDirective, GlModalDirective } from '@gitlab/ui';
+import { GlBadge, GlLink, GlModalDirective } from '@gitlab/ui';
 import { isArray } from 'lodash';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Actions from '../action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 import { generateText } from './utils';
@@ -14,7 +15,7 @@ export default {
     Actions,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
     GlModal: GlModalDirective,
   },
   props: {

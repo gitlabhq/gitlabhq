@@ -1,5 +1,5 @@
 <script>
-import { GlIntersectionObserver, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlIntersectionObserver } from '@gitlab/ui';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import ChunkLine from './chunk_line.vue';
 
@@ -19,9 +19,6 @@ export default {
   components: {
     ChunkLine,
     GlIntersectionObserver,
-  },
-  directives: {
-    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     isFirstChunk: {

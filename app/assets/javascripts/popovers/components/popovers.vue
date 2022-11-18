@@ -1,5 +1,6 @@
 <script>
-import { GlPopover, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlPopover } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const newPopover = (element) => {
   const { content, html, placement, title, triggers = 'focus' } = element.dataset;
@@ -19,7 +20,7 @@ export default {
     GlPopover,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   data() {
     return {

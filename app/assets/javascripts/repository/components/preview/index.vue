@@ -1,6 +1,7 @@
 <script>
-import { GlIcon, GlLink, GlLoadingIcon, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
 import $ from 'jquery';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import '~/behaviors/markdown/render_gfm';
 import { handleLocationHash } from '~/lib/utils/common_utils';
 import readmeQuery from '../../queries/readme.query.graphql';

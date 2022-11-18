@@ -1,5 +1,6 @@
 <script>
-import { GlPath, GlPopover, GlSkeletonLoader, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlPath, GlPopover, GlSkeletonLoader } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Tracking from '~/tracking';
 import { OVERVIEW_STAGE_ID } from '../constants';
 import FormattedStageCount from './formatted_stage_count.vue';

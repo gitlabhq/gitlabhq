@@ -1,5 +1,6 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { s__, n__ } from '~/locale';
 
 export default {

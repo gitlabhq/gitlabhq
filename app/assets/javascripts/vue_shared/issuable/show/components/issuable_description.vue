@@ -1,6 +1,6 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
 import $ from 'jquery';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import '~/behaviors/markdown/render_gfm';
 
 export default {

@@ -1,12 +1,6 @@
 <script>
-import {
-  GlAlert,
-  GlModal,
-  GlFormGroup,
-  GlFormInput,
-  GlSafeHtmlDirective as SafeHtml,
-  GlSprintf,
-} from '@gitlab/ui';
+import { GlAlert, GlModal, GlFormGroup, GlFormInput, GlSprintf } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   CONFIRM_DANGER_MODAL_BUTTON,
   CONFIRM_DANGER_MODAL_TITLE,

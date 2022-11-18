@@ -57,12 +57,13 @@ describe('popovers/components/popovers.vue', () => {
 
     describe('supports HTML content', () => {
       const svgIcon = '<svg><use xlink:href="icons.svg#test"></use></svg>';
+      const escapedSvgIcon = '<svg><use xlink:href=&quot;icons.svg#test&quot;></use></svg>';
 
       it.each`
         description                         | content                          | render
         ${'renders html content correctly'} | ${'<b>HTML</b>'}                 | ${'<b>HTML</b>'}
         ${'removes any unsafe content'}     | ${'<script>alert(XSS)</script>'} | ${''}
-        ${'renders svg icons correctly'}    | ${svgIcon}                       | ${svgIcon}
+        ${'renders svg icons correctly'}    | ${svgIcon}                       | ${escapedSvgIcon}
       `('$description', async ({ content, render }) => {
         await buildWrapper(createPopoverTarget({ content, html: true }));
 

@@ -1,16 +1,10 @@
 <script>
-import {
-  GlAlert,
-  GlBadge,
-  GlButton,
-  GlModalDirective,
-  GlSafeHtmlDirective as SafeHtml,
-  GlForm,
-} from '@gitlab/ui';
+import { GlAlert, GlBadge, GlButton, GlModalDirective, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { s__ } from '~/locale';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import {
   I18N_FETCH_TEST_SETTINGS_DEFAULT_ERROR_MESSAGE,
   I18N_DEFAULT_ERROR_MESSAGE,

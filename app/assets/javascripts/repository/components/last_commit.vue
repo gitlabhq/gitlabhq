@@ -1,12 +1,6 @@
 <script>
-import {
-  GlTooltipDirective,
-  GlLink,
-  GlButton,
-  GlButtonGroup,
-  GlLoadingIcon,
-  GlSafeHtmlDirective,
-} from '@gitlab/ui';
+import { GlTooltipDirective, GlLink, GlButton, GlButtonGroup, GlLoadingIcon } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import pathLastCommitQuery from 'shared_queries/repository/path_last_commit.query.graphql';
 import { sprintf, s__ } from '~/locale';
@@ -32,7 +26,7 @@ export default {
   },
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [getRefMixin],
   apollo: {

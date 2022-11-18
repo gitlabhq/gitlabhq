@@ -1,15 +1,8 @@
 <script>
-import {
-  GlFormGroup,
-  GlButton,
-  GlModal,
-  GlToast,
-  GlToggle,
-  GlLink,
-  GlSafeHtmlDirective,
-} from '@gitlab/ui';
+import { GlFormGroup, GlButton, GlModal, GlToast, GlToggle, GlLink } from '@gitlab/ui';
 import Vue from 'vue';
 import { mapState, mapActions } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { visitUrl, getBaseURL } from '~/lib/utils/url_utility';
@@ -26,7 +19,7 @@ export default {
     GlLink,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   formLabels: {
     createProject: __('Self-monitoring'),

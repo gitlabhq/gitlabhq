@@ -1,13 +1,14 @@
 <script>
-import { GlButton, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   components: {
     GlButton,

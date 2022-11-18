@@ -1,5 +1,5 @@
 <script>
-import { GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import 'mathjax/es5/tex-svg';
 import Prompt from '../prompt.vue';
 

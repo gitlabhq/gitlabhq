@@ -1,17 +1,10 @@
 <script>
-import {
-  GlIcon,
-  GlBadge,
-  GlLoadingIcon,
-  GlTooltipDirective,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlIcon, GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
 export default {
-  safeHtmlConfig: { ADD_TAGS: ['gl-emoji'] },
   components: {
     TimeAgoTooltip,
     GitlabTeamMemberBadge: () =>
@@ -21,7 +14,6 @@ export default {
     GlLoadingIcon,
   },
   directives: {
-    SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
   props: {

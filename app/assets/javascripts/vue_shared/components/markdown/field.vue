@@ -1,10 +1,11 @@
 <script>
-import { GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { debounce, unescape } from 'lodash';
 import { createAlert } from '~/flash';
 import GLForm from '~/gl_form';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { stripHtml } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
@@ -25,7 +26,7 @@ export default {
     Suggestions,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {

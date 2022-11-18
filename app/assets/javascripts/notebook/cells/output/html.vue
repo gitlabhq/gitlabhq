@@ -1,13 +1,9 @@
 <script>
-import { GlSafeHtmlDirective } from '@gitlab/ui';
 import Prompt from '../prompt.vue';
 
 export default {
   components: {
     Prompt,
-  },
-  directives: {
-    SafeHtml: GlSafeHtmlDirective,
   },
   props: {
     count: {
@@ -27,12 +23,6 @@ export default {
     showOutput() {
       return this.index === 0;
     },
-  },
-  safeHtmlConfig: {
-    ADD_TAGS: ['use'], // to support icon SVGs
-    FORBID_TAGS: ['style'],
-    FORBID_ATTR: ['style'],
-    ALLOW_DATA_ATTR: false,
   },
 };
 </script>

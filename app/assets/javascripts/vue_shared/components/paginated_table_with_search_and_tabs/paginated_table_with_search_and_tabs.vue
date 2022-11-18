@@ -1,12 +1,6 @@
 <script>
-import {
-  GlAlert,
-  GlBadge,
-  GlPagination,
-  GlTab,
-  GlTabs,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlAlert, GlBadge, GlPagination, GlTab, GlTabs } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import Api from '~/api';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';

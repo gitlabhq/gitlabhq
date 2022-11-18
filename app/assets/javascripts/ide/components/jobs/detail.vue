@@ -1,7 +1,8 @@
 <script>
-import { GlTooltipDirective, GlButton, GlIcon, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlTooltipDirective, GlButton, GlIcon } from '@gitlab/ui';
 import { throttle } from 'lodash';
 import { mapActions, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
 import JobDescription from './detail/description.vue';
 import ScrollButton from './detail/scroll_button.vue';
@@ -14,7 +15,7 @@ const scrollPositions = {
 export default {
   directives: {
     GlTooltip: GlTooltipDirective,
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   components: {
     GlButton,

@@ -1,6 +1,7 @@
 <script>
-import { GlButton, GlSafeHtmlDirective, GlBadge } from '@gitlab/ui';
+import { GlButton, GlBadge } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import PublishButton from './publish_button.vue';
@@ -13,7 +14,7 @@ export default {
     GlBadge,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   mixins: [glFeatureFlagMixin()],
   props: {

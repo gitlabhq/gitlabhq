@@ -1,5 +1,6 @@
 <script>
-import { GlDropdownItem, GlAvatar, GlSafeHtmlDirective as SafeHtml } from '@gitlab/ui';
+import { GlDropdownItem, GlAvatar } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
 import { truncateNamespace } from '~/lib/utils/text_utility';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';

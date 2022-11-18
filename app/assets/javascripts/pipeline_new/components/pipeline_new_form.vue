@@ -12,11 +12,11 @@ import {
   GlLink,
   GlSprintf,
   GlLoadingIcon,
-  GlSafeHtmlDirective as SafeHtml,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { uniqueId } from 'lodash';
 import Vue from 'vue';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { redirectTo } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import { VARIABLE_TYPE, FILE_TYPE, CC_VALIDATION_REQUIRED_ERROR } from '../constants';

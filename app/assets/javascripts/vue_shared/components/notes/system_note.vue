@@ -16,15 +16,10 @@
  *    }"
  *   />
  */
-import {
-  GlButton,
-  GlSkeletonLoader,
-  GlTooltipDirective,
-  GlIcon,
-  GlSafeHtmlDirective as SafeHtml,
-} from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';

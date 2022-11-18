@@ -1,12 +1,7 @@
 <script>
-import {
-  GlButton,
-  GlLoadingIcon,
-  GlSafeHtmlDirective,
-  GlTooltipDirective,
-  GlIntersectionObserver,
-} from '@gitlab/ui';
+import { GlButton, GlLoadingIcon, GlTooltipDirective, GlIntersectionObserver } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { DynamicScroller, DynamicScrollerItem } from 'vendor/vue-virtual-scroller';
 import { sprintf, s__, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
@@ -40,7 +35,7 @@ export default {
     StateContainer,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
     GlTooltip: GlTooltipDirective,
   },
   data() {

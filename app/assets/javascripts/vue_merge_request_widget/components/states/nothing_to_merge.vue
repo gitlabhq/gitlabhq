@@ -1,5 +1,6 @@
 <script>
-import { GlButton, GlSprintf, GlLink, GlSafeHtmlDirective } from '@gitlab/ui';
+import { GlButton, GlSprintf, GlLink } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import emptyStateSVG from 'icons/_mr_widget_empty_state.svg';
 import api from '~/api';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -12,7 +13,7 @@ export default {
     GlLink,
   },
   directives: {
-    SafeHtml: GlSafeHtmlDirective,
+    SafeHtml,
   },
   props: {
     mr: {
