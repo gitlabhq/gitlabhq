@@ -97,6 +97,8 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 
 Other elements of the CRON syntax may work in the cadence field, however, GitLab does not officially test or support them. The CRON expression is evaluated in UTC by default. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
 
+The scan execution policy for the `schedule` rule type triggers the `GitLab Security Policy Bot` user to create a new pipeline. This user does not count toward the license limit count.
+
 ### `agent` schema
 
 Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).

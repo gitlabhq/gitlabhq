@@ -6799,7 +6799,8 @@ RSpec.describe User do
             { user_type: :alert_bot },
             { user_type: :support_bot },
             { user_type: :security_bot },
-            { user_type: :automation_bot }
+            { user_type: :automation_bot },
+            { user_type: :security_policy_bot }
           ]
         end
 
@@ -6881,11 +6882,12 @@ RSpec.describe User do
       using RSpec::Parameterized::TableSyntax
 
       where(:user_type, :expected_result) do
-        'human'             | true
-        'alert_bot'         | false
-        'support_bot'       | false
-        'security_bot'      | false
-        'automation_bot'    | false
+        'human'               | true
+        'alert_bot'           | false
+        'support_bot'         | false
+        'security_bot'        | false
+        'automation_bot'      | false
+        'security_policy_bot' | false
       end
 
       with_them do
@@ -7034,10 +7036,12 @@ RSpec.describe User do
     it_behaves_like 'bot users', :security_bot
     it_behaves_like 'bot users', :ghost
     it_behaves_like 'bot users', :automation_bot
+    it_behaves_like 'bot users', :security_policy_bot
 
     it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
     it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
     it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
+    it_behaves_like 'bot user avatars', :security_policy_bot, 'security-bot.png'
     it_behaves_like 'bot user avatars', :automation_bot, 'support-bot.png'
 
     context 'when bot is the support_bot' do

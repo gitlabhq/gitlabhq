@@ -896,6 +896,16 @@ class User < ApplicationRecord
       end
     end
 
+    def security_policy_bot
+      email_pattern = "security-policy-bot%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :security_policy_bot), 'security-policy-bot', email_pattern) do |u|
+        u.bio = 'System bot that creates pipelines for security orchestration policies'
+        u.name = 'GitLab Security Policy Bot'
+        u.avatar = bot_avatar(image: 'security-bot.png')
+      end
+    end
+
     # Return true if there is only single non-internal user in the deployment,
     # ghost user is ignored.
     def single_user?
