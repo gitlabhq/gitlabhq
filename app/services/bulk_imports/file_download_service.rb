@@ -31,14 +31,13 @@ module BulkImports
       @tmpdir = tmpdir
       @file_size_limit = file_size_limit
       @allowed_content_types = allowed_content_types
+      @remote_content_validated = false
     end
 
     def execute
       validate_tmpdir
       validate_filepath
       validate_url
-      validate_content_type
-      validate_content_length
 
       download_file
 
@@ -49,7 +48,7 @@ module BulkImports
 
     private
 
-    attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types
+    attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types, :response_headers
 
     def download_file
       File.open(filepath, 'wb') do |file|
@@ -57,6 +56,15 @@ module BulkImports
 
         http_client.stream(relative_url) do |chunk|
           next if bytes_downloaded == 0 && [301, 302, 303, 307, 308].include?(chunk.code)
+
+          @response_headers ||= Gitlab::HTTP::Response::Headers.new(chunk.http_response.to_hash)
+
+          unless @remote_content_validated
+            validate_content_type
+            validate_content_length
+
+            @remote_content_validated = true
+          end
 
           bytes_downloaded += chunk.size
 
@@ -88,10 +96,6 @@ module BulkImports
 
     def allow_local_requests?
       ::Gitlab::CurrentSettings.allow_local_requests_from_web_hooks_and_services?
-    end
-
-    def response_headers
-      @response_headers ||= http_client.head(relative_url).headers
     end
 
     def validate_tmpdir

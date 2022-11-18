@@ -14,22 +14,19 @@ RSpec.describe BulkImports::FileDownloadService do
     let_it_be(:filepath) { File.join(tmpdir, filename) }
     let_it_be(:content_length) { 1000 }
 
-    let(:chunk_double) { double('chunk', size: 100, code: 200) }
-
-    let(:response_double) do
-      double(
-        code: 200,
-        success?: true,
-        parsed_response: {},
-        headers: {
-          'content-length' => content_length,
-          'content-type' => content_type,
-          'content-disposition' => content_disposition
-        }
-      )
+    let(:headers) do
+      {
+        'content-length' => content_length,
+        'content-type' => content_type,
+        'content-disposition' => content_disposition
+      }
     end
 
-    subject do
+    let(:chunk_size) { 100 }
+    let(:chunk_code) { 200 }
+    let(:chunk_double) { double('chunk', size: chunk_size, code: chunk_code, http_response: double(to_hash: headers)) }
+
+    subject(:service) do
       described_class.new(
         configuration: config,
         relative_url: '/test',
@@ -42,9 +39,10 @@ RSpec.describe BulkImports::FileDownloadService do
 
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-        allow(client).to receive(:head).and_return(response_double)
         allow(client).to receive(:stream).and_yield(chunk_double)
       end
+
+      allow(service).to receive(:response_headers).and_return(headers)
     end
 
     shared_examples 'downloads file' do
@@ -136,7 +134,7 @@ RSpec.describe BulkImports::FileDownloadService do
     end
 
     context 'when chunk code is not 200' do
-      let(:chunk_double) { double('chunk', size: 1000, code: 500) }
+      let(:chunk_code) { 500 }
 
       it 'raises an error' do
         expect { subject.execute }.to raise_error(
@@ -146,7 +144,7 @@ RSpec.describe BulkImports::FileDownloadService do
       end
 
       context 'when chunk code is redirection' do
-        let(:chunk_double) { double('redirection', size: 1000, code: 303) }
+        let(:chunk_code) { 303 }
 
         it 'does not write a redirection chunk' do
           expect { subject.execute }.not_to raise_error
@@ -157,10 +155,9 @@ RSpec.describe BulkImports::FileDownloadService do
         context 'when redirection chunk appears at a later stage of the download' do
           it 'raises an error' do
             another_chunk_double = double('another redirection', size: 1000, code: 303)
-            data_chunk = double('data chunk', size: 1000, code: 200)
+            data_chunk = double('data chunk', size: 1000, code: 200, http_response: double(to_hash: {}))
 
             allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
-              allow(client).to receive(:head).and_return(response_double)
               allow(client)
                 .to receive(:stream)
                 .and_yield(chunk_double)
@@ -173,6 +170,51 @@ RSpec.describe BulkImports::FileDownloadService do
               'File download error 303'
             )
           end
+        end
+      end
+    end
+
+    describe 'remote content validation' do
+      context 'on redirect chunk' do
+        let(:chunk_code) { 303 }
+
+        it 'does not run content type & length validations' do
+          expect(service).not_to receive(:validate_content_type)
+          expect(service).not_to receive(:validate_content_length)
+
+          service.execute
+        end
+      end
+
+      context 'when there is one data chunk' do
+        it 'validates content type & length' do
+          expect(service).to receive(:validate_content_type)
+          expect(service).to receive(:validate_content_length)
+
+          service.execute
+        end
+      end
+
+      context 'when there are multiple data chunks' do
+        it 'validates content type & length only once' do
+          data_chunk = double(
+            'data chunk',
+            size: 1000,
+            code: 200,
+            http_response: double(to_hash: {})
+          )
+
+          allow_next_instance_of(BulkImports::Clients::HTTP) do |client|
+            allow(client)
+              .to receive(:stream)
+              .and_yield(chunk_double)
+              .and_yield(data_chunk)
+          end
+
+          expect(service).to receive(:validate_content_type).once
+          expect(service).to receive(:validate_content_length).once
+
+          service.execute
         end
       end
     end
