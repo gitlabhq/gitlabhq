@@ -1120,11 +1120,11 @@ class AddOptionsToBuildMetadata < Gitlab::Database::Migration[2.0]
 end
 ```
 
-You have to use a serializer to provide a translation layer:
+By default hash keys will be strings. Optionally you can add a custom data type to provide different access to keys.
 
 ```ruby
 class BuildMetadata
-  serialize :config_options, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
+  attribute :config_options, :ind_jsonb # for indifferent accesss or :sym_jsonb if you need symbols only as keys.
 end
 ```
 

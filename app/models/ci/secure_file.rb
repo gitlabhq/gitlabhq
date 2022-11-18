@@ -17,19 +17,18 @@ module Ci
     validates :file, presence: true, file_size: { maximum: FILE_SIZE_LIMIT }
     validates :checksum, :file_store, :name, :project_id, presence: true
     validates :name, uniqueness: { scope: :project }
+
+    attribute :metadata, :ind_jsonb
     validates :metadata, json_schema: { filename: "ci_secure_file_metadata" }, allow_nil: true
+
+    attribute :file_store, default: -> { Ci::SecureFileUploader.default_store }
+    mount_file_store_uploader Ci::SecureFileUploader
 
     after_initialize :generate_key_data
     before_validation :assign_checksum
 
     scope :order_by_created_at, -> { order(created_at: :desc) }
     scope :project_id_in, ->(ids) { where(project_id: ids) }
-
-    serialize :metadata, Serializers::Json # rubocop:disable Cop/ActiveRecordSerialize
-
-    attribute :file_store, default: -> { Ci::SecureFileUploader.default_store }
-
-    mount_file_store_uploader Ci::SecureFileUploader
 
     def checksum_algorithm
       CHECKSUM_ALGORITHM
