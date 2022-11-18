@@ -514,8 +514,7 @@ Prerequisites:
 
 - You must have [administrator access](../../../administration/index.md) to your GitLab instance.
 
-To change the default issue closing pattern, edit the
-[`gitlab.rb` or `gitlab.yml` file](../../../administration/issue_closing_pattern.md)
+Learn how to change the default [issue closing pattern](../../../administration/issue_closing_pattern.md).
 of your installation.
 
 ## Change the issue type
