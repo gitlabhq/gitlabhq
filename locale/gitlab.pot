@@ -11403,6 +11403,9 @@ msgstr ""
 msgid "Create tag %{tagName}"
 msgstr ""
 
+msgid "Create testing scenarios by defining project conditions in your development platform."
+msgstr ""
+
 msgid "Create topic"
 msgstr ""
 
@@ -20786,6 +20789,9 @@ msgid "Import|There is not a valid Git repository at this URL. If your HTTP repo
 msgstr ""
 
 msgid "Improve customer support with Service Desk"
+msgstr ""
+
+msgid "Improve quality with test cases"
 msgstr ""
 
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
@@ -46279,9 +46285,6 @@ msgstr ""
 msgid "With requirements, you can set criteria to check your products against."
 msgstr ""
 
-msgid "With test cases, you can define conditions for your project to meet in determining quality"
-msgstr ""
-
 msgid "Withdraw Access Request"
 msgstr ""
 
@@ -46803,9 +46806,6 @@ msgid "You can find more information about GitLab subscriptions in %{subscriptio
 msgstr ""
 
 msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
-msgstr ""
-
-msgid "You can group test cases using labels. To learn about the future direction of this feature, visit %{linkStart}Quality Management direction page%{linkEnd}."
 msgstr ""
 
 msgid "You can invite a new member to %{project_name} or invite another group."

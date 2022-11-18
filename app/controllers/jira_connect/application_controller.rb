@@ -5,6 +5,7 @@ class JiraConnect::ApplicationController < ApplicationController
 
   CORS_ALLOWED_METHODS = {
     '/-/jira_connect/oauth_application_id' => %i[GET OPTIONS],
+    '/-/jira_connect/subscriptions.json' => %i[GET OPTIONS],
     '/-/jira_connect/subscriptions/*' => %i[DELETE OPTIONS]
   }.freeze
 

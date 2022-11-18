@@ -50,6 +50,13 @@ RSpec.describe JiraConnect::CorsPreflightChecksController do
     it_behaves_like 'allows cross-origin requests on self managed'
   end
 
+  describe 'OPTIONS /-/jira_connect/subscriptions.json' do
+    let(:allowed_methods) { 'GET, OPTIONS' }
+    let(:path) { '/-/jira_connect/subscriptions.json' }
+
+    it_behaves_like 'allows cross-origin requests on self managed'
+  end
+
   describe 'OPTIONS /-/jira_connect/subscriptions/:id' do
     let(:allowed_methods) { 'DELETE, OPTIONS' }
     let(:path) { '/-/jira_connect/subscriptions/123' }

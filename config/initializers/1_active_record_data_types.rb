@@ -8,7 +8,7 @@ require 'active_record/connection_adapters/postgresql_adapter'
 ActiveRecord::Type.register(:ind_jsonb, Gitlab::Database::Type::IndifferentJsonb)
 ActiveRecord::Type.register(:sym_jsonb, Gitlab::Database::Type::SymbolizedJsonb)
 
-module ActiveRecord::ConnectionAdapters::PostgreSQL::OID
+module ActiveRecord::ConnectionAdapters::PostgreSQL::OID # rubocop:disable Style/ClassAndModuleChildren
   # Add the class `DateTimeWithTimeZone` so we can map `timestamptz` to it.
   class DateTimeWithTimeZone < DateTime
     def type
@@ -37,7 +37,7 @@ module RegisterDateTimeWithTimeZone
   end
 end
 
-class ActiveRecord::ConnectionAdapters::PostgreSQLAdapter
+class ActiveRecord::ConnectionAdapters::PostgreSQLAdapter # rubocop:disable Style/ClassAndModuleChildren
   prepend RegisterDateTimeWithTimeZone
 
   # Add column type `datetime_with_timezone` so we can do this in
@@ -55,6 +55,9 @@ rescue StandardError
 end
 
 # Ensure `datetime_with_timezone` columns are correctly written to schema.rb
+
+# rubocop:disable Database/MultipleDatabases
 ActiveRecord::Base.connection.send(:reload_type_map) if connection_active?
 
 ActiveRecord::Base.time_zone_aware_types += [:datetime_with_timezone]
+# rubocop:enable Database/MultipleDatabases

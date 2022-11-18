@@ -45,6 +45,18 @@ RSpec.describe JiraConnect::SubscriptionsController do
       it { is_expected.not_to include('http://self-managed-gitlab.com/api/') }
       it { is_expected.not_to include('http://self-managed-gitlab.com/oauth/') }
     end
+
+    context 'when json format' do
+      let(:path) { '/-/jira_connect/subscriptions.json' }
+
+      it 'allows cross-origin requests', :aggregate_failures do
+        get path, params: params, headers: cors_request_headers
+
+        expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
+        expect(response.headers['Access-Control-Allow-Methods']).to eq 'GET, OPTIONS'
+        expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+      end
+    end
   end
 
   describe 'DELETE /-/jira_connect/subscriptions/:id' do
