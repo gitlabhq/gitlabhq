@@ -1,51 +1,69 @@
 require './spec/support/sidekiq_middleware'
 
 class Gitlab::Seeder::Pipelines
-  STAGES = %w[build test deploy notify]
-  BUILDS = [
-    # build stage
-    { name: 'build:linux', stage: 'build', status: :success,
-      queued_at: 10.hour.ago, started_at: 9.hour.ago, finished_at: 8.hour.ago },
-    { name: 'build:osx', stage: 'build', status: :success,
-      queued_at: 10.hour.ago, started_at: 10.hour.ago, finished_at: 9.hour.ago },
-
-    # test stage
-    { name: 'rspec:linux 0 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:linux 1 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:linux 2 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:windows 0 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:windows 1 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:windows 2 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:windows 2 3', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'rspec:osx', stage: 'test', status_event: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'spinach:linux', stage: 'test', status: :success,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true,
-      queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-
-    # deploy stage
-    { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success,
-      options: { environment: { action: 'start', on_stop: 'stop staging' } },
-      queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago },
-    { name: 'stop staging', stage: 'deploy', environment: 'staging',
-      when: 'manual', status: :skipped },
-    { name: 'production', stage: 'deploy', environment: 'production',
-      when: 'manual', status: :skipped },
-
-    # notify stage
-    { name: 'slack', stage: 'notify', when: 'manual', status: :success },
-  ]
-  EXTERNAL_JOBS = [
-    { name: 'jenkins', stage: 'test', status: :success,
-      queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago },
+  PIPELINE_STAGES = [
+    {
+      name: 'build',
+      position: 0,
+      builds: [
+        { name: 'build:linux', status: :success,
+          queued_at: 10.hour.ago, started_at: 9.hour.ago, finished_at: 8.hour.ago },
+        { name: 'build:osx', status: :success,
+          queued_at: 10.hour.ago, started_at: 10.hour.ago, finished_at: 9.hour.ago },
+      ]
+    },
+    {
+      name: 'test',
+      position: 1,
+      builds: [
+        { name: 'rspec:linux 0 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:linux 1 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:linux 2 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:windows 0 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:windows 1 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:windows 2 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:windows 2 3', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'rspec:osx', status_event: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'spinach:linux', status: :success,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+        { name: 'spinach:osx', status: :failed, allow_failure: true,
+          queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago }
+      ]
+    },
+    {
+      name: 'deploy',
+      position: 2,
+      builds: [
+        { name: 'staging', environment: 'staging', status_event: :success,
+          options: { environment: { action: 'start', on_stop: 'stop staging' } },
+          queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago },
+        { name: 'stop staging', environment: 'staging', when: 'manual', status: :skipped },
+        { name: 'production', environment: 'production', when: 'manual', status: :skipped },
+      ]
+    },
+    {
+      name: 'notify',
+      position: 3,
+      builds: [
+        { name: 'slack', when: 'manual', status: :success },
+      ]
+    },
+    {
+      name: 'external',
+      position: 4,
+      builds: [
+        { name: 'jenkins', status: :success,
+          queued_at: 7.hour.ago, started_at: 6.hour.ago, finished_at: 4.hour.ago }
+      ]
+    }
   ]
 
   def initialize(project)
@@ -54,9 +72,20 @@ class Gitlab::Seeder::Pipelines
 
   def seed!
     pipelines.each do |pipeline|
-      BUILDS.each { |opts| build_create!(pipeline, opts) }
-      EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
+      PIPELINE_STAGES.each do |stage_attrs|
+        stage = stage_create!(pipeline, stage_attrs[:name], stage_attrs[:position])
+
+        stage_attrs[:builds].each do |build_attrs|
+          if stage_attrs[:name] == 'external'
+            generic_commit_status_create!(pipeline, stage, build_attrs)
+          else
+            build_create!(pipeline, stage, build_attrs)
+          end
+        end
+      end
+
       pipeline.update_duration
+
       ::Ci::ProcessPipelineService.new(pipeline).execute
     end
 
@@ -64,6 +93,10 @@ class Gitlab::Seeder::Pipelines
   end
 
   private
+
+  def stage_create!(pipeline, name, position)
+    Ci::Stage.create!(pipeline: pipeline, project: pipeline.project, name: name, position: position)
+  end
 
   def pipelines
     create_master_pipelines + create_merge_request_pipelines
@@ -106,8 +139,8 @@ class Gitlab::Seeder::Pipelines
     project.ci_pipelines.create!(sha: commit.id, ref: ref, source: :push)
   end
 
-  def build_create!(pipeline, opts = {})
-    attributes = job_attributes(pipeline, opts)
+  def build_create!(pipeline, stage, opts = {})
+    attributes = job_attributes(pipeline, stage, opts)
 
     attributes[:options] ||= {}
     attributes[:options][:script] = 'build command'
@@ -129,7 +162,7 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_artifacts(build)
-    return unless build.stage_name == "build"
+    return unless build.ci_stage.name == 'build'
 
     artifacts_cache_file(artifacts_archive_path) do |file|
       build.job_artifacts.build(project: build.project, file_type: :archive, file_format: :zip, file: file)
@@ -141,7 +174,7 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_test_reports(build)
-    return unless build.stage_name == "test" && build.name == "rspec:osx"
+    return unless build.ci_stage.name == 'test' && build.name == "rspec:osx"
 
     if build.ref == build.project.default_branch
       artifacts_cache_file(test_reports_pass_path) do |file|
@@ -160,15 +193,15 @@ class Gitlab::Seeder::Pipelines
     end
   end
 
-  def commit_status_create!(pipeline, opts = {})
-    attributes = job_attributes(pipeline, opts)
+  def generic_commit_status_create!(pipeline, stage, opts = {})
+    attributes = job_attributes(pipeline, stage, opts)
 
     GenericCommitStatus.create!(attributes)
   end
 
-  def job_attributes(pipeline, opts)
+  def job_attributes(pipeline, stage, opts)
     {
-      name: 'test build', stage: 'test', stage_idx: stage_index(opts[:stage]),
+      name: 'test build', ci_stage: stage, stage_idx: stage.position,
       ref: pipeline.ref, tag: false, user: build_user, project: @project, pipeline: pipeline,
       scheduling_type: :stage, created_at: Time.now, updated_at: Time.now
     }.merge(opts)
@@ -184,10 +217,6 @@ class Gitlab::Seeder::Pipelines
 
   def build_status
     Ci::Build::AVAILABLE_STATUSES.sample
-  end
-
-  def stage_index(stage)
-    STAGES.index(stage) || 0
   end
 
   def artifacts_archive_path
