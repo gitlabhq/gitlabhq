@@ -8,6 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 > - Group-level security policies were [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 > - Group-level security policies were [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
+> - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
 
 Group, subgroup, or project owners can use scan execution policies to require that security scans run on a specified
 schedule or with the project (or multiple projects if the policy is defined at a group or subgroup level) pipeline. Required scans are injected into the CI pipeline as new jobs
@@ -95,7 +96,11 @@ GitLab supports the following types of CRON syntax for the `cadence` field:
 - A daily cadence of once per hour at a specified hour, for example: `0 18 * * *`
 - A weekly cadence of once per week on a specified day and at a specified hour, for example: `0 13 * * 0`
 
-Other elements of the CRON syntax may work in the cadence field, however, GitLab does not officially test or support them. The CRON expression is evaluated in UTC by default. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
+NOTE:
+Other elements of the [CRON syntax]((https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm)) may work in the cadence field if supported by the [cron](https://github.com/robfig/cron) we are using in our implementation, however, GitLab does not officially test or support them.
+
+NOTE:
+If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
 
 The scan execution policy for the `schedule` rule type triggers the `GitLab Security Policy Bot` user to create a new pipeline. This user does not count toward the license limit count.
 
@@ -110,19 +115,25 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 #### Policy example
 
 ```yaml
-- name: Enforce Container Scanning in cluster connected through gitlab-agent for production and staging namespaces
+- name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
   enabled: true
   rules:
   - type: schedule
     cadence: '0 10 * * *'
     agents:
-      gitlab-agent:
+      <agent-name>:
         namespaces:
-        - 'production'
-        - 'staging'
+        - 'default'
+        - 'kube-system'
   actions:
   - scan: container_scanning
 ```
+
+The keys for a schedule rule are:
+
+- `cadence` (required): a [CRON expression](https://docs.oracle.com/cd/E12058_01/doc/doc.1014/e12030/cron_expressions.htm) for when the scans will be run
+- `agents:<agent-name>` (required): The name of the agent to use for scanning
+- `agents:<agent-name>:namespaces` (optional): The Kubernetes namespaces to scan. If omitted, all namespaces will be scanned.
 
 ## `scan` action type
 
