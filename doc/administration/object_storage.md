@@ -70,7 +70,7 @@ must be enabled, only the following providers can be used:
 - [Azure Blob storage](#azure-blob-storage)
 
 When consolidated object storage is used, direct upload is enabled
-automatically. Background upload is not supported. For storage-specific
+automatically. For storage-specific
 configuration, [direct upload may become the default](https://gitlab.com/gitlab-org/gitlab/-/issues/27331)
 because it does not require a shared folder.
 

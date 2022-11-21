@@ -98,7 +98,7 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def permalink_path
-    url_helpers.project_blob_path(project, File.join(project.repository.commit.sha, blob.path))
+    url_helpers.project_blob_path(project, File.join(project.repository.commit(blob.commit_id).sha, blob.path))
   end
 
   def environment_formatted_external_url

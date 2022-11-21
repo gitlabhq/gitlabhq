@@ -86,6 +86,15 @@ RSpec.describe "User browses files", :js do
         visit(project_tree_path(project, "markdown"))
       end
 
+      it "redirects to the permalink URL" do
+        click_link(".gitignore")
+        click_link("Permalink")
+
+        permalink_path = project_blob_path(project, "#{project.repository.commit('markdown').sha}/.gitignore")
+
+        expect(page).to have_current_path(permalink_path, ignore_query: true)
+      end
+
       it "shows correct files and links" do
         expect(page).to have_current_path(project_tree_path(project, "markdown"), ignore_query: true)
         expect(page).to have_content("README.md")

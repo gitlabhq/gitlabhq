@@ -84,7 +84,7 @@ To enable Admin Mode through the UI:
 
 To turn on Admin Mode for your current session and access potentially dangerous resources:
 
-1. On the top bar, select **Enable Admin Mode**.
+1. On the top bar, select **Main menu > Enter Admin Mode**.
 1. Try to access any part of the UI with `/admin` in the URL (which requires administrator access).
 
 When Admin Mode status is disabled or turned off, administrators cannot access resources unless
@@ -95,7 +95,11 @@ if they try to open a private group or project, unless they are members of that 
 authentication are supported by Admin Mode. Admin Mode status is stored in the current user session and remains active until either:
 
 - It is explicitly disabled.
-- It is disabled automatically after a timeout.
+- It is disabled automatically after six hours.
+
+### Turn off Admin Mode for your session
+
+To turn off Admin Mode for your current session, on the top bar, select **Main menu > Leave Admin mode**.
 
 ### Limitations of Admin Mode
 

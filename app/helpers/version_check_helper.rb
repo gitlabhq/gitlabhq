@@ -1,12 +1,19 @@
 # frozen_string_literal: true
 
 module VersionCheckHelper
+  include Gitlab::Utils::StrongMemoize
+
   def show_version_check?
     return false unless Gitlab::CurrentSettings.version_check_enabled
     return false if User.single_user&.requires_usage_stats_consent?
 
     current_user&.can_read_all_resources?
   end
+
+  def gitlab_version_check
+    VersionCheck.new.response
+  end
+  strong_memoize_attr :gitlab_version_check
 
   def link_to_version
     if Gitlab.pre_release?

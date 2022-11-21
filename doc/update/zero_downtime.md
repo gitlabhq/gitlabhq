@@ -132,18 +132,7 @@ load balancer to latest GitLab version.
         sudo touch /etc/gitlab/skip-auto-reconfigure
         ```
 
-    1. Update the GitLab package:
-
-       ```shell
-       # Debian/Ubuntu
-       sudo apt-get update && sudo apt-get install gitlab-ee
-
-       # Centos/RHEL
-       sudo yum install gitlab-ee
-       ```
-
-       If you are a Community Edition user, replace `gitlab-ee` with
-       `gitlab-ce` in the above command.
+    1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
     1. Get the regular migrations and latest code in place. Before running this step,
        the deploy node's `/etc/gitlab/gitlab.rb` configuration file must have
@@ -193,17 +182,7 @@ Before you update the main GitLab application you must (in order):
 
 #### Upgrade Gitaly nodes
 
-Upgrade the Gitaly nodes one at a time to ensure access to Git repositories is maintained:
-
-```shell
-# Debian/Ubuntu
-sudo apt-get update && sudo apt-get install gitlab-ee
-
-# Centos/RHEL
-sudo yum install gitlab-ee
-```
-
-If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+[Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories) on the Gitaly nodes one at a time to ensure access to Git repositories is maintained.
 
 #### Upgrade Praefect
 
@@ -226,17 +205,7 @@ node first and run database migrations.
 
 1. On the **Praefect deploy node**:
 
-   1. Upgrade the GitLab package:
-
-      ```shell
-      # Debian/Ubuntu
-      sudo apt-get update && sudo apt-get install gitlab-ee
-
-      # Centos/RHEL
-      sudo yum install gitlab-ee
-      ```
-
-      If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the command above.
+   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
    1. To apply the Praefect database migrations and restart Praefect, run:
 
@@ -246,13 +215,7 @@ node first and run database migrations.
 
 1. On all **remaining Praefect nodes**:
 
-   1. Upgrade the GitLab package:
-
-      ```shell
-      sudo apt-get update && sudo apt-get install gitlab-ee
-      ```
-
-      If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the command above.
+   1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
    1. Ensure nodes are running the latest code:
 
@@ -279,17 +242,7 @@ node throughout the process.
 
 **PostgreSQL only nodes**
 
-- Update the GitLab package
-
-  ```shell
-  # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ee
-
-  # Centos/RHEL
-  sudo yum install gitlab-ee
-  ```
-
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+- [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 - Ensure nodes are running the latest code
 
@@ -299,17 +252,7 @@ node throughout the process.
 
 **Deploy node**
 
-- Update the GitLab package
-
-  ```shell
-  # Debian/Ubuntu
-  sudo apt-get update && sudo apt-get install gitlab-ee
-
-  # Centos/RHEL
-  sudo yum install gitlab-ee
-  ```
-
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+- [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 - If you're using PgBouncer:
 
@@ -341,13 +284,7 @@ node throughout the process.
 
 **All nodes _excluding_ the Deploy node**
 
-- Update the GitLab package
-
-  ```shell
-  sudo apt-get update && sudo apt-get install gitlab-ee
-  ```
-
-  If you are a Community Edition user, replace `gitlab-ee` with `gitlab-ce` in the above command.
+- [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 - Ensure nodes are running the latest code
 
@@ -514,15 +451,7 @@ Log in to your **primary** node, executing the following:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Update the GitLab package:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. To get the database migrations and latest code in place, run:
 
@@ -552,15 +481,7 @@ On each **secondary** node, executing the following:
    sudo gitlab-ctl reconfigure
    ```
 
-1. Update the GitLab package:
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. To get the database migrations and latest code in place, run:
 
@@ -669,15 +590,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 **On primary Gitaly only nodes**
 
-1. Update the GitLab package
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. Ensure nodes are running the latest code
 
@@ -687,15 +600,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 **On the primary "deploy node"**
 
-1. Update the GitLab package
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. If you're using PgBouncer:
 
@@ -737,15 +642,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 **On all primary nodes _excluding_ the primary "deploy node"**
 
-1. Update the GitLab package
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. Ensure nodes are running the latest code
 
@@ -784,15 +681,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 **On secondary Gitaly only nodes**
 
-1. Update the GitLab package
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. Ensure nodes are running the latest code
 
@@ -802,15 +691,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 **On the secondary "deploy node"**
 
-1. Update the GitLab package
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. To get the regular database migrations and latest code in place, run
 
@@ -837,15 +718,7 @@ sudo touch /etc/gitlab/skip-auto-reconfigure
 
 **On all secondary nodes _excluding_ the secondary "deploy node"**
 
-1. Update the GitLab package
-
-   ```shell
-   # Debian/Ubuntu
-   sudo apt-get update && sudo apt-get install gitlab-ee
-
-   # Centos/RHEL
-   sudo yum install gitlab-ee
-   ```
+1. [Upgrade the GitLab package](package/index.md#upgrade-to-a-specific-version-using-the-official-repositories).
 
 1. Ensure nodes are running the latest code
 

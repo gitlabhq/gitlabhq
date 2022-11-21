@@ -1,4 +1,4 @@
-import { GlFormCheckbox, GlSprintf } from '@gitlab/ui';
+import { GlFormCheckbox, GlSprintf, GlTruncate } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -15,7 +15,13 @@ import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { PACKAGE_ERROR_STATUS } from '~/packages_and_registries/package_registry/constants';
 
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
-import { packageData, packagePipelines, packageProject, packageTags } from '../../mock_data';
+import {
+  linksData,
+  packageData,
+  packagePipelines,
+  packageProject,
+  packageTags,
+} from '../../mock_data';
 
 Vue.use(VueRouter);
 
@@ -26,9 +32,9 @@ describe('packages_list_row', () => {
     isGroupPage: false,
   };
 
-  const packageWithoutTags = { ...packageData(), project: packageProject() };
+  const packageWithoutTags = { ...packageData(), project: packageProject(), ...linksData };
   const packageWithTags = { ...packageWithoutTags, tags: { nodes: packageTags() } };
-  const packageCannotDestroy = { ...packageData(), canDestroy: false };
+  const packageCannotDestroy = { ...packageData(), ...linksData, canDestroy: false };
 
   const findPackageTags = () => wrapper.findComponent(PackageTags);
   const findPackagePath = () => wrapper.findComponent(PackagePath);
@@ -41,6 +47,7 @@ describe('packages_list_row', () => {
   const findCreatedDateText = () => wrapper.findByTestId('created-date');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeagoTooltip);
   const findBulkDeleteAction = () => wrapper.findComponent(GlFormCheckbox);
+  const findPackageName = () => wrapper.findComponent(GlTruncate);
 
   const mountComponent = ({
     packageEntity = packageWithoutTags,
@@ -78,6 +85,22 @@ describe('packages_list_row', () => {
     expect(findPackageLink().props()).toMatchObject({
       event: 'click',
       to: { name: 'details', params: { id: getIdFromGraphQLId(packageWithoutTags.id) } },
+    });
+  });
+
+  it('does not have a link to navigate to the details page', () => {
+    mountComponent({
+      packageEntity: {
+        ...packageWithoutTags,
+        _links: {
+          webPath: null,
+        },
+      },
+    });
+
+    expect(findPackageLink().exists()).toBe(false);
+    expect(findPackageName().props()).toMatchObject({
+      text: '@gitlab-org/package-15',
     });
   });
 

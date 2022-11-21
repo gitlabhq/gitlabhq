@@ -38,11 +38,11 @@ module Gitlab
           h2 :storage_available_alert, text: /purchased storage is available/
 
           def plan_ci_limits
-            plan_ci_minutes_element.span.text[%r{([^/ ]+)$}]
+            plan_ci_minutes[/(\d+){2}/]
           end
 
           def additional_ci_limits
-            additional_ci_minutes_element.span.text[%r{([^/ ]+)$}]
+            additional_ci_minutes[/(\d+){2}/]
           end
 
           # Waits and Checks if storage available alert presents on the page

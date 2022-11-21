@@ -54,6 +54,9 @@ export default {
     },
   },
   computed: {
+    containsWebPathLink() {
+      return Boolean(this.packageEntity?._links?.webPath);
+    },
     packageType() {
       return getPackageTypeLabel(this.packageEntity.packageType);
     },
@@ -109,6 +112,7 @@ export default {
     <template #left-primary>
       <div class="gl-display-flex gl-align-items-center gl-mr-3 gl-min-w-0">
         <router-link
+          v-if="containsWebPathLink"
           :class="errorPackageStyle"
           class="gl-text-body gl-min-w-0"
           data-testid="details-link"
@@ -118,6 +122,7 @@ export default {
         >
           <gl-truncate :text="packageEntity.name" />
         </router-link>
+        <gl-truncate v-else :text="packageEntity.name" />
 
         <package-tags
           v-if="showTags"

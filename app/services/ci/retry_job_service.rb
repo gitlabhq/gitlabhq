@@ -28,7 +28,7 @@ module Ci
       check_access!(job)
 
       new_job = job.clone(current_user: current_user, new_job_variables_attributes: variables)
-      if Feature.enabled?(:ci_retry_job_fix, project) && enqueue_if_actionable && new_job.action?
+      if enqueue_if_actionable && new_job.action?
         new_job.set_enqueue_immediately!
       end
 
@@ -64,15 +64,10 @@ module Ci
 
         next if new_job.failed?
 
-        Gitlab::OptimisticLocking.retry_lock(new_job, name: 'retry_build', &:enqueue) if Feature.disabled?(
-          :ci_retry_job_fix, project)
-
         AfterRequeueJobService.new(project, current_user).execute(job)
 
-        if Feature.enabled?(:ci_retry_job_fix, project)
-          Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
-          new_job.reset
-        end
+        Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
+        new_job.reset
       end
     end
 

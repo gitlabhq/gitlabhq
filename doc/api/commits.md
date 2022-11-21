@@ -695,9 +695,10 @@ Example response:
 ]
 ```
 
-### Post the build status to a commit
+### Set the pipeline status of a commit
 
-Adds or updates a build status of a commit.
+Add or update the pipeline status of a commit. If the commit is associated with a merge request,
+the API call must target the commit in the merge request's source branch.
 
 ```plaintext
 POST /projects/:id/statuses/:sha

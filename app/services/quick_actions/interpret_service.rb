@@ -158,15 +158,15 @@ module QuickActions
     end
 
     def map_commands(commands, method)
-      commands.map do |name, arg|
-        definition = self.class.definition_by_name(name)
+      commands.map do |name_or_alias, arg|
+        definition = self.class.definition_by_name(name_or_alias)
         next unless definition
 
         case method
         when :explain
           definition.explain(self, arg)
         when :execute_message
-          @execution_message[name.to_sym] || definition.execute_message(self, arg)
+          @execution_message[definition.name.to_sym] || definition.execute_message(self, arg)
         end
       end.compact
     end

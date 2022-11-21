@@ -34,4 +34,16 @@ RSpec.describe VersionCheckHelper do
       end
     end
   end
+
+  describe '#gitlab_version_check' do
+    before do
+      allow_next_instance_of(VersionCheck) do |instance|
+        allow(instance).to receive(:response).and_return({ "severity" => "success" })
+      end
+    end
+
+    it 'returns an instance of the VersionCheck class' do
+      expect(helper.gitlab_version_check).to eq({ "severity" => "success" })
+    end
+  end
 end

@@ -636,24 +636,6 @@ If you need to manually remove **all** job artifacts associated with multiple jo
    - `3.months.ago`
    - `1.year.ago`
 
-### Error `Downloading artifacts from coordinator... not found`
-
-When a job attempts to download artifacts from an earlier job, you might receive an error message similar to:
-
-```plaintext
-Downloading artifacts from coordinator... not found  id=12345678 responseStatus=404 Not Found
-```
-
-This can be caused by a `gitlab.rb` file with the following configuration:
-
-```ruby
-gitlab_rails['artifacts_object_store_background_upload'] = false
-gitlab_rails['artifacts_object_store_direct_upload'] = true
-```
-
-To prevent this, comment out or remove those lines, or switch to their [default values](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-config-template/gitlab.rb.template), and
-then run `sudo gitlab-ctl reconfigure`.
-
 ### Job artifact upload fails with error 500
 
 If you are using object storage for artifacts and a job artifact fails to upload,

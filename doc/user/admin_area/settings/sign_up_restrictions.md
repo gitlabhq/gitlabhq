@@ -190,6 +190,12 @@ To disable it:
 Feature.disable(:soft_email_confirmation)
 ```
 
+## Set up LDAP user filter
+
+You can limit GitLab access to a subset of the LDAP users on your LDAP server.
+
+See the [documentation on setting up an LDAP user filter](../../../administration/auth/ldap/index.md#set-up-ldap-user-filter) for more information.
+
 <!-- ## Troubleshooting
 
 Include any troubleshooting steps that you can foresee. If you know beforehand what issues

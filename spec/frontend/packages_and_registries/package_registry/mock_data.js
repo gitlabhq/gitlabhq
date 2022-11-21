@@ -118,6 +118,13 @@ export const packageVersions = () => [
   },
 ];
 
+export const linksData = {
+  _links: {
+    webPath: '/gitlab-org/package-15',
+    __typeName: 'PackageLinks',
+  },
+};
+
 export const packageData = (extend) => ({
   __typename: 'Package',
   id: 'gid://gitlab/Packages::Package/111',
@@ -376,6 +383,7 @@ export const packagesListQuery = ({ type = 'group', extend = {}, extendPaginatio
         nodes: [
           {
             ...packageData(),
+            ...linksData,
             project: packageProject(),
             tags: { nodes: packageTags() },
             pipelines: {
@@ -387,6 +395,7 @@ export const packagesListQuery = ({ type = 'group', extend = {}, extendPaginatio
             project: packageProject(),
             tags: { nodes: [] },
             pipelines: { nodes: [] },
+            ...linksData,
           },
         ],
         pageInfo: pagination(extendPagination),

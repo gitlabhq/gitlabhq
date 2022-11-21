@@ -145,6 +145,12 @@ RSpec.shared_examples 'issuable quick actions' do
         }
       ),
       QuickAction.new(
+        action_text: "/labels ~feature",
+        expectation: ->(noteable, can_use_quick_action) {
+          expect(noteable.labels&.last&.id == feature_label.id).to eq(can_use_quick_action)
+        }
+      ),
+      QuickAction.new(
         action_text: "/unlabel",
         expectation: unlabel_expectation
       ),

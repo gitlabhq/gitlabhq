@@ -2491,6 +2491,16 @@ RSpec.describe QuickActions::InterpretService do
         expect(message).to eq('One or more contacts were successfully removed.')
       end
     end
+
+    context 'when using an alias' do
+      it 'returns the correct execution message' do
+        content = "/labels ~#{bug.title}"
+
+        _, _, message = service.execute(content, issue)
+
+        expect(message).to eq("Added ~\"Bug\" label.")
+      end
+    end
   end
 
   describe '#explain' do

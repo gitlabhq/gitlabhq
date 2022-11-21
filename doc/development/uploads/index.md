@@ -40,21 +40,9 @@ When using object storage, administrators can control how those files are moved 
 This move can happen in one of these ways:
 
 - [Rails controller upload](#rails-controller-upload).
-- [Background upload](#background-upload).
 - [Direct upload](#direct-upload).
 
-These strategies activate as per the following `<feature>.object_store.*` settings:
-
-|                           | `background_upload` = `false` | `background_upload` = `true`    |
-| ------------------------- | ----------------------------- | ------------------------------- |
-| `direct_upload` = `false` | Controller upload             | Background upload               |
-| `direct_upload` = `true`  | Direct upload                 | Direct upload (takes precedence)|
-
 Individual Sidekiq workers might also store files in object storage, which is not something we cover here.
-More importantly, `background_upload` does not imply _all files are uploaded by Sidekiq._
-Sidekiq workers that store files in object storage could still exist when this setting is `false`.
-Those cases are never user-initiated uploads, but they might occur in response to another user-initiated
-action, such as exporting a GitLab repository.
 
 Finally, Workhorse assists most user-initiated uploads using an upload buffering mechanism to keep slow work out of Rails controllers.
 This mechanism is explained in [Workhorse assisted uploads](#workhorse-assisted-uploads),
@@ -98,12 +86,11 @@ GitLab to the object store provider. As mentioned above, there are three differe
 this HTTP request is sent.
 
 - [Rails controller upload](#rails-controller-upload).
-- [Background upload](#background-upload).
 - [Direct upload](#direct-upload).
 
 ### Rails controller upload
 
-When neither background upload nor direct upload are available, Rails uploads the file to object storage
+When direct upload is not available, Rails uploads the file to object storage
 as part of the controller `create` action. Which controller is responsible depends on the kind of file uploaded.
 
 A Rails controller upload is very similar to uploading to local storage. The main difference: Rails must
@@ -114,25 +101,6 @@ As with local storage, this strategy benefits from [Workhorse assistance](#workh
 keep some of the costly I/O work out of Ruby and Rails. Direct upload does a better job at this because it also keeps the HTTP PUT requests to object storage outside Puma.
 
 This strategy is only suitable for small file uploads, as it is subject to Puma's 60 second request timeout.
-
-### Background upload
-
-WARNING:
-This strategy is deprecated in GitLab 14.9 and later, and is scheduled to [be removed in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/26600).
-
-With background uploads enabled:
-
-1. Files are uploaded as if they were to reside in local storage.
-1. When Rails saves the upload metadata and the transaction completes, a Sidekiq job is scheduled.
-1. The Sidekiq job transfers the file to the object store bucket.
-   - If the job completes, the upload record is updated to reflect the file's new location.
-   - If the job fails or gets lost, the upload stays in local storage and has the lifecycle of a normal local storage upload.
-
-As Rails and Sidekiq must cooperate to move the file to its final destination, it requires shared
-storage and as such is unsuitable for CNG installations. We do not use background upload in GitLab SaaS.
-
-As background upload is an extension of local storage, it benefits from the same [Workhorse assistance](#workhorse-assisted-uploads) to
-keep costly I/O work out of Ruby and Rails.
 
 ### Direct upload
 
