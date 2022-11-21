@@ -1,61 +1,18 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context 'with gitlab project migration', requires_admin: 'creates a user via API',
-                                                        quarantine: {
-                                                          type: :flaky,
-                                                          issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/364839'
-                                                        },
-                                                        feature_flag: {
-                                                          name: 'bulk_import_projects',
-                                                          scope: :global
-                                                        } do
+  RSpec.shared_context 'with gitlab project migration' do
+    # gitlab project migration doesn't work on just the projects
+    # so all project migration tests will always require setup for gitlab group migration
+    include_context "with gitlab group migration"
+
     let(:source_project_with_readme) { false }
-    let(:import_wait_duration) { { max_duration: 300, sleep_interval: 2 } }
-    let(:admin_api_client) { Runtime::API::Client.as_admin }
-    let(:user) do
-      Resource::User.fabricate_via_api! do |usr|
-        usr.api_client = admin_api_client
-        usr.hard_delete_on_api_removal = true
-      end
-    end
-
-    let(:api_client) { Runtime::API::Client.new(user: user) }
-
-    let(:sandbox) do
-      Resource::Sandbox.fabricate_via_api! do |group|
-        group.api_client = admin_api_client
-      end
-    end
-
-    let(:destination_group) do
-      Resource::Group.fabricate_via_api! do |group|
-        group.api_client = api_client
-        group.sandbox = sandbox
-        group.path = "destination-group-for-import-#{SecureRandom.hex(4)}"
-      end
-    end
-
-    let(:source_group) do
-      Resource::Group.fabricate_via_api! do |group|
-        group.api_client = api_client
-        group.path = "source-group-for-import-#{SecureRandom.hex(4)}"
-      end
-    end
 
     let(:source_project) do
       Resource::Project.fabricate_via_api! do |project|
-        project.api_client = api_client
+        project.api_client = source_admin_api_client
         project.group = source_group
         project.initialize_with_readme = source_project_with_readme
-      end
-    end
-
-    let(:imported_group) do
-      Resource::BulkImportGroup.fabricate_via_api! do |group|
-        group.api_client = api_client
-        group.sandbox = destination_group
-        group.source_group = source_group
       end
     end
 
@@ -74,18 +31,8 @@ module QA
     end
 
     before do
-      Runtime::Feature.enable(:bulk_import_projects)
-
-      sandbox.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
+      Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
       source_project # fabricate source group and project
-    end
-
-    after do |example|
-      # Checking for failures in the test currently makes test very flaky due to catching unrelated failures
-      # Log failures for easier debugging
-      Runtime::Logger.warn("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
-    ensure
-      user.remove_via_api!
     end
   end
 end

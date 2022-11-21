@@ -45,6 +45,11 @@ module Gitlab
           ::RequestStore[write_bytes_key] += num_bytes
         end
 
+        def increment_cross_slot_request_count(amount = 1)
+          ::RequestStore[cross_slots_key] ||= 0
+          ::RequestStore[cross_slots_key] += amount
+        end
+
         def get_request_count
           ::RequestStore[request_count_key] || 0
         end
@@ -61,6 +66,10 @@ module Gitlab
           ::RequestStore[call_details_key] ||= []
         end
 
+        def get_cross_slot_request_count
+          ::RequestStore[cross_slots_key] || 0
+        end
+
         def query_time
           query_time = ::RequestStore[call_duration_key] || 0
           query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
@@ -68,6 +77,11 @@ module Gitlab
 
         def redis_cluster_validate!(commands)
           ::Gitlab::Instrumentation::RedisClusterValidator.validate!(commands) if @redis_cluster_validation
+          true
+        rescue ::Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError
+          raise if Rails.env.development? || Rails.env.test? # raise in test environments to catch violations
+
+          false
         end
 
         def enable_redis_cluster_validation
@@ -120,6 +134,10 @@ module Gitlab
 
         def call_details_key
           strong_memoize(:call_details_key) { build_key(:redis_call_details) }
+        end
+
+        def cross_slots_key
+          strong_memoize(:cross_slots_key) { build_key(:redis_cross_slot_request_count) }
         end
 
         def build_key(namespace)

@@ -184,7 +184,6 @@ module Gitlab
 
       class << self
         def validate!(commands)
-          return unless Rails.env.development? || Rails.env.test?
           return if allow_cross_slot_commands?
           return if commands.empty?
 

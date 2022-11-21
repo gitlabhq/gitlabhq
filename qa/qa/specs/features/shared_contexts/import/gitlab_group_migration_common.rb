@@ -19,7 +19,13 @@ module QA
         is_new_session: false
       )
     end
-    let!(:source_admin_user) { Resource::User.fabricate_via_api! { |usr| usr.api_client = source_admin_api_client } }
+    let!(:source_admin_user) do
+      Resource::User.fabricate_via_api! do |usr|
+        usr.api_client = source_admin_api_client
+        usr.username = "root"
+        usr.email = "admin@example.com"
+      end.tap(&:set_public_email)
+    end
     let!(:source_group) do
       Resource::Sandbox.fabricate_via_api! do |group|
         group.api_client = source_admin_api_client
@@ -31,7 +37,19 @@ module QA
     # target instance objects
     #
     let!(:admin_api_client) { Runtime::API::Client.as_admin }
-    let!(:user) { Resource::User.fabricate_via_api! { |usr| usr.api_client = admin_api_client } }
+    let!(:admin_user) do
+      Resource::User.fabricate_via_api! do |usr|
+        usr.api_client = admin_api_client
+        usr.username = "root"
+        usr.email = "admin@example.com"
+      end.tap(&:set_public_email)
+    end
+    let!(:user) do
+      Resource::User.fabricate_via_api! do |usr|
+        usr.api_client = admin_api_client
+        usr.username = "target-user-#{SecureRandom.hex(6)}"
+      end
+    end
     let!(:api_client) { Runtime::API::Client.new(user: user) }
     let!(:target_sandbox) do
       Resource::Sandbox.fabricate_via_api! do |group|
@@ -55,7 +73,6 @@ module QA
 
     before do
       target_sandbox.add_member(user, Resource::Members::AccessLevel::OWNER)
-      source_admin_user.set_public_email
     end
 
     after do |example|

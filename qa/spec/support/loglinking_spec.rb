@@ -14,8 +14,8 @@ RSpec.describe QA::Support::Loglinking do
 
     context 'return error string' do
       it 'with sentry URL' do
-        allow(QA::Support::Loglinking).to receive(:sentry_url).and_return('https://sentry.address/?environment=bar')
-        allow(QA::Support::Loglinking).to receive(:kibana_url).and_return(nil)
+        allow(QA::Support::Loglinking).to receive(:get_sentry_base_url).and_return('https://sentry.address/?environment=bar')
+        allow(QA::Support::Loglinking).to receive(:get_kibana_base_url).and_return(nil)
 
         expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
@@ -24,12 +24,15 @@ RSpec.describe QA::Support::Loglinking do
       end
 
       it 'with kibana URL' do
-        allow(QA::Support::Loglinking).to receive(:sentry_url).and_return(nil)
-        allow(QA::Support::Loglinking).to receive(:kibana_url).and_return('https://kibana.address/')
+        time = Time.new(2022, 11, 14, 0, 0, 0, '+00:00')
+
+        allow(QA::Support::Loglinking).to receive(:get_sentry_base_url).and_return(nil)
+        allow(QA::Support::Loglinking).to receive(:get_kibana_base_url).and_return('https://kibana.address/')
+        allow(Time).to receive(:now).and_return(time)
 
         expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
-          Kibana Url: https://kibana.address/app/discover#/?_a=%28query%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foo123%27%29%29&_g=%28time%3A%28from%3Anow-24h%2Cto%3Anow%29%29
+          Kibana Url: https://kibana.address/app/discover#/?_a=%28query%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foo123%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
         ERROR
       end
     end
@@ -51,7 +54,7 @@ RSpec.describe QA::Support::Loglinking do
       url_hash.each do |environment, url|
         allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(environment)
 
-        expect(QA::Support::Loglinking.sentry_url).to eq(url)
+        expect(QA::Support::Loglinking.get_sentry_base_url).to eq(url)
       end
     end
   end
@@ -71,7 +74,7 @@ RSpec.describe QA::Support::Loglinking do
       url_hash.each do |environment, url|
         allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(environment)
 
-        expect(QA::Support::Loglinking.kibana_url).to eq(url)
+        expect(QA::Support::Loglinking.get_kibana_base_url).to eq(url)
       end
     end
   end

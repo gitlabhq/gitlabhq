@@ -199,6 +199,10 @@ module QA
           :source_project_id,
           :target_project_id,
           :merge_status,
+          # we consider mr to still be the same even if users changed
+          :author,
+          :reviewers,
+          :assignees,
           # these can differ depending on user fetching mr
           :user,
           :subscribed,

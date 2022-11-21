@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'rspec-parameterized'
+require 'support/helpers/rails_helpers'
 
 RSpec.describe Gitlab::InstrumentationHelper do
   using RSpec::Parameterized::TableSyntax
@@ -38,18 +39,20 @@ RSpec.describe Gitlab::InstrumentationHelper do
 
     context 'when Redis calls are made' do
       it 'adds Redis data and omits Gitaly data' do
-        Gitlab::Redis::Cache.with { |redis| redis.set('test-cache', 123) }
+        stub_rails_env('staging') # to avoid raising CrossSlotError
+        Gitlab::Redis::Cache.with { |redis| redis.mset('test-cache', 123, 'test-cache2', 123) }
         Gitlab::Redis::Queues.with { |redis| redis.set('test-queues', 321) }
 
         subject
 
         # Aggregated payload
         expect(payload[:redis_calls]).to eq(2)
+        expect(payload[:redis_cross_slot_calls]).to eq(1)
         expect(payload[:redis_duration_s]).to be >= 0
         expect(payload[:redis_read_bytes]).to be >= 0
         expect(payload[:redis_write_bytes]).to be >= 0
 
-        # Shared state payload
+        # Queue payload
         expect(payload[:redis_queues_calls]).to eq(1)
         expect(payload[:redis_queues_duration_s]).to be >= 0
         expect(payload[:redis_queues_read_bytes]).to be >= 0
@@ -57,6 +60,7 @@ RSpec.describe Gitlab::InstrumentationHelper do
 
         # Cache payload
         expect(payload[:redis_cache_calls]).to eq(1)
+        expect(payload[:redis_cache_cross_slot_calls]).to eq(1)
         expect(payload[:redis_cache_duration_s]).to be >= 0
         expect(payload[:redis_cache_read_bytes]).to be >= 0
         expect(payload[:redis_cache_write_bytes]).to be >= 0

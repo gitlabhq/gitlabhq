@@ -33,7 +33,10 @@ module Gitlab
       def instrument_call(commands)
         start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
         instrumentation_class.instance_count_request(commands.size)
-        instrumentation_class.redis_cluster_validate!(commands)
+
+        if ::RequestStore.active? && !instrumentation_class.redis_cluster_validate!(commands)
+          instrumentation_class.increment_cross_slot_request_count
+        end
 
         yield
       rescue ::Redis::BaseError => ex

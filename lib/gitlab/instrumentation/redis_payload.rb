@@ -20,6 +20,7 @@ module Gitlab
 
           {
             "#{key_prefix}_calls": -> { get_request_count },
+            "#{key_prefix}_cross_slot_calls": -> { get_cross_slot_request_count },
             "#{key_prefix}_duration_s": -> { query_time },
             "#{key_prefix}_read_bytes": -> { read_bytes },
             "#{key_prefix}_write_bytes": -> { write_bytes }

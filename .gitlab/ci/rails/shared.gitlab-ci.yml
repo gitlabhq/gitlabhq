@@ -68,6 +68,7 @@ include:
       - crystalball/
       - deprecations/
       - knapsack/
+      - query_recorder/
       - rspec/
       - tmp/capybara/
       - log/*.log

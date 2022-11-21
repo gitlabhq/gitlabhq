@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'rspec-parameterized'
 
 RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
+  using RSpec::Parameterized::TableSyntax
   let(:instrumentation_class_a) do
     stub_const('InstanceA', Class.new(described_class))
   end
@@ -88,6 +90,25 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
     end
   end
 
+  describe '.increment_cross_slot_request_count' do
+    context 'storage key overlapping' do
+      it 'keys do not overlap across storages' do
+        3.times { instrumentation_class_a.increment_cross_slot_request_count }
+        2.times { instrumentation_class_b.increment_cross_slot_request_count }
+
+        expect(instrumentation_class_a.get_cross_slot_request_count).to eq(3)
+        expect(instrumentation_class_b.get_cross_slot_request_count).to eq(2)
+      end
+
+      it 'increments by the given amount' do
+        instrumentation_class_a.increment_cross_slot_request_count(2)
+        instrumentation_class_a.increment_cross_slot_request_count(3)
+
+        expect(instrumentation_class_a.get_cross_slot_request_count).to eq(5)
+      end
+    end
+  end
+
   describe '.increment_read_bytes' do
     context 'storage key overlapping' do
       it 'keys do not overlap across storages' do
@@ -127,6 +148,36 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
             a_hash_including(commands: [[:set]], duration: 0.4, backtrace: an_instance_of(Array))
           ]
         )
+      end
+    end
+  end
+
+  describe '.redis_cluster_validate!' do
+    context 'Rails environments' do
+      where(:env, :should_raise) do
+        'production' | false
+        'staging' | false
+        'development' | true
+        'test' | true
+      end
+
+      before do
+        instrumentation_class_a.enable_redis_cluster_validation
+      end
+
+      with_them do
+        it do
+          stub_rails_env(env)
+
+          args = [[:mget, 'foo', 'bar']]
+
+          if should_raise
+            expect { instrumentation_class_a.redis_cluster_validate!(args) }
+              .to raise_error(::Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError)
+          else
+            expect { instrumentation_class_a.redis_cluster_validate!(args) }.not_to raise_error
+          end
+        end
       end
     end
   end

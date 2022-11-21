@@ -6,13 +6,13 @@ module QA
       include_context 'with gitlab project migration'
 
       context 'with release' do
-        let(:tag) { 'v0.0.1' }
-        let(:source_project_with_readme) { true }
+        let!(:tag) { 'v0.0.1' }
+        let!(:source_project_with_readme) { true }
 
-        let(:milestone) do
+        let!(:milestone) do
           Resource::ProjectMilestone.fabricate_via_api! do |resource|
             resource.project = source_project
-            resource.api_client = api_client
+            resource.api_client = source_admin_api_client
           end
         end
 

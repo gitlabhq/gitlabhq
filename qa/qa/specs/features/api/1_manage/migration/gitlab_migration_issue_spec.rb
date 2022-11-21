@@ -7,9 +7,15 @@ module QA
 
       let!(:source_issue) do
         Resource::Issue.fabricate_via_api! do |issue|
-          issue.api_client = api_client
+          issue.api_client = source_admin_api_client
           issue.project = source_project
           issue.labels = %w[label_one label_two]
+        end
+      end
+
+      let(:source_issue_comments) do
+        source_issue.comments.map do |note|
+          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
         end
       end
 
@@ -24,6 +30,12 @@ module QA
         end
       end
 
+      let(:imported_issue_comments) do
+        imported_issue.comments.map do |note|
+          { **note.except(:id, :noteable_id), author: note[:author].except(:web_url) }
+        end
+      end
+
       context 'with project issues' do
         let!(:source_comment) { source_issue.add_comment(body: 'This is a test comment!') }
 
@@ -35,17 +47,16 @@ module QA
         ) do
           expect_import_finished
           expect(imported_issues.count).to eq(1)
-
-          aggregate_failures do
-            expect(imported_issue).to eq(source_issue.reload!)
-
-            expect(imported_comments.count).to eq(1)
-            expect(imported_comments.first&.fetch(:body)).to include(source_comment[:body])
-          end
+          expect(imported_issue).to eq(source_issue.reload!)
+          expect(imported_issue_comments).to match_array(source_issue_comments)
         end
       end
 
-      context "with designs" do
+      # we can't fabricate things in source instance via UI
+      context "with designs", quarantine: {
+        type: :broken,
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366592'
+      } do
         let!(:source_design) do
           Flow::Login.sign_in(as: user)
 

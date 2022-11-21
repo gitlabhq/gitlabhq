@@ -22,7 +22,7 @@ module QA
 
         before do
           Resource::Repository::Commit.fabricate_via_api! do |commit|
-            commit.api_client = api_client
+            commit.api_client = source_admin_api_client
             commit.project = source_project
             commit.commit_message = 'Add .gitlab-ci.yml'
             commit.add_files(

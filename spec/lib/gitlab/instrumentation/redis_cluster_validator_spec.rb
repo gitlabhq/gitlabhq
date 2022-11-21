@@ -10,30 +10,6 @@ RSpec.describe Gitlab::Instrumentation::RedisClusterValidator do
   describe '.validate!' do
     using RSpec::Parameterized::TableSyntax
 
-    context 'Rails environments' do
-      where(:env, :should_raise) do
-        'production' | false
-        'staging' | false
-        'development' | true
-        'test' | true
-      end
-
-      with_them do
-        it do
-          stub_rails_env(env)
-
-          args = [[:mget, 'foo', 'bar']]
-
-          if should_raise
-            expect { described_class.validate!(args) }
-              .to raise_error(described_class::CrossSlotError)
-          else
-            expect { described_class.validate!(args) }.not_to raise_error
-          end
-        end
-      end
-    end
-
     where(:command, :arguments, :should_raise) do
       :rename | %w(foo bar) | true
       :RENAME | %w(foo bar) | true

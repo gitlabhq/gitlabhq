@@ -39,7 +39,7 @@ module Gitlab
           end
         end
 
-        %i[get_request_count query_time read_bytes write_bytes].each do |method|
+        %i[get_request_count get_cross_slot_request_count query_time read_bytes write_bytes].each do |method|
           define_method method do
             STORAGES.sum(&method)
           end
