@@ -1,6 +1,7 @@
 - breadcrumb_title _("Commits")
 - add_page_specific_style 'page_bundles/tree'
 - page_title _("Commits"), @ref
+
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
@@ -24,7 +25,7 @@
               = _("Create merge request")
 
         .control
-          = form_tag(project_commits_path(@project, @id), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path }) do
+          = form_tag(project_commits_path(@project, @id, ref_type: @ref_type), method: :get, class: 'commits-search-form js-signature-container', data: { 'signatures-path' => namespace_project_signatures_path(ref_type: @ref_type)}) do
             = search_field_tag :search, params[:search], { placeholder: _('Search by message'), id: 'commits-search', class: 'form-control gl-form-input input-short gl-mt-3 gl-sm-mt-0 gl-min-w-full', spellcheck: false }
         .control.d-none.d-md-block
           = link_to project_commits_path(@project, @id, rss_url_options), title: _("Commits feed"), class: 'btn gl-button btn-default btn-icon' do

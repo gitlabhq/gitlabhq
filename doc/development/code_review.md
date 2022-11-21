@@ -28,7 +28,7 @@ The reviewer can:
 - Give you a second opinion on the chosen solution and implementation.
 - Help look for bugs, logic problems, or uncovered edge cases.
 
-If the merge request is trivial (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
+If the merge request is trivial to review (for example, fixing a typo or a tiny refactor that doesn't change the behavior or any data),
 you can skip the reviewer step and directly ask a [maintainer](https://about.gitlab.com/handbook/engineering/workflow/code-review/#maintainer).
 Otherwise, a merge request should always be first reviewed by a reviewer in each
 [category (e.g. backend, database)](#approval-guidelines)
@@ -125,7 +125,7 @@ page, with these behaviors:
   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
   that it can be stable for backport branches.
 
-The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette) contains:
+The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains:
 
 - Assignment events in the last 7 and 30 days.
 - Currently assigned merge requests per person.

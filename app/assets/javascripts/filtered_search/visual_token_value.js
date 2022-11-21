@@ -8,6 +8,7 @@ import { createAlert } from '~/flash';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 import { __ } from '~/locale';
+import { TOKEN_TYPE_LABEL } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default class VisualTokenValue {
   constructor(tokenValue, tokenType, tokenOperator) {
@@ -23,7 +24,7 @@ export default class VisualTokenValue {
       return;
     }
 
-    if (tokenType === 'label') {
+    if (tokenType === TOKEN_TYPE_LABEL) {
       this.updateLabelTokenColor(tokenValueContainer);
     } else if (USER_TOKEN_TYPES.includes(tokenType)) {
       this.updateUserTokenAppearance(tokenValueContainer, tokenValueElement);

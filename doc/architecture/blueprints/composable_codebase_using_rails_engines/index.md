@@ -74,7 +74,7 @@ This blueprint explicitly talks about **horizontal** split and **Application Lay
 The Bounded Contexts is a topic that was discussed extensively number of times for a couple of years.
 Reflected in number of issues:
 
-- [Create new models / classes within a module / namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/212156)
+- [Create new models / classes in a module / namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/212156)
 - [Make teams to be maintainers of their code](https://gitlab.com/gitlab-org/gitlab/-/issues/25872)
 - [Use nested structure to organize CI classes](https://gitlab.com/gitlab-org/gitlab/-/issues/209745)
 - [WIP: Make it simple to build and use "Decoupled Services"](https://gitlab.com/gitlab-org/gitlab/-/issues/31121)
@@ -86,7 +86,7 @@ We are partially executing a **Bounded Contexts** idea:
 - Since we use namespaces, individual contributor or reviewer can know who to reach from domain experts about help with
   the given context
 
-The module namespaces are actively being used today to model codebase around team boundaries. Currently, the most
+The module namespaces are actively being used today to model codebase around team boundaries. The most
 prominent namespaces being used today are `Ci::` and `Packages::`. They provide a good way to contain the code owned
 by a group in a well-defined structure.
 
@@ -125,7 +125,7 @@ application layers. This list is not exhaustive, but shows a general list of the
 - Web Packages API: provide a REST API compatible with the packaging tools: Debian, Maven, Container Registry Proxy, etc.
 - Git nodes: all code required to authorize `git pull/push` over `SSH` or `HTTPS`
 - Sidekiq: run background jobs
-- Services/Models/DB: all code required to maintain our database structure, data validation, business logic and policies models that needs to be shared with other components
+- Services/Models/DB: all code required to maintain our database structure, data validation, business logic, and policies models that needs to be shared with other components
 
 The best way to likely describe how the actual GitLab Rails split would look like. It is a satellite model.
 Where we have a single core, that is shared across all satellite components. The design of that implies
@@ -376,7 +376,7 @@ What was done?
     end
     ```
 
-    Since the gem is inside :engines group, it will not be automatically required by default.
+    Since the gem is inside :engines group, it is not automatically required by default.
 
 1. Configure GitLab when to load the engine.
 
@@ -451,7 +451,7 @@ Savings on Sidekiq `start-up` event, for a single Sidekiq cluster without GraphQ
 - Boot-up time was reduced from 45.31 to 21.80 seconds. It was 23.51 seconds faster (51.89%)
 - We have 805,772 less live objects, 4,587,535 less allocated objects, 2,866 less allocated pages and 3.65 MB less allocated space for objects outside of the heap
 - We loaded 2,326 less code files (15.64%)
-- We reduced the duration of a single full GC cycle from 0.80s to 0.70 (12.64%)
+- We reduced the duration of a single full GC cycle from 0.80 seconds to 0.70 seconds (12.64%)
 
 Puma single, showed very little difference as expected.
 
@@ -461,20 +461,20 @@ More details can be found in the [issue](https://gitlab.com/gitlab-org/gitlab/-/
 
 Estimating the results for the scale of running GitLab.com, today we use:
 
-- Currently individual GC cycle takes around [130ms for Web](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=avg(rate(ruby_gc_duration_seconds_sum%7Bstage%3D%22main%22%2Ctype%3D%22web%22%7D%5B5m%5D)%2Frate(ruby_gc_duration_seconds_count%5B5m%5D))&g0.tab=0)
-  and [200ms for Sidekiq](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=avg(rate(ruby_gc_duration_seconds_sum%7Bstage%3D%22main%22%2Ctype%3D%22sidekiq%22%7D%5B5m%5D)%2Frate(ruby_gc_duration_seconds_count%5B5m%5D))&g0.tab=0) on GitLab.com
+- Individual GC cycle takes around [130 ms for Web](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=avg(rate(ruby_gc_duration_seconds_sum%7Bstage%3D%22main%22%2Ctype%3D%22web%22%7D%5B5m%5D)%2Frate(ruby_gc_duration_seconds_count%5B5m%5D))&g0.tab=0)
+  and [200 ms for Sidekiq](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=avg(rate(ruby_gc_duration_seconds_sum%7Bstage%3D%22main%22%2Ctype%3D%22sidekiq%22%7D%5B5m%5D)%2Frate(ruby_gc_duration_seconds_count%5B5m%5D))&g0.tab=0) on GitLab.com
 - On average we do around [2 GC cycles per-second](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.end_input=2021-02-17%2017%3A56&g0.max_source_resolution=0s&g0.expr=avg(rate(ruby_gc_duration_seconds_count%7Bstage%3D%22main%22%2Ctype%3D%22web%22%7D%5B5m%5D))&g0.tab=0)
   or [0.12 cycles per second for Sidekiq](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.end_input=2021-02-17%2017%3A56&g0.max_source_resolution=0s&g0.expr=avg(rate(ruby_gc_duration_seconds_count%7Bstage%3D%22main%22%2Ctype%3D%22sidekiq%22%7D%5B5m%5D))&g0.tab=0)
 - This translates to using [around 9.5 vCPUs per-second for Web](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum(rate(ruby_gc_duration_seconds_sum%7Bstage%3D%22main%22%2Ctype%3D%22web%22%7D%5B5m%5D))&g0.tab=0)
   and [around 8 vCPUs per-second for Sidekiq](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum(rate(ruby_gc_duration_seconds_sum%7Bstage%3D%22main%22%2Ctype%3D%22sidekiq%22%7D%5B5m%5D))&g0.tab=0) of spend on GC alone
-- Sidekiq [uses 2.1GB on average](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=max(ruby_process_unique_memory_bytes%7Btype%3D%22sidekiq%22%7D)%2F1024%2F1024%2F1024&g0.tab=1)
-  or [550GB in total](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum(ruby_process_unique_memory_bytes%7Btype%3D%22sidekiq%22%7D)%2F1024%2F1024%2F1024&g0.tab=0) of memory on GitLab.com
+- Sidekiq [uses 2.1 GB on average](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=max(ruby_process_unique_memory_bytes%7Btype%3D%22sidekiq%22%7D)%2F1024%2F1024%2F1024&g0.tab=1)
+  or [550 GB in total](https://thanos-query.ops.gitlab.net/graph?g0.range_input=1h&g0.max_source_resolution=0s&g0.expr=sum(ruby_process_unique_memory_bytes%7Btype%3D%22sidekiq%22%7D)%2F1024%2F1024%2F1024&g0.tab=0) of memory on GitLab.com
 
 We estimate the possible maximum savings for introducing `web_engine`:
 
-- Reduce a GC cycle time by 20%, from to 200ms to 160ms
+- Reduce a GC cycle time by 20%, from to 200 ms to 160 ms
 - The amount of GC cycles per-second would stay the same, but due to GC cycle time reduction we would use around 6 vCPUs instead of 8 vCPUs
-- In the best case we would be looking at Sidekiq alone we would be estimating to save up-to 137GB of memory on GitLab.com
+- In the best case we would be looking at Sidekiq alone we would be estimating to save up-to 137 GB of memory on GitLab.com
 
 This model could be extended to introduce `sidekiq_engine` giving a similar benefits
 (even more important due to visible impact on users) for Web nodes.

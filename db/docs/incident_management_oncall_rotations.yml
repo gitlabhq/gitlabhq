@@ -8,3 +8,4 @@ feature_categories:
 description: Persists information about on-call rotation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49058
 milestone: '13.7'
+gitlab_schema: gitlab_main

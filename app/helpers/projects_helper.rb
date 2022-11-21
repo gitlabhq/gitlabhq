@@ -480,6 +480,28 @@ module ProjectsHelper
     format_cached_count(1000, number)
   end
 
+  def fork_divergence_message(counts)
+    messages = []
+
+    if counts[:behind] > 0
+      messages << s_("ForksDivergence|%{behind} %{commit_word} behind") % {
+        behind: counts[:behind], commit_word: n_('commit', 'commits', counts[:behind])
+      }
+    end
+
+    if counts[:ahead] > 0
+      messages << s_("ForksDivergence|%{ahead} %{commit_word} ahead of") % {
+        ahead: counts[:ahead], commit_word: n_('commit', 'commits', counts[:ahead])
+      }
+    end
+
+    if messages.blank?
+      s_('ForksDivergence|Up to date with upstream repository')
+    else
+      s_("ForksDivergence|%{messages} upstream repository") % { messages: messages.join(', ') }
+    end
+  end
+
   private
 
   def localized_access_names

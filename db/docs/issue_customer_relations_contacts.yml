@@ -7,3 +7,4 @@ feature_categories:
 description: Holds Customer Relations (CRM) Contacts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71007
 milestone: '14.4'
+gitlab_schema: gitlab_main

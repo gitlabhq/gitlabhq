@@ -14,6 +14,9 @@ import RecentSearchesStore from '~/filtered_search/stores/recent_searches_store'
 import {
   FILTERED_SEARCH_TERM,
   SORT_DIRECTION,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import { uniqueTokens } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
@@ -110,9 +113,9 @@ describe('FilteredSearchBarRoot', () => {
     describe('tokenSymbols', () => {
       it('returns a map containing type and symbols from `tokens` prop', () => {
         expect(wrapper.vm.tokenSymbols).toEqual({
-          author_username: '@',
-          label_name: '~',
-          milestone_title: '%',
+          [TOKEN_TYPE_AUTHOR]: '@',
+          [TOKEN_TYPE_LABEL]: '~',
+          [TOKEN_TYPE_MILESTONE]: '%',
         });
       });
     });
@@ -120,9 +123,9 @@ describe('FilteredSearchBarRoot', () => {
     describe('tokenTitles', () => {
       it('returns a map containing type and title from `tokens` prop', () => {
         expect(wrapper.vm.tokenTitles).toEqual({
-          author_username: 'Author',
-          label_name: 'Label',
-          milestone_title: 'Milestone',
+          [TOKEN_TYPE_AUTHOR]: 'Author',
+          [TOKEN_TYPE_LABEL]: 'Label',
+          [TOKEN_TYPE_MILESTONE]: 'Milestone',
         });
       });
     });

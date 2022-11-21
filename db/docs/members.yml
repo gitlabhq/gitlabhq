@@ -11,3 +11,4 @@ feature_categories:
 description: Stores members per namespace
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/3503b504eabf95487fc3fb49df953a7d694da4fe
 milestone: '7.4'
+gitlab_schema: gitlab_main

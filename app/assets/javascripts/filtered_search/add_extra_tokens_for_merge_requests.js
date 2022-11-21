@@ -1,9 +1,16 @@
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
+import {
+  TOKEN_TITLE_APPROVED_BY,
+  TOKEN_TITLE_REVIEWER,
+  TOKEN_TYPE_APPROVED_BY,
+  TOKEN_TYPE_REVIEWER,
+  TOKEN_TYPE_TARGET_BRANCH,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
   const reviewerToken = {
-    formattedKey: s__('SearchToken|Reviewer'),
-    key: 'reviewer',
+    formattedKey: TOKEN_TITLE_REVIEWER,
+    key: TOKEN_TYPE_REVIEWER,
     type: 'string',
     param: 'username',
     symbol: '@',
@@ -53,7 +60,7 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
   if (!disableTargetBranchFilter) {
     const targetBranchToken = {
       formattedKey: __('Target-Branch'),
-      key: 'target-branch',
+      key: TOKEN_TYPE_TARGET_BRANCH,
       type: 'string',
       param: '',
       symbol: '',
@@ -67,8 +74,8 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
 
   const approvedBy = {
     token: {
-      formattedKey: __('Approved-By'),
-      key: 'approved-by',
+      formattedKey: TOKEN_TITLE_APPROVED_BY,
+      key: TOKEN_TYPE_APPROVED_BY,
       type: 'array',
       param: 'usernames[]',
       symbol: '@',
@@ -76,8 +83,8 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
       tag: '@approved-by',
     },
     tokenAlternative: {
-      formattedKey: __('Approved-By'),
-      key: 'approved-by',
+      formattedKey: TOKEN_TITLE_APPROVED_BY,
+      key: TOKEN_TYPE_APPROVED_BY,
       type: 'string',
       param: 'usernames',
       symbol: '@',
@@ -85,25 +92,25 @@ export default (IssuableTokenKeys, disableTargetBranchFilter = false) => {
     condition: [
       {
         url: 'approved_by_usernames[]=None',
-        tokenKey: 'approved-by',
+        tokenKey: TOKEN_TYPE_APPROVED_BY,
         value: __('None'),
         operator: '=',
       },
       {
         url: 'not[approved_by_usernames][]=None',
-        tokenKey: 'approved-by',
+        tokenKey: TOKEN_TYPE_APPROVED_BY,
         value: __('None'),
         operator: '!=',
       },
       {
         url: 'approved_by_usernames[]=Any',
-        tokenKey: 'approved-by',
+        tokenKey: TOKEN_TYPE_APPROVED_BY,
         value: __('Any'),
         operator: '=',
       },
       {
         url: 'not[approved_by_usernames][]=Any',
-        tokenKey: 'approved-by',
+        tokenKey: TOKEN_TYPE_APPROVED_BY,
         value: __('Any'),
         operator: '!=',
       },

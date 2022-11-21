@@ -7,3 +7,4 @@ feature_categories:
 description: Debian group-level component files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52885
 milestone: '13.9'
+gitlab_schema: gitlab_main

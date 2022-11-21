@@ -7,3 +7,4 @@ feature_categories:
 description: Maven package metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6607
 milestone: '11.3'
+gitlab_schema: gitlab_main

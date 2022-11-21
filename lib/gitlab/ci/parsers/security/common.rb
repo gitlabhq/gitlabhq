@@ -65,8 +65,14 @@ module Gitlab
             )
           end
 
+          # New Oj parsers are not thread safe, therefore,
+          # we need to initialize them for each thread.
+          def introspect_parser
+            Thread.current[:introspect_parser] ||= Oj::Introspect.new(filter: "remediations")
+          end
+
           def report_data
-            @report_data ||= Gitlab::Json.parse!(json_data)
+            @report_data ||= introspect_parser.parse(json_data)
           end
 
           def report_version

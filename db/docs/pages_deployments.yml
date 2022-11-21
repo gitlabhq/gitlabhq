@@ -7,3 +7,4 @@ feature_categories:
 description: Stores ZIP archives for GitLab Pages websites.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41785
 milestone: '13.4'
+gitlab_schema: gitlab_main

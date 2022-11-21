@@ -7,3 +7,4 @@ feature_categories:
 description: Contains snapshot data about the used programming languages over time.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/16491
 milestone: '12.3'
+gitlab_schema: gitlab_main

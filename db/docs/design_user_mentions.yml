@@ -7,3 +7,4 @@ feature_categories:
 description: User mentions in content related to designs
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'
+gitlab_schema: gitlab_main

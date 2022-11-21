@@ -39,7 +39,7 @@ The alert list displays the following information:
 
 NOTE:
 Check out a live example available from the
-[`tanuki-inc` project page](https://gitlab-examples-ops-incident-setup-everyone-tanuki-inc.34.69.64.147.nip.io/)
+[`tanuki-inc` project page](https://gitlab.com/gitlab-examples/ops/incident-setup/everyone/tanuki-inc)
 in GitLab to examine alerts in action.
 
 ## Alert severity

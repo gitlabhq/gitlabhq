@@ -17,7 +17,7 @@ Prerequisites:
 - Access to an existing Azure Subscription with `Owner` access level.
 - Access to the corresponding Azure Active Directory Tenant with at least the `Application Developer` access level.
 - A local installation of the [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli).
-  Alternatively, you can follow all the steps below with the [Azure Cloud Shell](https://shell.azure.com/).
+  Alternatively, you can follow all the steps below with the [Azure Cloud Shell](https://portal.azure.com/#cloudshell/).
 - A GitLab project.
 
 To complete this tutorial:

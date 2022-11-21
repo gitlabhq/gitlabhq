@@ -7,3 +7,4 @@ feature_categories:
 description: Join table between nuget target frameworks and packages_dependency_links
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/30618
 milestone: '13.0'
+gitlab_schema: gitlab_main

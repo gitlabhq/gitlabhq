@@ -7,3 +7,4 @@ feature_categories:
 description: Corresponds to an issue which has been published to the Status Page
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/29994
 milestone: '13.0'
+gitlab_schema: gitlab_main

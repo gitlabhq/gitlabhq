@@ -7,3 +7,4 @@ feature_categories:
 description: Debian package registry project level distributions
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49405
 milestone: '13.8'
+gitlab_schema: gitlab_main

@@ -7,3 +7,4 @@ feature_categories:
 description: Persists settings for alert HTTP integrations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43634
 milestone: '13.5'
+gitlab_schema: gitlab_main

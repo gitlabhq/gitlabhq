@@ -7,3 +7,4 @@ feature_categories:
 description: https://docs.gitlab.com/ee/user/operations_dashboard/
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7341
 milestone: '11.5'
+gitlab_schema: gitlab_main

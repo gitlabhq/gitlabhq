@@ -7,3 +7,4 @@ feature_categories:
 description: Log of all events that a Geo secondary can process. Parsed/watched through streaming replication on all secondaries.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cb6c7cbe2a9ee05cea6926e3d8c18f6aa26f4c64
 milestone: '9.3'
+gitlab_schema: gitlab_main

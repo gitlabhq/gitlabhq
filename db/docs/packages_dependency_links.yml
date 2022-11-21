@@ -7,3 +7,4 @@ feature_categories:
 description: Join table between packages_packages and packages_dependencies
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20549
 milestone: '12.6'
+gitlab_schema: gitlab_main

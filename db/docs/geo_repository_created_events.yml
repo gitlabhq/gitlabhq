@@ -7,3 +7,4 @@ feature_categories:
 description: Geo event for when a repository gets created, belongs to geo_event_log.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f3eacf881659b7af97b7c7ba3289237ec6cdc1cb
 milestone: '10.0'
+gitlab_schema: gitlab_main

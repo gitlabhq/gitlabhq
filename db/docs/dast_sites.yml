@@ -7,3 +7,4 @@ feature_categories:
 description: Site to run dast scan on
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36659
 milestone: '13.2'
+gitlab_schema: gitlab_main

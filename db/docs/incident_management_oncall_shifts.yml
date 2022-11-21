@@ -8,3 +8,4 @@ feature_categories:
 description: Tracks past and present on-call shifts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49423
 milestone: '13.8'
+gitlab_schema: gitlab_main

@@ -67,9 +67,7 @@ RSpec.describe Projects::Settings::IntegrationsController do
         let_it_be(:project) { create(:project) }
 
         context 'with chat notification integration' do
-          let_it_be(:teams_integration) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
-
-          let(:integration) { teams_integration }
+          let_it_be(:integration) { project.create_microsoft_teams_integration(webhook: 'http://webhook.com') }
 
           it 'returns success' do
             allow_next(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
@@ -77,6 +75,19 @@ RSpec.describe Projects::Settings::IntegrationsController do
             put :test, params: project_params
 
             expect(response).to be_successful
+          end
+
+          context 'with masked token' do
+            let(:integration_params) { { active: 'true', webhook: '************' } }
+
+            it 'returns success' do
+              allow_next(::MicrosoftTeams::Notifier).to receive(:ping).and_return(true)
+
+              put :test, params: project_params(service: integration_params)
+
+              expect(response).to be_successful
+              expect(integration.reload.webhook).to eq('http://webhook.com')
+            end
           end
         end
 

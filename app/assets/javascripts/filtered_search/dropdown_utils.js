@@ -1,4 +1,5 @@
 import { last } from 'lodash';
+import { TOKEN_TYPE_LABEL } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchContainer from './container';
 import FilteredSearchDropdownManager from './filtered_search_dropdown_manager';
 import FilteredSearchTokenizer from './filtered_search_tokenizer';
@@ -113,7 +114,7 @@ export default class DropdownUtils {
       visualToken &&
       visualToken.querySelector('.value') &&
       visualToken.querySelector('.value').textContent.trim();
-    if (tokenName === 'label' && tokenValue) {
+    if (tokenName === TOKEN_TYPE_LABEL && tokenValue) {
       // remove leading symbol and wrapping quotes
       tokenValue = tokenValue.replace(/^~("|')?(.*)/, '$2').replace(/("|')$/, '');
     }

@@ -7,3 +7,4 @@ feature_categories:
 description: https://docs.gitlab.com/ee/ci/environments/protected_environments.html
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/6672
 milestone: '11.3'
+gitlab_schema: gitlab_main

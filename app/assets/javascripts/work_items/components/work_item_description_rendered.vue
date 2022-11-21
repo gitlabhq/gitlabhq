@@ -1,5 +1,5 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlTooltipDirective } from '@gitlab/ui';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -9,6 +9,7 @@ const isCheckbox = (target) => target?.classList.contains('task-list-item-checkb
 export default {
   directives: {
     SafeHtml,
+    GlTooltip: GlTooltipDirective,
   },
   components: {
     GlButton,
@@ -98,10 +99,12 @@ export default {
       <label class="d-block col-form-label gl-mr-5">{{ __('Description') }}</label>
       <gl-button
         v-if="canEdit"
+        v-gl-tooltip
         class="gl-ml-auto"
         icon="pencil"
         data-testid="edit-description"
         :aria-label="__('Edit description')"
+        :title="__('Edit description')"
         @click="$emit('startEditing')"
       />
     </div>

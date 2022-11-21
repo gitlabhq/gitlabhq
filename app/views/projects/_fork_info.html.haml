@@ -1,0 +1,13 @@
+.info-well.gl-sm-display-flex.gl-flex-direction-column
+  .well-segment.gl-p-5.gl-w-full.gl-display-flex
+    .gl-icon.s32.gl-mt-4.gl-mr-4.gl-text-center
+      = sprite_icon('fork')
+    %div
+      - source = visible_fork_source(@project)
+      - if source
+        #{ s_('ForkedFromProjectPath|Forked from') }
+        = link_to source.full_name, project_path(source), data: { qa_selector: 'forked_from_link' }
+        .gl-text-secondary
+          = fork_divergence_message(::Projects::Forks::DivergenceCounts.new(@project, @ref).counts)
+      - else
+        = s_('ForkedFromProjectPath|Forked from an inaccessible project')

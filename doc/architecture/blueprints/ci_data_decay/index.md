@@ -23,7 +23,7 @@ builds [continues to grow exponentially](../ci_scale/index.md).
 GitLab CI/CD has come a long way since the initial release, but the design of
 the data storage for pipeline builds remains almost the same since 2012. In
 2021 we started working on database decomposition and extracting CI/CD data to
-ia separate database. Now we want to improve the architecture of GitLab CI/CD
+a separate database. Now we want to improve the architecture of GitLab CI/CD
 product to enable further scaling.
 
 ## Goals
@@ -78,7 +78,7 @@ pipeline processing in such pipeline. It means that all the metadata, we store
 in PostgreSQL, that is needed to efficiently and reliably process builds can be
 safely moved to a different data store.
 
-Currently, storing pipeline processing data is expensive as this kind of CI/CD
+Storing pipeline processing data is expensive as this kind of CI/CD
 data represents a significant portion of data stored in CI/CD tables. Once we
 restrict access to processing archived pipelines, we can move this metadata to
 a different place - preferably object storage - and make it accessible on

@@ -36,9 +36,49 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu do
     end
 
     context 'for menu items' do
-      subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+      describe 'Commits' do
+        let_it_be(:item_id) { :contributors }
+        let(:ref) { 'master' }
+
+        subject { described_class.new(context).renderable_items.find { |e| e.item_id == :commits }.link }
+
+        context 'when there is a ref_type' do
+          let(:context) do
+            Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: ref,
+                                            ref_type: ref_type)
+          end
+
+          let(:ref_type) { 'tags' }
+
+          it 'has a links to commits with ref_type' do
+            expect(subject).to eq("/#{project.full_path}/-/commits/#{ref}?ref_type=#{ref_type}")
+          end
+        end
+
+        context 'when there is no ref_type' do
+          let(:context) { Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: ref) }
+
+          context 'and the use_ref_type_parameter is disabled' do
+            before do
+              stub_feature_flags(use_ref_type_parameter: false)
+            end
+
+            it 'has a links to commits' do
+              expect(subject).to eq("/#{project.full_path}/-/commits/#{ref}")
+            end
+          end
+
+          context 'and the use_ref_type_parameter flag is enabled' do
+            it 'has a links to commits ref_type' do
+              expect(subject).to eq("/#{project.full_path}/-/commits/#{ref}?ref_type=heads")
+            end
+          end
+        end
+      end
 
       describe 'Contributors' do
+        subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+
         let_it_be(:item_id) { :contributors }
 
         context 'when analytics is disabled' do

@@ -7,3 +7,4 @@ feature_categories:
 description: Used to store the value stream configurations for projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60925
 milestone: '13.12'
+gitlab_schema: gitlab_main

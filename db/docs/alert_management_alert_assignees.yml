@@ -7,3 +7,4 @@ feature_categories:
 description: Persists metadata between users and alerts to support alert assignments
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/32609
 milestone: '13.1'
+gitlab_schema: gitlab_main

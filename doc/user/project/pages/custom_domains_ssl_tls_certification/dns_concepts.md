@@ -35,7 +35,7 @@ for the most popular hosting services:
 - [123-reg](https://www.123-reg.co.uk/support/domains/domain-name-server-dns-management-guide/)
 - [Amazon](https://docs.aws.amazon.com/AmazonS3/latest/dev/website-hosting-custom-domain-walkthrough.html)
 - [Bluehost](https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries)
-- [Cloudflare](https://support.cloudflare.com/hc/en-us/articles/201720164-Creating-a-Cloudflare-account-and-adding-a-website)
+- [Cloudflare](https://developers.cloudflare.com/fundamentals/get-started/setup/)
 - [cPanel](https://documentation.cpanel.net/display/84Docs/Edit+DNS+Zone)
 - [DigitalOcean](https://docs.digitalocean.com/products/networking/dns/how-to/manage-records/)
 - [DreamHost](https://help.dreamhost.com/hc/en-us/articles/360035516812)

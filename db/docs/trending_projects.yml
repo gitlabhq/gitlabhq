@@ -7,3 +7,4 @@ feature_categories:
 description: Stores the list of trending projects
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/6749
 milestone: '8.13'
+gitlab_schema: gitlab_main

@@ -7,3 +7,4 @@ feature_categories:
 description: Debian group-level distribution keys
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60993
 milestone: '14.0'
+gitlab_schema: gitlab_main

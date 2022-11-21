@@ -7,3 +7,4 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/7493
 milestone: '11.4'
+gitlab_schema: gitlab_main

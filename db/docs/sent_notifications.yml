@@ -7,3 +7,4 @@ feature_categories:
 description: Information related to sent email notifications that supports reply-by-email functionality
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1173
 milestone: '8.0'
+gitlab_schema: gitlab_main

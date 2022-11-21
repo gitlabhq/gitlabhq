@@ -312,6 +312,7 @@
   - "scripts/rspec_helpers.sh"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
@@ -381,6 +382,7 @@
   - ".gitlab/ci/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-patterns + .backstage-patterns
 .code-backstage-patterns: &code-backstage-patterns
@@ -411,6 +413,7 @@
   - "{,spec/}tooling/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-patterns + .qa-patterns
 .code-qa-patterns: &code-qa-patterns
@@ -437,6 +440,7 @@
   - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-patterns + .backstage-patterns + .qa-patterns
 .code-backstage-qa-patterns: &code-backstage-qa-patterns
@@ -471,6 +475,7 @@
   - "{,jh/}qa/**/*"
   # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
 
 # .code-backstage-qa-patterns + .workhorse-patterns
 # NOTE: `setup-test-env-patterns` intentionally does not include docs files, because this would
@@ -493,7 +498,9 @@
   - "config.ru"
   - "{,ee/,jh/}{app,bin,config,db,generator_templates,haml_lint,lib,locale,public,scripts,storybook,symbol,vendor}/**/*"
   - "doc/api/graphql/reference/*"  # Files in this folder are auto-generated
+  # Mapped patterns (see tests.yml)
   - "data/whats_new/*.yml"
+  - "doc/index.md"
   # CI changes
   - ".gitlab-ci.yml"
   - ".gitlab/ci/**/*"
@@ -1881,32 +1888,31 @@
     - <<: *if-merge-request-labels-run-review-app
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *frontend-build-patterns
       variables: *review-change-pattern
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *models-patterns
       variables: *review-change-pattern
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *lib-gitlab-patterns
       variables: *review-change-pattern
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns
-      when: never
+      allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *code-patterns
       when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-schedule
-      when: never
       allow_failure: true
       variables:
         KNAPSACK_GENERATE_REPORT: "true"

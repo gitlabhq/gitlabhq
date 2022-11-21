@@ -7,3 +7,4 @@ feature_categories:
 description: Join table relating packages_packages with ci_pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19796
 milestone: '12.6'
+gitlab_schema: gitlab_main

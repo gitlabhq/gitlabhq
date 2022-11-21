@@ -6,3 +6,4 @@ feature_categories:
 description: Used by the JiHu edition for user verification
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71139
 milestone: '14.4'
+gitlab_schema: gitlab_main

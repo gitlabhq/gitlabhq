@@ -7,3 +7,4 @@ feature_categories:
 description: The connection between a source project, which defines the job token scope, and a target project, which is the one allowed to be accessed by the job token.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62733
 milestone: '14.0'
+gitlab_schema: gitlab_ci

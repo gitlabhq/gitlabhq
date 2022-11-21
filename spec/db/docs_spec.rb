@@ -24,6 +24,7 @@ RSpec.describe 'Database Documentation' do
         description
         introduced_by_url
         milestone
+        gitlab_schema
       )
     end
 

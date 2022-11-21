@@ -7,3 +7,4 @@ feature_categories:
 description: Stores the data needed to notify a user of an upcoming reconciliation
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63054
 milestone: '14.0'
+gitlab_schema: gitlab_main

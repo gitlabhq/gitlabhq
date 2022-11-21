@@ -4,6 +4,7 @@ classes:
 - Ci::PipelineMetadata
 feature_categories:
 - continuous_integration
-description: 'Stores additional information about CI pipelines'
+description: Stores additional information about CI pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97139
 milestone: '15.5'
+gitlab_schema: gitlab_ci

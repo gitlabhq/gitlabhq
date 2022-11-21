@@ -7,3 +7,4 @@ feature_categories:
 description: LFS files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/1727
 milestone: '8.2'
+gitlab_schema: gitlab_main

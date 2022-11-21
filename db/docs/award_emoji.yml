@@ -7,3 +7,4 @@ feature_categories:
 description: Store the awarding of emoji by users on Issues, Epics, and other Awardables.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/3785
 milestone: '8.9'
+gitlab_schema: gitlab_main

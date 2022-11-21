@@ -7,3 +7,4 @@ feature_categories:
 description: Contacts, against which time can be spent by users on issues using the CRM functionality
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67985
 milestone: '14.3'
+gitlab_schema: gitlab_main

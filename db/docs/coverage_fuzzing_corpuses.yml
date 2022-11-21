@@ -7,3 +7,4 @@ feature_categories:
 description: Stores additional values describing corpuses used by coverage fuzzing
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71704
 milestone: '14.4'
+gitlab_schema: gitlab_main

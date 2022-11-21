@@ -36,7 +36,6 @@ module QA
         end
 
         view 'app/views/projects/_home_panel.html.haml' do
-          element :forked_from_link
           element :project_name_content
           element :project_id_content
           element :project_badges_content
@@ -46,6 +45,10 @@ module QA
         view 'app/views/projects/_files.html.haml' do
           element :project_buttons
           element :tree_holder, '.tree-holder' # rubocop:disable QA/ElementWithPattern
+        end
+
+        view 'app/views/projects/_fork_info.html.haml' do
+          element :forked_from_link
         end
 
         view 'app/views/projects/buttons/_fork.html.haml' do

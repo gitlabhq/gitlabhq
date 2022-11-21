@@ -20,9 +20,8 @@ module SidebarsHelper
     end
   end
 
-  def project_sidebar_context(project, user, current_ref)
-    context_data = project_sidebar_context_data(project, user, current_ref)
-
+  def project_sidebar_context(project, user, current_ref, ref_type: nil)
+    context_data = project_sidebar_context_data(project, user, current_ref, ref_type: ref_type)
     Sidebars::Projects::Context.new(**context_data)
   end
 
@@ -83,12 +82,13 @@ module SidebarsHelper
     tracking_attrs('user_side_navigation', 'render', 'user_side_navigation')
   end
 
-  def project_sidebar_context_data(project, user, current_ref)
+  def project_sidebar_context_data(project, user, current_ref, ref_type: nil)
     {
       current_user: user,
       container: project,
       learn_gitlab_enabled: learn_gitlab_enabled?(project),
       current_ref: current_ref,
+      ref_type: ref_type,
       jira_issues_integration: project_jira_issues_integration?,
       can_view_pipeline_editor: can_view_pipeline_editor?(project),
       show_cluster_hint: show_gke_cluster_integration_callout?(project)

@@ -34,7 +34,11 @@ class Projects::RefsController < Projects::ApplicationController
           when "badges"
             project_settings_ci_cd_path(@project, ref: @id)
           else
-            project_commits_path(@project, @id)
+            if Feature.enabled?(:use_ref_type_parameter, @project)
+              project_commits_path(@project, @id, ref_type: ref_type)
+            else
+              project_commits_path(@project, @id)
+            end
           end
 
         redirect_to new_path

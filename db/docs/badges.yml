@@ -9,3 +9,4 @@ feature_categories:
 description: Stores badges records
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/17082
 milestone: '10.6'
+gitlab_schema: gitlab_main

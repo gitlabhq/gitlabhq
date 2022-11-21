@@ -7,3 +7,4 @@ feature_categories:
 description: Store group level Value Stream objects.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36658
 milestone: '13.2'
+gitlab_schema: gitlab_main

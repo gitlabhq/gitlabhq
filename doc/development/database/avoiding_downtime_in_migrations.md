@@ -319,6 +319,11 @@ This operation is safe as there's no code using the table just yet.
 Dropping tables can be done safely using a post-deployment migration, but only
 if the application no longer uses the table.
 
+Add the table to `DELETED_TABLES` in
+[gitlab_schema.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/gitlab_schema.rb),
+along with its `gitlab_schema`. Even though the table is deleted, it is still
+referenced in database migrations.
+
 ## Renaming Tables
 
 Renaming tables requires downtime as an application may continue

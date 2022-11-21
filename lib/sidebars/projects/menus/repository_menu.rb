@@ -56,9 +56,15 @@ module Sidebars
         end
 
         def commits_menu_item
+          link = if Feature.enabled?(:use_ref_type_parameter, context.project)
+                   project_commits_path(context.project, context.current_ref, ref_type: context.try(:ref_type) || 'heads')
+                 else
+                   project_commits_path(context.project, context.current_ref)
+                 end
+
           ::Sidebars::MenuItem.new(
             title: _('Commits'),
-            link: project_commits_path(context.project, context.current_ref),
+            link: link,
             active_routes: { controller: %w(commit commits) },
             item_id: :commits,
             container_html_options: { id: 'js-onboarding-commits-link' }

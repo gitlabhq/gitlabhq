@@ -53,7 +53,7 @@
         %button.btn.gl-button.btn-blank.btn-link.js-read-more-trigger.d-lg-none{ type: "button" }
           = _("Read more")
 
-    - if @project.forked?
+    - if @project.forked? && Feature.disabled?(:fork_divergence_counts, @project.fork_source)
       %p
         - source = visible_fork_source(@project)
         - if source

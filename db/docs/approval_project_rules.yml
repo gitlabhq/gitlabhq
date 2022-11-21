@@ -7,3 +7,4 @@ feature_categories:
 description: Keeps approval project rules
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/8497
 milestone: '11.7'
+gitlab_schema: gitlab_main

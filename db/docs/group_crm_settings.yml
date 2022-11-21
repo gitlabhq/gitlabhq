@@ -7,3 +7,4 @@ feature_categories:
 description: Group-level settings for CRM-related features
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/76983
 milestone: '14.7'
+gitlab_schema: gitlab_main

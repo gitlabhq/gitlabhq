@@ -64,10 +64,16 @@ module ExtractsRef
   def assign_ref_vars
     @id, @ref, @path = extract_ref_path
     @repo = repository_container.repository
-
     raise InvalidPathError if @ref.match?(/\s/)
 
-    @commit = @repo.commit(@ref) if @ref.present?
+    return unless @ref.present?
+
+    @commit = if ref_type && Feature.enabled?(:use_ref_type_parameter, @repo.project)
+                @fully_qualified_ref = %(refs/#{ref_type}/#{@ref})
+                @repo.commit(@fully_qualified_ref)
+              else
+                @repo.commit(@ref)
+              end
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
@@ -80,6 +86,12 @@ module ExtractsRef
     ref, path = extract_ref(id)
 
     [id, ref, path]
+  end
+
+  def ref_type
+    return unless params[:ref_type].present?
+
+    params[:ref_type] == 'tags' ? 'tags' : 'heads'
   end
 
   private
