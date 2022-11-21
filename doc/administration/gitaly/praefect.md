@@ -46,15 +46,15 @@ default value. The default value depends on the GitLab version.
 Network latency for Gitaly Cluster should ideally be measurable in single-digit milliseconds. Latency is particularly
 important for:
 
-- Gitaly node health checks. Nodes must be able to respond within 1 second.
+- Gitaly node health checks. Nodes must be able to respond 1 second or faster.
 - Reference transactions that enforce [strong consistency](index.md#strong-consistency). Lower latencies mean Gitaly
   nodes can agree on changes faster.
 
 Achieving acceptable latency between Gitaly nodes:
 
 - On physical networks generally means high bandwidth, single location connections.
-- On the cloud generally means within the same region, including allowing cross availability zone replication. These links
-  are designed for this type of synchronization. Latency of less than 2ms should be sufficient for Gitaly Cluster.
+- On the cloud generally means in the same region, including allowing cross availability zone replication. These links
+  are designed for this type of synchronization. Latency of less than 2 ms should be sufficient for Gitaly Cluster.
 
 If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
 more information, see [Comparison to Geo](index.md#comparison-to-geo).
@@ -85,7 +85,7 @@ The requirements are relatively low because the database contains only metadata 
 - Where repositories are located.
 - Some queued work.
 
-It depends on the number of repositories, but a useful minimum is 5-10 GB, similar to the main
+It depends on the number of repositories, but a good minimum is 5-10 GB, similar to the main
 GitLab application database.
 
 ## Setup Instructions
@@ -106,7 +106,7 @@ If you [installed](https://about.gitlab.com/install/) GitLab using the Omnibus G
 Before beginning, you should already have a working GitLab instance.
 [Learn how to install GitLab](https://about.gitlab.com/install/).
 
-Provision a PostgreSQL server. We recommend using the PostgreSQL that is shipped
+Provision a PostgreSQL server. You should use the PostgreSQL that is shipped
 with Omnibus GitLab and use it to configure the PostgreSQL database. You can use an
 external PostgreSQL server (version 11 or newer) but you must set it up [manually](#manual-database-setup).
 

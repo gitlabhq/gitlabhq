@@ -1348,7 +1348,7 @@ level=error msg="response completed with error" err.code=unknown err.detail="une
 ```
 
 To resolve the error specify a `chunksize` value in the Registry configuration.
-Start with a value between `25000000` (25MB) and `50000000` (50MB).
+Start with a value between `25000000` (25 MB) and `50000000` (50 MB).
 
 **For Omnibus installations**
 

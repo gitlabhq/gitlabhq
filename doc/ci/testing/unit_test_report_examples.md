@@ -42,7 +42,7 @@ Use the following job in `.gitlab-ci.yml`:
 golang:
   stage: test
   script:
-    - go get gotest.tools/gotestsum
+    - go install gotest.tools/gotestsum@latest
     - gotestsum --junitfile report.xml --format testname
   artifacts:
     when: always

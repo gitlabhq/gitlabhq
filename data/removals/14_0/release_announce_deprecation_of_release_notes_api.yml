@@ -1,4 +1,4 @@
-- name: "Release description in the Tags API"
+- title: "Release description in the Tags API"
   reporter: kbychu
   removal_date: "2021-06-22"
   removal_milestone: "14.0"

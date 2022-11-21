@@ -1,4 +1,4 @@
-- name: "bundler-audit Dependency Scanning tool"
+- title: "bundler-audit Dependency Scanning tool"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

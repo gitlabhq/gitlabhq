@@ -1,4 +1,4 @@
-- name: "The `promote-db` command is no longer available from `gitlab-ctl`"
+- title: "The `promote-db` command is no longer available from `gitlab-ctl`"
   announcement_milestone: "14.5"
   announcement_date: "2021-11-22"
   removal_milestone: "15.0"

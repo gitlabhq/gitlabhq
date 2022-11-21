@@ -6,9 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Permissions and roles **(FREE)**
 
-Users have different abilities depending on the role they have in a
-particular group or project. If a user is both in a project's group and the
-project itself, the highest role is used.
+When you add a user to a project or group, you assign them a role.
+The role determines which actions they can take in GitLab.
+
+If you add a user to both a project's group and the
+project itself, the higher role is used.
 
 On [public and internal projects](../api/projects.md#project-visibility-level), the Guest role
 (not to be confused with [Guest user](#free-guest-users)) is not enforced.
@@ -20,6 +22,19 @@ GitLab [administrators](../administration/index.md) receive all permissions.
 
 To add or import a user, you can follow the
 [project members documentation](project/members/index.md).
+
+## Roles
+
+The available roles are:
+
+- Guest
+- Reporter
+- Developer
+- Maintainer
+- Owner
+
+A user assigned the Guest role has the least permissions,
+and the Owner has the most.
 
 ## Principles behind permissions
 
@@ -33,8 +48,8 @@ usernames. A GitLab administrator can configure the GitLab instance to
 
 ## Project members permissions
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8, personal namespace owners appear with Owner role in new projects in their namespace. Introduced [with a flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`. Disabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351919) in GitLab 14.9. Feature flag `personal_project_owner_with_owner_access` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/219299).
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/219299) in GitLab 14.8, personal namespace owners appear with Owner role in new projects in their namespace. Introduced [with a flag](../administration/feature_flags.md) named `personal_project_owner_with_owner_access`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/351919) in GitLab 14.9. Feature flag `personal_project_owner_with_owner_access` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/219299).
 
 A user's role determines what permissions they have on a project. The Owner role provides all permissions but is
 available only:
@@ -161,7 +176,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Edit comments (posted by any user)                                                                                                                  |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit project badges                                                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Edit project settings                                                                                                                               |          |          |           | ✓          | ✓        |
-| [Projects](project/index.md):<br>Export project                                                                                                                                      |          |          |           | ✓          | ✓        |
+| [Projects](project/index.md):<br>[Export project](project/settings/import_export.md)                                                                                                                                      |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md) (*11*)                                                                    |          |          |           | ✓ (*20*)   | ✓        |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                 |          |          |           | ✓          | ✓        |
 | [Projects](project/index.md):<br>Rename project                                                                                                                                      |          |          |           | ✓          | ✓        |

@@ -1,4 +1,4 @@
-- name: Limit projects returned in `GET /groups/:id/`
+- title: Limit projects returned in `GET /groups/:id/`
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: ogolowisnki
@@ -7,7 +7,7 @@
   body: |
     To improve performance, we are limiting the number of projects returned from the `GET /groups/:id/` API call to 100. A complete list of projects can still be retrieved with the `GET /groups/:id/projects` API call.
 
-- name: "GitLab OAuth implicit grant"
+- title: "GitLab OAuth implicit grant"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: ogolowinski

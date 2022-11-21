@@ -1,4 +1,4 @@
-- name: "Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node"
+- title: "Querying Usage Trends via the `instanceStatisticsMeasurements` GraphQL node"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

@@ -1,4 +1,4 @@
-- name: "Breaking changes to Terraform CI template"
+- title: "Breaking changes to Terraform CI template"
   reporter: nagyv-gitlab
   removal_date: "2021-06-22"
   removal_milestone: "14.0"

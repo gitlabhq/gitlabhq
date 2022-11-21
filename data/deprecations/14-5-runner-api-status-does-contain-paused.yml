@@ -1,4 +1,4 @@
-- name: "GraphQL API Runner status will not return `paused`"
+- title: "GraphQL API Runner status will not return `paused`"
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-11-22"
   removal_milestone: "16.0"  # the milestone when this feature is planned to be removed

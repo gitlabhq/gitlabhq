@@ -1,4 +1,4 @@
-- name: "Sidekiq configuration for metrics and health checks"
+- title: "Sidekiq configuration for metrics and health checks"
   announcement_milestone: "14.7"
   announcement_date: "2021-01-22"
   removal_milestone: "15.0"

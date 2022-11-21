@@ -1,4 +1,4 @@
-- name: "Test coverage project CI/CD setting"  # The headline announcing the removal. i.e. "`CI_PROJECT_CONFIG_PATH` removed in Gitlab 14.0"
+- title: "Test coverage project CI/CD setting"  # The headline announcing the removal. i.e. "`CI_PROJECT_CONFIG_PATH` removed in Gitlab 14.0"
   announcement_milestone: "14.8"  # The milestone when this feature was deprecated.
   announcement_date: "2022-03-22"  # The date of the milestone release when this feature was deprecated. This should almost always be the 22nd of a month (YYYY-MM-DD), unless you did an out of band blog post.
   removal_milestone: "15.0"  # The milestone when this feature is being removed.

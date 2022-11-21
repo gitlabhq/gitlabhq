@@ -1,4 +1,4 @@
-- name: "External Pipeline Validation Service Code Changes"
+- title: "External Pipeline Validation Service Code Changes"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: jreporter

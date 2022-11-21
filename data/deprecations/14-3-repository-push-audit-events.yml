@@ -1,4 +1,4 @@
-- name: "Audit events for repository push events"
+- title: "Audit events for repository push events"
   announcement_milestone: "14.3"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-09-22"  # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69024
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed

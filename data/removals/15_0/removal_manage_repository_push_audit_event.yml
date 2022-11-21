@@ -1,4 +1,4 @@
-- name: "Audit events for repository push events"
+- title: "Audit events for repository push events"
   announcement_milestone: "14.3"
   announcement_date: "2021-09-22"
   removal_milestone: "15.0"

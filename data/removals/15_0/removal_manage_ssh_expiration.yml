@@ -1,4 +1,4 @@
-- name: "Optional enforcement of SSH expiration"
+- title: "Optional enforcement of SSH expiration"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

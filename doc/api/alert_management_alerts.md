@@ -33,7 +33,7 @@ Example response:
     "created_at": "2020-11-12T20:07:58.156Z",
     "filename": "sample_2054",
     "file_path": "/uploads/-/system/alert_metric_image/file/17/sample_2054.png",
-    "url": "example.com/metric",
+    "url": "https://example.com/metric",
     "url_text": "An example metric"
 }
 ```
@@ -62,7 +62,7 @@ Example response:
         "created_at": "2020-11-12T20:07:58.156Z",
         "filename": "sample_2054",
         "file_path": "/uploads/-/system/alert_metric_image/file/17/sample_2054.png",
-        "url": "example.com/metric",
+        "url": "https://example.com/metric",
         "url_text": "An example metric"
     },
     {
@@ -70,7 +70,7 @@ Example response:
         "created_at": "2020-11-12T20:14:26.441Z",
         "filename": "sample_2054",
         "file_path": "/uploads/-/system/alert_metric_image/file/18/sample_2054.png",
-        "url": "example.com/metric",
+        "url": "https://example.com/metric",
         "url_text": "An example metric"
     }
 ]
@@ -102,8 +102,8 @@ Example response:
     "created_at": "2020-11-13T00:06:18.084Z",
     "filename": "file.png",
     "file_path": "/uploads/-/system/alert_metric_image/file/23/file.png",
-    "url": "http://example.com",
-    "url_text": "Example website"
+    "url": "https://example.com/metric",
+    "url_text": "An example metric"
 }
 ```
 

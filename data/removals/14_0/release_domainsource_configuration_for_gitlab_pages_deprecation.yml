@@ -1,4 +1,4 @@
-- name: "Disk source configuration for GitLab Pages"
+- title: "Disk source configuration for GitLab Pages"
   reporter: kbychu
   removal_date: "2021-06-22"
   removal_milestone: "14.0"

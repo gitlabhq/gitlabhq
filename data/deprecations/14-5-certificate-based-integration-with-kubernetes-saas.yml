@@ -1,4 +1,4 @@
-- name: "SaaS certificate-based integration with Kubernetes"
+- title: "SaaS certificate-based integration with Kubernetes"
   announcement_milestone: "14.5"
   announcement_date: "2021-11-15"
   removal_milestone: "15.9"

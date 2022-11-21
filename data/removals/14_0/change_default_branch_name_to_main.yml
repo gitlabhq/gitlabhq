@@ -1,4 +1,4 @@
-- name: "Default branch name for new repositories now `main`"
+- title: "Default branch name for new repositories now `main`"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: sarahwaldner

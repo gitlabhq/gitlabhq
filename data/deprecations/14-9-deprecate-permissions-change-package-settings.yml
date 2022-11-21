@@ -1,4 +1,4 @@
-- name: "GraphQL permissions change for Package settings"
+- title: "GraphQL permissions change for Package settings"
   announcement_milestone: "14.9"
   announcement_date: "2022-03-22"
   removal_milestone: "15.0"

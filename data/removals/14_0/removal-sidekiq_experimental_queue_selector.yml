@@ -1,4 +1,4 @@
-- name: Experimental prefix in Sidekiq queue selector options
+- title: Experimental prefix in Sidekiq queue selector options
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: smcgivern

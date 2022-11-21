@@ -1,4 +1,4 @@
-- name: "Release CLI distributed as a generic package"  # The name of the feature to be deprecated
+- title: "Release CLI distributed as a generic package"  # The name of the feature to be deprecated
   announcement_milestone: "14.2"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-08-22"  # The date of the milestone release when this feature was first announced as deprecated
   removal_milestone: "14.6"  # The milestone when this feature is planned to be removed

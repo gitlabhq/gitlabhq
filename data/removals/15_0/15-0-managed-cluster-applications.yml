@@ -1,4 +1,4 @@
-- name: "`Managed-Cluster-Applications.gitlab-ci.yml`"
+- title: "`Managed-Cluster-Applications.gitlab-ci.yml`"
   announcement_milestone: "14.0"
   announcement_date: "2021-06-22"
   removal_milestone: "15.0"

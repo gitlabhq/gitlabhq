@@ -1,4 +1,4 @@
-- name: "DS_DEFAULT_ANALYZERS environment variable"
+- title: "DS_DEFAULT_ANALYZERS environment variable"
   announcement_milestone: "14.0"
   announcement_date: "2021-06-22"
   removal_milestone: "15.0"

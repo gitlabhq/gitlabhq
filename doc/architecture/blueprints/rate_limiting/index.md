@@ -103,11 +103,11 @@ quota and by a policy.
   risks to performance, stability, and security.
   - _Example:_ API calls per second for a given IP address
   - _Example:_ `git clone` events per minute for a given user
-  - _Example:_ maximum artifact upload size of 1GB
+  - _Example:_ maximum artifact upload size of 1 GB
 - **Quota:** A global constraint in application usage that is aggregated across an
   entire namespace over the duration of their billing cycle.
   - _Example:_ 400 CI/CD minutes per namespace per month
-  - _Example:_ 10GB transfer per namespace per month
+  - _Example:_ 10 GB transfer per namespace per month
 - **Policy:** A representation of business logic that is decoupled from application
   code. Decoupled policy definitions allow logic to be shared across multiple services
   and/or "hot-loaded" at runtime without releasing a new version of the application.

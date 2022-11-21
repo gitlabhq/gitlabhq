@@ -1,4 +1,4 @@
-- name: "Default DAST spider begins crawling at target URL"
+- title: "Default DAST spider begins crawling at target URL"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: derekferguson

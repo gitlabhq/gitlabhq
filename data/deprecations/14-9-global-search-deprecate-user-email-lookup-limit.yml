@@ -1,4 +1,4 @@
-- name: "user_email_lookup_limit API field"
+- title: "user_email_lookup_limit API field"
   announcement_milestone: "14.9"
   announcement_date: "2022-03-22"
   removal_milestone: "15.0"

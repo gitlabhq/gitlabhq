@@ -158,7 +158,7 @@ To eliminate both file system requirements:
 The data flow is the same as described in the [data flow section](#data-flow)
 with one change: _the stored path of the first two phases is different_. This incremental
 log architecture stores chunks of logs in Redis and a persistent store (object storage or database) instead of
-file storage. Redis is used as first-class storage, and it stores up-to 128KB
+file storage. Redis is used as first-class storage, and it stores up-to 128 KB
 of data. After the full chunk is sent, it is flushed to a persistent store, either object storage (temporary directory) or database.
 After a while, the data in Redis and a persistent store is archived to [object storage](#uploading-logs-to-object-storage).
 
@@ -169,7 +169,7 @@ Here is the detailed data flow:
 1. The runner picks a job from GitLab
 1. The runner sends a piece of log to GitLab
 1. GitLab appends the data to Redis
-1. After the data in Redis reaches 128KB, the data is flushed to a persistent store (object storage or the database).
+1. After the data in Redis reaches 128 KB, the data is flushed to a persistent store (object storage or the database).
 1. The above steps are repeated until the job is finished.
 1. After the job is finished, GitLab schedules a Sidekiq worker to archive the log.
 1. The Sidekiq worker archives the log to object storage and cleans up the log

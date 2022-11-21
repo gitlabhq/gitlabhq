@@ -35,9 +35,7 @@ response attributes:
 Example request:
 
 ```shell
-curl --location --request GET "https://gdk.test:3443/api/v4/groups/33/saml/identities" \
---header "<PRIVATE-TOKEN>" \
---form "extern_uid=<ID_TO_BE_UPDATED>" \
+curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/saml/identities" --header "<PRIVATE-TOKEN>"
 ```
 
 Example response:
@@ -53,7 +51,7 @@ Example response:
 
 ## Update `extern_uid` field for a SAML identity
 
-Update `extern_uid` field for a SAML identity. Field that can be updated are:
+Update `extern_uid` field for a SAML identity:
 
 | SAML IdP attribute | GitLab field |
 | ------------------ | ------------ |
@@ -72,7 +70,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --location --request PATCH "https://gdk.test:3443/api/v4/groups/33/saml/sydney_jones" \
+curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/saml/sydney_jones" \
 --header "<PRIVATE TOKEN>" \
 --form "extern_uid=sydney_jones_new" \
 ```

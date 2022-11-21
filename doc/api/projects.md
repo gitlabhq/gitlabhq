@@ -54,7 +54,7 @@ GET /projects
 | `last_activity_after`                      | datetime | **{dotted-circle}** No | Limit results to projects with last_activity after specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `last_activity_before`                     | datetime | **{dotted-circle}** No | Limit results to projects with last_activity before specified time. Format: ISO 8601 (`YYYY-MM-DDTHH:MM:SSZ`) |
 | `membership`                               | boolean  | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`                         | integer  | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                                 | string   | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, `last_activity_at`, or `similarity` fields. `repository_size`, `storage_size`, `packages_size` or `wiki_size` fields are only allowed for administrators. `similarity` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332890) in GitLab 14.1) is only available when searching and is limited to projects that the current user is a member of. Default is `created_at`. |
 | `owned`                                    | boolean  | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `repository_checksum_failed` **(PREMIUM)** | boolean  | **{dotted-circle}** No | Limit projects where the repository checksum calculation has failed. |
@@ -333,7 +333,7 @@ GET /users/:user_id/projects
 | `id_after`                    | integer | **{dotted-circle}** No | Limit results to projects with IDs greater than the specified ID. |
 | `id_before`                   | integer | **{dotted-circle}** No | Limit results to projects with IDs less than the specified ID. |
 | `membership`                  | boolean | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -590,7 +590,7 @@ GET /users/:user_id/starred_projects
 | `user_id`                     | string  | **{check-circle}** Yes | The ID or username of the user. |
 | `archived`                    | boolean | **{dotted-circle}** No | Limit by archived status. |
 | `membership`                  | boolean | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`            | integer | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                    | string  | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string  | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -1150,7 +1150,7 @@ GET /projects/:id/groups
 |-----------------------------|-------------------|------------------------|-------------|
 | `id`                        | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `search`                    | string            | **{dotted-circle}** No | Search for specific groups. |
-| `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [access level](members.md#valid-access-levels). |
+| `shared_min_access_level`   | integer           | **{dotted-circle}** No | Limit to shared groups with at least this [role (`access_level`)](members.md#roles). |
 | `shared_visible_only`       | boolean           | **{dotted-circle}** No | Limit to shared groups user has access to. |
 | `skip_groups`               | array of integers | **{dotted-circle}** No | Skip the group IDs passed. |
 | `with_shared`               | boolean           | **{dotted-circle}** No | Include projects shared with this group. Default is `false`. |
@@ -1496,7 +1496,7 @@ GET /projects/:id/forks
 | `id`                          | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `archived`                    | boolean        | **{dotted-circle}** No | Limit by archived status. |
 | `membership`                  | boolean        | **{dotted-circle}** No | Limit by projects that the current user is a member of. |
-| `min_access_level`            | integer        | **{dotted-circle}** No | Limit by current user minimal [access level](members.md#valid-access-levels). |
+| `min_access_level`            | integer        | **{dotted-circle}** No | Limit by current user minimal [role (`access_level`)](members.md#roles). |
 | `order_by`                    | string         | **{dotted-circle}** No | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at`. |
 | `owned`                       | boolean        | **{dotted-circle}** No | Limit by projects explicitly owned by the current user. |
 | `search`                      | string         | **{dotted-circle}** No | Return list of projects matching the search criteria. |
@@ -2310,7 +2310,7 @@ POST /projects/:id/share
 
 | Attribute      | Type           | Required               | Description |
 |----------------|----------------|------------------------|-------------|
-| `group_access` | integer        | **{check-circle}** Yes | The [access level](members.md#valid-access-levels) to grant the group. |
+| `group_access` | integer        | **{check-circle}** Yes | The [role (`access_level`)](members.md#roles) to grant the group. |
 | `group_id`     | integer        | **{check-circle}** Yes | The ID of the group to share with. |
 | `id`           | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding). |
 | `expires_at`   | string         | **{dotted-circle}** No | Share expiration date in ISO 8601 format: 2016-09-26 |

@@ -1,4 +1,4 @@
-- name: "Move `custom_hooks_dir` setting from GitLab Shell to Gitaly"
+- title: "Move `custom_hooks_dir` setting from GitLab Shell to Gitaly"
   announcement_milestone: "14.9"
   announcement_date: "2022-03-22"
   removal_milestone: "15.0"

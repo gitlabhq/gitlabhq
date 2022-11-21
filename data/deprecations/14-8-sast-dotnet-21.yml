@@ -1,4 +1,4 @@
-- name: "SAST support for .NET 2.1"
+- title: "SAST support for .NET 2.1"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "15.0"

@@ -1,4 +1,4 @@
-- name: "Hardcoded `master` in CI/CD templates"
+- title: "Hardcoded `master` in CI/CD templates"
   reporter: dhershkovitch
   removal_date: "2021-06-22"
   removal_milestone: "14.0"

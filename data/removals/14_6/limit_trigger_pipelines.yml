@@ -1,4 +1,4 @@
-- name: "Limit the number of triggered pipeline to 25K in free tier"
+- title: "Limit the number of triggered pipeline to 25K in free tier"
   removal_date: Dec 22, 2021  # day the removal was released
   removal_milestone: "14.6"
   reporter: dhershkovitch  # GitLab username of the person reporting the removal

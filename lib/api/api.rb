@@ -174,6 +174,7 @@ module API
         mount ::API::Admin::Ci::Variables
         mount ::API::Admin::InstanceClusters
         mount ::API::Admin::PlanLimits
+        mount ::API::AlertManagementAlerts
         mount ::API::Appearance
         mount ::API::Applications
         mount ::API::Avatar
@@ -272,7 +273,6 @@ module API
       # Keep in alphabetical order
       mount ::API::Admin::BatchedBackgroundMigrations
       mount ::API::Admin::Sidekiq
-      mount ::API::AlertManagementAlerts
       mount ::API::AwardEmoji
       mount ::API::Boards
       mount ::API::Ci::JobArtifacts

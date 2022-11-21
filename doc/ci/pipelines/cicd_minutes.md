@@ -126,7 +126,7 @@ These additional CI/CD minutes:
 
 - Are used only after the monthly quota included in your subscription runs out.
 - Are carried over to the next month, if any remain at the end of the month.
-- Are valid for 12 months from date of purchase or until all minutes are consumed, whichever comes first. Expiry of minutes is not currently enforced.
+- Are valid for 12 months from date of purchase or until all minutes are consumed, whichever comes first. Expiry of minutes is not enforced.
 
 For example, with a GitLab SaaS Premium license:
 
@@ -137,7 +137,7 @@ For example, with a GitLab SaaS Premium license:
 If you use `13,000` minutes during the month, the next month your additional minutes become
 `2,000`. If you use `9,000` minutes during the month, your additional minutes remain the same.
 
-If you bought additional CI/CD minutes while on a trial subscription those minutes will be available after the trial ends or you upgrade to a paid plan.
+If you bought additional CI/CD minutes while on a trial subscription, those minutes are available after the trial ends or you upgrade to a paid plan.
 
 You can find pricing for additional CI/CD minutes on the
 [GitLab Pricing page](https://about.gitlab.com/pricing/).

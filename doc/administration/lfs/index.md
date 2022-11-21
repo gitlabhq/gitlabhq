@@ -291,7 +291,7 @@ sudo gitlab-rails console
 Set up timeouts:
 
 - These settings are only in effect for the same session. For example, they are not effective for Sidekiq workers.
-- 20 minutes (1200 sec) is enough to upload 30GB LFS files:
+- 20 minutes (1200 sec) is enough to upload 30 GB LFS files:
 
 ```ruby
 ::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
@@ -343,7 +343,7 @@ An error occurred while loading the file. Please try again later.
 
 This occurs due to Cross-Origin Resource Sharing (CORS) restrictions:
 the browser attempts to load the PDF from object storage, but the object
-storage provider rejects the request since the GitLab domain differs
+storage provider rejects the request because the GitLab domain differs
 from the object storage domain.
 
 To fix this issue, configure your object storage provider's CORS

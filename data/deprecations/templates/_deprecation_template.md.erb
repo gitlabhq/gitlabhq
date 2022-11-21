@@ -53,7 +53,7 @@ sole discretion of GitLab Inc.
     <%- entries.select{|d| d["announcement_milestone"] == milestone}.each do |deprecation| %>
 <div class="deprecation removal-<%= deprecation["removal_milestone"].gsub('.', '') %><% if deprecation["breaking_change"] -%> breaking-change<% end %>">
 
-### <%= deprecation["name"]%>
+### <%= deprecation["title"] %>
 
 <% if deprecation["end_of_support_milestone"] -%>
 End of Support: GitLab <span class="removal-milestone"><%= deprecation["end_of_support_milestone"]%></span> (<%= deprecation["end_of_support_date"]%>)<br />

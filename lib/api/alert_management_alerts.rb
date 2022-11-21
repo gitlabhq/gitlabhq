@@ -6,12 +6,21 @@ module API
     urgency :low
 
     params do
-      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
-      requires :alert_iid, type: Integer, desc: 'The IID of the Alert'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project',
+                    documentation: { example: 17 }
+      requires :alert_iid, type: Integer, desc: 'The IID of the Alert',
+                           documentation: { example: 23 }
     end
 
     resource :projects, requirements: ::API::API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/alert_management_alerts/:alert_iid/metric_images' do
+        desc 'Workhorse authorize metric image file upload' do
+          success code: 200
+          failure [
+            { code: 403, message: 'Forbidden' }
+          ]
+          tags %w[alert_management]
+        end
         post 'authorize' do
           authorize!(:upload_alert_management_metric_image, find_project_alert(request.params[:alert_iid]))
 
@@ -29,13 +38,20 @@ module API
         end
 
         desc 'Upload a metric image for an alert' do
-          success Entities::MetricImage
+          consumes ['multipart/form-data']
+          success code: 200, model: Entities::MetricImage
+          failure [
+            { code: 403, message: 'Forbidden' }
+          ]
+          tags %w[alert_management]
         end
         params do
           requires :file, type: ::API::Validations::Types::WorkhorseFile, desc: 'The image file to be uploaded',
                           documentation: { type: 'file' }
-          optional :url, type: String, desc: 'The url to view more metric info'
-          optional :url_text, type: String, desc: 'A description of the image or URL'
+          optional :url, type: String, desc: 'The url to view more metric info',
+                         documentation: { example: 'https://example.com/metric' }
+          optional :url_text, type: String, desc: 'A description of the image or URL',
+                              documentation: { example: 'An example metric' }
         end
         post do
           require_gitlab_workhorse!
@@ -61,7 +77,14 @@ module API
           end
         end
 
-        desc 'Metric Images for alert'
+        desc 'Metric Images for alert' do
+          success code: 200, model: Entities::MetricImage
+          is_array true
+          failure [
+            { code: 404, message: 'Not found' }
+          ]
+          tags %w[alert_management]
+        end
         get do
           alert = find_project_alert(params[:alert_iid])
 
@@ -73,12 +96,21 @@ module API
         end
 
         desc 'Update a metric image for an alert' do
-          success Entities::MetricImage
+          consumes ['multipart/form-data']
+          success code: 200, model: Entities::MetricImage
+          failure [
+            { code: 403, message: 'Forbidden' },
+            { code: 422, message: 'Unprocessable entity' }
+          ]
+          tags %w[alert_management]
         end
         params do
-          requires :metric_image_id, type: Integer, desc: 'The ID of metric image'
-          optional :url, type: String, desc: 'The url to view more metric info'
-          optional :url_text, type: String, desc: 'A description of the image or URL'
+          requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
+                                     documentation: { example: 42 }
+          optional :url, type: String, desc: 'The url to view more metric info',
+                         documentation: { example: 'https://example.com/metric' }
+          optional :url_text, type: String, desc: 'A description of the image or URL',
+                              documentation: { example: 'An example metric' }
         end
         put ':metric_image_id' do
           alert = find_project_alert(params[:alert_iid])
@@ -97,10 +129,16 @@ module API
         end
 
         desc 'Remove a metric image for an alert' do
-          success Entities::MetricImage
+          success code: 204, model: Entities::MetricImage
+          failure [
+            { code: 403, message: 'Forbidden' },
+            { code: 422, message: 'Unprocessable entity' }
+          ]
+          tags %w[alert_management]
         end
         params do
-          requires :metric_image_id, type: Integer, desc: 'The ID of metric image'
+          requires :metric_image_id, type: Integer, desc: 'The ID of metric image',
+                                     documentation: { example: 42 }
         end
         delete ':metric_image_id' do
           alert = find_project_alert(params[:alert_iid])

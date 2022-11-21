@@ -1,4 +1,4 @@
-- name: "Deprecate support for Debian 9"
+- title: "Deprecate support for Debian 9"
   announcement_milestone: "14.9"
   announcement_date: "2022-03-22"
   removal_milestone: "15.1"

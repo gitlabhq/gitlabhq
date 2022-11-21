@@ -1,4 +1,4 @@
-- name: "Support for Debian 9"
+- title: "Support for Debian 9"
   removal_date: Aug 22, 2022  # day the removal was released
   removal_milestone: "15.3"
   reporter: dorrino  # GitLab username of the person reporting the removal

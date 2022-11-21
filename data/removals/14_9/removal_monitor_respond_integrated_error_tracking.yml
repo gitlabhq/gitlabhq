@@ -1,4 +1,4 @@
-- name: "Integrated error tracking disabled by default"
+- title: "Integrated error tracking disabled by default"
   announcement_milestone: "14.9"
   announcement_date: "2022-02-23"  # This is the date customers were notified about the change in rate limits, making integrated error tracking unusable, see https://gitlab.com/groups/gitlab-org/-/epics/7580#communication-to-rate-limit-impacted-users
   removal_milestone: "14.9"

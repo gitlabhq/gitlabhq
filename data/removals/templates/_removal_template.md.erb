@@ -37,7 +37,7 @@ For removal reviewers (Technical Writers only):
   <%- milestones.each do |milestone| %>
 ## Removed in <%= milestone %>
     <%- entries.select{|entry| entry["removal_milestone"] == milestone}.each do |removal| %>
-### <%= removal["name"]%>
+### <%= removal["title"]%>
 <% if removal["breaking_change"] -%>
 
 WARNING:

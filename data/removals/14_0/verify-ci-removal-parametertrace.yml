@@ -1,4 +1,4 @@
-- name: "`trace` parameter in `jobs` API"
+- title: "`trace` parameter in `jobs` API"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: jreporter

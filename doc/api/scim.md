@@ -50,11 +50,10 @@ Example request:
 
 ```shell
 curl --location --request GET "https://gitlab.example.com/api/v4/groups/33/scim/identities" \
---header "PRIVATE-TOKEN: <PRIVATE-TOKEN>" \
---form "extern_uid=<ID_TO_BE_UPDATED>" \
+--header "PRIVATE-TOKEN: <PRIVATE-TOKEN>"
 ```
 
-## Update extern_uid field for a SCIM identity
+## Update `extern_uid` field for a SCIM identity
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227841) in GitLab 15.5.
 
@@ -79,5 +78,5 @@ Example request:
 ```shell
 curl --location --request PATCH "https://gitlab.example.com/api/v4/groups/33/scim/sydney_jones" \
 --header "PRIVATE-TOKEN: <PRIVATE TOKEN>" \
---form "extern_uid=sydney_jones_new" \
+--form "extern_uid=sydney_jones_new"
 ```

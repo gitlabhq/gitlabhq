@@ -1,4 +1,4 @@
-- name: "GitLab Runner installation to ignore the `skel` directory"
+- title: "GitLab Runner installation to ignore the `skel` directory"
   removal_date: "2021-06-22"
   removal_milestone: "14.0"
   reporter: deastman

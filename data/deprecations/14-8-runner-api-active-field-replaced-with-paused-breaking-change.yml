@@ -1,4 +1,4 @@
-- name: "REST and GraphQL API Runner usage of `active` replaced by `paused`"
+- title: "REST and GraphQL API Runner usage of `active` replaced by `paused`"
   announcement_milestone: "14.8"
   announcement_date: "2022-02-22"
   removal_milestone: "16.0"

@@ -1,4 +1,4 @@
-- name: "Gitaly nodes in virtual storage"
+- title: "Gitaly nodes in virtual storage"
   announcement_milestone: "13.12"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-04-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed

@@ -501,7 +501,7 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 ### 15.3.3
 
 - In GitLab 15.3.3, [SAML Group Links](../api/groups.md#saml-group-links) API `access_level` attribute type changed to `integer`. See
-[valid access levels](../api/members.md#valid-access-levels) documentation.
+[the API documentation](../api/members.md).
 
 ### 15.3.0
 

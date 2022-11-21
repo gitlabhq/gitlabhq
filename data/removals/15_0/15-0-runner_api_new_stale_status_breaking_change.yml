@@ -1,4 +1,4 @@
-- name: "API: `stale` status returned instead of `offline` or `not_connected`"
+- title: "API: `stale` status returned instead of `offline` or `not_connected`"
   announcement_milestone: "14.6"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-12-22"
   removal_milestone: "15.0"  # the milestone when this feature is planned to be removed

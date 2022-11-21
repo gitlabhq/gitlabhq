@@ -1,4 +1,4 @@
-- name: "`artifacts:reports:cobertura` keyword"
+- title: "`artifacts:reports:cobertura` keyword"
   announcement_milestone: "14.7"
   announcement_date: "2022-01-22"
   removal_milestone: "15.0"

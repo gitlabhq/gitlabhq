@@ -1,4 +1,4 @@
-- name: "Remove support for `prometheus.listen_address` and `prometheus.enable`"
+- title: "Remove support for `prometheus.listen_address` and `prometheus.enable`"
   removal_date: July 22, 2021
   removal_milestone: "14.1"
   reporter: fzimmer

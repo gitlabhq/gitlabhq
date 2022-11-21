@@ -1,4 +1,4 @@
-- name: "Changing merge request approvals with the `/approvals` API endpoint"
+- title: "Changing merge request approvals with the `/approvals` API endpoint"
   announcement_milestone: "12.3"
   announcement_date: "2019-09-22"
   removal_milestone: "16.0"
