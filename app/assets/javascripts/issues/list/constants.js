@@ -149,6 +149,11 @@ export const specialFilterValues = [
 ];
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
+export const TYPE_TOKEN_OBJECTIVE_OPTION = {
+  icon: 'issue-type-issue',
+  title: 'objective',
+  value: 'objective',
+};
 
 // This should be consistent with Issue::TYPES_FOR_LIST in the backend
 // https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/models/issue.rb#L48

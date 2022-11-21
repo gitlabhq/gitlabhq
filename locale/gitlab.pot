@@ -46356,6 +46356,9 @@ msgstr ""
 msgid "WorkItem|Collapse tasks"
 msgstr ""
 
+msgid "WorkItem|Create Objective"
+msgstr ""
+
 msgid "WorkItem|Create task"
 msgstr ""
 

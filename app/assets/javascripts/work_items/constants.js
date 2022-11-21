@@ -27,7 +27,6 @@ export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
-
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
 
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
@@ -120,6 +119,10 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
 export const FORM_TYPES = {
   create: 'create',
   add: 'add',
+  [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
+    icon: `issue-type-issue`,
+    name: s__('WorkItem|Objective'),
+  },
 };
 
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;

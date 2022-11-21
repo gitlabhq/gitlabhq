@@ -331,6 +331,7 @@ export default {
         <slot name="sidebar-items" :checked-issuables="bulkEditIssuables"></slot>
       </template>
     </issuable-bulk-edit-sidebar>
+    <slot name="list-body"></slot>
     <ul v-if="issuablesLoading" class="content-list">
       <li v-for="n in skeletonItemCount" :key="n" class="issue gl-px-5! gl-py-5!">
         <gl-skeleton-loader />

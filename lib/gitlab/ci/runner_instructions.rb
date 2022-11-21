@@ -22,7 +22,8 @@ module Gitlab
         osx: {
           human_readable_name: "macOS",
           download_locations: {
-            amd64: "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64"
+            amd64: "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-amd64",
+            arm64: "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-darwin-arm64"
           },
           install_script_template_path: "lib/gitlab/ci/runner_instructions/templates/osx/install.sh",
           runner_executable: "gitlab-runner"

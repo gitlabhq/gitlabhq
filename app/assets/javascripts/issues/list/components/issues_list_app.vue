@@ -163,6 +163,16 @@ export default {
       required: false,
       default: () => [],
     },
+    eeTypeTokenOptions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    eeWorkItemTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -239,14 +249,17 @@ export default {
         state: this.state,
         ...this.pageParams,
         ...this.apiFilterParams,
-        types: this.apiFilterParams.types || defaultWorkItemTypes,
+        types: this.apiFilterParams.types || this.defaultWorkItemTypes,
       };
     },
     namespace() {
       return this.isProject ? ITEM_TYPE.PROJECT : ITEM_TYPE.GROUP;
     },
+    defaultWorkItemTypes() {
+      return [...defaultWorkItemTypes, ...this.eeWorkItemTypes];
+    },
     typeTokenOptions() {
-      return defaultTypeTokenOptions.concat(TYPE_TOKEN_TASK_OPTION);
+      return [...defaultTypeTokenOptions, TYPE_TOKEN_TASK_OPTION, ...this.eeTypeTokenOptions];
     },
     hasOrFeature() {
       return this.glFeatures.orIssuableQueries;
@@ -872,7 +885,7 @@ export default {
           <gl-icon name="thumb-down" />
           {{ issuable.downvotes }}
         </li>
-        <slot :issuable="issuable"></slot>
+        <slot name="blocking-count" :issuable="issuable"></slot>
       </template>
 
       <template #empty-state>
@@ -907,6 +920,10 @@ export default {
           :title="$options.i18n.noClosedIssuesTitle"
           :svg-path="emptyStateSvgPath"
         />
+      </template>
+
+      <template #list-body>
+        <slot name="list-body"></slot>
       </template>
     </issuable-list>
 
