@@ -982,6 +982,7 @@ Instead, you need to delete the old environment and create a new one:
 - [Environments Dashboard](../environments/environments_dashboard.md): View a summary of each
   environment's operational health. **(PREMIUM)**
 - [Deployment safety](deployment_safety.md#restrict-write-access-to-a-critical-environment): Secure your deployments.
+- [Track deployments of an external deployment tool](external_deployment_tools.md): Use an external deployment tool instead of built-in deployment solution.
 
 ## Troubleshooting
 

@@ -18173,8 +18173,7 @@ CREATE TABLE namespaces (
     push_rule_id bigint,
     shared_runners_enabled boolean DEFAULT true NOT NULL,
     allow_descendants_override_disabled_shared_runners boolean DEFAULT false NOT NULL,
-    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL,
-    tmp_project_id integer
+    traversal_ids integer[] DEFAULT '{}'::integer[] NOT NULL
 );
 
 CREATE SEQUENCE namespaces_id_seq
@@ -31407,8 +31406,6 @@ CREATE INDEX tmp_index_members_on_state ON members USING btree (state) WHERE (st
 
 CREATE INDEX tmp_index_migrated_container_registries ON container_repositories USING btree (project_id) WHERE ((migration_state = 'import_done'::text) OR (created_at >= '2022-01-23 00:00:00'::timestamp without time zone));
 
-CREATE UNIQUE INDEX tmp_index_on_tmp_project_id_on_namespaces ON namespaces USING btree (tmp_project_id);
-
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
@@ -33159,9 +33156,6 @@ ALTER TABLE ONLY project_wiki_repository_states
 
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6a5165a692 FOREIGN KEY (milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY namespaces
-    ADD CONSTRAINT fk_6a77f66919 FOREIGN KEY (tmp_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY geo_event_log
     ADD CONSTRAINT fk_6ada82d42a FOREIGN KEY (container_repository_updated_event_id) REFERENCES geo_container_repository_updated_events(id) ON DELETE CASCADE;
