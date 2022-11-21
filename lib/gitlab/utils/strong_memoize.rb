@@ -16,16 +16,6 @@ module Gitlab
       #     include Gitlab::Utils::StrongMemoize
       #
       #     def trigger_from_token
-      #       strong_memoize(:trigger) do
-      #         Ci::Trigger.find_by_token(params[:token].to_s)
-      #       end
-      #     end
-      #
-      # Or like:
-      #
-      #     include Gitlab::Utils::StrongMemoize
-      #
-      #     def trigger_from_token
       #       Ci::Trigger.find_by_token(params[:token].to_s)
       #     end
       #     strong_memoize_attr :trigger_from_token

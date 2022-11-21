@@ -11,7 +11,7 @@
   .labels-container.gl-mt-5
     - if @labels.any?
       .text-muted.gl-mb-5
-        = _('Labels can be applied to %{features}. Group labels are available for any project within the group.') % { features: issuable_types.to_sentence }
+        = labels_function_introduction
       .other-labels
         %h4= _('Labels')
         %ul.manage-labels-list.js-other-labels

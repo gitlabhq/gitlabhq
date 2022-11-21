@@ -565,6 +565,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   than `<custom_hooks_dir>/<hook_name>`.
 - [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
+- The `AES256-GCM-SHA384` SSL cipher is no longer allowed by NGINX.
+  See how you can [add the cipher back](https://docs.gitlab.com/omnibus/update/gitlab_15_changes.html#aes256-gcm-sha384-ssl-cipher-no-longer-allowed-by-default-by-nginx) to the allow list.
 
 ### 14.10.0
 

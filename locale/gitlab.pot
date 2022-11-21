@@ -13591,6 +13591,9 @@ msgstr ""
 msgid "DeploymentApproval|Rejected by you %{time}"
 msgstr ""
 
+msgid "DeploymentTarget|Edge Computing (e.g. Cloudflare Workers)"
+msgstr ""
+
 msgid "DeploymentTarget|GitLab Pages"
 msgstr ""
 
@@ -13625,6 +13628,9 @@ msgid "DeploymentTarget|Serverless backend (Lambda, Cloud functions)"
 msgstr ""
 
 msgid "DeploymentTarget|Virtual machine (for example, EC2)"
+msgstr ""
+
+msgid "DeploymentTarget|Web Deployment Platform (Netlify, Vercel, Gatsby)"
 msgstr ""
 
 msgid "Deployments"
@@ -23815,13 +23821,16 @@ msgstr ""
 msgid "Labels"
 msgstr ""
 
-msgid "Labels can be applied to %{features}. Group labels are available for any project within the group."
-msgstr ""
-
 msgid "Labels can be applied to issues and merge requests to categorize them."
 msgstr ""
 
+msgid "Labels can be applied to issues and merge requests. Group labels are available for any project within the group."
+msgstr ""
+
 msgid "Labels can be applied to issues and merge requests. Star a label to make it a priority label."
+msgstr ""
+
+msgid "Labels can be applied to issues, merge requests, and epics. Group labels are available for any project within the group."
 msgstr ""
 
 msgid "Labels with no issues in this iteration:"

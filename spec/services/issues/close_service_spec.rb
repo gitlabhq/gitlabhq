@@ -346,31 +346,29 @@ RSpec.describe Issues::CloseService do
 
       context 'when there is an associated Alert Management Alert' do
         context 'when alert can be resolved' do
-          let!(:alert) { create(:alert_management_alert, issue: issue, project: project) }
-
           it 'resolves an alert and sends a system note' do
+            alert = create(:alert_management_alert, issue: issue, project: project)
+
             expect_any_instance_of(SystemNoteService) do |notes_service|
               expect(notes_service).to receive(:change_alert_status).with(
-                alert,
-                current_user,
-                " by closing issue #{issue.to_reference(project)}"
+                alert, current_user, " by closing issue #{issue.to_reference(project)}"
               )
             end
 
             close_issue
 
-            expect(alert.reload.resolved?).to eq(true)
+            expect(alert.reload).to be_resolved
           end
         end
 
         context 'when alert cannot be resolved' do
-          let!(:alert) { create(:alert_management_alert, :with_validation_errors, issue: issue, project: project) }
-
           before do
             allow(Gitlab::AppLogger).to receive(:warn).and_call_original
           end
 
           it 'writes a warning into the log' do
+            alert = create(:alert_management_alert, :with_validation_errors, issue: issue, project: project)
+
             close_issue
 
             expect(Gitlab::AppLogger).to have_received(:warn).with(
@@ -379,6 +377,26 @@ RSpec.describe Issues::CloseService do
               alert_id: alert.id,
               alert_errors: { hosts: ['hosts array is over 255 chars'] }
             )
+          end
+        end
+      end
+
+      context 'when there are several associated Alert Management Alerts' do
+        context 'when alerts can be resolved' do
+          it 'resolves an alert and sends a system note', :aggregate_failures do
+            alerts = create_list(:alert_management_alert, 2, issue: issue, project: project)
+
+            alerts.each do |alert|
+              expect_any_instance_of(SystemNoteService) do |notes_service|
+                expect(notes_service).to receive(:change_alert_status).with(
+                  alert, current_user, " by closing issue #{issue.to_reference(project)}"
+                )
+              end
+            end
+
+            close_issue
+
+            expect(alerts.map(&:reload)).to all(be_resolved)
           end
         end
       end

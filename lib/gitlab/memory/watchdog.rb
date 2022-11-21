@@ -55,16 +55,8 @@ module Gitlab
       end
 
       ##
-      # Configuration for Watchdog, use like:
-      #
-      #   watchdog.configure do |config|
-      #     config.handler = Gitlab::Memory::Watchdog::TermProcessHandler
-      #     config.sleep_time_seconds = 60
-      #     config.logger = Gitlab::AppLogger
-      #     config.monitors do |stack|
-      #       stack.push MyMonitorClass, args*, max_strikes:, kwargs**, &block
-      #     end
-      #   end
+      # Configuration for Watchdog, see Gitlab::Memory::Watchdog::Configurator
+      # for examples.
       def configure
         yield @configuration
       end
@@ -105,6 +97,8 @@ module Gitlab
         all_labels = log_labels.merge(monitor_payload)
         logger.warn(all_labels)
         @counter_violations_handled.increment(reason: monitor_name)
+
+        Gitlab::Memory::Reports::HeapDump.enqueue! if @configuration.write_heap_dumps?
 
         handler.call
       end

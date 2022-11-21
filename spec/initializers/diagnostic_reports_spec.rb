@@ -10,6 +10,7 @@ RSpec.describe 'diagnostic reports' do
   shared_examples 'does not modify worker startup hooks' do
     it do
       expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
+      expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_stop)
       expect(Gitlab::Memory::ReportsDaemon).not_to receive(:instance)
 
       load_initializer
@@ -30,18 +31,22 @@ RSpec.describe 'diagnostic reports' do
 
       it 'modifies worker startup hooks, starts Gitlab::Memory::ReportsDaemon' do
         expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start).and_call_original
-
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop)
         expect_next_instance_of(Gitlab::Memory::ReportsDaemon) do |daemon|
-          expect(daemon).to receive(:start).and_call_original
-
-          # make sleep no-op
-          allow(daemon).to receive(:sleep).and_return(nil)
-
-          # let alive return 3 times: true, true, false
-          allow(daemon).to receive(:alive).and_return(true, true, false)
+          expect(daemon).to receive(:start)
         end
 
         load_initializer
+      end
+
+      it 'writes scheduled heap dumps in on_worker_stop' do
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop).and_call_original
+        expect(Gitlab::Memory::Reports::HeapDump).to receive(:write_conditionally)
+
+        load_initializer
+        # This is necessary because this hook normally fires during worker shutdown.
+        Gitlab::Cluster::LifecycleEvents.do_worker_stop
       end
     end
 

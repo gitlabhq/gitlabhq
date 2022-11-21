@@ -702,16 +702,12 @@ RSpec.describe ProjectsController do
           skip unless project.hashed_storage?(:repository)
 
           hashed_storage_path = ::Storage::Hashed.new(project).disk_path
-          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path
-          end
+          original_repository_path = project.repository.relative_path
 
           expect { update_project path: 'renamed_path' }.to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
-          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            assigns(:repository).path
-          end
+          assign_repository_path = assigns(:repository).relative_path
 
           expect(original_repository_path).to include(hashed_storage_path)
           expect(assign_repository_path).to include(hashed_storage_path)
@@ -721,16 +717,12 @@ RSpec.describe ProjectsController do
           skip if project.hashed_storage?(:repository)
 
           hashed_storage_path = Storage::Hashed.new(project).disk_path
-          original_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            project.repository.path
-          end
+          original_repository_path = project.repository.relative_path
 
           expect { update_project path: 'renamed_path' }.to change { project.reload.path }
           expect(project.path).to include 'renamed_path'
 
-          assign_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            assigns(:repository).path
-          end
+          assign_repository_path = assigns(:repository).relative_path
 
           expect(original_repository_path).not_to include(hashed_storage_path)
           expect(assign_repository_path).to include(hashed_storage_path)

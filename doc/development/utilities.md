@@ -181,20 +181,6 @@ Refer to [`strong_memoize.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/maste
     include Gitlab::Utils::StrongMemoize
 
     def result
-      strong_memoize(:result) do
-        search
-      end
-    end
-  end
-  ```
-
-  Alternatively, use the `strong_memoize_attr` helper to memoize the method for you:
-
-  ```ruby
-  class Find
-    include Gitlab::Utils::StrongMemoize
-
-    def result
       search
     end
     strong_memoize_attr :result

@@ -25,7 +25,7 @@ RSpec.describe Issue do
     it { is_expected.to have_many(:design_versions) }
     it { is_expected.to have_one(:sentry_issue) }
     it { is_expected.to have_one(:alert_management_alert) }
-    it { is_expected.to have_many(:alert_management_alerts) }
+    it { is_expected.to have_many(:alert_management_alerts).validate(false) }
     it { is_expected.to have_many(:resource_milestone_events) }
     it { is_expected.to have_many(:resource_state_events) }
     it { is_expected.to have_and_belong_to_many(:prometheus_alert_events) }

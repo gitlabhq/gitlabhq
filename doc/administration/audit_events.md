@@ -21,17 +21,46 @@ NOTE:
 You can't configure a retention policy for audit events, but epic
 [7917](https://gitlab.com/groups/gitlab-org/-/epics/7917) proposes to change this.
 
+## View audit events
+
+Depending on the events you want to view, at a minimum you must have:
+
+- For group audit events of all users in the group, the Owner role for the group.
+- For project audit events of all users in the project, the Maintainer role for the project.
+- For group and project audit events based on your own actions, the Developer role for the group or project.
+- [Auditor users](auditor_users.md) can see group and project events for all users.
+
+You can view audit events scoped to a group or project.
+
+To view a group's audit events:
+
+1. Go to the group.
+1. On the left sidebar, select **Security & Compliance > Audit Events**.
+
+Group events do not include project audit events. Group events can also be accessed using the
+[Group Audit Events API](../api/audit_events.md#group-audit-events). Group event queries are limited to a maximum of 30
+days.
+
+To view a project's audit events:
+
+1. Go to the project.
+1. On the left sidebar, select **Security & Compliance > Audit Events**.
+
+Project events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events).
+Project event queries are limited to a maximum of 30 days.
+
+### View instance audit events **(PREMIUM SELF)**
+
+You can view audit events from user actions across an entire GitLab instance.
+
+To view instance audit events:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+
 ## List of events
 
-There are two kinds of events logged:
-
-- Events scoped to the group or project, used by group and project managers
-  to look up who made a change.
-- Instance events scoped to the whole GitLab instance, used by your Compliance team to
-  perform formal audits.
-
-NOTE:
-Some events are recorded and available only as [streaming audit events](audit_event_streaming.md).
+You can view different events depending on the version of GitLab you have.
 
 ### Impersonation data
 
@@ -51,19 +80,7 @@ When a user is being [impersonated](../user/admin_area/index.md#user-impersonati
 
 ### Group events
 
-A user with:
-
-- Owner role (or above) can retrieve group audit events of all users.
-- Developer or Maintainer role is limited to group audit events based on their individual actions.
-
-Group events do not include project audit events.
-
-To view a group's audit events:
-
-1. Go to the group.
-1. On the left sidebar, select **Security & Compliance > Audit Events**.
-
-From there, you can see the following actions:
+The following actions on groups generate group audit events:
 
 - Group name or path changed.
 - Group repository size limit changed.
@@ -111,19 +128,9 @@ From there, you can see the following actions:
 - Changes to streaming audit destination custom HTTP headers. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366350) in GitLab 15.3.
 - Group had a security policy project linked, changed, or unlinked. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6)
 
-Group events can also be accessed via the [Group Audit Events API](../api/audit_events.md#group-audit-events)
-
 ### Project events
 
-A user with a Maintainer role (or above) can retrieve project audit events of all users.
-A user with a Developer role is limited to project audit events based on their individual actions.
-
-To view a project's audit events:
-
-1. Go to the project.
-1. On the left sidebar, select **Security & Compliance > Audit Events**.
-
-From there, you can see the following actions:
+The following actions on projects generate project audit events:
 
 - Added or removed deploy keys
 - Project created, deleted, renamed, moved (transferred), changed path
@@ -182,24 +189,9 @@ From there, you can see the following actions:
 - Project was scheduled for deletion due to inactivity ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85689) in GitLab 15.0)
 - Project had a security policy project linked, changed, or unlinked ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/377877) in GitLab 15.6)
 
-Project events can also be accessed via the [Project Audit Events API](../api/audit_events.md#project-audit-events).
-
-Project event queries are limited to a maximum of 30 days.
-
 ### Instance events **(PREMIUM SELF)**
 
-Server-wide audit events introduce the ability to observe user actions across
-the entire instance of your GitLab server, making it easy to understand who
-changed what and when for audit purposes.
-
-Instance events do not include group or project audit events.
-
-To view the server-wide audit events:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-
-The following user actions are recorded:
+The following user actions on a GitLab instance generate instance audit events:
 
 - Sign-in events and the authentication type (such as standard, LDAP, or OmniAuth)
 - Failed sign-ins

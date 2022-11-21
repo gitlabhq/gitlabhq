@@ -23,7 +23,7 @@ module IncidentManagement
             description: description,
             issue_type: ISSUE_TYPE,
             severity: severity,
-            alert_management_alert: alert
+            alert_management_alerts: [alert].compact
           },
           spam_params: nil
         ).execute

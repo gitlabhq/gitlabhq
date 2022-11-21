@@ -3,7 +3,7 @@ status: proposed
 creation-date: "2022-09-14"
 authors: [ "@fabio", "@grzesiek" ]
 coach: "@kamil"
-approvers: [ "@dov" ]
+approvers: [ "@dhershkovitch" ]
 owning-stage: "~devops::verify"
 participating-stages: []
 ---

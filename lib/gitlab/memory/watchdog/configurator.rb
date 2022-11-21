@@ -7,25 +7,31 @@ module Gitlab
         class << self
           def configure_for_puma
             lambda do |config|
-              sleep_time_seconds = ENV.fetch('GITLAB_MEMWD_SLEEP_TIME_SEC', 60).to_i
               config.logger = Gitlab::AppLogger
               config.handler = Gitlab::Memory::Watchdog::PumaHandler.new
-              config.sleep_time_seconds = sleep_time_seconds
+              config.write_heap_dumps = write_heap_dumps?
+              config.sleep_time_seconds = ENV.fetch('GITLAB_MEMWD_SLEEP_TIME_SEC', 60).to_i
               config.monitors(&configure_monitors_for_puma)
             end
           end
 
           def configure_for_sidekiq
             lambda do |config|
-              sleep_time_seconds = [ENV.fetch('SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL', 3).to_i, 2].max
               config.logger = Sidekiq.logger
               config.handler = Gitlab::Memory::Watchdog::TermProcessHandler.new
-              config.sleep_time_seconds = sleep_time_seconds
+              config.write_heap_dumps = write_heap_dumps?
+              config.sleep_time_seconds = [
+                ENV.fetch('SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL', 3).to_i, 2
+              ].max
               config.monitors(&configure_monitors_for_sidekiq)
             end
           end
 
           private
+
+          def write_heap_dumps?
+            Gitlab::Utils.to_boolean(ENV['GITLAB_MEMWD_DUMP_HEAP'], default: false)
+          end
 
           def configure_monitors_for_puma
             lambda do |stack|

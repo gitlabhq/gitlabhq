@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
       end
 
       def method_name
-        strong_memoize(:method_name) do
+        strong_memoize(:method_name) do # rubocop: disable Gitlab/StrongMemoizeAttr
           trace << value
           value
         end

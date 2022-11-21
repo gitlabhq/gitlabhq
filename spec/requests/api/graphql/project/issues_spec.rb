@@ -360,7 +360,7 @@ RSpec.describe 'getting an issue list for a project' do
       post_graphql(query, current_user: current_user)
 
       alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
-      expected_titles = issues.map { |issue| issue.alert_management_alert&.title }
+      expected_titles = issues.map { |issue| issue.alert_management_alerts.first&.title }
 
       expect(alert_titles).to contain_exactly(*expected_titles)
     end

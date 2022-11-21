@@ -718,13 +718,12 @@ There are some cases where `users` passed in the code is actually referring to a
 
 ```ruby
       def find_user_from_sources
-        strong_memoize(:find_user_from_sources) do
-          deploy_token_from_request ||
-            find_user_from_bearer_token ||
-            find_user_from_job_token ||
-            user_from_warden
-        end
+        deploy_token_from_request ||
+          find_user_from_bearer_token ||
+          find_user_from_job_token ||
+          user_from_warden
       end
+      strong_memoize_attr :find_user_from_sources
 ```
 
 ### Past Vulnerable Code

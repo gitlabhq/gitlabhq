@@ -91,7 +91,7 @@ class Issue < ApplicationRecord
   has_one :incident_management_issuable_escalation_status, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_and_belongs_to_many :self_managed_prometheus_alert_events, join_table: :issues_self_managed_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
   has_and_belongs_to_many :prometheus_alert_events, join_table: :issues_prometheus_alert_events # rubocop: disable Rails/HasAndBelongsToMany
-  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue
+  has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :issue, validate: false
   has_many :prometheus_alerts, through: :prometheus_alert_events
   has_many :issue_customer_relations_contacts, class_name: 'CustomerRelations::IssueContact', inverse_of: :issue
   has_many :customer_relations_contacts, through: :issue_customer_relations_contacts, source: :contact, class_name: 'CustomerRelations::Contact', inverse_of: :issues

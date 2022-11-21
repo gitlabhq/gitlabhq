@@ -12,6 +12,8 @@ export const DEPLOYMENT_TARGET_SELECTIONS = [
   s__('DeploymentTarget|Registry (package or container)'),
   s__('DeploymentTarget|Infrastructure provider (Terraform, Cloudformation, and so on)'),
   s__('DeploymentTarget|Serverless backend (Lambda, Cloud functions)'),
+  s__('DeploymentTarget|Edge Computing (e.g. Cloudflare Workers)'),
+  s__('DeploymentTarget|Web Deployment Platform (Netlify, Vercel, Gatsby)'),
   s__('DeploymentTarget|GitLab Pages'),
   s__('DeploymentTarget|Other hosting service'),
   s__('DeploymentTarget|No deployment planned'),

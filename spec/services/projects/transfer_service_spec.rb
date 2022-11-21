@@ -263,7 +263,7 @@ RSpec.describe Projects::TransferService do
   end
 
   context 'when transfer fails' do
-    let!(:original_path) { project_path(project) }
+    let!(:original_path) { project.repository.relative_path }
 
     def attempt_project_transfer(&block)
       expect do
@@ -277,21 +277,11 @@ RSpec.describe Projects::TransferService do
       expect_any_instance_of(Labels::TransferService).to receive(:execute).and_raise(ActiveRecord::StatementInvalid, "PG ERROR")
     end
 
-    def project_path(project)
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        project.repository.path_to_repo
-      end
-    end
-
-    def current_path
-      project_path(project)
-    end
-
     it 'rolls back repo location' do
       attempt_project_transfer
 
       expect(project.repository.raw.exists?).to be(true)
-      expect(original_path).to eq current_path
+      expect(original_path).to eq project.repository.relative_path
     end
 
     it 'rolls back project full path in gitaly' do

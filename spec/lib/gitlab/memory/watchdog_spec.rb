@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
     let(:handler) { instance_double(described_class::NullHandler) }
     let(:logger) { instance_double(::Logger) }
     let(:sleep_time_seconds) { 60 }
+    let(:write_heap_dumps) { false }
     let(:threshold_violated) { false }
     let(:violations_counter) { instance_double(::Prometheus::Client::Counter) }
     let(:violations_handled_counter) { instance_double(::Prometheus::Client::Counter) }
@@ -69,6 +70,7 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
           config.handler = handler
           config.logger = logger
           config.sleep_time_seconds = sleep_time_seconds
+          config.write_heap_dumps = write_heap_dumps
           config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
         end
 
@@ -154,6 +156,16 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
 
             watchdog.call
           end
+
+          context 'and heap dumps are enabled' do
+            let(:write_heap_dumps) { true }
+
+            it 'does not schedule a heap dump' do
+              expect(Gitlab::Memory::Reports::HeapDump).not_to receive(:enqueue!)
+
+              watchdog.call
+            end
+          end
         end
 
         context 'when monitor exceeds the allowed number of strikes' do
@@ -184,6 +196,16 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
             expect(handler).to receive(:call)
 
             watchdog.call
+          end
+
+          context 'and heap dumps are enabled' do
+            let(:write_heap_dumps) { true }
+
+            it 'schedules a heap dump' do
+              expect(Gitlab::Memory::Reports::HeapDump).to receive(:enqueue!)
+
+              watchdog.call
+            end
           end
 
           context 'when enforce_memory_watchdog ops toggle is off' do
@@ -255,6 +277,10 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
       subject(:handler) { described_class::TermProcessHandler.new(42) }
 
       describe '#call' do
+        before do
+          allow(Process).to receive(:kill)
+        end
+
         it 'sends SIGTERM to the current process' do
           expect(Process).to receive(:kill).with(:TERM, 42)
 
@@ -274,11 +300,12 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
 
       before do
         stub_const('::Puma::Cluster::WorkerHandle', puma_worker_handle_class)
+        allow(puma_worker_handle_class).to receive(:new).and_return(puma_worker_handle)
+        allow(puma_worker_handle).to receive(:term)
       end
 
       describe '#call' do
         it 'invokes orderly termination via Puma API' do
-          expect(puma_worker_handle_class).to receive(:new).and_return(puma_worker_handle)
           expect(puma_worker_handle).to receive(:term)
 
           expect(handler.call).to be(true)

@@ -39,7 +39,7 @@ module Gitlab
 
         DEFAULT_SLEEP_TIME_SECONDS = 60
 
-        attr_writer :logger, :handler, :sleep_time_seconds
+        attr_writer :logger, :handler, :sleep_time_seconds, :write_heap_dumps
 
         def monitors
           @monitor_stack ||= MonitorStack.new
@@ -58,6 +58,10 @@ module Gitlab
         # Used to control the frequency with which the watchdog will wake up and poll the GC.
         def sleep_time_seconds
           @sleep_time_seconds ||= DEFAULT_SLEEP_TIME_SECONDS
+        end
+
+        def write_heap_dumps?
+          !!@write_heap_dumps
         end
       end
     end
