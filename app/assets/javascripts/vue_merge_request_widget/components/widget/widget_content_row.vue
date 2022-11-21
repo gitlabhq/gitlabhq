@@ -96,7 +96,7 @@ export default {
           v-if="shouldShowHeaderActions"
           class="gl-ml-auto gl-display-flex gl-align-items-baseline"
         >
-          <help-popover v-if="helpPopover" :options="helpPopover.options">
+          <help-popover v-if="helpPopover" :options="helpPopover.options" icon="information-o">
             <template v-if="helpPopover.content">
               <p
                 v-if="helpPopover.content.text"

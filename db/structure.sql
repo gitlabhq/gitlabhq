@@ -30332,7 +30332,7 @@ CREATE UNIQUE INDEX index_project_repository_states_on_project_id ON project_rep
 
 CREATE INDEX index_project_repository_storage_moves_on_project_id ON project_repository_storage_moves USING btree (project_id);
 
-CREATE INDEX index_project_settings_on_legacy_open_source_license_available ON project_settings USING btree (legacy_open_source_license_available) WHERE (legacy_open_source_license_available = true);
+CREATE INDEX index_project_settings_on_legacy_os_license_project_id ON project_settings USING btree (legacy_open_source_license_available, project_id) WHERE (legacy_open_source_license_available = true);
 
 CREATE INDEX index_project_settings_on_project_id_partially ON project_settings USING btree (project_id) WHERE (has_vulnerabilities IS TRUE);
 

@@ -498,17 +498,6 @@ module Gitlab
         end
       end
 
-      # Adds a column with a default value without locking an entire table.
-      #
-      # @deprecated With PostgreSQL 11, adding columns with a default does not lead to a table rewrite anymore.
-      #             As such, this method is not needed anymore and the default `add_column` helper should be used.
-      #             This helper is subject to be removed in a >13.0 release.
-      def add_column_with_default(table, column, type, default:, limit: nil, allow_null: false)
-        raise 'Deprecated: add_column_with_default does not support being passed blocks anymore' if block_given?
-
-        add_column(table, column, type, default: default, limit: limit, null: allow_null)
-      end
-
       # Renames a column without requiring downtime.
       #
       # Concurrent renames work by using database triggers to ensure both the

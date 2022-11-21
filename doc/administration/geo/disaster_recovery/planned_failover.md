@@ -217,7 +217,7 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which the Geo secondary
 
       - All replication meters reach 100% replicated, 0% failures.
       - All verification meters reach 100% verified, 0% failures.
-      - Database replication lag is 0ms.
+      - Database replication lag is 0 ms.
       - The Geo log cursor is up to date (0 events behind).
 
 1. On the **secondary** site:

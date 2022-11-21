@@ -281,11 +281,11 @@ RSpec.describe 'bin/audit-event-type' do
 
     describe '.read_milestone' do
       before do
-        allow(File).to receive(:read).with('VERSION').and_return('15.6.0-pre')
         allow(File).to receive(:read).and_call_original
       end
 
       it 'returns the correct milestone from the VERSION file' do
+        expect(File).to receive(:read).with('VERSION').and_return('15.6.0-pre')
         expect(described_class.read_milestone).to eq('15.6')
       end
     end

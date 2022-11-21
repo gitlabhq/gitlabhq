@@ -253,6 +253,7 @@ export default {
         <div class="gl-display-flex">
           <help-popover
             v-if="helpPopover"
+            icon="information-o"
             :options="helpPopover.options"
             :class="{ 'gl-mr-3': actionButtons.length > 0 }"
           >

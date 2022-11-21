@@ -76,7 +76,10 @@ describe('~/vue_merge_request_widget/components/widget/widget_content_row.vue', 
         },
       });
 
-      expect(findHelpPopover().props('options')).toEqual({ title: 'Help popover title' });
+      const popover = findHelpPopover();
+
+      expect(popover.props('options')).toEqual({ title: 'Help popover title' });
+      expect(popover.props('icon')).toBe('information-o');
       expect(wrapper.findByText('Help popover content').exists()).toBe(true);
       expect(wrapper.findByText('Learn more').attributes('href')).toBe('/path/to/docs');
       expect(wrapper.findByText('Learn more').attributes('target')).toBe('_blank');

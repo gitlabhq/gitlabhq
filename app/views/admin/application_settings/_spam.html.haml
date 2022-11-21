@@ -50,8 +50,7 @@
       = f.label :akismet_api_key, _('Akismet API Key'), class: 'label-bold'
       = f.text_field :akismet_api_key, class: 'form-control gl-form-input'
       .form-text.text-muted
-        Generate API key at
-        %a{ href: 'http://www.akismet.com', target: 'blank', rel: 'noopener noreferrer' } http://www.akismet.com
+        = _("Generate API key at %{site}").html_safe % { site: link_to('http://www.akismet.com', 'http://www.akismet.com', target: 'blank', ref: 'noopener noreferrer') }
 
     %h5
       = _('IP address restrictions')

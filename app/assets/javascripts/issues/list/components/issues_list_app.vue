@@ -173,6 +173,11 @@ export default {
       required: false,
       default: () => [],
     },
+    eeIsOkrsEnabled: {
+      type: Boolean,
+      required: false,
+      default: () => false,
+    },
   },
   data() {
     return {
@@ -840,9 +845,14 @@ export default {
         >
           {{ $options.i18n.editIssues }}
         </gl-button>
-        <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+        <gl-button
+          v-if="showNewIssueLink && !eeIsOkrsEnabled"
+          :href="newIssuePath"
+          variant="confirm"
+        >
           {{ $options.i18n.newIssueLabel }}
         </gl-button>
+        <slot name="new-objective-button"></slot>
         <new-issue-dropdown v-if="showNewIssueDropdown" />
       </template>
 

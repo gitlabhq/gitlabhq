@@ -72,7 +72,7 @@ On the **secondary** site:
 1. On the left sidebar, select **Geo > Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
-   objects aren't yet replicated (shown in gray), consider giving the site more
+   objects aren't replicated (shown in gray), consider giving the site more
    time to complete.
 
    ![Replication status](../../replication/img/geo_dashboard_v14_0.png)
@@ -162,7 +162,7 @@ follow these steps to avoid unnecessary data loss:
 
          - All replication meters reach 100% replicated, 0% failures.
          - All verification meters reach 100% verified, 0% failures.
-         - Database replication lag is 0ms.
+         - Database replication lag is 0 ms.
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:
@@ -215,7 +215,7 @@ follow these steps to avoid unnecessary data loss:
      `initctl stop gitlab-runsvvdir && echo 'manual' > /etc/init/gitlab-runsvdir.override && initctl reload-configuration`.
 
    - If you do not have SSH access to the **primary** site, take the machine offline and
-     prevent it from rebooting. Since there are many ways you may prefer to accomplish
+     prevent it from rebooting. As there are many ways you may prefer to accomplish
      this, we avoid a single recommendation. You may have to:
 
      - Reconfigure the load balancers.
@@ -276,7 +276,7 @@ WARNING:
 If you encounter an `ActiveRecord::RecordInvalid: Validation failed: Name has already been taken` error during this process, read
 [the troubleshooting advice](../../replication/troubleshooting.md#fixing-errors-during-a-failover-or-when-promoting-a-secondary-to-a-primary-site).
 
-The `gitlab-ctl promote-to-primary-node` command cannot be used yet in
+The `gitlab-ctl promote-to-primary-node` command cannot be used in
 conjunction with multiple servers, as it can only
 perform changes on a **secondary** with only a single machine. Instead, you must
 do this manually.

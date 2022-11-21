@@ -766,12 +766,7 @@ With PostgreSQL 11 being the minimum version in GitLab 13.0 and later, adding co
 the standard `add_column` helper should be used in all cases.
 
 Before PostgreSQL 11, adding a column with a default was problematic as it would
-have caused a full table rewrite. The corresponding helper `add_column_with_default`
-has been deprecated and is scheduled to be removed in a later release.
-
-If a backport adding a column with a default value is needed for %12.9 or earlier versions,
-it should use `add_column_with_default` helper. If a [large table](https://gitlab.com/gitlab-org/gitlab/-/blob/master/rubocop/rubocop-migrations.yml#L3)
-is involved, backporting to %12.9 is contraindicated.
+have caused a full table rewrite.
 
 ## Removing the column default for non-nullable columns
 
@@ -852,8 +847,7 @@ update_column_in_batches(:projects, :foo, update_value) do |table, query|
 end
 ```
 
-Like `add_column_with_default`, there is a RuboCop cop to detect usage of this
-on large tables. In the case of `update_column_in_batches`, it may be acceptable
+In the case of `update_column_in_batches`, it may be acceptable
 to run on a large table, as long as it is only updating a small subset of the
 rows in the table, but do not ignore that without validating on the GitLab.com
 staging environment - or asking someone else to do so for you - beforehand.

@@ -552,39 +552,6 @@ RSpec.describe RegistrationsController do
         end
       end
     end
-
-    context 'when the first or last name is not "present?"' do
-      using RSpec::Parameterized::TableSyntax
-
-      render_views
-
-      shared_examples 'a user without present first name or last name' do
-        it 'renders the form with errors' do
-          subject
-          expect(controller.current_user).to be_nil
-          expect(response).to render_template(:new)
-          expect(response.body).to include(_('name cannot be blank')) # include 'First name' or 'Last name' or both
-        end
-      end
-
-      where(:first_name, :last_name) do
-        nil     | 'last'
-        ''      | 'last'
-        '   '   | 'last'
-        'first' | nil
-        'first' | ''
-        'first' | '   '
-        ''      | ''
-      end
-
-      with_them do
-        before do
-          base_user_params.merge!({ first_name: first_name, last_name: last_name })
-        end
-
-        it_behaves_like 'a user without present first name or last name'
-      end
-    end
   end
 
   describe '#destroy' do

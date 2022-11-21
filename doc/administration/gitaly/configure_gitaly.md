@@ -937,8 +937,8 @@ gitaly['cgroups_cpu_enabled'] = true
 
 In the previous example using the new configuration method:
 
-- The top level memory limit is capped at 60gb.
-- Each of the 1000 cgroups in the repositories pool is capped at 20gb.
+- The top level memory limit is capped at 60 GB.
+- Each of the 1000 cgroups in the repositories pool is capped at 20 GB.
 
 This configuration leads to "oversubscription". Each cgroup in the pool has a much larger capacity than 1/1000th
 of the top-level memory limit.

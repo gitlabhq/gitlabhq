@@ -1199,18 +1199,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     end
   end
 
-  describe '#add_column_with_default' do
-    let(:column) { Project.columns.find { |c| c.name == "id" } }
-
-    it 'delegates to #add_column' do
-      expect(model).to receive(:add_column).with(:projects, :foo, :integer, default: 10, limit: nil, null: true)
-
-      model.add_column_with_default(:projects, :foo, :integer,
-                                    default: 10,
-                                    allow_null: true)
-    end
-  end
-
   describe '#rename_column_concurrently' do
     context 'in a transaction' do
       it 'raises RuntimeError' do

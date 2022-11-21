@@ -767,20 +767,23 @@ Do not use **navigate**. Use **go** instead. For example:
 
 ([Vale](../testing.md#vale) rule: [`SubstitutionSuggestions.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionSuggestions.yml))
 
-## need to, should
+## need to
 
-Try to avoid **needs to**, because it's wordy. If something is recommended, use **should** instead. If something is required, use **must**.
+Try to avoid **need to**, because it's wordy.
 
-Use:
+For example, when a variable is **required**,
+instead of **You need to set the variable**, use:
 
-- You should set the variable. (recommended)
-- You must set the variable. (required)
-- Set the variable. (required)
+- Set the variable.
+- You must set the variable.
 
-Instead of:
+When the variable is **recommended**:
 
-- You need to set the variable.
-- We recommend that you set the variable.
+- You should set the variable.
+
+When the variable is **optional**:
+
+- You can set the variable.
 
 ## note that
 
@@ -897,6 +900,15 @@ For example, you might write something like:
 ## push rules
 
 Use lowercase for **push rules**.
+
+## recommend, we recommend
+
+Instead of **we recommend**, use **you should**. We want to talk to the user the way
+we would talk to a colleague, and to avoid differentiation between `we` and `them`.
+
+- You should set the variable. (It's recommended.)
+- Set the variable. (It's required.)
+- You can set the variable. (It's optional.)
 
 ## register
 
