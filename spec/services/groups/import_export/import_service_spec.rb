@@ -148,6 +148,14 @@ RSpec.describe Groups::ImportExport::ImportService do
             action: 'create',
             label: 'import_group_from_file'
           )
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_access_level',
+            user: user,
+            extra: { user_role: 'Owner', import_type: 'import_group_from_file' }
+          )
         end
 
         it 'removes import file' do
@@ -235,6 +243,14 @@ RSpec.describe Groups::ImportExport::ImportService do
           )
 
           service.execute
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_access_level',
+            user: user,
+            extra: { user_role: 'Owner', import_type: 'import_group_from_file' }
+          )
         end
       end
     end
@@ -274,6 +290,14 @@ RSpec.describe Groups::ImportExport::ImportService do
             category: 'Groups::ImportExport::ImportService',
             action: 'create',
             label: 'import_group_from_file'
+          )
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_access_level',
+            user: user,
+            extra: { user_role: 'Owner', import_type: 'import_group_from_file' }
           )
         end
 
@@ -350,6 +374,24 @@ RSpec.describe Groups::ImportExport::ImportService do
 
         it 'successfully imports the group' do
           expect(service.execute).to be_truthy
+        end
+
+        it 'tracks the event' do
+          service.execute
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_group_from_file'
+          )
+
+          expect_snowplow_event(
+            category: 'Groups::ImportExport::ImportService',
+            action: 'create',
+            label: 'import_access_level',
+            user: user,
+            extra: { user_role: 'Owner', import_type: 'import_group_from_file' }
+          )
         end
 
         it 'logs the import success' do

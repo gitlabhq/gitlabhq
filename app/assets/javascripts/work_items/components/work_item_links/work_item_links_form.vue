@@ -9,7 +9,16 @@ import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_ty
 import projectWorkItemsQuery from '../../graphql/project_work_items.query.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
-import { FORM_TYPES, TASK_TYPE_NAME } from '../../constants';
+import {
+  FORM_TYPES,
+  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_ENUM_TASK,
+  I18N_WORK_ITEM_CREATE_BUTTON_LABEL,
+  I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER,
+  I18N_WORK_ITEM_ADD_BUTTON_LABEL,
+  I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL,
+  sprintfWorkItem,
+} from '../../constants';
 
 export default {
   components: {
@@ -52,6 +61,11 @@ export default {
       type: String,
       required: true,
     },
+    childrenType: {
+      type: String,
+      required: false,
+      default: WORK_ITEM_TYPE_ENUM_TASK,
+    },
   },
   apollo: {
     workItemTypes: {
@@ -71,7 +85,7 @@ export default {
         return {
           projectPath: this.projectPath,
           searchTerm: this.search?.title || this.search,
-          types: ['TASK'],
+          types: [this.childrenType],
           in: this.search ? 'TITLE' : undefined,
         };
       },
@@ -79,7 +93,9 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.workspace.workItems.nodes.filter((wi) => !this.childrenIds.includes(wi.id));
+        return data.workspace.workItems.nodes.filter(
+          (wi) => !this.childrenIds.includes(wi.id) && this.issuableGid !== wi.id,
+        );
       },
     },
   },
@@ -99,7 +115,7 @@ export default {
       let workItemInput = {
         title: this.search?.title || this.search,
         projectPath: this.projectPath,
-        workItemTypeId: this.taskWorkItemType,
+        workItemTypeId: this.childWorkItemType,
         hierarchyWidget: {
           parentId: this.issuableGid,
         },
@@ -122,19 +138,22 @@ export default {
     isCreateForm() {
       return this.formType === FORM_TYPES.create;
     },
+    childrenTypeName() {
+      return WORK_ITEMS_TYPE_MAP[this.childrenType]?.name;
+    },
     addOrCreateButtonLabel() {
       if (this.isCreateForm) {
-        return this.$options.i18n.createChildOptionLabel;
+        return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.childrenTypeName);
       } else if (this.workItemsToAdd.length > 1) {
-        return this.$options.i18n.addTasksButtonLabel;
+        return sprintfWorkItem(I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL, this.childrenTypeName);
       }
-      return this.$options.i18n.addTaskButtonLabel;
+      return sprintfWorkItem(I18N_WORK_ITEM_ADD_BUTTON_LABEL, this.childrenTypeName);
     },
     addOrCreateMethod() {
       return this.isCreateForm ? this.createChild : this.addChild;
     },
-    taskWorkItemType() {
-      return this.workItemTypes.find((type) => type.name === TASK_TYPE_NAME)?.id;
+    childWorkItemType() {
+      return this.workItemTypes.find((type) => type.name === this.childrenTypeName)?.id;
     },
     parentIterationId() {
       return this.parentIteration?.id;
@@ -153,6 +172,9 @@ export default {
     },
     isLoading() {
       return this.$apollo.queries.availableWorkItems.loading;
+    },
+    addInputPlaceholder() {
+      return sprintfWorkItem(I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER, this.childrenTypeName);
     },
   },
   created() {
@@ -253,17 +275,13 @@ export default {
   },
   i18n: {
     inputLabel: __('Title'),
-    addTaskButtonLabel: s__('WorkItem|Add task'),
-    addTasksButtonLabel: s__('WorkItem|Add tasks'),
     addChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to add a child. Please try again.',
     ),
-    createChildOptionLabel: s__('WorkItem|Create task'),
     createChildErrorMessage: s__(
       'WorkItem|Something went wrong when trying to create a child. Please try again.',
     ),
     createPlaceholder: s__('WorkItem|Add a title'),
-    addPlaceholder: s__('WorkItem|Search existing tasks'),
     fieldValidationMessage: __('Maximum of 255 characters'),
   },
 };
@@ -296,7 +314,7 @@ export default {
       v-model="workItemsToAdd"
       :dropdown-items="availableWorkItems"
       :loading="isLoading"
-      :placeholder="$options.i18n.addPlaceholder"
+      :placeholder="addInputPlaceholder"
       menu-class="gl-dropdown-menu-wide dropdown-reduced-height gl-min-h-7!"
       class="gl-mb-4"
       data-testid="work-item-token-select-input"

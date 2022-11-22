@@ -2464,6 +2464,9 @@ msgstr ""
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr ""
 
+msgid "Additional diagram formats"
+msgstr ""
+
 msgid "Additional minutes"
 msgstr ""
 
@@ -46324,6 +46327,12 @@ msgstr ""
 msgid "WorkItem|Add"
 msgstr ""
 
+msgid "WorkItem|Add %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|Add %{workItemType}s"
+msgstr ""
+
 msgid "WorkItem|Add a title"
 msgstr ""
 
@@ -46337,12 +46346,6 @@ msgid "WorkItem|Add due date"
 msgstr ""
 
 msgid "WorkItem|Add start date"
-msgstr ""
-
-msgid "WorkItem|Add task"
-msgstr ""
-
-msgid "WorkItem|Add tasks"
 msgstr ""
 
 msgid "WorkItem|Add to iteration"
@@ -46375,6 +46378,9 @@ msgid "WorkItem|Closed"
 msgstr ""
 
 msgid "WorkItem|Collapse tasks"
+msgstr ""
+
+msgid "WorkItem|Create %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Create objective"
@@ -46411,6 +46417,9 @@ msgid "WorkItem|Issue"
 msgstr ""
 
 msgid "WorkItem|Iteration"
+msgstr ""
+
+msgid "WorkItem|Key result"
 msgstr ""
 
 msgid "WorkItem|Learn about tasks."
@@ -46458,7 +46467,7 @@ msgstr ""
 msgid "WorkItem|Requirements"
 msgstr ""
 
-msgid "WorkItem|Search existing tasks"
+msgid "WorkItem|Search existing %{workItemType}s"
 msgstr ""
 
 msgid "WorkItem|Select type"

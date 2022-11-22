@@ -71,6 +71,50 @@ if you [approve a merge request](../approvals/index.md#approve-a-merge-request) 
 are shown in the reviewer list, a green check mark **{check-circle-filled}**
 displays next to your name.
 
+### Download merge request changes as a diff
+
+To download the changes included in a merge request as a diff:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
+1. On the top right, select **Code > Plain diff**.
+
+If you know the URL of the merge request, you can also download the diff from
+the command line by appending `.diff` to the URL. This example downloads the diff
+for merge request `000000`:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff
+```
+
+To download and apply the diff in a one-line CLI command:
+
+```shell
+curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.diff" | git apply
+```
+
+### Download merge request changes as a patch file
+
+To download the changes included in a merge request as a patch file:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Merge requests**.
+1. On the top right, select **Code > Email patches**.
+
+If you know the URL of the merge request, you can also download the patch from
+the command line by appending `.patch` to the URL. This example downloads the patch
+file for merge request `000000`:
+
+```plaintext
+https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch
+```
+
+To download and apply the patch in a one-line CLI command using [`git am`](https://git-scm.com/docs/git-am):
+
+```shell
+curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch" | git am
+```
+
 ### Submit a review
 
 You can submit your completed review in multiple ways:

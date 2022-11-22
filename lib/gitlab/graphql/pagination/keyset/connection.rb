@@ -59,16 +59,7 @@ module Gitlab
               if before
                 true
               elsif first
-                if Feature.enabled?(:graphql_keyset_pagination_without_next_page_query)
-                  limited_nodes.size > limit_value
-                else
-                  case sliced_nodes
-                  when Array
-                    sliced_nodes.size > limit_value
-                  else
-                    sliced_nodes.limit(1).offset(limit_value).exists? # rubocop: disable CodeReuse/ActiveRecord
-                  end
-                end
+                limited_nodes.size > limit_value
               else
                 false
               end
@@ -126,15 +117,9 @@ module Gitlab
                 @has_previous_page = paginated_nodes.count > limit_value
                 @has_previous_page ? paginated_nodes.last(limit_value) : paginated_nodes
               elsif loaded?(sliced_nodes)
-                if Feature.enabled?(:graphql_keyset_pagination_without_next_page_query)
-                  sliced_nodes.take(limit_value + 1) # rubocop: disable CodeReuse/ActiveRecord
-                else
-                  sliced_nodes.take(limit_value) # rubocop: disable CodeReuse/ActiveRecord
-                end
-              elsif Feature.enabled?(:graphql_keyset_pagination_without_next_page_query)
-                sliced_nodes.limit(limit_value + 1).to_a
+                sliced_nodes.take(limit_value + 1) # rubocop: disable CodeReuse/ActiveRecord
               else
-                sliced_nodes.limit(limit_value)
+                sliced_nodes.limit(limit_value + 1).to_a
               end
             end
           end

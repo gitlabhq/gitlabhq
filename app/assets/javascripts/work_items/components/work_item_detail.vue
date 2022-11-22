@@ -519,6 +519,7 @@ export default {
       <work-item-tree
         v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
         :work-item-type="workItemType"
+        :work-item-id="workItem.id"
       />
       <gl-empty-state
         v-if="error"

@@ -185,6 +185,14 @@ RSpec.describe Import::BitbucketController do
 
       post :create, format: :json
 
+      expect_snowplow_event(
+        category: 'Import::BitbucketController',
+        action: 'create',
+        label: 'import_access_level',
+        user: user,
+        extra: { user_role: 'Owner', import_type: 'bitbucket' }
+      )
+
       expect(response).to have_gitlab_http_status(:ok)
     end
 
@@ -297,6 +305,14 @@ RSpec.describe Import::BitbucketController do
               .to receive(:new).and_return(double(execute: project))
 
             expect { post :create, format: :json }.not_to change(Namespace, :count)
+
+            expect_snowplow_event(
+              category: 'Import::BitbucketController',
+              action: 'create',
+              label: 'import_access_level',
+              user: user,
+              extra: { user_role: 'Owner', import_type: 'bitbucket' }
+            )
           end
 
           it "takes the current user's namespace" do
@@ -417,6 +433,14 @@ RSpec.describe Import::BitbucketController do
         post :create, params: { target_namespace: other_namespace.name }, format: :json
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
+
+        expect_snowplow_event(
+          category: 'Import::BitbucketController',
+          action: 'create',
+          label: 'import_access_level',
+          user: user,
+          extra: { user_role: 'Not a member', import_type: 'bitbucket' }
+        )
       end
     end
   end

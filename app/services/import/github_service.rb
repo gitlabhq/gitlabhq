@@ -13,6 +13,7 @@ module Import
       return context_error if context_error
 
       project = create_project(access_params, provider)
+      track_access_level('github')
 
       if project.persisted?
         store_import_settings(project)

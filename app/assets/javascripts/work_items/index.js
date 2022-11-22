@@ -15,6 +15,7 @@ export const initWorkItemsRoot = () => {
     apolloProvider,
     provide: {
       fullPath,
+      projectPath: fullPath,
       hasIssueWeightsFeature: parseBoolean(hasIssueWeightsFeature),
       issuesListPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),

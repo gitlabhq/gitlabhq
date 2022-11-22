@@ -28,6 +28,7 @@ export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';
 export const WORK_ITEM_TYPE_ENUM_TEST_CASE = 'TEST_CASE';
 export const WORK_ITEM_TYPE_ENUM_REQUIREMENTS = 'REQUIREMENTS';
 export const WORK_ITEM_TYPE_ENUM_OBJECTIVE = 'OBJECTIVE';
+export const WORK_ITEM_TYPE_ENUM_KEY_RESULT = 'KEY_RESULT';
 
 export const WORK_ITEM_TYPE_VALUE_OBJECTIVE = 'Objective';
 
@@ -62,6 +63,13 @@ export const I18N_WORK_ITEM_DELETED = s__('WorkItem|%{workItemType} deleted');
 
 export const I18N_WORK_ITEM_FETCH_ITERATIONS_ERROR = s__(
   'WorkItem|Something went wrong when fetching iterations. Please try again.',
+);
+
+export const I18N_WORK_ITEM_CREATE_BUTTON_LABEL = s__('WorkItem|Create %{workItemType}');
+export const I18N_WORK_ITEM_ADD_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}');
+export const I18N_WORK_ITEM_ADD_MULTIPLE_BUTTON_LABEL = s__('WorkItem|Add %{workItemType}s');
+export const I18N_WORK_ITEM_SEARCH_INPUT_PLACEHOLDER = s__(
+  'WorkItem|Search existing %{workItemType}s',
 );
 
 export const sprintfWorkItem = (msg, workItemTypeArg) => {
@@ -106,6 +114,10 @@ export const WORK_ITEMS_TYPE_MAP = {
   [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
     icon: `issue-type-issue`,
     name: s__('WorkItem|Objective'),
+  },
+  [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
+    icon: `issue-type-issue`,
+    name: s__('WorkItem|Key result'),
   },
 };
 

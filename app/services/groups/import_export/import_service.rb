@@ -8,6 +8,7 @@ module Groups
       def initialize(group:, user:)
         @group = group
         @current_user = user
+        @user_role = user_role
         @shared = Gitlab::ImportExport::Shared.new(@group)
         @logger = Gitlab::Import::Logger.build
       end
@@ -31,6 +32,14 @@ module Groups
         if valid_user_permissions? && import_file && restorers.all?(&:restore)
           notify_success
 
+          Gitlab::Tracking.event(
+            self.class.name,
+            'create',
+            label: 'import_access_level',
+            user: current_user,
+            extra: { user_role: user_role, import_type: 'import_group_from_file' }
+          )
+
           group
         else
           notify_error!
@@ -42,6 +51,15 @@ module Groups
       end
 
       private
+
+      def user_role
+        # rubocop:disable CodeReuse/ActiveRecord, Style/MultilineTernaryOperator
+        access_level = group.parent ?
+          current_user&.group_members&.find_by(source_id: group.parent&.id)&.access_level :
+          Gitlab::Access::OWNER
+        Gitlab::Access.human_access(access_level)
+        # rubocop:enable CodeReuse/ActiveRecord, Style/MultilineTernaryOperator
+      end
 
       def import_file
         @import_file ||= Gitlab::ImportExport::FileImporter.import(

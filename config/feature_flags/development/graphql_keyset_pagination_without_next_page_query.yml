@@ -1,8 +1,0 @@
----
-name: graphql_keyset_pagination_without_next_page_query
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97509
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373792
-milestone: '15.4'
-type: development
-group: group::optimize
-default_enabled: true

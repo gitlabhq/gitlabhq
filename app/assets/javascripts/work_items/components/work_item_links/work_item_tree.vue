@@ -2,17 +2,31 @@
 import { GlButton } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
-import { WORK_ITEMS_TREE_TEXT_MAP } from '../../constants';
+import {
+  FORM_TYPES,
+  WORK_ITEMS_TREE_TEXT_MAP,
+  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+} from '../../constants';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
+import WorkItemLinksForm from './work_item_links_form.vue';
 
 export default {
+  FORM_TYPES,
   WORK_ITEMS_TREE_TEXT_MAP,
+  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
     GlButton,
     OkrActionsSplitButton,
+    WorkItemLinksForm,
   },
   props: {
     workItemType: {
+      type: String,
+      required: true,
+    },
+    workItemId: {
       type: String,
       required: true,
     },
@@ -22,6 +36,8 @@ export default {
       isShownAddForm: false,
       isOpen: true,
       error: null,
+      formType: null,
+      childType: null,
     };
   },
   computed: {
@@ -36,9 +52,11 @@ export default {
     toggle() {
       this.isOpen = !this.isOpen;
     },
-    showAddForm() {
+    showAddForm(formType, childType) {
       this.isOpen = true;
       this.isShownAddForm = true;
+      this.formType = formType;
+      this.childType = childType;
       this.$nextTick(() => {
         this.$refs.wiLinksForm.$refs.wiTitleInput?.$el.focus();
       });
@@ -64,7 +82,20 @@ export default {
           {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
         </h5>
       </div>
-      <okr-actions-split-button />
+      <okr-actions-split-button
+        @showCreateObjectiveForm="
+          showAddForm($options.FORM_TYPES.create, $options.WORK_ITEM_TYPE_ENUM_OBJECTIVE)
+        "
+        @showAddObjectiveForm="
+          showAddForm($options.FORM_TYPES.add, $options.WORK_ITEM_TYPE_ENUM_OBJECTIVE)
+        "
+        @showCreateKeyResultForm="
+          showAddForm($options.FORM_TYPES.create, $options.WORK_ITEM_TYPE_ENUM_KEY_RESULT)
+        "
+        @showAddKeyResultForm="
+          showAddForm($options.FORM_TYPES.add, $options.WORK_ITEM_TYPE_ENUM_KEY_RESULT)
+        "
+      />
       <div class="gl-border-l-1 gl-border-l-solid gl-border-l-gray-100 gl-pl-3 gl-ml-3">
         <gl-button
           category="tertiary"
@@ -87,6 +118,15 @@ export default {
           {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
         </p>
       </div>
+      <work-item-links-form
+        v-if="isShownAddForm"
+        ref="wiLinksForm"
+        data-testid="add-tree-form"
+        :issuable-gid="workItemId"
+        :form-type="formType"
+        :children-type="childType"
+        @cancel="hideAddForm"
+      />
     </div>
   </div>
 </template>

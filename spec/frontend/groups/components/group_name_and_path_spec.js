@@ -398,7 +398,7 @@ describe('GroupNameAndPath', () => {
 
       expect(findAlert().exists()).toBe(true);
       expect(findAlert().findByRole('link', { name: 'Learn more' }).attributes('href')).toBe(
-        helpPagePath('user/group/index', {
+        helpPagePath('user/group/manage', {
           anchor: 'change-a-groups-path',
         }),
       );
