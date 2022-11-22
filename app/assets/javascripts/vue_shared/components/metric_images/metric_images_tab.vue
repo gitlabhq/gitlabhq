@@ -1,5 +1,5 @@
 <script>
-import { GlFormGroup, GlFormInput, GlLoadingIcon, GlModal, GlTab } from '@gitlab/ui';
+import { GlFormGroup, GlFormInput, GlLoadingIcon, GlModal } from '@gitlab/ui';
 import { mapState, mapActions } from 'vuex';
 import { __, s__ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
@@ -11,7 +11,6 @@ export default {
     GlFormInput,
     GlLoadingIcon,
     GlModal,
-    GlTab,
     MetricImagesTable,
     UploadDropzone,
   },
@@ -82,7 +81,7 @@ export default {
 </script>
 
 <template>
-  <gl-tab :title="s__('Incident|Metrics')" data-testid="metrics-tab">
+  <div>
     <div v-if="isLoadingMetricImages">
       <gl-loading-icon class="gl-p-5" size="sm" />
     </div>
@@ -117,5 +116,5 @@ export default {
       :drop-description-message="$options.i18n.dropDescription"
       @change="openMetricDialog"
     />
-  </gl-tab>
+  </div>
 </template>

@@ -1,6 +1,6 @@
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
-import Mock from './mock_data';
+import Mock from '../mock_data';
 
 const ASSIGNEE = {
   id: 2,

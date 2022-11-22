@@ -68,6 +68,7 @@ RSpec.describe Gitlab::Audit::Auditor do
 
         expect(logger).to have_received(:info).with(
           hash_including(
+            'id' => AuditEvent.last.id,
             'author_id' => author.id,
             'author_name' => author.name,
             'entity_id' => group.id,
@@ -112,6 +113,7 @@ RSpec.describe Gitlab::Audit::Auditor do
 
             expect(logger).to have_received(:info).with(
               hash_including(
+                'id' => AuditEvent.last.id,
                 'author_id' => author.id,
                 'author_name' => author.name,
                 'entity_id' => group.id,
@@ -244,7 +246,9 @@ RSpec.describe Gitlab::Audit::Auditor do
       let(:audit!) { auditor.audit(context) }
 
       before do
-        allow(AuditEvent).to receive(:bulk_insert!).and_raise(ActiveRecord::RecordInvalid)
+        expect_next_instance_of(AuditEvent) do |instance|
+          allow(instance).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+        end
         allow(Gitlab::ErrorTracking).to receive(:track_exception)
       end
 
@@ -255,6 +259,28 @@ RSpec.describe Gitlab::Audit::Auditor do
           kind_of(ActiveRecord::RecordInvalid),
           { audit_operation: name }
         )
+      end
+
+      it 'does not throw exception' do
+        expect { auditor.audit(context) }.not_to raise_exception
+      end
+    end
+
+    context 'when audit event is not saved in database due to some database infra issue' do
+      let(:audit!) { auditor.audit(context) }
+
+      before do
+        allow_any_instance_of(auditor) do |auditor_instance|
+          allow(auditor_instance).to receive(:log_to_database).and_return(nil)
+        end
+      end
+
+      it 'calls log_to_file_and_stream with in memory events' do
+        audit!
+
+        expect_any_instance_of(auditor) do |auditor_instance|
+          expect(auditor_instance).to receive(:log_to_file_and_stream).with(include(kind_of(AuditEvent)))
+        end
       end
 
       it 'does not throw exception' do

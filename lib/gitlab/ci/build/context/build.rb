@@ -50,3 +50,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Build::Context::Build.prepend_mod_with('Gitlab::Ci::Build::Context::Build')

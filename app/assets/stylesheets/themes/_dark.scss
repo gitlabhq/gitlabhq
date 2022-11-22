@@ -11,6 +11,20 @@ $gray-800: #dcdcde;
 $gray-900: #ececef;
 $gray-950: #fbfafd;
 
+$gray-lightest: lighten($gray-10, 1);
+$gray-light: lighten($gray-10, 2);
+$gray-lighter: darken($gray-50, 4);
+$gray-normal: $gray-50;
+$gray-dark: darken($gray-100, 2);
+$gray-darker: darken($gray-200, 2);
+$gray-darkest: $gray-700;
+
+$black: #fff;
+$black-normal: $gray-900;
+$white: $gray-50;
+$white-normal: $gray-50;
+$white-dark: $gray-100;
+
 $green-50: #0a4020;
 $green-100: #0d532a;
 $green-200: #24663b;
@@ -82,21 +96,6 @@ $purple-700: #ac93e6;
 $purple-800: #cbbbf2;
 $purple-900: #e1d8f9;
 $purple-950: #f4f0ff;
-
-$gray-lightest: #222;
-$gray-light: $gray-50;
-$gray-lighter: #303030;
-$gray-normal: #333;
-$gray-dark: $gray-100;
-$gray-darker: #4f4f4f;
-$gray-darkest: #c4c4c4;
-
-$black: #fff;
-$black-normal: $gray-900;
-$white: #333;
-$white-light: #2b2b2b;
-$white-normal: #333;
-$white-dark: #444;
 
 $theme-indigo-50: #1a1a40;
 

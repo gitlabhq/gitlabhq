@@ -132,16 +132,15 @@ The feature is not ready for production use.
 If a webhook fails repeatedly, it may be disabled automatically.
 
 Webhooks that return response codes in the `5xx` range are understood to be failing
-intermittently, and are temporarily disabled. This lasts initially
-for 10 minutes. If the hook continues to fail, the back-off period is
-extended on each retry, up to a maximum disabled period of 24 hours.
+intermittently and are temporarily disabled. These webhooks are initially disabled
+for 1 minute, which is extended on each retry up to a maximum of 24 hours.
 
-Webhooks that return failure codes in the `4xx` range are understood to be
-misconfigured, and these are disabled until you manually re-enable
-them. These webhooks are not automatically retried.
+Webhooks that return response codes in the `4xx` range are understood to be
+misconfigured and are permanently disabled until you manually re-enable
+them yourself.
 
-See [troubleshooting](#troubleshoot-webhooks) for information on
-how to see if a webhook is disabled, and how to re-enable it.
+See [Troubleshooting](#troubleshoot-webhooks) for more information on
+disabled webhooks and how to re-enable them.
 
 ## Test a webhook
 

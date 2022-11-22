@@ -83,17 +83,8 @@ $darken-dark-factor: 10% !default;
 $darken-border-factor: 5% !default;
 $darken-border-dashed-factor: 25% !default;
 
-$white: #fff !default;
-$white-normal: #f0f0f0 !default;
-$white-dark: #eaeaea !default;
-$white-transparent: rgba($white, 0.8) !default;
-
 $purple: #6d49cb !default;
 $purple-light: #ede8fb !default;
-
-$black: #000 !default;
-$black-transparent: rgba(0, 0, 0, 0.3) !default;
-$almost-black: #242424 !default;
 
 $green-50: #ecf4ee !default;
 $green-100: #c3e6cd !default;
@@ -182,6 +173,15 @@ $t-gray-a-06: rgba($gray-950, 0.06) !default;
 $t-gray-a-08: rgba($gray-950, 0.08) !default;
 $t-gray-a-16: rgba($gray-950, 0.16) !default;
 $t-gray-a-24: rgba($gray-950, 0.24) !default;
+
+$white: #fff !default;
+$white-normal: $gray-50 !default;
+$white-dark: darken($gray-50, 2) !default;
+$white-transparent: rgba($white, 0.8) !default;
+
+$black: #000 !default;
+$black-transparent: $t-gray-a-24 !default;
+$almost-black: $gray-950 !default;
 
 $greens: (
   '50': $green-50,
@@ -380,7 +380,7 @@ $well-expand-item: #e8f2f7 !default;
 $well-inner-border: #eef0f2 !default;
 $well-light-border: #f1f1f1;
 $well-light-text-color: #5b6169;
-$nav-active-bg: rgba($black, 0.08);
+$nav-active-bg: $t-gray-a-08;
 
 /*
  * Text
@@ -732,8 +732,8 @@ $commit-stat-summary-height: 36px;
 /*
 * Common
 */
-$common-gray-light: #bbb;
-$common-gray-dark: #444;
+$common-gray-light: $gray-200;
+$common-gray-dark: $gray-800;
 
 /*
 * Files

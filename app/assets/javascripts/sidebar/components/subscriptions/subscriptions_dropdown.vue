@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { subscriptionsDropdownOptions } from '../constants';
+import { subscriptionsDropdownOptions } from '../../constants';
 
 export default {
   subscriptionsDropdownOptions,

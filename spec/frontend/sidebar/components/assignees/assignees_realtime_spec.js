@@ -11,7 +11,7 @@ import Mock, {
   issuableQueryResponse,
   subscriptionNullResponse,
   subscriptionResponse,
-} from './mock_data';
+} from '../../mock_data';
 
 Vue.use(VueApollo);
 

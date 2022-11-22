@@ -4,7 +4,7 @@ $system-note-svg-size: 1rem;
 @mixin vertical-line($left) {
   &::before {
     content: '';
-    border-left: 2px solid var(--gray-10, $gray-10);
+    border-left: 2px solid var(--gray-50, $gray-50);
     position: absolute;
     top: $gl-padding-6;
     bottom: 0;
@@ -416,17 +416,17 @@ $system-note-svg-size: 1rem;
     .timeline-icon {
       display: flex;
       align-items: center;
-      background-color: $gray-10;
+      background-color: $gray-50;
       width: $system-note-icon-size;
       height: $system-note-icon-size;
-      border: 1px solid $gray-10;
+      border: 1px solid $gray-50;
       border-radius: $system-note-icon-size;
       margin: -6px 0 0;
 
       svg {
         width: $system-note-svg-size;
         height: $system-note-svg-size;
-        fill: $gray-400;
+        fill: $gray-600;
         display: block;
         margin: 0 auto;
       }

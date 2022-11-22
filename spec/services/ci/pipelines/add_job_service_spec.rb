@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Ci::Pipelines::AddJobService do
   include ExclusiveLeaseHelpers
 
-  let_it_be(:pipeline) { create(:ci_pipeline) }
+  let_it_be_with_reload(:pipeline) { create(:ci_pipeline) }
 
   let(:job) { build(:ci_build) }
 
@@ -35,7 +35,7 @@ RSpec.describe Ci::Pipelines::AddJobService do
     end
 
     it 'assigns partition_id to job and metadata' do
-      pipeline.partition_id = 123
+      pipeline.partition_id = ci_testing_partition_id
 
       expect { execute }
         .to change(job, :partition_id).to(pipeline.partition_id)

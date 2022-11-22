@@ -11,7 +11,7 @@ import {
   getIssueCrmContactsQueryResponse,
   issueCrmContactsUpdateResponse,
   issueCrmContactsUpdateNullResponse,
-} from './mock_data';
+} from '../mock_data';
 
 jest.mock('~/flash');
 

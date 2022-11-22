@@ -606,8 +606,8 @@ html {
 }
 .btn:active,
 .btn.active {
-  background-color: #eaeaea;
-  border-color: #e3e3e3;
+  background-color: #e6e6ea;
+  border-color: #dedee3;
   color: #333238;
 }
 .btn svg {
@@ -1123,7 +1123,7 @@ kbd {
   font-weight: 600;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: rgba(31, 30, 36, 0.08);
 }
 .nav-sidebar ul {
   padding-left: 0;

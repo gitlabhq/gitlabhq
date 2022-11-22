@@ -19,7 +19,7 @@ body.gl-dark {
   --black: #fff;
 }
 :root {
-  --white: #333;
+  --white: #333238;
 }
 *,
 *::before,
@@ -117,7 +117,7 @@ button::-moz-focus-inner,
 kbd {
   padding: 0.2rem 0.4rem;
   font-size: 90%;
-  color: #333;
+  color: #333238;
   background-color: #ececef;
   border-radius: 0.2rem;
 }
@@ -142,7 +142,7 @@ kbd kbd {
   font-weight: 400;
   line-height: 1.5;
   color: #ececef;
-  background-color: #333;
+  background-color: #333238;
   background-clip: padding-box;
   border: 1px solid #737278;
   border-radius: 0.25rem;
@@ -158,7 +158,7 @@ kbd kbd {
   opacity: 1;
 }
 .form-control:disabled {
-  background-color: #333238;
+  background-color: #24232a;
   opacity: 1;
 }
 .form-inline {
@@ -215,7 +215,7 @@ kbd kbd {
   color: #ececef;
   text-align: left;
   list-style: none;
-  background-color: #333;
+  background-color: #333238;
   background-clip: padding-box;
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 0.25rem;
@@ -410,7 +410,7 @@ a.gl-badge.badge-info:active {
   background-color: #0b5cad;
 }
 a.gl-badge.badge-info:active {
-  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
+  box-shadow: 0 0 0 1px #333238, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .gl-badge.badge-success {
@@ -423,7 +423,7 @@ a.gl-badge.badge-success:active {
   background-color: #24663b;
 }
 a.gl-badge.badge-success:active {
-  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
+  box-shadow: 0 0 0 1px #333238, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .gl-badge.badge-warning {
@@ -436,7 +436,7 @@ a.gl-badge.badge-warning:active {
   background-color: #8f4700;
 }
 a.gl-badge.badge-warning:active {
-  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
+  box-shadow: 0 0 0 1px #333238, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .gl-button .gl-badge {
@@ -444,7 +444,7 @@ a.gl-badge.badge-warning:active {
 }
 .gl-form-input,
 .gl-form-input.form-control {
-  background-color: #333;
+  background-color: #333238;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -527,11 +527,11 @@ a.gl-badge.badge-warning:active {
   border-radius: 0.25rem;
 }
 .gl-button.gl-button.btn-default {
-  background-color: #333;
+  background-color: #333238;
 }
 .gl-button.gl-button.btn-default:active,
 .gl-button.gl-button.btn-default.active {
-  box-shadow: inset 0 0 0 1px #a4a3a8, 0 0 0 1px #333, 0 0 0 3px #1f75cb;
+  box-shadow: inset 0 0 0 1px #a4a3a8, 0 0 0 1px #333238, 0 0 0 3px #1f75cb;
   outline: none;
   background-color: #434248;
 }
@@ -613,7 +613,7 @@ html {
   font-size: 0.875rem;
   font-weight: 400;
   padding: 6px 10px;
-  background-color: #333;
+  background-color: #333238;
   border-color: #434248;
   color: #ececef;
   color: #ececef;
@@ -625,7 +625,7 @@ html {
 }
 .btn:active,
 .btn.active {
-  background-color: #444;
+  background-color: #434248;
   border-color: #4f4f4f;
   color: #ececef;
 }
@@ -649,7 +649,7 @@ html {
   position: relative;
 }
 .dropdown-menu-toggle:active {
-  box-shadow: 0 0 0 1px #333, 0 0 0 3px #1f75cb;
+  box-shadow: 0 0 0 1px #333238, 0 0 0 3px #1f75cb;
   outline: none;
 }
 .search-input-container .dropdown-menu {
@@ -657,7 +657,7 @@ html {
 }
 .dropdown-menu-toggle {
   padding: 6px 8px 6px 10px;
-  background-color: #333;
+  background-color: #333238;
   color: #ececef;
   font-size: 14px;
   text-align: left;
@@ -689,7 +689,7 @@ html {
   font-size: 0.875rem;
   font-weight: 400;
   padding: 8px 0;
-  background-color: #333;
+  background-color: #333238;
   border: 1px solid #434248;
   border-radius: 0.25rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -722,15 +722,15 @@ html {
 }
 .dropdown-menu li > a:active,
 .dropdown-menu li button:active {
-  background-color: #4f4f4f;
+  background-color: #4e4c53;
   color: #ececef;
   outline: 0;
   text-decoration: none;
 }
 .dropdown-menu li > a:active,
 .dropdown-menu li button:active {
-  box-shadow: inset 0 0 0 2px #1f75cb, inset 0 0 0 3px #333,
-    inset 0 0 0 1px #333;
+  box-shadow: inset 0 0 0 2px #1f75cb, inset 0 0 0 3px #333238,
+    inset 0 0 0 1px #333238;
   outline: none;
 }
 .dropdown-menu .divider {
@@ -765,7 +765,7 @@ html {
 input {
   border-radius: 0.25rem;
   color: #ececef;
-  background-color: #333;
+  background-color: #333238;
 }
 .form-control {
   border-radius: 4px;
@@ -1010,7 +1010,7 @@ kbd {
   float: left;
   margin-right: 5px;
   border-radius: 50%;
-  border: 1px solid #333;
+  border: 1px solid #333238;
 }
 .notification-dot {
   background-color: #9e5400;
@@ -1049,7 +1049,7 @@ kbd {
 }
 .context-header .avatar-container {
   flex: 0 0 32px;
-  background-color: #333;
+  background-color: #333238;
 }
 .context-header .sidebar-context-title {
   overflow: hidden;
@@ -1142,7 +1142,7 @@ kbd {
   font-weight: 600;
 }
 .nav-sidebar li.active:not(.fly-out-top-item) > a:not(.has-sub-items) {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: rgba(251, 250, 253, 0.08);
 }
 .nav-sidebar ul {
   padding-left: 0;
@@ -1189,7 +1189,7 @@ kbd {
   margin-bottom: -0.25rem;
   margin-top: 0;
   position: relative;
-  color: #333;
+  color: #333238;
   background: var(--black, #fff);
 }
 .nav-sidebar
@@ -1417,7 +1417,7 @@ kbd {
 .close-nav-button {
   height: 48px;
   padding: 0 16px;
-  background-color: #333238;
+  background-color: #24232a;
   border: 0;
   color: #89888d;
   display: flex;
@@ -1564,7 +1564,7 @@ svg.s16 {
   margin-left: 5px;
   line-height: 25px;
   width: 98%;
-  color: #333;
+  color: #333238;
   background: none;
 }
 .search .search-input-container {
@@ -1627,7 +1627,7 @@ svg.s16 {
   width: 40px;
   height: 40px;
   padding: 0;
-  background: #222;
+  background: #212027;
   overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(251, 250, 253, 0.1);
 }
@@ -1792,10 +1792,10 @@ body.gl-dark {
   --dark-icon-color-orange-2: #b37a5d;
   --gl-text-color: #ececef;
   --border-color: #4f4f4f;
-  --white: #333;
+  --white: #333238;
   --black: #fff;
   --gray-light: #333238;
-  --svg-status-bg: #333;
+  --svg-status-bg: #333238;
 }
 .nav-sidebar,
 .toggle-sidebar-button,
@@ -1830,7 +1830,7 @@ body.gl-dark .navbar-gitlab .navbar-sub-nav > li.active > button,
 body.gl-dark .navbar-gitlab .navbar-nav > li.active > a,
 body.gl-dark .navbar-gitlab .navbar-nav > li.active > button {
   color: #ececef;
-  background-color: #333;
+  background-color: #333238;
 }
 body.gl-dark .navbar-gitlab .navbar-sub-nav {
   color: #ececef;
@@ -1862,10 +1862,10 @@ body.gl-dark
 }
 body.gl-dark .navbar-gitlab .nav > li.active > a {
   color: #ececef;
-  background-color: #333;
+  background-color: #333238;
 }
 body.gl-dark .navbar-gitlab .nav > li.active > a .notification-dot {
-  border-color: #333;
+  border-color: #333238;
 }
 body.gl-dark
   .navbar-gitlab
@@ -2036,10 +2036,10 @@ body.gl-dark {
   --dark-icon-color-orange-2: #b37a5d;
   --gl-text-color: #ececef;
   --border-color: #4f4f4f;
-  --white: #333;
+  --white: #333238;
   --black: #fff;
   --gray-light: #333238;
-  --svg-status-bg: #333;
+  --svg-status-bg: #333238;
 }
 .tab-width-8 {
   tab-size: 8;

@@ -299,7 +299,7 @@ module Gitlab
             object_store: {
               enabled: alt_usage_data { config['enabled'] },
               direct_upload: alt_usage_data { config['direct_upload'] },
-              background_upload: alt_usage_data { config['background_upload'] },
+              background_upload: alt_usage_data { false }, # This setting no longer exists
               provider: alt_usage_data { config['connection']['provider'] }
             }
           }

@@ -110,13 +110,22 @@ module API
 
         authorize! :update_pipeline, pipeline
 
+        # rubocop: disable Performance/ActiveRecordSubtransactionMethods
+        stage = pipeline.stages.safe_find_or_create_by!(name: 'external') do |stage|
+          stage.position = GenericCommitStatus::EXTERNAL_STAGE_IDX
+          stage.project = pipeline.project
+        end
+        # rubocop: enable Performance/ActiveRecordSubtransactionMethods
+
         status = GenericCommitStatus.running_or_pending.find_or_initialize_by(
           project: user_project,
           pipeline: pipeline,
           name: name,
           ref: ref,
           user: current_user,
-          protected: user_project.protected_for?(ref)
+          protected: user_project.protected_for?(ref),
+          ci_stage: stage,
+          stage_idx: stage.position
         )
 
         updatable_optional_attributes = %w[target_url description coverage]

@@ -1,7 +1,7 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { __ } from '~/locale';
-import { statusDropdownOptions } from '../constants';
+import { statusDropdownOptions } from '../../constants';
 
 export default {
   components: {

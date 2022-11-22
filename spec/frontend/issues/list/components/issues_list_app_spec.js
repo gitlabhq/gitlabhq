@@ -61,7 +61,7 @@ import {
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
-import('~/issuable/bulk_update_sidebar');
+import('~/issuable');
 import('~/users_select');
 
 jest.mock('@sentry/browser');

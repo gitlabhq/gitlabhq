@@ -598,7 +598,7 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
           external_diffs: { enabled: false },
           lfs: { enabled: true, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
           uploads: { enabled: nil, object_store: { enabled: false, direct_upload: true, background_upload: false, provider: "AWS" } },
-          packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: true, provider: "AWS" } } }
+          packages: { enabled: true, object_store: { enabled: false, direct_upload: false, background_upload: false, provider: "AWS" } } }
       )
     end
 

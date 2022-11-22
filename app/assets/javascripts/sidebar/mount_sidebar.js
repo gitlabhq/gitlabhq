@@ -6,6 +6,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import initInviteMembersModal from '~/invite_members/init_invite_members_modal';
 import initInviteMembersTrigger from '~/invite_members/init_invite_members_trigger';
 import { IssuableType } from '~/issues/constants';
+import { gqlClient } from '~/issues/list/graphql';
 import {
   isInIssuePage,
   isInDesignPage,
@@ -14,33 +15,36 @@ import {
   parseBoolean,
 } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
-import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
-import SidebarAssigneesWidget from '~/sidebar/components/assignees/sidebar_assignees_widget.vue';
-import SidebarConfidentialityWidget from '~/sidebar/components/confidential/sidebar_confidentiality_widget.vue';
-import SidebarDueDateWidget from '~/sidebar/components/date/sidebar_date_widget.vue';
-import MilestoneDropdown from '~/sidebar/components/milestone/milestone_dropdown.vue';
-import SidebarParticipantsWidget from '~/sidebar/components/participants/sidebar_participants_widget.vue';
-import SidebarReferenceWidget from '~/sidebar/components/reference/sidebar_reference_widget.vue';
-import SidebarDropdownWidget from '~/sidebar/components/sidebar_dropdown_widget.vue';
-import SidebarTodoWidget from '~/sidebar/components/todo_toggle/sidebar_todo_widget.vue';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
-import trackShowInviteMemberLink from '~/sidebar/track_invite_members';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
 import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
 import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
-import Translate from '../vue_shared/translate';
+import Translate from '~/vue_shared/translate';
+import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
-import CopyEmailToClipboard from './components/copy_email_to_clipboard.vue';
+import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
+import SidebarConfidentialityWidget from './components/confidential/sidebar_confidentiality_widget.vue';
+import CopyEmailToClipboard from './components/copy_email/copy_email_to_clipboard.vue';
+import SidebarDueDateWidget from './components/date/sidebar_date_widget.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
+import MilestoneDropdown from './components/milestone/milestone_dropdown.vue';
+import MoveIssuesButton from './components/move/move_issues_button.vue';
+import SidebarParticipantsWidget from './components/participants/sidebar_participants_widget.vue';
+import SidebarReferenceWidget from './components/reference/sidebar_reference_widget.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarReviewersInputs from './components/reviewers/sidebar_reviewers_inputs.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';
+import SidebarDropdownWidget from './components/sidebar_dropdown_widget.vue';
+import StatusDropdown from './components/status/status_dropdown.vue';
 import SidebarSubscriptionsWidget from './components/subscriptions/sidebar_subscriptions_widget.vue';
+import SubscriptionsDropdown from './components/subscriptions/subscriptions_dropdown.vue';
 import SidebarTimeTracking from './components/time_tracking/sidebar_time_tracking.vue';
+import SidebarTodoWidget from './components/todo_toggle/sidebar_todo_widget.vue';
 import { IssuableAttributeType } from './constants';
-import SidebarMoveIssue from './lib/sidebar_move_issue';
 import CrmContacts from './components/crm_contacts/crm_contacts.vue';
+import SidebarMoveIssue from './lib/sidebar_move_issue';
+import trackShowInviteMemberLink from './track_invite_members';
 
 Vue.use(Translate);
 Vue.use(VueApollo);
@@ -632,6 +636,59 @@ function mountCopyEmailToClipboard() {
     name: 'SidebarCopyEmailRoot',
     render: (createElement) =>
       createElement(CopyEmailToClipboard, { props: { issueEmailAddress: createNoteEmail } }),
+  });
+}
+
+export function mountMoveIssuesButton() {
+  const el = document.querySelector('.js-move-issues');
+
+  if (!el) {
+    return null;
+  }
+
+  Vue.use(VueApollo);
+
+  return new Vue({
+    el,
+    name: 'MoveIssuesRoot',
+    apolloProvider: new VueApollo({
+      defaultClient: gqlClient,
+    }),
+    render: (createElement) =>
+      createElement(MoveIssuesButton, {
+        props: {
+          projectFullPath: el.dataset.projectFullPath,
+          projectsFetchPath: el.dataset.projectsFetchPath,
+        },
+      }),
+  });
+}
+
+export function mountStatusDropdown() {
+  const el = document.querySelector('.js-status-dropdown');
+
+  if (!el) {
+    return null;
+  }
+
+  return new Vue({
+    el,
+    name: 'StatusDropdownRoot',
+    render: (createElement) => createElement(StatusDropdown),
+  });
+}
+
+export function mountSubscriptionsDropdown() {
+  const el = document.querySelector('.js-subscriptions-dropdown');
+
+  if (!el) {
+    return null;
+  }
+
+  return new Vue({
+    el,
+    name: 'SubscriptionsDropdownRoot',
+    render: (createElement) => createElement(SubscriptionsDropdown),
   });
 }
 

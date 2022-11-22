@@ -13,7 +13,7 @@ import {
 import issuableEventHub from '~/issues/list/eventhub';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import moveIssueMutation from './graphql/mutations/move_issue.mutation.graphql';
+import moveIssueMutation from '../../queries/move_issue.mutation.graphql';
 
 export default {
   name: 'MoveIssuesButton',

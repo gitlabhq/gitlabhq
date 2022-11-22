@@ -320,10 +320,11 @@ RSpec.describe Projects::UpdatePagesService do
   end
 
   context 'when retrying the job' do
+    let(:stage) { create(:ci_stage, position: 1_000_000, name: 'deploy', pipeline: pipeline) }
     let!(:older_deploy_job) do
       create(:generic_commit_status, :failed, pipeline: pipeline,
                                               ref: build.ref,
-                                              stage: 'deploy',
+                                              ci_stage: stage,
                                               name: 'pages:deploy')
     end
 
@@ -337,13 +338,15 @@ RSpec.describe Projects::UpdatePagesService do
       expect(execute).to eq(:success)
 
       expect(older_deploy_job.reload).to be_retried
+      expect(deploy_status.ci_stage).to eq(stage)
+      expect(deploy_status.stage_idx).to eq(stage.position)
     end
   end
 
   private
 
   def deploy_status
-    GenericCommitStatus.find_by(name: 'pages:deploy')
+    GenericCommitStatus.where(name: 'pages:deploy').last
   end
 
   def execute

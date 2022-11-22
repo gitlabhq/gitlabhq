@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlEmptyState, GlLoadingIcon, GlTab } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLoadingIcon } from '@gitlab/ui';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ISSUE } from '~/graphql_shared/constants';
 import { fetchPolicies } from '~/lib/graphql';
@@ -15,7 +15,6 @@ export default {
     GlButton,
     GlEmptyState,
     GlLoadingIcon,
-    GlTab,
     CreateTimelineEvent,
     IncidentTimelineEventsList,
   },
@@ -77,7 +76,7 @@ export default {
 </script>
 
 <template>
-  <gl-tab :title="$options.i18n.title">
+  <div>
     <gl-loading-icon v-if="timelineEventLoading" size="lg" color="dark" class="gl-mt-5" />
     <gl-empty-state
       v-else-if="showEmptyState"
@@ -106,5 +105,5 @@ export default {
     >
       {{ $options.i18n.addEventButton }}
     </gl-button>
-  </gl-tab>
+  </div>
 </template>

@@ -5,7 +5,7 @@ import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
 import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
-import UsersMock from './mock_data';
+import UsersMock from '../../mock_data';
 
 describe('Assignee component', () => {
   const getDefaultProps = () => ({

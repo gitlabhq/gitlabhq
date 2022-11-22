@@ -8,7 +8,7 @@ import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
 import { GitLabDropdown } from '~/deprecated_jquery_dropdown/gl_dropdown';
-import Mock from './mock_data';
+import Mock from '../mock_data';
 
 jest.mock('~/flash');
 

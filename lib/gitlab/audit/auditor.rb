@@ -84,14 +84,23 @@ module Gitlab
       end
 
       def record(events)
-        log_events(events) unless @stream_only
-        send_to_stream(events)
+        @stream_only ? send_to_stream(events) : log_events_and_stream(events)
       end
 
-      def log_events(events)
+      def log_events_and_stream(events)
         log_authentication_event
-        log_to_database(events)
+        saved_events = log_to_database(events)
+
+        # we only want to override events with saved_events when it successfully saves into database.
+        # we are doing so to ensure events in memory reflects events saved in database and have id column.
+        events = saved_events if saved_events.present?
+
+        log_to_file_and_stream(events)
+      end
+
+      def log_to_file_and_stream(events)
         log_to_file(events)
+        send_to_stream(events)
       end
 
       def audit_enabled?
@@ -145,7 +154,13 @@ module Gitlab
       end
 
       def log_to_database(events)
-        AuditEvent.bulk_insert!(events)
+        if events.one?
+          events.first.save!
+          events
+        else
+          event_ids = AuditEvent.bulk_insert!(events, returns: :ids)
+          AuditEvent.id_in(event_ids)
+        end
       rescue ActiveRecord::RecordInvalid => e
         ::Gitlab::ErrorTracking.track_exception(e, audit_operation: @name)
       end

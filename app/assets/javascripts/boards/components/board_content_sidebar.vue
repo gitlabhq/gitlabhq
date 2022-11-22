@@ -34,10 +34,10 @@ export default {
     MountingPortal,
     SidebarHealthStatusWidget: () =>
       import('ee_component/sidebar/components/health_status/sidebar_health_status_widget.vue'),
+    SidebarIterationWidget: () =>
+      import('ee_component/sidebar/components/iteration/sidebar_iteration_widget.vue'),
     SidebarWeightWidget: () =>
       import('ee_component/sidebar/components/weight/sidebar_weight_widget.vue'),
-    IterationSidebarDropdownWidget: () =>
-      import('ee_component/sidebar/components/iteration_sidebar_dropdown_widget.vue'),
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
@@ -193,7 +193,7 @@ export default {
             :issuable-type="issuableType"
             data-testid="sidebar-milestones"
           />
-          <iteration-sidebar-dropdown-widget
+          <sidebar-iteration-widget
             v-if="iterationFeatureAvailable && !isIncidentSidebar"
             :iid="activeBoardItem.iid"
             :workspace-path="projectPathForActiveIssue"

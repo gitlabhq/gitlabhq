@@ -8,7 +8,7 @@ import SidebarAssignees from '~/sidebar/components/assignees/sidebar_assignees.v
 import SidebarService from '~/sidebar/services/sidebar_service';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import SidebarStore from '~/sidebar/stores/sidebar_store';
-import Mock from './mock_data';
+import Mock from '../../mock_data';
 
 describe('sidebar assignees', () => {
   let wrapper;
