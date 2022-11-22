@@ -27,7 +27,8 @@ module API
               use :pagination
             end
             get do
-              agent_tokens = ::Clusters::AgentTokensFinder.new(user_project, current_user, params[:agent_id]).execute
+              agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
+              agent_tokens = ::Clusters::AgentTokensFinder.new(agent, current_user).execute
 
               present paginate(agent_tokens), with: Entities::Clusters::AgentTokenBasic
             end

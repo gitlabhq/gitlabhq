@@ -118,5 +118,9 @@ FactoryBot.define do
         create(:crm_settings, group: group, enabled: true)
       end
     end
+
+    trait :with_root_storage_statistics do
+      association :root_storage_statistics, factory: :namespace_root_storage_statistics
+    end
   end
 end

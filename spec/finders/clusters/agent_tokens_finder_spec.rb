@@ -7,7 +7,6 @@ RSpec.describe Clusters::AgentTokensFinder do
     let_it_be(:project) { create(:project) }
     let(:user) { create(:user, maintainer_projects: [project]) }
     let(:agent) { create(:cluster_agent, project: project) }
-    let(:agent_id) { agent.id }
 
     let!(:matching_agent_tokens) do
       [
@@ -16,7 +15,7 @@ RSpec.describe Clusters::AgentTokensFinder do
       ]
     end
 
-    subject(:execute) { described_class.new(project, user, agent_id).execute }
+    subject(:execute) { described_class.new(agent, user).execute }
 
     it 'returns the tokens of the specified agent' do
       # creating a token in a different agent to make sure it will not be included in the result
@@ -32,16 +31,20 @@ RSpec.describe Clusters::AgentTokensFinder do
         project.add_reporter(user)
       end
 
-      it 'raises an error' do
-        expect { execute }.to raise_error(ActiveRecord::RecordNotFound)
+      it { is_expected.to eq ::Clusters::AgentToken.none }
+    end
+
+    context 'when current_user is nil' do
+      it 'returns an empty list' do
+        result = described_class.new(agent, nil).execute
+        expect(result).to eq ::Clusters::AgentToken.none
       end
     end
 
-    context 'when agent does not exist' do
-      let(:agent_id) { non_existing_record_id }
-
-      it 'raises an error' do
-        expect { execute }.to raise_error(ActiveRecord::RecordNotFound)
+    context 'when agent is nil' do
+      it 'returns an empty list' do
+        result = described_class.new(nil, user).execute
+        expect(result).to eq ::Clusters::AgentToken.none
       end
     end
   end

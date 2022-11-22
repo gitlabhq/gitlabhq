@@ -47543,6 +47543,12 @@ msgstr ""
 msgid "Your namespace %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."
 msgstr ""
 
+msgid "Your namespace is over the user and storage limits and has been placed in a read-only state."
+msgstr ""
+
+msgid "Your namespace is over the user limit and has been placed in a read-only state."
+msgstr ""
+
 msgid "Your new %{accessTokenType}"
 msgstr ""
 

@@ -600,6 +600,7 @@ wiki_page_meta: :gitlab_main
 wiki_page_slugs: :gitlab_main
 work_item_parent_links: :gitlab_main
 work_item_types: :gitlab_main
+work_item_hierarchy_restrictions: :gitlab_main
 x509_certificates: :gitlab_main
 x509_commit_signatures: :gitlab_main
 x509_issuers: :gitlab_main
