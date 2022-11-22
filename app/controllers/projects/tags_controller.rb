@@ -7,7 +7,7 @@ class Projects::TagsController < Projects::ApplicationController
 
   # Authorize
   before_action :require_non_empty_project
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :authorize_admin_tag!, only: [:new, :create, :destroy]
 
   feature_category :source_code_management

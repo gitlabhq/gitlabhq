@@ -10,7 +10,7 @@ class Projects::CompareController < Projects::ApplicationController
 
   # Authorize
   before_action :require_non_empty_project
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   # Defining ivars
   before_action :define_diffs, only: [:show, :diff_for_path]
   before_action :define_environment, only: [:show]
@@ -95,7 +95,7 @@ class Projects::CompareController < Projects::ApplicationController
       target_project = target_projects(source_project).find_by_id(compare_params[:from_project_id])
 
       # Just ignore the field if it points at a non-existent or hidden project
-      next source_project unless target_project && can?(current_user, :download_code, target_project)
+      next source_project unless target_project && can?(current_user, :read_code, target_project)
 
       target_project
     end

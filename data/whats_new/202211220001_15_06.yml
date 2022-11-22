@@ -10,7 +10,7 @@
   gitlab-com: true
   available_in: [Ultimate]
   documentation_link: 'https://docs.gitlab.com/ee/user/application_security/policies/scan-result-policies.html'
-  image_url: 'https://www.youtube-nocookie.com/embed/jfbNo5IE-2s'
+  image_url: 'https://img.youtube.com/vi/jfbNo5IE-2s/hqdefault.jpg'
   published_at: 2022-11-22
   release: 15.6
 - name: "Git abuse rate limiting"

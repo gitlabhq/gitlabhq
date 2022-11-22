@@ -12,7 +12,7 @@ class Projects::CommitsController < Projects::ApplicationController
   around_action :allow_gitaly_ref_name_caching
   before_action :require_non_empty_project
   before_action :assign_ref_vars, except: :commits_root
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :validate_ref!, except: :commits_root
   before_action :set_commits, except: :commits_root
 

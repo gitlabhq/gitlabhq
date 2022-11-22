@@ -9,7 +9,7 @@ class Projects::RefsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :validate_ref_id
   before_action :assign_ref_vars
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
 
   feature_category :source_code_management
   urgency :low, [:switch, :logs_tree]

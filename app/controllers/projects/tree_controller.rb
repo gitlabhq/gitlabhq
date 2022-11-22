@@ -13,7 +13,7 @@ class Projects::TreeController < Projects::ApplicationController
   before_action :require_non_empty_project, except: [:new, :create]
   before_action :assign_ref_vars
   before_action :assign_dir_vars, only: [:create_dir]
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :authorize_edit_tree!, only: [:create_dir]
 
   before_action do

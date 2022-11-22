@@ -366,10 +366,10 @@ RSpec.describe Projects::IssuesController do
       }
     end
 
-    context 'the current user cannot download code' do
+    context 'the current user cannot read code' do
       it 'prevents access' do
         allow(controller).to receive(:can?).with(any_args).and_return(true)
-        allow(controller).to receive(:can?).with(user, :download_code, project).and_return(false)
+        allow(controller).to receive(:can?).with(user, :read_code, project).and_return(false)
 
         subject
 

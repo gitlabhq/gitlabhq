@@ -7,7 +7,6 @@ RSpec.describe WebHooks::WebHooksHelper do
 
   let(:current_user) { nil }
   let(:callout_dismissed) { false }
-  let(:web_hooks_disable_failed) { false }
   let(:webhooks_failed_callout) { false }
 
   before do
@@ -15,8 +14,7 @@ RSpec.describe WebHooks::WebHooksHelper do
     allow(helper).to receive(:web_hook_disabled_dismissed?).with(project).and_return(callout_dismissed)
 
     stub_feature_flags(
-      webhooks_failed_callout: webhooks_failed_callout,
-      web_hooks_disable_failed: web_hooks_disable_failed
+      webhooks_failed_callout: webhooks_failed_callout
     )
   end
 
@@ -30,14 +28,6 @@ RSpec.describe WebHooks::WebHooksHelper do
 
   shared_context 'webhooks_failed_callout is enabled for this project' do
     let(:webhooks_failed_callout) { project }
-  end
-
-  shared_context 'web_hooks_disable_failed is enabled' do
-    let(:web_hooks_disable_failed) { true }
-  end
-
-  shared_context 'web_hooks_disable_failed is enabled for this project' do
-    let(:web_hooks_disable_failed) { project }
   end
 
   shared_context 'the user has permission' do
@@ -60,7 +50,6 @@ RSpec.describe WebHooks::WebHooksHelper do
     context 'all conditions are met' do
       include_context 'user is logged in'
       include_context 'webhooks_failed_callout is enabled'
-      include_context 'web_hooks_disable_failed is enabled'
       include_context 'the user has permission'
       include_context 'a hook has failed'
 
@@ -88,7 +77,6 @@ RSpec.describe WebHooks::WebHooksHelper do
     context 'all conditions are met, project scoped flags' do
       include_context 'user is logged in'
       include_context 'webhooks_failed_callout is enabled for this project'
-      include_context 'web_hooks_disable_failed is enabled for this project'
       include_context 'the user has permission'
       include_context 'a hook has failed'
 
@@ -101,7 +89,6 @@ RSpec.describe WebHooks::WebHooksHelper do
       contexts = [
         'user is logged in',
         'webhooks_failed_callout is enabled',
-        'web_hooks_disable_failed is enabled',
         'the user has permission',
         'a hook has failed'
       ]

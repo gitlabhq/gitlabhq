@@ -26,7 +26,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :verify_git_import_enabled, only: [:create]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
   before_action :present_project, only: [:edit]
-  before_action :authorize_download_code!, only: [:refs]
+  before_action :authorize_read_code!, only: [:refs]
 
   # Authorize
   before_action :authorize_admin_project!, only: [:edit, :update, :housekeeping, :download_export, :export, :remove_export, :generate_new_export]
@@ -369,7 +369,7 @@ class ProjectsController < Projects::ApplicationController
   def render_landing_page
     Gitlab::Tracking.event('project_overview', 'render', user: current_user, project: @project.project)
 
-    if can?(current_user, :download_code, @project)
+    if can?(current_user, :read_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
 
       render 'projects/empty' if @project.empty_repo?
@@ -520,14 +520,6 @@ class ProjectsController < Projects::ApplicationController
     false
   end
 
-  def project_view_files?
-    if current_user
-      current_user.project_view == 'files'
-    else
-      project_view_files_allowed?
-    end
-  end
-
   # Override extract_ref from ExtractsPath, which returns the branch and file path
   # for the blob/tree, which in this case is just the root of the default branch.
   # This way we avoid to access the repository.ref_names.
@@ -538,10 +530,6 @@ class ProjectsController < Projects::ApplicationController
   # Override get_id from ExtractsPath in this case is just the root of the default branch.
   def get_id
     project.repository.root_ref
-  end
-
-  def project_view_files_allowed?
-    !project.empty_repo? && can?(current_user, :download_code, project)
   end
 
   def build_canonical_path(project)

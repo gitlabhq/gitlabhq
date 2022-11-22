@@ -57,8 +57,6 @@ class WebHook < ApplicationRecord
   }, _prefix: true
 
   scope :executable, -> do
-    next all unless Feature.enabled?(:web_hooks_disable_failed)
-
     where('recent_failures <= ? AND (disabled_until IS NULL OR disabled_until < ?)', FAILURE_THRESHOLD, Time.current)
   end
 
@@ -67,23 +65,17 @@ class WebHook < ApplicationRecord
     where('recent_failures > ? OR disabled_until >= ?', FAILURE_THRESHOLD, Time.current)
   end
 
-  def self.web_hooks_disable_failed?(hook)
-    Feature.enabled?(:web_hooks_disable_failed, hook.parent)
-  end
-
   def executable?
     !temporarily_disabled? && !permanently_disabled?
   end
 
   def temporarily_disabled?
-    return false unless web_hooks_disable_failed?
     return false if recent_failures <= FAILURE_THRESHOLD
 
     disabled_until.present? && disabled_until >= Time.current
   end
 
   def permanently_disabled?
-    return false unless web_hooks_disable_failed?
     return false if disabled_until.present?
 
     recent_failures > FAILURE_THRESHOLD
@@ -224,10 +216,6 @@ class WebHook < ApplicationRecord
 
   def next_backoff_count
     backoff_count.succ.clamp(1, MAX_FAILURES)
-  end
-
-  def web_hooks_disable_failed?
-    self.class.web_hooks_disable_failed?(self)
   end
 
   def initialize_url_variables

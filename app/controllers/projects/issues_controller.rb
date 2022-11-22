@@ -37,7 +37,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_merge_request_from!, only: [:create_merge_request]
 
   before_action :authorize_import_issues!, only: [:import_csv]
-  before_action :authorize_download_code!, only: [:related_branches]
+  before_action :authorize_read_code!, only: [:related_branches]
 
   before_action do
     push_frontend_feature_flag(:preserve_unchanged_markdown, project)

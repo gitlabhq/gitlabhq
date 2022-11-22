@@ -207,16 +207,6 @@ RSpec.describe WebHook do
     it { is_expected.to contain_exactly(:token, :url, :url_variables) }
   end
 
-  describe '.web_hooks_disable_failed?' do
-    it 'returns true when feature is enabled for parent' do
-      second_hook = build(:project_hook)
-      stub_feature_flags(web_hooks_disable_failed: [false, second_hook.project])
-
-      expect(described_class.web_hooks_disable_failed?(hook)).to eq(false)
-      expect(described_class.web_hooks_disable_failed?(second_hook)).to eq(true)
-    end
-  end
-
   describe 'execute' do
     let(:data) { { key: 'value' } }
     let(:hook_name) { 'project hook' }
@@ -297,16 +287,6 @@ RSpec.describe WebHook do
       expect(described_class.where(project_id: project.id).executable).to match_array executables
       expect(described_class.where(project_id: project.id).disabled).to match_array not_executable
     end
-
-    context 'when the feature flag is not enabled' do
-      before do
-        stub_feature_flags(web_hooks_disable_failed: false)
-      end
-
-      specify 'enabled is the same as all' do
-        expect(described_class.where(project_id: project.id).executable).to match_array(executables + not_executable)
-      end
-    end
   end
 
   describe '#executable?' do
@@ -353,26 +333,6 @@ RSpec.describe WebHook do
 
       it 'has the correct state' do
         expect(web_hook.executable?).to eq(executable)
-      end
-
-      context 'when the feature flag is enabled for a project' do
-        before do
-          stub_feature_flags(web_hooks_disable_failed: project)
-        end
-
-        it 'has the expected value' do
-          expect(web_hook.executable?).to eq(executable)
-        end
-      end
-
-      context 'when the feature flag is not enabled' do
-        before do
-          stub_feature_flags(web_hooks_disable_failed: false)
-        end
-
-        it 'is executable' do
-          expect(web_hook).to be_executable
-        end
       end
     end
   end
@@ -613,12 +573,6 @@ RSpec.describe WebHook do
       it 'is true' do
         expect(hook).to be_temporarily_disabled
       end
-
-      it 'is false when `web_hooks_disable_failed` flag is disabled' do
-        stub_feature_flags(web_hooks_disable_failed: false)
-
-        expect(hook).not_to be_temporarily_disabled
-      end
     end
   end
 
@@ -634,12 +588,6 @@ RSpec.describe WebHook do
 
       it 'is true' do
         expect(hook).to be_permanently_disabled
-      end
-
-      it 'is false when `web_hooks_disable_failed` flag is disabled' do
-        stub_feature_flags(web_hooks_disable_failed: false)
-
-        expect(hook).not_to be_permanently_disabled
       end
     end
   end

@@ -121,13 +121,9 @@ Endpoints should follow these best practices:
 
 ### Failing webhooks
 
-> Introduced in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`.
-On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60837) in GitLab 13.12 [with a flag](../../../administration/feature_flags.md) named `web_hooks_disable_failed`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 15.7.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
 
 If a webhook fails repeatedly, it may be disabled automatically.
 
@@ -335,12 +331,11 @@ GitLab expects a response in [10 seconds](../../../user/gitlab_com/index.md#othe
 
 ### Re-enable disabled webhooks
 
-> - Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
-> - The [`web_hooks_disable_failed` flag](#failing-webhooks) must also be enabled for this feature to work. Disabled by default.
+> Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flags](../../../administration/feature_flags.md) named `webhooks_failed_callout` and `web_hooks_disable_failed`.
+ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`.
 On GitLab.com, this feature is not available.
 The feature is not ready for production use.
 

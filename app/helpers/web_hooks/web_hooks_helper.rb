@@ -8,7 +8,6 @@ module WebHooks
       return false if project_hook_page?
       return false unless current_user
       return false unless Feature.enabled?(:webhooks_failed_callout, project)
-      return false unless Feature.enabled?(:web_hooks_disable_failed, project)
       return false unless Ability.allowed?(current_user, :read_web_hooks, project)
 
       # Assumes include of Users::CalloutsHelper

@@ -44089,16 +44089,16 @@ msgstr ""
 msgid "UsageQuota|Wiki content."
 msgstr ""
 
-msgid "UsageQuota|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{actualRepositorySizeLimit} limit."
+msgid "UsageQuota|You have consumed all of your additional storage. Purchase more to unlock your projects over the free %{actualRepositorySizeLimit} limit."
 msgstr ""
 
-msgid "UsageQuota|You have reached the free storage limit of %{actualRepositorySizeLimit} on %{projectsLockedText}. To unlock them, please purchase additional storage."
+msgid "UsageQuota|You have reached the free storage limit of %{actualRepositorySizeLimit} on %{projectsLockedText}. To unlock them, purchase additional storage."
 msgstr ""
 
 msgid "UsageQuota|You used: %{usage} %{limit}"
 msgstr ""
 
-msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, please purchase more storage."
+msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, purchase more storage."
 msgstr ""
 
 msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"

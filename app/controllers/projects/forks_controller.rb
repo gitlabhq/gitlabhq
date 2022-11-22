@@ -9,9 +9,9 @@ class Projects::ForksController < Projects::ApplicationController
   # Authorize
   before_action :disable_query_limiting, only: [:create]
   before_action :require_non_empty_project
-  before_action :authorize_download_code!
+  before_action :authorize_read_code!
   before_action :authenticate_user!, only: [:new, :create]
-  before_action :authorize_fork_project!, only: [:new, :create]
+  before_action :authorize_fork_project!, except: [:index]
   before_action :authorize_fork_namespace!, only: [:create]
 
   feature_category :source_code_management
