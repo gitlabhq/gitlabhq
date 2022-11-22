@@ -13,6 +13,9 @@ RSpec.describe Resolvers::EnvironmentsResolver do
     let!(:environment1) { create(:environment, :available, name: 'production', project: project) }
     let!(:environment2) { create(:environment, :stopped, name: 'test', project: project) }
     let!(:environment3) { create(:environment, :available, name: 'test2', project: project) }
+    let!(:environment4) { create(:environment, :available, name: 'folder1/test1', project: project) }
+    let!(:environment5) { create(:environment, :available, name: 'folder1/test2', project: project) }
+    let!(:environment6) { create(:environment, :available, name: 'folder2/test3', project: project) }
 
     before do
       group.add_developer(current_user)
@@ -20,7 +23,12 @@ RSpec.describe Resolvers::EnvironmentsResolver do
 
     describe '#resolve' do
       it 'finds all environments' do
-        expect(resolve_environments).to contain_exactly(environment1, environment2, environment3)
+        expect(resolve_environments).to contain_exactly(environment1,
+                                                        environment2,
+                                                        environment3,
+                                                        environment4,
+                                                        environment5,
+                                                        environment6)
       end
 
       context 'with name' do
@@ -31,7 +39,7 @@ RSpec.describe Resolvers::EnvironmentsResolver do
 
       context 'with search' do
         it 'searches environment by name' do
-          expect(resolve_environments(search: 'test')).to contain_exactly(environment2, environment3)
+          expect(resolve_environments(search: 'production')).to contain_exactly(environment1)
         end
 
         context 'when the search term does not match any environments' do
@@ -43,13 +51,27 @@ RSpec.describe Resolvers::EnvironmentsResolver do
 
       context 'with states' do
         it 'searches environments by state' do
-          expect(resolve_environments(states: ['available'])).to contain_exactly(environment1, environment3)
+          expect(resolve_environments(states: ['available'])).to contain_exactly(environment1,
+                                                                                 environment3,
+                                                                                 environment4,
+                                                                                 environment5,
+                                                                                 environment6)
         end
 
         it 'generates an error if requested state is invalid' do
           expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
             resolve_environments(states: ['invalid'])
           end
+        end
+      end
+
+      context 'with environment_type' do
+        it 'searches environments by type' do
+          expect(resolve_environments(type: 'folder1')).to contain_exactly(environment4, environment5)
+        end
+
+        it 'returns an empty result' do
+          expect(resolve_environments(type: 'folder3')).to be_empty
         end
       end
 

@@ -531,7 +531,7 @@
 {"name":"sassc","version":"2.4.0","platform":"x64-mingw32","checksum":"8773b917cb52c7e92c94d4bf324c1c0be3e50d9092f9f5ed4c3c6e454b451c5e"},
 {"name":"sassc-rails","version":"2.1.0","platform":"ruby","checksum":"764dcc74e06930e3483caf0d595084d11f2b0fefd6539abf487cdddfba6cafa2"},
 {"name":"sawyer","version":"0.9.2","platform":"ruby","checksum":"fa3a72d62a4525517b18857ddb78926aab3424de0129be6772a8e2ba240e7aca"},
-{"name":"sd_notify","version":"0.1.0","platform":"ruby","checksum":"22b68623635175dfdb856d43c9480f9ad13eafa604ab410dc91168102287a663"},
+{"name":"sd_notify","version":"0.1.1","platform":"ruby","checksum":"cbc7ac6caa7cedd26b30a72b5eeb6f36050dc0752df263452ea24fb5a4ad3131"},
 {"name":"securecompare","version":"1.0.0","platform":"ruby","checksum":"cb0c6599deaaedf6d28f8d88538b06e7198c4826b1b8edb1dbeb44a2162fc62b"},
 {"name":"seed-fu","version":"2.3.7","platform":"ruby","checksum":"f19673443e9af799b730e3d4eca6a89b39e5a36825015dffd00d02ea3365cf74"},
 {"name":"selenium-webdriver","version":"3.142.7","platform":"ruby","checksum":"dea0993e0e4fdb364f0453144814c0e6099a411d17396807c6cac666d0ddac29"},

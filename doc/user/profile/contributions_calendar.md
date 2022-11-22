@@ -21,50 +21,20 @@ The contribution calendar only displays contributions from the last 12 months, b
 
 GitLab tracks the following contribution events:
 
-- `approved`
-  - Merge request
-- `closed`
-  - [Epic](../group/epics/index.md)
-  - Issue
-  - Merge request
-  - Milestone
-- `commented` on any `Noteable` record.
-  - Alert
-  - Commit
-  - Design
-  - Issue
-  - Merge request
-  - Snippet
-- `created`
-  - Design
-  - [Epic](../group/epics/index.md)
-  - Issue
-  - Merge request
-  - Milestone
-  - Project
-  - Wiki page
-- `destroyed`
-  - Design
-  - Milestone
-  - Wiki page
-- `expired`
-  - Project membership
-- `joined`
-  - Project membership
-- `left`
-  - Project membership
-- `merged`
-  - Merge request
-- `pushed` commits to (or deleted commits from) a repository, individually or in bulk.
-  - Project
-- `reopened`
-  - [Epic](../group/epics/index.md)
-  - Issue
-  - Merge request
-  - Milestone
-- `updated`
-  - Design
-  - Wiki page
+| Event | Contribution |
+| ----- | ------------ |
+| `approved` | Merge request |
+| `closed` | [Epic](../group/epics/index.md), Issue, Merge request, Milestone |
+| `commented` on any `Noteable` record. | Alert, Commit, Design, Issue, Merge request, Snippet |
+| `created` | Design, Epic, Issue, Merge request, Milestone, Project, Wiki page |
+| `destroyed` | Design, Milestone, Wiki page |
+| `expired` | Project membership |
+| `joined` | Project membership |
+| `left` | Project membership |
+| `merged` | Merge request |
+| `pushed` commits to (or deleted commits from) a repository, individually or in bulk. | Project |
+| `reopened` | Epic, Issue, Merge request, Milestone |
+| `updated` | Design, Wiki page |
 
 ### View daily contributions
 

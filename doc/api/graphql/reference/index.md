@@ -17128,6 +17128,7 @@ Returns [`Environment`](#environment).
 | <a id="projectenvironmentname"></a>`name` | [`String`](#string) | Name of the environment. |
 | <a id="projectenvironmentsearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectenvironmentstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
+| <a id="projectenvironmenttype"></a>`type` | [`String`](#string) | Search query for environment type. |
 
 ##### `Project.environments`
 
@@ -17146,6 +17147,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectenvironmentsname"></a>`name` | [`String`](#string) | Name of the environment. |
 | <a id="projectenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
+| <a id="projectenvironmentstype"></a>`type` | [`String`](#string) | Search query for environment type. |
 
 ##### `Project.forkTargets`
 
