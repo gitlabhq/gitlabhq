@@ -35,5 +35,54 @@ You can configure your tool to make a request to the GitLab [Deployment API](../
 NOTE:
 You can create a [project access token](../../user/project/settings/project_access_tokens.md) for the GitLab API authentication.
 
+### Example: Track deployments of ArgoCD
+
+You can use [ArgoCD webhook](https://argocd-notifications.readthedocs.io/en/stable/services/webhook/) to send deployment events to GitLab Deployment API.
+Here is an example setup that creates a `success` deployment record in GitLab when ArgoCD successfully deploys a new revision:
+
+1. Create a new webhook. You can save the following manifest file and apply it by `kubectl apply -n argocd -f <manifiest-file-path>`:
+
+    ```yaml
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: argocd-notifications-cm
+    data:
+      trigger.on-deployed: |
+        - description: Application is synced and healthy. Triggered once per commit.
+          oncePer: app.status.sync.revision
+          send:
+          - gitlab-deployment-status
+          when: app.status.operationState.phase in ['Succeeded'] and app.status.health.status == 'Healthy'
+      template.gitlab-deployment-status: |
+        webhook:
+          gitlab:
+            method: POST
+            path: /projects/<your-project-id>/deployments
+            body: |
+              {
+                "status": "success",
+                "environment": "production",
+                "sha": "{{.app.status.operationState.operation.sync.revision}}",
+                "ref": "main",
+                "tag": "false"
+              }
+      service.webhook.gitlab: |
+        url: https://gitlab.com/api/v4
+        headers:
+        - name: PRIVATE-TOKEN
+          value: <your-access-token>
+        - name: Content-type
+          value: application/json
+    ```
+
+1. Create a new subscription in your application:
+
+    ```shell
+    kubectl patch app <your-app-name> -n argocd -p '{"metadata": {"annotations": {"notifications.argoproj.io/subscribe.on-deployed.gitlab":""}}}' --type merge
+    ```
+
 NOTE:
-If you don't have an environment yet, you can [create a new environment](index.md#create-a-static-environment) in the UI or with the [Environment API](../../api/environments.md#create-a-new-environment).
+If a deployment wasn't created as expected, you can troubleshoot with [`argocd-notifications` tool](https://argocd-notifications.readthedocs.io/en/stable/troubleshooting/).
+For example, `argocd-notifications template notify gitlab-deployment-status <your-app-name> --recipient gitlab:argocd-notifications`
+triggers API request immediately and renders an error message from GitLab API server if any.

@@ -13344,7 +13344,8 @@ CREATE TABLE ci_resources (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     resource_group_id bigint NOT NULL,
-    build_id bigint
+    build_id bigint,
+    partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_resources_id_seq

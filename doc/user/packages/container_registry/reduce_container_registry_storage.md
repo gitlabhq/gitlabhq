@@ -4,17 +4,18 @@ group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Reduce Container Registry Storage **(FREE)**
+# Reduce Container Registry storage **(FREE)**
 
-Container registries become large over time without cleanup. When a large number of images or tags are added:
+Container registries can grow in size over time if you don't manage your registry usage. For example,
+if you add a large number of images or tags:
 
-- Fetching the list of available tags or images becomes slower.
+- Retrieving the list of available tags or images becomes slower.
 - They take up a large amount of storage space on the server.
 
-We recommend deleting unnecessary images and tags and setting up a [cleanup policy](#cleanup-policy)
+You should delete unnecessary images and tags and set up a [cleanup policy](#cleanup-policy)
 to automatically manage your container registry usage.
 
-## Check Container Registry Storage Use
+## Check Container Registry storage use
 
 The Usage Quotas page (**Settings > Usage Quotas > Storage**) displays storage usage for Packages.
 This page includes the Container Registry usage, which is only available on GitLab.com.
@@ -23,10 +24,16 @@ metadata database. Support for improvements is proposed in epic [5523](https://g
 You cannot use the Container Registry in self-managed instances, but epic [5521](https://gitlab.com/groups/gitlab-org/-/epics/5521) proposes to change this behavior.
 
 Image layers stored in the Container Registry are deduplicated at the root namespace level.
-If you tag the same image more than once in the same repository or across distinct
-repositories under the same root namespace, it is only counted once.
-If an image layer is shared across multiple images, in the same
-container repository, project, group, or across different repositories, it is only counted once.
+
+An image is only counted once if:
+
+- You tag the same image more than once in the same repository.
+- You tag the same image across distinct repositories under the same root namespace.
+
+An image layer is only counted once if:
+
+- You share the image layer across multiple images in the same container repository, project, or group.
+- You share the image layer across different repositories.
 
 Only layers that are referenced by tagged images are accounted for. Untagged images and any layers
 referenced exclusively by them are subject to [online garbage collection](index.md#delete-images).
@@ -50,7 +57,7 @@ To delete the underlying layers and images that aren't associated with any tags,
 
 ### Enable the cleanup policy
 
-Cleanup policies can be run on all projects, with these exceptions:
+You can run cleanup policies on all projects with these exceptions:
 
 - For self-managed GitLab instances, the project must have been created
   in GitLab 12.8 or later. However, an administrator can enable the cleanup policy
@@ -63,7 +70,7 @@ Cleanup policies can be run on all projects, with these exceptions:
   ApplicationSetting.last.update(container_expiration_policies_enable_historic_entries: true)
   ```
 
-  Enabling cleanup policies on all project can impact performance, especially if you
+  Enabling cleanup policies on all projects can impact performance, especially if you
   are using an [external registry](#use-with-external-container-registries).
 
 WARNING:
@@ -72,34 +79,34 @@ GitLab.com that don't have a container image.
 
 ### How the cleanup policy works
 
-The cleanup policy collects all tags in the Container Registry and excludes tags
-until only the tags to be deleted remain.
+The cleanup policy collects all tags in the Container Registry and excludes tags until the only
+tags you want to delete remain.
 
 The cleanup policy searches for images based on the tag name. Support for full path matching is tracked in issue [281071](https://gitlab.com/gitlab-org/gitlab/-/issues/281071).
 
 The cleanup policy:
 
 1. Collects all tags for a given repository in a list.
-1. Excludes the tag named `latest` from the list.
-1. Evaluates the `name_regex` (tags to expire), excluding non-matching names from the list.
-1. Excludes from the list any tags matching the `name_regex_keep` value (tags to preserve).
+1. Excludes the tag named `latest`.
+1. Evaluates the `name_regex` (tags to expire), excluding non-matching names.
+1. Excludes any tags matching the `name_regex_keep` value (tags to preserve).
 1. Excludes any tags that do not have a manifest (not part of the options in the UI).
 1. Orders the remaining tags by `created_date`.
-1. Excludes from the list the N tags based on the `keep_n` value (Number of tags to retain).
-1. Excludes from the list the tags more recent than the `older_than` value (Expiration interval).
-1. Finally, the remaining tags in the list are deleted from the Container Registry.
+1. Excludes the N tags based on the `keep_n` value (Number of tags to retain).
+1. Excludes the tags more recent than the `older_than` value (Expiration interval).
+1. Deletes the remaining tags in the list from the Container Registry.
 
 WARNING:
 On GitLab.com, the execution time for the cleanup policy is limited. Some tags may remain in
 the Container Registry after the policy runs. The next time the policy runs, the remaining tags are included.
-It may take multiple runs for all tags to be deleted.
+It may take multiple runs to delete all tags.
 
 WARNING:
 GitLab self-managed installations support third-party container registries that comply with the
 [Docker Registry HTTP API V2](https://docs.docker.com/registry/spec/api/)
-specification. However, this specification does not include a tag delete operation. Therefore, when
-interacting with third-party container registries, GitLab uses a workaround to delete tags. See the
-[related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
+specification. However, this specification does not include a tag delete operation. Therefore, GitLab uses a
+workaround to delete tags when interacting with third-party container registries. Refer to
+issue [15737](https://gitlab.com/gitlab-org/gitlab/-/issues/15737)
 for more information. Due to possible implementation variations, this workaround is not guaranteed
 to work with all third-party registries in the same predictable way. If you use the GitLab Container
 Registry, this workaround is not required because we implemented a special tag delete operation. In
@@ -115,18 +122,18 @@ To create a cleanup policy in the UI:
 1. Expand the **Clean up image tags** section.
 1. Complete the fields.
 
-   | Field                                                                     | Description                                                                                                       |
-   |---------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------|
-   | **Toggle** | Turn the policy on or off. |
-   | **Run cleanup** | How often the policy should run. |
-   | **Keep the most recent** | How many tags to _always_ keep for each image. |
-   | **Keep tags matching** | The regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
-   | **Remove tags older than** | Remove only tags older than X days. |
-   | **Remove tags matching**  | The regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | Field                      | Description                                     |
+   |----------------------------|-------------------------------------------------|
+   | **Toggle**                 | Turn the policy on or off.                      |
+   | **Run cleanup**            | How often the policy should run.                |
+   | **Keep the most recent**   | How many tags to _always_ keep for each image.  |
+   | **Keep tags matching**     | A regex pattern that determines which tags to preserve. The `latest` tag is always preserved. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples). |
+   | **Remove tags older than** | Remove only tags older than X days.             |
+   | **Remove tags matching**   | A regex pattern that determines which tags to remove. This value cannot be blank. For all tags, use `.*`. See other [regex pattern examples](#regex-pattern-examples).             |
 
 1. Select **Save**.
 
-Depending on the interval you chose, the policy is scheduled to run.
+The policy runs on the scheduled interval you selected.
 
 NOTE:
 If you edit the policy and select **Save** again, the interval is reset.
@@ -135,7 +142,8 @@ If you edit the policy and select **Save** again, the interval is reset.
 
 Cleanup policies use regex patterns to determine which tags should be preserved or removed, both in the UI and the API.
 
-Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Do not include any `\A`, `\Z`, `^` or `$` token in the regex patterns as they are not necessary.
+Regex patterns are automatically surrounded with `\A` and `\Z` anchors. Therefore, you do not need to include any
+`\A`, `\Z`, `^` or `$` tokens in the regex patterns.
 
 Here are some examples of regex patterns you can use:
 
@@ -180,17 +188,17 @@ Here are some examples of regex patterns you can use:
 Cleanup policies are executed as a background process. This process is complex, and depending on the number of tags to delete,
 the process can take time to finish.
 
-To prevent server resource starvation, the following application settings are available:
+You can use the following application settings to prevent server resource starvation:
 
 - `container_registry_expiration_policies_worker_capacity`: the maximum number of cleanup workers
-  running concurrently. This must be greater than or equal to `0`. We recommend starting with a low
-  number and increasing it after monitoring the resources used by the background workers. To remove
+  running concurrently. This value must be greater than or equal to `0`. You should start with a low
+  number and increase it after monitoring the resources used by the background workers. To remove
   all workers and not execute the cleanup policies, set this to `0`. The default value is `4`.
 - `container_registry_delete_tags_service_timeout`: the maximum time (in seconds) that the cleanup
   process can take to delete a batch of tags. The default value is `250`.
 - `container_registry_cleanup_tags_service_max_list_size`: the maximum number of tags that can be
-  deleted in a single execution. Additional tags must be deleted in another execution. We recommend
-  starting with a low number and increasing it after monitoring that container images are properly
+  deleted in a single execution. Additional tags must be deleted in another execution. You should
+  start with a low number and increase it after verifying that container images are properly
   deleted. The default value is `200`.
 - `container_registry_expiration_policies_caching`: enable or disable tag creation timestamp caching
   during execution of policies. Cached timestamps are stored in [Redis](../../../development/architecture.md#redis).
@@ -213,7 +221,8 @@ You can set, update, and disable the cleanup policies using the GitLab API.
 
 Examples:
 
-- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve any images with the name `main` and the policy is enabled:
+- Select all tags, keep at least 1 tag per image, clean up any tag older than 14 days, run once a month, preserve
+any images with the name `main`, and the policy is enabled:
 
   ```shell
   curl --request PUT --header 'Content-Type: application/json;charset=UTF-8' --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -251,14 +260,14 @@ See the API documentation for further details: [Edit project API](../../../api/p
 
 When using an [external container registry](../../../administration/packages/container_registry.md#use-an-external-container-registry-with-gitlab-as-an-auth-endpoint),
 running a cleanup policy on a project may have some performance risks.
-If a project runs a policy to remove thousands of tags
+If a project runs a policy to remove thousands of tags,
 the GitLab background jobs may get backed up or fail completely.
-For projects created before GitLab 12.8, we recommend you enable container cleanup policies
+For projects created before GitLab 12.8, you should enable container cleanup policies
 only if the number of tags being cleaned up is minimal.
 
 ## More Container Registry storage reduction options
 
-Here are some other options to reduce your project's use of Container Registry storage:
+Here are some other options you can use to reduce the Container Registry storage used by your project:
 
 - Use the [GitLab UI](index.md#delete-images)
   to delete individual image tags or the entire repository containing all the tags.
@@ -330,6 +339,10 @@ the tags. To create the list and delete the tags:
 1. Remove any tags that you want to keep from the `list_o_tags.out` file. For example, you can use `sed` to
    parse the file and remove the tags.
 
+   ::Tabs
+
+   :::TabTitle Linux
+
    ```shell
    # Remove the `latest` tag from the file
    sed -i '/latest/d' list_o_tags.out
@@ -344,11 +357,23 @@ the tags. To create the list and delete the tags:
    sed -i '/_v3$/d' list_o_tags.out
    ```
 
-   If you are running macOS, you must add `.bak` to the commands. For example:
+   :::TabTitle macOS
 
    ```shell
+   # Remove the `latest` tag from the file
    sed -i .bak '/latest/d' list_o_tags.out
+
+   # Remove the first N tags from the file
+   sed -i .bak '1,Nd' list_o_tags.out
+
+   # Remove the tags starting with `Av` from the file
+   sed -i .bak '/^Av/d' list_o_tags.out
+
+   # Remove the tags ending with `_v3` from the file
+   sed -i .bak '/_v3$/d' list_o_tags.out
    ```
+
+   ::EndTabs
 
 1. Double-check the `list_o_tags.out` file to make sure it contains only the tags that you want to
    delete.

@@ -86,7 +86,7 @@ To change the default issue closing pattern:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (Source)
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml` and change the `issue_closing_pattern` value:
 

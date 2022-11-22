@@ -221,6 +221,34 @@ amounts at which the alert displays.
 | 100-999               | 8% of seats have been used.                                            |
 | 1000+                 | 5% of seats have been used                                             |
 
+## Change the linked account
+
+To change the GitLab.com account linked to your Customers Portal account:
+
+1. Log in to the
+   [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. In a separate browser tab, go to [GitLab SaaS](https://gitlab.com/users/sign_in) and ensure you
+   are not logged in.
+1. On the Customers Portal page, select **My account > Account details**.
+1. Under **Your GitLab.com account**, select **Change linked account**.
+1. Log in to the [GitLab SaaS](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal
+   account.
+
+## Change the linked namespace
+
+To change the namespace linked to a subscription:
+
+1. Log in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in) with a
+   [linked](#change-the-linked-account) GitLab SaaS account.
+1. Navigate to the **Manage Purchases** page.
+1. Select **Change linked namespace**.
+1. Select the desired group from the **This subscription is for** dropdown. For a group to appear here, you must have the Owner role for that group.
+1. Select **Proceed to checkout**.
+
+Subscription charges are calculated based on the total number of users in a group, including its subgroups and nested projects. If the [total number of users](#view-seat-usage) exceeds the number of seats in your subscription, your account is charged for the additional users and you need to pay for the overage before you can change the linked namespace.
+
+Only one namespace can be linked to a subscription.
+
 ## Upgrade your GitLab SaaS subscription tier
 
 To upgrade your [GitLab tier](https://about.gitlab.com/pricing/):
@@ -415,7 +443,7 @@ and for communicating directly with the relevant GitLab team members.
 
 If your credit card is declined when purchasing a GitLab subscription, possible reasons include:
 
-- The credit card details provided are incorrect.
+- The credit card details provided are incorrect. The most common cause for this is an incomplete or dummy address.
 - The credit card account has insufficient funds.
 - You are using a virtual credit card and it has insufficient funds, or has expired.
 - The transaction exceeds the credit limit.

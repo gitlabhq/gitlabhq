@@ -244,6 +244,7 @@ Gitlab/StrongMemoizeAttr:
     - 'app/services/packages/debian/generate_distribution_key_service.rb'
     - 'app/services/packages/debian/generate_distribution_service.rb'
     - 'app/services/packages/debian/process_changes_service.rb'
+    - 'app/services/packages/debian/process_package_file_service.rb'
     - 'app/services/packages/helm/process_file_service.rb'
     - 'app/services/packages/maven/metadata/base_create_xml_service.rb'
     - 'app/services/packages/maven/metadata/create_plugins_xml_service.rb'

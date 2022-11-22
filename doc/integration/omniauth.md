@@ -55,7 +55,7 @@ To change these settings:
 
   :::TabTitle Linux package (Omnibus)
 
-  1. Edit `/etc/gitlab/gitlab.rb` and update the following section:
+  1. Edit `/etc/gitlab/gitlab.rb`:
 
      ```ruby
      # CAUTION!
@@ -67,7 +67,7 @@ To change these settings:
      gitlab_rails['omniauth_block_auto_created_users'] = true
      ```
 
-  1. Reconfigure GitLab:
+  1. Save the file and reconfigure GitLab:
 
      ```shell
      sudo gitlab-ctl reconfigure
@@ -96,22 +96,15 @@ To change these settings:
      For more details, see the
      [globals documentation](https://docs.gitlab.com/charts/charts/globals.html#omniauth).
 
-  1. Apply the new values:
+  1. Save the file and apply the new values:
 
      ```shell
      helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
      ```
 
-  :::TabTitle Self-compiled (Source)
+  :::TabTitle Self-compiled (source)
 
-  1. Open the configuration file:
-
-     ```shell
-     cd /home/git/gitlab
-     sudo -u git -H editor config/gitlab.yml
-     ```
-
-  1. Update the following section:
+  1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
      ```yaml
      ## OmniAuth settings
@@ -132,9 +125,13 @@ To change these settings:
        block_auto_created_users: true
      ```
 
-  1. Restart GitLab:
+  1. Save the file and restart GitLab:
 
      ```shell
+     # For systems running systemd
+     sudo systemctl restart gitlab.target
+
+     # For systems running SysV init
      sudo service gitlab restart
      ```
 

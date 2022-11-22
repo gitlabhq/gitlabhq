@@ -1496,16 +1496,19 @@ GitLab supports four installation methods:
 - Linux package (Omnibus)
 - Helm chart (Kubernetes)
 - Docker
-- Self-compiled (Source)
+- Self-compiled (source)
 
 Configuration procedures can require users to edit configuration files, reconfigure
 GitLab, or restart GitLab. In this case:
 
 - Use [tabs](#tabs) to differentiate among the various installation methods.
+- Use the installation methods names exactly as described in the previous list.
 - Use them in the order described below.
 - Indent the code blocks to line up with the list item they belong to.
 - Use the appropriate syntax highlighting for each code block (`ruby`, `shell`, or `yaml`).
 - For the YAML files, always include the parent settings.
+- The final step to reconfigure or restart GitLab can be used verbatim since it's
+  the same every time.
 
 You can copy and paste the following snippet when describing a configuration
 edit:
@@ -1545,7 +1548,7 @@ edit:
          name: gitlab.example.com
    ```
 
-1. Apply the new values:
+1. Save the file and apply the new values:
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1570,7 +1573,7 @@ edit:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (Source)
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 
@@ -1629,7 +1632,7 @@ It renders as:
          name: gitlab.example.com
    ```
 
-1. Apply the new values:
+1. Save the file and apply the new values:
 
    ```shell
    helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
@@ -1654,7 +1657,7 @@ It renders as:
    docker compose up -d
    ```
 
-:::TabTitle Self-compiled (Source)
+:::TabTitle Self-compiled (source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 

@@ -93,6 +93,8 @@ metadata:
     description: Operations related to importing BitBucket projects
   - name: project_import_github
     description: Operations related to importing GitHub projects
+  - name: project_packages
+    description: Operations related to project packages
   - name: protected environments
     description: Operations related to protected environments
   - name: release_links
