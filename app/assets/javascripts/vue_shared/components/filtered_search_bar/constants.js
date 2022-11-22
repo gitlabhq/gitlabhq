@@ -88,6 +88,7 @@ export const TOKEN_TYPE_ORGANIZATION = 'organization';
 export const TOKEN_TYPE_RELEASE = 'release';
 export const TOKEN_TYPE_REVIEWER = 'reviewer';
 export const TOKEN_TYPE_SOURCE_BRANCH = 'source-branch';
+export const TOKEN_TYPE_STATUS = 'status';
 export const TOKEN_TYPE_TARGET_BRANCH = 'target-branch';
 export const TOKEN_TYPE_TYPE = 'type';
 export const TOKEN_TYPE_WEIGHT = 'weight';

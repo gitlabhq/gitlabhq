@@ -2,6 +2,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RecentSearchesDropdownContent from '~/filtered_search/components/recent_searches_dropdown_content.vue';
 import eventHub from '~/filtered_search/event_hub';
 import IssuableFilteredSearchTokenKeys from '~/filtered_search/issuable_filtered_search_token_keys';
+import { TOKEN_TYPE_AUTHOR } from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('Recent Searches Dropdown Content', () => {
   let wrapper;
@@ -60,7 +61,7 @@ describe('Recent Searches Dropdown Content', () => {
         items: [
           'foo',
           'author:@root label:~foo bar',
-          [{ type: 'author_username', value: { data: 'toby', operator: '=' } }],
+          [{ type: TOKEN_TYPE_AUTHOR, value: { data: 'toby', operator: '=' } }],
         ],
         isLocalStorageAvailable: true,
       });

@@ -12,10 +12,10 @@ RSpec.describe 'projects/_flash_messages' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:can?).with(user, :download_code, project).and_return(true)
+    allow(view).to receive(:can?).with(user, :read_code, project).and_return(true)
   end
 
-  context 'when current_user has download_code permission' do
+  context 'when current_user has read_code permission' do
     context 'when user has a terraform state' do
       let_it_be(:project) { create(:project) }
       let_it_be(:terraform_state) { create(:terraform_state, :locked, :with_version, project: project) }

@@ -411,8 +411,6 @@ group :development, :test do
 
   gem 'simple_po_parser', '~> 1.1.6', require: false
 
-  gem 'timecop', '~> 0.9.1'
-
   gem 'png_quantizator', '~> 0.2.1', require: false
 
   gem 'parallel', '~> 1.19', require: false

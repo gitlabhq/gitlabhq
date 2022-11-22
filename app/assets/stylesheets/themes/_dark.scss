@@ -101,6 +101,18 @@ $theme-indigo-50: #1a1a40;
 
 $border-color: #4f4f4f;
 
+$data-viz-blue-50: #2a2b59;
+$data-viz-blue-100: #303470;
+$data-viz-blue-200: #374291;
+$data-viz-blue-300: #3f51ae;
+$data-viz-blue-400: #4e65cd;
+$data-viz-blue-500: #617ae2;
+$data-viz-blue-600: #7992f5;
+$data-viz-blue-700: #97acff;
+$data-viz-blue-800: #b7c6ff;
+$data-viz-blue-900: #d2dcff;
+$data-viz-blue-950: #e9ebff;
+
 :root {
   color-scheme: dark;
 }
@@ -264,11 +276,3 @@ $line-removed-dark: $red-200;
 
 $well-expand-item: $gray-200;
 $well-inner-border: $gray-200;
-
-$calendar-activity-colors: (
-  #404040,
-  #1e23a8,
-  #445cf2,
-  #97acff,
-  #e9ebff
-);

@@ -1361,6 +1361,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /ee/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/reports/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
+/app/assets/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
 
 [Manage::Workspace]
 lib/api/entities/basic_project_details.rb @gitlab-org/manage/manage-workspace/backend-approvers

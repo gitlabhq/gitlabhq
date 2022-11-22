@@ -176,6 +176,7 @@ module Gitlab
           event = event_for(event_name)
           Gitlab::ErrorTracking.track_and_raise_for_dev_exception(UnknownEvent.new("Unknown event #{event_name}")) unless event.present?
 
+          return if event.blank?
           return unless feature_enabled?(event)
 
           Gitlab::Redis::HLL.add(key: redis_key(event, time, context), value: values, expiry: expiry(event))

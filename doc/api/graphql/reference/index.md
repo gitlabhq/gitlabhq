@@ -17145,7 +17145,7 @@ Returns [`Environment`](#environment).
 
 ##### `Project.environments`
 
-Environments of the project.
+Environments of the project. This field can only be resolved for one project in any single request.
 
 Returns [`EnvironmentConnection`](#environmentconnection).
 

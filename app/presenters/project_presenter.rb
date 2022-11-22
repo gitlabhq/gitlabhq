@@ -68,7 +68,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
     user_view = current_user.project_view
 
-    if can?(current_user, :download_code, project)
+    if can?(current_user, :read_code, project)
       user_view
     elsif user_view == 'activity'
       'activity'
@@ -423,7 +423,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def anonymous_project_view
-    if !project.empty_repo? && can?(current_user, :download_code, project)
+    if !project.empty_repo? && can?(current_user, :read_code, project)
       'files'
     elsif project.wiki_repository_exists? && can?(current_user, :read_wiki, project)
       'wiki'

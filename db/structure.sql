@@ -28440,6 +28440,8 @@ CREATE INDEX index_bulk_imports_on_user_id ON bulk_imports USING btree (user_id)
 
 CREATE UNIQUE INDEX index_chat_names_on_integration_id_and_team_id_and_chat_id ON chat_names USING btree (integration_id, team_id, chat_id);
 
+CREATE INDEX index_chat_names_on_team_id_and_chat_id ON chat_names USING btree (team_id, chat_id);
+
 CREATE UNIQUE INDEX index_chat_names_on_user_id_and_integration_id ON chat_names USING btree (user_id, integration_id);
 
 CREATE UNIQUE INDEX index_chat_teams_on_namespace_id ON chat_teams USING btree (namespace_id);

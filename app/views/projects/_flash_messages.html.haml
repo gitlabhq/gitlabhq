@@ -2,7 +2,7 @@
 
 = content_for :flash_message do
   = render partial: 'deletion_failed', locals: { project: project }
-  - if current_user && can?(current_user, :download_code, project)
+  - if current_user && can?(current_user, :read_code, project)
     = render 'shared/no_ssh'
     = render 'shared/no_password'
     - unless project.empty_repo?

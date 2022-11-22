@@ -6,7 +6,7 @@ module Sidebars
       class RepositoryMenu < ::Sidebars::Menu
         override :configure_menu_items
         def configure_menu_items
-          return false unless can?(context.current_user, :download_code, context.project)
+          return false unless can?(context.current_user, :read_code, context.project)
           return false if context.project.empty_repo?
 
           add_item(files_menu_item)

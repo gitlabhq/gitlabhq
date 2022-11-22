@@ -16,6 +16,39 @@ review-cleanup:
     - scripts/review_apps/automated_cleanup.rb
     - gcp_cleanup
 
+.base-review-checks:
+  extends:
+    - .default-retry
+  image: ${REVIEW_APPS_IMAGE}
+  stage: prepare
+  before_script:
+    - source scripts/review_apps/gcp_cleanup.sh
+    - setup_gcp_dependencies
+
+review-k8s-resources-count-checks:
+  extends:
+    - .base-review-checks
+    - .review:rules:review-k8s-resources-count-checks
+  needs:
+    - job: review-cleanup
+      optional: true
+  environment:
+    name: review/k8s-resources-count-checks
+    action: verify
+  script:
+    - scripts/review_apps/k8s-resources-count-checks.sh
+
+review-gcp-quotas-checks:
+  extends:
+    - .base-review-checks
+    - .review:rules:review-gcp-quotas-checks
+  needs: []
+  environment:
+    name: review/gcp-quotas-checks
+    action: verify
+  script:
+    - ruby scripts/review_apps/gcp-quotas-checks.rb
+
 start-review-app-pipeline:
   extends:
     - .review:rules:start-review-app-pipeline

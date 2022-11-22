@@ -76,16 +76,21 @@ describe('WorkItemLinkChild', () => {
 
     it.each`
       action                  | event          | emittedEvent
-      ${'clicking'}           | ${'click'}     | ${'click'}
       ${'doing mouseover on'} | ${'mouseover'} | ${'mouseover'}
       ${'doing mouseout on'}  | ${'mouseout'}  | ${'mouseout'}
     `('$action item title emit `$emittedEvent` event', ({ event, emittedEvent }) => {
+      titleEl.vm.$emit(event);
+
+      expect(wrapper.emitted(emittedEvent)).toEqual([[]]);
+    });
+
+    it('emits click event with correct parameters on clicking title', () => {
       const eventObj = {
         preventDefault: jest.fn(),
       };
-      titleEl.vm.$emit(event, eventObj);
+      titleEl.vm.$emit('click', eventObj);
 
-      expect(wrapper.emitted(emittedEvent)).toEqual([[workItemTask.id, eventObj]]);
+      expect(wrapper.emitted('click')).toEqual([[eventObj]]);
     });
   });
 

@@ -258,8 +258,11 @@ module Types
     field :environments,
           Types::EnvironmentType.connection_type,
           null: true,
-          description: 'Environments of the project.',
-          resolver: Resolvers::EnvironmentsResolver
+          description: 'Environments of the project. ' \
+                       'This field can only be resolved for one project in any single request.',
+          resolver: Resolvers::EnvironmentsResolver do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
 
     field :environment,
           Types::EnvironmentType,

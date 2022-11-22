@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
   let(:transaction) { Gitlab::Metrics::WebTransaction.new(env) }
   let(:subscriber) { described_class.new }
 
-  let(:event) { double(:event, duration: 15.2) }
+  let(:event) { double(:event, duration: 15.2, payload: { key: %w[a b c] }) }
 
   describe '#cache_read' do
     it 'increments the cache_read duration' do
@@ -61,6 +61,40 @@ RSpec.describe Gitlab::Metrics::Subscribers::RailsCache do
           end
         end
       end
+    end
+  end
+
+  describe '#cache_read_multi' do
+    subject { subscriber.cache_read_multi(event) }
+
+    context 'with a transaction' do
+      before do
+        allow(subscriber).to receive(:current_transaction)
+                               .and_return(transaction)
+      end
+
+      it 'observes multi-key count' do
+        expect(transaction).to receive(:observe)
+                                 .with(:gitlab_cache_read_multikey_count, event.payload[:key].size)
+
+        subject
+      end
+    end
+
+    context 'with no transaction' do
+      it 'does not observes multi-key count' do
+        expect(transaction).not_to receive(:observe)
+                                 .with(:gitlab_cache_read_multikey_count, event.payload[:key].size)
+
+        subject
+      end
+    end
+
+    it 'observes read_multi duration' do
+      expect(subscriber).to receive(:observe)
+                              .with(:read_multi, event.duration)
+
+      subject
     end
   end
 

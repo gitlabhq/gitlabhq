@@ -87,9 +87,9 @@ export default {
         category="tertiary"
         variant="link"
         class="gl-text-truncate gl-max-w-80 gl-text-black-normal!"
-        @click="$emit('click', childItem.id, $event)"
-        @mouseover="$emit('mouseover', childItem.id, $event)"
-        @mouseout="$emit('mouseout', childItem.id, $event)"
+        @click="$emit('click', $event)"
+        @mouseover="$emit('mouseover')"
+        @mouseout="$emit('mouseout')"
       >
         {{ childItem.title }}
       </gl-button>

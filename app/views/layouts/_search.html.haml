@@ -29,7 +29,7 @@
       = hidden_field_tag :scope, search_context.scope
       = hidden_field_tag :search_code, search_context.code_search?
 
-    - ref = search_context.ref if can?(current_user, :download_code, search_context.project)
+    - ref = search_context.ref if can?(current_user, :read_code, search_context.project)
     = hidden_field_tag :snippets, search_context.for_snippets?
     = hidden_field_tag :repository_ref, ref
     = hidden_field_tag :nav_source, 'navbar'

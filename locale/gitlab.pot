@@ -19223,6 +19223,9 @@ msgstr ""
 msgid "GroupSAML|\"persistent\" recommended"
 msgstr ""
 
+msgid "GroupSAML|%{group_name} SAML authentication failed: %{message}"
+msgstr ""
+
 msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enable %{linkStart}SSO enforcement%{linkEnd} to reduce security risks."
 msgstr ""
 
@@ -19326,6 +19329,9 @@ msgid "GroupSAML|SAML Group Name"
 msgstr ""
 
 msgid "GroupSAML|SAML Group Name: %{saml_group_name}"
+msgstr ""
+
+msgid "GroupSAML|SAML Name ID and email address do not match your user account. Contact an administrator."
 msgstr ""
 
 msgid "GroupSAML|SAML Response Output"
@@ -36539,6 +36545,9 @@ msgstr ""
 msgid "SecurityOrchestration|Failed to load vulnerability scanners."
 msgstr ""
 
+msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
+msgstr ""
+
 msgid "SecurityOrchestration|Groups"
 msgstr ""
 
@@ -36597,6 +36606,9 @@ msgid "SecurityOrchestration|Policy cannot be enabled for non-existing branches 
 msgstr ""
 
 msgid "SecurityOrchestration|Policy cannot be enabled without branch information"
+msgstr ""
+
+msgid "SecurityOrchestration|Policy changes may take some time to be applied."
 msgstr ""
 
 msgid "SecurityOrchestration|Policy definition"

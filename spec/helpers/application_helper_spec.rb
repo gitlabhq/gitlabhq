@@ -419,7 +419,7 @@ RSpec.describe ApplicationHelper do
       end
 
       it 'includes all possible body data elements and associates the project elements with project' do
-        expect(helper).to receive(:can?).with(nil, :download_code, project)
+        expect(helper).to receive(:can?).with(nil, :read_code, project)
         expect(helper.body_data).to eq(
           {
             page: 'application',
@@ -437,7 +437,7 @@ RSpec.describe ApplicationHelper do
         let_it_be(:project) { create(:project, :repository, group: create(:group)) }
 
         it 'includes all possible body data elements and associates the project elements with project' do
-          expect(helper).to receive(:can?).with(nil, :download_code, project)
+          expect(helper).to receive(:can?).with(nil, :read_code, project)
           expect(helper.body_data).to eq(
             {
               page: 'application',
@@ -463,7 +463,7 @@ RSpec.describe ApplicationHelper do
             stub_controller_method(:action_name, 'show')
             stub_controller_method(:params, { id: issue.id })
 
-            expect(helper).to receive(:can?).with(nil, :download_code, project).and_return(false)
+            expect(helper).to receive(:can?).with(nil, :read_code, project).and_return(false)
             expect(helper.body_data).to eq(
               {
                 page: 'projects:issues:show',
@@ -479,12 +479,34 @@ RSpec.describe ApplicationHelper do
         end
       end
 
-      context 'when current_user has download_code permission' do
-        it 'returns find_file with the default branch' do
-          allow(helper).to receive(:current_user).and_return(user)
+      describe 'find_file attribute' do
+        subject { helper.body_data[:find_file] }
 
-          expect(helper).to receive(:can?).with(user, :download_code, project).and_return(true)
-          expect(helper.body_data[:find_file]).to end_with(project.default_branch)
+        before do
+          allow(helper).to receive(:current_user).and_return(user)
+        end
+
+        context 'when the project has no repository' do
+          before do
+            allow(project).to receive(:empty_repo?).and_return(true)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when user cannot read_code for the project' do
+          before do
+            allow(helper).to receive(:can?).with(user, :read_code, project).and_return(false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when current_user has read_code permission' do
+          it 'returns find_file with the default branch' do
+            expect(helper).to receive(:can?).with(user, :read_code, project).and_return(true)
+            expect(subject).to end_with(project.default_branch)
+          end
         end
       end
     end

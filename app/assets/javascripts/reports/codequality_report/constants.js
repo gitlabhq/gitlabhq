@@ -29,3 +29,30 @@ export const SEVERITY_ICONS_EXTENSION = {
   blocker: 'severityCritical',
   unknown: 'severityUnknown',
 };
+
+export const SEVERITIES = {
+  info: {
+    class: SEVERITY_CLASSES.info,
+    name: SEVERITY_ICONS.info,
+  },
+  minor: {
+    class: SEVERITY_CLASSES.minor,
+    name: SEVERITY_ICONS.minor,
+  },
+  major: {
+    class: SEVERITY_CLASSES.major,
+    name: SEVERITY_ICONS.major,
+  },
+  critical: {
+    class: SEVERITY_CLASSES.critical,
+    name: SEVERITY_ICONS.critical,
+  },
+  blocker: {
+    class: SEVERITY_CLASSES.blocker,
+    name: SEVERITY_ICONS.blocker,
+  },
+  unknown: {
+    class: SEVERITY_CLASSES.unknown,
+    name: SEVERITY_ICONS.unknown,
+  },
+};

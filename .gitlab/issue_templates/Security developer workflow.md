@@ -38,6 +38,7 @@ After your merge request has been approved according to our [approval guidelines
 
 ## Documentation and final details
 
+- [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
 - [ ] Ensure the [Links section](#links) is completed.
 - [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#versions-affected) and editions affected to the [details section](#details)
   * The Git history of the files affected may help you associate the issue with a [release](https://about.gitlab.com/releases/)

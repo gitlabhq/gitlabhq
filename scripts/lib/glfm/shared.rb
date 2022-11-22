@@ -3,6 +3,7 @@ require 'fileutils'
 require 'open3'
 require 'active_support/core_ext/hash/keys'
 
+# This module contains shared methods used by other GLFM scripts and modules.
 module Glfm
   module Shared
     def write_file(file_path, file_content_string)

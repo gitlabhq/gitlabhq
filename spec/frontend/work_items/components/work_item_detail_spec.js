@@ -11,6 +11,7 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -94,7 +95,6 @@ describe('WorkItemDetail component', () => {
     error = undefined,
     workItemsMvc2Enabled = false,
     fetchByIid = false,
-    iidPathQueryParam = undefined,
   } = {}) => {
     const handlers = [
       [workItemQuery, handler],
@@ -108,7 +108,7 @@ describe('WorkItemDetail component', () => {
 
     wrapper = shallowMount(WorkItemDetail, {
       apolloProvider: createMockApollo(handlers),
-      propsData: { isModal, workItemId, iid: '1' },
+      propsData: { isModal, workItemId, workItemIid: '1' },
       data() {
         return {
           updateInProgress,
@@ -129,18 +129,12 @@ describe('WorkItemDetail component', () => {
         WorkItemWeight: true,
         WorkItemIteration: true,
       },
-      mocks: {
-        $route: {
-          query: {
-            iid_path: iidPathQueryParam,
-          },
-        },
-      },
     });
   };
 
   afterEach(() => {
     wrapper.destroy();
+    setWindowLocation('');
   });
 
   describe('when there is no `workItemId` prop', () => {
@@ -633,6 +627,8 @@ describe('WorkItemDetail component', () => {
   });
 
   it('calls the IID work item query when `useIidInWorkItemsPath` feature flag is true and `iid_path` route parameter is present', async () => {
+    setWindowLocation(`?iid_path=true`);
+
     createComponent({ fetchByIid: true, iidPathQueryParam: 'true' });
     await waitForPromises();
 

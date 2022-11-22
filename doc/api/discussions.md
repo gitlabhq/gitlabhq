@@ -911,7 +911,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>"\
 
 To create a new thread:
 
-1. [Get the latest merge request version](merge_requests.md#get-mr-diff-versions):
+1. [Get the latest merge request version](merge_requests.md#get-merge-request-diff-versions):
 
    ```shell
    curl --header "PRIVATE-TOKEN: <your_access_token>"\

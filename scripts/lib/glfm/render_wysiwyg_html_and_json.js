@@ -19,7 +19,6 @@ jest.mock('~/emoji');
 // Jest because that is the simplest environment in which to execute the
 // relevant Content Editor logic.
 //
-//
 // This script should be invoked via jest with the a command similar to the following:
 // yarn jest --testMatch '**/render_wysiwyg_html_and_json.js' ./scripts/lib/glfm/render_wysiwyg_html_and_json.js
 it('serializes html to prosemirror json', async () => {

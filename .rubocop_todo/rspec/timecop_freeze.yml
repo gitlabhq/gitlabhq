@@ -1,4 +1,0 @@
----
-RSpec/TimecopFreeze:
-  Exclude:
-  - qa/spec/support/repeater_spec.rb

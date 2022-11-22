@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'erb'
 require 'fileutils'
 require 'open-uri'
 require 'pathname'
@@ -29,19 +30,21 @@ module Glfm
       # create `output_spec/spec.txt`
       glfm_spec_txt_header_lines = GLFM_SPEC_TXT_HEADER.split("\n").map { |line| "#{line}\n" }
       official_spec_lines = readlines_from_path!(GLFM_OFFICIAL_SPECIFICATION_MD_PATH)
-
       glfm_spec_txt_string = (glfm_spec_txt_header_lines + official_spec_lines).join('')
       write_glfm_spec_txt(glfm_spec_txt_string)
 
       # create `output_example_snapshots/snapshot_spec.md`
+      snapshot_spec_md_header_lines = ES_SNAPSHOT_SPEC_MD_HEADER.split("\n").map { |line| "#{line}\n" }
       ghfm_spec_example_lines = extract_ghfm_spec_example_lines(ghfm_spec_lines)
       official_spec_example_lines =
         extract_glfm_spec_example_lines(official_spec_lines, GLFM_OFFICIAL_SPECIFICATION_MD_PATH)
       internal_extension_lines = readlines_from_path!(GLFM_INTERNAL_EXTENSIONS_MD_PATH)
+      validate_internal_extensions_md(internal_extension_lines)
       internal_extension_example_lines =
         extract_glfm_spec_example_lines(internal_extension_lines, GLFM_INTERNAL_EXTENSIONS_MD_PATH)
+
       snapshot_spec_md_string = (
-        glfm_spec_txt_header_lines +
+        snapshot_spec_md_header_lines +
           ghfm_spec_example_lines +
           official_spec_example_lines +
           ["\n"] +
@@ -49,16 +52,37 @@ module Glfm
       ).join('')
       write_snapshot_spec_md(snapshot_spec_md_string)
 
+      # Some unit tests can skip HTML generation if they don't need it, so they run faster
       if skip_spec_html_generation
         output("Skipping GLFM spec.html and snapshot_spec.html generation...")
         return
       end
 
-      # create `output_spec/spec.html` and `output_snapshot_examples/snapshot_spec.html`
-      spec_html_string, snapshot_spec_html_string =
-        generate_spec_html_files(glfm_spec_txt_string, snapshot_spec_md_string)
-      write_spec_html(spec_html_string)
-      write_snapshot_spec_html(snapshot_spec_html_string)
+      # Use the backend markdown processing to render un-styled GLFM specification HTML files from the markdown
+      # We strip off the frontmatter headers before rendering.
+      spec_html_unstyled_string, snapshot_spec_html_unstyled_string =
+        generate_spec_html_files(
+          glfm_spec_txt_string.gsub!(GLFM_SPEC_TXT_HEADER, "[TOC]\n\n"),
+          snapshot_spec_md_string.gsub!(ES_SNAPSHOT_SPEC_MD_HEADER, "[TOC]\n\n"),
+          ghfm_spec_example_lines.join('')
+        )
+
+      # Add styling to the rendered HTML files, to make them look like the CommonMark and
+      # GitHub Flavored Markdown HTML-rendered specifications
+      spec_html_styled_string = add_styling_to_specification_html(
+        body: spec_html_unstyled_string,
+        title: GLFM_SPEC_TXT_TITLE,
+        version: GLFM_SPEC_VERSION
+      )
+      snapshot_spec_html_styled_string = add_styling_to_specification_html(
+        body: snapshot_spec_html_unstyled_string,
+        title: ES_SNAPSHOT_SPEC_TITLE,
+        version: GLFM_SPEC_VERSION
+      )
+
+      # Write out the styled HTML GLFM specification HTML files
+      write_spec_html(spec_html_styled_string)
+      write_snapshot_spec_html(snapshot_spec_html_styled_string)
     end
 
     private
@@ -156,6 +180,16 @@ module Glfm
       spec_lines[(begin_tests_comment_line_index + 1)..(end_tests_comment_index - 1)]
     end
 
+    def validate_internal_extensions_md(internal_extension_lines)
+      first_line = internal_extension_lines[0].strip
+      last_line = internal_extension_lines[-1].strip
+      return unless first_line != BEGIN_TESTS_COMMENT_LINE_TEXT || last_line != END_TESTS_COMMENT_LINE_TEXT
+
+      raise "Error: No content is allowed outside of the " \
+            "'#{BEGIN_TESTS_COMMENT_LINE_TEXT}' and '#{END_TESTS_COMMENT_LINE_TEXT}' comments " \
+              "in '#{GLFM_INTERNAL_EXTENSIONS_MD_PATH}'."
+    end
+
     def write_glfm_spec_txt(glfm_spec_txt_string)
       output("Writing #{GLFM_SPEC_TXT_PATH}...")
       FileUtils.mkdir_p(Pathname.new(GLFM_SPEC_TXT_PATH).dirname)
@@ -168,11 +202,32 @@ module Glfm
       write_file(ES_SNAPSHOT_SPEC_MD_PATH, snapshot_spec_md_string)
     end
 
-    def generate_spec_html_files(spec_txt_string, snapshot_spec_md_string)
+    def generate_spec_html_files(spec_txt_string, snapshot_spec_md_string, ghfm_spec_examples_string)
       output("Generating spec.html and snapshot_spec.html from spec.txt and snapshot_spec.md markdown...")
 
-      spec_txt_string_split_examples = split_examples_into_html_and_md(spec_txt_string)
-      snapshot_spec_md_string_split_examples = split_examples_into_html_and_md(snapshot_spec_md_string)
+      # NOTE: spec.txt only contains official GLFM examples, but snapshot_spec.md contains ALL examples, with the
+      #       official GLFM examples coming _after_ the GHFM (which contains CommonMark + GHFM) examples, and the
+      #       internal extension examples coming last. In the snapshot_spec.md, The CommonMark and GLFM examples come
+      #       first, in order for the example numbers to match tne numbers in those separate specifications [1]. But, we
+      #       also need for the numbering of the official examples in spec.txt to match the numbering of the official
+      #       examples in snapshot_spec.md. Here's the ordering:
+      #
+      #       spec.txt:
+      #       1. GLFM Official
+      #
+      #       snapshot_spec.md:
+      #       1. GHFM (contains CommonMark + GHFM)
+      #       2. GLFM Official
+      #       3. GLFM Internal
+      #
+      #       [1] Note that the example numbering in the GLFM spec.html is currently out of sync with its corresponding
+      #           spec.txt because its rendering is out of date. This has been reported in the following issue:
+      #           https://github.com/github/cmark-gfm/issues/288
+      ghfm_spec_examples_count = ghfm_spec_examples_string.scan(EXAMPLE_BEGIN_STRING).length
+
+      spec_txt_string_split_examples =
+        transform_examples_for_rendering(spec_txt_string, starting_example_number: ghfm_spec_examples_count + 1)
+      snapshot_spec_md_string_split_examples = transform_examples_for_rendering(snapshot_spec_md_string)
 
       input_markdown_yml_string = <<~MARKDOWN
         ---
@@ -212,11 +267,42 @@ module Glfm
       [rendered_html_hash.fetch(:spec_txt), rendered_html_hash.fetch(:snapshot_spec_md)]
     end
 
-    def split_examples_into_html_and_md(spec_md_string)
-      spec_md_string.gsub(
-        /(^#{EXAMPLE_BEGIN_STRING}.*?$(?:.|\n)*?)^\.$(\n(?:.|\n)*?^#{EXAMPLE_END_STRING}$)/mo,
-        "\\1#{EXAMPLE_BACKTICKS_STRING}\n\n#{EXAMPLE_BACKTICKS_STRING}\\2"
-      )
+    # NOTE: body, title, and version are used by the ERB binding.
+    # noinspection RubyUnusedLocalVariable
+    def add_styling_to_specification_html(body:, title:, version:)
+      # noinspection RubyMismatchedArgumentType
+      ERB.new(File.read(File.expand_path('specification_html_template.erb', __dir__))).result(binding)
+    end
+
+    def transform_examples_for_rendering(spec_md_string, starting_example_number: 1)
+      # This method:
+      # 1. Splits the single example code block which has a period between the markdown and HTML into two code blocks
+      # 2. Adds a wrapper div for use in styling and target for the example number named anchor. This will get the
+      #    'class="example" id="example-n"' attributes applied via javascript (since markdown rendering does not
+      #    preserve classes or IDs)
+      # 3. Adds a div which includes the example number named anchor and text. This will get the 'class="examplenum"'
+      #    attribute applied via javascript.
+      #
+      # NOTE: Even though they will get stripped durning markdown rendering, we will go ahead and add the class and id
+      #       attributes here, for easier debugging and comparison to the source markdown.
+      example_replacement_regex = /(^#{EXAMPLE_BEGIN_STRING}.*?$(?:.|\n)*?)^\.$(\n(?:.|\n)*?^#{EXAMPLE_END_STRING}$)/mo
+      example_num = starting_example_number
+      spec_md_string.gsub(example_replacement_regex) do |_example_string|
+        markdown_part = ::Regexp.last_match(1)
+        html_part = ::Regexp.last_match(2)
+        example_anchor_name = "example-#{example_num}"
+        examplenum_div = %(<div class="examplenum"><a href="##{example_anchor_name}">Example #{example_num}</a></div>\n)
+        example_num += 1
+        # NOTE: We need blank lines before the markdown code blocks so they will be rendered properly
+        %(<div class="example" id="#{example_anchor_name}">\n) +
+          "#{examplenum_div}\n" \
+          "#{markdown_part}" \
+          "#{EXAMPLE_BACKTICKS_STRING}" \
+          "\n\n" \
+          "#{EXAMPLE_BACKTICKS_STRING}" \
+          "#{html_part}\n" \
+          '</div>'
+      end
     end
 
     def write_spec_html(spec_html_string)

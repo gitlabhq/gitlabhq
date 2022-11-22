@@ -29,7 +29,7 @@ module Sidebars
         end
 
         def graph_menu_item
-          if !can?(context.current_user, :download_code, context.project) ||
+          if !can?(context.current_user, :read_code, context.project) ||
             context.project.empty_repo?
             return ::Sidebars::NilMenuItem.new(item_id: :graph)
           end
@@ -72,7 +72,7 @@ module Sidebars
         end
 
         def commits_menu_item
-          if !can?(context.current_user, :download_code, context.project) ||
+          if !can?(context.current_user, :read_code, context.project) ||
             context.project.empty_repo?
             return ::Sidebars::NilMenuItem.new(item_id: :commits)
           end

@@ -273,6 +273,22 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
           expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.to raise_error(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
         end
 
+        context 'when Rails environment is production' do
+          before do
+            allow(Rails.env).to receive(:development?).and_return(false)
+            allow(Rails.env).to receive(:test?).and_return(false)
+          end
+
+          it 'reports only UnknownEvent exception' do
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+                                               .with(Gitlab::UsageDataCounters::HLLRedisCounter::UnknownEvent)
+                                               .once
+                                               .and_call_original
+
+            expect { described_class.track_event('unknown', values: entity1, time: Date.current) }.not_to raise_error
+          end
+        end
+
         it 'reports an error if Feature.enabled raise an error' do
           expect(Feature).to receive(:enabled?).and_raise(StandardError.new)
           expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)

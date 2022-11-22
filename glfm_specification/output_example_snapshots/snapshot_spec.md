@@ -1,5 +1,5 @@
 ---
-title: GitLab Flavored Markdown (GLFM) Spec
+title: GitLab Flavored Markdown Internal Extensions
 version: alpha
 ...
 # Preliminaries
@@ -9803,8 +9803,14 @@ See
 [table of contents](https://docs.gitlab.com/ee/user/markdown.html#table-of-contents)
 in the GitLab Flavored Markdown documentation.
 
+NOTE: Because of this bug (https://gitlab.com/gitlab-org/gitlab/-/issues/359077),
+we cannot actually include the `TOC` tag with single brackets in backticks
+in this Markdown document, otherwise it would render a table of contents inline
+right here. So, it's been switched to `[` + `TOC` + `]` instead. This can be reverted
+once that bug is fixed.
+
 A table of contents is an unordered list that links to subheadings in the document.
-Add either the `[[_TOC_]]` or `[TOC]` tag on its own line.
+Add either the `[[_TOC_]]` tag or the `[` + `TOC` + `]` tag on its own line.
 
 ```````````````````````````````` example gitlab
 [TOC]

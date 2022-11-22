@@ -211,7 +211,6 @@ RSpec.configure do |config|
   end
 
   config.before(:suite) do
-    Timecop.safe_mode = true
     TestEnv.init
 
     # Reload all feature flags definitions

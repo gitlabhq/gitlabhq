@@ -723,6 +723,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/2',
+                iid: '2',
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
                   __typename: 'WorkItemType',
@@ -747,6 +748,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
 
 export const workItemTask = {
   id: 'gid://gitlab/WorkItem/4',
+  iid: '4',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     __typename: 'WorkItemType',
@@ -761,6 +763,7 @@ export const workItemTask = {
 
 export const confidentialWorkItemTask = {
   id: 'gid://gitlab/WorkItem/2',
+  iid: '2',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     __typename: 'WorkItemType',
@@ -775,6 +778,7 @@ export const confidentialWorkItemTask = {
 
 export const closedWorkItemTask = {
   id: 'gid://gitlab/WorkItem/3',
+  iid: '3',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
     __typename: 'WorkItemType',
@@ -791,6 +795,7 @@ export const workItemHierarchyResponse = {
   data: {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
+      iid: '1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
         __typename: 'WorkItemType',
@@ -821,6 +826,7 @@ export const workItemHierarchyResponse = {
               workItemTask,
               {
                 id: 'gid://gitlab/WorkItem/5',
+                iid: '5',
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
                   __typename: 'WorkItemType',

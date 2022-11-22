@@ -7,7 +7,7 @@
           %span= s_('ProjectOverview|Fork')
       - else
         - disabled_tooltip = fork_button_disabled_tooltip(@project)
-        - count_class = 'disabled' unless can?(current_user, :download_code, @project)
+        - count_class = 'disabled' unless can?(current_user, :read_code, @project)
         - button_class = 'disabled' if disabled_tooltip
 
         %span.btn-group{ class: ('has-tooltip' if disabled_tooltip), title: disabled_tooltip }

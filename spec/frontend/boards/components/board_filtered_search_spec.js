@@ -30,7 +30,7 @@ describe('BoardFilteredSearch', () => {
     {
       icon: 'labels',
       title: TOKEN_TITLE_LABEL,
-      type: 'label',
+      type: TOKEN_TYPE_LABEL,
       operators: [
         { value: '=', description: 'is' },
         { value: '!=', description: 'is not' },
@@ -43,7 +43,7 @@ describe('BoardFilteredSearch', () => {
     {
       icon: 'pencil',
       title: TOKEN_TITLE_AUTHOR,
-      type: 'author',
+      type: TOKEN_TYPE_AUTHOR,
       operators: [
         { value: '=', description: 'is' },
         { value: '!=', description: 'is not' },
@@ -109,7 +109,7 @@ describe('BoardFilteredSearch', () => {
       createComponent({ props: { eeFilters: { labelName: ['label'] } } });
 
       expect(findFilteredSearch().props('initialFilterValue')).toEqual([
-        { type: 'label', value: { data: 'label', operator: '=' } },
+        { type: TOKEN_TYPE_LABEL, value: { data: 'label', operator: '=' } },
       ]);
     });
   });
@@ -158,7 +158,9 @@ describe('BoardFilteredSearch', () => {
         ['None', url('None')],
         ['Any', url('Any')],
       ])('sets the url param %s', (assigneeParam, expected) => {
-        const mockFilters = [{ type: 'assignee', value: { data: assigneeParam, operator: '=' } }];
+        const mockFilters = [
+          { type: TOKEN_TYPE_ASSIGNEE, value: { data: assigneeParam, operator: '=' } },
+        ];
         jest.spyOn(urlUtility, 'updateHistory');
         findFilteredSearch().vm.$emit('onFilter', mockFilters);
 

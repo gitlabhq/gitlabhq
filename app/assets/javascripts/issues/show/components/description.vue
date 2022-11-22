@@ -166,7 +166,7 @@ export default {
     this.renderGFM();
     this.updateTaskStatusText();
 
-    if (this.workItemId) {
+    if (this.workItemId && this.workItemsEnabled) {
       const taskLink = this.$el.querySelector(
         `.gfm-issue[data-issue="${getIdFromGraphQLId(this.workItemId)}"]`,
       );

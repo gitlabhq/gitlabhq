@@ -4,20 +4,25 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
+import { stubComponent } from 'helpers/stub_component';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
+import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import { FORM_TYPES } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import changeWorkItemParentMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import getWorkItemLinksQuery from '~/work_items/graphql/work_item_links.query.graphql';
+import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import {
   workItemHierarchyResponse,
   workItemHierarchyEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   changeWorkItemParentMutationResponse,
   workItemQueryResponse,
+  projectWorkItemResponse,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
@@ -55,6 +60,7 @@ const issueDetailsResponse = (confidential = false) => ({
     },
   },
 });
+const showModal = jest.fn();
 
 describe('WorkItemLinks', () => {
   let wrapper;
@@ -71,6 +77,7 @@ describe('WorkItemLinks', () => {
     .mockResolvedValue(changeWorkItemParentMutationResponse);
 
   const childWorkItemQueryHandler = jest.fn().mockResolvedValue(workItemQueryResponse);
+  const childWorkItemByIidHandler = jest.fn().mockResolvedValue(projectWorkItemResponse);
 
   const createComponent = async ({
     data = {},
@@ -78,6 +85,7 @@ describe('WorkItemLinks', () => {
     mutationHandler = mutationChangeParentHandler,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(issueDetailsResponse()),
     hasIterationsFeature = false,
+    fetchByIid = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
@@ -85,6 +93,7 @@ describe('WorkItemLinks', () => {
         [changeWorkItemParentMutation, mutationHandler],
         [workItemQuery, childWorkItemQueryHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
+        [workItemByIidQuery, childWorkItemByIidHandler],
       ],
       {},
       { addTypename: true },
@@ -100,11 +109,21 @@ describe('WorkItemLinks', () => {
         projectPath: 'project/path',
         iid: '1',
         hasIterationsFeature,
+        glFeatures: {
+          useIidInWorkItemsPath: fetchByIid,
+        },
       },
       propsData: { issuableId: 1 },
       apolloProvider: mockApollo,
       mocks: {
         $toast,
+      },
+      stubs: {
+        WorkItemDetailModal: stubComponent(WorkItemDetailModal, {
+          methods: {
+            show: showModal,
+          },
+        }),
       },
     });
 
@@ -130,6 +149,7 @@ describe('WorkItemLinks', () => {
   afterEach(() => {
     wrapper.destroy();
     mockApollo = null;
+    setWindowLocation('');
   });
 
   it('is expanded by default', () => {
@@ -271,39 +291,6 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  describe('prefetching child items', () => {
-    let firstChild;
-
-    beforeEach(async () => {
-      await createComponent();
-
-      firstChild = findFirstWorkItemLinkChild();
-    });
-
-    it('does not fetch the child work item before hovering work item links', () => {
-      expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
-    });
-
-    it('fetches the child work item if link is hovered for 250+ ms', async () => {
-      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
-      await waitForPromises();
-
-      expect(childWorkItemQueryHandler).toHaveBeenCalledWith({
-        id: 'gid://gitlab/WorkItem/2',
-      });
-    });
-
-    it('does not fetch the child work item if link is hovered for less than 250 ms', async () => {
-      firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
-      jest.advanceTimersByTime(200);
-      firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
-      await waitForPromises();
-
-      expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
-    });
-  });
-
   describe('when parent item is confidential', () => {
     it('passes correct confidentiality status to form', async () => {
       await createComponent({
@@ -315,5 +302,146 @@ describe('WorkItemLinks', () => {
 
       expect(findAddLinksForm().props('parentConfidential')).toBe(true);
     });
+  });
+
+  describe('when work item is fetched by id', () => {
+    describe('prefetching child items', () => {
+      let firstChild;
+
+      beforeEach(async () => {
+        await createComponent();
+
+        firstChild = findFirstWorkItemLinkChild();
+      });
+
+      it('does not fetch the child work item by id before hovering work item links', () => {
+        expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
+      });
+
+      it('fetches the child work item by id if link is hovered for 250+ ms', async () => {
+        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        expect(childWorkItemQueryHandler).toHaveBeenCalledWith({
+          id: 'gid://gitlab/WorkItem/2',
+        });
+      });
+
+      it('does not fetch the child work item by id if link is hovered for less than 250 ms', async () => {
+        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+        jest.advanceTimersByTime(200);
+        firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
+        await waitForPromises();
+
+        expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
+      });
+
+      it('does not fetch work item by iid if link is hovered for 250+ ms', async () => {
+        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('starts prefetching work item by id if URL contains work item id', async () => {
+      setWindowLocation('?work_item_id=5');
+      await createComponent();
+
+      expect(childWorkItemQueryHandler).toHaveBeenCalledWith({
+        id: 'gid://gitlab/WorkItem/5',
+      });
+    });
+
+    it('does not open the modal if work item id URL parameter is not found in child items', async () => {
+      setWindowLocation('?work_item_id=555');
+      await createComponent();
+
+      expect(showModal).not.toHaveBeenCalled();
+      expect(wrapper.findComponent(WorkItemDetailModal).props('workItemId')).toBe(null);
+    });
+
+    it('opens the modal if work item id URL parameter is found in child items', async () => {
+      setWindowLocation('?work_item_id=2');
+      await createComponent();
+
+      expect(showModal).toHaveBeenCalled();
+      expect(wrapper.findComponent(WorkItemDetailModal).props('workItemId')).toBe(
+        'gid://gitlab/WorkItem/2',
+      );
+    });
+  });
+
+  describe('when work item is fetched by iid', () => {
+    describe('prefetching child items', () => {
+      let firstChild;
+
+      beforeEach(async () => {
+        setWindowLocation('?iid_path=true');
+        await createComponent({ fetchByIid: true });
+
+        firstChild = findFirstWorkItemLinkChild();
+      });
+
+      it('does not fetch the child work item by iid before hovering work item links', () => {
+        expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
+      });
+
+      it('fetches the child work item by iid if link is hovered for 250+ ms', async () => {
+        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
+          fullPath: 'project/path',
+          iid: '2',
+        });
+      });
+
+      it('does not fetch the child work item by iid if link is hovered for less than 250 ms', async () => {
+        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+        jest.advanceTimersByTime(200);
+        firstChild.vm.$emit('mouseout', firstChild.vm.childItem.id);
+        await waitForPromises();
+
+        expect(childWorkItemByIidHandler).not.toHaveBeenCalled();
+      });
+
+      it('does not fetch work item by id if link is hovered for 250+ ms', async () => {
+        firstChild.vm.$emit('mouseover', firstChild.vm.childItem.id);
+        jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+        await waitForPromises();
+
+        expect(childWorkItemQueryHandler).not.toHaveBeenCalled();
+      });
+    });
+
+    it('starts prefetching work item by iid if URL contains work item id', async () => {
+      setWindowLocation('?work_item_iid=5&iid_path=true');
+      await createComponent({ fetchByIid: true });
+
+      expect(childWorkItemByIidHandler).toHaveBeenCalledWith({
+        iid: '5',
+        fullPath: 'project/path',
+      });
+    });
+  });
+
+  it('does not open the modal if work item iid URL parameter is not found in child items', async () => {
+    setWindowLocation('?work_item_iid=555&iid_path=true');
+    await createComponent({ fetchByIid: true });
+
+    expect(showModal).not.toHaveBeenCalled();
+    expect(wrapper.findComponent(WorkItemDetailModal).props('workItemIid')).toBe(null);
+  });
+
+  it('opens the modal if work item iid URL parameter is found in child items', async () => {
+    setWindowLocation('?work_item_iid=2&iid_path=true');
+    await createComponent({ fetchByIid: true });
+
+    expect(showModal).toHaveBeenCalled();
+    expect(wrapper.findComponent(WorkItemDetailModal).props('workItemIid')).toBe('2');
   });
 });

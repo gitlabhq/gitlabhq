@@ -4,6 +4,11 @@ require 'pathname'
 
 module Glfm
   module Constants
+    # Version and titles for rendering
+    GLFM_SPEC_VERSION = 'alpha'
+    GLFM_SPEC_TXT_TITLE = 'GitLab Flavored Markdown Official Specification'
+    ES_SNAPSHOT_SPEC_TITLE = 'GitLab Flavored Markdown Internal Extensions'
+
     # Root dir containing all specification files
     specification_path = Pathname.new(File.expand_path("../../../glfm_specification", __dir__))
 
@@ -25,6 +30,12 @@ module Glfm
     GLFM_OUTPUT_SPEC_PATH = specification_path.join('output_spec')
     GLFM_SPEC_TXT_PATH = GLFM_OUTPUT_SPEC_PATH.join('spec.txt')
     GLFM_SPEC_HTML_PATH = GLFM_OUTPUT_SPEC_PATH.join('spec.html')
+    GLFM_SPEC_TXT_HEADER = <<~MARKDOWN
+      ---
+      title: #{GLFM_SPEC_TXT_TITLE}
+      version: #{GLFM_SPEC_VERSION}
+      ...
+    MARKDOWN
 
     # Example Snapshot (ES) files
     ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH = specification_path.join('output_example_snapshots')
@@ -34,14 +45,14 @@ module Glfm
     ES_MARKDOWN_YML_PATH = ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH.join('markdown.yml')
     ES_HTML_YML_PATH = ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH.join('html.yml')
     ES_PROSEMIRROR_JSON_YML_PATH = ES_OUTPUT_EXAMPLE_SNAPSHOTS_PATH.join('prosemirror_json.yml')
-
-    # Other constants used for processing files
-    GLFM_SPEC_TXT_HEADER = <<~MARKDOWN
+    ES_SNAPSHOT_SPEC_MD_HEADER = <<~MARKDOWN
       ---
-      title: GitLab Flavored Markdown (GLFM) Spec
-      version: alpha
+      title: #{ES_SNAPSHOT_SPEC_TITLE}
+      version: #{GLFM_SPEC_VERSION}
       ...
     MARKDOWN
+
+    # Other constants used for processing files
     EXAMPLE_BACKTICKS_LENGTH = 32
     EXAMPLE_BACKTICKS_STRING = '`' * EXAMPLE_BACKTICKS_LENGTH
     EXAMPLE_BEGIN_STRING = "#{EXAMPLE_BACKTICKS_STRING} example"

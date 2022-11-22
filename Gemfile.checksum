@@ -594,7 +594,6 @@
 {"name":"thor","version":"1.2.1","platform":"ruby","checksum":"b1752153dc9c6b8d3fcaa665e9e1a00a3e73f28da5e238b81c404502e539d446"},
 {"name":"thrift","version":"0.16.0","platform":"ruby","checksum":"d023286ea89e30444c9f1c28dd76107f87d8aaf85fe1742da1d8cd3b5417dcce"},
 {"name":"tilt","version":"2.0.11","platform":"ruby","checksum":"7b180fc472cbdeb186c85d31c0f2d1e61a2c0d77e1d9fd0ca28482a9d972d6a0"},
-{"name":"timecop","version":"0.9.1","platform":"ruby","checksum":"374b543f0961dbd487e96d09ac812d4fdfeb603ec705bbff241ba060d0a9f534"},
 {"name":"timeliness","version":"0.3.10","platform":"ruby","checksum":"c357233ce19dc53148e8b29dfddde134689f18f52b32928e9dfe12ebcf4a773f"},
 {"name":"timfel-krb5-auth","version":"0.8.3","platform":"ruby","checksum":"ab388c9d747fa3cd95baf2cc1c03253e372d8c680adcc543670f4f099854bb80"},
 {"name":"tins","version":"1.31.1","platform":"ruby","checksum":"51c4a347c25c630d310cbc2c040ffb84e266c8227f2ade881f1130ee4f9fbecf"},

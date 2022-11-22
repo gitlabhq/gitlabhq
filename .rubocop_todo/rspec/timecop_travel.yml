@@ -1,4 +1,0 @@
----
-RSpec/TimecopTravel:
-  Exclude:
-  - qa/spec/support/repeater_spec.rb

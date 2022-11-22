@@ -20,6 +20,11 @@ export default {
       required: false,
       default: null,
     },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
+    },
     issueGid: {
       type: String,
       required: false,
@@ -144,6 +149,7 @@ export default {
       is-modal
       :work-item-parent-id="issueGid"
       :work-item-id="workItemId"
+      :work-item-iid="workItemIid"
       class="gl-p-5 gl-mt-n3"
       @close="hide"
       @deleteWorkItem="deleteWorkItem"

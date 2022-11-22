@@ -1,5 +1,6 @@
 <script>
 import { GlSkeletonLoader, GlAlert } from '@gitlab/ui';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
@@ -10,6 +11,9 @@ export default {
   components: {
     GlSkeletonLoader,
     GlAlert,
+  },
+  directives: {
+    SafeHtml,
   },
   props: {
     getWikiContentUrl: {
@@ -83,9 +87,9 @@ export default {
   <div
     v-else-if="!loadingContentFailed && !isLoadingContent"
     ref="content"
+    v-safe-html="content"
     data-qa-selector="wiki_page_content"
     data-testid="wiki-page-content"
     class="js-wiki-page-content md"
-    v-html="content /* eslint-disable-line vue/no-v-html */"
   ></div>
 </template>

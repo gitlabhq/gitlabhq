@@ -34,7 +34,7 @@ describe('DiffCodeQuality', () => {
     wrapper = createWrapper(multipleFindingsArr);
     const listItems = wrapper.findAll('li');
 
-    expect(wrapper.findAll('li').length).toBe(3);
+    expect(wrapper.findAll('li').length).toBe(5);
 
     listItems.wrappers.map((e, i) => {
       return expect(e.text()).toEqual(multipleFindingsArr[i].description);

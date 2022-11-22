@@ -2,18 +2,22 @@ import { GlFilteredSearchToken } from '@gitlab/ui';
 import { keyBy } from 'lodash';
 import { ListType } from '~/boards/constants';
 import {
-  OPERATORS_IS_NOT,
   OPERATORS_IS,
+  OPERATORS_IS_NOT,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -733,18 +737,18 @@ export const mockMoveData = {
 };
 
 export const mockEmojiToken = {
-  type: 'my-reaction',
+  type: TOKEN_TYPE_MY_REACTION,
   icon: 'thumb-up',
-  title: 'My-Reaction',
+  title: TOKEN_TITLE_MY_REACTION,
   unique: true,
   token: EmojiToken,
   fetchEmojis: expect.any(Function),
 };
 
 export const mockConfidentialToken = {
-  type: 'confidential',
+  type: TOKEN_TYPE_CONFIDENTIAL,
   icon: 'eye-slash',
-  title: 'Confidential',
+  title: TOKEN_TITLE_CONFIDENTIAL,
   unique: true,
   token: GlFilteredSearchToken,
   operators: OPERATORS_IS,

@@ -13,6 +13,7 @@ import {
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
@@ -90,7 +91,7 @@ export default {
       required: false,
       default: null,
     },
-    iid: {
+    workItemIid: {
       type: String,
       required: false,
       default: null,
@@ -247,13 +248,13 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
     fetchByIid() {
-      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(this.$route.query.iid_path);
+      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
     },
     queryVariables() {
       return this.fetchByIid
         ? {
             fullPath: this.fullPath,
-            iid: this.iid,
+            iid: this.workItemIid,
           }
         : {
             id: this.workItemId,

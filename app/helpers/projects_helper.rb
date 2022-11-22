@@ -553,10 +553,10 @@ module ProjectsHelper
 
   def search_tab_ability_map
     @search_tab_ability_map ||= tab_ability_map.merge(
-      blobs: :download_code,
-      commits: :download_code,
+      blobs: :read_code,
+      commits: :read_code,
       merge_requests: :read_merge_request,
-      notes: [:read_merge_request, :download_code, :read_issue, :read_snippet],
+      notes: [:read_merge_request, :read_code, :read_issue, :read_snippet],
       members: :read_project_member
     )
   end
@@ -702,7 +702,7 @@ module ProjectsHelper
 
   def find_file_path
     return unless @project && !@project.empty_repo?
-    return unless can?(current_user, :download_code, @project)
+    return unless can?(current_user, :read_code, @project)
 
     ref = @ref || @project.repository.root_ref
 

@@ -350,17 +350,17 @@ $theme-light-red-700: #a62e21;
 
 // Data visualization color palette
 
-$data-viz-blue-50: #e9ebff;
-$data-viz-blue-100: #d4dcfa;
-$data-viz-blue-200: #b7c6ff;
-$data-viz-blue-300: #97acff;
-$data-viz-blue-400: #748eff;
-$data-viz-blue-500: #5772ff;
-$data-viz-blue-600: #445cf2;
-$data-viz-blue-700: #3547de;
-$data-viz-blue-800: #232fcf;
-$data-viz-blue-900: #1e23a8;
-$data-viz-blue-950: #11118a;
+$data-viz-blue-50: #e9ebff !default;
+$data-viz-blue-100: #d2dcff !default;
+$data-viz-blue-200: #b7c6ff !default;
+$data-viz-blue-300: #97acff !default;
+$data-viz-blue-400: #7992f5 !default;
+$data-viz-blue-500: #617ae2 !default;
+$data-viz-blue-600: #4e65cd !default;
+$data-viz-blue-700: #3f51ae !default;
+$data-viz-blue-800: #374291 !default;
+$data-viz-blue-900: #303470 !default;
+$data-viz-blue-950: #2a2b59 !default;
 
 $border-white-light: darken($white, $darken-border-factor) !default;
 $border-white-normal: darken($white-normal, $darken-border-factor) !default;

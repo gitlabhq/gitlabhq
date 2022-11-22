@@ -373,5 +373,5 @@ function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
   echoinfo "Environment debugging data:"
-  kubectl get svc,pods,jobs --namespace "${namespace}"
+  kubectl get svc,pods,jobs -o wide --namespace "${namespace}"
 }

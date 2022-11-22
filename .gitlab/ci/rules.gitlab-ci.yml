@@ -1990,6 +1990,24 @@
     - <<: *if-dot-com-gitlab-org-schedule
       allow_failure: true
 
+.review:rules:review-k8s-resources-count-checks:
+  rules:
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - "scripts/review_apps/k8s-resources-count-checks.sh"
+      allow_failure: true
+
+.review:rules:review-gcp-quotas-checks:
+  rules:
+    - <<: *if-dot-com-gitlab-org-schedule
+      allow_failure: true
+    - <<: *if-dot-com-gitlab-org-merge-request
+      changes:
+        - "scripts/review_apps/gcp-quotas-checks.rb"
+      allow_failure: true
+
 .review:rules:review-stop:
   rules:
     - when: manual

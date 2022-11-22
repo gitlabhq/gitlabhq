@@ -20,6 +20,7 @@ query workItemLinksQuery($id: WorkItemID!) {
         children {
           nodes {
             id
+            iid
             confidential
             workItemType {
               id

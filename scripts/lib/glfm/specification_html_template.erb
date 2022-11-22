@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<!-- NOTE: Styling is based on the CommonMark specification template:                -->
+<!-- - https://github.com/commonmark/commonmark-spec/blob/master/tools/make_spec.lua -->
+<!-- - https://github.com/commonmark/commonmark-spec/blob/master/tools/template.html -->
+<!--                                                                                 -->
+<!-- NOTE: 'TODO:' comments will be followed up as task(s) on this issue:            -->
+<!-- - https://gitlab.com/gitlab-org/gitlab/-/issues/361241                          -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %></title>
+  <style type="text/css">
+    body {
+      font-family: Helvetica, arial, freesans, clean, sans-serif;
+      line-height: 1.4;
+      max-width: 48em;
+      margin: auto;
+      padding: 0 0.5em 4em;
+      color: #333333;
+      background-color: #ffffff;
+      font-size: 13pt;
+    }
+
+    div#TOC ul { list-style: none; }
+    h1 {
+      font-size: 140%;
+      font-weight: bold;
+      border-top: 1px solid gray;
+      padding-top: 0.5em;
+    }
+
+    h2 {
+      font-size: 120%;
+      font-weight: bold;
+    }
+
+    h3 {
+      font-size: 110%;
+      font-weight: bold;
+    }
+
+    h4 {
+      font-size: 100%;
+      font-weight: bold;
+    }
+
+    /* NOTE: "font-weight: bold" was applied to "a.definition" class in original CommonMark */
+    /*       template, but in practice it was applied to all anchors                        */
+    a {
+      font-weight: bold;
+    }
+
+
+    /* TODO: Format whitespace in examples. This will require preprocessing to insert spans around them. */
+    /*span.space { position: relative; }*/
+    /*span.space:after {*/
+    /*  content: "·";*/
+    /*  position: absolute;*/
+    /*  !* create a mark that indicates a space (trick from D. Greenspan) *!*/
+    /*  top: 0; bottom: 7px; left: 1px; right: 1px;*/
+    /*  color: #aaaaaa;*/
+    /*}*/
+    /*@media print {*/
+    /*  a.dingus { display: none; }*/
+    /*}*/
+
+    div.example {
+      overflow: hidden;
+    }
+
+    p {
+      text-align: justify;
+    }
+
+    pre {
+      padding: 0.5em;
+      margin: 0.2em 0 0.5em;
+      font-size: 88%;
+    }
+
+    pre {
+      white-space: pre-wrap; /* css-3 */
+      white-space: -moz-pre-wrap; /* Mozilla, since 1999 */
+      white-space: -o-pre-wrap; /* Opera 7 */
+      word-wrap: break-word; /* Internet Explorer 5.5+ */
+    }
+
+    code {
+      font-family: monospace;
+      background-color: #d3e1e4;
+    }
+
+    pre > code {
+      background-color: transparent;
+    }
+
+    .example {
+      font-size: 0; /* hack to get width: 50% to work on inline-block */
+      padding-bottom: 6pt;
+    }
+
+    .column pre {
+      font-size: 11pt;
+      padding: 2pt 6pt;
+    }
+
+    div.examplenum {
+      font-size: 11pt;
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    div.column {
+      display: inline-block;
+      width: 50%;
+      vertical-align: top;
+    }
+
+    div.example > div:nth-child(2) {
+      clear: left;
+      background-color: #d3e1e4;
+    }
+
+    div.example > div:nth-child(3) {
+      clear: right;
+      background-color: #c9cace;
+    }
+
+    @media print {
+      @page {
+        size: auto;
+        margin: 1.2in 1.2in 1.2in 1.2in;
+      }
+
+      body {
+        margin: 0;
+        line-height: 1.2;
+        font-size: 10pt;
+      }
+
+      .column pre {
+        font-size: 9pt;
+      }
+
+      div.examplenum {
+        font-size: 9pt;
+      }
+    }
+  </style>
+  <!-- TODO: Extract this javascript out to a separate file and unit test it -->
+  <script type="text/javascript">
+    /* NOTE: The following code performs many of the pre-processing steps originally handled */
+    /* in https://github.com/commonmark/commonmark-spec/blob/master/tools/make_spec.lua      */
+
+    /* Adds a div.example wrapper around each pair of example code blocks. */
+    function addAttributesToExampleWrapperDivs() {
+      const exampleAnchorTags = document.querySelectorAll("a[href^=\"#example-\"]");
+      for (const exampleAnchorTag of exampleAnchorTags) {
+        const examplenumDiv = exampleAnchorTag.parentElement;
+        examplenumDiv.classList.add("examplenum");
+        const exampleDiv = examplenumDiv.parentElement;
+        exampleDiv.classList.add("example");
+        exampleDiv.id = exampleAnchorTag.getAttribute("href").substring(1);
+      }
+    }
+
+    function addColumnClassToMarkdownDivs() {
+      const markdownCodeBlockDivs = document.querySelectorAll("div.markdown-code-block");
+      for (const markdownCodeBlockDiv of markdownCodeBlockDivs) {
+        markdownCodeBlockDiv.classList.add("column");
+      }
+    }
+
+    function addNumbersToHeaders() {
+      const headers = document.querySelectorAll('h1,h2,h3');
+      let h1Index = -1; // NOTE: -1 because we don't assign a number to the title
+      let h2Index = 0;
+      let h3Index = 0;
+      const tocEntries = [];
+      for (const header of headers) {
+        if (h1Index === -1) {
+          h1Index++;
+          continue;
+        }
+
+        const originalHeaderTextContent = header.textContent.trim();
+        const headerAnchor = originalHeaderTextContent.toLowerCase().replaceAll(' ', '-');
+        header.id = headerAnchor;
+        let indent;
+        let headerTextContent;
+        if (header.tagName === 'H1') {
+          h1Index++;
+          h2Index = 0;
+          h3Index = 0;
+          header.textContent = headerTextContent = h1Index + ' ' + originalHeaderTextContent;
+          indent = 0;
+        } else if (header.tagName === 'H2') {
+          h2Index++;
+          h3Index = 0;
+          header.textContent =
+            headerTextContent = h1Index + '.' + h2Index + ' ' + originalHeaderTextContent;
+          indent = 1;
+        } else if (header.tagName === 'H3') {
+          h3Index++;
+          header.textContent = headerTextContent =
+            h1Index + '.' + h2Index + '.' + h3Index + ' ' + originalHeaderTextContent;
+          indent = 2;
+        }
+        tocEntries.push({headerAnchor, headerTextContent, indent});
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function(_event) {
+      addAttributesToExampleWrapperDivs();
+      addColumnClassToMarkdownDivs();
+      const tocEntries = addNumbersToHeaders();
+      addToc(tocEntries);
+    });
+
+    /* NOTE: The following code is to support the "Try it" interactive "dingus", which        */
+    /*       we do not yet support. But it is being left here for comparison context with the */
+    /*       original CommonMark template.                                                    */
+    // $$(document).ready(function() {
+    //   $$("div.example").each(function(e) {
+    //     var t = $$(this).find('code.language-markdown').text();
+    //     $$(this).find('a.dingus').click(function(f) {
+    //       window.open('/dingus/?text=' +
+    //         encodeURIComponent(t.replace(/→/g,"\t")));
+    //     });
+    //   });
+    //   $$("code.language-markdown").dblclick(function(e) { window.open('/dingus/?text=' +
+    //     encodeURIComponent($$(this).text()));
+    //   });
+    // });
+  </script>
+</head>
+<body>
+<h1 class="title"><%= title %></h1>
+<div class="version">Version <%= version %></div>
+
+<%= body %>
+
+</body>
+</html>

@@ -36,8 +36,8 @@
         = render 'projects/buttons/star'
         = render 'projects/buttons/fork'
 
-  - if can?(current_user, :download_code, @project)
-    = cache_if(cache_enabled, [@project, :download_code], expires_in: 1.minute) do
+  - if can?(current_user, :read_code, @project)
+    = cache_if(cache_enabled, [@project, :read_code], expires_in: 1.minute) do
       %nav.project-stats
         - if @project.empty_repo?
           = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_anchors

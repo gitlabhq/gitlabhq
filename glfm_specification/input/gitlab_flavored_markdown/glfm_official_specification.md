@@ -2,6 +2,16 @@
 
 TODO: Write a GitLab-specific version of the GitHub Flavored Markdown intro section.
 
+NOTE: The example numbering in this document does not start at "1", because this official specification
+only contains a subset of all the examples which are supported by GitLab Flavored Markdown. See
+[`snapshot_spec.html`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/glfm_specification/output_example_snapshots/snapshot_spec.html)
+for a complete list of all examples, which are a superset of examples from:
+
+- CommonMark
+- GitHub Flavored Markdown
+- GitLab Flavored Markdown Official Specification (the same ones from this specifiation)
+- GitLab Flavored Markdown Internal Extensions.
+
 <!-- BEGIN TESTS -->
 # GitLab Official Specification Markdown
 
@@ -211,8 +221,14 @@ See
 [table of contents](https://docs.gitlab.com/ee/user/markdown.html#table-of-contents)
 in the GitLab Flavored Markdown documentation.
 
+NOTE: Because of this bug (https://gitlab.com/gitlab-org/gitlab/-/issues/359077),
+we cannot actually include the `TOC` tag with single brackets in backticks
+in this Markdown document, otherwise it would render a table of contents inline
+right here. So, it's been switched to `[` + `TOC` + `]` instead. This can be reverted
+once that bug is fixed.
+
 A table of contents is an unordered list that links to subheadings in the document.
-Add either the `[[_TOC_]]` or `[TOC]` tag on its own line.
+Add either the `[[_TOC_]]` tag or the `[` + `TOC` + `]` tag on its own line.
 
 ```````````````````````````````` example gitlab
 [TOC]
