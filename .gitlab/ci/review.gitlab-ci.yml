@@ -6,7 +6,7 @@ review-cleanup:
   stage: prepare
   environment:
     name: review/regular-cleanup
-    action: stop
+    action: access
   before_script:
     - source scripts/utils.sh
     - source scripts/review_apps/gcp_cleanup.sh

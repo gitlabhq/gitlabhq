@@ -5,8 +5,6 @@ class Packages::Debian::DistributionReleaseFileUploader < GitlabUploader
 
   storage_options Gitlab.config.packages
 
-  after :store, :schedule_background_upload
-
   alias_method :upload, :model
 
   def filename

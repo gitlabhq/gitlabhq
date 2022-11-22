@@ -289,6 +289,93 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
       end
     end
 
+    context 'when project has merge commit template with reviewers' do
+      let(:user1) { create(:user) }
+      let(:user2) { create(:user) }
+      let(message_template_name) { <<~MSG.rstrip }
+        Merge branch '%{source_branch}' into '%{target_branch}'
+
+        %{reviewed_by}
+      MSG
+
+      context 'and mr has no reviewers' do
+        before do
+          merge_request.reviews = []
+        end
+
+        it 'removes variable and blank line' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Merge branch 'feature' into 'master'
+          MSG
+        end
+
+        context 'when there is blank line after reviewed_by' do
+          let(message_template_name) { <<~MSG.rstrip }
+            Merge branch '%{source_branch}' into '%{target_branch}'
+
+            %{reviewed_by}
+
+            Type: merge
+          MSG
+
+          it 'removes blank line before it' do
+            expect(result_message).to eq <<~MSG.rstrip
+              Merge branch 'feature' into 'master'
+
+              Type: merge
+            MSG
+          end
+        end
+
+        context 'when there is no blank line after reviewed_by' do
+          let(message_template_name) { <<~MSG.rstrip }
+            Merge branch '%{source_branch}' into '%{target_branch}'
+
+            %{reviewed_by}
+            Type: merge
+          MSG
+
+          it 'does not remove blank line before it' do
+            expect(result_message).to eq <<~MSG.rstrip
+              Merge branch 'feature' into 'master'
+
+              Type: merge
+            MSG
+          end
+        end
+      end
+
+      context 'and mr has one reviewer' do
+        before do
+          merge_request.reviews.create!(project: merge_request.project, author: user1)
+        end
+
+        it 'returns user name and email' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Merge branch 'feature' into 'master'
+
+            Reviewed-by: #{user1.name} <#{user1.email}>
+          MSG
+        end
+      end
+
+      context 'and mr has multiple reviewers' do
+        before do
+          merge_request.reviews.create!(project: merge_request.project, author: user1)
+          merge_request.reviews.create!(project: merge_request.project, author: user2)
+        end
+
+        it 'returns users names and emails' do
+          expect(result_message).to eq <<~MSG.rstrip
+            Merge branch 'feature' into 'master'
+
+            Reviewed-by: #{user1.name} <#{user1.email}>
+            Reviewed-by: #{user2.name} <#{user2.email}>
+          MSG
+        end
+      end
+    end
+
     context 'when project has merge commit template with approvers' do
       let(:user1) { create(:user) }
       let(:user2) { create(:user) }
@@ -547,6 +634,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
         first_commit:%{first_commit}
         first_multiline_commit:%{first_multiline_commit}
         url:%{url}
+        reviewed_by:%{reviewed_by}
         approved_by:%{approved_by}
         merged_by:%{merged_by}
         co_authored_by:%{co_authored_by}
@@ -568,6 +656,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
 
           Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
           url:#{Gitlab::UrlBuilder.build(merge_request)}
+          reviewed_by:
           approved_by:
           merged_by:#{current_user.name} <#{current_user.commit_email_or_default}>
           co_authored_by:Co-authored-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>

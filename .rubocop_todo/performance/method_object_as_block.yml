@@ -81,7 +81,6 @@ Performance/MethodObjectAsBlock:
     - 'rubocop/cop/avoid_return_from_blocks.rb'
     - 'rubocop/cop/gitlab/mark_used_feature_flags.rb'
     - 'rubocop/rubocop.rb'
-    - 'scripts/api/download_job_artifact.rb'
     - 'spec/graphql/resolvers/concerns/caching_array_resolver_spec.rb'
     - 'spec/lib/api/entities/merge_request_basic_spec.rb'
     - 'spec/lib/gitlab/import_export/import_test_coverage_spec.rb'

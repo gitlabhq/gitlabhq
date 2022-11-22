@@ -16742,6 +16742,18 @@ Represents a product analytics dashboard.
 | <a id="productanalyticsdashboardtitle"></a>`title` | [`String!`](#string) | Title of the dashboard. |
 | <a id="productanalyticsdashboardwidgets"></a>`widgets` | [`ProductAnalyticsDashboardWidgetConnection!`](#productanalyticsdashboardwidgetconnection) | Widgets shown on the dashboard. (see [Connections](#connections)) |
 
+### `ProductAnalyticsDashboardVisualization`
+
+Represents a product analytics dashboard visualization.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="productanalyticsdashboardvisualizationdata"></a>`data` | [`JSON!`](#json) | Data of the visualization. |
+| <a id="productanalyticsdashboardvisualizationoptions"></a>`options` | [`JSON!`](#json) | Options of the visualization. |
+| <a id="productanalyticsdashboardvisualizationtype"></a>`type` | [`String!`](#string) | Type of the visualization. |
+
 ### `ProductAnalyticsDashboardWidget`
 
 Represents a product analytics dashboard widget.
@@ -16752,6 +16764,7 @@ Represents a product analytics dashboard widget.
 | ---- | ---- | ----------- |
 | <a id="productanalyticsdashboardwidgetgridattributes"></a>`gridAttributes` | [`JSON`](#json) | Description of the position and size of the widget. |
 | <a id="productanalyticsdashboardwidgettitle"></a>`title` | [`String!`](#string) | Title of the widget. |
+| <a id="productanalyticsdashboardwidgetvisualization"></a>`visualization` | [`ProductAnalyticsDashboardVisualization!`](#productanalyticsdashboardvisualization) | Visualization of the widget. |
 
 ### `Project`
 

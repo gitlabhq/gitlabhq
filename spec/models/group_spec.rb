@@ -1955,6 +1955,78 @@ RSpec.describe Group do
     end
   end
 
+  describe '#self_and_hierarchy_intersecting_with_user_groups' do
+    let_it_be(:user) { create(:user) }
+    let(:subject) { group.self_and_hierarchy_intersecting_with_user_groups(user) }
+
+    it 'makes a call to GroupsFinder' do
+      expect(GroupsFinder).to receive_message_chain(:new, :execute, :unscope)
+
+      subject
+    end
+
+    context 'when the group is private' do
+      let_it_be(:group) { create(:group, :private) }
+
+      context 'when the user is not a member of the group' do
+        it 'is an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'when the user is a member of the group' do
+        before do
+          group.add_developer(user)
+        end
+
+        it 'is equal to the group' do
+          expect(subject).to match_array([group])
+        end
+      end
+
+      context 'when the group has a sub group' do
+        let_it_be(:subgroup) { create(:group, :private, parent: group) }
+
+        context 'when the user is not a member of the subgroup' do
+          it 'is an empty array' do
+            expect(subject).to eq([])
+          end
+        end
+
+        context 'when the user is a member of the subgroup' do
+          before do
+            subgroup.add_developer(user)
+          end
+
+          it 'is equal to the group and subgroup' do
+            expect(subject).to match_array([group, subgroup])
+          end
+
+          context 'when the group has an ancestor' do
+            let_it_be(:ancestor) { create(:group, :private) }
+
+            before do
+              group.parent = ancestor
+              group.save!
+            end
+
+            it 'is equal to the ancestor, group and subgroup' do
+              expect(subject).to match_array([ancestor, group, subgroup])
+            end
+          end
+        end
+      end
+    end
+
+    context 'when the group is public' do
+      let_it_be(:group) { create(:group, :public) }
+
+      it 'is equal to the public group regardless of membership' do
+        expect(subject).to match_array([group])
+      end
+    end
+  end
+
   describe '#update_two_factor_requirement_for_members' do
     let_it_be_with_reload(:user) { create(:user) }
 

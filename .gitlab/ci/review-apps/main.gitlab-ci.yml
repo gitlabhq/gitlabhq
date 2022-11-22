@@ -108,6 +108,8 @@ review-deploy:
     key: "review-deploy-dependencies-charts-${GITLAB_HELM_CHART_REF}-v1"
     paths:
       - "gitlab-${GITLAB_HELM_CHART_REF}"
+  environment:
+    action: start
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
@@ -140,6 +142,8 @@ review-deploy-sample-projects:
     - .review:rules:review-deploy
   stage: deploy
   needs: ["review-deploy"]
+  environment:
+    action: prepare
   before_script:
     - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)

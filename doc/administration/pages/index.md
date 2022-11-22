@@ -247,20 +247,20 @@ control over how the Pages daemon runs and serves content in your environment.
 | `enable`                                | Enable or disable GitLab Pages on the current system. |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. |
 | `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`. |
-| `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: 30s). |
-| `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10s). |
-| `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30s). |
-| `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600s). |
-| `gitlab_cache_refresh`                  | The interval at which a domain's configuration is set to be due to refresh (default: 60s). |
-| `gitlab_cache_cleanup`                  | The interval at which expired items are removed from the cache (default: 60s). |
-| `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: 30s). |
-| `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: 1s). |
+| `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: 30 s). |
+| `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: 10 s). |
+| `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: 30 s). |
+| `gitlab_cache_expiry`                   | The maximum time a domain's configuration is stored in the cache (default: 600 s). |
+| `gitlab_cache_refresh`                  | The interval at which a domain's configuration is set to be due to refresh (default: 60 s). |
+| `gitlab_cache_cleanup`                  | The interval at which expired items are removed from the cache (default: 60 s). |
+| `gitlab_retrieval_timeout`              | The maximum time to wait for a response from the GitLab API per request (default: 30 s). |
+| `gitlab_retrieval_interval`             | The interval to wait before retrying to resolve a domain's configuration via the GitLab API (default: 1 s). |
 | `gitlab_retrieval_retries`              | The maximum number of times to retry to resolve a domain's configuration via the API (default: 3). |
 | `domain_config_source`                  | This parameter was removed in 14.0, on earlier versions it can be used to enable and test API domain configuration source |
 | `gitlab_id`                             | The OAuth application public ID. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `gitlab_secret`                         | The OAuth application secret. Leave blank to automatically fill when Pages authenticates with GitLab. |
 | `auth_scope`                            | The OAuth application scope to use for authentication. Must match GitLab Pages OAuth application settings. Leave blank to use `api` scope by default. |
-| `auth_cookie_session_timeout`           | Authentication cookie session timeout in seconds (default: 600s). A value of `0` means the cookie is deleted after the browser session ends. |
+| `auth_cookie_session_timeout`           | Authentication cookie session timeout in seconds (default: 600 s). A value of `0` means the cookie is deleted after the browser session ends. |
 | `gitlab_server`                         | Server to use for authentication when access control is enabled; defaults to GitLab `external_url`. |
 | `headers`                               | Specify any additional http headers that should be sent to the client with each response. Multiple headers can be given as an array, header and value as one string, for example `['my-header: myvalue', 'my-other-header: my-other-value']` |
 | `enable_disk`                           | Allows the GitLab Pages daemon to serve content from disk. Shall be disabled if shared disk storage isn't available. |
@@ -540,22 +540,22 @@ archive. You can modify the cache behavior by changing the following configurati
 
 | Setting | Description |
 | ------- | ----------- |
-| `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is 60s. |
-| `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is 30s. |
-| `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is 30s. |
-| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30s. |
-| `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is 30m. |
+| `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is 60 s. |
+| `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is 30 s. |
+| `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is 30 s. |
+| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30 s. |
+| `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is 30 m. |
 
 #### ZIP cache refresh example
 
 Archives are refreshed in the cache (extending the time they are held in memory) if they're accessed
 before `zip_cache_expiration`, and the time left before expiring is less than or equal to
-`zip_cache_refresh`. For example, if `archive.zip` is accessed at time 0s, it expires in 60s (the
-default for `zip_cache_expiration`). In the example below, if the archive is opened again after 15s
-it is **not** refreshed because the time left for expiry (45s) is greater than `zip_cache_refresh`
-(default 30s). However, if the archive is accessed again after 45s (from the first time it was
+`zip_cache_refresh`. For example, if `archive.zip` is accessed at time 0 s, it expires in 60 s (the
+default for `zip_cache_expiration`). In the example below, if the archive is opened again after 15 s
+it is **not** refreshed because the time left for expiry (45 s) is greater than `zip_cache_refresh`
+(default 30 s). However, if the archive is accessed again after 45 s (from the first time it was
 opened) it's refreshed. This extends the time the archive remains in memory from
-`45s + zip_cache_expiration (60s)`, for a total of 105s.
+`45s + zip_cache_expiration (60s)`, for a total of 105 s.
 
 After an archive reaches `zip_cache_expiration`, it's marked as expired and removed on the next
 `zip_cache_cleanup` interval.

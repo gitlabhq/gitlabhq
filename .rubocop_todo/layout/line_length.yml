@@ -3717,7 +3717,6 @@ Layout/LineLength:
     - 'rubocop/cop/rspec/top_level_describe_path.rb'
     - 'rubocop/cop/usage_data/large_table.rb'
     - 'scripts/api/cancel_pipeline.rb'
-    - 'scripts/api/download_job_artifact.rb'
     - 'scripts/api/get_job_id.rb'
     - 'scripts/changed-feature-flags'
     - 'scripts/failed_tests.rb'

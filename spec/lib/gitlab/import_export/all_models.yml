@@ -157,6 +157,7 @@ merge_requests:
 - author
 - assignee
 - reviewers
+- reviewed_by_users
 - updated_by
 - milestone
 - iteration

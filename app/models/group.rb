@@ -550,6 +550,11 @@ class Group < Namespace
     members_with_parents.pluck(Arel.sql('DISTINCT members.user_id'))
   end
 
+  def self_and_hierarchy_intersecting_with_user_groups(user)
+    user_groups = GroupsFinder.new(user).execute.unscope(:order)
+    self_and_hierarchy.unscope(:order).where(id: user_groups)
+  end
+
   def self_and_ancestors_ids
     strong_memoize(:self_and_ancestors_ids) do
       self_and_ancestors.pluck(:id)

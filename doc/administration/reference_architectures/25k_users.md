@@ -2362,7 +2362,7 @@ services where applicable):
 | Consul<sup>1</sup>                       | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`   |
 | PostgreSQL<sup>1</sup>                   | 3     | 16 vCPU, 60 GB memory  | `n1-standard-16` | `m5.4xlarge` |
 | PgBouncer<sup>1</sup>                    | 3     | 2 vCPU, 1.8 GB memory  | `n1-highcpu-2`   | `c5.large`   |
-| Internal load balancing node<sup>3</sup> | 1     | 4 vCPU, 3.6GB memory   | `n1-highcpu-4`   | `c5.xlarge`  |
+| Internal load balancing node<sup>3</sup> | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`   | `c5.xlarge`  |
 | Redis/Sentinel - Cache<sup>2</sup>       | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`  |
 | Redis/Sentinel - Persistent<sup>2</sup>  | 3     | 4 vCPU, 15 GB memory   | `n1-standard-4`  | `m5.xlarge`  |
 | Gitaly<sup>5 6</sup>                     | 3     | 32 vCPU, 120 GB memory | `n1-standard-32` | `m5.8xlarge` |

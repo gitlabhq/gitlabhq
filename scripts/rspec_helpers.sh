@@ -3,44 +3,14 @@
 function retrieve_tests_metadata() {
   mkdir -p $(dirname "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}") $(dirname "${FLAKY_RSPEC_SUITE_REPORT_PATH}") "${RSPEC_PROFILING_FOLDER_PATH}"
 
-  if [[ -n "${RETRIEVE_TESTS_METADATA_FROM_PAGES}" ]]; then
-    if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
-      curl --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
-        echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
-    fi
-
-    if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
-      curl --location -o "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
-        echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-    fi
-  else
-    # ${CI_DEFAULT_BRANCH} might not be master in other forks but we want to
-    # always target the canonical project here, so the branch must be hardcoded
-    local project_path="gitlab-org/gitlab"
-    local artifact_branch="master"
-    local username="gitlab-bot"
-    local job_name="update-tests-metadata"
-    local test_metadata_job_id
-
-    # Ruby
-    test_metadata_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "status=success" -q "ref=${artifact_branch}" -q "username=${username}" -Q "scope=success" --job-name "${job_name}")
-
-    if [[ -n "${test_metadata_job_id}" ]]; then
-      echo "test_metadata_job_id: ${test_metadata_job_id}"
-
-      if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
-        scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" || echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
-      fi
-
-      if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
-        scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_job_id}" --artifact-path "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
-          echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-      fi
-    else
-      echo "test_metadata_job_id couldn't be found!"
+  if [[ ! -f "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ]]; then
+    curl --location -o "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" ||
       echo "{}" > "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}"
+  fi
+
+  if [[ ! -f "${FLAKY_RSPEC_SUITE_REPORT_PATH}" ]]; then
+    curl --location -o "${FLAKY_RSPEC_SUITE_REPORT_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FLAKY_RSPEC_SUITE_REPORT_PATH}" ||
       echo "{}" > "${FLAKY_RSPEC_SUITE_REPORT_PATH}"
-    fi
   fi
 }
 
@@ -74,31 +44,8 @@ function update_tests_metadata() {
 function retrieve_tests_mapping() {
   mkdir -p $(dirname "$RSPEC_PACKED_TESTS_MAPPING_PATH")
 
-  if [[ -n "${RETRIEVE_TESTS_METADATA_FROM_PAGES}" ]]; then
-    if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
-      (curl --location  -o "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" "https://gitlab-org.gitlab.io/gitlab/${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-    fi
-  else
-    # ${CI_DEFAULT_BRANCH} might not be master in other forks but we want to
-    # always target the canonical project here, so the branch must be hardcoded
-    local project_path="gitlab-org/gitlab"
-    local artifact_branch="master"
-    local username="gitlab-bot"
-    local job_name="update-tests-metadata"
-    local test_metadata_with_mapping_job_id
-
-    test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "status=success" -q "ref=${artifact_branch}" -q "username=${username}" -Q "scope=success" --job-name "${job_name}")
-
-    if [[ -n "${test_metadata_with_mapping_job_id}" ]]; then
-      echo "test_metadata_with_mapping_job_id: ${test_metadata_with_mapping_job_id}"
-
-      if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
-        (scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_with_mapping_job_id}" --artifact-path "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-      fi
-    else
-      echo "test_metadata_with_mapping_job_id couldn't be found!"
-      echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
-    fi
+  if [[ ! -f "${RSPEC_PACKED_TESTS_MAPPING_PATH}" ]]; then
+    (curl --location  -o "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" "https://gitlab-org.gitlab.io/gitlab/${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz" && gzip -d "${RSPEC_PACKED_TESTS_MAPPING_PATH}.gz") || echo "{}" > "${RSPEC_PACKED_TESTS_MAPPING_PATH}"
   fi
 
   scripts/unpack-test-mapping "${RSPEC_PACKED_TESTS_MAPPING_PATH}" "${RSPEC_TESTS_MAPPING_PATH}"
@@ -107,31 +54,8 @@ function retrieve_tests_mapping() {
 function retrieve_frontend_fixtures_mapping() {
   mkdir -p $(dirname "$FRONTEND_FIXTURES_MAPPING_PATH")
 
-  if [[ -n "${RETRIEVE_TESTS_METADATA_FROM_PAGES}" ]]; then
-    if [[ ! -f "${FRONTEND_FIXTURES_MAPPING_PATH}" ]]; then
-      (curl --location  -o "${FRONTEND_FIXTURES_MAPPING_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FRONTEND_FIXTURES_MAPPING_PATH}") || echo "{}" > "${FRONTEND_FIXTURES_MAPPING_PATH}"
-    fi
-  else
-    # ${CI_DEFAULT_BRANCH} might not be master in other forks but we want to
-    # always target the canonical project here, so the branch must be hardcoded
-    local project_path="gitlab-org/gitlab"
-    local artifact_branch="master"
-    local username="gitlab-bot"
-    local job_name="generate-frontend-fixtures-mapping"
-    local test_metadata_with_mapping_job_id
-
-    test_metadata_with_mapping_job_id=$(scripts/api/get_job_id.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" -q "ref=${artifact_branch}" -q "username=${username}" -Q "scope=success" --job-name "${job_name}")
-
-    if [[ $? -eq 0 ]] && [[ -n "${test_metadata_with_mapping_job_id}" ]]; then
-      echo "test_metadata_with_mapping_job_id: ${test_metadata_with_mapping_job_id}"
-
-      if [[ ! -f "${FRONTEND_FIXTURES_MAPPING_PATH}" ]]; then
-        (scripts/api/download_job_artifact.rb --endpoint "https://gitlab.com/api/v4" --project "${project_path}" --job-id "${test_metadata_with_mapping_job_id}" --artifact-path "${FRONTEND_FIXTURES_MAPPING_PATH}") || echo "{}" > "${FRONTEND_FIXTURES_MAPPING_PATH}"
-      fi
-    else
-      echo "test_metadata_with_mapping_job_id couldn't be found!"
-      echo "{}" > "${FRONTEND_FIXTURES_MAPPING_PATH}"
-    fi
+  if [[ ! -f "${FRONTEND_FIXTURES_MAPPING_PATH}" ]]; then
+    (curl --location  -o "${FRONTEND_FIXTURES_MAPPING_PATH}" "https://gitlab-org.gitlab.io/gitlab/${FRONTEND_FIXTURES_MAPPING_PATH}") || echo "{}" > "${FRONTEND_FIXTURES_MAPPING_PATH}"
   fi
 }
 

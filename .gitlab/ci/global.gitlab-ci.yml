@@ -348,3 +348,20 @@
   tags:
     # See https://gitlab.com/gitlab-com/www-gitlab-com/-/issues/7019 for tag descriptions
     - gitlab-org-docker
+
+.use-buildx:
+  extends: .use-docker-in-docker
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/debian-bullseye-slim:docker-${DOCKER_VERSION}-buildx-0.8
+  variables:
+    QEMU_IMAGE: tonistiigi/binfmt:qemu-v7.0.0
+  before_script:
+    - source scripts/utils.sh
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
+    - |
+      if [[ "${ARCH}" =~ arm64 ]]; then
+        echo -e "\033[1;33mInstalling latest qemu emulators\033[0m"
+        docker pull -q ${QEMU_IMAGE};
+        docker run --rm --privileged ${QEMU_IMAGE} --uninstall qemu-*;
+        docker run --rm --privileged ${QEMU_IMAGE} --install all;
+      fi
+    - docker buildx create --use # creates and set's to active buildkit builder

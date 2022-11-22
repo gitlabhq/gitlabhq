@@ -111,7 +111,7 @@ PostgresSQL defaults:
 
 Comments in issue [#30528](https://gitlab.com/gitlab-org/gitlab/-/issues/30528)
 indicate that these should both be set to at least a number of minutes for all
-Omnibus GitLab installations (so they don't hang indefinitely). However, 15s
+Omnibus GitLab installations (so they don't hang indefinitely). However, 15 s
 for `statement_timeout` is very short, and is only effective if the
 underlying infrastructure is very performant.
 

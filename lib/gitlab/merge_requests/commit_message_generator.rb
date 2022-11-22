@@ -41,6 +41,7 @@ module Gitlab
         'first_commit' => -> (merge_request, _, _) { merge_request.first_commit&.safe_message&.strip },
         'first_multiline_commit' => -> (merge_request, _, _) { merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title },
         'url' => ->(merge_request, _, _) { Gitlab::UrlBuilder.build(merge_request) },
+        'reviewed_by' => ->(merge_request, _, _) { merge_request.reviewed_by_users.map { |user| "Reviewed-by: #{user.name} <#{user.commit_email_or_default}>" }.join("\n") },
         'approved_by' => ->(merge_request, _, _) { merge_request.approved_by_users.map { |user| "Approved-by: #{user.name} <#{user.commit_email_or_default}>" }.join("\n") },
         'merged_by' => ->(_, user, _) { "#{user&.name} <#{user&.commit_email_or_default}>" },
         'co_authored_by' => ->(merge_request, merged_by, squash) do

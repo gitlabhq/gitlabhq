@@ -272,6 +272,37 @@ during a low traffic period([after `00:00 UTC`](https://dashboards.gitlab.net/d/
 
 See an example of this strategy in our [partition tooling](../../../development/database/table_partitioning.md#step-6---create-parent-table-and-attach-existing-table-as-the-initial-partition)).
 
+### Partitioning steps
+
+The database [partition tooling](../../../development/database/table_partitioning.md#partitioning-a-table-list)
+docs contain a list of steps to partition a table, but the steps are not enough
+for our iterative strategy. As our dataset continues to grow we want to take
+advantage of partitioning performance right away and not wait until all tables
+are partitioned. For example, after partitioning the `ci_builds_metadata` table
+we want to start writing and reading data to/from a new partition. This means
+that we will increase the `partition_id` value from `100`, the default value,
+to `101`. Now all of the new resources for the pipeline hierarchy will be
+persisted with `partition_id = 101`. We can continue following the database
+tooling instructions for the next table that will be partitioned, but we require
+a few extra steps:
+
+- add `partition_id` column for the FK references with default value of `100`
+  since the majority of records should have that value.
+- change application logic to cascade the `partition_id` value
+- correct partition_id values for recent records with a post deploy/background
+  migration, similar to this:
+
+  ```sql
+  UPDATE ci_pipeline_metadata
+         SET partition_id = ci_pipelines.partition_id
+         FROM ci_pipelines
+              WHERE ci_pipelines.id = ci_pipeline_metadata.pipeline_id
+                AND ci_pipelines.partition_id in (101, 102);
+  ```
+
+- change the foreign key definitions
+- ...
+
 ## Storing partitions metadata in the database
 
 To build an efficient mechanism that will be responsible for creating

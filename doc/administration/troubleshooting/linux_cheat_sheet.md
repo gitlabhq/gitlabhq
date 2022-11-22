@@ -294,8 +294,8 @@ small differences should not be considered significant.
 
 |Setup          | access times  |
 |:--------------|:--------------|
-| EFS           | 10 - 30ms     |
-| Local Storage | 0.01 - 1ms    |
+| EFS           | 10 - 30 ms     |
+| Local Storage | 0.01 - 1 ms    |
 
 ## Networking
 

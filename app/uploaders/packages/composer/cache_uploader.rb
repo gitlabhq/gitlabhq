@@ -4,8 +4,6 @@ class Packages::Composer::CacheUploader < GitlabUploader
 
   storage_options Gitlab.config.packages
 
-  after :store, :schedule_background_upload
-
   alias_method :upload, :model
 
   def filename

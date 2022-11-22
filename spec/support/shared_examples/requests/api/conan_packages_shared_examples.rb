@@ -849,12 +849,6 @@ RSpec.shared_examples 'uploads a package file' do
         expect(package_file.file_name).to eq(params[:file].original_filename)
       end
 
-      it "doesn't attempt to migrate file to object storage" do
-        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-        subject
-      end
-
       context 'with existing package' do
         let!(:existing_package) { create(:conan_package, name: 'foo', version: 'bar', project: project) }
 
@@ -936,8 +930,6 @@ RSpec.shared_examples 'uploads a package file' do
         end
       end
     end
-
-    it_behaves_like 'background upload schedules a file migration'
   end
 end
 

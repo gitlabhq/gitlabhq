@@ -188,20 +188,6 @@ RSpec.shared_examples 'returns paginated packages' do
   end
 end
 
-RSpec.shared_examples 'background upload schedules a file migration' do
-  context 'background upload enabled' do
-    before do
-      stub_package_file_object_storage(background_upload: true)
-    end
-
-    it 'schedules migration of file to object storage' do
-      expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('Packages::PackageFileUploader', 'Packages::PackageFile', :file, kind_of(Numeric))
-
-      subject
-    end
-  end
-end
-
 RSpec.shared_context 'package filter context' do
   def package_filter_url(filter, param)
     "/projects/#{project.id}/packages?package_#{filter}=#{param}"

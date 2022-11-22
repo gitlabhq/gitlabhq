@@ -18,6 +18,12 @@ RSpec.describe Gitlab::Audit::Type::Definition do
   let(:definition) { described_class.new(path, attributes) }
   let(:yaml_content) { attributes.deep_stringify_keys.to_yaml }
 
+  around do |example|
+    described_class.clear_memoization(:definitions)
+    example.run
+    described_class.clear_memoization(:definitions)
+  end
+
   describe '#key' do
     subject { definition.key }
 
@@ -108,6 +114,18 @@ RSpec.describe Gitlab::Audit::Type::Definition do
         expect(audit_event_type_definition.saved_to_database).to be true
         expect(audit_event_type_definition.streamed).to be true
       end
+    end
+  end
+
+  describe '.event_names' do
+    before do
+      allow(described_class).to receive(:definitions) do
+        { definition.key => definition }
+      end
+    end
+
+    it 'returns names of event types as string array' do
+      expect(described_class.event_names).to match_array([definition.attributes[:name]])
     end
   end
 

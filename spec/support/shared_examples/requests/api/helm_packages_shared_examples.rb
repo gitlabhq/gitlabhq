@@ -156,25 +156,13 @@ RSpec.shared_examples 'process helm upload' do |user_type, status|
       end
 
       context 'and direct upload disabled' do
-        context 'and background upload disabled' do
-          let(:fog_connection) do
-            stub_package_file_object_storage(direct_upload: false, background_upload: false)
-          end
-
-          it_behaves_like 'creates helm package files'
+        let(:fog_connection) do
+          stub_package_file_object_storage(direct_upload: false)
         end
 
-        context 'and background upload enabled' do
-          let(:fog_connection) do
-            stub_package_file_object_storage(direct_upload: false, background_upload: true)
-          end
-
-          it_behaves_like 'creates helm package files'
-        end
+        it_behaves_like 'creates helm package files'
       end
     end
-
-    it_behaves_like 'background upload schedules a file migration'
   end
 end
 

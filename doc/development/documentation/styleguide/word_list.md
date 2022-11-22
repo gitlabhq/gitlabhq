@@ -745,6 +745,11 @@ For **MB** and **GB**, follow the [Microsoft guidance](https://learn.microsoft.c
 
 Do not use first-person singular. Use **you**, **we**, or **us** instead. ([Vale](../testing.md#vale) rule: [`FirstPerson.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/FirstPerson.yml))
 
+## member
+
+When you add a [user account](#user-account) to a group or project,
+the user account becomes a **member**.
+
 ## merge requests
 
 Use lowercase for **merge requests**. If you use **MR** as the acronym, spell it out on first use.
@@ -1225,18 +1230,10 @@ See also [downgrade](#downgrade) and [roll back](#roll-back).
 
 Do not use **useful**. If the user doesn't find the process to be useful, we lose their trust. ([Vale](../testing.md#vale) rule: [`Simplicity.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Simplicity.yml))
 
-## user, users
+## user account
 
-When possible, address the reader directly, instead of calling them **users**.
-Use the [second person](#you-your-yours), **you**, instead.
-
-Use:
-
-- You can configure a pipeline.
-
-Instead of:
-
-- Users can configure a pipeline.
+You create a **user account**. The user account has an [access level](#access-level).
+When you add a **user account** to a group or project, the user account becomes a **member**.
 
 ## utilize
 
@@ -1297,7 +1294,7 @@ in present tense, active voice.
 
 ## you, your, yours
 
-Use **you**, **your**, and **yours** instead of [**the user** and **the user's**](#user-users).
+Use **you**, **your**, and **yours** instead of **the user** and **the user's**.
 Documentation should be from the [point of view](https://design.gitlab.com/content/voice-tone/#point-of-view) of the reader.
 
 Use:
