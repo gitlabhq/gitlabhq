@@ -77,7 +77,7 @@ In this case, the feature branch would be `release-X-Y`. Assuming the `release-X
 
 1. After you select **Create merge request**, an option to **Change branches** displays. Select that option.
 
-1. In the **New Merge Request** screen, you can now select the **Source** and **Target** branches.
+1. In the **New merge request** screen, you can now select the **Source** and **Target** branches.
 In the screenshot shown,
 we have selected `test-branch` as the source, and `release-13-0` as the target.
 
@@ -87,14 +87,14 @@ we have selected `test-branch` as the source, and `release-13-0` as the target.
    You should see an entry similar to:
 
    ```plaintext
-   New Merge Request
+   New merge request
 
    From test-branch into release-13-0
    ```
 
    An entry like this confirms your merge request's destination.
 
-1. Make any additional changes in the **New Merge Request** screen, and select **Submit merge request**.
+1. Make any additional changes in the **New merge request** screen, and select **Create merge request**.
 1. In the new merge request, look for **Request to merge**. An entry similar to this displays:
 
    ```plaintext

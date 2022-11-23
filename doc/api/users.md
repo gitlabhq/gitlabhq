@@ -39,7 +39,10 @@ GET /users
 ]
 ```
 
-You can also search for users by name, username, or public email by using `?search=`. For example. `/users?search=John`.
+You can also use `?search=` to search for users by name, username, or public email. For example, `/users?search=John`. When you search for a:
+
+- Public email, you must use the full email address to get an exact match. 
+- Name or username, you do not have to get an exact match because this is a fuzzy search.
 
 In addition, you can lookup users by username:
 
@@ -239,6 +242,11 @@ the `group_saml` provider option and `provisioned_by_group_id` parameter:
   }
 ]
 ```
+
+You can also use `?search=` to search for users by name, username, or email. For example, `/users?search=John`. When you search for a:
+
+- Email, you must use the full email address to get an exact match. As an administrator, you can search for both public and private email addresses.
+- Name or username, you do not have to get an exact match because this is a fuzzy search.
 
 You can lookup users by external UID and provider:
 

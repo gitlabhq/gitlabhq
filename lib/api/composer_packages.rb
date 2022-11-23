@@ -148,9 +148,9 @@ module API
         end
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
         get 'archives/*package_name', urgency: :default do
-          authorize_read_package!(authorized_user_project)
+          project = authorized_user_project(action: :read_package)
 
-          package = authorized_user_project
+          package = project
             .packages
             .composer
             .with_name(params[:package_name])
@@ -160,10 +160,10 @@ module API
 
           not_found! unless metadata
 
-          track_package_event('pull_package', :composer, project: authorized_user_project, namespace: authorized_user_project.namespace)
+          track_package_event('pull_package', :composer, project: project, namespace: project.namespace)
           package.touch_last_downloaded_at
 
-          send_git_archive authorized_user_project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
+          send_git_archive project.repository, ref: metadata.target_sha, format: 'zip', append_sha: true
         end
       end
     end

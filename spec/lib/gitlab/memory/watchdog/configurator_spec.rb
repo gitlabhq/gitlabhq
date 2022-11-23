@@ -207,7 +207,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
       end
 
       context 'when settings are set via environment variables' do
-        let(:memory_limit) { 1300 }
+        let(:memory_limit) { 1300.megabytes }
         let(:max_strikes) { 4 }
 
         before do
@@ -219,7 +219,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
       end
 
       context 'when settings are not set via environment variables' do
-        let(:memory_limit) { 1200 }
+        let(:memory_limit) { 1200.megabytes }
         let(:max_strikes) { 5 }
 
         it_behaves_like 'as monitor configurator'

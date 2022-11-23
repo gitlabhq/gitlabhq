@@ -60,16 +60,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
       options[:merge_conflicts_in_diff]
     ]
 
-    if Feature.enabled?(:check_etags_diffs_batch_before_write_cache, merge_request.project) && !stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
-      return
-    end
+    return unless stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
 
     diffs.unfold_diff_files(unfoldable_positions)
     diffs.write_cache
-
-    if Feature.disabled?(:check_etags_diffs_batch_before_write_cache, merge_request.project) && !stale?(etag: [cache_context + diff_options_hash.fetch(:paths, []), diffs])
-      return
-    end
 
     render json: PaginatedDiffSerializer.new(current_user: current_user).represent(diffs, options)
   end

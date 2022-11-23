@@ -509,6 +509,17 @@ RSpec.describe API::ComposerPackages do
         end
 
         it_behaves_like 'Composer publish with deploy tokens'
+
+        context 'with access to package registry for everyone' do
+          let(:headers) { {} }
+
+          before do
+            project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+            project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+          end
+
+          it_behaves_like 'returning response status', :success
+        end
       end
     end
 
