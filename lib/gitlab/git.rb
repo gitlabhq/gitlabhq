@@ -16,6 +16,7 @@ module Gitlab
     CommitError = Class.new(BaseError)
     OSError = Class.new(BaseError)
     UnknownRef = Class.new(BaseError)
+    AmbiguousRef = Class.new(BaseError)
     CommandTimedOut = Class.new(CommandError)
     InvalidPageToken = Class.new(BaseError)
     InvalidRefFormatError = Class.new(BaseError)

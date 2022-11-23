@@ -203,7 +203,7 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `ci-qa-patterns`             | Only create job for CI configuration-related changes related to the `qa` stage. |
 | `yaml-lint-patterns`         | Only create job for YAML-related changes.                                |
 | `docs-patterns`              | Only create job for docs-related changes.                                |
-| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (that is, `package.json`, and `yarn.lock`). changes. |
+| `frontend-dependency-patterns` | Only create job when frontend dependencies are updated (for example, `package.json`, and `yarn.lock`) changes. |
 | `frontend-patterns-for-as-if-foss`  | Only create job for frontend-related changes that have impact on FOSS. |
 | `backend-patterns`           | Only create job for backend-related changes.                           |
 | `db-patterns`                | Only create job for DB-related changes. |

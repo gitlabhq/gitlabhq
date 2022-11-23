@@ -1377,6 +1377,24 @@ RSpec.describe Gitlab::Git::Repository do
 
       expect(branch).to eq(nil)
     end
+
+    context 'when branch is ambiguous' do
+      let(:ambiguous_branch) { 'prefix' }
+      let(:branch_with_prefix) { 'prefix/branch' }
+
+      before do
+        repository.create_branch(branch_with_prefix)
+      end
+
+      after do
+        repository.delete_branch(branch_with_prefix)
+      end
+
+      it 'returns nil for ambiguous branch' do
+        expect(repository.find_branch(branch_with_prefix)).to be_a_kind_of(Gitlab::Git::Branch)
+        expect(repository.find_branch(ambiguous_branch)).to eq(nil)
+      end
+    end
   end
 
   describe '#branches' do

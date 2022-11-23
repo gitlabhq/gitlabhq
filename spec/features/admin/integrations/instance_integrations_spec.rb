@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Instance integrations', :js do
+RSpec.describe 'Instance integrations', :js, feature_category: :integrations do
   include_context 'instance integration activation'
 
   it_behaves_like 'integration settings form' do

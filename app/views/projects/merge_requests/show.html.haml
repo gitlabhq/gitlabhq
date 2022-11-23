@@ -51,7 +51,7 @@
           - if moved_mr_sidebar_enabled?
             - if !!@issuable_sidebar.dig(:current_user, :id)
               .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
-            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar{ class: "gl-lg-display-none!" }
+            .gl-ml-auto.gl-align-items-center.gl-display-none.gl-md-display-flex.gl-ml-3.js-expand-sidebar.gl-absolute.gl-right-5{ class: "gl-lg-display-none!" }
               = render Pajamas::ButtonComponent.new(icon: 'chevron-double-lg-left',
                 button_options: { class: 'js-sidebar-toggle' }) do
                 = _('Expand')

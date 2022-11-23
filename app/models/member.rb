@@ -61,6 +61,7 @@ class Member < ApplicationRecord
   validate :access_level_inclusion
   validate :validate_member_role_access_level
   validate :validate_access_level_locked_for_member_role, on: :update
+  validate :validate_member_role_belongs_to_same_root_namespace
 
   scope :with_invited_user_state, -> do
     joins('LEFT JOIN users as invited_user ON invited_user.email = members.invite_email')
@@ -513,6 +514,15 @@ class Member < ApplicationRecord
     if access_level_changed?
       errors.add(:access_level, _("cannot be changed since member is associated with a custom role"))
     end
+  end
+
+  def validate_member_role_belongs_to_same_root_namespace
+    return unless member_role_id
+
+    return if member_namespace.id == member_role.namespace_id
+    return if member_namespace.root_ancestor.id == member_role.namespace_id
+
+    errors.add(:member_namespace, _("must be in same hierarchy as custom role's namespace"))
   end
 
   def send_invite

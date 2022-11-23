@@ -99,6 +99,7 @@ review-qa-non-blocking:
   variables:
     QA_SCENARIO: Test::Instance::ReviewNonBlocking
     QA_RUN_TYPE: review-qa-non-blocking
+  when: manual
   allow_failure: true
 review-qa-non-blocking-parallel:
   extends:

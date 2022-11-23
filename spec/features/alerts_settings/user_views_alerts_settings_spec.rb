@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Alert integrations settings form', :js do
+RSpec.describe 'Alert integrations settings form', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }

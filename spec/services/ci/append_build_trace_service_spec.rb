@@ -76,4 +76,20 @@ RSpec.describe Ci::AppendBuildTraceService do
       expect(build.failure_reason).to eq 'trace_size_exceeded'
     end
   end
+
+  context 'when debug_trace param is provided' do
+    let(:metadata) { Ci::BuildMetadata.find_by(build_id: build) }
+
+    it 'changes the build metadata debug_trace value' do
+      stream_size = 192.kilobytes
+      body_data = 'x' * stream_size
+      content_range = "0-#{stream_size}"
+
+      described_class
+         .new(build, content_range: content_range, debug_trace: true)
+         .execute(body_data)
+
+      expect(metadata.debug_trace_enabled).to be(true)
+    end
+  end
 end

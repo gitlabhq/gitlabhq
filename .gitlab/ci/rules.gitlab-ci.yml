@@ -902,6 +902,7 @@
       when: never
     - <<: *if-merge-request-labels-as-if-foss
     - <<: *if-merge-request-labels-run-all-rspec
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
     - <<: *if-default-refs
@@ -932,6 +933,7 @@
     - !reference [".strict-ee-only-rules", rules]
     - !reference [".frontend:rules:default-frontend-jobs-as-if-foss", rules]
     - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: *frontend-patterns-for-as-if-foss
 

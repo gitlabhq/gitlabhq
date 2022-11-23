@@ -134,6 +134,10 @@ module Gitlab
         wrapped_gitaly_errors do
           gitaly_ref_client.find_branch(name)
         end
+      rescue Gitlab::Git::AmbiguousRef
+        # Gitaly returns "reference is ambiguous" error in case when users request
+        # branch "my-branch", when another branch "my-branch/branch" exists.
+        # We handle this error here and return nil for this case.
       end
 
       def find_tag(name)

@@ -88,10 +88,12 @@ In addition, there are a few circumstances where we would always run the full Je
 - when the `pipeline:run-all-jest` label is set on the merge request
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
-- when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)
-- when any frontend "core" file is changed (for example, `package.json`, `yarn.lock`, `babel.config.js`, `jest.config.*.js`, `config/helpers/**/*.js`)
+- when relevant CI configuration file is changed (`.gitlab/ci/rules.gitlab-ci.yml`, `.gitlab/ci/frontend.gitlab-ci.yml`)
+- when any frontend dependency file is changed (for example, `package.json`, `yarn.lock`, `config/webpack.config.js`, `config/helpers/**/*.js`)
 - when any vendored JavaScript file is changed (for example, `vendor/assets/javascripts/**/*`)
-- when any backend file is changed ([see the patterns list for details](https://gitlab.com/gitlab-org/gitlab/-/blob/3616946936c1adbd9e754c1bd06f86ba670796d8/.gitlab/ci/rules.gitlab-ci.yml#L205-216))
+
+The `rules` definitions for full Jest tests are defined at `.frontend:rules:jest` in
+[`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/42321b18b946c64d2f6f788c38844499a5ae9141/.gitlab/ci/rules.gitlab-ci.yml#L938-955).
 
 ### Fork pipelines
 

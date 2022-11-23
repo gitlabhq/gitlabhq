@@ -9,7 +9,7 @@ module Gitlab
           include Gitlab::Utils::StrongMemoize
 
           def perform!
-            logger.instrument_with_sql(:pipeline_save) do
+            logger.instrument_once_with_sql(:pipeline_save) do
               BulkInsertableAssociations.with_bulk_insert do
                 ::Ci::BulkInsertableTags.with_bulk_insert_tags do
                   pipeline.transaction do

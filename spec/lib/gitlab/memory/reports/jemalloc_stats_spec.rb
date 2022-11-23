@@ -5,8 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::Memory::Reports::JemallocStats do
   let_it_be(:outdir) { Dir.mktmpdir }
 
-  let(:filename_label) { SecureRandom.uuid }
-  let(:jemalloc_stats) { described_class.new(reports_path: outdir, filename_label: filename_label) }
+  let(:jemalloc_stats) { described_class.new(reports_path: outdir) }
 
   after do
     FileUtils.rm_f(outdir)
@@ -27,14 +26,14 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
           .to receive(:dump_stats)
           .with(path: outdir,
                 tmp_dir: File.join(outdir, '/tmp'),
-                filename_label: filename_label)
+                filename_label: 'test_report')
           .and_return(report_path)
 
-        expect(jemalloc_stats.run).to eq(report_path)
+        expect(jemalloc_stats.run('test_report')).to eq(report_path)
       end
 
       describe 'reports cleanup' do
-        let(:jemalloc_stats) { described_class.new(reports_path: outdir, filename_label: filename_label) }
+        let(:jemalloc_stats) { described_class.new(reports_path: outdir) }
 
         before do
           stub_env('GITLAB_DIAGNOSTIC_REPORTS_JEMALLOC_MAX_REPORTS_STORED', 3)
@@ -62,7 +61,7 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
           end
 
           it 'keeps only `max_reports_stored` total newest files' do
-            expect { jemalloc_stats.run }
+            expect { jemalloc_stats.run('test_report') }
               .to change { Dir.entries(outdir).count { |e| e.match(/jemalloc_stats.*/) } }
                     .from(5).to(3)
 
@@ -90,7 +89,7 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
           end
 
           it 'does not remove any reports' do
-            expect { jemalloc_stats.run }
+            expect { jemalloc_stats.run('test_report') }
               .not_to change { Dir.entries(outdir).count { |e| e.match(/jemalloc_stats.*/) } }
           end
         end
@@ -105,7 +104,7 @@ RSpec.describe Gitlab::Memory::Reports::JemallocStats do
       it 'does not run the report and returns nil' do
         expect(Gitlab::Memory::Jemalloc).not_to receive(:dump_stats)
 
-        expect(jemalloc_stats.run).to be_nil
+        expect(jemalloc_stats.run('test_report')).to be_nil
       end
     end
   end

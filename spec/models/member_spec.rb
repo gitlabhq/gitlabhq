@@ -175,26 +175,31 @@ RSpec.describe Member do
     end
 
     context 'member role access level' do
-      let_it_be(:member) { create(:group_member, access_level: Gitlab::Access::DEVELOPER) }
+      let_it_be_with_reload(:member) { create(:group_member, access_level: Gitlab::Access::DEVELOPER) }
 
-      context 'no member role is associated' do
+      context 'when no member role is associated' do
         it 'is valid' do
           expect(member).to be_valid
         end
       end
 
-      context 'member role is associated' do
+      context 'when member role is associated' do
         let!(:member_role) do
-          create(:member_role, members: [member], base_access_level: Gitlab::Access::DEVELOPER)
+          create(
+            :member_role,
+            members: [member],
+            base_access_level: Gitlab::Access::DEVELOPER,
+            namespace: member.member_namespace
+          )
         end
 
-        context 'member role matches access level' do
+        context 'when member role matches access level' do
           it 'is valid' do
             expect(member).to be_valid
           end
         end
 
-        context 'member role does not match access level' do
+        context 'when member role does not match access level' do
           it 'is invalid' do
             member_role.base_access_level = Gitlab::Access::MAINTAINER
 
@@ -202,13 +207,57 @@ RSpec.describe Member do
           end
         end
 
-        context 'access_level cannot be changed' do
+        context 'when access_level is changed' do
           it 'is invalid' do
             member.access_level = Gitlab::Access::MAINTAINER
 
             expect(member).not_to be_valid
-            expect(member.errors.full_messages).to include(
-              "Access level cannot be changed since member is associated with a custom role"
+            expect(member.errors[:access_level]).to include(
+              _("cannot be changed since member is associated with a custom role")
+            )
+          end
+        end
+      end
+    end
+
+    context 'member role namespace' do
+      let_it_be_with_reload(:member) { create(:group_member) }
+
+      context 'when no member role is associated' do
+        it 'is valid' do
+          expect(member).to be_valid
+        end
+      end
+
+      context 'when member role is associated' do
+        let_it_be(:member_role) do
+          create(:member_role, members: [member], namespace: member.group, base_access_level: member.access_level)
+        end
+
+        context 'when member#member_namespace is a group within hierarchy of member_role#namespace' do
+          it 'is valid' do
+            member.member_namespace = create(:group, parent: member_role.namespace)
+
+            expect(member).to be_valid
+          end
+        end
+
+        context 'when member#member_namespace is a project within hierarchy of member_role#namespace' do
+          it 'is valid' do
+            project = create(:project, group: member_role.namespace)
+            member.member_namespace = Namespace.find(project.parent_id)
+
+            expect(member).to be_valid
+          end
+        end
+
+        context 'when member#member_namespace is outside hierarchy of member_role#namespace' do
+          it 'is invalid' do
+            member.member_namespace = create(:group)
+
+            expect(member).not_to be_valid
+            expect(member.errors[:member_namespace]).to include(
+              _("must be in same hierarchy as custom role's namespace")
             )
           end
         end
@@ -248,7 +297,7 @@ RSpec.describe Member do
 
       accepted_invite_user = build(:user, state: :active)
       @accepted_invite_member = create(:project_member, :invited, :developer, project: project)
-                                      .tap { |u| u.accept_invite!(accepted_invite_user) }
+        .tap { |u| u.accept_invite!(accepted_invite_user) }
 
       requested_user = create(:user).tap { |u| project.request_access(u) }
       @requested_member = project.requesters.find_by(user_id: requested_user.id)
@@ -612,14 +661,14 @@ RSpec.describe Member do
       subject { described_class.authorizable.to_a }
 
       it 'includes the member who has an associated user record,'\
-       'but also having an invite_token' do
-        member = create(:project_member,
-                        :developer,
-                        :invited,
-                        user: create(:user))
+        'but also having an invite_token' do
+          member = create(:project_member,
+                          :developer,
+                          :invited,
+                          user: create(:user))
 
-        expect(subject).to include(member)
-      end
+          expect(subject).to include(member)
+        end
 
       it { is_expected.to include @owner }
       it { is_expected.to include @maintainer }

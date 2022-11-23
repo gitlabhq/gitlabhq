@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin searches application settings', :js do
+RSpec.describe 'Admin searches application settings', :js, feature_category: :global_search do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:application_settings) { create(:application_setting) }
 

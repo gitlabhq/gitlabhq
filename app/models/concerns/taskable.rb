@@ -63,14 +63,15 @@ module Taskable
   def task_status(short: false)
     return '' if description.blank?
 
-    prep, completed = if short
-                        ['/', '']
-                      else
-                        [' of ', ' completed']
-                      end
-
     sum = tasks.summary
-    "#{sum.complete_count}#{prep}#{sum.item_count} #{'checklist item'.pluralize(sum.item_count)}#{completed}"
+    checklist_item_noun = n_('checklist item', 'checklist items', sum.item_count)
+    if short
+      format(s_('Tasks|%{complete_count}/%{total_count} %{checklist_item_noun}'),
+checklist_item_noun: checklist_item_noun, complete_count: sum.complete_count, total_count: sum.item_count)
+    else
+      format(s_('Tasks|%{complete_count} of %{total_count} %{checklist_item_noun} completed'),
+checklist_item_noun: checklist_item_noun, complete_count: sum.complete_count, total_count: sum.item_count)
+    end
   end
 
   # Return a short string that describes the current state of this Taskable's

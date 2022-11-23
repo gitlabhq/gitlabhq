@@ -227,6 +227,7 @@ The following user actions on a GitLab instance generate instance audit events:
 - Removed SSH key ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1)
 - Added or removed GPG key ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) in GitLab 14.1)
 - A user's two-factor authentication was disabled ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238177) in GitLab 15.1)
+- Enabled Admin Mode ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362101) in GitLab 15.7)
 
 Instance events can also be accessed via the [Instance Audit Events API](../api/audit_events.md#instance-audit-events).
 

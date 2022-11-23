@@ -229,15 +229,17 @@ module API
         params do
           requires :id, type: Integer, desc: %q(Job's ID)
           optional :token, type: String, desc: %q(Job's authentication token)
+          optional :debug_trace, type: Boolean, desc: %q(Enable or Disable the debug trace)
         end
         patch '/:id/trace', urgency: :low, feature_category: :continuous_integration do
           job = authenticate_job!(heartbeat_runner: true)
 
           error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
           content_range = request.headers['Content-Range']
+          debug_trace = Gitlab::Utils.to_boolean(params[:debug_trace])
 
           result = ::Ci::AppendBuildTraceService
-            .new(job, content_range: content_range)
+            .new(job, content_range: content_range, debug_trace: debug_trace)
             .execute(request.body.read)
 
           if result.status == 403

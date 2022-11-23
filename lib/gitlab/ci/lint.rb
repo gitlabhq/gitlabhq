@@ -73,7 +73,7 @@ module Gitlab
       end
 
       def yaml_processor_result(content, logger)
-        logger.instrument(:yaml_process) do
+        logger.instrument(:yaml_process, once: true) do
           Gitlab::Ci::YamlProcessor.new(content, project: @project,
                                                  user: @current_user,
                                                  sha: @sha,
@@ -119,7 +119,7 @@ module Gitlab
               environment: job[:environment],
               when: job[:when],
               allow_failure: job[:allow_failure],
-              needs: job.dig(:needs_attributes)
+              needs: job[:needs_attributes]
             }
           end
         end
@@ -130,10 +130,10 @@ module Gitlab
       def build_logger
         Gitlab::Ci::Pipeline::Logger.new(project: @project) do |l|
           l.log_when do |observations|
-            values = observations['yaml_process_duration_s']
-            next false if values.empty?
+            duration = observations['yaml_process_duration_s']
+            next false unless duration
 
-            values.max >= LOG_MAX_DURATION_THRESHOLD
+            duration >= LOG_MAX_DURATION_THRESHOLD
           end
         end
       end

@@ -337,7 +337,7 @@ RSpec.describe Gitlab::Ci::Lint do
     end
   end
 
-  context 'pipeline logger' do
+  describe 'pipeline logger' do
     let(:counters) do
       {
         'count' => a_kind_of(Numeric),
@@ -346,7 +346,7 @@ RSpec.describe Gitlab::Ci::Lint do
       }
     end
 
-    let(:loggable_data) do
+    let(:expected_data) do
       {
         'class' => 'Gitlab::Ci::Pipeline::Logger',
         'config_build_context_duration_s' => counters,
@@ -363,7 +363,7 @@ RSpec.describe Gitlab::Ci::Lint do
         'pipeline_persisted' => false,
         'pipeline_source' => 'unknown',
         'project_id' => project&.id,
-        'yaml_process_duration_s' => counters
+        'yaml_process_duration_s' => a_kind_of(Numeric)
       }
     end
 
@@ -401,7 +401,7 @@ RSpec.describe Gitlab::Ci::Lint do
       end
 
       it 'creates a log entry' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(loggable_data)
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(expected_data)
 
         validate
       end
@@ -422,7 +422,7 @@ RSpec.describe Gitlab::Ci::Lint do
         let(:project) { nil }
 
         let(:project_nil_loggable_data) do
-          loggable_data.except('project_id')
+          expected_data.except('project_id')
         end
 
         it 'creates a log entry without project_id' do

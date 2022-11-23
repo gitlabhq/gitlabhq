@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin > Admin sees projects statistics" do
+RSpec.describe "Admin > Admin sees projects statistics", feature_category: :projects do
   let(:current_user) { create(:admin) }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'DevOps Report page', :js do
+RSpec.describe 'DevOps Report page', :js, feature_category: :devops_reports do
   before do
     admin = create(:admin)
     sign_in(admin)

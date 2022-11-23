@@ -25410,6 +25410,12 @@ msgstr ""
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
 msgstr ""
 
+msgid "MemberRole|can't be changed"
+msgstr ""
+
+msgid "MemberRole|must be top-level namespace"
+msgstr ""
+
 msgid "Members"
 msgstr ""
 
@@ -40271,6 +40277,12 @@ msgstr ""
 msgid "TasksToBeDone|Set up CI/CD pipelines to build, test, deploy, and monitor code"
 msgstr ""
 
+msgid "Tasks|%{complete_count} of %{total_count} %{checklist_item_noun} completed"
+msgstr ""
+
+msgid "Tasks|%{complete_count}/%{total_count} %{checklist_item_noun}"
+msgstr ""
+
 msgid "Team"
 msgstr ""
 
@@ -47021,6 +47033,9 @@ msgstr ""
 msgid "You don't have permission to review this deployment. Contact the project or group owner for help."
 msgstr ""
 
+msgid "You don't have permission to view this epic"
+msgstr ""
+
 msgid "You don't have permissions to create this project"
 msgstr ""
 
@@ -47957,6 +47972,11 @@ msgstr[1] ""
 
 msgid "check"
 msgid_plural "checks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "checklist item"
+msgid_plural "checklist items"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -49239,6 +49259,9 @@ msgstr ""
 msgid "must be greater than start date"
 msgstr ""
 
+msgid "must be in same hierarchy as custom role's namespace"
+msgstr ""
+
 msgid "must be inside the fork network"
 msgstr ""
 
@@ -49246,9 +49269,6 @@ msgid "must be less than the limit of %{tag_limit} tags"
 msgstr ""
 
 msgid "must be set for a project namespace"
-msgstr ""
-
-msgid "must be top-level namespace"
 msgstr ""
 
 msgid "must be unique by status and elapsed time within a policy"

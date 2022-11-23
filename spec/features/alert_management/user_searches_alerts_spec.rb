@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches Alert Management alerts', :js do
+RSpec.describe 'User searches Alert Management alerts', :js, feature_category: :incident_management do
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:alert) { create(:alert_management_alert, project: project, status: 'triggered') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin System Info' do
+RSpec.describe 'Admin System Info', feature_category: :not_owned do
   before do
     admin = create(:admin)
     sign_in(admin)

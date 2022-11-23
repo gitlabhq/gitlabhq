@@ -344,6 +344,18 @@ RSpec.describe API::Branches do
         end
       end
 
+      context 'when branch is ambiguous' do
+        let(:branch_name) { 'prefix' }
+
+        before do
+          project.repository.create_branch('prefix/branch')
+        end
+
+        it_behaves_like '404 response' do
+          let(:request) { get api(route, current_user) }
+        end
+      end
+
       context 'when repository does not exist' do
         it_behaves_like '404 response' do
           let(:project) { create(:project, creator: user) }

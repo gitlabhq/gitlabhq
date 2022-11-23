@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin disables Git access protocol', :js do
+RSpec.describe 'Admin disables Git access protocol', :js, feature_category: :source_code_management do
   include StubENV
   include MobileHelpers
 

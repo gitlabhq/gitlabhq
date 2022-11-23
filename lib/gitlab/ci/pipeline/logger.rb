@@ -23,7 +23,7 @@ module Gitlab
           log_conditions.push(block)
         end
 
-        def instrument(operation)
+        def instrument(operation, once: false)
           return yield unless enabled?
 
           raise ArgumentError, 'block not given' unless block_given?
@@ -32,25 +32,29 @@ module Gitlab
 
           result = yield
 
-          observe("#{operation}_duration_s", current_monotonic_time - op_started_at)
+          observe("#{operation}_duration_s", current_monotonic_time - op_started_at, once: once)
 
           result
         end
 
-        def instrument_with_sql(operation, &block)
+        def instrument_once_with_sql(operation, &block)
           op_start_db_counters = current_db_counter_payload
 
-          result = instrument(operation, &block)
+          result = instrument(operation, once: true, &block)
 
-          observe_sql_counters(operation, op_start_db_counters, current_db_counter_payload)
+          observe_sql_counters(operation, op_start_db_counters, current_db_counter_payload, once: true)
 
           result
         end
 
-        def observe(operation, value)
+        def observe(operation, value, once: false)
           return unless enabled?
 
-          observations[operation.to_s].push(value)
+          if once
+            observations[operation.to_s] = value
+          else
+            observations[operation.to_s].push(value)
+          end
         end
 
         def commit(pipeline:, caller:)
@@ -79,14 +83,18 @@ module Gitlab
         end
 
         def observations_hash
-          observations.transform_values do |values|
-            next if values.empty?
+          observations.transform_values do |observation|
+            next if observation.blank?
 
-            {
-              'count' => values.size,
-              'max' => values.max,
-              'sum' => values.sum
-            }
+            if observation.is_a?(Array)
+              {
+                'count' => observation.size,
+                'max' => observation.max,
+                'sum' => observation.sum
+              }
+            else
+              observation
+            end
           end.compact
         end
 
@@ -117,12 +125,12 @@ module Gitlab
           @observations ||= Hash.new { |hash, key| hash[key] = [] }
         end
 
-        def observe_sql_counters(operation, start_db_counters, end_db_counters)
+        def observe_sql_counters(operation, start_db_counters, end_db_counters, once: false)
           end_db_counters.each do |key, value|
             result = value - start_db_counters.fetch(key, 0)
             next if result == 0
 
-            observe("#{operation}_#{key}", result)
+            observe("#{operation}_#{key}", result, once: once)
           end
         end
 

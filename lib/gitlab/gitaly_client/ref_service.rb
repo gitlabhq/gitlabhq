@@ -17,6 +17,8 @@ module Gitlab
         'desc' => Gitaly::SortDirection::DESCENDING
       }.freeze
 
+      AMBIGUOUS_REFERENCE = 'reference is ambiguous'
+
       # 'repository' is a Gitlab::Git::Repository
       def initialize(repository)
         @repository = repository
@@ -109,6 +111,10 @@ module Gitlab
 
         target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
         Gitlab::Git::Branch.new(@repository, branch.name.dup, branch.target_commit.id, target_commit)
+      rescue GRPC::BadStatus => e
+        raise e unless e.message.include?(AMBIGUOUS_REFERENCE)
+
+        raise Gitlab::Git::AmbiguousRef, "branch is ambiguous: #{branch_name}"
       end
 
       def find_tag(tag_name)

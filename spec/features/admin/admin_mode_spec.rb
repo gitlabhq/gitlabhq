@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin mode', :js do
+RSpec.describe 'Admin mode', :js, feature_category: :not_owned do
   include MobileHelpers
   include Spec::Support::Helpers::Features::TopNavSpecHelpers
   include StubENV

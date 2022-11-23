@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin manage applications' do
+RSpec.describe 'admin manage applications', feature_category: :system_access do
   let_it_be(:new_application_path) { new_admin_application_path }
   let_it_be(:applications_path) { admin_applications_path }
   let_it_be(:index_path) { admin_applications_path }

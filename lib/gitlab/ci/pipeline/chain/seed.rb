@@ -13,7 +13,7 @@ module Gitlab
             raise ArgumentError, 'missing workflow rules result' unless @command.workflow_rules_result
 
             # Allocate next IID. This operation must be outside of transactions of pipeline creations.
-            logger.instrument(:pipeline_allocate_seed_attributes) do
+            logger.instrument(:pipeline_allocate_seed_attributes, once: true) do
               pipeline.ensure_project_iid!
               pipeline.ensure_ci_ref!
             end
@@ -25,7 +25,7 @@ module Gitlab
             ##
             # Gather all runtime build/stage errors
             #
-            seed_errors = logger.instrument(:pipeline_seed_evaluation) do
+            seed_errors = logger.instrument(:pipeline_seed_evaluation, once: true) do
               pipeline_seed.errors
             end
 
@@ -44,7 +44,7 @@ module Gitlab
 
           def pipeline_seed
             strong_memoize(:pipeline_seed) do
-              logger.instrument(:pipeline_seed_initialization) do
+              logger.instrument(:pipeline_seed_initialization, once: true) do
                 stages_attributes = @command.yaml_processor_result.stages_attributes
 
                 Gitlab::Ci::Pipeline::Seed::Pipeline.new(context, stages_attributes)
@@ -61,11 +61,13 @@ module Gitlab
           end
 
           def root_variables
-            logger.instrument(:pipeline_seed_merge_variables) do
-              ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                @command.yaml_processor_result.root_variables,
-                @command.workflow_rules_result.variables
-              )
+            strong_memoize(:root_variables) do
+              logger.instrument(:pipeline_seed_merge_variables, once: true) do
+                ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                  @command.yaml_processor_result.root_variables,
+                  @command.workflow_rules_result.variables
+                )
+              end
             end
           end
         end

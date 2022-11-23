@@ -194,9 +194,40 @@ RSpec.describe Gitlab::Auth::CurrentUserMode, :request_store do
 
       it 'creates a timestamp in the session' do
         subject.request_admin_mode!
+
         subject.enable_admin_mode!(password: user.password)
 
         expect(session).to include(expected_session_entry(be_within(1.second).of(Time.now)))
+      end
+
+      it 'returns true after successful enable' do
+        subject.request_admin_mode!
+
+        expect(subject.enable_admin_mode!(password: user.password)).to eq(true)
+      end
+
+      it 'returns false after unsuccessful enable' do
+        subject.request_admin_mode!
+
+        expect(subject.enable_admin_mode!(password: 'wrong password')).to eq(false)
+      end
+
+      context 'when user is not an admin' do
+        let(:user) { build_stubbed(:user) }
+
+        it 'returns false' do
+          subject.request_admin_mode!
+
+          expect(subject.enable_admin_mode!(password: user.password)).to eq(false)
+        end
+      end
+
+      context 'when admin mode is not requested' do
+        it 'raises error' do
+          expect do
+            subject.enable_admin_mode!(password: user.password)
+          end.to raise_error(Gitlab::Auth::CurrentUserMode::NotRequestedError)
+        end
       end
     end
 

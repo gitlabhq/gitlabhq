@@ -16,9 +16,8 @@ module Gitlab
         # The cleanup logic will be redundant after we'll implement the uploads, which would perform the cleanup.
         DEFAULT_MAX_REPORTS_STORED = 250
 
-        def initialize(reports_path:, filename_label:)
+        def initialize(reports_path:)
           @reports_path = reports_path
-          @filename_label = filename_label
 
           # Store report in tmp subdir while it is still streaming.
           # This will clearly separate finished reports from the files we are still writing to.
@@ -26,11 +25,16 @@ module Gitlab
           FileUtils.mkdir_p(@tmp_dir)
         end
 
-        def run
+        def name
+          'jemalloc_stats'
+        end
+
+        def run(report_id)
           return unless active?
 
-          Gitlab::Memory::Jemalloc.dump_stats(path: reports_path, tmp_dir: @tmp_dir,
-                                              filename_label: filename_label).tap do
+          Gitlab::Memory::Jemalloc.dump_stats(path: reports_path,
+                                              tmp_dir: @tmp_dir,
+                                              filename_label: report_id).tap do
             cleanup
           end
         end
@@ -41,7 +45,7 @@ module Gitlab
 
         private
 
-        attr_reader :reports_path, :filename_label
+        attr_reader :reports_path
 
         def cleanup
           reports_files_modified_order[0...-max_reports_stored].each do |f|

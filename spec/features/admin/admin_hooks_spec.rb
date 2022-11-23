@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin::Hooks' do
+RSpec.describe 'Admin::Hooks', feature_category: :integrations do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:admin) }

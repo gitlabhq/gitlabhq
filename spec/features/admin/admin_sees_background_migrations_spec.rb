@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin > Admin sees background migrations" do
+RSpec.describe "Admin > Admin sees background migrations", feature_category: :database do
   let_it_be(:admin) { create(:admin) }
   let(:job_class) { Gitlab::BackgroundMigration::CopyColumnUsingBackgroundMigrationJob }
 

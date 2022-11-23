@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin uses repository checks', :request_store do
+RSpec.describe 'Admin uses repository checks', :request_store, feature_category: :user_management do
   include StubENV
   include Spec::Support::Helpers::ModalHelpers
 

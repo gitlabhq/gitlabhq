@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin updates settings' do
+RSpec.describe 'Admin updates settings', feature_category: :not_owned do
   include StubENV
   include TermsHelper
   include UsageDataHelpers

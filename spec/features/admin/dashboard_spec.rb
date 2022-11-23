@@ -11,7 +11,7 @@ RSpec.describe 'admin visits dashboard' do
     gitlab_enable_admin_mode_sign_in(admin)
   end
 
-  context 'counting forks', :js do
+  context 'counting forks', :js, feature_category: :source_code_management do
     it 'correctly counts 2 forks of a project' do
       project = create(:project)
       project_fork = fork_project(project)
@@ -28,7 +28,7 @@ RSpec.describe 'admin visits dashboard' do
     end
   end
 
-  describe 'Users statistic' do
+  describe 'Users statistic', feature_category: :user_management do
     let_it_be(:users_statistics) { create(:users_statistics) }
 
     it 'shows correct amounts of users', :aggregate_failures do
@@ -54,7 +54,7 @@ RSpec.describe 'admin visits dashboard' do
     end
   end
 
-  describe 'Version check', :js do
+  describe 'Version check', :js, feature_category: :deployment_management do
     it 'shows badge on CE' do
       visit admin_root_path
 
