@@ -26,6 +26,24 @@ we can document the reasons for not choosing this approach.
 It is essential for Pods architecture to provide a way to migrate data out of big Pods
 into smaller ones. This describes various approaches to provide this type of split.
 
+We also need to handle for cases where data is already violating the expected
+isolation constraints of Pods (ie. references cannot span multiple
+organizations). We know that existing features like linked issues allowed users
+to link issues across any projects regardless of their hierachy. There are many
+similar features. All of this data will need to be migrated in some way before
+it can be split across different pods. This may mean some data needs to be
+deleted, or the feature changed and modelled slightly differently before we can
+properly split or migrate the organizations between pods.
+
+Having schema deviations across different Pods, which is a necessary
+consequence of different databases, will also impact our ability to migrate
+data between pods. Different schemas impact our ability to reliably replicate
+data across pods and especially impact our ability to validate that the data is
+correctly replicated. It might force us to only be able to move data between
+pods when the schemas are all in sync (slowing down deployments and the
+rebalancing process) or possibly only migrate from newer to older schemas which
+would be complex.
+
 ## 1. Definition
 
 ## 2. Data flow
@@ -55,6 +73,28 @@ physical replication, etc.
 1. All accesses to `gitlab-org` on a given Pod are validated about `pod_id` of `routes`
    to ensure that given Pod is authoritative to handle the data.
 
+#### More challenges of this proposal
+
+1. There is no streaming replication capability for Elasticsearch, but you could
+   snapshot the whole Elasticsearch index and recreate, but this takes hours.
+   It could be handled by pausing Elasticsearch indexing on the initial pod during
+   the migration as indexing downtime is not a big issue, but this still needs
+   to be coordinated with the migration process
+1. Syncing Redis, Gitaly, CI Postgres, Main Postgres, registry Postgres, other
+   new data stores snapshots in an online system would likely lead to gaps
+   without a long downtime. You need to choose a sync point and at the sync
+   point you need to stop writes to perform the migration. The more data stores
+   there are to migrate at the same time the longer the write downtime for the
+   failover. We would also need to find a reliable place in the application to
+   actually block updates to all these systems with a high degree of
+   confidence. In the past we've only been confident by shutting down all rails
+   services because any rails process could write directly to any of these at
+   any time due to async workloads or other surprising code paths.
+1. How to efficiently delete all the orphaned data. Locating all `ci_builds`
+   associated with half the organizations would be very expensive if we have to
+   do joins. We haven't yet determined if we'd want to store an `organization_id`
+   column on every table, but this is the kind of thing it would be helpful for.
+
 ### 3.2. Migrate organization from an existing Pod
 
 This is different to split, as we intend to perform logical and selective replication
@@ -74,6 +114,14 @@ which Pod is authoritative for this organization.
    live changes made.
 1. It likely will require a full database structure analysis (more robust than project import/export)
    to perform selective PostgreSQL logical replication.
+
+#### More challenges of this proposal
+
+1. Logical replication is still not performant enough to keep up with our
+   scale. Even if we could use logical replication we still don't have an
+   efficient way to filter data related to a single organization without
+   joining all the way to the `organizations` table which will slow down
+   logical replication dramatically.
 
 ## 4. Evaluation
 

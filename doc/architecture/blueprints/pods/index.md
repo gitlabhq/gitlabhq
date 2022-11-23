@@ -324,6 +324,8 @@ This is the list of known affected features with the proposed solutions.
 - [Pods: GraphQL](pods-feature-graphql.md)
 - [Pods: Organizations](pods-feature-organizations.md)
 - [Pods: Router Endpoints Classification](pods-feature-router-endpoints-classification.md)
+- [Pods: Schema changes (Postgres and Elasticsearch migrations)](pods-feature-schema-changes.md)
+- [Pods: Global Search](pods-feature-global-search.md)
 
 ## Links
 

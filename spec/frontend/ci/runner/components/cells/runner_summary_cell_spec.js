@@ -1,6 +1,6 @@
 import { __ } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import RunnerStackedSummaryCell from '~/ci/runner/components/cells/runner_stacked_summary_cell.vue';
+import RunnerSummaryCell from '~/ci/runner/components/cells/runner_summary_cell.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import RunnerSummaryField from '~/ci/runner/components/cells/runner_summary_field.vue';
@@ -22,7 +22,7 @@ describe('RunnerTypeCell', () => {
       .wrappers[0];
 
   const createComponent = (runner, options) => {
-    wrapper = mountExtended(RunnerStackedSummaryCell, {
+    wrapper = mountExtended(RunnerSummaryCell, {
       propsData: {
         runner: {
           ...mockRunner,
