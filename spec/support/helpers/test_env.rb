@@ -91,7 +91,8 @@ module TestEnv
     'utf-16' => 'f05a987',
     'gitaly-rename-test' => '94bb47c',
     'smime-signed-commits' => 'ed775cc',
-    'Ääh-test-utf-8' => '7975be0'
+    'Ääh-test-utf-8' => '7975be0',
+    'ssh-signed-commit' => '7b5160f'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

@@ -483,7 +483,18 @@ RSpec.describe DiffHelper do
   end
 
   describe '#conflicts' do
-    let(:merge_request) { instance_double(MergeRequest, cannot_be_merged?: true) }
+    let(:merge_request) do
+      instance_double(
+        MergeRequest,
+        cannot_be_merged?: cannot_be_merged?,
+        source_branch_exists?: source_branch_exists?,
+        target_branch_exists?: target_branch_exists?
+      )
+    end
+
+    let(:cannot_be_merged?) { true }
+    let(:source_branch_exists?) { true }
+    let(:target_branch_exists?) { true }
     let(:can_be_resolved_in_ui?) { true }
     let(:allow_tree_conflicts) { false }
     let(:files) { [instance_double(Gitlab::Conflict::File, path: 'a')] }
@@ -508,7 +519,23 @@ RSpec.describe DiffHelper do
     end
 
     context 'when merge request can be merged' do
-      let(:merge_request) { instance_double(MergeRequest, cannot_be_merged?: false) }
+      let(:cannot_be_merged?) { false }
+
+      it 'returns nil' do
+        expect(helper.conflicts).to be_nil
+      end
+    end
+
+    context 'when source branch does not exist' do
+      let(:source_branch_exists?) { false }
+
+      it 'returns nil' do
+        expect(helper.conflicts).to be_nil
+      end
+    end
+
+    context 'when target branch does not exist' do
+      let(:target_branch_exists?) { false }
 
       it 'returns nil' do
         expect(helper.conflicts).to be_nil

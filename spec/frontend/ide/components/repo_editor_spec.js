@@ -8,9 +8,14 @@ import '~/behaviors/markdown/render_gfm';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
-import { EDITOR_CODE_INSTANCE_FN, EDITOR_DIFF_INSTANCE_FN } from '~/editor/constants';
+import {
+  EDITOR_CODE_INSTANCE_FN,
+  EDITOR_DIFF_INSTANCE_FN,
+  EXTENSION_CI_SCHEMA_FILE_NAME_MATCH,
+} from '~/editor/constants';
 import { EditorMarkdownExtension } from '~/editor/extensions/source_editor_markdown_ext';
 import { EditorMarkdownPreviewExtension } from '~/editor/extensions/source_editor_markdown_livepreview_ext';
+import { CiSchemaExtension } from '~/editor/extensions/source_editor_ci_schema_ext';
 import SourceEditor from '~/editor/source_editor';
 import RepoEditor from '~/ide/components/repo_editor.vue';
 import { leftSidebarViews, FILE_VIEW_MODE_PREVIEW, viewerTypes } from '~/ide/constants';
@@ -21,6 +26,8 @@ import axios from '~/lib/utils/axios_utils';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
 import SourceEditorInstance from '~/editor/source_editor_instance';
 import { file } from '../helpers';
+
+jest.mock('~/editor/extensions/source_editor_ci_schema_ext');
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';
 const CURRENT_PROJECT_ID = 'gitlab-org/gitlab';
@@ -43,6 +50,12 @@ const dummyFile = {
   binary: {
     ...file('file.dat'),
     content: '🐱', // non-ascii binary content,
+    tempFile: true,
+    active: true,
+  },
+  ciConfig: {
+    ...file(EXTENSION_CI_SCHEMA_FILE_NAME_MATCH),
+    content: '',
     tempFile: true,
     active: true,
   },
@@ -101,6 +114,7 @@ describe('RepoEditor', () => {
   let createDiffInstanceSpy;
   let createModelSpy;
   let applyExtensionSpy;
+  let removeExtensionSpy;
   let extensionsStore;
 
   const waitForEditorSetup = () =>
@@ -108,7 +122,7 @@ describe('RepoEditor', () => {
       vm.$once('editorSetup', resolve);
     });
 
-  const createComponent = async ({ state = {}, activeFile = dummyFile.text } = {}) => {
+  const createComponent = async ({ state = {}, activeFile = dummyFile.text, flags = {} } = {}) => {
     const store = prepareStore(state, activeFile);
     wrapper = shallowMount(RepoEditor, {
       store,
@@ -117,6 +131,9 @@ describe('RepoEditor', () => {
       },
       mocks: {
         ContentViewer,
+      },
+      provide: {
+        glFeatures: flags,
       },
     });
     await waitForPromises();
@@ -137,6 +154,7 @@ describe('RepoEditor', () => {
     createDiffInstanceSpy = jest.spyOn(SourceEditor.prototype, EDITOR_DIFF_INSTANCE_FN);
     createModelSpy = jest.spyOn(monacoEditor, 'createModel');
     applyExtensionSpy = jest.spyOn(SourceEditorInstance.prototype, 'use');
+    removeExtensionSpy = jest.spyOn(SourceEditorInstance.prototype, 'unuse');
     jest.spyOn(service, 'getFileData').mockResolvedValue();
     jest.spyOn(service, 'getRawFileData').mockResolvedValue();
   });
@@ -174,6 +192,76 @@ describe('RepoEditor', () => {
       const tabs = findTabs();
 
       expect(tabs).toHaveLength(0);
+    });
+  });
+
+  describe('schema registration for .gitlab-ci.yml', () => {
+    const setup = async (activeFile, flagIsOn = true) => {
+      await createComponent({
+        flags: {
+          schemaLinting: flagIsOn,
+        },
+      });
+      vm.editor.registerCiSchema = jest.fn();
+      if (activeFile) {
+        wrapper.setProps({ file: activeFile });
+      }
+      await waitForPromises();
+      await nextTick();
+    };
+    it.each`
+      flagIsOn | activeFile            | shouldUseExtension | desc
+      ${false} | ${dummyFile.markdown} | ${false}           | ${`file is not CI config; should NOT`}
+      ${true}  | ${dummyFile.markdown} | ${false}           | ${`file is not CI config; should NOT`}
+      ${false} | ${dummyFile.ciConfig} | ${false}           | ${`file is CI config; should NOT`}
+      ${true}  | ${dummyFile.ciConfig} | ${true}            | ${`file is CI config; should`}
+    `(
+      'when the flag is "$flagIsOn", $desc use extension',
+      async ({ flagIsOn, activeFile, shouldUseExtension }) => {
+        await setup(activeFile, flagIsOn);
+
+        if (shouldUseExtension) {
+          expect(applyExtensionSpy).toHaveBeenCalledWith({
+            definition: CiSchemaExtension,
+          });
+        } else {
+          expect(applyExtensionSpy).not.toHaveBeenCalledWith({
+            definition: CiSchemaExtension,
+          });
+        }
+      },
+    );
+    it('stores the fetched extension and does not double-fetch the schema', async () => {
+      await setup();
+      expect(CiSchemaExtension).toHaveBeenCalledTimes(0);
+
+      wrapper.setProps({ file: dummyFile.ciConfig });
+      await waitForPromises();
+      await nextTick();
+      expect(CiSchemaExtension).toHaveBeenCalledTimes(1);
+      expect(vm.CiSchemaExtension).toEqual(CiSchemaExtension);
+      expect(vm.editor.registerCiSchema).toHaveBeenCalledTimes(1);
+
+      wrapper.setProps({ file: dummyFile.markdown });
+      await waitForPromises();
+      await nextTick();
+      expect(CiSchemaExtension).toHaveBeenCalledTimes(1);
+      expect(vm.editor.registerCiSchema).toHaveBeenCalledTimes(1);
+
+      wrapper.setProps({ file: dummyFile.ciConfig });
+      await waitForPromises();
+      await nextTick();
+      expect(CiSchemaExtension).toHaveBeenCalledTimes(1);
+      expect(vm.editor.registerCiSchema).toHaveBeenCalledTimes(2);
+    });
+    it('unuses the existing CI extension if the new model is not CI config', async () => {
+      await setup(dummyFile.ciConfig);
+
+      expect(removeExtensionSpy).not.toHaveBeenCalled();
+      wrapper.setProps({ file: dummyFile.markdown });
+      await waitForPromises();
+      await nextTick();
+      expect(removeExtensionSpy).toHaveBeenCalledWith(CiSchemaExtension);
     });
   });
 

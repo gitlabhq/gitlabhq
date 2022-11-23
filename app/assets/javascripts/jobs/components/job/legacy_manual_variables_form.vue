@@ -6,6 +6,7 @@ import {
   GlButton,
   GlLink,
   GlSprintf,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import { mapActions } from 'vuex';
@@ -13,7 +14,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 
 export default {
-  name: 'ManualVariablesForm',
+  name: 'LegacyManualVariablesForm',
   components: {
     GlFormInputGroup,
     GlInputGroupText,
@@ -21,6 +22,9 @@ export default {
     GlButton,
     GlLink,
     GlSprintf,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     action: {
@@ -42,6 +46,7 @@ export default {
     value: 'value',
   },
   i18n: {
+    clearInputs: s__('CiVariables|Clear inputs'),
     header: s__('CiVariables|Variables'),
     keyLabel: s__('CiVariables|Key'),
     valueLabel: s__('CiVariables|Value'),
@@ -152,11 +157,13 @@ export default {
 
         <gl-button
           v-if="canRemove(index)"
+          v-gl-tooltip
+          :aria-label="$options.i18n.clearInputs"
+          :title="$options.i18n.clearInputs"
           class="gl-flex-grow-0 gl-flex-basis-0"
           category="tertiary"
           variant="danger"
           icon="clear"
-          :aria-label="__('Delete variable')"
           data-testid="delete-variable-btn"
           @click="deleteVariable(variable.id)"
         />

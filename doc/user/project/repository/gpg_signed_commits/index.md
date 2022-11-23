@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Signing commits with GPG **(FREE)**
+# Sign commits with GPG **(FREE)**
 
 You can sign the commits you make in a GitLab repository with a
 GPG ([GNU Privacy Guard](https://gnupg.org/)) key. When you add a cryptographic
@@ -238,6 +238,7 @@ If you must unverify both future and past commits,
 ## Related topics
 
 - [Sign commits and tags with X.509 certificates](../x509_signed_commits/index.md)
+- [Sign commits with SSH keys](../ssh_signed_commits/index.md)
 - [Commits API](../../../../api/commits.md)
 - GPG resources:
   - [Git Tools - Signing Your Work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)

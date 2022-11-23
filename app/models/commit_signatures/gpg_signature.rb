@@ -2,6 +2,7 @@
 module CommitSignatures
   class GpgSignature < ApplicationRecord
     include CommitSignature
+    include SignatureType
 
     sha_attribute :gpg_key_primary_keyid
 
@@ -9,6 +10,14 @@ module CommitSignatures
     belongs_to :gpg_key_subkey
 
     validates :gpg_key_primary_keyid, presence: true
+
+    def signed_by_user
+      gpg_key&.user
+    end
+
+    def type
+      :gpg
+    end
 
     def self.with_key_and_subkeys(gpg_key)
       subkey_ids = gpg_key.subkeys.pluck(:id)

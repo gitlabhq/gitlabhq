@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Clusterable > Show page' do
+RSpec.describe 'Clusterable > Show page', feature_category: :kubernetes_management do
   include KubernetesHelpers
 
   let(:current_user) { create(:user) }

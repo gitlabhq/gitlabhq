@@ -11,6 +11,7 @@ module Types
       authorize :download_code
 
       field :user, Types::UserType, null: true,
+                                    method: :signed_by_user,
                                     calls_gitaly: true,
                                     description: 'User associated with the key.'
 

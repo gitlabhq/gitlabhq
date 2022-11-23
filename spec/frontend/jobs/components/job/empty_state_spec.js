@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import EmptyState from '~/jobs/components/job/empty_state.vue';
+import { mockId } from './mock_data';
 
 describe('Empty State', () => {
   let wrapper;
@@ -7,6 +8,7 @@ describe('Empty State', () => {
   const defaultProps = {
     illustrationPath: 'illustrations/pending_job_empty.svg',
     illustrationSizeClass: 'svg-430',
+    jobId: mockId,
     title: 'This job has not started yet',
     playable: false,
   };

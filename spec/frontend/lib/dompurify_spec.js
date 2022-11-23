@@ -94,6 +94,11 @@ describe('~/lib/dompurify', () => {
     expect(sanitize('<link rel="stylesheet" href="styles.css">')).toBe('');
   });
 
+  it("doesn't allow form tags", () => {
+    expect(sanitize('<form>')).toBe('');
+    expect(sanitize('<form method="post" action="path"></form>')).toBe('');
+  });
+
   describe.each`
     type          | gon
     ${'root'}     | ${rootGon}

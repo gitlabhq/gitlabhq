@@ -32,12 +32,8 @@ describe('Legacy Sidebar Header', () => {
   });
 
   describe('when job log is erasable', () => {
-    const path = '/root/ci-project/-/jobs/1447/erase';
-
     beforeEach(() => {
-      createWrapper({
-        erasePath: path,
-      });
+      createWrapper();
     });
 
     it('renders erase job link', () => {
@@ -45,13 +41,13 @@ describe('Legacy Sidebar Header', () => {
     });
 
     it('erase job link has correct path', () => {
-      expect(findEraseLink().attributes('href')).toBe(path);
+      expect(findEraseLink().attributes('href')).toBe(job.erase_path);
     });
   });
 
   describe('when job log is not erasable', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper({ job: { ...job, erase_path: null } });
     });
 
     it('does not render erase button', () => {
@@ -77,8 +73,7 @@ describe('Legacy Sidebar Header', () => {
 
   describe('when there is no retry path', () => {
     it('should not render a retry button', async () => {
-      const copy = { ...job, retry_path: null };
-      createWrapper({ job: copy });
+      createWrapper({ job: { ...job, retry_path: null } });
 
       expect(findRetryButton().exists()).toBe(false);
     });
@@ -100,9 +95,7 @@ describe('Legacy Sidebar Header', () => {
       it('should have a different label when the job status is failed', () => {
         createWrapper({ job: { ...job, status: failedJobStatus } });
 
-        expect(findRetryButton().attributes('title')).toBe(
-          LegacySidebarHeader.i18n.retryJobButtonLabel,
-        );
+        expect(findRetryButton().attributes('title')).toBe(LegacySidebarHeader.i18n.retryJobLabel);
       });
     });
   });

@@ -1,0 +1,17 @@
+query getJob($fullPath: ID!, $id: JobID!) {
+  project(fullPath: $fullPath) {
+    id
+    job(id: $id) {
+      id
+      manualJob
+      manualVariables {
+        nodes {
+          id
+          key
+          value
+        }
+      }
+      name
+    }
+  }
+}

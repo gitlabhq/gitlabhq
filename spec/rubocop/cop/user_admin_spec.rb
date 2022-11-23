@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-
-require 'rubocop'
 require_relative '../../../rubocop/cop/user_admin'
 
 RSpec.describe RuboCop::Cop::UserAdmin do

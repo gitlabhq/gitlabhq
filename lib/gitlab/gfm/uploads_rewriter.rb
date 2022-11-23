@@ -54,7 +54,6 @@ module Gitlab
         file = find_file(match[:secret], match[:file])
 
         # No file will be returned for a path traversal
-        return markdown if file.nil?
         return markdown unless file.try(:exists?)
 
         klass = @target_parent.is_a?(Namespace) ? NamespaceFileUploader : FileUploader

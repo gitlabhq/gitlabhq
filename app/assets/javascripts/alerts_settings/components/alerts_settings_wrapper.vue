@@ -375,6 +375,7 @@ export default {
         category="secondary"
         variant="confirm"
         data-testid="add-integration-btn"
+        data-qa-selector="add_integration_button"
         class="gl-mt-3"
         @click="setFormVisibility(true)"
       >

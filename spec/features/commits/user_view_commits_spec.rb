@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Commit > User view commits' do
+RSpec.describe 'Commit > User view commits', feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
 

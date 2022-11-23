@@ -22,6 +22,7 @@ RSpec.describe CommitSignatures::SshSignature do
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'commit signature'
+  it_behaves_like 'signature with type checking', :ssh
 
   describe 'associations' do
     it { is_expected.to belong_to(:key).optional }
@@ -35,6 +36,12 @@ RSpec.describe CommitSignatures::SshSignature do
       expect(
         described_class.by_commit_sha([commit_sha, another_signature.commit_sha])
       ).to contain_exactly(signature, another_signature)
+    end
+  end
+
+  describe '#signed_by_user' do
+    it 'returns the user associated with the SSH key' do
+      expect(signature.signed_by_user).to eq(ssh_key.user)
     end
   end
 end

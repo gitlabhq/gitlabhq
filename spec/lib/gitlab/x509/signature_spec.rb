@@ -11,6 +11,17 @@ RSpec.describe Gitlab::X509::Signature do
     }
   end
 
+  it_behaves_like 'signature with type checking', :x509 do
+    subject(:signature) do
+      described_class.new(
+        X509Helpers::User1.signed_commit_signature,
+        X509Helpers::User1.signed_commit_base_data,
+        X509Helpers::User1.certificate_email,
+        X509Helpers::User1.signed_commit_time
+      )
+    end
+  end
+
   shared_examples "a verified signature" do
     let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
 

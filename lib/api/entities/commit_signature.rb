@@ -10,6 +10,8 @@ module API
           ::API::Entities::GpgCommitSignature.represent commit_signature(commit), options
         elsif commit.signature.is_a?(::CommitSignatures::X509CommitSignature)
           ::API::Entities::X509Signature.represent commit.signature, options
+        elsif commit.signature.is_a?(::CommitSignatures::SshSignature)
+          ::API::Entities::SshSignature.represent(commit.signature, options)
         end
       end
 

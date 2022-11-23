@@ -8499,6 +8499,9 @@ msgstr ""
 msgid "CiVariables|Cannot use Masked Variable with current value"
 msgstr ""
 
+msgid "CiVariables|Clear inputs"
+msgstr ""
+
 msgid "CiVariables|Environments"
 msgstr ""
 
@@ -8524,6 +8527,9 @@ msgid "CiVariables|Remove variable"
 msgstr ""
 
 msgid "CiVariables|Remove variable row"
+msgstr ""
+
+msgid "CiVariables|Run job again"
 msgstr ""
 
 msgid "CiVariables|Scope"
@@ -23615,6 +23621,9 @@ msgstr ""
 msgid "Job|This job is stuck because you don't have any active runners that can run this job."
 msgstr ""
 
+msgid "Job|Update CI/CD variables"
+msgstr ""
+
 msgid "Job|Waiting for resource"
 msgstr ""
 
@@ -24046,6 +24055,9 @@ msgid "Learn More"
 msgstr ""
 
 msgid "Learn More."
+msgstr ""
+
+msgid "Learn about signing commits with SSH keys."
 msgstr ""
 
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
@@ -35095,6 +35107,9 @@ msgstr ""
 msgid "Run housekeeping tasks to automatically optimize Git repositories. Disabling this option will cause performance to degenerate over time."
 msgstr ""
 
+msgid "Run manual job again"
+msgstr ""
+
 msgid "Run manual or delayed jobs"
 msgstr ""
 
@@ -35753,6 +35768,9 @@ msgid "SSH host keys are not available on this system. Please use %{ssh_keyscan}
 msgstr ""
 
 msgid "SSH key"
+msgstr ""
+
+msgid "SSH key fingerprint:"
 msgstr ""
 
 msgid "SSH keys"
@@ -41452,6 +41470,9 @@ msgstr ""
 msgid "There was an error fetching the environments information."
 msgstr ""
 
+msgid "There was an error fetching the job."
+msgstr ""
+
 msgid "There was an error fetching the jobs for your project."
 msgstr ""
 
@@ -41489,6 +41510,9 @@ msgid "There was an error resetting user pipeline minutes."
 msgstr ""
 
 msgid "There was an error retrieving the Jira users."
+msgstr ""
+
+msgid "There was an error running the job. Please try again."
 msgstr ""
 
 msgid "There was an error saving your changes."

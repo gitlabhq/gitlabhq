@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Registration enabled callout' do
+RSpec.describe 'Registration enabled callout', feature_category: :authentication_and_authorization do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_admin) { create(:user) }
   let_it_be(:project) { create(:project) }

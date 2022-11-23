@@ -14,6 +14,12 @@ module API
 
       desc 'Get Non SQL usage ping metrics' do
         detail 'This feature was introduced in GitLab 13.11.'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
       end
 
       get 'non_sql_metrics' do

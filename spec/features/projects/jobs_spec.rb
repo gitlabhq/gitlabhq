@@ -215,10 +215,6 @@ RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
         visit project_job_path(project, job)
       end
 
-      it 'shows retry button' do
-        expect(page).to have_link('Retry')
-      end
-
       context 'if job passed' do
         it 'does not show New issue button' do
           expect(page).not_to have_link('New issue')

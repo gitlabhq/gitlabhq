@@ -23,6 +23,14 @@ module QA
             end
           end
 
+          def go_to_monitor_alerts
+            hover_monitor do
+              within_submenu do
+                click_element(:sidebar_menu_item_link, menu_item: 'Alerts')
+              end
+            end
+          end
+
           private
 
           def hover_monitor

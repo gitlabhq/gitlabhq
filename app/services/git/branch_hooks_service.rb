@@ -164,16 +164,27 @@ module Git
       end
     end
 
-    def unsigned_x509_shas(commits)
-      CommitSignatures::X509CommitSignature.unsigned_commit_shas(commits.map(&:sha))
+    def signature_types
+      types = [
+        ::CommitSignatures::GpgSignature,
+        ::CommitSignatures::X509CommitSignature
+      ]
+
+      types.push(::CommitSignatures::SshSignature) if Feature.enabled?(:ssh_commit_signatures, project)
+
+      types
     end
 
-    def unsigned_gpg_shas(commits)
-      CommitSignatures::GpgSignature.unsigned_commit_shas(commits.map(&:sha))
+    def unsigned_commit_shas(commits)
+      commit_shas = commits.map(&:sha)
+
+      signature_types
+        .map { |signature| signature.unsigned_commit_shas(commit_shas) }
+        .reduce(&:&)
     end
 
     def enqueue_update_signatures
-      unsigned = unsigned_x509_shas(limited_commits) & unsigned_gpg_shas(limited_commits)
+      unsigned = unsigned_commit_shas(limited_commits)
       return if unsigned.empty?
 
       signable = Gitlab::Git::Commit.shas_with_signatures(project.repository, unsigned)

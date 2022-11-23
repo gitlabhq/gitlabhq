@@ -227,7 +227,7 @@ module DiffHelper
   end
 
   def conflicts(allow_tree_conflicts: false)
-    return unless merge_request.cannot_be_merged?
+    return unless merge_request.cannot_be_merged? && merge_request.source_branch_exists? && merge_request.target_branch_exists?
 
     conflicts_service = MergeRequests::Conflicts::ListService.new(merge_request, allow_tree_conflicts: allow_tree_conflicts) # rubocop:disable CodeReuse/ServiceClass
 

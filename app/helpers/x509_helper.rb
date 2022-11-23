@@ -16,8 +16,4 @@ module X509Helper
   rescue StandardError
     {}
   end
-
-  def x509_signature?(sig)
-    sig.is_a?(CommitSignatures::X509CommitSignature) || sig.is_a?(Gitlab::X509::Signature)
-  end
 end

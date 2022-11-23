@@ -267,6 +267,7 @@ module API
         mount ::API::Terraform::StateVersion
         mount ::API::Topics
         mount ::API::Unleash
+        mount ::API::UsageDataNonSqlMetrics
         mount ::API::UserCounts
         mount ::API::Wikis
 
@@ -329,7 +330,6 @@ module API
       mount ::API::Templates
       mount ::API::Todos
       mount ::API::UsageData
-      mount ::API::UsageDataNonSqlMetrics
       mount ::API::UsageDataQueries
       mount ::API::Users
       mount ::API::Ml::Mlflow

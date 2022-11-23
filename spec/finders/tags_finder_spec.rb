@@ -68,6 +68,14 @@ RSpec.describe TagsFinder do
         expect(result.count).to eq(1)
       end
 
+      it 'filters tags by name with wildcard' do
+        result = load_tags({ search: 'v1.*.0' })
+
+        expect(result.first.name).to eq('v1.0.0')
+        expect(result.second.name).to eq('v1.1.0')
+        expect(result.count).to eq(2)
+      end
+
       it 'filters tags by nonexistent name that begins with' do
         result = load_tags({ search: '^nope' })
 
@@ -76,6 +84,11 @@ RSpec.describe TagsFinder do
 
       it 'filters tags by nonexistent name that ends with' do
         result = load_tags({ search: 'nope$' })
+        expect(result.count).to eq(0)
+      end
+
+      it 'filters tags by nonexistent name with wildcard' do
+        result = load_tags({ search: 'n*e' })
         expect(result.count).to eq(0)
       end
 

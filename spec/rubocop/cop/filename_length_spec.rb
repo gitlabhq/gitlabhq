@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require 'rubocop/rspec/support'
 require_relative '../../../rubocop/cop/filename_length'
 
 RSpec.describe RuboCop::Cop::FilenameLength do

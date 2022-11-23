@@ -83,7 +83,7 @@ export default {
     </p>
     <form ref="settingsForm" @submit.prevent="updateAlertsIntegrationSettings">
       <gl-form-group class="gl-pl-0">
-        <gl-form-checkbox v-model="createIssueEnabled" data-qa-selector="create_issue_checkbox">
+        <gl-form-checkbox v-model="createIssueEnabled" data-qa-selector="create_incident_checkbox">
           <span>{{ $options.i18n.createIncident.label }}</span>
         </gl-form-checkbox>
       </gl-form-group>

@@ -1,9 +1,16 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createDefaultClient from '~/lib/graphql';
 import JobApp from './components/job/job_app.vue';
 import createStore from './store';
 
+Vue.use(VueApollo);
 Vue.use(GlToast);
+
+const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient(),
+});
 
 const initializeJobPage = (element) => {
   const store = createStore();
@@ -26,11 +33,13 @@ const initializeJobPage = (element) => {
 
   return new Vue({
     el: element,
+    apolloProvider,
     store,
     components: {
       JobApp,
     },
     provide: {
+      projectPath,
       retryOutdatedJobDocsUrl,
     },
     render(createElement) {

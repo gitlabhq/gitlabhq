@@ -6,6 +6,7 @@ module Gitlab
   module X509
     class Signature
       include Gitlab::Utils::StrongMemoize
+      include SignatureType
 
       attr_reader :signature_text, :signed_text, :created_at
 
@@ -14,6 +15,10 @@ module Gitlab
         @signed_text = signed_text
         @email = email
         @created_at = created_at
+      end
+
+      def type
+        :x509
       end
 
       def x509_certificate

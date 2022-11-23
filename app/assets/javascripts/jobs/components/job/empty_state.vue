@@ -20,6 +20,14 @@ export default {
       type: String,
       required: true,
     },
+    isRetryable: {
+      type: Boolean,
+      required: false,
+    },
+    jobId: {
+      type: Number,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -54,8 +62,8 @@ export default {
     },
   },
   computed: {
-    isGraphQL() {
-      return this.glFeatures?.graphqlJobApp;
+    showGraphQLManualVariablesForm() {
+      return this.glFeatures?.graphqlJobApp && this.isRetryable;
     },
     shouldRenderManualVariables() {
       return this.playable && !this.scheduled;
@@ -77,14 +85,18 @@ export default {
 
         <p v-if="content" data-testid="job-empty-state-content">{{ content }}</p>
       </div>
-      <template v-if="isGraphQL">
-        <manual-variables-form v-if="shouldRenderManualVariables" :action="action" />
+      <template v-if="showGraphQLManualVariablesForm">
+        <manual-variables-form
+          v-if="shouldRenderManualVariables"
+          :job-id="jobId"
+          @hideManualVariablesForm="$emit('hideManualVariablesForm')"
+        />
       </template>
       <template v-else>
         <legacy-manual-variables-form v-if="shouldRenderManualVariables" :action="action" />
       </template>
-      <div class="text-content">
-        <div v-if="action && !shouldRenderManualVariables" class="text-center">
+      <div v-if="action && !shouldRenderManualVariables" class="text-content">
+        <div class="text-center">
           <gl-link
             :href="action.path"
             :data-method="action.method"

@@ -50,7 +50,7 @@ module QA
 
       # Source objects
       #
-      let(:source_project) { source_group.projects.find { |project| project.name.include?(gitlab_source_project) }.reload! }
+      let(:source_project) { source_group.projects.find { |project| project.name == gitlab_source_project }.reload! }
       let(:source_branches) { source_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
@@ -61,7 +61,7 @@ module QA
 
       # Imported objects
       #
-      let(:imported_project) { imported_group.projects.find { |project| project.name.include?(gitlab_source_project) }.reload! }
+      let(:imported_project) { imported_group.projects.find { |project| project.name == gitlab_source_project }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }

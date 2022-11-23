@@ -430,6 +430,7 @@ export default {
             v-model="integrationForm.type"
             :disabled="isSelectDisabled"
             class="gl-max-w-full"
+            data-qa-selector="integration_type_dropdown"
             :options="integrationTypesOptions"
           />
 
@@ -461,6 +462,7 @@ export default {
               v-model="integrationForm.name"
               type="text"
               :placeholder="$options.i18n.integrationFormSteps.nameIntegration.placeholder"
+              data-qa-selector="integration_name_field"
               @input="validateName"
             />
           </gl-form-group>
@@ -483,6 +485,7 @@ export default {
               v-model="integrationForm.active"
               :is-loading="loading"
               :label="$options.i18n.integrationFormSteps.nameIntegration.activeToggle"
+              data-qa-selector="active_toggle_container"
               class="gl-mt-4 gl-font-weight-normal"
             />
           </gl-form-group>
@@ -594,6 +597,7 @@ export default {
             category="secondary"
             class="gl-ml-3 js-no-auto-disable"
             data-testid="integration-form-test-and-submit"
+            data-qa-selector="save_and_create_alert_button"
             @click="submit(true)"
           >
             {{ $options.i18n.saveAndTestIntegration }}
@@ -695,6 +699,7 @@ export default {
             :debounce="$options.JSON_VALIDATE_DELAY"
             rows="6"
             max-rows="10"
+            data-qa-selector="test_payload_field"
             @input="validateJson(false)"
           />
         </gl-form-group>
@@ -706,6 +711,7 @@ export default {
             data-testid="send-test-alert"
             variant="confirm"
             class="js-no-auto-disable"
+            data-qa-selector="send_test_alert_button"
             @click="isFormDirty ? null : sendTestAlert()"
           >
             {{ $options.i18n.send }}

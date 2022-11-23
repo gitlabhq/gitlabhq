@@ -101,10 +101,13 @@ This feature allows you to search and select branches quickly. Search results ap
 - Branches with names that matched search terms exactly.
 - Other branches with names that include search terms, sorted alphabetically.
 
-Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following:
+Sometimes when you have hundreds of branches you may want a more flexible matching pattern. In such cases you can use the following operators:
 
-- `^feature` matches only branch names that begin with 'feature'.
-- `feature$` matches only branch names that end with 'feature'.
+- `^` matches beginning of branch name, for example `^feat` would match `feat/user-authentication`
+- `$` matches end of branch name, for example `widget$` would match `feat/search-box-widget`
+- `*` wildcard matcher, for example `branch*cache*` would match `fix/branch-search-cache-expiration`
+
+These operators can be mixed, for example `^chore/*migration$` would match `chore/user-data-migration`
 
 ## Swap revisions
 
