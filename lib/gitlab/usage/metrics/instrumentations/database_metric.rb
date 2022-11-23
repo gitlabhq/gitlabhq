@@ -117,6 +117,8 @@ module Gitlab
             case time_frame
             when '28d'
               monthly_time_range_db_params(column: self.class.metric_timestamp_column)
+            when '7d'
+              weekly_time_range_db_params(column: self.class.metric_timestamp_column)
             when 'all'
               {}
             when 'none'

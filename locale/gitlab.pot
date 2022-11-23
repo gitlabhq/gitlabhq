@@ -6924,6 +6924,9 @@ msgstr ""
 msgid "BranchRules|%{total} approval %{subject}"
 msgstr ""
 
+msgid "BranchRules|%{total} matching %{subject}"
+msgstr ""
+
 msgid "BranchRules|%{total} status %{subject}"
 msgstr ""
 
@@ -47329,7 +47332,7 @@ msgstr ""
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
 msgstr ""
 
-msgid "Your CI/CD configuration syntax is invalid. View Lint tab for more details."
+msgid "Your CI/CD configuration syntax is invalid. Select the Validate tab for more details."
 msgstr ""
 
 msgid "Your CSV export has started. It will be emailed to %{email} when complete."
@@ -48018,6 +48021,9 @@ msgid "ciReport|%{scanner} detected no new %{vulnStr}"
 msgstr ""
 
 msgid "ciReport|%{scanner} detected no new potential vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{scanner}: Loading resulted in an error"
 msgstr ""
 
 msgid "ciReport|: Loading resulted in an error"

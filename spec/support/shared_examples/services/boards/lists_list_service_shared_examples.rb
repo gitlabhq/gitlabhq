@@ -5,7 +5,7 @@ RSpec.shared_examples 'lists list service' do
     let!(:backlog_list) { create_backlog_list(board) }
 
     it 'does not create a backlog list' do
-      expect { service.execute(board) }.not_to change(board.lists, :count)
+      expect { service.execute(board) }.not_to change { board.lists.count }
     end
 
     it "returns board's lists" do
@@ -35,11 +35,11 @@ RSpec.shared_examples 'lists list service' do
 
   context 'when the board does not have a backlog list' do
     it 'creates a backlog list' do
-      expect { service.execute(board) }.to change(board.lists, :count).by(1)
+      expect { service.execute(board) }.to change { board.lists.count }.by(1)
     end
 
     it 'does not create a backlog list when create_default_lists is false' do
-      expect { service.execute(board, create_default_lists: false) }.not_to change(board.lists, :count)
+      expect { service.execute(board, create_default_lists: false) }.not_to change { board.lists.count }
     end
 
     it "returns board's lists" do

@@ -58,6 +58,7 @@ export default {
       :branch-protection="rule.branchProtection"
       :status-checks-total="rule.externalStatusChecks.nodes.length"
       :approval-rules-total="rule.approvalRules.nodes.length"
+      :matching-branches-count="rule.matchingBranchesCount"
     />
 
     <span v-if="!branchRules.length" data-testid="empty">{{ $options.i18n.emptyState }}</span>

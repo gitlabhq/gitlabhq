@@ -4,6 +4,7 @@ import { sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from '../../queries/branch_rules_details.query.graphql';
+import { getAccessLevels } from '../../../utils';
 import Protection from './protection.vue';
 import {
   I18N,
@@ -120,23 +121,7 @@ export default {
     },
   },
   methods: {
-    getAccessLevels(accessLevels = {}) {
-      const total = accessLevels.edges?.length;
-      const accessLevelTypes = { total, users: [], groups: [], roles: [] };
-
-      accessLevels.edges?.forEach(({ node }) => {
-        if (node.user) {
-          const src = node.user.avatarUrl;
-          accessLevelTypes.users.push({ src, ...node.user });
-        } else if (node.group) {
-          accessLevelTypes.groups.push(node);
-        } else {
-          accessLevelTypes.roles.push(node);
-        }
-      });
-
-      return accessLevelTypes;
-    },
+    getAccessLevels,
   },
 };
 </script>

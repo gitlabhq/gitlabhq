@@ -29,7 +29,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker do
       end
 
       it 'creates a GitLab issue' do
-        expect { perform }.to change(Issue, :count).by(1)
+        expect { perform }.to change { Issue.count }.by(1)
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker do
       end
 
       it 'does not create a GitLab issue' do
-        expect { perform }.not_to change(Issue, :count)
+        expect { perform }.not_to change { Issue.count }
       end
 
       it 'logs a warning' do

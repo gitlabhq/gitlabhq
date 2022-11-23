@@ -196,6 +196,22 @@ RSpec.describe Gitlab::Usage::Metrics::Instrumentations::DatabaseMetric do
       end
     end
 
+    context 'with 7 days time frame' do
+      subject do
+        database_metric_class.tap do |metric_class|
+          metric_class.relation { Issue }
+          metric_class.operation :count
+        end.new(time_frame: '7d')
+      end
+
+      it 'calculates a correct result' do
+        create(:issue, created_at: 10.days.ago)
+        create(:issue, created_at: 5.days.ago)
+
+        expect(subject.value).to eq(1)
+      end
+    end
+
     context 'with additional parameters passed via options' do
       subject do
         database_metric_class.tap do |metric_class|

@@ -3,7 +3,6 @@
 exports[`Dashboard template matches the default snapshot 1`] = `
 <div
   class="prometheus-graphs"
-  data-qa-selector="prometheus_graphs_content"
   data-testid="prometheus-graphs"
   environmentstate="available"
   metricsdashboardbasepath="/monitoring/monitor-project/-/metrics?environment=1"
@@ -40,7 +39,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
     >
       <dashboards-dropdown-stub
         class="flex-grow-1"
-        data-qa-selector="dashboards_filter_dropdown"
         defaultbranch="master"
         id="monitor-dashboards-dropdown"
         toggle-class="dropdown-menu-toggle"
@@ -60,7 +58,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
         class="flex-grow-1"
         clearalltext="Clear all"
         clearalltextclass="gl-px-5"
-        data-qa-selector="environments_dropdown"
         data-testid="environments-dropdown"
         headertext=""
         hideheaderborder="true"
@@ -106,7 +103,6 @@ exports[`Dashboard template matches the default snapshot 1`] = `
       <date-time-picker-stub
         class="flex-grow-1 show-last-dropdown"
         customenabled="true"
-        data-qa-selector="range_picker_dropdown"
         options="[object Object],[object Object],[object Object],[object Object],[object Object],[object Object],[object Object]"
         value="[object Object]"
       />

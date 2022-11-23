@@ -30,6 +30,6 @@ end
 
 RSpec.shared_examples 'job is unchanged' do
   it 'does not change status' do
-    expect { service.execute }.not_to change(job, :status)
+    expect { service.execute }.not_to change { job.status }
   end
 end

@@ -78,7 +78,7 @@ RSpec.describe Resolvers::Ci::GroupRunnersResolver do
           status_status: 'active',
           type_type: :group_type,
           tag_name: ['active_runner'],
-          preload: { tag_name: nil },
+          preload: { tag_name: false },
           search: 'abc',
           sort: 'contacted_asc',
           membership: :descendants,

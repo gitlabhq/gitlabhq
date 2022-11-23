@@ -17,14 +17,14 @@ RSpec.describe IncidentManagement::CloseIncidentWorker do
         expect(service).to receive(:execute).with(issue, system_note: false).and_call_original
       end
 
-      expect { worker.perform(issue_id) }.to change(ResourceStateEvent, :count).by(1)
+      expect { worker.perform(issue_id) }.to change { ResourceStateEvent.count }.by(1)
     end
 
     shared_examples 'does not call the close issue service' do
       specify do
         expect(Issues::CloseService).not_to receive(:new)
 
-        expect { worker.perform(issue_id) }.not_to change(ResourceStateEvent, :count)
+        expect { worker.perform(issue_id) }.not_to change { ResourceStateEvent.count }
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe IncidentManagement::CloseIncidentWorker do
       end
 
       specify do
-        expect { worker.perform(issue_id) }.not_to change(ResourceStateEvent, :count)
+        expect { worker.perform(issue_id) }.not_to change { ResourceStateEvent.count }
       end
     end
   end

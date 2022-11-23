@@ -1,6 +1,6 @@
 <script>
 import { GlIntersectionObserver } from '@gitlab/ui';
-import { scrollToElement } from '~/lib/utils/common_utils';
+import LineHighlighter from '~/blob/line_highlighter';
 import ChunkLine from './chunk_line.vue';
 
 /*
@@ -81,12 +81,14 @@ export default {
       return;
     }
 
-    window.requestIdleCallback(() => {
+    window.requestIdleCallback(async () => {
       this.isLoading = false;
       const { hash } = this.$route;
       if (hash && this.totalChunks > 0 && this.totalChunks === this.chunkIndex + 1) {
         // when the last chunk is loaded scroll to the hash
-        scrollToElement(hash, { behavior: 'auto' });
+        await this.$nextTick();
+        const lineHighlighter = new LineHighlighter({ scrollBehavior: 'auto' });
+        lineHighlighter.highlightHash(hash);
       }
     });
   },

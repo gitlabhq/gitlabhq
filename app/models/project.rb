@@ -2994,6 +2994,10 @@ class Project < ApplicationRecord
     group&.work_items_feature_flag_enabled? || Feature.enabled?(:work_items, self)
   end
 
+  def work_items_mvc_feature_flag_enabled?
+    group&.work_items_mvc_feature_flag_enabled? || Feature.enabled?(:work_items_mvc)
+  end
+
   def work_items_mvc_2_feature_flag_enabled?
     group&.work_items_mvc_2_feature_flag_enabled? || Feature.enabled?(:work_items_mvc_2)
   end

@@ -118,7 +118,7 @@ RSpec.describe ProcessCommitWorker do
     it 'creates Issue::CloseWorker jobs' do
       expect do
         worker.close_issues(project, user, user, commit, [issue])
-      end.to change(Issues::CloseWorker.jobs, :size).by(1)
+      end.to change { Issues::CloseWorker.jobs.size }.by(1)
     end
   end
 

@@ -8,7 +8,7 @@ RSpec.shared_examples 'a destroyable issuable link' do
     end
 
     it 'removes related issue' do
-      expect { subject }.to change(issuable_link.class, :count).by(-1)
+      expect { subject }.to change { issuable_link.class.count }.by(-1)
     end
 
     it 'creates notes' do
@@ -28,7 +28,7 @@ RSpec.shared_examples 'a destroyable issuable link' do
 
   context 'when failing to remove an issuable link' do
     it 'does not remove relation' do
-      expect { subject }.not_to change(issuable_link.class, :count).from(1)
+      expect { subject }.not_to change { issuable_link.class.count }.from(1)
     end
 
     it 'does not create notes' do

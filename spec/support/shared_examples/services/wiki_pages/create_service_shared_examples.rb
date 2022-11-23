@@ -75,7 +75,7 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
     end
 
     it 'does not record the activity' do
-      expect { service.execute }.not_to change(Event, :count)
+      expect { service.execute }.not_to change { Event.count }
     end
 
     it 'reports the error' do

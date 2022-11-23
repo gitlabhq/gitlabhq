@@ -13,7 +13,7 @@ RSpec.describe IssuableExportCsvWorker do
     let(:issuable_type) { :issue }
 
     it 'emails a CSV' do
-      expect { subject }.to change(ActionMailer::Base.deliveries, :size).by(1)
+      expect { subject }.to change { ActionMailer::Base.deliveries.size }.by(1)
     end
 
     it 'ensures that project_id is passed to issues_finder' do
@@ -54,7 +54,7 @@ RSpec.describe IssuableExportCsvWorker do
     let(:issuable_type) { :merge_request }
 
     it 'emails a CSV' do
-      expect { subject }.to change(ActionMailer::Base.deliveries, :size).by(1)
+      expect { subject }.to change { ActionMailer::Base.deliveries.size }.by(1)
     end
 
     it 'calls the MR export service' do

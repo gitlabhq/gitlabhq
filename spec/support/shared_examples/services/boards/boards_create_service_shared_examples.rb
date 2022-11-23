@@ -3,7 +3,7 @@
 RSpec.shared_examples 'boards create service' do
   context 'when parent does not have a board' do
     it 'creates a new board' do
-      expect { service.execute }.to change(Board, :count).by(1)
+      expect { service.execute }.to change { Board.count }.by(1)
     end
 
     it 'creates the default lists' do
@@ -23,7 +23,7 @@ RSpec.shared_examples 'boards create service' do
     it 'does not create a new board' do
       expect(service).to receive(:can_create_board?) { false }
 
-      expect { service.execute }.not_to change(parent.boards, :count)
+      expect { service.execute }.not_to change { parent.boards.count }
     end
   end
 end

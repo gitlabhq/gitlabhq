@@ -6,9 +6,21 @@ import axios from '~/lib/utils/axios_utils';
 import { TEST_HOST } from 'helpers/test_constants';
 import NewDeployToken from '~/deploy_tokens/components/new_deploy_token.vue';
 import waitForPromises from 'helpers/wait_for_promises';
+import { createAlert, VARIANT_INFO } from '~/flash';
 
 const createNewTokenPath = `${TEST_HOST}/create`;
 const deployTokensHelpUrl = `${TEST_HOST}/help`;
+
+jest.mock('~/flash', () => {
+  const original = jest.requireActual('~/flash');
+
+  return {
+    __esModule: true,
+    ...original,
+    createAlert: jest.fn(),
+  };
+});
+
 describe('New Deploy Token', () => {
   let wrapper;
 
@@ -69,8 +81,68 @@ describe('New Deploy Token', () => {
 
           expect(tokenUsername.props('value')).toBe('test token username');
           expect(tokenValue.props('value')).toBe('test token');
+
+          expect(createAlert).toHaveBeenCalledWith(
+            expect.objectContaining({
+              variant: VARIANT_INFO,
+            }),
+          );
         });
     }
+
+    it('should flash error message if token creation fails', async () => {
+      const mockAxios = new MockAdapter(axios);
+
+      const date = new Date();
+      const formInputs = wrapper.findAllComponents(GlFormInput);
+      const name = formInputs.at(0);
+      const username = formInputs.at(2);
+      name.vm.$emit('input', 'test name');
+      username.vm.$emit('input', 'test username');
+
+      const datepicker = wrapper.findAllComponents(GlDatepicker).at(0);
+      datepicker.vm.$emit('input', date);
+
+      const [
+        readRepo,
+        readRegistry,
+        writeRegistry,
+        readPackageRegistry,
+        writePackageRegistry,
+      ] = wrapper.findAllComponents(GlFormCheckbox).wrappers;
+      readRepo.vm.$emit('input', true);
+      readRegistry.vm.$emit('input', true);
+      writeRegistry.vm.$emit('input', true);
+      readPackageRegistry.vm.$emit('input', true);
+      writePackageRegistry.vm.$emit('input', true);
+
+      const expectedErrorMessage = 'Server error while creating a token';
+
+      mockAxios
+        .onPost(createNewTokenPath, {
+          deploy_token: {
+            name: 'test name',
+            expires_at: date.toISOString(),
+            username: 'test username',
+            read_repository: true,
+            read_registry: true,
+            write_registry: true,
+            read_package_registry: true,
+            write_package_registry: true,
+          },
+        })
+        .replyOnce(500, { message: expectedErrorMessage });
+
+      wrapper.findAllComponents(GlButton).at(0).vm.$emit('click');
+
+      await waitForPromises().then(() => nextTick());
+
+      expect(createAlert).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: expectedErrorMessage,
+        }),
+      );
+    });
 
     it('should make a request to create a token on submit', () => {
       const mockAxios = new MockAdapter(axios);

@@ -24,13 +24,13 @@ RSpec.describe TasksToBeDone::CreateWorker do
           .and_call_original
       end
 
-      expect { described_class.new.perform(*job_args) }.to change(Issue, :count).by(3)
+      expect { described_class.new.perform(*job_args) }.to change { Issue.count }.by(3)
     end
   end
 
   include_examples 'an idempotent worker' do
     it 'creates 3 task issues' do
-      expect { subject }.to change(Issue, :count).by(3)
+      expect { subject }.to change { Issue.count }.by(3)
     end
   end
 end

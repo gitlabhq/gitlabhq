@@ -7,7 +7,7 @@ require 'spec_helper'
 #   * Defined expected timeline event via `let(:expected_timeline_event) { instance_double(...) }`
 RSpec.shared_examples 'creating an incident timeline event' do
   it 'creates a timeline event' do
-    expect { resolve }.to change(IncidentManagement::TimelineEvent, :count).by(1)
+    expect { resolve }.to change { IncidentManagement::TimelineEvent.count }.by(1)
   end
 
   it 'responds with a timeline event', :aggregate_failures do

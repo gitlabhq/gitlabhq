@@ -11,7 +11,7 @@ RSpec.shared_examples 'creates an alert management alert or errors' do
   it 'creates AlertManagement::Alert' do
     expect(Gitlab::AppLogger).not_to receive(:warn)
 
-    expect { subject }.to change(AlertManagement::Alert, :count).by(1)
+    expect { subject }.to change { AlertManagement::Alert.count }.by(1)
   end
 
   it 'executes the alert service hooks' do
@@ -118,7 +118,7 @@ end
 
 RSpec.shared_examples 'does not create an alert management alert' do
   specify do
-    expect { subject }.not_to change(AlertManagement::Alert, :count)
+    expect { subject }.not_to change { AlertManagement::Alert.count }
   end
 end
 

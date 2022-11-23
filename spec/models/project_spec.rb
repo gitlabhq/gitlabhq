@@ -8156,6 +8156,16 @@ RSpec.describe Project, factory_default: :keep do
     end
   end
 
+  describe '#work_items_mvc_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
+
+    it_behaves_like 'checks parent group feature flag' do
+      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
+      let(:feature_flag) { :work_items_mvc }
+      let(:subject_project) { group_project }
+    end
+  end
+
   describe '#work_items_mvc_2_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 

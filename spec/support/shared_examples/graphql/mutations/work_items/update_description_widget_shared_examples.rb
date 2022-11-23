@@ -5,7 +5,7 @@ RSpec.shared_examples 'update work item description widget' do
     expect do
       post_graphql_mutation(mutation, current_user: current_user)
       work_item.reload
-    end.to change(work_item, :description).from(nil).to(new_description)
+    end.to change { work_item.description }.from(nil).to(new_description)
 
     expect(response).to have_gitlab_http_status(:success)
     expect(mutation_response['workItem']['widgets']).to include(

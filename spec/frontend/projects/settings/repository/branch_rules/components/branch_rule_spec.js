@@ -63,6 +63,17 @@ describe('Branch rule', () => {
         subject: n__('rule', 'rules', branchRulePropsMock.approvalRulesTotal),
       }),
     );
+    expect(findProtectionDetailsListItems().at(4).text()).toBe(wrapper.vm.pushAccessLevelsText);
+  });
+
+  it('renders branches count for wildcards', () => {
+    createComponent({ name: 'test-*' });
+    expect(findProtectionDetailsListItems().at(0).text()).toMatchInterpolatedText(
+      sprintf(i18n.matchingBranches, {
+        total: branchRulePropsMock.matchingBranchesCount,
+        subject: n__('branch', 'branches', branchRulePropsMock.matchingBranchesCount),
+      }),
+    );
   });
 
   it('renders a detail button with the correct href', () => {

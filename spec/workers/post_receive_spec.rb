@@ -324,8 +324,8 @@ RSpec.describe PostReceive do
         expect do
           perform
           project.reload
-        end.to change(project, :last_activity_at)
-           .and change(project, :last_repository_updated_at)
+        end.to change { project.last_activity_at }
+           .and change { project.last_repository_updated_at }
       end
     end
 

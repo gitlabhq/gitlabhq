@@ -3,5 +3,5 @@
 require 'spec_helper'
 
 RSpec.describe 'getting merge access levels for a branch protection' do
-  include_examples 'perform graphql requests for AccessLevel type objects', :merge
+  it_behaves_like 'a GraphQL query for access levels', :merge
 end

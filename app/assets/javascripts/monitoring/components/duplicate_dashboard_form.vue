@@ -104,13 +104,7 @@ export default {
       label-size="sm"
       label-for="fileName"
     >
-      <gl-form-input
-        id="fileName"
-        ref="fileName"
-        v-model="form.fileName"
-        data-qa-selector="duplicate_dashboard_filename_field"
-        :required="true"
-      />
+      <gl-form-input id="fileName" ref="fileName" v-model="form.fileName" :required="true" />
     </gl-form-group>
     <gl-form-group :label="__('Branch')" label-size="sm" label-for="branch">
       <gl-form-radio-group

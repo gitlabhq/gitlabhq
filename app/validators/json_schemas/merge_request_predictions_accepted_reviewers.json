@@ -1,0 +1,10 @@
+{
+  "description": "Merge request predictions accepted reviewers",
+  "type": "object",
+  "properties": {
+    "reviewers": {
+      "type": "array"
+    }
+  },
+  "additionalProperties": true
+}

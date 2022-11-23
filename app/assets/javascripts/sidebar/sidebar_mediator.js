@@ -56,12 +56,14 @@ export default class SidebarMediator {
   }
 
   async saveReviewers(field) {
-    const selected = this.store.reviewers.map((u) => u.id);
+    const selectedReviewers = this.store.reviewers;
+    const selectedIds = selectedReviewers.map((u) => u.id);
+    const suggestedSelectedIds = selectedReviewers.filter((u) => u.suggested).map((u) => u.id);
 
     // If there are no ids, that means we have to unassign (which is id = 0)
     // And it only accepts an array, hence [0]
-    const reviewers = selected.length === 0 ? [0] : selected;
-    const data = { reviewer_ids: reviewers };
+    const reviewers = selectedIds.length === 0 ? [0] : selectedIds;
+    const data = { reviewer_ids: reviewers, suggested_reviewer_ids: suggestedSelectedIds };
 
     try {
       const res = await this.service.update(field, data);

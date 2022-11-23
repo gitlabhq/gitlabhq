@@ -24,7 +24,7 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(issuable_link_class, :count)
+        expect { subject }.not_to change { issuable_link_class.count }
       end
     end
 
@@ -38,7 +38,7 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(issuable_link_class, :count)
+        expect { subject }.not_to change { issuable_link_class.count }
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'no relationship is created' do
-        expect { subject }.not_to change(issuable_link_class, :count)
+        expect { subject }.not_to change { issuable_link_class.count }
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.shared_examples 'issuable link creation' do
       end
 
       it 'creates relationships' do
-        expect { subject }.to change(issuable_link_class, :count).by(2)
+        expect { subject }.to change { issuable_link_class.count }.by(2)
 
         expect(issuable_link_class.find_by!(target: issuable2)).to have_attributes(source: issuable, link_type: 'relates_to')
         expect(issuable_link_class.find_by!(target: issuable3)).to have_attributes(source: issuable, link_type: 'relates_to')

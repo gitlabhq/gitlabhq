@@ -41,7 +41,9 @@ import { __, s__ } from '~/locale';
 
 export default {
   i18n: {
-    invalid: __('Your CI/CD configuration syntax is invalid. View Lint tab for more details.'),
+    invalid: __(
+      'Your CI/CD configuration syntax is invalid. Select the Validate tab for more details.',
+    ),
     unavailable: __(
       "We're experiencing difficulties and this tab content is currently unavailable.",
     ),

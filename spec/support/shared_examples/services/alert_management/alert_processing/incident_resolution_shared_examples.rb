@@ -14,7 +14,7 @@ RSpec.shared_examples 'closes related incident if enabled' do
     specify do
       expect { Sidekiq::Testing.inline! { subject } }
         .to change { alert.issue.reload.closed? }.from(false).to(true)
-        .and change(ResourceStateEvent, :count).by(1)
+        .and change { ResourceStateEvent.count }.by(1)
     end
   end
 

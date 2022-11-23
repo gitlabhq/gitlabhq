@@ -25,7 +25,7 @@ RSpec.shared_examples 'update highest role with exclusive lease' do
 
       expect(UpdateHighestRoleWorker).to receive(:perform_in).with(described_class::HIGHEST_ROLE_JOB_DELAY, user_id).and_call_original
 
-      expect { subject }.to change(UpdateHighestRoleWorker.jobs, :size).by(1)
+      expect { subject }.to change { UpdateHighestRoleWorker.jobs.size }.by(1)
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.shared_examples 'update highest role with exclusive lease' do
     it 'only schedules one job' do
       stub_exclusive_lease_taken(lease_key, timeout: described_class::HIGHEST_ROLE_LEASE_TIMEOUT)
 
-      expect { subject }.not_to change(UpdateHighestRoleWorker.jobs, :size)
+      expect { subject }.not_to change { UpdateHighestRoleWorker.jobs.size }
     end
   end
 end

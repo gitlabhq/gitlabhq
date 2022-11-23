@@ -29,7 +29,13 @@ export const fetchDiffData = (state, endpoint, category) => {
  */
 export const enrichVulnerabilityWithFeedback = (vulnerability, feedback = []) =>
   feedback
-    .filter((fb) => fb.project_fingerprint === vulnerability.project_fingerprint)
+    .filter((fb) =>
+      // Some records still have a `finding_uuid` with null, we need to fallback to using `project_fingerprint` in those cases. Once all entries have been fixed, we can remove the fallback.
+      // related epic: https://gitlab.com/groups/gitlab-org/-/epics/2791
+      fb.finding_uuid !== null
+        ? fb.finding_uuid === vulnerability.finding_uuid
+        : fb.project_fingerprint === vulnerability.project_fingerprint,
+    )
     .reduce((vuln, fb) => {
       if (fb.feedback_type === FEEDBACK_TYPE_DISMISSAL) {
         return {

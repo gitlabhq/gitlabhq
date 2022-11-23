@@ -12,7 +12,7 @@ RSpec.describe Metrics::Dashboard::SyncDashboardsWorker do
   describe ".perform" do
     context 'with valid dashboard hash' do
       it 'imports metrics' do
-        expect { worker.perform(project.id) }.to change(PrometheusMetric, :count).by(3)
+        expect { worker.perform(project.id) }.to change { PrometheusMetric.count }.by(3)
       end
 
       it 'is idempotent' do
@@ -32,7 +32,7 @@ RSpec.describe Metrics::Dashboard::SyncDashboardsWorker do
       end
 
       it 'does not import metrics' do
-        expect { worker.perform(project.id) }.not_to change(PrometheusMetric, :count)
+        expect { worker.perform(project.id) }.not_to change { PrometheusMetric.count }
       end
 
       it 'does not raise an error' do

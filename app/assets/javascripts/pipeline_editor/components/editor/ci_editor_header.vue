@@ -43,9 +43,7 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-bg-gray-10 gl-display-flex gl-p-3 gl-gap-3 gl-border-solid gl-border-gray-100 gl-border-1"
-  >
+  <div class="gl-display-flex gl-p-3 gl-gap-3 gl-border-solid gl-border-gray-100 gl-border-1">
     <gl-button
       :href="$options.TEMPLATE_REPOSITORY_URL"
       size="small"

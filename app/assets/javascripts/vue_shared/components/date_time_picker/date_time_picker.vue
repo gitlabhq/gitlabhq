@@ -265,7 +265,6 @@ export default {
           <gl-dropdown-item
             v-for="(option, index) in options"
             :key="index"
-            data-qa-selector="quick_range_item"
             :active="isOptionActive(option)"
             active-class="active"
             @click="setQuickRange(option)"

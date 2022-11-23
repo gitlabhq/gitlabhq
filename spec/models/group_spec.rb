@@ -3366,6 +3366,13 @@ RSpec.describe Group do
     end
   end
 
+  describe '#work_items_mvc_feature_flag_enabled?' do
+    it_behaves_like 'checks self and root ancestor feature flag' do
+      let(:feature_flag) { :work_items_mvc }
+      let(:feature_flag_method) { :work_items_mvc_feature_flag_enabled? }
+    end
+  end
+
   describe '#work_items_mvc_2_feature_flag_enabled?' do
     it_behaves_like 'checks self and root ancestor feature flag' do
       let(:feature_flag) { :work_items_mvc_2 }

@@ -67,7 +67,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
             upgrade_status: 'recommended',
             type_type: :instance_type,
             tag_name: ['active_runner'],
-            preload: { tag_name: nil },
+            preload: { tag_name: false },
             search: 'abc',
             sort: 'contacted_asc'
           }
@@ -92,7 +92,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
         let(:expected_params) do
           {
             active: false,
-            preload: { tag_name: nil }
+            preload: { tag_name: false }
           }
         end
 
@@ -112,7 +112,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
         let(:expected_params) do
           {
             active: false,
-            preload: { tag_name: nil }
+            preload: { tag_name: false }
           }
         end
 
@@ -131,7 +131,7 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
 
         let(:expected_params) do
           {
-            preload: { tag_name: nil }
+            preload: { tag_name: false }
           }
         end
 

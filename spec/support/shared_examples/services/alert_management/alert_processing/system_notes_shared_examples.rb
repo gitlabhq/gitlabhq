@@ -19,7 +19,7 @@ RSpec.shared_examples 'creates expected system notes for alert' do |*notes|
   end
 
   it "for #{notes.join(', ')}" do
-    expect { subject }.to change(Note, :count).by(expected_note_count)
+    expect { subject }.to change { Note.count }.by(expected_note_count)
 
     expected_notes.each_value.with_index do |value, index|
       expect(new_notes[index]).to include(value)
@@ -29,6 +29,6 @@ end
 
 RSpec.shared_examples 'does not create a system note for alert' do
   specify do
-    expect { subject }.not_to change(Note, :count)
+    expect { subject }.not_to change { Note.count }
   end
 end

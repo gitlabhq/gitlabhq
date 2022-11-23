@@ -41,7 +41,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
             expect(ContainerRegistry::Migration).to receive(timeout).and_call_original
 
             expect { subject }
-                .to change(import_aborted_migrations, :count).by(1)
+                .to change { import_aborted_migrations.count }.by(1)
                 .and change { stale_migration.reload.migration_state }.to('import_aborted')
                 .and not_change { ongoing_migration.migration_state }
           end
@@ -67,7 +67,7 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
               expect(ContainerRegistry::Migration).to receive(timeout).and_call_original
 
               expect { subject }
-                  .to change(import_skipped_migrations, :count)
+                  .to change { import_skipped_migrations.count }
 
               expect(stale_migration.reload.migration_state).to eq('import_skipped')
               expect(stale_migration.reload.migration_skipped_reason).to eq('migration_canceled')
@@ -124,11 +124,11 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
           expect(worker).to receive(:log_extra_metadata_on_done).with(:aborted_stale_migrations_count, 1)
 
           expect { subject }
-              .to change(pre_importing_migrations, :count).by(-1)
+              .to change { pre_importing_migrations.count }.by(-1)
               .and not_change(pre_import_done_migrations, :count)
               .and not_change(importing_migrations, :count)
               .and not_change(import_done_migrations, :count)
-              .and change(import_aborted_migrations, :count).by(1)
+              .and change { import_aborted_migrations.count }.by(1)
               .and change { stale_migration.reload.migration_state }.from('pre_importing').to('import_aborted')
               .and not_change { ongoing_migration.migration_state }
         end
@@ -223,10 +223,10 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
 
           expect { subject }
               .to not_change(pre_importing_migrations, :count)
-              .and change(pre_import_done_migrations, :count).by(-1)
+              .and change { pre_import_done_migrations.count }.by(-1)
               .and not_change(importing_migrations, :count)
               .and not_change(import_done_migrations, :count)
-              .and change(import_aborted_migrations, :count).by(1)
+              .and change { import_aborted_migrations.count }.by(1)
               .and change { stale_migration.reload.migration_state }.from('pre_import_done').to('import_aborted')
               .and not_change { ongoing_migration.migration_state }
         end
@@ -252,9 +252,9 @@ RSpec.describe ContainerRegistry::Migration::GuardWorker, :aggregate_failures do
           expect { subject }
               .to not_change(pre_importing_migrations, :count)
               .and not_change(pre_import_done_migrations, :count)
-              .and change(importing_migrations, :count).by(-1)
+              .and change { importing_migrations.count }.by(-1)
               .and not_change(import_done_migrations, :count)
-              .and change(import_aborted_migrations, :count).by(1)
+              .and change { import_aborted_migrations.count }.by(1)
               .and change { stale_migration.reload.migration_state }.from('importing').to('import_aborted')
               .and not_change { ongoing_migration.migration_state }
         end

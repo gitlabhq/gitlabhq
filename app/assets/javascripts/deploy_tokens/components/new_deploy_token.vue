@@ -13,27 +13,7 @@ import { createAlert, VARIANT_INFO } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-import { s__ } from '~/locale';
-
-function defaultData() {
-  return {
-    expiresAt: null,
-    name: '',
-    newTokenDetails: null,
-    readRepository: false,
-    writeRepository: false,
-    readRegistry: false,
-    writeRegistry: false,
-    readPackageRegistry: false,
-    writePackageRegistry: false,
-    username: '',
-    placeholders: {
-      link: { link: ['link_start', 'link_end'] },
-      i: { i: ['i_start', 'i_end'] },
-      code: { code: ['code_start', 'code_end'] },
-    },
-  };
-}
+import translations from '../deploy_token_translations';
 
 export default {
   components: {
@@ -72,45 +52,9 @@ export default {
   },
 
   data() {
-    return defaultData();
+    return this.defaultData();
   },
-  translations: {
-    addTokenButton: s__('DeployTokens|Create deploy token'),
-    addTokenExpiryLabel: s__('DeployTokens|Expiration date (optional)'),
-    addTokenExpiryDescription: s__(
-      'DeployTokens|Enter an expiration date for your token. Defaults to never expire.',
-    ),
-    addTokenHeader: s__('DeployTokens|New deploy token'),
-    addTokenDescription: s__(
-      'DeployTokens|Create a new deploy token for all projects in this group. %{link_start}What are deploy tokens?%{link_end}',
-    ),
-    addTokenNameLabel: s__('DeployTokens|Name'),
-    addTokenNameDescription: s__('DeployTokens|Enter a unique name for your deploy token.'),
-    addTokenScopesLabel: s__('DeployTokens|Scopes (select at least one)'),
-    addTokenUsernameDescription: s__(
-      'DeployTokens|Enter a username for your token. Defaults to %{code_start}gitlab+deploy-token-{n}%{code_end}.',
-    ),
-    addTokenUsernameLabel: s__('DeployTokens|Username (optional)'),
-    newTokenCopyMessage: s__('DeployTokens|Copy deploy token'),
-    newProjectTokenCreated: s__('DeployTokens|Your new project deploy token has been created.'),
-    newGroupTokenCreated: s__('DeployTokens|Your new group deploy token has been created.'),
-    newTokenDescription: s__(
-      'DeployTokens|Use this token as a password. Save it. This password can %{i_start}not%{i_end} be recovered.',
-    ),
-    newTokenMessage: s__('DeployTokens|Your New Deploy Token'),
-    newTokenUsernameCopy: s__('DeployTokens|Copy username'),
-    newTokenUsernameDescription: s__(
-      'DeployTokens|This username supports access. %{link_start}What kind of access?%{link_end}',
-    ),
-    readRepositoryHelp: s__('DeployTokens|Allows read-only access to the repository.'),
-    readRegistryHelp: s__('DeployTokens|Allows read-only access to registry images.'),
-    writeRegistryHelp: s__('DeployTokens|Allows read and write access to registry images.'),
-    readPackageRegistryHelp: s__('DeployTokens|Allows read-only access to the package registry.'),
-    writePackageRegistryHelp: s__(
-      'DeployTokens|Allows read and write access to the package registry.',
-    ),
-    createTokenFailedAlert: s__('DeployTokens|Failed to create a new deployment token'),
-  },
+  translations,
   computed: {
     formattedExpiryDate() {
       return this.expiresAt ? formatDate(this.expiresAt, 'yyyy-mm-dd') : '';
@@ -122,20 +66,78 @@ export default {
     },
   },
   methods: {
-    createDeployToken() {
-      return axios
-        .post(this.createNewTokenPath, {
-          deploy_token: {
-            expires_at: this.expiresAt,
-            name: this.name,
-            read_repository: this.readRepository,
-            read_registry: this.readRegistry,
-            write_registry: this.writeRegistry,
-            read_package_registry: this.readPackageRegistry,
-            write_package_registry: this.writePackageRegistry,
-            username: this.username,
+    defaultData() {
+      return {
+        expiresAt: null,
+        name: '',
+        newTokenDetails: null,
+        readRepository: false,
+        writeRepository: false,
+        readRegistry: false,
+        writeRegistry: false,
+        readPackageRegistry: false,
+        writePackageRegistry: false,
+        scopes: [
+          {
+            id: 'deploy_token_read_repository',
+            isShown: true,
+            value: false,
+            helpText: this.$options.translations.readRepositoryHelp,
+            scopeName: 'read_repository',
           },
-        })
+          {
+            id: 'deploy_token_read_registry',
+            isShown: this.$props.containerRegistryEnabled,
+            value: false,
+            helpText: this.$options.translations.readRegistryHelp,
+            scopeName: 'read_registry',
+          },
+          {
+            id: 'deploy_token_write_registry',
+            isShown: this.$props.containerRegistryEnabled,
+            value: false,
+            helpText: this.$options.translations.writeRegistryHelp,
+            scopeName: 'write_registry',
+          },
+          {
+            id: 'deploy_token_read_package_registry',
+            isShown: this.$props.packagesRegistryEnabled,
+            value: false,
+            helpText: this.$options.translations.readPackageRegistryHelp,
+            scopeName: 'read_package_registry',
+          },
+          {
+            id: 'deploy_token_write_package_registry',
+            isShown: this.$props.packagesRegistryEnabled,
+            value: false,
+            helpText: this.$options.translations.writePackageRegistryHelp,
+            scopeName: 'write_package_registry',
+          },
+        ],
+        username: '',
+        placeholders: {
+          link: { link: ['link_start', 'link_end'] },
+          i: { i: ['i_start', 'i_end'] },
+          code: { code: ['code_start', 'code_end'] },
+        },
+      };
+    },
+    createDeployToken() {
+      const scopes = {};
+      this.scopes.forEach((scope) => {
+        scopes[scope.scopeName] = scope.value;
+      });
+      const body = {
+        deploy_token: {
+          expires_at: this.expiresAt,
+          name: this.name,
+          username: this.username,
+          ...scopes,
+        },
+      };
+
+      return axios
+        .post(this.createNewTokenPath, body)
         .then((response) => {
           this.newTokenDetails = response.data;
           this.resetData();
@@ -152,7 +154,7 @@ export default {
         });
     },
     resetData() {
-      const newData = defaultData();
+      const newData = this.defaultData();
       delete newData.newTokenDetails;
       Object.keys(newData).forEach((k) => {
         this[k] = newData[k];
@@ -269,55 +271,19 @@ export default {
     >
       <div id="deploy-token-scopes">
         <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-        <gl-form-checkbox
-          id="deploy_token_read_repository"
-          v-model="readRepository"
-          name="deploy_token_read_repository"
-          data-qa-selector="deploy_token_read_repository_checkbox"
-        >
-          read_repository
-          <template #help>{{ $options.translations.readRepositoryHelp }}</template>
-        </gl-form-checkbox>
-        <gl-form-checkbox
-          v-if="containerRegistryEnabled"
-          id="deploy_token_read_registry"
-          v-model="readRegistry"
-          name="deploy_token_read_registry"
-          data-qa-selector="deploy_token_read_registry_checkbox"
-        >
-          read_registry
-          <template #help>{{ $options.translations.readRegistryHelp }}</template>
-        </gl-form-checkbox>
-        <gl-form-checkbox
-          v-if="containerRegistryEnabled"
-          id="deploy_token_write_registry"
-          v-model="writeRegistry"
-          name="deploy_token_write_registry"
-          data-qa-selector="deploy_token_write_registry_checkbox"
-        >
-          write_registry
-          <template #help>{{ $options.translations.writeRegistryHelp }}</template>
-        </gl-form-checkbox>
-        <gl-form-checkbox
-          v-if="packagesRegistryEnabled"
-          id="deploy_token_read_package_registry"
-          v-model="readPackageRegistry"
-          name="deploy_token_read_package_registry"
-          data-qa-selector="deploy_token_read_package_registry_checkbox"
-        >
-          read_package_registry
-          <template #help>{{ $options.translations.readPackageRegistryHelp }}</template>
-        </gl-form-checkbox>
-        <gl-form-checkbox
-          v-if="packagesRegistryEnabled"
-          id="deploy_token_write_package_registry"
-          v-model="writePackageRegistry"
-          name="deploy_token_write_package_registry"
-          data-qa-selector="deploy_token_write_package_registry_checkbox"
-        >
-          write_package_registry
-          <template #help>{{ $options.translations.writePackageRegistryHelp }}</template>
-        </gl-form-checkbox>
+        <template v-for="scope in scopes">
+          <gl-form-checkbox
+            v-if="scope.isShown"
+            :id="scope.id"
+            :key="scope.id"
+            v-model="scope.value"
+            :name="scope.id"
+            :data-qa-selector="`${scope.id}_checkbox`"
+          >
+            {{ scope.scopeName }}
+            <template #help>{{ scope.helpText }}</template>
+          </gl-form-checkbox>
+        </template>
         <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
       </div>
     </gl-form-group>

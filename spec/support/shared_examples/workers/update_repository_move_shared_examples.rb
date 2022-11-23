@@ -15,7 +15,7 @@ RSpec.shared_examples 'an update storage move worker' do
 
         expect do
           subject.perform(container.id, 'test_second_storage')
-        end.to change(repository_storage_move_klass, :count).by(1)
+        end.to change { repository_storage_move_klass.count }.by(1)
 
         storage_move = container.repository_storage_moves.last
         expect(storage_move).to have_attributes(
@@ -32,7 +32,7 @@ RSpec.shared_examples 'an update storage move worker' do
 
         expect do
           subject.perform(nil, nil, repository_storage_move.id)
-        end.not_to change(repository_storage_move_klass, :count)
+        end.not_to change { repository_storage_move_klass.count }
       end
     end
   end

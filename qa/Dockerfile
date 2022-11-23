@@ -51,8 +51,10 @@ ENTRYPOINT ["bin/test"]
 
 # Add ee files when passing the parameter: `--build-arg QA_BUILD_TARGET=ee`
 FROM foss as ee
-ONBUILD COPY ./ee/app/models/license.rb /home/gitlab/ee/app/models/
-ONBUILD COPY ./ee/config/feature_flags /home/gitlab/ee/config/feature_flags/
+# Copy VERSION to ensure the COPY succeeds to copy at least one file since ee/app/models/license.rb isn't present in FOSS
+# The [b] part makes ./ee/app/models/license.r[b] a pattern that is allowed to return no files (which is the case in FOSS)
+ONBUILD COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
+ONBUILD COPY VERSION ./ee/config/feature_flag[s] /home/gitlab/ee/config/feature_flags/
 
 # Add JH files when passing the parameter: `--build-arg QA_BUILD_TARGET=jhqa`
 FROM ee AS jhqa

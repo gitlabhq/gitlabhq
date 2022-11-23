@@ -16,20 +16,20 @@ RSpec.shared_examples 'backfill migration for project repositories' do |storage|
         projects.create!(name: "foo-#{index}", path: "foo-#{index}", namespace_id: group.id, storage_version: storage_version)
       end
 
-      expect { described_class.new.perform(1, projects.last.id) }.to change(project_repositories, :count).by(2)
+      expect { described_class.new.perform(1, projects.last.id) }.to change { project_repositories.count }.by(2)
     end
 
     it "does nothing for projects on #{storage} storage that have already a project_repository row" do
       projects.create!(id: 1, name: 'foo', path: 'foo', namespace_id: group.id, storage_version: storage_version)
       project_repositories.create!(project_id: 1, disk_path: 'phony/foo/bar', shard_id: shard.id)
 
-      expect { described_class.new.perform(1, projects.last.id) }.not_to change(project_repositories, :count)
+      expect { described_class.new.perform(1, projects.last.id) }.not_to change { project_repositories.count }
     end
 
     it "does nothing for projects on #{storage == :legacy ? 'hashed' : 'legacy'} storage" do
       projects.create!(name: 'foo', path: 'foo', namespace_id: group.id, storage_version: storage == :legacy ? 1 : nil)
 
-      expect { described_class.new.perform(1, projects.last.id) }.not_to change(project_repositories, :count)
+      expect { described_class.new.perform(1, projects.last.id) }.not_to change { project_repositories.count }
     end
 
     it 'inserts rows in a single query' do

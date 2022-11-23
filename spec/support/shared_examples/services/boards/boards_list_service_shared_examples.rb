@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'boards list service' do
   it 'does not create a new board' do
-    expect { service.execute }.not_to change(parent.boards, :count)
+    expect { service.execute }.not_to change { parent.boards.count }
   end
 
   it 'returns parent boards' do

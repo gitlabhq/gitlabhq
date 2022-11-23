@@ -5,7 +5,7 @@ RSpec.shared_examples_for 'issuable update service updating last_edited_at value
     let(:update_params) { { title: 'updated title' } }
 
     it 'does not update last_edited values' do
-      expect { update_issuable }.to change(issuable, :title).from(issuable.title).to('updated title').and(
+      expect { update_issuable }.to change { issuable.title }.from(issuable.title).to('updated title').and(
         not_change(issuable, :last_edited_at)
       ).and(
         not_change(issuable, :last_edited_by)
@@ -19,10 +19,10 @@ RSpec.shared_examples_for 'issuable update service updating last_edited_at value
     it 'updates last_edited values' do
       expect do
         update_issuable
-      end.to change(issuable, :description).from(issuable.description).to('updated description').and(
-        change(issuable, :last_edited_at)
+      end.to change { issuable.description }.from(issuable.description).to('updated description').and(
+        change { issuable.last_edited_at }
       ).and(
-        change(issuable, :last_edited_by)
+        change { issuable.last_edited_by }
       )
     end
   end

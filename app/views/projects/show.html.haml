@@ -25,8 +25,5 @@
 
 - view_path = @project.default_view
 
-- if show_auto_devops_callout?(@project)
-  = render 'shared/auto_devops_callout'
-
 %div{ class: project_child_container_class(view_path) }
   = render view_path, is_project_overview: true

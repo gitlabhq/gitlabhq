@@ -12,7 +12,7 @@ RSpec.shared_examples 'housekeeps repository' do
         expect(resource.git_garbage_collect_worker_klass).to receive(:perform_async).with(resource.id, :incremental_repack, :the_lease_key, :the_uuid).and_call_original
 
         Sidekiq::Testing.fake! do
-          expect { subject.execute }.to change(resource.git_garbage_collect_worker_klass.jobs, :size).by(1)
+          expect { subject.execute }.to change { resource.git_garbage_collect_worker_klass.jobs.size }.by(1)
         end
       end
 

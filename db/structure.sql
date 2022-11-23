@@ -17648,7 +17648,8 @@ CREATE TABLE merge_request_predictions (
     merge_request_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    suggested_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL
+    suggested_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL,
+    accepted_reviewers jsonb DEFAULT '{}'::jsonb NOT NULL
 );
 
 CREATE SEQUENCE merge_request_predictions_merge_request_id_seq
@@ -31145,8 +31146,6 @@ CREATE INDEX index_vulnerabilities_on_project_id_and_state_and_severity ON vulne
 CREATE INDEX index_vulnerabilities_on_resolved_by_id ON vulnerabilities USING btree (resolved_by_id);
 
 CREATE INDEX index_vulnerabilities_on_start_date_sourcing_milestone_id ON vulnerabilities USING btree (start_date_sourcing_milestone_id);
-
-CREATE INDEX index_vulnerabilities_on_state_case_id ON vulnerabilities USING btree (array_position(ARRAY[(1)::smallint, (4)::smallint, (3)::smallint, (2)::smallint], state), id DESC);
 
 CREATE INDEX index_vulnerabilities_on_state_case_id_desc ON vulnerabilities USING btree (array_position(ARRAY[(1)::smallint, (4)::smallint, (3)::smallint, (2)::smallint], state) DESC, id DESC);
 
