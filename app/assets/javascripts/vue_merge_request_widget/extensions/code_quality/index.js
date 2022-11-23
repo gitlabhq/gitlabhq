@@ -1,7 +1,7 @@
 import { n__, s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
-import { SEVERITY_ICONS_EXTENSION } from '~/reports/codequality_report/constants';
+import { SEVERITY_ICONS_MR_WIDGET } from '~/reports/codequality_report/constants';
 import { parseCodeclimateMetrics } from '~/reports/codequality_report/store/utils/codequality_parser';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
@@ -86,7 +86,7 @@ export default {
             href: e.urlPath,
           },
           icon: {
-            name: SEVERITY_ICONS_EXTENSION[e.severity],
+            name: SEVERITY_ICONS_MR_WIDGET[e.severity],
           },
         });
       });
@@ -100,7 +100,7 @@ export default {
             href: e.urlPath,
           },
           icon: {
-            name: SEVERITY_ICONS_EXTENSION[e.severity],
+            name: SEVERITY_ICONS_MR_WIDGET[e.severity],
           },
         });
       });

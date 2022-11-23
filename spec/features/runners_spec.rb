@@ -117,11 +117,27 @@ RSpec.describe 'Runners' do
         it 'user sees CI/CD setting page' do
           visit project_runners_path(project)
 
-          expect(page.find('.available-shared-runners')).to have_content(shared_runner.display_name)
+          within '[data-testid="available-shared-runners"]' do
+            expect(page).to have_content(shared_runner.display_name)
+          end
+        end
+
+        context 'when multiple shared runners are configured' do
+          let!(:shared_runner_2) { create(:ci_runner, :instance) }
+
+          it 'adds pagination to the shared runner list' do
+            stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
+
+            visit project_runners_path(project)
+
+            within '[data-testid="available-shared-runners"]' do
+              expect(find('.pagination')).not_to be_nil
+            end
+          end
         end
       end
 
-      context 'when multiple runners are configured' do
+      context 'when multiple project runners are configured' do
         let!(:project_runner_2) { create(:ci_runner, :project, projects: [project]) }
 
         it 'adds pagination to the runner list' do

@@ -1,9 +1,20 @@
 <script>
+import { darkModeEnabled } from '~/lib/utils/color_utils';
+import { setUrlParams } from '~/lib/utils/url_utility';
+
 export default {
   props: {
     observabilityIframeSrc: {
       type: String,
       required: true,
+    },
+  },
+  computed: {
+    iframeSrcWithParams() {
+      return setUrlParams(
+        { theme: darkModeEnabled() ? 'dark' : 'light', username: gon?.current_username },
+        this.observabilityIframeSrc,
+      );
     },
   },
   mounted() {
@@ -37,6 +48,6 @@ export default {
     data-testid="observability-ui-iframe"
     frameborder="0"
     height="100%"
-    :src="observabilityIframeSrc"
+    :src="iframeSrcWithParams"
   ></iframe>
 </template>

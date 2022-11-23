@@ -167,30 +167,5 @@ If you do not have the Maintainer role to perform this task, ask for help in the
 
 ## Docker files
 
-The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/) contains all needed
-Dockerfiles to build and deploy <https://docs.gitlab.com>. It is heavily inspired by Docker's
-[Dockerfile](https://github.com/docker/docker.github.io/blob/06ed03db13895bfe867761b6fc2ad40acf6026dd/Dockerfile).
-
-| Dockerfile                                                                                                                 | Docker image                  | Description                                                                                                                                                                                                                                                                           |
-|:---------------------------------------------------------------------------------------------------------------------------|:------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [`bootstrap.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/bootstrap.Dockerfile)             | `gitlab-docs:bootstrap`       | Contains all the dependencies that are needed to build the website. If the gems are updated and `Gemfile{,.lock}` changes, the image must be rebuilt.                                                                                                                                 |
-| [`builder.onbuild.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/builder.onbuild.Dockerfile) | `gitlab-docs:builder-onbuild` | Base image to build the docs website. It uses `ONBUILD` to perform all steps and depends on `gitlab-docs:bootstrap`.                                                                                                                                                                  |
-| [`nginx.onbuild.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/nginx.onbuild.Dockerfile)     | `gitlab-docs:nginx-onbuild`   | Base image to use for building documentation archives. It uses `ONBUILD` to perform all required steps to copy the archive, and relies upon its parent `Dockerfile.builder.onbuild` that is invoked when building single documentation archives (see the `Dockerfile` of each branch) |
-| [`archives.Dockerfile`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/dockerfiles/archives.Dockerfile)               | `gitlab-docs:archives`        | Contains all the versions of the website in one archive. It copies all generated HTML files from every version in one location.                                                                                                                                                       |
-
-### How to build the images
-
-Although build images are built automatically via GitLab CI/CD, you can build and tag all tooling images locally:
-
-1. Make sure you have [Docker installed](https://docs.docker.com/get-docker/).
-1. Make sure you're in the `dockerfiles/` directory of the `gitlab-docs` repository.
-1. Build the images:
-
-   ```shell
-   docker build -t registry.gitlab.com/gitlab-org/gitlab-docs:bootstrap -f Dockerfile.bootstrap ../
-   docker build -t registry.gitlab.com/gitlab-org/gitlab-docs:builder-onbuild -f Dockerfile.builder.onbuild ../
-   docker build -t registry.gitlab.com/gitlab-org/gitlab-docs:nginx-onbuild -f Dockerfile.nginx.onbuild ../
-   ```
-
-For each image, there's a manual job under the `images` stage in
-[`.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab-docs/blob/main/.gitlab-ci.yml) which can be invoked at any time.
+The [`dockerfiles` directory](https://gitlab.com/gitlab-org/gitlab-docs/-/tree/main/dockerfiles) contains Dockerfiles needed
+to build, test, and deploy <https://docs.gitlab.com>.

@@ -175,95 +175,7 @@ When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include a 
 
 ### API scan
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/10928) in GitLab 12.10.
-> - A new DAST API scanning engine was introduced in GitLab 13.10.
-
-Using an API specification as a scan's target is a useful way to seed URLs for scanning an API.
-Vulnerability rules in an API scan are different than those in a normal website scan.
-
-A new DAST API scanning engine is available in GitLab 13.12 and later. For more details, see [DAST API scanning engine](../dast_api). The new scanning engine supports REST, SOAP, GraphQL, and generic APIs using forms, XML, and JSON. Testing can be performed using OpenAPI, Postman Collections, and HTTP Archive (HAR) documents.
-
-The target API instance's base URL is provided by using the `DAST_API_TARGET_URL` variable or an `environment_url.txt` file.
-
-#### Specification format
-
-API scans support OpenAPI V2 and OpenAPI V3 specifications. You can define these specifications using `JSON` or `YAML`.
-
-#### Import API specification from a URL
-
-If your API specification is accessible at a URL, you can pass that URL in directly as the target.
-The specification does not have to be hosted on the same host as the API being tested.
-
-```yaml
-include:
-  - template: DAST-API.gitlab-ci.yml
-
-variables:
-  DAST_API_SPECIFICATION: http://my.api/api-specification.yml
-```
-
-#### Import API specification from a file
-
-If your API specification file is in your repository, you can provide its filename as the target.
-
-```yaml
-dast:
-  variables:
-    GIT_STRATEGY: fetch
-    DAST_API_SPECIFICATION: api-specification.yml
-```
-
-#### Full API scan
-
-API scans support full scanning, which can be enabled by using the `DAST_FULL_SCAN_ENABLED`
-CI/CD variable. Domain validation is not supported for full API scans.
-
-#### Host override
-
-Specifications often define a host, which contains a domain name and a port. The
-host referenced may be different than the host of the API's review instance.
-This can cause incorrect URLs to be imported, or a scan on an incorrect host.
-Use the `DAST_API_HOST_OVERRIDE` CI/CD variable to override these values.
-
-WARNING:
-When using the API host override feature, you cannot use the `$DAST_WEBSITE` variable to override the hostname.
-A host override is _only_ supported when importing the API specification from a URL. Attempts to override the
-host throw an error when the API specification is imported from a file. This is due to a limitation in the
-ZAP OpenAPI extension.
-
-For example, with a OpenAPI V3 specification containing:
-
-```yaml
-servers:
-  - url: https://api.host.com
-```
-
-If the test version of the API is running at `https://api-test.host.com`, then
-the following DAST configuration can be used:
-
-```yaml
-include:
-  - template: DAST-API.gitlab-ci.yml
-
-variables:
-  DAST_API_SPECIFICATION: http://api-test.host.com/api-specification.yml
-  DAST_API_HOST_OVERRIDE: api-test.host.com
-```
-
-#### Authentication using headers
-
-Tokens in request headers are often used as a way to authenticate API requests.
-You can achieve this by using the `DAST_REQUEST_HEADERS` CI/CD variable.
-Headers are applied to every request DAST makes.
-
-```yaml
-include:
-  - template: DAST-API.gitlab-ci.yml
-
-variables:
-  DAST_API_SPECIFICATION: http://api-test.api.com/api-specification.yml
-  DAST_REQUEST_HEADERS: "Authorization: Bearer my.token"
-```
+- The [DAST API analyzer](../dast_api/index.md) is used for scanning web APIs. Web API technologies such as GraphQL, REST, and SOAP are supported.
 
 ### URL scan
 
@@ -437,11 +349,11 @@ including a large number of false positives.
 |:-------------------------------------------------|:--------------|:------------------------------|
 | `DAST_ADVERTISE_SCAN`                            | boolean       | Set to `true` to add a `Via` header to every request sent, advertising that the request was sent as part of a GitLab DAST scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334947) in GitLab 14.1. |
 | `DAST_AGGREGATE_VULNERABILITIES`                 | boolean       | Vulnerability aggregation is set to `true` by default. To disable this feature and see each vulnerability individually set to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254043) in GitLab 14.0. |
-| `DAST_API_HOST_OVERRIDE` <sup>1</sup>            | string        | Used to override domains defined in API specification files. Only supported when importing the API specification from a URL. Example: `example.com:8080`. |
-| `DAST_API_SPECIFICATION` <sup>1</sup>            | URL or string | The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. The variable `DAST_WEBSITE` must be specified if this is omitted. |
+| `DAST_API_HOST_OVERRIDE` <sup>1</sup>            | string        | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 15.7. Replaced by [DAST API scan](../dast_api/index.md#available-cicd-variables). Used to override domains defined in API specification files. Only supported when importing the API specification from a URL. Example: `example.com:8080`. |
+| `DAST_API_SPECIFICATION` <sup>1</sup>            | URL or string | **{warning}** **[Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/383467)** in GitLab 15.7. Replaced by [DAST API scan](../dast_api/index.md#available-cicd-variables). The API specification to import. The specification can be hosted at a URL, or the name of a file present in the `/zap/wrk` directory. The variable `DAST_WEBSITE` must be specified if this is omitted. |
 | `DAST_AUTH_REPORT` <sup>2</sup>                  | boolean       | Used in combination with exporting the `gl-dast-debug-auth-report.html` artifact to aid in debugging authentication issues. |
-| `DAST_AUTH_EXCLUDE_URLS` <sup>2</sup>            | URLs          | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289959)** in GitLab 14.0. Replaced by `DAST_EXCLUDE_URLS`. The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. |
-| `DAST_AUTH_URL` <sup>1,2</sup>                   | URL           | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Not supported for API scans. Example: `https://login.example.com`. |
+| `DAST_AUTH_EXCLUDE_URLS` <sup>2</sup>            | URLs          | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/289959)** in GitLab 14.0. Replaced by `DAST_EXCLUDE_URLS`. The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. |
+| `DAST_AUTH_URL` <sup>1,2</sup>                   | URL           | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Example: `https://login.example.com`. |
 | `DAST_AUTH_VERIFICATION_LOGIN_FORM` <sup>2</sup> | boolean       | Verifies successful authentication by checking for the lack of a login form once the login form has been submitted. |
 | `DAST_AUTH_VERIFICATION_SELECTOR` <sup>2</sup>   | selector      | Verifies successful authentication by checking for presence of a selector once the login form has been submitted. Example: `css:.user-photo`. |
 | `DAST_AUTH_VERIFICATION_URL` <sup>1,2</sup>      | URL           | A URL only accessible to logged in users that DAST can use to confirm successful authentication. If provided, DAST exits if it cannot access the URL. Example: `"http://example.com/loggedin_page"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207335) in GitLab 13.8. |
@@ -449,9 +361,9 @@ including a large number of false positives.
 | `DAST_BROWSER_PATH_TO_LOGIN_FORM` <sup>1,2</sup> | selector      | Comma-separated list of selectors that are selected prior to attempting to enter `DAST_USERNAME` and `DAST_PASSWORD` into the login form. Example: `"css:.navigation-menu,css:.login-menu-item"`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326633) in GitLab 14.1. |
 | `DAST_DEBUG` <sup>1</sup>                        | boolean       | Enable debug message output. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_EXCLUDE_RULES`                             | string        | Set to a comma-separated list of Vulnerability Rule IDs to exclude them from running during the scan. Rule IDs are numbers and can be found from the DAST log or on the [ZAP project](https://www.zaproxy.org/docs/alerts/). For example, `HTTP Parameter Override` has a rule ID of `10026`. Cannot be used when `DAST_ONLY_INCLUDE_RULES` is set. **Note:** In earlier versions of GitLab the excluded rules were executed but vulnerabilities they generated were suppressed. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/118641) in GitLab 12.10. |
-| `DAST_EXCLUDE_URLS` <sup>1,2</sup>               | URLs          | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Not supported for API scans. Example, `http://example.com/sign-out`. |
+| `DAST_EXCLUDE_URLS` <sup>1,2</sup>               | URLs          | The URLs to skip during the authenticated scan; comma-separated. Regular expression syntax can be used to match multiple URLs. For example, `.*` matches an arbitrary character sequence. Example, `http://example.com/sign-out`. |
 | `DAST_FIRST_SUBMIT_FIELD` <sup>2</sup>           | string        | The `id` or `name` of the element that when selected submits the username form of a multi-page login process. For example, `css:button[type='user-submit']`. [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/9894) in GitLab 12.4. |
-| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED`      | boolean       | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293595)** in GitLab 14.0. Set to `true` to require domain validation when running DAST full scans. Not supported for API scans. Default: `false` |
+| `DAST_FULL_SCAN_DOMAIN_VALIDATION_REQUIRED`      | boolean       | **{warning}** **[Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/293595)** in GitLab 14.0. Set to `true` to require domain validation when running DAST full scans. Default: `false` |
 | `DAST_FULL_SCAN_ENABLED` <sup>1</sup>            | boolean       | Set to `true` to run a [ZAP Full Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Full-Scan) instead of a [ZAP Baseline Scan](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan). Default: `false` |
 | `DAST_HTML_REPORT`                               | string        | The filename of the HTML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_INCLUDE_ALPHA_VULNERABILITIES`             | boolean       | Set to `true` to include alpha passive and active scan rules. Default: `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
@@ -475,7 +387,7 @@ including a large number of false positives.
 | `DAST_USERNAME` <sup>1,2</sup>                   | string        | The username to authenticate to in the website. Example: `admin` |
 | `DAST_USERNAME_FIELD` <sup>1,2</sup>             | string        | The selector of username field at the sign-in HTML form. Example: `name:username` |
 | `DAST_XML_REPORT`                                | string        | The filename of the XML report written at the end of a scan. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
-| `DAST_WEBSITE` <sup>1</sup>                      | URL           | The URL of the website to scan. The variable `DAST_API_SPECIFICATION` must be specified if this is omitted. |
+| `DAST_WEBSITE` <sup>1</sup>                      | URL           | The URL of the website to scan. |
 | `DAST_ZAP_CLI_OPTIONS`                           | string        | ZAP server command-line options. For example, `-Xmx3072m` would set the Java maximum memory allocation pool size. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/12652) in GitLab 13.1. |
 | `DAST_ZAP_LOG_CONFIGURATION`                     | string        | Set to a semicolon-separated list of additional log4j properties for the ZAP Server. Example: `logger.httpsender.name=org.parosproxy.paros.network.HttpSender;logger.httpsender.level=debug;logger.sitemap.name=org.parosproxy.paros.model.SiteMap;logger.sitemap.level=debug;` |
 | `SECURE_ANALYZERS_PREFIX`                        | URL           | Set the Docker registry base address from which to download the analyzer. |
@@ -987,7 +899,7 @@ A site profile contains:
 - **Scan method**: A type of method to perform API testing. The supported methods are OpenAPI, Postman Collections, and HTTP Archive (HAR) documents.
 - **File URL**: The URL of the OpenAPI, Postman Collection, or HTTP Archive file.
 
-When an API site type is selected, a [host override](#host-override) is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
+When an API site type is selected, a host override is used to ensure the API being scanned is on the same host as the target. This is done to reduce the risk of running an active scan against the wrong API.
 
 When configured, request headers and password fields are encrypted using [`aes-256-gcm`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) before being stored in the database.
 This data can only be read and decrypted with a valid secrets file.

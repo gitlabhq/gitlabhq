@@ -1,5 +1,8 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ObservabilityApp from '~/observability/components/observability_app.vue';
+import { darkModeEnabled } from '~/lib/utils/color_utils';
+
+jest.mock('~/lib/utils/color_utils');
 
 describe('Observability root app', () => {
   let wrapper;
@@ -32,11 +35,34 @@ describe('Observability root app', () => {
     wrapper.destroy();
   });
 
-  it('should render an iframe with observabilityIframeSrc as src', () => {
-    mountComponent();
-    const iframe = findIframe();
-    expect(iframe.exists()).toBe(true);
-    expect(iframe.attributes('src')).toBe(TEST_IFRAME_SRC);
+  describe('iframe src', () => {
+    const TEST_USERNAME = 'test-user';
+
+    beforeAll(() => {
+      gon.current_username = TEST_USERNAME;
+    });
+
+    it('should render an iframe with observabilityIframeSrc, decorated with light theme and username', () => {
+      darkModeEnabled.mockReturnValueOnce(false);
+      mountComponent();
+      const iframe = findIframe();
+
+      expect(iframe.exists()).toBe(true);
+      expect(iframe.attributes('src')).toBe(
+        `${TEST_IFRAME_SRC}&theme=light&username=${TEST_USERNAME}`,
+      );
+    });
+
+    it('should render an iframe with observabilityIframeSrc decorated with dark theme and username', () => {
+      darkModeEnabled.mockReturnValueOnce(true);
+      mountComponent();
+      const iframe = findIframe();
+
+      expect(iframe.exists()).toBe(true);
+      expect(iframe.attributes('src')).toBe(
+        `${TEST_IFRAME_SRC}&theme=dark&username=${TEST_USERNAME}`,
+      );
+    });
   });
 
   it('should not call replace method from vue router if message event does not have url', () => {

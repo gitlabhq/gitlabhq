@@ -1,8 +1,0 @@
----
-name: indifferent_wal_location_keys
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101096
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/377989
-milestone: '15.5'
-type: development
-group: group::source code
-default_enabled: false

@@ -4,71 +4,53 @@
 
 # rubocop:disable Rails/Pluck, Layout/LineLength, RSpec/MultipleMemoizedHelpers
 module QA
-  RSpec.describe "Manage", requires_admin: 'creates users', only: { job: 'large-gitlab-import' } do
-    describe "Gitlab migration", product_group: :import do
-      let(:logger) { Runtime::Logger.logger }
-      let(:differ) { RSpec::Support::Differ.new(color: true) }
-      let(:gitlab_group) { ENV['QA_LARGE_IMPORT_GROUP'] || 'gitlab-migration' }
-      let(:gitlab_project) { ENV['QA_LARGE_IMPORT_REPO'] || 'dri' }
-      let(:gitlab_source_address) { ENV['QA_LARGE_IMPORT_SOURCE_URL'] || 'https://staging.gitlab.com' }
+  RSpec.describe "Manage", only: { job: "large-gitlab-import" } do
+    describe "Gitlab migration", orchestrated: false, product_group: :import do
+      include_context "with gitlab group migration"
 
-      let(:import_wait_duration) do
+      let!(:logger) { Runtime::Logger.logger }
+      let!(:differ) { RSpec::Support::Differ.new(color: true) }
+      let!(:source_gitlab_address) { ENV["QA_LARGE_IMPORT_SOURCE_URL"] || "https://gitlab.com" }
+      let!(:gitlab_source_group) { ENV["QA_LARGE_IMPORT_GROUP"] || "gitlab-migration-large-import-test" }
+      let!(:gitlab_source_project) { ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
+
+      let!(:import_wait_duration) do
         {
-          max_duration: (ENV['QA_LARGE_IMPORT_DURATION'] || 3600).to_i,
+          max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i,
           sleep_interval: 30
         }
       end
 
-      let(:admin_api_client) { Runtime::API::Client.as_admin }
-
-      # explicitly create PAT via api to not create it via UI in environments where admin token env var is not present
-      let(:target_api_client) do
+      let!(:source_admin_user) { "no-op" }
+      let!(:source_admin_api_client) do
         Runtime::API::Client.new(
-          user: user,
-          personal_access_token: Resource::PersonalAccessToken.fabricate_via_api! do |pat|
-            pat.api_client = admin_api_client
-          end.token
-        )
-      end
-
-      let(:user) do
-        Resource::User.fabricate_via_api! do |usr|
-          usr.api_client = admin_api_client
-        end
-      end
-
-      let(:source_api_client) do
-        Runtime::API::Client.new(
-          gitlab_source_address,
-          personal_access_token: ENV["QA_LARGE_IMPORT_GL_TOKEN"],
+          source_gitlab_address,
+          personal_access_token: ENV["QA_LARGE_IMPORT_GL_TOKEN"] || raise("missing QA_LARGE_IMPORT_GL_TOKEN variable"),
           is_new_session: false
         )
       end
 
-      let(:sandbox) do
-        Resource::Sandbox.fabricate_via_api! do |group|
-          group.api_client = admin_api_client
-        end
-      end
+      # alias api client because for large import test it's not an actual admin user
+      let!(:source_api_client) { source_admin_api_client }
 
-      let(:destination_group) do
-        Resource::Group.fabricate_via_api! do |group|
-          group.api_client = admin_api_client
-          group.sandbox = sandbox
-          group.path = "imported-group-destination-#{SecureRandom.hex(4)}"
-        end
-      end
-
-      # Source group and it's objects
-      #
-      let(:source_group) do
+      let!(:source_group) do
         Resource::Sandbox.fabricate_via_api! do |group|
           group.api_client = source_api_client
-          group.path = gitlab_group
+          group.path = gitlab_source_group
         end
       end
 
-      let(:source_project) { source_group.projects.find { |project| project.name.include?(gitlab_project) }.reload! }
+      # generate unique target group because source group has a static name
+      let!(:target_sandbox) do
+        Resource::Sandbox.fabricate_via_api! do |group|
+          group.api_client = admin_api_client
+          group.path = "qa-sandbox-#{SecureRandom.hex(4)}"
+        end
+      end
+
+      # Source objects
+      #
+      let(:source_project) { source_group.projects.find { |project| project.name.include?(gitlab_source_project) }.reload! }
       let(:source_branches) { source_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:source_commits) { source_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
@@ -77,38 +59,25 @@ module QA
       let(:source_mrs) { fetch_mrs(source_project, source_api_client) }
       let(:source_issues) { fetch_issues(source_project, source_api_client) }
 
-      # Imported group and it's objects
+      # Imported objects
       #
-      let(:imported_group) do
-        Resource::BulkImportGroup.fabricate_via_api! do |group|
-          group.import_access_token = source_api_client.personal_access_token # token for importing on source instance
-          group.api_client = target_api_client # token used by qa framework to access resources in destination instance
-          group.gitlab_address = gitlab_source_address
-          group.source_group = source_group
-          group.sandbox = destination_group
-        end
-      end
-
-      let(:imported_project) { imported_group.projects.find { |project| project.name.include?(gitlab_project) }.reload! }
+      let(:imported_project) { imported_group.projects.find { |project| project.name.include?(gitlab_source_project) }.reload! }
       let(:branches) { imported_project.repository_branches(auto_paginate: true).map { |b| b[:name] } }
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
       let(:pipelines) { imported_project.pipelines.map { |pp| pp.except(:id, :web_url, :project_id) } }
-      let(:mrs) { fetch_mrs(imported_project, target_api_client) }
-      let(:issues) { fetch_issues(imported_project, target_api_client) }
+      let(:mrs) { fetch_mrs(imported_project, api_client) }
+      let(:issues) { fetch_issues(imported_project, api_client) }
 
       let(:import_failures) { imported_group.import_details.sum([]) { |details| details[:failures] } }
 
       before do
-        destination_group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
+        Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
       end
 
       # rubocop:disable RSpec/InstanceVariable
       after do |example|
-        # Log failures for easier debugging
-        Runtime::Logger.error("Import failures: #{import_failures}") if example.exception && !import_failures.empty?
-
         next unless defined?(@import_time)
 
         # save data for comparison notification creation
@@ -121,7 +90,7 @@ module QA
             source: {
               name: "GitLab Source",
               project_name: source_project.path_with_namespace,
-              address: gitlab_source_address,
+              address: source_gitlab_address,
               data: {
                 branches: source_branches.length,
                 commits: source_commits.length,
@@ -163,7 +132,7 @@ module QA
         start = Time.now
 
         # trigger import and log imported group path
-        logger.info("== Importing group '#{gitlab_group}' in to '#{imported_group.full_path}' ==")
+        logger.info("== Importing group '#{gitlab_source_group}' in to '#{imported_group.full_path}' ==")
 
         # fetch all objects right after import has started
         fetch_source_gitlab_objects

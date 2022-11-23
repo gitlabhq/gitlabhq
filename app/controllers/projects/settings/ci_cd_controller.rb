@@ -122,9 +122,9 @@ module Projects
           .page(params[:specific_page]).per(NUMBER_OF_RUNNERS_PER_PAGE)
           .with_tags
 
-        @shared_runners = ::Ci::Runner.instance_type.active.with_tags
-
-        @shared_runners_count = @shared_runners.count(:all)
+        active_shared_runners = ::Ci::Runner.instance_type.active
+        @shared_runners_count = active_shared_runners.count(:all)
+        @shared_runners = active_shared_runners.page(params[:shared_runners_page]).per(NUMBER_OF_RUNNERS_PER_PAGE).with_tags
 
         @group_runners = ::Ci::Runner.belonging_to_parent_group_of_project(@project.id).with_tags
       end

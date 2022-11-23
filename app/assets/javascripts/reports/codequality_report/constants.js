@@ -16,12 +16,7 @@ export const SEVERITY_ICONS = {
   unknown: 'severity-unknown',
 };
 
-// This is the icons mapping for the code Quality Merge-Request Widget Extension
-// once the refactor_mr_widgets_extensions flag is activated the above SEVERITY_ICONS
-// need be removed and this variable needs to be rename to SEVERITY_ICONS
-// Rollout Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/341759
-
-export const SEVERITY_ICONS_EXTENSION = {
+export const SEVERITY_ICONS_MR_WIDGET = {
   info: 'severityInfo',
   minor: 'severityLow',
   major: 'severityMedium',

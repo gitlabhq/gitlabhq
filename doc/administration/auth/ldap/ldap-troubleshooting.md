@@ -831,6 +831,38 @@ ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
 The `bind_dn`, `password`, `port`, `host`, and `base` are all
 identical to what's configured in the `gitlab.rb`.
 
+#### Use ldapsearch with `start_tls` encryption
+
+The previous example performs an LDAP test in plaintext to port 389. If you are using [`start_tls` encryption](index.md#basic-configuration-settings), in
+the `ldapsearch` command include:
+
+- The `-Z` flag.
+- The FQDN of the LDAP server.
+
+You must include these because, during TLS negotiation, the FQDN of the LDAP server is evaluated against its certificate:
+
+```shell
+ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
+  -w Password1 \
+  -p 389 \
+  -h "testing.ldap.com" \
+  -b "dc=ldap-testing,dc=example,dc=com" -Z
+```
+
+#### Use ldapsearch with `simple_tls` encryption
+
+If you are using [`simple_tls` encryption](index.md#basic-configuration-settings) (usually on port 636), include the following in the `ldapsearch` command:
+
+- The LDAP server FQDN with the `-H` flag and the port.
+- The full constructed URI.
+
+```shell
+ldapsearch -D "cn=admin,dc=ldap-testing,dc=example,dc=com" \
+  -w Password1 \
+  -H "ldaps://testing.ldap.com:636" \
+  -b "dc=ldap-testing,dc=example,dc=com"
+```
+
 For more information, see the [official `ldapsearch` documentation](https://linux.die.net/man/1/ldapsearch).
 
 ### Using **AdFind** (Windows)

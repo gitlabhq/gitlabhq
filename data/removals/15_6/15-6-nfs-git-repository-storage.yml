@@ -1,0 +1,29 @@
+- title: "NFS as Git repository storage is no longer supported. Migrate to Gitaly Cluster as soon as possible"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
+  announcement_milestone: "14.0"  # The milestone when this feature was first announced as deprecated.
+  announcement_date: "2021-06-22"  # The date of the milestone release when this feature was first announced as deprecated
+  removal_milestone: "15.6"  # The milestone when this feature is planned to be removed
+  removal_date: "2022-11-22"  # (optional - may be required in the future) YYYY-MM-DD format - the date of the milestone release when this feature is planned to be removed
+  breaking_change: false  # (required) Change to true if this removal is a breaking change.
+  reporter: mjwood  # (required) GitLab username of the person reporting the removal
+  stage: create  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/351243
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    As of November 22, 2022, we are removing support for customers utilizing NFS for Git repository storage. This was originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we chose to extend our removal of support date until now. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs) for further information.
+
+    This change in support follows the development deprecation for NFS for Git repository storage that occurred in GitLab 14.0.
+
+    Gitaly Cluster offers tremendous benefits for our customers such as:
+
+    - [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
+    - [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
+    - [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
+
+    We encourage customers currently using NFS for Git repositories to migrate as soon as possible by reviewing our documentation on
+    [migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
+#
+# OPTIONAL FIELDS
+#
+  tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  documentation_url:  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

@@ -58,6 +58,17 @@ To view instance audit events:
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
 
+## Time zones
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/242014) in GitLab 15.7, GitLab UI shows dates and times in the user's local time zone instead of UTC.
+
+The time zone used for audit events depends on where you view them:
+
+- In GitLab UI, your local time zone (GitLab 15.6 and later) or UTC (GitLab 15.5 and earlier) is used.
+- The [Audit Events API](../api/audit_events.md) returns dates and times in UTC by default, or the [configured time zone](timezone.md) on a self-managed GitLab instance.
+- In `audit_json.log`, UTC is used.
+- In CSV exports, UTC is used.
+
 ## List of events
 
 You can view different events depending on the version of GitLab you have.
@@ -315,7 +326,7 @@ The first row contains the headers, which are listed in the following table alon
 | Target Details | Details of the target |
 | Action | Description of the action |
 | IP Address | IP address of the author who performed the action |
-| Created At (UTC) | Formatted as `YYYY-MM-DD HH:MM:SS` |
+| Created At (UTC) | Date (in ISO 8601 format) that the audit event was created. |
 
 ### Limitation
 

@@ -46,6 +46,23 @@ To change the approvals required for a merge request, you should no longer use t
 
 Instead, use the [`/approval_rules` endpoint](https://docs.gitlab.com/ee/api/merge_request_approvals.html#merge-request-level-mr-approvals) to [create](https://docs.gitlab.com/ee/api/merge_request_approvals.html#create-merge-request-level-rule) or [update](https://docs.gitlab.com/ee/api/merge_request_approvals.html#update-merge-request-level-rule) the approval rules for a merge request.
 
+## Removed in 15.6
+
+### NFS as Git repository storage is no longer supported. Migrate to Gitaly Cluster as soon as possible
+
+As of November 22, 2022, we are removing support for customers utilizing NFS for Git repository storage. This was originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we chose to extend our removal of support date until now. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs) for further information.
+
+This change in support follows the development deprecation for NFS for Git repository storage that occurred in GitLab 14.0.
+
+Gitaly Cluster offers tremendous benefits for our customers such as:
+
+- [Variable replication factors](https://docs.gitlab.com/ee/administration/gitaly/index.html#replication-factor).
+- [Strong consistency](https://docs.gitlab.com/ee/administration/gitaly/index.html#strong-consistency).
+- [Distributed read capabilities](https://docs.gitlab.com/ee/administration/gitaly/index.html#distributed-reads).
+
+We encourage customers currently using NFS for Git repositories to migrate as soon as possible by reviewing our documentation on
+[migrating to Gitaly Cluster](https://docs.gitlab.com/ee/administration/gitaly/index.html#migrate-to-gitaly-cluster).
+
 ## Removed in 15.4
 
 ### SAST analyzer consolidation and CI/CD template changes

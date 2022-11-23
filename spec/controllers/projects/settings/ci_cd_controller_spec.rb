@@ -42,12 +42,23 @@ RSpec.describe Projects::Settings::CiCdController do
         let_it_be(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
         let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
-        it 'sets assignable project runners only' do
+        before do
           group.add_maintainer(user)
+        end
 
-          get :show, params: { namespace_id: project.namespace, project_id: project }
+        subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
+
+        it 'sets assignable project runners only' do
+          subject
 
           expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
+        end
+
+        it 'sets shared runners' do
+          subject
+
+          expect(assigns(:shared_runners_count)).to be(1)
+          expect(assigns(:shared_runners)).to contain_exactly(shared_runner)
         end
       end
 
