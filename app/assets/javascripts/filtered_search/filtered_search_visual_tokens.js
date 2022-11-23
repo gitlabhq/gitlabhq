@@ -1,5 +1,6 @@
 import { spriteIcon } from '~/lib/utils/common_utils';
 import { objectToQuery } from '~/lib/utils/url_utility';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchContainer from './container';
 import VisualTokenValue from './visual_token_value';
 
@@ -38,7 +39,7 @@ export default class FilteredSearchVisualTokens {
       lastVisualToken,
       isLastVisualTokenValid:
         lastVisualToken === null ||
-        lastVisualToken.className.indexOf('filtered-search-term') !== -1 ||
+        lastVisualToken.className.indexOf(FILTERED_SEARCH_TERM) !== -1 ||
         (lastVisualToken &&
           lastVisualToken.querySelector('.operator') !== null &&
           lastVisualToken.querySelector('.value') !== null),
@@ -113,7 +114,7 @@ export default class FilteredSearchVisualTokens {
     } = options;
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
-    li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
+    li.classList.add(isSearchTerm ? FILTERED_SEARCH_TERM : 'filtered-search-token');
 
     if (!isSearchTerm) {
       li.classList.add(tokenClass);
@@ -239,7 +240,7 @@ export default class FilteredSearchVisualTokens {
   static addSearchVisualToken(searchTerm) {
     const { lastVisualToken } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-    if (lastVisualToken && lastVisualToken.classList.contains('filtered-search-term')) {
+    if (lastVisualToken && lastVisualToken.classList.contains(FILTERED_SEARCH_TERM)) {
       lastVisualToken.querySelector('.name').textContent += ` ${searchTerm}`;
     } else {
       FilteredSearchVisualTokens.addVisualTokenElement({

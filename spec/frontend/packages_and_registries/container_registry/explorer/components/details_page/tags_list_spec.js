@@ -18,7 +18,7 @@ import {
   NO_TAGS_MATCHING_FILTERS_TITLE,
   NO_TAGS_MATCHING_FILTERS_DESCRIPTION,
 } from '~/packages_and_registries/container_registry/explorer/constants/index';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import { tagsMock, imageTagsMock, tagsPageInfo } from '../../mock_data';
 
 describe('Tags List', () => {

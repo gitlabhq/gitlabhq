@@ -1,6 +1,6 @@
 import { GlSorting, GlSortingItem, GlFilteredSearch } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import component from '~/vue_shared/components/registry/registry_search.vue';
 
 describe('Registry Search', () => {

@@ -4,6 +4,7 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import FilteredSearchSpecHelper from 'helpers/filtered_search_spec_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import FilteredSearchVisualTokens from '~/filtered_search/filtered_search_visual_tokens';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('Filtered Search Visual Tokens', () => {
   let mock;
@@ -302,7 +303,7 @@ describe('Filtered Search Visual Tokens', () => {
       });
       const token = tokensContainer.querySelector('.js-visual-token');
 
-      expect(token.classList.contains('filtered-search-term')).toEqual(true);
+      expect(token.classList.contains(FILTERED_SEARCH_TERM)).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('search term');
       expect(token.querySelector('.operator').innerText).toEqual('=');
       expect(token.querySelector('.value')).toEqual(null);
@@ -430,7 +431,7 @@ describe('Filtered Search Visual Tokens', () => {
       subject.addSearchVisualToken('search term');
       const token = tokensContainer.querySelector('.js-visual-token');
 
-      expect(token.classList.contains('filtered-search-term')).toEqual(true);
+      expect(token.classList.contains(FILTERED_SEARCH_TERM)).toEqual(true);
       expect(token.querySelector('.name').innerText).toEqual('search term');
       expect(token.querySelector('.value')).toEqual(null);
     });

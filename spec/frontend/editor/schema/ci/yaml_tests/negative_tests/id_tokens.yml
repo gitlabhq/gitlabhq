@@ -1,0 +1,11 @@
+id_token_with_wrong_aud_type:
+  id_tokens:
+    INVALID_ID_TOKEN:
+      aud:
+        invalid_prop: invalid
+
+id_token_with_extra_properties:
+  id_tokens:
+    INVALID_ID_TOKEN:
+      aud: 'https://gitlab.com'
+      sub: 'not a valid property'

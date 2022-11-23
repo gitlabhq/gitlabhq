@@ -18,6 +18,7 @@ import groupRunnersDataPaginated from 'test_fixtures/graphql/ci/runner/list/grou
 import groupRunnersCountData from 'test_fixtures/graphql/ci/runner/list/group_runners_count.query.graphql.json';
 
 import { DEFAULT_MEMBERSHIP, RUNNER_PAGE_SIZE } from '~/ci/runner/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 const emptyPageInfo = {
   __typename: 'PageInfo',
@@ -73,7 +74,7 @@ export const mockSearchExamples = [
       membership: DEFAULT_MEMBERSHIP,
       filters: [
         {
-          type: 'filtered-search-term',
+          type: FILTERED_SEARCH_TERM,
           value: { data: 'something' },
         },
       ],
@@ -95,11 +96,11 @@ export const mockSearchExamples = [
       membership: DEFAULT_MEMBERSHIP,
       filters: [
         {
-          type: 'filtered-search-term',
+          type: FILTERED_SEARCH_TERM,
           value: { data: 'something' },
         },
         {
-          type: 'filtered-search-term',
+          type: FILTERED_SEARCH_TERM,
           value: { data: 'else' },
         },
       ],

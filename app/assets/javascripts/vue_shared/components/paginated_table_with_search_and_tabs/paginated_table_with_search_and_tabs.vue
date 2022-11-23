@@ -5,6 +5,7 @@ import Api from '~/api';
 import { updateHistory, setUrlParams } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import {
+  FILTERED_SEARCH_TERM,
   OPERATORS_IS,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
@@ -226,7 +227,7 @@ export default {
             case 'assignee_username':
               filterParams.assigneeUsername = isAny(filter.value.data);
               break;
-            case 'filtered-search-term':
+            case FILTERED_SEARCH_TERM:
               if (filter.value.data !== '') filterParams.search = filter.value.data;
               break;
             default:

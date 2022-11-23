@@ -716,7 +716,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
         let(:config) do
           { before_script: %w[ls pwd],
             script: 'rspec',
-            after_script: %w[cleanup] }
+            after_script: %w[cleanup],
+            id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } } }
         end
 
         it 'returns correct value' do
@@ -730,7 +731,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
                    only: { refs: %w[branches tags] },
                    job_variables: {},
                    root_variables_inheritance: true,
-                   scheduling_type: :stage)
+                   scheduling_type: :stage,
+                   id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
         end
       end
     end

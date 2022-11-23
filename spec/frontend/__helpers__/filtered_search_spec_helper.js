@@ -1,3 +1,5 @@
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
+
 export default class FilteredSearchSpecHelper {
   static createFilterVisualTokenHTML(name, operator, value, isSelected) {
     return FilteredSearchSpecHelper.createFilterVisualToken(name, operator, value, isSelected)
@@ -43,7 +45,7 @@ export default class FilteredSearchSpecHelper {
 
   static createSearchVisualToken(name) {
     const li = document.createElement('li');
-    li.classList.add('js-visual-token', 'filtered-search-term');
+    li.classList.add('js-visual-token', FILTERED_SEARCH_TERM);
     li.innerHTML = `<div class="name">${name}</div>`;
     return li;
   }

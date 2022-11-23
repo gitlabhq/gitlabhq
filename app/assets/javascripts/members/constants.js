@@ -187,8 +187,6 @@ export const LEAVE_MODAL_ID = 'member-leave-modal';
 
 export const REMOVE_GROUP_LINK_MODAL_ID = 'remove-group-link-modal-id';
 
-export const SEARCH_TOKEN_TYPE = 'filtered-search-term';
-
 export const SORT_QUERY_PARAM_NAME = 'sort';
 export const ACTIVE_TAB_QUERY_PARAM_NAME = 'tab';
 

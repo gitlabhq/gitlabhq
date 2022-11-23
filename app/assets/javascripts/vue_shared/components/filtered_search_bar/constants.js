@@ -50,7 +50,6 @@ export const SORT_DIRECTION = {
   ascending: 'ascending',
 };
 
-export const FILTERED_SEARCH_LABELS = 'labels';
 export const FILTERED_SEARCH_TERM = 'filtered-search-term';
 
 export const TOKEN_TITLE_APPROVED_BY = __('Approved-By');

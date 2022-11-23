@@ -585,6 +585,36 @@
         ]
       }
     },
+    "id_tokens": {
+      "type": "object",
+      "markdownDescription": "Defines JWTs to be injected as environment variables.",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "properties": {
+            "aud": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "minItems": 1,
+                  "uniqueItems": true
+                }
+              ]
+            }
+          },
+          "required": [
+            "aud"
+          ],
+          "additionalProperties": false
+        }
+      }
+    },
     "secrets": {
       "type": "object",
       "markdownDescription": "Defines secrets to be injected as environment variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secrets).",
@@ -1208,6 +1238,9 @@
         },
         "cache": {
           "$ref": "#/definitions/cache"
+        },
+        "id_tokens": {
+          "$ref": "#/definitions/id_tokens"
         },
         "secrets": {
           "$ref": "#/definitions/secrets"

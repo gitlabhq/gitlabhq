@@ -1,4 +1,3 @@
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import {
   getQueryParams,
   keyValueToFilterToken,
@@ -7,6 +6,7 @@ import {
   beautifyPath,
   getCommitLink,
 } from '~/packages_and_registries/shared/utils';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 import { packageList } from 'jest/packages_and_registries/infrastructure_registry/components/mock_data';
 

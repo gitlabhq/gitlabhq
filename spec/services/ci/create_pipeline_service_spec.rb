@@ -710,6 +710,29 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
       end
     end
 
+    context 'when the configuration includes ID tokens' do
+      it 'creates variables for the ID tokens' do
+        config = YAML.dump({
+          job_with_id_tokens: {
+            script: 'ls',
+            id_tokens: {
+              'TEST_ID_TOKEN' => {
+                aud: 'https://gitlab.com'
+              }
+            }
+          }
+        })
+        stub_ci_pipeline_yaml_file(config)
+
+        result = execute_service.payload
+
+        expect(result).to be_persisted
+        expect(result.builds.first.id_tokens).to eq({
+          'TEST_ID_TOKEN' => { 'aud' => 'https://gitlab.com' }
+        })
+      end
+    end
+
     context 'with manual actions' do
       before do
         config = YAML.dump({ deploy: { script: 'ls', when: 'manual' } })

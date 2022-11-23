@@ -6,7 +6,6 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getContainerRepositoriesQuery from 'shared_queries/container_registry/get_container_repositories.query.graphql';
-import { FILTERED_SEARCH_TERM } from '~/packages_and_registries/shared/constants';
 import DeleteImage from '~/packages_and_registries/container_registry/explorer/components/delete_image.vue';
 import CliCommands from '~/packages_and_registries/shared/components/cli_commands.vue';
 import GroupEmptyState from '~/packages_and_registries/container_registry/explorer/components/list_page/group_empty_state.vue';
@@ -23,6 +22,7 @@ import getContainerRepositoriesDetails from '~/packages_and_registries/container
 import component from '~/packages_and_registries/container_registry/explorer/pages/list.vue';
 import Tracking from '~/tracking';
 import PersistedSearch from '~/packages_and_registries/shared/components/persisted_search.vue';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import TitleArea from '~/vue_shared/components/registry/title_area.vue';
 
 import { $toast } from 'jest/packages_and_registries/shared/mocks';

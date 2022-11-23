@@ -3539,8 +3539,8 @@ RSpec.describe Ci::Build do
         rsa_key = OpenSSL::PKey::RSA.generate(3072).to_s
         stub_application_setting(ci_jwt_signing_key: rsa_key)
         build.metadata.update!(id_tokens: {
-                                 'ID_TOKEN_1' => { id_token: { aud: 'developers' } },
-                                 'ID_TOKEN_2' => { id_token: { aud: 'maintainers' } }
+                                 'ID_TOKEN_1' => { aud: 'developers' },
+                                 'ID_TOKEN_2' => { aud: 'maintainers' }
                                })
       end
 

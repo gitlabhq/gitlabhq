@@ -2,6 +2,7 @@ import Api from '~/api';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { DELETE_PACKAGE_ERROR_MESSAGE } from '~/packages_and_registries/shared/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   FETCH_PACKAGES_LIST_ERROR_MESSAGE,
   DELETE_PACKAGE_SUCCESS_MESSAGE,
@@ -31,7 +32,7 @@ export const requestPackagesList = ({ dispatch, state }, params = {}) => {
   const type = state.config.forceTerraform
     ? TERRAFORM_SEARCH_TYPE
     : state.filter.find((f) => f.type === 'type');
-  const name = state.filter.find((f) => f.type === 'filtered-search-term');
+  const name = state.filter.find((f) => f.type === FILTERED_SEARCH_TERM);
   const packageFilters = { package_type: type?.value?.data, package_name: name?.value?.data };
 
   const apiMethod = state.config.isGroupPage ? 'groupPackages' : 'projectPackages';

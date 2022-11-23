@@ -7,11 +7,11 @@ import {
   redirectTo,
 } from '~/lib/utils/url_utility';
 import {
-  SEARCH_TOKEN_TYPE,
   SORT_QUERY_PARAM_NAME,
   ACTIVE_TAB_QUERY_PARAM_NAME,
   AVAILABLE_FILTERED_SEARCH_TOKENS,
 } from 'ee_else_ce/members/constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 
 export default {
@@ -65,7 +65,7 @@ export default {
 
     if (query[this.filteredSearchBar.searchParam]) {
       tokens.push({
-        type: SEARCH_TOKEN_TYPE,
+        type: FILTERED_SEARCH_TERM,
         value: {
           data: query[this.filteredSearchBar.searchParam],
         },
@@ -83,7 +83,7 @@ export default {
           return accumulator;
         }
 
-        if (type === SEARCH_TOKEN_TYPE) {
+        if (type === FILTERED_SEARCH_TERM) {
           if (value.data !== '') {
             const { searchParam } = this.filteredSearchBar;
             const { [searchParam]: searchParamValue } = accumulator;

@@ -1208,11 +1208,11 @@ module Ci
       if project.ci_cd_settings.opt_in_jwt?
         id_tokens_variables
       else
-        legacy_jwt_variables.concat(id_tokens_variables)
+        predefined_jwt_variables.concat(id_tokens_variables)
       end
     end
 
-    def legacy_jwt_variables
+    def predefined_jwt_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         jwt = Gitlab::Ci::Jwt.for_build(self)
         jwt_v2 = Gitlab::Ci::JwtV2.for_build(self)
@@ -1229,7 +1229,7 @@ module Ci
 
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         id_tokens.each do |var_name, token_data|
-          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['id_token']['aud'])
+          token = Gitlab::Ci::JwtV2.for_build(self, aud: token_data['aud'])
 
           variables.append(key: var_name, value: token, public: false, masked: true)
         end

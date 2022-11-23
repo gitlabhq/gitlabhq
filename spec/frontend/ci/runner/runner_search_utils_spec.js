@@ -6,6 +6,7 @@ import {
   fromSearchToVariables,
   isSearchFiltered,
 } from 'ee_else_ce/ci/runner/runner_search_utils';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 import { mockSearchExamples } from './mock_data';
 
 describe('search_params.js', () => {
@@ -48,8 +49,8 @@ describe('search_params.js', () => {
 
     it('When search params appear as array, they are concatenated', () => {
       expect(fromUrlQueryToSearch('?search[]=my&search[]=text').filters).toEqual([
-        { type: 'filtered-search-term', value: { data: 'my' } },
-        { type: 'filtered-search-term', value: { data: 'text' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'my' } },
+        { type: FILTERED_SEARCH_TERM, value: { data: 'text' } },
       ]);
     });
   });
@@ -93,7 +94,7 @@ describe('search_params.js', () => {
         fromSearchToVariables({
           filters: [
             {
-              type: 'filtered-search-term',
+              type: FILTERED_SEARCH_TERM,
               value: { data: '' },
             },
           ],
@@ -106,11 +107,11 @@ describe('search_params.js', () => {
         fromSearchToVariables({
           filters: [
             {
-              type: 'filtered-search-term',
+              type: FILTERED_SEARCH_TERM,
               value: { data: 'something' },
             },
             {
-              type: 'filtered-search-term',
+              type: FILTERED_SEARCH_TERM,
               value: { data: '' },
             },
           ],

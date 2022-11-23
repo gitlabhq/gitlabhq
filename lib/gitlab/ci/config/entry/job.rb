@@ -14,7 +14,7 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script
                             environment coverage retry parallel interruptible timeout
-                            release].freeze
+                            release id_tokens].freeze
 
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
@@ -116,6 +116,11 @@ module Gitlab
             description: 'Indicates whether this job is allowed to fail or not.',
             inherit: false
 
+          entry :id_tokens, ::Gitlab::Config::Entry::ComposableHash,
+            description: 'Configured JWTs for this job',
+            inherit: false,
+            metadata: { composable_class: ::Gitlab::Ci::Config::Entry::IdToken }
+
           attributes :script, :tags, :when, :dependencies,
                      :needs, :retry, :parallel, :start_in,
                      :interruptible, :timeout,
@@ -158,7 +163,8 @@ module Gitlab
               ignore: ignored?,
               allow_failure_criteria: allow_failure_criteria,
               needs: needs_defined? ? needs_value : nil,
-              scheduling_type: needs_defined? ? :dag : :stage
+              scheduling_type: needs_defined? ? :dag : :stage,
+              id_tokens: id_tokens_value
             ).compact
           end
 

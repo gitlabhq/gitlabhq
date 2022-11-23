@@ -107,9 +107,7 @@ RSpec.describe Ci::BuildMetadata do
         }
         metadata.id_tokens = {
           TEST_JWT_TOKEN: {
-            id_token: {
-              aud: 'https://gitlab.test'
-            }
+            aud: 'https://gitlab.test'
           }
         }
 

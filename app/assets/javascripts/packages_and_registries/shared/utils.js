@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import { queryToObject } from '~/lib/utils/url_utility';
-import { FILTERED_SEARCH_TERM } from './constants';
+import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const getQueryParams = (query) =>
   queryToObject(query, { gatherArrays: true, legacySpacesDecode: true });

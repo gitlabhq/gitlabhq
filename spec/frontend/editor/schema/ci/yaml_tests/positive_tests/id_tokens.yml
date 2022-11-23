@@ -1,0 +1,11 @@
+valid_id_tokens:
+  script:
+    - echo $ID_TOKEN_1
+    - echo $ID_TOKEN_2
+  id_tokens:
+    ID_TOKEN_1:
+      aud: 'https://gitlab.com'
+    ID_TOKEN_2:
+      aud:
+        - 'https://aws.com'
+        - 'https://google.com'

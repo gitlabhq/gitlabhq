@@ -5,15 +5,24 @@
   "patternProperties": {
     ".*": {
       "type": "object",
-      "patternProperties": {
-        "^id_token$": {
-          "type": "object",
-          "required": ["aud"],
-          "properties": {
-            "aud": { "type": "string" },
-            "field": { "type": "string" }
-          },
-          "additionalProperties": false
+      "required": [
+        "aud"
+      ],
+      "properties": {
+        "aud": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "minItems": 1,
+              "uniqueItems": true
+            }
+          ]
         }
       },
       "additionalProperties": false
