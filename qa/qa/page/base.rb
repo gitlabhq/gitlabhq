@@ -13,7 +13,6 @@ module QA
       include Support::WaitForRequests
 
       extend Validatable
-      extend SingleForwardable
 
       ElementNotFound = Class.new(RuntimeError)
 
@@ -30,8 +29,6 @@ module QA
           MSG
         end
       end
-
-      def_delegators :evaluator, :view, :views
 
       def initialize
         @retry_later_backoff = QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
@@ -276,7 +273,7 @@ module QA
         visible = kwargs.delete(:visible)
         visible = visible.nil? && true
 
-        try_find_element = lambda do |wait|
+        try_find_element = ->(wait) do
           if disabled.nil?
             has_css?(element_selector_css(name, kwargs), text: text, wait: wait, class: klass, visible: visible)
           else
@@ -422,26 +419,30 @@ module QA
         URI(page.current_url).host
       end
 
-      def self.path
-        raise NotImplementedError
-      end
+      class << self
+        def path
+          raise NotImplementedError
+        end
 
-      def self.evaluator
-        @evaluator ||= Page::Base::DSL.new
-      end
+        def evaluator
+          @evaluator ||= Page::Base::DSL.new
+        end
 
-      def self.errors
-        return ["Page class does not have views / elements defined!"] if views.empty?
+        def errors
+          return ["Page class does not have views / elements defined!"] if views.empty?
 
-        views.flat_map(&:errors)
-      end
+          views.flat_map(&:errors)
+        end
 
-      def self.elements
-        views.flat_map(&:elements)
-      end
+        def elements
+          views.flat_map(&:elements)
+        end
 
-      def self.required_elements
-        elements.select(&:required?)
+        def required_elements
+          elements.select(&:required?)
+        end
+
+        delegate :view, :views, to: :evaluator
       end
 
       def send_keys_to_element(name, keys)

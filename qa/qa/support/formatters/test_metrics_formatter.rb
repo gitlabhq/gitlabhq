@@ -19,15 +19,14 @@ module QA
 
           parse_execution_data(notification.examples)
 
-          if Runtime::Env.export_metrics?
-            push_test_metrics
-            push_fabrication_metrics
-          end
-
-          save_test_metrics if Runtime::Env.save_metrics_json?
+          push_test_metrics
+          push_fabrication_metrics
+          save_test_metrics
         end
 
         private
+
+        delegate :export_metrics?, :save_metrics_json?, :ci_job_url, :ci_job_name, to: "QA::Runtime::Env"
 
         # Save execution data for the run
         #
@@ -42,6 +41,8 @@ module QA
         #
         # @return [void]
         def push_test_metrics
+          return log(:debug, "Metrics export not enabled, skipping test metrics export") unless export_metrics?
+
           write_api.write(data: execution_data)
           log(:debug, "Pushed #{execution_data.length} test execution entries to influxdb")
         rescue StandardError => e
@@ -52,6 +53,8 @@ module QA
         #
         # @return [void]
         def push_fabrication_metrics
+          return log(:debug, "Metrics export not enabled, skipping fabrication metrics export") unless export_metrics?
+
           data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
             values.map { |v| fabrication_stats(resource: resource, **v) }
           end
@@ -67,6 +70,8 @@ module QA
         #
         # @return [void]
         def save_test_metrics
+          return log(:debug, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
+
           File.write("tmp/test-metrics-#{env('CI_JOB_NAME_SLUG') || 'local'}.json", execution_data.to_json)
         rescue StandardError => e
           log(:error, "Failed to save test execution metrics, error: #{e}")
@@ -110,7 +115,7 @@ module QA
               ui_fabrication: ui_fabrication,
               total_fabrication: api_fabrication + ui_fabrication,
               retry_attempts: retry_attempts(example.metadata),
-              job_url: QA::Runtime::Env.ci_job_url,
+              job_url: ci_job_url,
               pipeline_url: env('CI_PIPELINE_URL'),
               pipeline_id: env('CI_PIPELINE_ID'),
               job_id: env('CI_JOB_ID'),
@@ -145,7 +150,7 @@ module QA
             fields: {
               fabrication_time: fabrication_time,
               info: info,
-              job_url: QA::Runtime::Env.ci_job_url,
+              job_url: ci_job_url,
               timestamp: timestamp
             }
           }
@@ -155,7 +160,7 @@ module QA
         #
         # @return [String]
         def job_name
-          @job_name ||= QA::Runtime::Env.ci_job_name&.gsub(%r{ \d{1,2}/\d{1,2}}, '')
+          @job_name ||= ci_job_name&.gsub(%r{ \d{1,2}/\d{1,2}}, '')
         end
 
         # Single common timestamp for all exported example metrics to keep data points consistently grouped

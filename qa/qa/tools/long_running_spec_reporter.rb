@@ -6,15 +6,15 @@ require "slack-notifier"
 module QA
   module Tools
     class LongRunningSpecReporter
-      extend SingleForwardable
-
       SLACK_CHANNEL = "#quality-reports"
       PROJECT = "gitlab-qa-resources"
       BUCKET = "knapsack-reports"
       REPORT_NAME = "ee-instance-parallel.json"
       RUNTIME_THRESHOLD = 300
 
-      def_delegator :new, :execute
+      class << self
+        delegate :execute, to: :new
+      end
 
       # Find and report specs exceeding runtime threshold
       #

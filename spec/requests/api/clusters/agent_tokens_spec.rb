@@ -80,6 +80,27 @@ RSpec.describe API::Clusters::AgentTokens do
         end
       end
 
+      it 'returns an agent token that is revoked' do
+        get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{revoked_agent_token.id}", user)
+
+        aggregate_failures "testing response" do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to match_response_schema('public_api/v4/agent_token')
+          expect(json_response['id']).to eq(revoked_agent_token.id)
+          expect(json_response['name']).to eq(revoked_agent_token.name)
+          expect(json_response['agent_id']).to eq(agent.id)
+          expect(json_response['status']).to eq('revoked')
+        end
+      end
+
+      it 'returns a 404 if agent does not exist' do
+        path = "/projects/#{project.id}/cluster_agents/#{non_existing_record_id}/tokens/#{non_existing_record_id}"
+
+        get api(path, user)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
       it 'returns a 404 error if agent token id is not available' do
         get api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{non_existing_record_id}", user)
 

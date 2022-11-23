@@ -5,13 +5,13 @@ require "fog/google"
 module QA
   module Support
     class KnapsackReport
-      extend SingleForwardable
-
       PROJECT = "gitlab-qa-resources"
       BUCKET = "knapsack-reports"
       FALLBACK_REPORT = "knapsack/master_report.json"
 
-      def_delegators :new, :configure!, :move_regenerated_report, :download_report, :upload_report
+      class << self
+        delegate :configure!, :move_regenerated_report, :download_report, :upload_report, to: :new
+      end
 
       def initialize(report_name = nil)
         @report_name = report_name

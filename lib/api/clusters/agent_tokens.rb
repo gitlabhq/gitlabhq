@@ -43,8 +43,7 @@ module API
             end
             get ':token_id' do
               agent = ::Clusters::AgentsFinder.new(user_project, current_user).find(params[:agent_id])
-
-              token = agent.agent_tokens.find(params[:token_id])
+              token = ::Clusters::AgentTokensFinder.new(agent, current_user).find(params[:token_id])
 
               present token, with: Entities::Clusters::AgentToken
             end

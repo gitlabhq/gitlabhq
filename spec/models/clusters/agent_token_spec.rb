@@ -49,4 +49,12 @@ RSpec.describe Clusters::AgentToken do
       expect(agent_token.token.length).to be >= 50
     end
   end
+
+  describe '#to_ability_name' do
+    it 'is :cluster' do
+      agent_token = build(:cluster_agent_token)
+
+      expect(agent_token.to_ability_name).to eq :cluster
+    end
+  end
 end

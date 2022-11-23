@@ -25,5 +25,9 @@ module Clusters
       active: 0,
       revoked: 1
     }
+
+    def to_ability_name
+      :cluster
+    end
   end
 end

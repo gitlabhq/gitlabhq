@@ -28,21 +28,23 @@ class Environment < ApplicationRecord
   has_many :self_managed_prometheus_alert_events, inverse_of: :environment
   has_many :alert_management_alerts, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
-  # NOTE: If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
-  has_one :last_deployment, -> { success.ordered }, class_name: 'Deployment', inverse_of: :environment
-  has_one :last_visible_deployment, -> { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
+  # NOTE:
+  # 1) no-op arguments is to prevent accidental legacy preloading. See: https://gitlab.com/gitlab-org/gitlab/-/issues/369240
+  # 2) If you preload multiple last deployments of environments, use Preloaders::Environments::DeploymentPreloader.
+  has_one :last_deployment, -> (_env) { success.ordered }, class_name: 'Deployment', inverse_of: :environment
+  has_one :last_visible_deployment, -> (_env) { visible.order(id: :desc) }, inverse_of: :environment, class_name: 'Deployment'
+  has_one :upcoming_deployment, -> (_env) { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
 
   Deployment::FINISHED_STATUSES.each do |status|
-    has_one :"last_#{status}_deployment", -> { where(status: status).ordered },
+    has_one :"last_#{status}_deployment", -> (_env) { where(status: status).ordered },
             class_name: 'Deployment', inverse_of: :environment
   end
 
   Deployment::UPCOMING_STATUSES.each do |status|
-    has_one :"last_#{status}_deployment", -> { where(status: status).ordered_as_upcoming },
+    has_one :"last_#{status}_deployment", -> (_env) { where(status: status).ordered_as_upcoming },
             class_name: 'Deployment', inverse_of: :environment
   end
 
-  has_one :upcoming_deployment, -> { upcoming.order(id: :desc) }, class_name: 'Deployment', inverse_of: :environment
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
@@ -88,7 +90,6 @@ class Environment < ApplicationRecord
 
   scope :in_review_folder, -> { where(environment_type: "review") }
   scope :for_name, -> (name) { where(name: name) }
-  scope :preload_cluster, -> { preload(last_deployment: :cluster) }
   scope :preload_project, -> { preload(:project) }
   scope :auto_stoppable, -> (limit) { available.where('auto_stop_at < ?', Time.zone.now).limit(limit) }
   scope :auto_deletable, -> (limit) { stopped.where('auto_delete_at < ?', Time.zone.now).limit(limit) }

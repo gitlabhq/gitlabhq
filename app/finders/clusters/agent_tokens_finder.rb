@@ -2,6 +2,8 @@
 
 module Clusters
   class AgentTokensFinder
+    include FinderMethods
+
     def initialize(agent, current_user)
       @agent = agent
       @current_user = current_user

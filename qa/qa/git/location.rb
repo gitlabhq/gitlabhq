@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 require 'uri'
-require 'forwardable'
 
 module QA
   module Git
     class Location
-      extend Forwardable
-
       attr_reader :git_uri, :uri
 
-      def_delegators :@uri, :user, :host, :path
+      delegate :user, :host, :path, to: :@uri
 
       # See: config/initializers/1_settings.rb
       # Settings#build_gitlab_shell_ssh_path_prefix
