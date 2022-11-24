@@ -44,6 +44,8 @@ RSpec.describe 'factories', :saas do
     [:ci_pipeline_artifact, :remote_store],
     # EE
     [:dast_profile, :with_dast_site_validation],
+    [:dependency_proxy_manifest, :remote_store],
+    [:geo_dependency_proxy_manifest_state, any],
     [:ee_ci_build, :dependency_scanning_report],
     [:ee_ci_build, :license_scan_v1],
     [:ee_ci_job_artifact, :v1],

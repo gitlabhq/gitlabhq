@@ -7367,6 +7367,29 @@ The edge type for [`DependencyProxyManifest`](#dependencyproxymanifest).
 | <a id="dependencyproxymanifestedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dependencyproxymanifestedgenode"></a>`node` | [`DependencyProxyManifest`](#dependencyproxymanifest) | The item at the end of the edge. |
 
+#### `DependencyProxyManifestRegistryConnection`
+
+The connection type for [`DependencyProxyManifestRegistry`](#dependencyproxymanifestregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestregistryconnectionedges"></a>`edges` | [`[DependencyProxyManifestRegistryEdge]`](#dependencyproxymanifestregistryedge) | A list of edges. |
+| <a id="dependencyproxymanifestregistryconnectionnodes"></a>`nodes` | [`[DependencyProxyManifestRegistry]`](#dependencyproxymanifestregistry) | A list of nodes. |
+| <a id="dependencyproxymanifestregistryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DependencyProxyManifestRegistryEdge`
+
+The edge type for [`DependencyProxyManifestRegistry`](#dependencyproxymanifestregistry).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="dependencyproxymanifestregistryedgenode"></a>`node` | [`DependencyProxyManifestRegistry`](#dependencyproxymanifestregistry) | The item at the end of the edge. |
+
 #### `DeploymentConnection`
 
 The connection type for [`Deployment`](#deployment).
@@ -11804,6 +11827,25 @@ Dependency proxy manifest.
 | <a id="dependencyproxymanifeststatus"></a>`status` | [`DependencyProxyManifestStatus!`](#dependencyproxymanifeststatus) | Status of the manifest (default, pending_destruction, processing, error). |
 | <a id="dependencyproxymanifestupdatedat"></a>`updatedAt` | [`Time!`](#time) | Date of most recent update. |
 
+### `DependencyProxyManifestRegistry`
+
+Represents the Geo replication and verification state of a dependency_proxy_manifest.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyproxymanifestregistrycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp when the DependencyProxyManifestRegistry was created. |
+| <a id="dependencyproxymanifestregistrydependencyproxymanifestid"></a>`dependencyProxyManifestId` | [`ID!`](#id) | ID of the Dependency Proxy Manifest. |
+| <a id="dependencyproxymanifestregistryid"></a>`id` | [`ID!`](#id) | ID of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistrylastsyncfailure"></a>`lastSyncFailure` | [`String`](#string) | Error message during sync of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistrylastsyncedat"></a>`lastSyncedAt` | [`Time`](#time) | Timestamp of the most recent successful sync of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryretryat"></a>`retryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyManifestRegistry is resynced. |
+| <a id="dependencyproxymanifestregistryretrycount"></a>`retryCount` | [`Int`](#int) | Number of consecutive failed sync attempts of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistrystate"></a>`state` | [`RegistryState`](#registrystate) | Sync state of the DependencyProxyManifestRegistry. |
+| <a id="dependencyproxymanifestregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the DependencyProxyManifestRegistry is reverified. |
+| <a id="dependencyproxymanifestregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the DependencyProxyManifestRegistry. |
+
 ### `DependencyProxySetting`
 
 Group-level Dependency Proxy settings.
@@ -13000,6 +13042,28 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="geonodedependencyproxyblobregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
 | <a id="geonodedependencyproxyblobregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodedependencyproxyblobregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
+
+##### `GeoNode.dependencyProxyManifestRegistries`
+
+Find Dependency Proxy Manifest registries on this Geo node. Ignored if `geo_dependency_proxy_manifest_replication` feature flag is disabled.
+
+WARNING:
+**Introduced** in 15.6.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`DependencyProxyManifestRegistryConnection`](#dependencyproxymanifestregistryconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="geonodedependencyproxymanifestregistriesids"></a>`ids` | [`[ID!]`](#id) | Filters registries by their ID. |
+| <a id="geonodedependencyproxymanifestregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
+| <a id="geonodedependencyproxymanifestregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
 ##### `GeoNode.groupWikiRepositoryRegistries`
 

@@ -14684,6 +14684,18 @@ CREATE TABLE dependency_proxy_image_ttl_group_policies (
     enabled boolean DEFAULT false NOT NULL
 );
 
+CREATE TABLE dependency_proxy_manifest_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    dependency_proxy_manifest_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_fdd5d9791b CHECK ((char_length(verification_failure) <= 255))
+);
+
 CREATE TABLE dependency_proxy_manifests (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -25704,6 +25716,9 @@ ALTER TABLE ONLY dependency_proxy_group_settings
 ALTER TABLE ONLY dependency_proxy_image_ttl_group_policies
     ADD CONSTRAINT dependency_proxy_image_ttl_group_policies_pkey PRIMARY KEY (group_id);
 
+ALTER TABLE ONLY dependency_proxy_manifest_states
+    ADD CONSTRAINT dependency_proxy_manifest_states_pkey PRIMARY KEY (dependency_proxy_manifest_id);
+
 ALTER TABLE ONLY dependency_proxy_manifests
     ADD CONSTRAINT dependency_proxy_manifests_pkey PRIMARY KEY (id);
 
@@ -29694,6 +29709,16 @@ CREATE INDEX index_lists_on_milestone_id ON lists USING btree (milestone_id);
 CREATE INDEX index_lists_on_user_id ON lists USING btree (user_id);
 
 CREATE INDEX index_loose_foreign_keys_deleted_records_for_partitioned_query ON ONLY loose_foreign_keys_deleted_records USING btree (partition, fully_qualified_table_name, consume_after, id) WHERE (status = 1);
+
+CREATE INDEX index_manifest_states_failed_verification ON dependency_proxy_manifest_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
+
+CREATE INDEX index_manifest_states_needs_verification ON dependency_proxy_manifest_states USING btree (verification_state) WHERE ((verification_state = 0) OR (verification_state = 3));
+
+CREATE INDEX index_manifest_states_on_dependency_proxy_manifest_id ON dependency_proxy_manifest_states USING btree (dependency_proxy_manifest_id);
+
+CREATE INDEX index_manifest_states_on_verification_state ON dependency_proxy_manifest_states USING btree (verification_state);
+
+CREATE INDEX index_manifest_states_pending_verification ON dependency_proxy_manifest_states USING btree (verified_at NULLS FIRST) WHERE (verification_state = 0);
 
 CREATE INDEX index_member_roles_on_namespace_id ON member_roles USING btree (namespace_id);
 
@@ -34616,6 +34641,9 @@ ALTER TABLE ONLY application_settings
 
 ALTER TABLE ONLY clusters_kubernetes_namespaces
     ADD CONSTRAINT fk_rails_7e7688ecaf FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_proxy_manifest_states
+    ADD CONSTRAINT fk_rails_806cf07a3c FOREIGN KEY (dependency_proxy_manifest_id) REFERENCES dependency_proxy_manifests(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY ci_job_artifact_states
     ADD CONSTRAINT fk_rails_80a9cba3b2 FOREIGN KEY (job_artifact_id) REFERENCES ci_job_artifacts(id) ON DELETE CASCADE;

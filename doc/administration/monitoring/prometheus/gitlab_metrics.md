@@ -332,6 +332,16 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `geo_dependency_proxy_blob_verification_total`   | Gauge   | 15.6  | Number of dependency proxy blobs verifications tried on secondary | |
 | `geo_dependency_proxy_blob_verified`             | Gauge   | 15.6  | Number of dependency proxy blobs verified on secondary | |
 | `geo_dependency_proxy_blob_verification_failed`  | Gauge   | 15.6  | Number of dependency proxy blobs verifications failed on secondary | |
+| `geo_dependency_proxy_manifests`                     | Gauge   | 15.6  | Number of dependency proxy manifests on primary | `url` |
+| `geo_dependency_proxy_manifests_checksum_total`      | Gauge   | 15.6  | Number of dependency proxy manifests tried to checksum on primary | `url` |
+| `geo_dependency_proxy_manifests_checksummed`         | Gauge   | 15.6  | Number of dependency proxy manifests successfully checksummed on primary | `url` |
+| `geo_dependency_proxy_manifests_checksum_failed`     | Gauge   | 15.6  | Number of dependency proxy manifests failed to calculate the checksum on primary | `url` |
+| `geo_dependency_proxy_manifests_synced`              | Gauge   | 15.6  | Number of syncable dependency proxy manifests synced on secondary | `url` |
+| `geo_dependency_proxy_manifests_failed`              | Gauge   | 15.6  | Number of syncable dependency proxy manifests failed to sync on secondary | `url` |
+| `geo_dependency_proxy_manifests_registry`            | Gauge   | 15.6  | Number of dependency proxy manifests in the registry | `url` |
+| `geo_dependency_proxy_manifests_verification_total`  | Gauge   | 15.6  | Number of dependency proxy manifests verifications tried on secondary | `url` |
+| `geo_dependency_proxy_manifests_verified`            | Gauge   | 15.6  | Number of dependency proxy manifests verified on secondary | `url` |
+| `geo_dependency_proxy_manifests_verification_failed` | Gauge   | 15.6  | Number of dependency proxy manifests verifications failed on secondary | `url` |
 
 ## Database load balancing metrics **(PREMIUM SELF)**
 

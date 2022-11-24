@@ -523,6 +523,18 @@ Example response:
     "container_repositories_registry_count": 5,
     "container_repositories_synced_in_percentage": "100.00%",
     "container_repositories_synced_missing_on_primary_count": 0,
+    "dependency_proxy_manifests_count": 5,
+    "dependency_proxy_manifests_checksum_total_count": 5,
+    "dependency_proxy_manifests_checksummed_count": 5,
+    "dependency_proxy_manifests_checksum_failed_count": 5,
+    "dependency_proxy_manifests_synced_count": 5,
+    "dependency_proxy_manifests_failed_count": 0,
+    "dependency_proxy_manifests_registry_count": 5,
+    "dependency_proxy_manifests_verification_total_count": 5,
+    "dependency_proxy_manifests_verified_count": 5,
+    "dependency_proxy_manifests_verification_failed_count": 5,
+    "dependency_proxy_manifests_synced_in_percentage": "100.00%",
+    "dependency_proxy_manifests_verified_in_percentage": "100.00%"
   },
   {
     "geo_node_id": 2,
@@ -707,6 +719,18 @@ Example response:
     "container_repositories_registry_count": 5,
     "container_repositories_synced_in_percentage": "100.00%",
     "container_repositories_synced_missing_on_primary_count": 0,
+    "dependency_proxy_manifests_count": 5,
+    "dependency_proxy_manifests_checksum_total_count": 5,
+    "dependency_proxy_manifests_checksummed_count": 5,
+    "dependency_proxy_manifests_checksum_failed_count": 5,
+    "dependency_proxy_manifests_synced_count": 5,
+    "dependency_proxy_manifests_failed_count": 0,
+    "dependency_proxy_manifests_registry_count": 5,
+    "dependency_proxy_manifests_verification_total_count": 5,
+    "dependency_proxy_manifests_verified_count": 5,
+    "dependency_proxy_manifests_verification_failed_count": 5,
+    "dependency_proxy_manifests_synced_in_percentage": "100.00%",
+    "dependency_proxy_manifests_verified_in_percentage": "100.00%"
   }
 ]
 ```
@@ -901,6 +925,18 @@ Example response:
   "container_repositories_registry_count": 5,
   "container_repositories_synced_in_percentage": "100.00%",
   "container_repositories_synced_missing_on_primary_count": 0,
+  "dependency_proxy_manifests_count": 5,
+  "dependency_proxy_manifests_checksum_total_count": 5,
+  "dependency_proxy_manifests_checksummed_count": 5,
+  "dependency_proxy_manifests_checksum_failed_count": 5,
+  "dependency_proxy_manifests_synced_count": 5,
+  "dependency_proxy_manifests_failed_count": 0,
+  "dependency_proxy_manifests_registry_count": 5,
+  "dependency_proxy_manifests_verification_total_count": 5,
+  "dependency_proxy_manifests_verified_count": 5,
+  "dependency_proxy_manifests_verification_failed_count": 5,
+  "dependency_proxy_manifests_synced_in_percentage": "100.00%",
+  "dependency_proxy_manifests_verified_in_percentage": "100.00%"
 }
 ```
 

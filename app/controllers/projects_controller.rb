@@ -37,7 +37,6 @@ class ProjectsController < Projects::ApplicationController
   before_action :check_export_rate_limit!, only: [:export, :download_export, :generate_new_export]
 
   before_action do
-    push_frontend_feature_flag(:lazy_load_commits, @project)
     push_frontend_feature_flag(:highlight_js, @project)
     push_frontend_feature_flag(:file_line_blame, @project)
     push_frontend_feature_flag(:increase_page_size_exponentially, @project)
