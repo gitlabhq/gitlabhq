@@ -86,6 +86,7 @@ RSpec.describe 'Query.runner(id)' do
         'active' => runner.active,
         'paused' => !runner.active,
         'status' => runner.status('14.5').to_s.upcase,
+        'jobExecutionStatus' => runner.running_builds.any? ? 'RUNNING' : 'IDLE',
         'maximumTimeout' => runner.maximum_timeout,
         'accessLevel' => runner.access_level.to_s.upcase,
         'runUntagged' => runner.run_untagged,
@@ -97,8 +98,12 @@ RSpec.describe 'Query.runner(id)' do
         'maintenanceNote' => runner.maintenance_note,
         'maintenanceNoteHtml' =>
           runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
-        'jobCount' => 0,
-        'jobs' => a_hash_including("count" => 0, "nodes" => [], "pageInfo" => anything),
+        'jobCount' => runner.running_builds.count,
+        'jobs' => a_hash_including(
+          "count" => runner.running_builds.count,
+          "nodes" => an_instance_of(Array),
+          "pageInfo" => anything
+        ),
         'projectCount' => nil,
         'adminUrl' => "http://localhost/admin/runners/#{runner.id}",
         'userPermissions' => {
@@ -178,6 +183,19 @@ RSpec.describe 'Query.runner(id)' do
         expect(runner_data).not_to be_nil
         expect(runner_data).not_to include('tagList')
       end
+    end
+
+    context 'with build running' do
+      before do
+        project = create(:project, :repository)
+        pipeline = create(:ci_pipeline, project: project)
+        build = create(:ci_build, runner: runner, pipeline: pipeline)
+        create(:ci_running_build, build: build, project: project, runner: runner)
+      end
+
+      specify { expect(runner.running_builds.count).to eq 1 }
+
+      it_behaves_like 'runner details fetch'
     end
   end
 

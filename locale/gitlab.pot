@@ -28485,6 +28485,9 @@ msgstr ""
 msgid "OnDemandScans|Timezone"
 msgstr ""
 
+msgid "OnDemandScans|Verify configuration"
+msgstr ""
+
 msgid "OnDemandScans|View results"
 msgstr ""
 
@@ -35364,9 +35367,6 @@ msgstr ""
 msgid "Runners|Never expires"
 msgstr ""
 
-msgid "Runners|New group runners view"
-msgstr ""
-
 msgid "Runners|New registration token generated!"
 msgstr ""
 
@@ -35574,12 +35574,6 @@ msgid "Runners|Tags"
 msgstr ""
 
 msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
-msgstr ""
-
-msgid "Runners|Take me there!"
-msgstr ""
-
-msgid "Runners|The new view gives you more space and better visibility into your fleet of runners."
 msgstr ""
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
@@ -36717,6 +36711,9 @@ msgid "SecurityOrchestration|Security policy project was unlinked successfully"
 msgstr ""
 
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|Select groups"
 msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
@@ -46452,6 +46449,9 @@ msgstr ""
 msgid "WorkItem|Delete %{workItemType}"
 msgstr ""
 
+msgid "WorkItem|Discard changes"
+msgstr ""
+
 msgid "WorkItem|Due date"
 msgstr ""
 
@@ -46521,10 +46521,16 @@ msgstr ""
 msgid "WorkItem|Requirements"
 msgstr ""
 
+msgid "WorkItem|Save and overwrite"
+msgstr ""
+
 msgid "WorkItem|Search existing %{workItemType}s"
 msgstr ""
 
 msgid "WorkItem|Select type"
+msgstr ""
+
+msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when creating %{workItemType}. Please try again."
@@ -46591,6 +46597,9 @@ msgid "WorkItem|Undo"
 msgstr ""
 
 msgid "WorkItem|Use tasks to break down your work in an issue into smaller pieces. %{learnMoreLink}"
+msgstr ""
+
+msgid "WorkItem|View current version"
 msgstr ""
 
 msgid "WorkItem|Work Items"

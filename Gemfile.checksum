@@ -563,7 +563,7 @@
 {"name":"sorted_set","version":"1.0.3","platform":"java","checksum":"996283f2e5c6e838825bcdcee31d6306515ae5f24bcb0ee4ce09dfff32919b8c"},
 {"name":"sorted_set","version":"1.0.3","platform":"ruby","checksum":"4f2b8bee6e8c59cbd296228c0f1f81679357177a8b6859dcc2a99e86cce6372f"},
 {"name":"spamcheck","version":"1.0.0","platform":"ruby","checksum":"dfeea085184091353e17d729d2f3d714b07cba36aaf64c32dfc35ce9b466fc9c"},
-{"name":"spring","version":"2.1.1","platform":"ruby","checksum":"0d0ccd42eb6ac035b26a6791d10715b3b59c069d1fcd34693d7782257cf85cf4"},
+{"name":"spring","version":"4.1.0","platform":"ruby","checksum":"f17f080fb0df558d663c897a6229ed3d5cc54819ab51876ea6eef49a67f0a3cb"},
 {"name":"spring-commands-rspec","version":"1.0.4","platform":"ruby","checksum":"6202e54fa4767452e3641461a83347645af478bf45dddcca9737b43af0dd1a2c"},
 {"name":"sprite-factory","version":"1.7.1","platform":"ruby","checksum":"5586524a1aec003241f1abc6852b61433e988aba5ee2b55f906387bf49b01ba2"},
 {"name":"sprockets","version":"3.7.2","platform":"ruby","checksum":"5ea1d7facd09203c1aa196afd6178208cd25abdbcc2a9978810a2f0754e152a0"},

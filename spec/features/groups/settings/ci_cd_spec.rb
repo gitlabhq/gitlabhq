@@ -23,11 +23,6 @@ RSpec.describe 'Group CI/CD settings' do
       visit group_settings_ci_cd_path(group)
     end
 
-    it 'displays the new group runners view banner' do
-      expect(page).to have_content(s_('Runners|New group runners view'))
-      expect(page).to have_link(href: group_runners_path(group))
-    end
-
     it 'has "Enable shared runners for this group" toggle', :js do
       expect(shared_runners_toggle).to have_content(_('Enable shared runners for this group'))
     end

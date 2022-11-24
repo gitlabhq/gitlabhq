@@ -394,7 +394,7 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.10'
 
-  gem 'spring', '~> 2.1.0'
+  gem 'spring', '~> 4.1.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
   gem 'gitlab-styles', '~> 9.1.0', require: false

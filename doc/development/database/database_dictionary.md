@@ -11,7 +11,8 @@ locate the feature categories responsible for specific database tables.
 
 ## Location
 
-Database dictionary metadata files are stored in the `gitlab` project under `db/docs/`.
+Database dictionary metadata files are stored in the `gitlab` project under `db/docs/` for the `main` and `ci` databases.
+For the `geo` database, the dictionary files are stored under `ee/db/docs/`.
 
 ## Example dictionary file
 
@@ -40,12 +41,14 @@ milestone: '13.0'
 
 ## Adding tables
 
-When adding a new table, create a new file under `db/docs/` named
-`<table_name>.yml` containing as much information as you know about the table.
+When adding a new table, create a new file under `db/docs/` for the `main` and `ci` databases.
+For the `geo` database use `ee/db/docs/`.
+Name the file as `<table_name>.yml`, containing as much information as you know about the table.
 
 Include this file in the commit with the migration that creates the table.
 
 ## Dropping tables
 
-When dropping a table, you must remove the metadata file from `db/docs/`
-in the same commit with the migration that drops the table.
+When dropping a table, you must remove the metadata file from `db/docs/` for `main` and `ci` databases.
+For the `geo` database, you must remove the file from `ee/db/docs/`.
+Use the same commit with the migration that drops the table.

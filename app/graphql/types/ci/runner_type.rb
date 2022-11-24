@@ -91,6 +91,11 @@ module Types
       field :owner_project, ::Types::ProjectType, null: true,
                                                   description: 'Project that owns the runner. For project runners only.',
                                                   resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
+      field :job_execution_status,
+            Types::Ci::RunnerJobExecutionStatusEnum,
+            null: true,
+            description: 'Job execution status of the runner.',
+            deprecated: { milestone: '15.7', reason: :alpha }
 
       markdown_field :maintenance_note_html, null: true
 
@@ -132,6 +137,16 @@ module Types
         return unless runner.group_type?
 
         batched_owners(::Ci::RunnerNamespace, Group, :runner_groups, :namespace_id)
+      end
+
+      def job_execution_status
+        BatchLoader::GraphQL.for(runner.id).batch(key: :running_builds_exist) do |runner_ids, loader|
+          statuses = ::Ci::Runner.id_in(runner_ids).with_running_builds.index_by(&:id)
+
+          runner_ids.each do |runner_id|
+            loader.call(runner_id, statuses[runner_id] ? :running : :idle)
+          end
+        end
       end
 
       private

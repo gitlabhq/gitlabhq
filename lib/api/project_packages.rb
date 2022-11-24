@@ -69,6 +69,8 @@ module API
         package = ::Packages::PackageFinder
           .new(user_project, params[:package_id]).execute
 
+        render_api_error!('Package not found', 404) unless package.default?
+
         present package, with: ::API::Entities::Package, user: current_user, namespace: user_project.namespace
       end
 

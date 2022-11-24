@@ -299,6 +299,10 @@ Rails/MailerName:
     # See for the context on why it's excluded https://gitlab.com/gitlab-org/gitlab/-/issues/239356#note_956419227
     - 'app/mailers/notify.rb'
 
+Rails/Pluck:
+  # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/94047#note_1179689274
+  AutoCorrect: false
+
 Rails/RakeEnvironment:
   # Context on why it's disabled: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93419#note_1048223982
   Enabled: false

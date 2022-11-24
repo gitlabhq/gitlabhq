@@ -365,7 +365,7 @@ RSpec.describe 'User edit profile' do
         end
       end
 
-      it 'sets the users status to busy' do
+      it 'sets the users status to busy', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/382965' do
         open_user_status_modal
         busy_status = find('[data-testid="user-availability-checkbox"]')
 

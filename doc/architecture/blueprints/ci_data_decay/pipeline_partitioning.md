@@ -180,6 +180,49 @@ respective database tables. Using `RANGE` partitioning works similarly to using
 of `partition_id` values, using `RANGE` partitioning might be a better
 strategy.
 
+### Multi-project pipelines
+
+Parent-child pipeline will always be part of the same partition because child
+pipelines are considered a resource of the parent pipeline. They can't be
+viewed individually in the project pipeline list page.
+
+On the other hand, multi-project pipelines can be viewed in the pipeline list page.
+They can also be accessed from the pipeline graph as downstream/upstream links
+when created via the `trigger` token or the API using a job token.
+They can also be created from other pipelines by using trigger tokens, but in this
+case we don't store the source pipeline.
+
+While partitioning `ci_builds` we need to update the foreign keys to the
+`ci_sources_pipelines` table:
+
+```plain
+Foreign-key constraints:
+    "fk_be5624bf37" FOREIGN KEY (source_job_id) REFERENCES ci_builds(id) ON DELETE CASCADE
+    "fk_d4e29af7d7" FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE
+    "fk_e1bad85861" FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE
+```
+
+A `ci_sources_pipelines` record references two `ci_pipelines` rows (parent and
+the child). Our usual strategy has been to add a `partition_id` to the
+table, but if we do it here we will force all multi-project
+pipelines to be part of the same partition.
+
+We should add two `partition_id` columns for this table, a
+`partition_id` and a `source_partition_id`:
+
+```plain
+Foreign-key constraints:
+    "fk_be5624bf37" FOREIGN KEY (source_job_id, source_partition_id) REFERENCES ci_builds(id, source_partition_id) ON DELETE CASCADE
+    "fk_d4e29af7d7" FOREIGN KEY (source_pipeline_id, source_partition_id) REFERENCES ci_pipelines(id, source_partition_id) ON DELETE CASCADE
+    "fk_e1bad85861" FOREIGN KEY (pipeline_id, partition_id) REFERENCES ci_pipelines(id, partition_id) ON DELETE CASCADE
+```
+
+This solution is the closest to a two way door decision because:
+
+- We retain the ability to reference pipelines in different partitions.
+- If we later decide that we want to force multi-project pipelines in the same partition
+  we could add a constraint to validate that both columns have the same value.
+
 ## Why do we want to use explicit logical partition ids?
 
 Partitioning CI/CD data using a logical `partition_id` has several benefits. We

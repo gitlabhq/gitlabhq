@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "User Feed" do
+RSpec.describe "User Feed", feature_category: :devops_reports do
   describe "GET /" do
     let!(:user) { create(:user) }
 

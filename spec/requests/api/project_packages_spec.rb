@@ -350,6 +350,16 @@ RSpec.describe API::ProjectPackages do
         end
       end
     end
+
+    context 'when package has no default status' do
+      let!(:package1) { create(:npm_package, :error, project: project) }
+
+      it 'returns 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/packages/:package_id' do

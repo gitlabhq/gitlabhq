@@ -226,5 +226,16 @@ RSpec.describe 'package details' do
         end
       end
     end
+
+    context 'with package that has no default status' do
+      before do
+        composer_package.update!(status: :error)
+        subject
+      end
+
+      it "does not return package's details" do
+        expect(package_details).to be_nil
+      end
+    end
   end
 end

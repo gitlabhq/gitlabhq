@@ -32,4 +32,12 @@ RSpec.describe API::Entities::Package do
       expect(subject[:_links][:web_path]).to match('/infrastructure_registry/')
     end
   end
+
+  context 'when package has no default status' do
+    let(:package) { create(:package, :error) }
+
+    it 'does not expose web_path in _links' do
+      expect(subject[:_links]).not_to have_key(:web_path)
+    end
+  end
 end

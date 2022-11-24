@@ -701,6 +701,32 @@ RSpec.describe Ci::Runner do
     it { is_expected.to eq([runner1]) }
   end
 
+  describe '.with_running_builds' do
+    subject { described_class.with_running_builds }
+
+    let_it_be(:runner1) { create(:ci_runner) }
+
+    context 'with no builds running' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'with single build running on runner2' do
+      let(:runner2) { create(:ci_runner) }
+      let(:runner3) { create(:ci_runner) }
+
+      before do
+        project = create(:project, :repository)
+        pipeline = create(:ci_pipeline, project: project)
+        build2 = create(:ci_build, runner: runner2, pipeline: pipeline)
+        create(:ci_running_build, build: build2, project: project, runner: runner2)
+        build3 = create(:ci_build, runner: runner3, pipeline: pipeline)
+        create(:ci_running_build, build: build3, project: project, runner: runner3)
+      end
+
+      it { is_expected.to contain_exactly(runner2, runner3) }
+    end
+  end
+
   describe '#matches_build?' do
     using RSpec::Parameterized::TableSyntax
 

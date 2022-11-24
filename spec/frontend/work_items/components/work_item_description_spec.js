@@ -111,6 +111,16 @@ describe('WorkItemDescription', () => {
         });
       });
 
+      it('has a subscription', async () => {
+        createComponent();
+
+        await waitForPromises();
+
+        expect(subscriptionHandler).toHaveBeenCalledWith({
+          issuableId: workItemQueryResponse.data.workItem.id,
+        });
+      });
+
       describe('editing description', () => {
         it('shows edited by text', async () => {
           const lastEditedAt = '2022-09-21T06:18:42Z';

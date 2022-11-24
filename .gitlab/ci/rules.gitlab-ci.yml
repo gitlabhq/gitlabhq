@@ -806,8 +806,7 @@
 
 .docs:rules:docs-code-quality:
   rules:
-    - <<: *if-default-branch-refs
-    - <<: *if-default-refs
+    - <<: *if-merge-request
       changes: *docs-code-quality-patterns
 
 .docs:rules:docs-lint:

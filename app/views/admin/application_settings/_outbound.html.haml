@@ -20,6 +20,6 @@
     .form-group
       = f.gitlab_ui_checkbox_component :dns_rebinding_protection_enabled,
           s_('OutboundRequests|Enforce DNS rebinding attack protection'),
-          help_text: _('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
+          help_text: s_('OutboundRequests|Resolve IP addresses once and uses them to submit requests.')
 
   = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }

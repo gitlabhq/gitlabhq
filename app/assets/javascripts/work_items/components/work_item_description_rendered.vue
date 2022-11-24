@@ -115,6 +115,7 @@ export default {
       ref="gfm-content"
       v-safe-html="descriptionHtml"
       class="md gl-mb-5 gl-min-h-8"
+      data-testid="work-item-description"
       @change="toggleCheckboxes"
     ></div>
   </div>

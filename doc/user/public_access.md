@@ -10,7 +10,7 @@ type: reference
 GitLab allows users with the Owner role to set a project's or group's visibility as:
 
 - **Public**
-- **Internal**
+- **[Internal](#internal-projects-and-groups)**
 - **Private**
 
 These visibility levels affect who can see the project in the public access directory (`/public`
@@ -38,7 +38,7 @@ By default, `/public` is visible to unauthenticated users. However, if the
 [**Public** visibility level](admin_area/settings/visibility_and_access_controls.md#restrict-visibility-levels)
 is restricted, `/public` is visible only to signed-in users.
 
-## Internal projects and groups
+## Internal projects and groups **(FREE SELF)**
 
 Internal projects can be cloned by any signed-in user except
 [external users](permissions.md#external-users).

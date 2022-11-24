@@ -69,6 +69,7 @@ module Ci
     TAG_LIST_MAX_LENGTH = 50
 
     has_many :builds
+    has_many :running_builds, inverse_of: :runner, class_name: 'Ci::RunningBuild'
     has_many :runner_projects, inverse_of: :runner, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects, disable_joins: true
     has_many :runner_namespaces, inverse_of: :runner, autosave: true
@@ -89,6 +90,11 @@ module Ci
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where('contacted_at > ?', recent_queue_deadline) }
+    scope :with_running_builds, -> do
+      where('EXISTS(?)',
+            ::Ci::RunningBuild.select(1)
+                                 .where('ci_running_builds.runner_id = ci_runners.id'))
+    end
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
     scope :deprecated_shared, -> { instance_type }

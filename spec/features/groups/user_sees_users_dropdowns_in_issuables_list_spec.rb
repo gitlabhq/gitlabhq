@@ -11,6 +11,7 @@ RSpec.describe 'Groups > User sees users dropdowns in issuables list', :js do
   let!(:project) { create(:project, group: group) }
 
   before do
+    stub_feature_flags(or_issuable_queries: false)
     group.add_developer(user_in_dropdown)
     sign_in(user_in_dropdown)
   end

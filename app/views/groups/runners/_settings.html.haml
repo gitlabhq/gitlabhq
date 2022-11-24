@@ -3,10 +3,3 @@
 - if @group.licensed_feature_available?(:stale_runner_cleanup_for_namespace)
   .gl-mb-5
     #stale-runner-cleanup-form{ data: { group_full_path: @group.full_path, stale_timeout_secs: ::Ci::Runner::STALE_TIMEOUT.to_i } }
-= render Pajamas::BannerComponent.new(button_text: s_('Runners|Take me there!'),
-  button_link: group_runners_path(@group),
-  svg_path: 'illustrations/rocket-launch-md.svg',
-  close_options: { class: 'gl-display-none' }) do |c|
-  - c.title do
-    = s_('Runners|New group runners view')
-  %p= s_('Runners|The new view gives you more space and better visibility into your fleet of runners.')

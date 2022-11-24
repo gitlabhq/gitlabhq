@@ -347,7 +347,7 @@ Returns [`Namespace`](#namespace).
 
 ### `Query.package`
 
-Find a package. This field can only be resolved for one query in any single request.
+Find a package. This field can only be resolved for one query in any single request. Returns `null` if a package has no `default` status.
 
 Returns [`PackageDetailsType`](#packagedetailstype).
 
@@ -11012,6 +11012,7 @@ CI/CD variables for a project.
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunneripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner. |
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |
+| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | The GitLab Flavored Markdown rendering of `maintenance_note`. |
@@ -16838,6 +16839,7 @@ Represents a product analytics dashboard widget.
 | <a id="projectissuesenabled"></a>`issuesEnabled` | [`Boolean`](#boolean) | Indicates if Issues are enabled for the current user. |
 | <a id="projectjiraimportstatus"></a>`jiraImportStatus` | [`String`](#string) | Status of Jira import background job of the project. |
 | <a id="projectjiraimports"></a>`jiraImports` | [`JiraImportConnection`](#jiraimportconnection) | Jira imports into the project. (see [Connections](#connections)) |
+| <a id="projectjitsukey"></a>`jitsuKey` **{warning-solid}** | [`String`](#string) | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Jitsu key assigned to the project. |
 | <a id="projectjobsenabled"></a>`jobsEnabled` | [`Boolean`](#boolean) | Indicates if CI/CD pipeline jobs are enabled for the current user. |
 | <a id="projectlanguages"></a>`languages` | [`[RepositoryLanguage!]`](#repositorylanguage) | Programming languages used in the project. |
 | <a id="projectlastactivityat"></a>`lastActivityAt` | [`Time`](#time) | Timestamp of the project last activity. |
@@ -20874,6 +20876,13 @@ Values for YAML processor result.
 | ----- | ----------- |
 | <a id="cirunneraccesslevelnot_protected"></a>`NOT_PROTECTED` | A runner that is not protected. |
 | <a id="cirunneraccesslevelref_protected"></a>`REF_PROTECTED` | A runner that is ref protected. |
+
+### `CiRunnerJobExecutionStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Runner is idle. |
+| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in 15.7. This feature is in Alpha. It can be changed or removed at any time. Runner is executing jobs. |
 
 ### `CiRunnerMembershipFilter`
 

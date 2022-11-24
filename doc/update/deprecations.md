@@ -65,6 +65,20 @@ The `gitlab.kas.metrics.port` has been deprecated in favor of the new `gitlab.ka
 This port is used for much more than just metrics, which warranted this change to avoid confusion in configuration.
 
 </div>
+
+<div class="deprecation removal-1600 breaking-change">
+
+### `POST ci/lint` API endpoint deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.00</span> (2021-03-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `POST ci/lint` API endpoint is deprecated in 15.7, and will be removed in 16.0. This endpoint does not validate the full range of CI/CD configuration options. Instead, use [`POST /projects/:id/ci/lint`](https://docs.gitlab.com/15.5/ee/api/lint.html#validate-a-ci-yaml-configuration-with-a-namespace), which properly validates CI/CD configuration.
+
+</div>
 </div>
 
 <div class="announcement-milestone">
