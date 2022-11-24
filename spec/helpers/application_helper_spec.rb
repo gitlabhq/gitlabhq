@@ -683,4 +683,16 @@ RSpec.describe ApplicationHelper do
       end
     end
   end
+
+  describe 'stylesheet_link_tag_defer' do
+    it 'uses print stylesheet by default' do
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="print" href="/stylesheets/test.css" />')
+    end
+
+    it 'uses regular stylesheet when no_startup_css param present' do
+      allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
+
+      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+    end
+  end
 end

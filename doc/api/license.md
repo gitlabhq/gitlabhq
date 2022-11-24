@@ -97,6 +97,55 @@ Returns:
 - `200 OK` with response containing the licenses in JSON format. This is an empty JSON array if there are no licenses.
 - `403 Forbidden` if the current user in not permitted to read the licenses.
 
+## Retrieve information about a single license
+
+```plaintext
+GET /license/:id
+```
+
+Supported attributes:
+
+| Attribute | Type    | Required | Description               |
+|-----------|---------|----------|---------------------------|
+| `id`      | integer | yes      | ID of the GitLab license. |
+
+Returns the following status codes:
+
+- `200 OK`: Response contains the licenses in JSON format.
+- `404 Not Found`: The requested license doesn't exist.
+- `403 Forbidden`: The current user is not permitted to read the licenses.
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/license/:id"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "plan": "premium",
+  "created_at": "2018-02-27T23:21:58.674Z",
+  "starts_at": "2018-01-27",
+  "expires_at": "2022-01-27",
+  "historical_max": 300,
+  "maximum_user_count": 300,
+  "expired": false,
+  "overage": 200,
+  "user_limit": 100,
+  "active_users": 50,
+  "licensee": {
+    "Name": "John Doe1"
+  },
+  "add_ons": {
+    "GitLab_FileLocks": 1,
+    "GitLab_Auditor_User": 1
+  }
+}
+```
+
 ## Add a new license
 
 ```plaintext

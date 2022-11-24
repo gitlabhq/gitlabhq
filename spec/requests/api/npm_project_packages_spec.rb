@@ -55,7 +55,6 @@ RSpec.describe API::NpmProjectPackages do
   end
 
   describe 'GET /api/v4/projects/:id/packages/npm/*package_name/-/*file_name' do
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
     let(:package_file) { package.package_files.first }
 
     let(:headers) { {} }
@@ -215,7 +214,7 @@ RSpec.describe API::NpmProjectPackages do
         let_it_be(:version) { '1.2.3' }
 
         let(:params) { upload_params(package_name: package_name, package_version: version) }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
+        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_npm_user' } }
 
         shared_examples 'handling upload with different authentications' do
           context 'with access token' do

@@ -16,12 +16,14 @@
 RSpec.shared_examples 'Snowplow event tracking' do |overrides: {}|
   let(:extra) { {} }
 
-  it 'is not emitted if FF is disabled' do
-    stub_feature_flags(feature_flag_name => false)
+  if try(:feature_flag_name)
+    it 'is not emitted if FF is disabled' do
+      stub_feature_flags(feature_flag_name => false)
 
-    subject
+      subject
 
-    expect_no_snowplow_event(category: category, action: action)
+      expect_no_snowplow_event(category: category, action: action)
+    end
   end
 
   it 'is emitted' do

@@ -123,7 +123,7 @@ module API
           package = Packages::Pypi::PackageFinder.new(current_user, group, { filename: filename, sha256: params[:sha256] }).execute
           package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: false).execute
 
-          track_package_event('pull_package', :pypi)
+          track_package_event('pull_package', :pypi, namespace: group, project: package.project)
 
           present_package_file!(package_file, supports_direct_download: true)
         end

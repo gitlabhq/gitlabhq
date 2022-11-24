@@ -136,7 +136,7 @@ RSpec.describe API::RpmProjectPackages do
   end
 
   describe 'GET /api/v4/projects/:id/packages/rpm/:package_file_id/:filename' do
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group } }
+    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, property: 'i_package_rpm_user' } }
     let(:url) { "/projects/#{project.id}/packages/rpm/#{package_file_id}/#{package_name}" }
 
     subject { get api(url), headers: headers }
@@ -148,7 +148,10 @@ RSpec.describe API::RpmProjectPackages do
   end
 
   describe 'POST /api/v4/projects/:project_id/packages/rpm' do
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: group, user: user } }
+    let(:snowplow_gitlab_standard_context) do
+      { project: project, namespace: group, user: user, property: 'i_package_rpm_user' }
+    end
+
     let(:url) { "/projects/#{project.id}/packages/rpm" }
     let(:file_upload) { fixture_file_upload('spec/fixtures/packages/rpm/hello-0.0.1-1.fc29.x86_64.rpm') }
 

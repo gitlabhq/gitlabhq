@@ -35,7 +35,9 @@ RSpec.describe API::GroupContainerRepositories do
 
   describe 'GET /groups/:id/registry/repositories' do
     let(:url) { "/groups/#{group.id}/registry/repositories" }
-    let(:snowplow_gitlab_standard_context) { { user: api_user, namespace: group } }
+    let(:snowplow_gitlab_standard_context) do
+      { user: api_user, namespace: group, property: 'i_package_container_user' }
+    end
 
     subject { get api(url, api_user) }
 

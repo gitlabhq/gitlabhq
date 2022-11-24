@@ -52,9 +52,14 @@ dast:
     DAST_BROWSER_SCAN: "true"
 ```
 
+## Authentication
+
+The browser-based analyzer can authenticate a user prior to a scan. See [Authentication](authentication.md) for configuration instructions.
+
 ### Available CI/CD variables
 
-The browser-based crawler can be configured using CI/CD variables.
+These CI/CD variables are specific to DAST. They can be used to customize the behavior of DAST to your requirements.
+For authentication CI/CD variables, see [Authentication](authentication.md).
 
 | CI/CD variable                               | Type            | Example                           | Description |
 |----------------------------------------------| ----------------| --------------------------------- | ------------|

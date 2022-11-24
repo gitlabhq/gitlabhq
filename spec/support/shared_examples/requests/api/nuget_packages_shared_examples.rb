@@ -495,7 +495,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
       let(:token) { user_token ? personal_access_token.token : 'wrong' }
       let(:user_headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
       let(:headers) { user_headers.merge(workhorse_headers) }
-      let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace } }
+      let(:snowplow_gitlab_standard_context) { { project: project, user: user, namespace: project.namespace, property: 'i_package_nuget_user' } }
 
       before do
         update_visibility_to(Gitlab::VisibilityLevel.const_get(visibility_level, false))

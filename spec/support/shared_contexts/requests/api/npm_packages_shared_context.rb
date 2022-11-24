@@ -17,6 +17,7 @@ RSpec.shared_context 'npm api setup' do
   let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
 
   let(:package_name) { package.name }
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_npm_user' } }
 
   before do
     # create a duplicated package without triggering model validation errors

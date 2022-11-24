@@ -67,7 +67,7 @@ module API
 
           package_file = Packages::Helm::PackageFilesFinder.new(project, params[:channel], file_name: "#{params[:file_name]}.tgz").most_recent!
 
-          track_package_event('pull_package', :helm, project: project, namespace: project.namespace)
+          track_package_event('pull_package', :helm, project: project, namespace: project.namespace, property: 'i_package_helm_user')
 
           present_package_file!(package_file)
         end
@@ -110,7 +110,8 @@ module API
             package, chart_params.merge(build: current_authenticated_job)
           ).execute
 
-          track_package_event('push_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace)
+          track_package_event('push_package', :helm, project: authorized_user_project, namespace: authorized_user_project.namespace,
+                                                     property: 'i_package_helm_user')
 
           ::Packages::Helm::ExtractionWorker.perform_async(params[:channel], chart_package_file.id) # rubocop:disable CodeReuse/Worker
 

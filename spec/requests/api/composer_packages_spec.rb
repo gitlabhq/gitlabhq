@@ -14,7 +14,10 @@ RSpec.describe API::ComposerPackages do
   let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
   let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
 
-  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
+  let(:snowplow_gitlab_standard_context) do
+    { project: project, namespace: project.namespace, user: user, property: 'i_package_composer_user' }
+  end
+
   let(:headers) { {} }
 
   using RSpec::Parameterized::TableSyntax
@@ -491,7 +494,6 @@ RSpec.describe API::ComposerPackages do
         with_them do
           let(:token) { user_token ? personal_access_token.token : 'wrong' }
           let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-          let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
           before do
             project.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project_visibility_level, false))
@@ -501,6 +503,10 @@ RSpec.describe API::ComposerPackages do
 
           include_context 'Composer user type', params[:user_role], params[:member] do
             if params[:expected_status] == :success
+              let(:snowplow_gitlab_standard_context) do
+                { project: project, namespace: project.namespace, property: 'i_package_composer_user' }
+              end
+
               it_behaves_like 'a package tracking event', described_class.name, 'pull_package'
             else
               it_behaves_like 'not a package tracking event'

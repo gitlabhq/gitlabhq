@@ -33,7 +33,7 @@ module API
         package_file = ::Packages::PackageFileFinder
           .new(package, params[:file_name]).execute!
 
-        track_package_event('pull_package', package, category: 'API::NpmPackages', project: project, namespace: project.namespace)
+        track_package_event('pull_package', :npm, category: 'API::NpmPackages', project: project, namespace: project.namespace)
 
         present_package_file!(package_file)
       end

@@ -20,6 +20,13 @@ module Gitlab
       def to_context
         SnowplowTracker::SelfDescribingJson.new(SCHEMA_URL, @payload)
       end
+
+      def to_h
+        {
+          schema: SCHEMA_URL,
+          data: @payload
+        }
+      end
     end
   end
 end

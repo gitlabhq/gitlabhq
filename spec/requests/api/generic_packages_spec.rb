@@ -19,7 +19,7 @@ RSpec.describe API::GenericPackages do
 
   let(:user) { personal_access_token.user }
   let(:ci_build) { create(:ci_build, :running, user: user, project: project) }
-  let(:snowplow_standard_context_params) { { user: user, project: project, namespace: project.namespace } }
+  let(:snowplow_gitlab_standard_context) { { user: user, project: project, namespace: project.namespace, property: 'i_package_generic_user' } }
 
   def auth_header
     return {} if user_role == :anonymous
@@ -408,8 +408,6 @@ RSpec.describe API::GenericPackages do
       end
 
       context 'event tracking' do
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
-
         subject { upload_file(params, workhorse_headers.merge(personal_access_token_header)) }
 
         it_behaves_like 'a package tracking event', described_class.name, 'push_package'
@@ -645,8 +643,6 @@ RSpec.describe API::GenericPackages do
     end
 
     context 'event tracking' do
-      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user } }
-
       before do
         project.add_developer(user)
       end

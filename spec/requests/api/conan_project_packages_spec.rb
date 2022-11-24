@@ -5,7 +5,6 @@ RSpec.describe API::ConanProjectPackages do
   include_context 'conan api setup'
 
   let(:project_id) { project.id }
-  let(:snowplow_standard_context_params) { { user: user, project: project, namespace: project.namespace } }
 
   describe 'GET /api/v4/projects/:id/packages/conan/v1/ping' do
     let(:url) { "/projects/#{project.id}/packages/conan/v1/ping" }

@@ -238,4 +238,26 @@ RSpec.describe API::Helpers::PackagesHelpers do
       end
     end
   end
+
+  describe '#track_package_event' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+      let(:action) { 'push_package' }
+      let(:scope) { :terraform_module }
+      let(:category) { described_class.name }
+      let(:namespace) { project.namespace }
+      let(:user) { project.creator }
+      let(:feature_flag_name) { nil }
+      let(:label) { 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly' }
+      let(:property) { 'i_package_terraform_module_user' }
+
+      subject(:package_action) do
+        args = { category: category, namespace: namespace, user: user, project: project }
+        helper.track_package_event(action, scope, **args)
+      end
+    end
+  end
 end

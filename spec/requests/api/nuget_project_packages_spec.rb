@@ -13,6 +13,7 @@ RSpec.describe API::NugetProjectPackages do
 
   let(:target) { project }
   let(:target_type) { 'projects' }
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_nuget_user' } }
 
   shared_examples 'accept get request on private project with access to package registry for everyone' do
     subject { get api(url) }
@@ -28,9 +29,7 @@ RSpec.describe API::NugetProjectPackages do
   describe 'GET /api/v4/projects/:id/packages/nuget' do
     let(:url) { "/projects/#{target.id}/packages/nuget/index.json" }
 
-    it_behaves_like 'handling nuget service requests' do
-      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
-    end
+    it_behaves_like 'handling nuget service requests'
 
     it_behaves_like 'accept get request on private project with access to package registry for everyone'
   end
@@ -58,9 +57,7 @@ RSpec.describe API::NugetProjectPackages do
   describe 'GET /api/v4/projects/:id/packages/nuget/query' do
     let(:url) { "/projects/#{target.id}/packages/nuget/query?#{query_parameters.to_query}" }
 
-    it_behaves_like 'handling nuget search requests' do
-      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
-    end
+    it_behaves_like 'handling nuget search requests'
 
     it_behaves_like 'accept get request on private project with access to package registry for everyone' do
       let_it_be(:query_parameters) { { q: 'query', take: 5, skip: 0, prerelease: true } }
@@ -152,7 +149,6 @@ RSpec.describe API::NugetProjectPackages do
       with_them do
         let(:token) { user_token ? personal_access_token.token : 'wrong' }
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, token) }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
         subject { get api(url), headers: headers }
 

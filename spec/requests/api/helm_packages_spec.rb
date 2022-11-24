@@ -17,6 +17,8 @@ RSpec.describe API::HelmPackages do
   let_it_be(:package_file2_2) { create(:helm_package_file, package: package2, file_sha256: 'file2', file_name: 'filename2.tgz', channel: 'test', description: 'hello from test channel') }
   let_it_be(:other_package) { create(:npm_package, project: project) }
 
+  let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, property: 'i_package_helm_user' } }
+
   describe 'GET /api/v4/projects/:id/packages/helm/:channel/index.yaml' do
     let(:project_id) { project.id }
     let(:channel) { 'stable' }
@@ -63,7 +65,6 @@ RSpec.describe API::HelmPackages do
 
       with_them do
         let(:headers) { user_role == :anonymous ? {} : basic_auth_header(user.username, personal_access_token.token) }
-        let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
         before do
           project.update!(visibility: visibility.to_s)
@@ -74,8 +75,6 @@ RSpec.describe API::HelmPackages do
     end
 
     context 'with access to package registry for everyone' do
-      let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
-
       before do
         project.update!(visibility: Gitlab::VisibilityLevel::PRIVATE)
         project.project_feature.update!(package_registry_access_level: ProjectFeature::PUBLIC)
@@ -152,7 +151,6 @@ RSpec.describe API::HelmPackages do
     let(:params) { { chart: temp_file(file_name) } }
     let(:file_key) { :chart }
     let(:send_rewritten_field) { true }
-    let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace } }
 
     subject do
       workhorse_finalize(

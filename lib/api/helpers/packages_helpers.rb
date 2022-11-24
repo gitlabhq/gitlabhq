@@ -78,10 +78,18 @@ module API
         end
       end
 
-      def track_package_event(event_name, scope, **args)
-        ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
+      def track_package_event(action, scope, **args)
+        ::Packages::CreateEventService.new(nil, current_user, event_name: action, scope: scope).execute
         category = args.delete(:category) || self.options[:for].name
-        ::Gitlab::Tracking.event(category, event_name.to_s, **args)
+        event_name = "i_package_#{scope}_user"
+        ::Gitlab::Tracking.event(
+          category,
+          action.to_s,
+          property: event_name,
+          label: 'redis_hll_counters.user_packages.user_packages_total_unique_counts_monthly',
+          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context],
+          **args
+        )
       end
 
       def present_package_file!(package_file, supports_direct_download: true)
