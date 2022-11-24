@@ -626,14 +626,14 @@ does not do this:
 
 ### User DN and email have changed
 
-If both the primary email **and** the DN change in LDAP, GitLab has
-no way of identifying the correct LDAP record of a user and, as a
-result, blocks that user. To fix this, update the user's existing
-GitLab profile with at least one of the new primary email or DN values
-so GitLab can find the LDAP record.
+If both the primary email **and** the DN change in LDAP, GitLab cannot identify the correct LDAP record of a user. As a
+result, GitLab blocks that user. So that GitLab can find the LDAP record, update the user's existing GitLab profile with
+at least either:
 
-The following script updates the emails for all provided users so they
-aren't blocked or unable to access their accounts.
+- The new primary email.
+- DN values.
+
+The following script updates the emails for all provided users so they aren't blocked or unable to access their accounts.
 
 NOTE:
 The following script requires that any new accounts with the new

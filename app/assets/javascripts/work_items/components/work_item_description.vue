@@ -68,7 +68,7 @@ export default {
         return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
       },
       skip() {
-        return !this.workItemId;
+        return !this.queryVariables.id && !this.queryVariables.iid;
       },
       result() {
         this.descriptionText = this.workItemDescription?.description;

@@ -11,51 +11,293 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 >   passthrough chains. Expanded to include additional passthrough types of `file`, `git`, and `url` in GitLab 14.6.
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/235359) support for overriding rules in GitLab 14.8.
 
-You can customize the default scanning rules provided by our SAST analyzers.
-Ruleset customization supports the following that can be used
-simultaneously:
+You can customize the behavior of our SAST analyzers by [defining a ruleset configuration file](#create-the-configuration-file) in the
+repository being scanned. There are two kinds of customization:
 
-- [Disabling predefined rules](#disable-predefined-analyzer-rules). Available for all analyzers.
-- [Overriding predefined rules](#override-predefined-analyzer-rules). Available for all analyzers.
-- Modifying the default behavior of a given analyzer by [synthesizing and passing a custom configuration](#synthesize-a-custom-configuration). Available for only `nodejs-scan`, `gosec`, and `semgrep`.
+- Modifying the behavior of **predefined rules**. This includes:
+  - [Disabling predefined rules](#disable-predefined-rules). Available for all analyzers.
+  - [Overriding predefined rules](#override-predefined-rules). Available for all analyzers.
+- Replacing predefined rules by [synthesizing a custom configuration](#synthesize-a-custom-configuration)
+  using **passthroughs**. Available for only [nodejs-scan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)
+  and [semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 
-To customize the default scanning rules, create a file containing custom rules. These rules
-are passed through to the analyzer's underlying scanner tools.
+## Disable predefined rules
 
-To create a custom ruleset:
+You can disable predefined rules for any SAST analyzer. Disabled rules won't appear
+on the [Pipeline Security](../index.md#view-security-scan-information-in-the-pipeline-security-tab)
+tab or the [Vulnerability Report](../index.md#view-security-scan-information-in-the-vulnerability-report).
+
+Disabling rules has a retroactive effect. The analyzer continues to scan for the
+vulnerability, but findings are omitted from the [`gl-sast-report.json` artifact](index.md#reports-json-format).
+
+See the [Schema](#schema) and [Examples](#examples) sections for information on how
+to configure this behavior.
+
+## Override predefined rules
+
+Certain attributes of predefined rules can be overridden for any SAST analyzer. This
+can be useful when adapting SAST to your existing workflow or tools. For example, you
+might want to override the severity of a vulnerability based on organizational policy,
+or choose a different message to display in the Vulnerability Report.
+
+See the [Schema](#schema) and [Examples](#examples) sections for information on how
+to configure this behavior.
+
+## Synthesize a custom configuration
+
+You can completely replace the predefined rules of some SAST analyzers:
+
+- [nodejs-scan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) - you
+  can replace the default [njsscan configuration file](https://github.com/ajinabraham/njsscan#configure-njsscan)
+  with your own.
+- [semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) - you can replace
+  the [GitLab-maintained ruleset](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep/-/tree/main/rules)
+  with your own.
+
+You provide your customizations via passthroughs, which are composed into a
+passthrough chain at runtime and evaluated to produce a complete configuration. The
+underlying scanner is then executed against this new configuration.
+
+There are multiple passthrough types that let you provide configuration in different
+ways, such as using a file committed to your repository or inline in the ruleset
+configuration file. You can also choose how subsequent passthroughs in the chain are
+handled; they can overwrite or append to previous configuration.
+
+See the [Schema](#schema) and [Examples](#examples) sections for information on how
+to configure this behavior.
+
+## Create the configuration file
+
+To create the ruleset configuration file:
 
 1. Create a `.gitlab` directory at the root of your project, if one doesn't already exist.
-1. Create a custom ruleset file named `sast-ruleset.toml` in the `.gitlab` directory.
+1. Create a file named `sast-ruleset.toml` in the `.gitlab` directory.
 
-## Disable predefined analyzer rules
+## Schema
 
-To disable analyzer rules:
+### The top-level section
 
-1. Set the `disabled` flag to `true` in the context of a `ruleset` section
+The top-level section contains one or more _configuration sections_, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
 
-1. In one or more `ruleset.identifier` sub sections, list the rules that you want disabled. Every `ruleset.identifier` section has:
+| Setting | Description |
+| --------| ----------- |
+| `[$analyzer]` | Declares a configuration section for an analyzer. The name follows the snake-case names defined in the list of [SAST analyzers](analyzers.md#sast-analyzers). |
 
-- a `type` field, to name the predefined rule identifier that the targeted analyzer uses.
-- a `value` field, to name the rule to be disabled.
-
-### Example: Disable predefined rules of SAST analyzers
-
-In the following example, the disabled rules are assigned to `eslint`
-and `sobelow` by matching the `type` and `value` of identifiers:
+Configuration example:
 
 ```toml
-[eslint]
-  [[eslint.ruleset]]
-    disable = true
-    [eslint.ruleset.identifier]
-      type = "eslint_rule_id"
-      value = "security/detect-object-injection"
+[semgrep]
+...
+```
 
-  [[eslint.ruleset]]
+Avoid creating configuration sections that modify existing rules _and_ synthesize a custom ruleset, as
+the latter replaces predefined rules completely.
+
+### The `[$analyzer]` configuration section
+
+The `[$analyzer]` section lets you customize the behavior of an analyzer. Valid properties
+differ based on the kind of configuration you're making.
+
+| Setting | Applies to | Description |
+| --------| -------------- | ----------- |
+| `[[$analyzer.ruleset]]` | Predefined rules | Defines modifications to an existing rule. |
+| `interpolate` | All | If set to `true`, you can use `$VAR` in the configuration to evaluate environment variables. Use this feature with caution, so you don't leak secrets or tokens. (Default: `false`) |
+| `description` | Passthroughs | Description of the custom ruleset. |
+| `targetdir`   | Passthroughs | The directory where the final configuration should be persisted. If empty, a directory with a random name is created. The directory can contain up to 100MB of files. |
+| `validate`    | Passthroughs | If set to `true`, the content of each passthrough is validated. The validation works for `yaml`, `xml`, `json` and `toml` content. The proper validator is identified based on the extension used in the `target` parameter of the `[[$analyzer.passthrough]]` section. (Default: `false`) |
+| `timeout`     | Passthroughs | The maximum time to spend to evaluate the passthrough chain, before timing out. The timeout cannot exceed 300 seconds. (Default: 60) |
+
+#### `interpolate`
+
+WARNING:
+To reduce the risk of leaking secrets, use this feature with caution.
+
+The example below shows a configuration that uses the `$GITURL` environment variable to access a
+private repository. The variable contains a username and token (for example `https://user:token@url`), so
+they're not explicitly stored in the configuration file.
+
+```toml
+[semgrep]
+  description = "My private Semgrep ruleset"
+  interpolate = true
+
+  [[semgrep.passthrough]]
+    type  = "git"
+    value = "$GITURL"
+    ref = "refs/heads/main"
+```
+
+### The `[[$analyzer.ruleset]]` section
+
+The `[[$analyzer.ruleset]]` section targets and modifies a single predefined rule. You can define
+one to many of these sections per analyzer.
+
+| Setting | Description |
+| --------| ----------- |
+| `disabled` | Whether the rule should be disabled. (Default: `false`) |
+| `[$analyzer.ruleset.identifier]` | Selects the predefined rule to be modified. |
+| `[$analyzer.ruleset.override]` | Defines the overrides for the rule. |
+
+Configuration example:
+
+```toml
+[semgrep]
+  [[semgrep.ruleset]]
     disable = true
-    [eslint.ruleset.identifier]
+    ...
+```
+
+### The `[$analyzer.ruleset.identifier]` section
+
+The `[$analyzer.ruleset.identifier]` section defines the identifiers of the predefined
+rule that you wish to modify.
+
+| Setting | Description |
+| --------| ----------- |
+| `type`  | The type of identifier used by the predefined rule. |
+| `value` | The value of the identifier used by the predefined rule. |
+
+You can look up the correct values for `type` and `value` by viewing the
+[`gl-sast-report.json`](index.md#reports-json-format) produced by the analyzer.
+You can download this file as a job artifact from the analyzer's CI job.
+
+For example, the snippet below shows a finding from a `semgrep` rule with three
+identifiers. The `type` and `value` keys in the JSON object correspond to the
+values you should provide in this section.
+
+```json
+...
+  "vulnerabilities": [
+    {
+      "id": "7331a4b7093875f6eb9f6eb1755b30cc792e9fb3a08c9ce673fb0d2207d7c9c9",
+      "category": "sast",
+      "message": "Key Exchange without Entity Authentication",
+      "description": "Audit the use of ssh.InsecureIgnoreHostKey\n",
+      ...
+      "identifiers": [
+        {
+          "type": "semgrep_id",
+          "name": "gosec.G106-1",
+          "value": "gosec.G106-1"
+        },
+        {
+          "type": "cwe",
+          "name": "CWE-322",
+          "value": "322",
+          "url": "https://cwe.mitre.org/data/definitions/322.html"
+        },
+        {
+          "type": "gosec_rule_id",
+          "name": "Gosec Rule ID G106",
+          "value": "G106"
+        }
+      ]
+    }
+    ...
+  ]
+...
+```
+
+Configuration example:
+
+```toml
+[semgrep]
+  [[semgrep.ruleset]]
+    [semgrep.ruleset.identifier]
+      type = "semgrep_id"
+      value = "gosec.G106-1
+    ...
+```
+
+### The `[$analyzer.ruleset.override]` section
+
+The `[$analyzer.ruleset.override]` section allows you to override attributes of a predefined rule.
+
+| Setting | Description |
+| --------| ----------- |
+| `description`  | A detailed description of the issue. |
+| `message` | (Deprecated) A description of the issue. |
+| `name` | The name of the rule. |
+| `severity` | The severity of the rule. Valid options are: `Critical`, `High`, `Medium`, `Low`, `Unknown`, `Info`) |
+
+NOTE:
+While `message` is populated by the analyzers, it has been [deprecated](https://gitlab.com/gitlab-org/security-products/analyzers/report/-/blob/1d86d5f2e61dc38c775fb0490ee27a45eee4b8b3/vulnerability.go#L22)
+in favor of `name` and `description`.
+
+Configuration example:
+
+```toml
+[semgrep]
+  [[semgrep.ruleset]]
+    [semgrep.ruleset.override]
+      severity = "Critical"
+      name = "Command injection"
+    ...
+```
+
+### The `[[$analyzer.passthrough]]` section
+
+NOTE:
+This is currently supported by the `nodejs-scan` and `semgrep` analyzers only.
+
+The `[[$analyzer.passthrough]]` section allows you to synthesize a custom configuration for an analyzer. You
+can define up to 20 of these sections per analyzer. Passthroughs are composed into a _passthrough chain_
+that evaluates into a complete configuration that replaces the predefined rules of the analyzer.
+
+Passthroughs are evaluated in order. Passthroughs listed later in the chain have
+a higher precedence and can overwrite or append to data yielded by previous
+passthroughs (depending on the `mode`). This is useful for cases where you need
+to use or modify an existing configuration.
+
+The amount of data generated by a single passthrough is limited to 1MB.
+
+| Setting | Applies to | Description |
+| ------- | ---------- | ----------- |
+| `type` | All |  One of `file`, `raw`, `git` or `url`. |
+| `target` | All | The target file to contain the data written by the passthrough evaluation. If empty, a random filename is used. |
+| `mode` | All | If `overwrite`, the `target` file is overwritten. If `append`, new content is appended to the `target` file. Note that the `git` type only supports `overwrite`. (Default: `overwrite`) |
+| `ref` | `type = "git"` | Contains the name of the branch or the SHA to pull. When using a branch name, specify it in the form `refs/heads/<branch>`, not `refs/remotes/<remote_name>/<branch>`. |
+| `subdir` | `type = "git"` | Used to select a subdirectory of the Git repository as the configuration source. |
+| `value` | All | For the `file`, `url`, and `git` types, defines the location of the file or Git repository. For the `raw` type, contains the inline configuration. |
+| `validator` | All | Used to explicitly invoke validators (`xml`, `yaml`, `json`, `toml`) on the target file after the evaluation of a passthrough. |
+
+#### Passthrough types
+
+| Type   | Description |
+| ------ | ----------- |
+| `file` | Use a file that is present in the Git repository. |
+| `raw`  | Provide the configuration inline. |
+| `git`  | Pull the configuration from a remote Git repository. |
+| `url`  | Fetch the configuration using HTTP. |
+
+WARNING:
+When using the `raw` passthrough with a YAML snippet, it's recommended to format all indentation
+in the `sast-ruleset.toml` file as spaces. The YAML specification mandates spaces over tabs, and the
+analyzer will fail to parse your custom ruleset unless the indentation is represented accordingly.
+
+## Examples
+
+### Disable predefined rules of SAST analyzers
+
+With the following custom ruleset configuration, the following rules are omitted from the report:
+
+- `semgrep` rules with a `semgrep_id` of `gosec.G106-1` or a `cwe` of `322`.
+- `sobelow` rules with a `sobelow_rule_id` of `sql_injection`.
+- `flawfinder` rules with a `flawfinder_func_name` of `memcpy`.
+
+```toml
+[semgrep]
+  [[semgrep.ruleset]]
+    disable = true
+    [semgrep.ruleset.identifier]
+      type = "semgrep_id"
+      value = "gosec.G106-1"
+
+  [[semgrep.ruleset]]
+    disable = true
+    [semgrep.ruleset.identifier]
       type = "cwe"
-      value = "185"
+      value = "322"
 
 [sobelow]
   [[sobelow.ruleset]]
@@ -63,199 +305,129 @@ and `sobelow` by matching the `type` and `value` of identifiers:
     [sobelow.ruleset.identifier]
       type = "sobelow_rule_id"
       value = "sql_injection"
+
+[flawfinder]
+  [[flawfinder.ruleset]]
+    disable = true
+    [flawfinder.ruleset.identifier]
+      type = "flawfinder_func_name"
+      value = "memcpy"
 ```
 
-Those vulnerabilities containing the provided type and value are now disabled, meaning
-they won't be displayed in Merge Request nor the Vulnerability Report.
+### Override predefined rules of SAST analyzers
 
-## Override predefined analyzer rules
-
-To override analyzer rules:
-
-1. In one or more `ruleset.identifier` subsections, list the rules that you want to override. Every `ruleset.identifier` section has:
-
-   - a `type` field, to name the predefined rule identifier that the targeted analyzer uses.
-   - a `value` field, to name the rule to be overridden.
-
-1. In the `ruleset.override` context of a `ruleset` section,
-   provide the keys to override. Any combination of keys can be
-   overridden. Valid keys are:
-
-   - description
-   - message
-   - name
-   - severity (valid options are: Critical, High, Medium, Low, Unknown, Info)
-
-### Example: Override predefined rules of SAST analyzers
-
-Before adding a ruleset, we verify which vulnerability will be overwritten by viewing the [`gl-sast-report.json`](index.md#reports-json-format):
-
-```json
-"identifiers": [
-        {
-          "type": "gosec_rule_id",
-          "name": "Gosec Rule ID G307",
-          "value": "G307"
-        },
-        {
-          "type": "CWE",
-          "name": "CWE-703",
-          "value": "703",
-          "url": "https://cwe.mitre.org/data/definitions/703.html"
-        }
-      ]
-```
-
-In the following example, rules from `gosec` are matched by the `type`
-and `value` of identifiers and then overridden:
+With the following custom ruleset configuration, vulnerabilities found with
+`semgrep` with a type `CWE` and a value `322` will have their severity
+overridden to `Critical`.
 
 ```toml
-[gosec]
-  [[gosec.ruleset]]
-    [gosec.ruleset.identifier]
-        type = "CWE"
-        value = "703"
-    [gosec.ruleset.override]
+[semgrep]
+  [[semgrep.ruleset]]
+    [semgrep.ruleset.identifier]
+      type = "CWE"
+      value = "322"
+    [semgrep.ruleset.override]
       severity = "Critical"
 ```
 
-If a vulnerability is found with a type `CWE` with a value of `703` then
-the vulnerability severity is overwritten to `Critical`.
+### Synthesize a custom configuration using a raw passthrough for `nodejs-scan`
 
-## Synthesize a custom configuration
+With the following custom ruleset configuration, the predefined behavior
+of the `nodejs-scan` analyzer is replaced with a custom configuration.
 
-To create a custom configuration, you can use passthrough chains.
-
-A passthrough is a single step in a passthrough chain. The passthrough is evaluated
-in a sequence to incrementally build a configuration. The configuration is then
-passed to the target analyzer.
-
-A configuration section for an analyzer has the following
-parameters:
-
-| Parameter     | Explanation |
-| ------------- | ------ |
-| `description` | Description about the analyzer configuration section. |
-| `targetdir`   | The `targetdir` parameter defines the directory where the final configuration is located. If `targetdir` is empty, the analyzer uses a random directory. The maximum size of `targetdir` is 100MB. |
-| `validate`    | If set to `true`, the target files for passthroughs (`raw`, `file` and `url`) are validated. The validation works for `yaml`, `xml`, `json` and `toml` files. The proper validator is identified based on the extension of the target file. By default, `validate` is set to `false`. |
-| `interpolate` | If set to `true`, environment variable interpolation is enabled so that the configuration uses secrets/tokens. We advise using this feature with caution to not leak any secrets. By default, `interpolate` is set to `false`. |
-| `timeout`     | The total `timeout` for the evaluation of a passthrough chain is set to 60 seconds. If `timeout` is not set, the default timeout is 60 seconds. The timeout cannot exceed 300 seconds. |
-
-A configuration section can include one or more passthrough sections. The maximum number of passthrough sections is 20.
-There are several types of passthroughs:
-
-| Type   | Description |
-| ------ | ------ |
-| `file` | Use a file that is already available in the Git repository. |
-| `raw`  | Provide the configuration inline. |
-| `git`  | Pull the configuration from a remote Git repository. |
-| `url`  | Fetch the analyzer configuration through HTTP. |
-
-If multiple passthrough sections are defined in a passthrough chain, their
-position in the chain defines the order in which they are evaluated.
-
-- Passthroughs listed later in the chain sequence have a higher precedence.
-- Passthroughs with a higher precedence overwrite (default) and append data
-  yielded by previous passthroughs. This is useful for cases where you need to
-  use or modify an existing configuration.
-
-Configure a passthrough these parameters:
-
-| Parameter     | Explanation |
-| ------------ | ----------- |
-| `type`       | One of `file`, `raw`, `git` or `url`. |
-| `target`     | The target file that contains the data written by the passthrough evaluation. If no value is provided, a random target file is generated. |
-| `mode`       | `overwrite`: if `target` exists, overwrites the file; `append`: append to file instead. The default is `overwrite`. |
-| `ref`        | This option only applies to the `git` passthrough type and contains the name of the branch or the SHA to be used. When using a branch name, specify it in the form `refs/heads/<branch>`, not `refs/remotes/<remote_name>/<branch>`. |
-| `subdir`     | This option only applies to the `git` passthrough type and can be used to only consider a certain subdirectory of the source Git repository. |
-| `value`      | For the `file` `url` and `git` types, `value` defines the source location of the file/Git repository; for the `raw` type, `value` carries the raw content to be passed through. |
-| `validator`  | Can be used to explicitly invoke validators (`xml`, `yaml`, `json`, `toml`) on the target files after the application of a passthrough. Per default, no validator is set. |
-
-The amount of data generated by a single passthrough is limited to 1MB.
-
-## Passthrough configuration examples
-
-### Raw passthrough for nodejs-scan
-
-Define a custom analyzer configuration. In this example, customized rules are
-defined for the `nodejs-scan` scanner:
+The syntax used for the `value` follows the [njsscan config format](https://github.com/ajinabraham/njsscan#configure-njsscan).
 
 ```toml
 [nodejs-scan]
-  description = 'custom ruleset for nodejs-scan'
+  description = "My custom ruleset for nodejs-scan"
 
   [[nodejs-scan.passthrough]]
     type  = "raw"
     value = '''
+---
 - nodejs-extensions:
   - .js
-
+  
   template-extensions:
   - .new
   - .hbs
   - ''
-
+  
   ignore-filenames:
-- skip.js
-
+  - skip.js
+  
   ignore-paths:
   - __MACOSX
   - skip_dir
   - node_modules
-
+  
   ignore-extensions:
   - .hbs
-
+  
   ignore-rules:
   - regex_injection_dos
   - pug_jade_template
   - express_xss
-
 '''
 ```
 
-### File passthrough for Gosec
+### Synthesize a custom configuration using a file passthrough for `semgrep`
 
-Provide the name of the file containing a custom analyzer configuration. In
-this example, customized rules for the `gosec` scanner are contained in the
-file `gosec-config.json`:
+With the following custom ruleset configuration, the predefined ruleset
+of the `semgrep` analyzer is replaced with a custom ruleset contained in
+a file called `my-semgrep-rules.yaml` in the repository being scanned.
 
-```toml
-[gosec]
-  description = 'custom ruleset for gosec'
-
-  [[gosec.passthrough]]
-    type  = "file"
-    value = "gosec-config.json"
+```yaml
+# my-semgrep-rules.yml
+---
+rules:
+- id: my-custom-rule
+  pattern: print("Hello World")
+  message: |
+    Unauthorized use of Hello World.
+  severity: CRITICAL
+  languages:
+  - python
 ```
 
-### Passthrough chain for Semgrep
+```toml
+[semgrep]
+  description = "My custom ruleset for Semgrep"
 
-In the below example, we generate a custom configuration under the `/sgrules`
-target directory with a total `timeout` of 60 seconds.
+  [[semgrep.passthrough]]
+    type  = "file"
+    value = "my-semgrep-rules.yml"
+```
 
-Several passthrouh types generate a configuration for the target analyzer:
+### Synthesize a custom configuration using a passthrough chain for `semgrep`
 
-- Two `git` passthrough sections pull the head of branch
-  `refs/heads/test` from the `myrules` Git repository, and revision
-  `97f7686` from the `sast-rules` Git repository. From the `sast-rules` Git
-  repository, only data from the `go` subdirectory is considered.
+With the following custom ruleset configuration, the predefined ruleset
+of the `semgrep` analyzer is replaced with a custom ruleset produced by
+evaluating a chain of four passthroughs. Each passthrough produces a file
+that's written to the `/sgrules` directory within the container. A
+`timeout` of 60 seconds is set in case any Git remotes are unresponsive.
+
+Different passthrough types are demonstrated in this example:
+
+- Two `git` passthroughs, the first pulling `refs/heads/test` from the
+  `myrules` Git repository, and the second pulling revision `97f7686`
+  from the `sast-rules` repository, and considering only files in the
+  `go` subdirectory.
   - The `sast-rules` entry has a higher precedence because it appears later in
     the configuration.
-  - If there is a filename collision between files in both repositories, files
-    from the `sast` repository overwrite files from the `myrules` repository,
-    as `sast-rules` has higher precedence.
-- The `raw` entry creates a file named `insecure.yml` under `/sgrules`. The
-  full path is `/sgrules/insecure.yml`.
-- The `url` entry fetches a configuration made available through a URL and
-  stores it in the `/sgrules/gosec.yml` file.
+  - If there's a filename collision between the two checkouts, files
+    from the `sast-rules` repository will overwrite files from the
+    `myrules` repository.
+- A `raw` passthrough, which writes its `value` to `/sgrules/insecure.yml`.
+- A `url` passthrough, which fetches a configuration hosted at a URL and
+  writes it to `/sgrules/gosec.yml`.
 
 Afterwards, Semgrep is invoked with the final configuration located under
 `/sgrules`.
 
 ```toml
 [semgrep]
-  description = 'semgrep custom rules configuration'
+  description = "My custom ruleset for Semgrep"
   targetdir = "/sgrules"
   timeout = 60
 
@@ -277,15 +449,15 @@ Afterwards, Semgrep is invoked with the final configuration located under
 rules:
 - id: "insecure"
   patterns:
-  - pattern: "func insecure() {...}"
+    - pattern: "func insecure() {...}"
   message: |
     Insecure function insecure detected
   metadata:
     cwe: "CWE-200: Exposure of Sensitive Information to an Unauthorized Actor"
   severity: "ERROR"
   languages:
-  - "go"
-    """
+    - "go"
+"""
 
   [[semgrep.passthrough]]
     type  = "url"
@@ -293,89 +465,93 @@ rules:
     target = "gosec.yml"
 ```
 
-### Interpolation
+### Configure the mode for passthroughs in a chain
 
-The code snippet below shows an example configuration that uses an environment
-variable `$GITURL` to access a private repositories with a Git URL. The variable contains
-a username and token in the `value` field (for example `https://user:token@url`).
-It does not explicitly store credentials in the configuration file. To reduce the risk of leaking secrets through created paths and files, use this feature with caution.
+You can choose how to handle filename conflicts that occur between
+passthroughs in a chain. The default behavior is to overwrite
+existing files with the same name, but you can choose `mode = append`
+instead to append the content of later files onto earlier ones.
 
-```toml
-[semgrep]
-  description = 'semgrep custom rules configuration'
-  targetdir = "/sgrules"
-  interpolate = true
+You can use the `append` mode for the `file`, `url`, and `raw`
+passthrough types only.
 
-  [[semgrep.passthrough]]
-    type  = "git"
-    value = "$GITURL"
-    ref = "refs/heads/main"
-```
-
-### Configure the append mode for passthroughs
-
-To append data to previous passthroughs, use the `append` mode for the
-passthrough types `file`, `url`, and `raw`.
-
-Passthroughs in `override` mode overwrite files
-created when preceding passthroughs in the chain find a naming
-collision. If `mode` is set to `append`, a passthrough appends data to the
-files created by its predecessors instead of overwriting.
-
-In the below Semgrep configuration,`/sgrules/insecure.yml` assembles two passthroughs. The rules are:
-
-- `insecure`
-- `secret`
-
-These rules add a search pattern to the analyzer and extends Semgrep capabilities.
-
-For passthrough chains we recommend that you enable validation. To enable validation,
-you can either:
-
-- set `validate` to `true`
-
-- set a passthrough `validator` to `xml`, `json`, `yaml`, or `toml`.
+With the following custom ruleset configuration, two `raw` passthroughs
+are used to iteratively assemble the `/sgrules/my-rules.yml` file, which
+is then provided to Semgrep as the ruleset. Each passthrough appends a
+single rule to the ruleset. The first passthrough is responsible for
+initialising the top-level `rules` object, according to the
+[Semgrep rule syntax](https://semgrep.dev/docs/writing-rules/rule-syntax/).
 
 ```toml
 [semgrep]
-  description = 'semgrep custom rules configuration'
+  description = "My custom ruleset for Semgrep"
   targetdir = "/sgrules"
   validate = true
 
   [[semgrep.passthrough]]
     type  = "raw"
-    target = "insecure.yml"
+    target = "my-rules.yml"
     value = """
 rules:
 - id: "insecure"
   patterns:
-  - pattern: "func insecure() {...}"
+    - pattern: "func insecure() {...}"
   message: |
-    Insecure function insecure detected
+    Insecure function 'insecure' detected
   metadata:
-    cwe: "...
+    cwe: "..."
   severity: "ERROR"
   languages:
-  - "go"
+    - "go"
 """
 
   [[semgrep.passthrough]]
     type  = "raw"
     mode  = "append"
-    target = "insecure.yml"
+    target = "my-rules.yml"
     value = """
 - id: "secret"
   patterns:
-  - pattern-either:
-    - pattern: "$MASK = \"...\""
-  - metavariable-regex:
-      metavariable: "$MASK"
-      regex: "(password|pass|passwd|pwd|secret|token)"
+    - pattern-either:
+        - pattern: '$MASK = "..."'
+    - metavariable-regex:
+        metavariable: "$MASK"
+        regex: "(password|pass|passwd|pwd|secret|token)"
   message: |
-    Use of Hard-coded Password
+    Use of hard-coded password
+  metadata:
     cwe: "..."
   severity: "ERROR"
   languages:
-  - "go"
+    - "go"
 """
+```
+
+```yaml
+# /sgrules/my-rules.yml
+rules:
+- id: "insecure"
+  patterns:
+    - pattern: "func insecure() {...}"
+  message: |
+    Insecure function 'insecure' detected
+  metadata:
+    cwe: "..."
+  severity: "ERROR"
+  languages:
+    - "go"
+- id: "secret"
+  patterns:
+    - pattern-either:
+        - pattern: '$MASK = "..."'
+    - metavariable-regex:
+        metavariable: "$MASK"
+        regex: "(password|pass|passwd|pwd|secret|token)"
+  message: |
+    Use of hard-coded password
+  metadata:
+    cwe: "..."
+  severity: "ERROR"
+  languages:
+    - "go"
 ```

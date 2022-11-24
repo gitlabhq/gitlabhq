@@ -49,6 +49,7 @@ describe('WorkItemLabels component', () => {
     searchQueryHandler = successSearchQueryHandler,
     updateWorkItemMutationHandler = successUpdateWorkItemMutationHandler,
     fetchByIid = false,
+    queryVariables = { id: workItemId },
   } = {}) => {
     const apolloProvider = createMockApollo([
       [workItemQuery, workItemQueryHandler],
@@ -63,9 +64,7 @@ describe('WorkItemLabels component', () => {
         workItemId,
         canUpdate,
         fullPath: 'test-project-path',
-        queryVariables: {
-          id: workItemId,
-        },
+        queryVariables,
         fetchByIid,
       },
       attachTo: document.body,
@@ -250,5 +249,12 @@ describe('WorkItemLabels component', () => {
 
     expect(workItemQuerySuccess).not.toHaveBeenCalled();
     expect(workItemByIidResponseHandler).toHaveBeenCalled();
+  });
+
+  it('skips calling the handlers when missing the needed queryVariables', async () => {
+    createComponent({ queryVariables: {}, fetchByIid: false });
+    await waitForPromises();
+
+    expect(workItemQuerySuccess).not.toHaveBeenCalled();
   });
 });

@@ -285,7 +285,7 @@
     list-style: none;
 
     > a,
-    button,
+    > button,
     .gl-button.btn-link,
     .menu-item {
       @include dropdown-link;

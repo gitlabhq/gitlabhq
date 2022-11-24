@@ -60,6 +60,7 @@ describe('WorkItemDescription', () => {
     canUpdate = true,
     workItemResponse = workItemResponseFactory({ canUpdate }),
     isEditing = false,
+    queryVariables = { id: workItemId },
     fetchByIid = false,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
@@ -75,9 +76,7 @@ describe('WorkItemDescription', () => {
       propsData: {
         workItemId: id,
         fullPath: 'test-project-path',
-        queryVariables: {
-          id: workItemId,
-        },
+        queryVariables,
         fetchByIid,
       },
       provide: {
@@ -274,6 +273,13 @@ describe('WorkItemDescription', () => {
 
         expect(workItemResponseHandler).not.toHaveBeenCalled();
         expect(workItemByIidResponseHandler).toHaveBeenCalled();
+      });
+
+      it('skips calling the handlers when missing the needed queryVariables', async () => {
+        createComponent({ queryVariables: {}, fetchByIid: false });
+        await waitForPromises();
+
+        expect(workItemResponseHandler).not.toHaveBeenCalled();
       });
     },
   );

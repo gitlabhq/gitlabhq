@@ -499,6 +499,12 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- The structure of `/etc/gitlab/gitlab-secrets.json` was modified in [GitLab 15.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6310),
+  and new configuration was added to `gitlab_pages`, `grafana`, and `mattermost` sections.
+  In a highly available or GitLab Geo environment, secrets need to be the same on all nodes.
+  If you're manually syncing the secrets file across nodes, or manually specifying secrets in
+  `/etc/gitlab/gitlab.rb`, make sure `/etc/gitlab/gitlab-secrets.json` is the same on all nodes.
+
 ### 15.3.3
 
 - In GitLab 15.3.3, [SAML Group Links](../api/groups.md#saml-group-links) API `access_level` attribute type changed to `integer`. See

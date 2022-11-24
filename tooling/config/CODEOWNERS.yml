@@ -59,6 +59,7 @@
         - 'config/events/'
         - 'config/audit_events/'
         - 'runner_token_expiration/'
+        - '*metadata_id_tokens*'
       patterns:
         - '%{keyword}'
 

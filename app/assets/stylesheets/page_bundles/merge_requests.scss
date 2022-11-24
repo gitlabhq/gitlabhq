@@ -1075,18 +1075,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.detail-page-header-actions {
-  .gl-toggle {
-    @include gl-ml-auto;
-    @include gl-rounded-pill;
-    @include gl-w-9;
-
-    &.is-checked:hover {
-      background-color: $blue-500;
-    }
-  }
-}
-
 .page-with-icon-sidebar .issue-sticky-header {
   --width: calc(100% - #{$contextual-sidebar-collapsed-width});
 }
@@ -1095,10 +1083,6 @@ $tabs-holder-z-index: 250;
   .gl-toggle-label {
     @include gl-font-weight-normal;
   }
-}
-
-.dropdown-menu li button.gl-toggle:not(.is-checked) {
-  background: $gray-400;
 }
 
 .mr-widget-content-row:first-child {

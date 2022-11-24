@@ -70,4 +70,46 @@ RSpec.describe Ci::UnitTestFailure do
       end
     end
   end
+
+  describe 'partitioning', :ci_partitionable do
+    let(:project) { FactoryBot.build(:project) }
+    let(:unit_test) { FactoryBot.build(:ci_unit_test, project: project) }
+
+    context 'with build' do
+      let(:build) { FactoryBot.build(:ci_build, partition_id: ci_testing_partition_id) }
+      let(:unit_test_failure) do
+        FactoryBot.build(:ci_unit_test_failure, build: build, unit_test: unit_test, failed_at: 1.day.ago)
+      end
+
+      it 'copies the partition_id from build' do
+        expect { unit_test_failure.valid? }.to change { unit_test_failure.partition_id }.to(ci_testing_partition_id)
+      end
+
+      context 'when it is already set' do
+        let(:unit_test_failure) do
+          FactoryBot.build(
+            :ci_unit_test_failure,
+            build: build,
+            unit_test: unit_test,
+            failed_at: 1.day.ago,
+            partition_id: 125
+          )
+        end
+
+        it 'does not change the partition_id value' do
+          expect { unit_test_failure.valid? }.not_to change { unit_test_failure.partition_id }
+        end
+      end
+    end
+
+    context 'without build' do
+      subject(:unit_test_failure) { FactoryBot.build(:ci_unit_test_failure, build: nil, partition_id: 125) }
+
+      it { is_expected.to validate_presence_of(:partition_id) }
+
+      it 'does not change the partition_id value' do
+        expect { unit_test_failure.valid? }.not_to change { unit_test_failure.partition_id }
+      end
+    end
+  end
 end

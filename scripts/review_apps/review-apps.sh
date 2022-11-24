@@ -374,4 +374,10 @@ function display_deployment_debug() {
 
   echoinfo "Environment debugging data:"
   kubectl get svc,pods,jobs -o wide --namespace "${namespace}"
+
+  echoinfo "Webservice logs:"
+  kubectl logs -l app=webservice --all-containers --namespace "${namespace}"
+
+  echoinfo "postgreSQL logs:"
+  kubectl logs -l app=postgresql --all-containers --namespace "${namespace}"
 }

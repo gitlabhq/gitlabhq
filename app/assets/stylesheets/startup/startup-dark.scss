@@ -704,7 +704,7 @@ html {
   list-style: none;
 }
 .dropdown-menu li > a,
-.dropdown-menu li button {
+.dropdown-menu li > button {
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -721,14 +721,14 @@ html {
   width: 100%;
 }
 .dropdown-menu li > a:active,
-.dropdown-menu li button:active {
+.dropdown-menu li > button:active {
   background-color: #4e4c53;
   color: #ececef;
   outline: 0;
   text-decoration: none;
 }
 .dropdown-menu li > a:active,
-.dropdown-menu li button:active {
+.dropdown-menu li > button:active {
   box-shadow: inset 0 0 0 2px #1f75cb, inset 0 0 0 3px #333238,
     inset 0 0 0 1px #333238;
   outline: none;

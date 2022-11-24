@@ -4,7 +4,7 @@ group: Distribution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Clean up **(FREE SELF)**
+# Clean up Rake tasks **(FREE SELF)**
 
 GitLab provides Rake tasks for cleaning up GitLab instances.
 

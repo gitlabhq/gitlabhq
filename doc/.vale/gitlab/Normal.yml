@@ -1,0 +1,14 @@
+---
+# Warning: gitlab.Normal
+#
+# Suggests alternatives for 'normal'.
+#
+# For a list of all options, see https://vale.sh/docs/topics/styles/
+extends: substitution
+message: "Use '%s' instead of '%s'."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
+level: warning
+ignorecase: true
+swap:
+  normally: "usually' or 'typically"
+  normal:  "typical' or 'standard"

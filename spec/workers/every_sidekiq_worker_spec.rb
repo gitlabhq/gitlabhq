@@ -388,6 +388,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'PipelineProcessWorker' => 3,
         'PostReceive' => 3,
         'ProcessCommitWorker' => 3,
+        'ProductAnalytics::InitializeAnalyticsWorker' => 3,
         'ProjectCacheWorker' => 3,
         'ProjectDestroyWorker' => 3,
         'ProjectExportWorker' => false,

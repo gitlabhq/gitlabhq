@@ -1119,7 +1119,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/services/users/email_verification/validate_token_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/services/users/refresh_authorized_projects_service.rb @gitlab-org/manage/authentication-and-authorization/approvers
 /app/services/webauthn/ @gitlab-org/manage/authentication-and-authorization/approvers
-/app/validators/json_schemas/build_metadata_id_tokens.json @gitlab-org/manage/authentication-and-authorization/approvers
 /app/validators/json_schemas/cluster_agent_authorization_configuration.json @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/admin/application_settings/_external_authorization_service_form.html.haml @gitlab-org/manage/authentication-and-authorization/approvers
 /app/views/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
@@ -1309,6 +1308,7 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/models/project_ci_cd_setting.rb @gitlab-org/maintainers/cicd-verify
 /app/presenters/commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
 /app/presenters/generic_commit_status_presenter.rb @gitlab-org/maintainers/cicd-verify
+/app/validators/json_schemas/build_metadata_id_tokens.json @gitlab-org/maintainers/cicd-verify
 /app/views/projects/artifacts/ @gitlab-org/maintainers/cicd-verify
 /app/views/projects/generic_commit_statuses/ @gitlab-org/maintainers/cicd-verify
 /app/views/projects/jobs/ @gitlab-org/maintainers/cicd-verify

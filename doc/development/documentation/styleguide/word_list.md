@@ -790,6 +790,24 @@ When the variable is **optional**:
 
 - You can set the variable.
 
+## normal, normally
+
+Don't use **normal** to mean the usual, typical, or standard way of doing something.
+Use those terms instead.
+
+Use:
+
+- Typically, you specify a certificate.
+- Usually, you specify a certificate.
+- Follow the standard Git workflow.
+
+Instead of:
+
+- Normally, you specify a certificate.
+- Follow the normal Git workflow.
+
+([Vale](../testing.md#vale) rule: [`Normal.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Normal.yml))
+
 ## note that
 
 Do not use **note that** because it's wordy.

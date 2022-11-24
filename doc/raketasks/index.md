@@ -7,15 +7,13 @@ comments: false
 
 # Rake tasks **(FREE SELF)**
 
-GitLab provides [Rake](https://ruby.github.io/rake/) tasks to assist you with
-common administration and operational processes.
+GitLab provides [Rake](https://ruby.github.io/rake/) tasks to assist you with common administration and operational
+processes.
 
 You can perform GitLab Rake tasks by using:
 
-- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html)
-  installations.
-- `bundle exec rake <raketask>` for [source](../install/installation.md)
-  installations.
+- `gitlab-rake <raketask>` for [Omnibus GitLab](https://docs.gitlab.com/omnibus/index.html) installations.
+- `bundle exec rake <raketask>` for [source](../install/installation.md) installations.
 
 ## Available Rake tasks
 

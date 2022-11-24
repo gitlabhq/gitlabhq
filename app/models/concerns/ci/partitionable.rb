@@ -29,6 +29,7 @@ module Ci
         Ci::JobArtifact
         Ci::PipelineVariable
         Ci::Pipeline
+        Ci::UnitTestFailure
       ].freeze
 
       def self.check_inclusion(klass)

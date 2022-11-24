@@ -2,12 +2,16 @@
 
 module Ci
   class UnitTestFailure < Ci::ApplicationRecord
+    include Ci::Partitionable
+
     REPORT_WINDOW = 14.days
 
     validates :unit_test, :build, :failed_at, presence: true
 
     belongs_to :unit_test, class_name: "Ci::UnitTest", foreign_key: :unit_test_id
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
+
+    partitionable scope: :build
 
     scope :deletable, -> { where('failed_at < ?', REPORT_WINDOW.ago) }
 

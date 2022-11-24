@@ -23,6 +23,14 @@ mapping:
   - source: lib/gitlab/usage_data_counters/(.+)\.rb
     test: spec/lib/gitlab/usage_data_spec.rb
 
+  # See https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/54#note_1160811638
+  - source: lib/gitlab/ci/config/(.+)\.rb
+    test: spec/lib/gitlab/ci/yaml_processor_spec.rb
+  - source: ee/lib/gitlab/ci/config/(.+)\.rb
+    test: spec/lib/gitlab/ci/yaml_processor_spec.rb
+  - source: ee/lib/gitlab/ci/config/(.+)\.rb
+    test: ee/spec/lib/gitlab/ci/yaml_processor_spec.rb
+
   # FOSS lib & tooling should map to respective spec
   - source: (tooling/)?lib/(.+)\.rb
     test: spec/%slib/%s_spec.rb

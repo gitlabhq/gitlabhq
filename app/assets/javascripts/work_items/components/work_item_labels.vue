@@ -83,7 +83,7 @@ export default {
         return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
       },
       skip() {
-        return !this.workItemId;
+        return !this.queryVariables.id && !this.queryVariables.iid;
       },
       error() {
         this.$emit('error', i18n.fetchError);
