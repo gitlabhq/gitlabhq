@@ -87,14 +87,17 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
   describe '.categories' do
     it 'gets CE unique category names' do
       expect(described_class.categories).to include(
-        'deploy_token_packages',
-        'user_packages',
-        'ecosystem',
         'analytics',
+        'ci_templates',
+        'ci_users',
+        'code_review',
+        'deploy_token_packages',
+        'ecosystem',
+        'environments',
+        'error_tracking',
+        'geo',
         'ide_edit',
-        'search',
-        'source_code',
-        'incident_management',
+        'importer',
         'incident_management_alerts',
         'incident_management_oncall',
         'testing',
@@ -103,19 +106,21 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
         'snippets',
         'code_review',
         'terraform',
-        'ci_templates',
         'quickactions',
         'pipeline_authoring',
         'epics_usage',
         'secure',
-        'importer',
         'geo',
         'growth',
         'work_items',
         'ci_users',
         'error_tracking',
         'manage',
-        'kubernetes_agent'
+        'kubernetes_agent',
+        'incident_management',
+        'search',
+        'source_code',
+        'user_packages'
       )
     end
   end
