@@ -23,9 +23,6 @@ build-qa-image:
   script:
     - run_timed_command "scripts/build_qa_image"
 
-# This image is used by:
-# - The `CNG` pipelines (via the `review-build-cng` job): https://gitlab.com/gitlab-org/build/CNG/-/blob/cfc67136d711e1c8c409bf8e57427a644393da2f/.gitlab-ci.yml#L335
-# - The `omnibus-gitlab` pipelines (via the `e2e:package-and-test` job): https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130
 build-assets-image:
   extends:
     - .base-image-build
@@ -33,7 +30,11 @@ build-assets-image:
   stage: build-images
   needs: ["compile-production-assets"]
   script:
-    # TODO: Change the image tag to be the MD5 of assets files and skip image building if the image exists
-    # We'll also need to pass GITLAB_ASSETS_TAG to the trigerred omnibus-gitlab pipeline similarly to how we do it for trigerred CNG pipelines
-    # https://gitlab.com/gitlab-org/gitlab/issues/208389
+    - skopeo login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - run_timed_command "scripts/build_assets_image"
+  artifacts:
+    expire_in: 7 days
+    paths:
+      # The `cached-assets-hash.txt` file is used in `review-build-cng-env` (`.gitlab/ci/review-apps/main.gitlab-ci.yml`)
+      # to pass the assets image tag to the CNG downstream pipeline.
+      - cached-assets-hash.txt

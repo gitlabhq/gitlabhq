@@ -226,6 +226,7 @@ module API
         mount ::API::Lint
         mount ::API::Markdown
         mount ::API::MergeRequestApprovals
+        mount ::API::MergeRequests
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
         mount ::API::Metrics::Dashboard::Annotations
@@ -304,7 +305,6 @@ module API
       mount ::API::Labels
       mount ::API::MavenPackages
       mount ::API::Members
-      mount ::API::MergeRequests
       mount ::API::Notes
       mount ::API::NotificationSettings
       mount ::API::NpmInstancePackages

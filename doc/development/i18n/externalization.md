@@ -284,9 +284,7 @@ expect(wrapper.text()).toEqual(MSG_ALERT_SETTINGS_FORM_ERROR);
 
 ### Dynamic translations
 
-Sometimes there are dynamic translations that the parser can't find when running
-`bin/rake gettext:find`. For these scenarios you can use the [`N_` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
-There's also an alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
+For more details you can see how we [keep translations dynamic](#keep-translations-dynamic).
 
 ## Working with special content
 
@@ -763,6 +761,10 @@ class MyPresenter
   end
 end
 ```
+
+Sometimes there are dynamic translations that the parser can't find when running
+`bin/rake gettext:find`. For these scenarios you can use the [`N_` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
+There's also an alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
 
 ### Splitting sentences
 

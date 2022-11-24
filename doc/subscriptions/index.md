@@ -155,9 +155,6 @@ For qualifying open source projects, the [GitLab for Open Source Program](https:
 
 #### Meeting GitLab for Open Source Program requirements
 
-NOTE:
-GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in an applicant's namespace must meet program requirements. Applicants submit materials related to one project in the applying namespace, and the open source program team uses that project to verify eligibility of the entire namespace.
-
 To meet GitLab for Open Source Program requirements, first add an OSI-approved open source license to all projects in your namespace.
 
 To add a license to a project:
@@ -165,7 +162,12 @@ To add a license to a project:
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the overview page, select **Add LICENSE**. If the license you want is not available as a license template, manually copy the entire, unaltered [text of your chosen license](https://opensource.org/licenses/alphabetical) into the `LICENSE` file. Note that GitLab defaults to **All rights reserved** if users do not perform this action.
 
+![Add license](img/add-license.png)
+
 Applicants must add the correct license to each project in their respective groups or namespaces. When you're sure you're using OSI-approved licenses for your projects, you can take your screenshots.
+
+NOTE:
+GitLab for Open Source Program benefits apply to an entire GitLab namespace. To qualify for the GitLab for Open Source Program, all projects in an applicant's namespace must meet program requirements. Applicants submit materials related to one project in the applying namespace, and the open source program team uses that project to verify eligibility of the entire namespace.
 
 #### Verification for Open Source Program
 

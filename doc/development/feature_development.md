@@ -19,7 +19,7 @@ Consult these topics for information on contributing to specific GitLab features
 
 ### General
 
-- [Directory structure](directory_structure.md)
+- [Software design guides](software_design.md)
 - [GitLab EventStore](event_store.md) to publish/subscribe to domain events
 - [GitLab utilities](utilities.md)
 - [Newlines style guide](newlines_styleguide.md)

@@ -1,36 +1,75 @@
+#!/bin/sh
+
+set -e
+
+# This script builds an image that contains assets, that's then used by:
+# - The `CNG` downstream pipelines (triggered from `gitlab-org/gitlab` via the `review-build-cng` job):
+#   https://gitlab.com/gitlab-org/gitlab/-/blob/c34e0834b01cd45c1f69a01b5e38dd6bc505f903/.gitlab/ci/review-apps/main.gitlab-ci.yml#L69.
+# - The `omnibus-gitlab` downstream pipelines (triggered from `gitlab-org/gitlab` via the `e2e:package-and-test` job):
+#   https://gitlab.com/gitlab-org/omnibus-gitlab/-/blob/dfd1ad475868fc84e91ab7b5706aa03e46dc3a86/.gitlab-ci.yml#L130.
+# - The `gitlab-org/charts/gitlab` `master` pipelines via `gitlab-org/build/CNG`,
+#   which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:master`
+# - The `omnibus-gitlab` and CNG `master`/stable-branch pipelines, for both gitlab.com and dev.gitlab.org,
+#   which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:${CI_COMMIT_REF_SLUG}`.
+# - The `omnibus-gitlab` tag pipelines, for both gitlab.com and dev.gitlab.org,
+#   which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:${CI_COMMIT_REF_SLUG}`.
+# - The CNG tag pipelines, for both gitlab.com and dev.gitlab.org,
+#   which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:${CI_COMMIT_REF_NAME}`.
+# - The auto-deploy pipelines, which pull `registry.gitlab.com/gitlab-org/gitlab/gitlab-assets-ee:${CI_COMMIT_SHA}`.
+
+. scripts/utils.sh
+
 # Exit early if we don't want to build the image
-if [[ "${BUILD_ASSETS_IMAGE}" != "true" ]]
+if [ "${BUILD_ASSETS_IMAGE}" != "true" ]
 then
   exit 0
 fi
 
 # Generate the image name based on the project this is being run in
 ASSETS_IMAGE_NAME="gitlab-assets-ce"
+
 # `dev.gitlab-org` still has gitlab-ee.
-if [[ "${CI_PROJECT_NAME}" == "gitlab" ]] || [[ "${CI_PROJECT_NAME}" == "gitlab-ee" ]]
-then
+if [ "${CI_PROJECT_NAME}" = "gitlab" ] || [ "${CI_PROJECT_NAME}" = "gitlab-ee" ]; then
   ASSETS_IMAGE_NAME="gitlab-assets-ee"
 fi
 
-ASSETS_IMAGE_PATH=${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}
+ASSETS_IMAGE_PATH="${CI_REGISTRY}/${CI_PROJECT_PATH}/${ASSETS_IMAGE_NAME}"
 
-mkdir -p assets_container.build/public
-cp -r public/assets assets_container.build/public/
-cp Dockerfile.assets assets_container.build/
-
-COMMIT_REF_SLUG_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}
-
+# Used in MR pipelines
+COMMIT_ASSETS_HASH_DESTINATION="${ASSETS_IMAGE_PATH}:$(assets_image_tag)"
+# Used by other projects's master pipelines
+COMMIT_REF_SLUG_DESTINATION="${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_SLUG}"
+# Used by auto-deploy pipelines: https://gitlab.com/gitlab-org/release/docs/blob/master/general/deploy/auto-deploy.md
 COMMIT_SHA_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_SHA}
-COMMIT_REF_NAME_DESTINATION=${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}
+# Used for CNG tag pipelines
+COMMIT_REF_NAME_DESTINATION="${ASSETS_IMAGE_PATH}:${CI_COMMIT_REF_NAME}"
 
-DESTINATIONS="--destination=$COMMIT_REF_SLUG_DESTINATION --destination=$COMMIT_SHA_DESTINATION"
+if skopeo inspect "docker://${COMMIT_ASSETS_HASH_DESTINATION}" > /dev/null; then
+  echosuccess "Image ${COMMIT_ASSETS_HASH_DESTINATION} already exists, no need to rebuild it."
 
-# Also tag the image with GitLab version, if running on a tag pipeline, so
-# other projects can simply use that instead of computing the slug.
-if [ -n "$CI_COMMIT_TAG" ]; then
-  DESTINATIONS="$DESTINATIONS --destination=$COMMIT_REF_NAME_DESTINATION"
+  skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_REF_SLUG_DESTINATION}"
+  skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_SHA_DESTINATION}"
+
+  if [ -n "${CI_COMMIT_TAG}" ]; then
+    skopeo copy "docker://${COMMIT_ASSETS_HASH_DESTINATION}" "docker://${COMMIT_REF_NAME_DESTINATION}"
+  fi
+else
+  echoinfo "Image ${COMMIT_ASSETS_HASH_DESTINATION} doesn't exist, we'll need to build it."
+
+  DESTINATIONS="--destination=${COMMIT_ASSETS_HASH_DESTINATION} --destination=${COMMIT_REF_SLUG_DESTINATION} --destination=${COMMIT_SHA_DESTINATION}"
+
+  if [ -n "${CI_COMMIT_TAG}" ]; then
+    DESTINATIONS="$DESTINATIONS --destination=${COMMIT_REF_NAME_DESTINATION}"
+  fi
+
+  mkdir -p assets_container.build/public
+  cp -r public/assets assets_container.build/public/
+  cp Dockerfile.assets assets_container.build/
+
+  echo "Building assets image for destinations: ${DESTINATIONS}"
+
+  /kaniko/executor \
+    --context="assets_container.build" \
+    --dockerfile="assets_container.build/Dockerfile.assets" \
+    ${DESTINATIONS}
 fi
-
-echo "building assets image for destinations: $DESTINATIONS"
-
-/kaniko/executor --context=assets_container.build --dockerfile=assets_container.build/Dockerfile.assets $DESTINATIONS

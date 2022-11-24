@@ -160,7 +160,7 @@ The technique can only optimize `IN` queries that satisfy the following requirem
   in the following order: `column_for_the_in_query`, `order by column 1`, and
   `order by column 2`.
 - The columns in the `ORDER BY` clause are distinct
-  (the combination of the columns uniquely identifies one particular column in the table).
+  (the combination of the columns uniquely identifies one particular row in the table).
 
 WARNING:
 This technique does not improve the performance of the `COUNT(*)` queries.
