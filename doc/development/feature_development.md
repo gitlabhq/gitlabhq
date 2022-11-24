@@ -54,7 +54,7 @@ Consult these topics for information on contributing to specific GitLab features
 ### Debugging
 
 - [Pry debugging](pry_debugging.md)
-- [Sidekiq debugging](../administration/troubleshooting/sidekiq.md)
+- [Sidekiq debugging](../administration/sidekiq/sidekiq_troubleshooting.md)
 
 ### Git specifics
 

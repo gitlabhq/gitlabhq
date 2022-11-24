@@ -271,7 +271,7 @@ which introduced the scope.
 
 When an API endpoint returns collections, always add a test to verify
 that the API endpoint does not have an N+1 problem, now and in the future.
-We can do this using [`ActiveRecord::QueryRecorder`](query_recorder.md).
+We can do this using [`ActiveRecord::QueryRecorder`](database/query_recorder.md).
 
 Example:
 

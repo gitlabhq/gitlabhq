@@ -41,7 +41,7 @@ In brief:
 - The WebSocket is handled in [Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse),
   rather than the Rails application server.
 - Workhorse queries Rails for connection details and user permissions. Rails
-  queries Kubernetes for them in the background using [Sidekiq](../troubleshooting/sidekiq.md).
+  queries Kubernetes for them in the background using [Sidekiq](../sidekiq/sidekiq_troubleshooting.md).
 - Workhorse acts as a proxy server between the user's browser and the Kubernetes
   API, passing WebSocket frames between the two.
 - Workhorse regularly polls Rails, terminating the WebSocket connection if the

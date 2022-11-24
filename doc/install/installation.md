@@ -32,7 +32,7 @@ Because an installation from source is a lot of work and error prone we strongly
 One reason the Omnibus package is more reliable is its use of runit to restart any of the GitLab processes in case one crashes.
 On heavily used GitLab instances the memory usage of the Sidekiq background worker grows over time.
 
-Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/operations/sidekiq_memory_killer.md) if it uses too much memory.
+Omnibus packages solve this by [letting the Sidekiq terminate gracefully](../administration/sidekiq/sidekiq_memory_killer.md) if it uses too much memory.
 After this termination runit detects Sidekiq is not running and starts it.
 Because installations from source don't use runit for process supervision, Sidekiq
 can't be terminated and its memory usage grows over time.

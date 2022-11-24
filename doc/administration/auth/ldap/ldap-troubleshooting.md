@@ -541,7 +541,7 @@ Usually this is not a cause for concern.
 
 If you think a particular user should already exist in GitLab, but you're seeing
 this entry, it could be due to a mismatched DN stored in GitLab. See
-[User DN and/or email have changed](#user-dn-orand-email-have-changed) to update the user's LDAP identity.
+[User DN and email have changed](#user-dn-and-email-have-changed) to update the user's LDAP identity.
 
 ```shell
 User with DN `uid=john0,ou=people,dc=example,dc=com` should have access
@@ -624,23 +624,13 @@ does not do this:
 1. Wait until LDAP group synchronization has finished running.
 1. Remove the user from the LDAP group.
 
-### User DN or/and email have changed
+### User DN and email have changed
 
-When an LDAP user is created in GitLab, their LDAP DN is stored for later reference.
-
-If GitLab cannot find a user by their DN, it falls back
-to finding the user by their email. If the lookup is successful, GitLab
-updates the stored DN to the new value so both values now match what's in
-LDAP.
-
-If the email has changed and the DN has not, GitLab finds the user with
-the DN and updates its own record of the user's email to match the one in LDAP.
-
-However, if the primary email _and_ the DN change in LDAP, then GitLab
-has no way of identifying the correct LDAP record of the user and, as a
-result, the user is blocked. To rectify this, the user's existing
-profile must be updated with at least one of the new values (primary
-email or DN) so the LDAP record can be found.
+If both the primary email **and** the DN change in LDAP, GitLab has
+no way of identifying the correct LDAP record of a user and, as a
+result, blocks that user. To fix this, update the user's existing
+GitLab profile with at least one of the new primary email or DN values
+so GitLab can find the LDAP record.
 
 The following script updates the emails for all provided users so they
 aren't blocked or unable to access their accounts.

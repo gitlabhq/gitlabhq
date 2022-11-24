@@ -308,7 +308,7 @@ In the second (filtered) example, we know exactly 100 will be updated with each 
 
 NOTE:
 When applying additional filters, it is important to ensure they are properly covered by an index to optimize `EachBatch` performance.
-In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](../iterating_tables_in_batches.md).
+In the example above we need an index on `(type, id)` to support the filters. See [the `EachBatch` docs for more information](iterating_tables_in_batches.md).
 
 ## Example
 

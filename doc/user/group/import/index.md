@@ -9,14 +9,14 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
 > - Group items [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338985) in GitLab 14.3.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 for project resources [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 
 FLAG:
 On self-managed GitLab, by default [migrating group items](#migrated-group-items) is available. To hide the
 feature, ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `bulk_import`.
 On self-managed GitLab, by default [migrating project items](#migrated-project-items) is not available. To show
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
-`bulk_import_projects`. On GitLab.com, migrating group resources is available but migrating project resources is not
-available.
+`bulk_import_projects`. On GitLab.com, migration of both groups and projects is available.
 
 Users with the Owner role on a top-level group can use GitLab Migration to migrate the group to:
 
@@ -116,10 +116,11 @@ Any other items are **not** migrated.
 
 ## Migrated project items
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4 [with a flag](../../feature_flags.md) named `bulk_import_projects`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/339941) in GitLab 15.6.
 
 FLAG:
-On self-managed GitLab, migrating project resources are not available by default. To make them available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`. On GitLab.com, migrating project resources are not available.
+On self-managed GitLab, migrating project resources are not available by default. To make them available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `bulk_import_projects`. On GitLab.com, migration of project resources is available.
 
 The [`import_export.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/import_export/project/import_export.yml)
 file for projects lists many of the items migrated when migrating projects using group migration. View this file in the branch
@@ -131,6 +132,7 @@ Migrating projects with file exports uses the same export and import mechanisms 
 
 - Projects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
   - Auto DevOps ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339410) in GitLab 14.6)
+  - Badges ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75029) in GitLab 14.6)
   - Branches (including protected branches) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339414) in GitLab 14.7)
   - CI Pipelines ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339407) in GitLab 14.6)
   - Designs ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339421) in GitLab 15.1)
@@ -140,6 +142,8 @@ Migrating projects with file exports uses the same export and import mechanisms 
     - Issue resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Issue resource iteration events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Merge request URL references ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) in GitLab 15.6)
+    - Time Tracking ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267946) in GitLab 14.4)
+  - Issue boards ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71661) in GitLab 14.4)
   - Labels ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339419) in GitLab 14.4)
   - LFS Objects ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339405) in GitLab 14.8)
   - Members ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341886) in GitLab 14.8)
@@ -150,16 +154,28 @@ Migrating projects with file exports uses the same export and import mechanisms 
     - Merge request resource state events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Merge request resource milestone events ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) in GitLab 15.4)
     - Issue URL references ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) in GitLab 15.6)
-  - Migrate Push Rules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.6)
-  - Pull Requests (including external pull requests) ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339409) in GitLab 14.5)
+    - Time Tracking ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.5)
+  - Push Rules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) in GitLab 14.6)
+  - Milestones ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339417) in GitLab 14.5)
+  - External Pull Requests ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339409) in GitLab 14.5)
   - Pipeline History ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339412) in GitLab 14.6)
   - Pipeline Schedules ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339408) in GitLab 14.8)
+  - Project Features ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74722) in GitLab 14.6)
   - Releases ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339422) in GitLab 15.1)
   - Release Evidences ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360567) in GitLab 15.1)
   - Repositories ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267945) in GitLab 14.4)
   - Snippets ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343438) in GitLab 14.6)
+  - Settings ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339416) in GitLab 14.6)
+    - Avatar ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75249) in GitLab 14.6)
+    - Container Expiration Policy ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) in GitLab 14.6)
+    - Project Properties ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75898) in GitLab 14.6)
+    - Service Desk ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) in GitLab 14.6)
   - Uploads ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339401) in GitLab 14.5)
   - Wikis ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345923) in GitLab 14.6)
+
+Items excluded from migration, because they contain sensitive information:
+
+- Pipeline Triggers
 
 ## Troubleshooting Group Migration
 

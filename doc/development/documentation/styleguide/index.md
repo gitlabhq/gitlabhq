@@ -97,7 +97,7 @@ move in this direction, so we can address these issues:
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.
 
-GitLab uses these [topic types](../structure.md).
+GitLab uses these [topic types](../topic_types/index.md).
 
 ### Link instead of repeating text
 

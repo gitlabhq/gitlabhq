@@ -2115,7 +2115,7 @@ end
   Authenticating a user with the `current_user:` argument for `post_graphql`
   generates more queries on the first request than on subsequent requests on that
   same user. If you are testing for N+1 queries using
-  [QueryRecorder](query_recorder.md), use a **different** user for each request.
+  [QueryRecorder](database/query_recorder.md), use a **different** user for each request.
 
   The below example shows how a test for avoiding N+1 queries should look:
 

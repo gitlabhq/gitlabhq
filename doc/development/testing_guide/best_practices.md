@@ -1341,7 +1341,7 @@ Testing query performance allows us to:
 `QueryRecorder` allows profiling and testing of the number of database queries
 performed in a given block of code.
 
-See the [`QueryRecorder`](../query_recorder.md) section for more details.
+See the [`QueryRecorder`](../database/query_recorder.md) section for more details.
 
 #### GitalyClient
 

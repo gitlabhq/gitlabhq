@@ -37,7 +37,7 @@ consistent performance of GitLab. Refer to the [Index](#performance-documentatio
   - [Service measurement](../development/service_measurement.md)
 - Self-managed administration and customer-focused:
   - [File system performance benchmarking](../administration/operations/filesystem_benchmarking.md)
-  - [Sidekiq performance troubleshooting](../administration/troubleshooting/sidekiq.md)
+  - [Sidekiq performance troubleshooting](../administration/sidekiq/sidekiq_troubleshooting.md)
 
 ## Workflow
 
@@ -74,7 +74,7 @@ GitLab provides built-in tools to help improve performance and availability:
 - [Profiling](profiling.md).
 - [Distributed Tracing](distributed_tracing.md)
 - [GitLab Performance Monitoring](../administration/monitoring/performance/index.md).
-- [QueryRecoder](query_recorder.md) for preventing `N+1` regressions.
+- [QueryRecoder](database/query_recorder.md) for preventing `N+1` regressions.
 - [Chaos endpoints](chaos_endpoints.md) for testing failure scenarios. Intended mainly for testing availability.
 - [Service measurement](service_measurement.md) for measuring and logging service execution.
 

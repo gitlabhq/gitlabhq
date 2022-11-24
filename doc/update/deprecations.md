@@ -48,6 +48,27 @@ sole discretion of GitLab Inc.
 
 <div class="announcement-milestone">
 
+## Announced in 15.7
+
+<div class="deprecation removal-160 breaking-change">
+
+### KAS Metrics Port in GitLab Helm Chart
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The `gitlab.kas.metrics.port` has been deprecated in favor of the new `gitlab.kas.observability.port` configuration field for the [GitLab Helm Chart](https://gitlab.com/gitlab-org/charts/gitlab/-/merge_requests/2839).
+This port is used for much more than just metrics, which warranted this change to avoid confusion in configuration.
+
+</div>
+</div>
+
+<div class="announcement-milestone">
+
 ## Announced in 15.6
 
 <div class="deprecation removal-160 breaking-change">

@@ -592,8 +592,6 @@ Grafana is an open source, feature rich metrics dashboard and graph editor for G
 Jaeger, inspired by Dapper and OpenZipkin, is a distributed tracing system.
 It can be used for monitoring microservices-based distributed systems.
 
-For monitoring deployed apps, see [Jaeger tracing documentation](../operations/tracing.md)
-
 #### Logrotate
 
 - [Project page](https://github.com/logrotate/logrotate/blob/master/README.md)

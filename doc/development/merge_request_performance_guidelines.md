@@ -145,7 +145,7 @@ end
 This means running one query for every object to update. This code can
 easily overload a database given enough rows to update or many instances of this
 code running in parallel. This particular problem is known as the
-["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
+["N+1 query problem"](https://guides.rubyonrails.org/active_record_querying.html#eager-loading-associations). You can write a test with [QueryRecorder](database/query_recorder.md) to detect this and prevent regressions.
 
 In this particular case the workaround is fairly easy:
 
@@ -224,7 +224,7 @@ The total number of the queries (including cached ones) executed by the code mod
 should not increase unless absolutely necessary.
 The number of executed queries (including cached queries) should not depend on
 collection size.
-You can write a test by passing the `skip_cached` variable to [QueryRecorder](query_recorder.md) to detect this and prevent regressions.
+You can write a test by passing the `skip_cached` variable to [QueryRecorder](database/query_recorder.md) to detect this and prevent regressions.
 
 As an example, say you have a CI pipeline. All pipeline builds belong to the same pipeline,
 thus they also belong to the same project (`pipeline.project`):
@@ -351,7 +351,7 @@ Post.all.includes(:author).each do |post|
 end
 ```
 
-Also consider using [QueryRecoder tests](query_recorder.md) to prevent a regression when eager loading.
+Also consider using [QueryRecoder tests](database/query_recorder.md) to prevent a regression when eager loading.
 
 ## Memory Usage
 

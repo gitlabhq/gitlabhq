@@ -1936,7 +1936,7 @@ Updates to example must be made at:
 NOTE:
 If you find that the environment's Sidekiq job processing is slow with long queues,
 more nodes can be added as required. You can also tune your Sidekiq nodes to
-run [multiple Sidekiq processes](../operations/extra_sidekiq_processes.md).
+run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 
 <div align="right">
   <a type="button" class="btn btn-default" href="#setup-components">

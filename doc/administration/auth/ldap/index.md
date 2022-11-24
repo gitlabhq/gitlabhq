@@ -507,6 +507,18 @@ If initially your LDAP configuration looked like:
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+## Updating LDAP DN and email
+
+When an LDAP user is created in GitLab, their LDAP distinguished name (DN) is linked to their GitLab account as an identifier.
+
+When a user tries to sign in with LDAP, GitLab tries to find the user using the DN saved on that user's account.
+
+- If GitLab finds the user by the DN, and the user's email matches the GitLab account's email, GitLab does not take any further action.
+- If GitLab finds the user by the DN and the user's email has changed, GitLab updates its record of the user's email to match the one in LDAP.
+- If GitLab cannot find a user by their DN, it tries to find the user by their email. If GitLab finds the user by their email, GitLab updates the DN stored in the user's GitLab account. Both values now match the information stored in LDAP.
+
+If both the DN **and** the email address have changed, see the [user DN and email have changed](ldap-troubleshooting.md#user-dn-and-email-have-changed) section of our documentation.
+
 ## Disable anonymous LDAP authentication
 
 GitLab doesn't support TLS client authentication. Complete these steps on your LDAP server.
@@ -543,7 +555,7 @@ Updating user email addresses must be done on the LDAP server that manages the u
 
 The updated user's previous email address becomes the secondary email address to preserve that user's commit history.
 
-You can find more details on the expected behavior of user updates in our [LDAP troubleshooting section](ldap-troubleshooting.md#user-dn-orand-email-have-changed).
+You can find more details on the expected behavior of user updates in our [LDAP troubleshooting section](ldap-troubleshooting.md#user-dn-and-email-have-changed).
 
 ## Google Secure LDAP
 

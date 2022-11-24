@@ -12,7 +12,7 @@ The GitLab documentation is [intended as the single source of truth (SSOT)](http
 In addition to this page, the following resources can help you craft and contribute to documentation:
 
 - [Style Guide](styleguide/index.md) - What belongs in the docs, language guidelines, Markdown standards to follow, links, and more.
-- [Topic type template](structure.md) - Learn about the different types of topics.
+- [Topic types](topic_types/index.md) - Learn about the different types of topics.
 - [Documentation process](workflow.md).
 - [Markdown Guide](../../user/markdown.md) - A reference for all Markdown syntax supported by GitLab.
 - [Site architecture](site_architecture/index.md) - How <https://docs.gitlab.com> is built.

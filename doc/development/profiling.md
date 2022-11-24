@@ -149,7 +149,7 @@ ENABLE_BULLET=true bundle exec rails s
 Bullet logs query problems to both the Rails log as well as the browser
 console.
 
-As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](query_recorder.md) to prevent a regression.
+As a follow up to finding `N+1` queries with Bullet, consider writing a [QueryRecoder test](database/query_recorder.md) to prevent a regression.
 
 ## System stats
 

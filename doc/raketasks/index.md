@@ -39,7 +39,7 @@ The following Rake tasks are available for use with GitLab:
 | [Praefect Rake tasks](../administration/raketasks/praefect.md) | [Praefect](../administration/gitaly/praefect.md)-related tasks. |
 | [Project import/export](../administration/raketasks/project_import_export.md) | Prepare for [project exports and imports](../user/project/settings/import_export.md). |
 | [Sample Prometheus data](generate_sample_prometheus_data.md) | Generate sample Prometheus data. |
-| [Sidekiq job migration](sidekiq_job_migration.md) | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
+| [Sidekiq job migration](../administration/sidekiq/sidekiq_job_migration.md) | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
 | [SMTP maintenance](../administration/raketasks/smtp.md) | SMTP-related tasks. |
 | [SPDX license list import](spdx.md)                   | Import a local copy of the [SPDX license list](https://spdx.org/licenses/) for matching [License Compliance policies](../user/compliance/license_compliance/index.md). |
 | [Repository storage](../administration/raketasks/storage.md) | List and migrate existing projects and attachments from legacy storage to hashed storage. |

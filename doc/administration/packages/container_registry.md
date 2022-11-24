@@ -882,7 +882,7 @@ WARNING:
 If you're using a distributed architecture and Sidekiq is running on a different node, the cleanup
 policies don't work. To fix this, you must configure the `gitlab.rb` file on the Sidekiq nodes to
 point to the correct registry URL and copy the `registry.key` file to each Sidekiq node. For more
-information, see the [Sidekiq configuration](../sidekiq.md)
+information, see the [Sidekiq configuration](../sidekiq/index.md)
 page.
 
 To reduce the amount of [Container Registry disk space used by a given project](#registry-disk-space-usage-by-project),
