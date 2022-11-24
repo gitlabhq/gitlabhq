@@ -129,4 +129,44 @@ describe('GlobalSearchSidebarFilters', () => {
       expect(actionSpies.resetQuery).toHaveBeenCalled();
     });
   });
+
+  describe.each`
+    scope               | showFilter
+    ${'issues'}         | ${true}
+    ${'merge_requests'} | ${false}
+    ${'projects'}       | ${false}
+    ${'milestones'}     | ${false}
+    ${'users'}          | ${false}
+    ${'notes'}          | ${false}
+    ${'wiki_blobs'}     | ${false}
+    ${'blobs'}          | ${false}
+  `(`ConfidentialityFilter`, ({ scope, showFilter }) => {
+    beforeEach(() => {
+      createComponent({ urlQuery: { scope } });
+    });
+
+    it(`does${showFilter ? '' : ' not'} render when scope is ${scope}`, () => {
+      expect(findConfidentialityFilter().exists()).toBe(showFilter);
+    });
+  });
+
+  describe.each`
+    scope               | showFilter
+    ${'issues'}         | ${true}
+    ${'merge_requests'} | ${true}
+    ${'projects'}       | ${false}
+    ${'milestones'}     | ${false}
+    ${'users'}          | ${false}
+    ${'notes'}          | ${false}
+    ${'wiki_blobs'}     | ${false}
+    ${'blobs'}          | ${false}
+  `(`StatusFilter`, ({ scope, showFilter }) => {
+    beforeEach(() => {
+      createComponent({ urlQuery: { scope } });
+    });
+
+    it(`does${showFilter ? '' : ' not'} render when scope is ${scope}`, () => {
+      expect(findStatusFilter().exists()).toBe(showFilter);
+    });
+  });
 });

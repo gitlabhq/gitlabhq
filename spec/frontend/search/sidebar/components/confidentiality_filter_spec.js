@@ -1,38 +1,15 @@
 import { shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
-import Vuex from 'vuex';
-import { MOCK_QUERY } from 'jest/search/mock_data';
 import ConfidentialityFilter from '~/search/sidebar/components/confidentiality_filter.vue';
 import RadioFilter from '~/search/sidebar/components/radio_filter.vue';
-
-Vue.use(Vuex);
 
 describe('ConfidentialityFilter', () => {
   let wrapper;
 
-  const actionSpies = {
-    applyQuery: jest.fn(),
-    resetQuery: jest.fn(),
-  };
-
-  const createComponent = (initialState) => {
-    const store = new Vuex.Store({
-      state: {
-        query: MOCK_QUERY,
-        ...initialState,
-      },
-      actions: actionSpies,
-    });
-
+  const createComponent = (initProps) => {
     wrapper = shallowMount(ConfidentialityFilter, {
-      store,
+      ...initProps,
     });
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-    wrapper = null;
-  });
 
   const findRadioFilter = () => wrapper.findComponent(RadioFilter);
 
@@ -41,24 +18,28 @@ describe('ConfidentialityFilter', () => {
       createComponent();
     });
 
-    describe.each`
-      scope               | showFilter
-      ${'issues'}         | ${true}
-      ${'merge_requests'} | ${false}
-      ${'projects'}       | ${false}
-      ${'milestones'}     | ${false}
-      ${'users'}          | ${false}
-      ${'notes'}          | ${false}
-      ${'wiki_blobs'}     | ${false}
-      ${'blobs'}          | ${false}
-    `(`dropdown`, ({ scope, showFilter }) => {
-      beforeEach(() => {
-        createComponent({ query: { scope } });
-      });
+    it('renders the component', () => {
+      expect(findRadioFilter().exists()).toBe(true);
+    });
+  });
 
-      it(`does${showFilter ? '' : ' not'} render when scope is ${scope}`, () => {
-        expect(findRadioFilter().exists()).toBe(showFilter);
+  describe.each`
+    hasFeatureFlagEnabled | paddingClass
+    ${true}               | ${'gl-px-5'}
+    ${false}              | ${'gl-px-0'}
+  `(`RadioFilter`, ({ hasFeatureFlagEnabled, paddingClass }) => {
+    beforeEach(() => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            searchPageVerticalNav: hasFeatureFlagEnabled,
+          },
+        },
       });
+    });
+
+    it(`has ${paddingClass} class`, () => {
+      expect(findRadioFilter().classes(paddingClass)).toBe(true);
     });
   });
 });

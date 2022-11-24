@@ -2,6 +2,7 @@
 
 NO_SPECS_LABELS = [
   'maintenance::pipelines',
+  'maintenance::refactor',
   'maintenance::workflow',
   'documentation',
   'QA'

@@ -173,7 +173,7 @@ module Gitlab
 
         private
 
-        def track_snowplow_action(action, author, project)
+        def track_snowplow_action(event_name, author, project)
           return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
           return unless author
 
@@ -181,17 +181,18 @@ module Gitlab
             ISSUE_CATEGORY,
             ISSUE_ACTION,
             label: ISSUE_LABEL,
-            property: action,
+            property: event_name,
             project: project,
             namespace: project.namespace,
-            user: author
+            user: author,
+            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
           )
         end
 
-        def track_unique_action(action, author)
+        def track_unique_action(event_name, author)
           return unless author
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id)
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: author.id)
         end
       end
     end
