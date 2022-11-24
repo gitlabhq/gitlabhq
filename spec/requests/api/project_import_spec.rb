@@ -44,7 +44,7 @@ RSpec.describe API::ProjectImport, :aggregate_failures do
 
     it_behaves_like 'requires authentication'
 
-    it 'executes a limited number of queries' do
+    it 'executes a limited number of queries', :use_clean_rails_redis_caching do
       control_count = ActiveRecord::QueryRecorder.new { subject }.count
 
       expect(control_count).to be <= 111

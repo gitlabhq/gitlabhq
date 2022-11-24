@@ -54,7 +54,7 @@ RSpec.describe Groups::LabelsController do
         get :index, params: { group_id: group.to_param }
       end
 
-      it 'avoids N+1 queries' do
+      it 'avoids N+1 queries', :use_clean_rails_redis_caching do
         control = ActiveRecord::QueryRecorder.new(skip_cached: false) { get :index, params: { group_id: group.to_param } }
 
         create_list(:group_label, 3, group: group)

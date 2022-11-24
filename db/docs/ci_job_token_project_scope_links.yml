@@ -4,7 +4,10 @@ classes:
 - Ci::JobToken::ProjectScopeLink
 feature_categories:
 - continuous_integration
-description: The connection between a source project, which defines the job token scope, and a target project, which is the one allowed to be accessed by the job token.
+description: |
+  Links a source project and target project, allowing a project's job token to give access to another project.
+  Using the outbound direction, the source project's job token can access target projects.
+  Using the inbound direction, the source project can be accessed by the target project's job token.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62733
 milestone: '14.0'
 gitlab_schema: gitlab_ci

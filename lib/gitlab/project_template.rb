@@ -60,6 +60,7 @@ module Gitlab
           ProjectTemplate.new('dotnetcore', '.NET Core', _('A .NET Core console application template, customizable for any .NET Core project'), 'https://gitlab.com/gitlab-org/project-templates/dotnetcore', 'illustrations/third-party-logos/dotnet.svg'),
           ProjectTemplate.new('android', 'Android', _('A ready-to-go template for use with Android apps'), 'https://gitlab.com/gitlab-org/project-templates/android', 'illustrations/logos/android.svg'),
           ProjectTemplate.new('gomicro', 'Go Micro', _('Go Micro is a framework for micro service development'), 'https://gitlab.com/gitlab-org/project-templates/go-micro', 'illustrations/logos/gomicro.svg'),
+          ProjectTemplate.new('bridgetown', 'Pages/Bridgetown', _('Everything you need to create a GitLab Pages site using Bridgetown'), 'https://gitlab.com/gitlab-org/project-templates/bridgetown'),
           ProjectTemplate.new('gatsby', 'Pages/Gatsby', _('Everything you need to create a GitLab Pages site using Gatsby'), 'https://gitlab.com/pages/gatsby', 'illustrations/third-party-logos/gatsby.svg'),
           ProjectTemplate.new('hugo', 'Pages/Hugo', _('Everything you need to create a GitLab Pages site using Hugo'), 'https://gitlab.com/pages/hugo', 'illustrations/logos/hugo.svg'),
           ProjectTemplate.new('pelican', 'Pages/Pelican', _('Everything you need to create a GitLab Pages site using Pelican'), 'https://gitlab.com/pages/pelican', 'illustrations/third-party-logos/pelican.svg'),

@@ -52,14 +52,8 @@ module Gitlab
               .each(&method(:verify!))
           end
 
-          def normalize_location(location)
-            logger.instrument(:config_mapper_normalize) do
-              normalize_location_without_instrumentation(location)
-            end
-          end
-
           # convert location if String to canonical form
-          def normalize_location_without_instrumentation(location)
+          def normalize_location(location)
             if location.is_a?(String)
               expanded_location = expand_variables(location)
               normalize_location_string(expanded_location)

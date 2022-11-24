@@ -6,7 +6,6 @@ RSpec.describe Ci::BuildMetadata do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, group: group, build_timeout: 2000) }
-
   let_it_be(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: project.commit.id,
@@ -14,7 +13,9 @@ RSpec.describe Ci::BuildMetadata do
                          status: 'success')
   end
 
-  let(:job) { create(:ci_build, pipeline: pipeline) }
+  let_it_be_with_reload(:runner) { create(:ci_runner) }
+
+  let(:job) { create(:ci_build, pipeline: pipeline, runner: runner) }
   let(:metadata) { job.metadata }
 
   it_behaves_like 'having unique enum values'
@@ -32,63 +33,110 @@ RSpec.describe Ci::BuildMetadata do
       end
     end
 
-    context 'when project timeout is set' do
-      context 'when runner is assigned to the job' do
+    context 'when job, project and runner timeouts are set' do
+      context 'when job timeout is lower then runner timeout' do
         before do
-          job.update!(runner: runner)
+          runner.update!(maximum_timeout: 4000)
+          job.update!(options: { job_timeout: 3000 })
         end
 
-        context 'when runner timeout is not set' do
-          let(:runner) { create(:ci_runner, maximum_timeout: nil) }
-
-          it_behaves_like 'sets timeout', 'project_timeout_source', 2000
-        end
-
-        context 'when runner timeout is lower than project timeout' do
-          let(:runner) { create(:ci_runner, maximum_timeout: 1900) }
-
-          it_behaves_like 'sets timeout', 'runner_timeout_source', 1900
-        end
-
-        context 'when runner timeout is higher than project timeout' do
-          let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
-
-          it_behaves_like 'sets timeout', 'project_timeout_source', 2000
-        end
+        it_behaves_like 'sets timeout', 'job_timeout_source', 3000
       end
 
-      context 'when job timeout is set' do
-        context 'when job timeout is higher than project timeout' do
-          let(:job) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 3000 }) }
-
-          it_behaves_like 'sets timeout', 'job_timeout_source', 3000
+      context 'when runner timeout is lower then job timeout' do
+        before do
+          runner.update!(maximum_timeout: 2000)
+          job.update!(options: { job_timeout: 3000 })
         end
 
-        context 'when job timeout is lower than project timeout' do
-          let(:job) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 1000 }) }
+        it_behaves_like 'sets timeout', 'runner_timeout_source', 2000
+      end
+    end
 
-          it_behaves_like 'sets timeout', 'job_timeout_source', 1000
+    context 'when job, project timeout values are set and runner is assigned' do
+      context 'when runner has no timeout set' do
+        before do
+          runner.update!(maximum_timeout: nil)
+          job.update!(options: { job_timeout: 3000 })
         end
+
+        it_behaves_like 'sets timeout', 'job_timeout_source', 3000
+      end
+    end
+
+    context 'when only job and project timeouts are defined' do
+      context 'when job timeout is lower then project timeout' do
+        before do
+          job.update!(options: { job_timeout: 1000 })
+        end
+
+        it_behaves_like 'sets timeout', 'job_timeout_source', 1000
       end
 
-      context 'when both runner and job timeouts are set' do
+      context 'when project timeout is lower then job timeout' do
         before do
-          job.update!(runner: runner)
+          job.update!(options: { job_timeout: 3000 })
         end
 
-        context 'when job timeout is higher than runner timeout' do
-          let(:job) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 3000 }) }
-          let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
+        it_behaves_like 'sets timeout', 'job_timeout_source', 3000
+      end
+    end
 
-          it_behaves_like 'sets timeout', 'runner_timeout_source', 2100
+    context 'when only project and runner timeouts are defined' do
+      before do
+        runner.update!(maximum_timeout: 1900)
+      end
+
+      context 'when runner timeout is lower then project timeout' do
+        it_behaves_like 'sets timeout', 'runner_timeout_source', 1900
+      end
+
+      context 'when project timeout is lower then runner timeout' do
+        before do
+          runner.update!(maximum_timeout: 2100)
         end
 
-        context 'when job timeout is lower than runner timeout' do
-          let(:job) { create(:ci_build, pipeline: pipeline, options: { job_timeout: 1900 }) }
-          let(:runner) { create(:ci_runner, maximum_timeout: 2100) }
+        it_behaves_like 'sets timeout', 'project_timeout_source', 2000
+      end
+    end
 
-          it_behaves_like 'sets timeout', 'job_timeout_source', 1900
+    context 'when only job and runner timeouts are defined' do
+      context 'when runner timeout is lower them job timeout' do
+        before do
+          job.update!(options: { job_timeout: 2000 })
+          runner.update!(maximum_timeout: 1900)
         end
+
+        it_behaves_like 'sets timeout', 'runner_timeout_source', 1900
+      end
+
+      context 'when job timeout is lower them runner timeout' do
+        before do
+          job.update!(options: { job_timeout: 1000 })
+          runner.update!(maximum_timeout: 1900)
+        end
+
+        it_behaves_like 'sets timeout', 'job_timeout_source', 1000
+      end
+    end
+
+    context 'when only job timeout is defined and runner is assigned, but has no timeout set' do
+      before do
+        job.update!(options: { job_timeout: 1000 })
+        runner.update!(maximum_timeout: nil)
+      end
+
+      it_behaves_like 'sets timeout', 'job_timeout_source', 1000
+    end
+
+    context 'when only one timeout value is defined' do
+      context 'when only project timeout value is defined' do
+        before do
+          job.update!(options: { job_timeout: nil })
+          runner.update!(maximum_timeout: nil)
+        end
+
+        it_behaves_like 'sets timeout', 'project_timeout_source', 2000
       end
     end
   end

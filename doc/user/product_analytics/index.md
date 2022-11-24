@@ -4,9 +4,9 @@ group: Product Analytics
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Product analytics **(ULTIMATE)** **Alpha**
+# Product analytics **(ULTIMATE)**
 
-> Introduced in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+> Introduced in GitLab 15.4 as an [Alpha](../../policy/alpha-beta-support.md#alpha-features) feature [with a flag](../../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available per project or for your entire instance, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `cube_api_proxy`.
@@ -16,6 +16,33 @@ This feature is not ready for production use.
 ## Overview
 
 You can view the [product category](https://about.gitlab.com/direction/analytics/product-analytics/) page for more information about our direction. This page is a work in progress and will be updated as we add more features.
+
+## Enable product analytics
+
+You can enable and configure product analytics to track events
+within your project applications on a self-managed instance.
+
+Prerequisite:
+
+- You must be an administrator of a self-managed GitLab instance.
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Product analytics** section.
+1. Select **Enable product analytics** and enter the configuration values.
+   The following table shows the required configuration parameters and example values:
+
+    | Name                         | Value                      |
+    |------------------------------|----------------------------|
+    | Jitsu host                   | `https://jitsu.gitlab.com` |
+    | Jitsu project ID             | `g0maofw84gx5sjxgse2k` |
+    | Jitsu administrator email    | `jitsu.admin@gitlab.com` |
+    | Jitsu administrator password | `<your_password>` |
+    | Clickhouse URL               | `https://<username>:<password>@clickhouse.gitlab.com:8123` |
+    | Cube API URL                 | `https://cube.gitlab.com` |
+    | Cube API key                 | `25718201b3e9...ae6bbdc62dbb` |
+
+1. Select **Save changes**.
 
 ## Product analytics dashboards
 

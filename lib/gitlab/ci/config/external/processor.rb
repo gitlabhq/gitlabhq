@@ -32,9 +32,7 @@ module Gitlab
 
           def validate_external_files!
             @external_files.each do |file|
-              logger.instrument(:config_external_verify) do
-                raise IncludeError, file.error_message unless file.valid?
-              end
+              raise IncludeError, file.error_message unless file.valid?
             end
           end
 

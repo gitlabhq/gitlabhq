@@ -16167,6 +16167,9 @@ msgstr ""
 msgid "Everything on your to-do list is marked as done."
 msgstr ""
 
+msgid "Everything you need to create a GitLab Pages site using Bridgetown"
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using Gatsby"
 msgstr ""
 
@@ -32555,6 +32558,9 @@ msgid "ProjectTemplates|Netlify/Plain HTML"
 msgstr ""
 
 msgid "ProjectTemplates|NodeJS Express"
+msgstr ""
+
+msgid "ProjectTemplates|Pages/Bridgetown"
 msgstr ""
 
 msgid "ProjectTemplates|Pages/Gatsby"

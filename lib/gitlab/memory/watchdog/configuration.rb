@@ -10,7 +10,6 @@ module Gitlab
           end
 
           def push(monitor_class, *args, **kwargs, &block)
-            remove(monitor_class)
             @monitors.push(build_monitor_state(monitor_class, *args, **kwargs, &block))
           end
 
@@ -22,14 +21,11 @@ module Gitlab
 
           private
 
-          def remove(monitor_class)
-            @monitors.delete_if { |monitor| monitor.monitor_class == monitor_class }
-          end
-
-          def build_monitor_state(monitor_class, *args, max_strikes:, **kwargs, &block)
+          def build_monitor_state(monitor_class, *args, max_strikes:, monitor_name: nil, **kwargs, &block)
             monitor = build_monitor(monitor_class, *args, **kwargs, &block)
+            monitor_name ||= monitor_class.name.demodulize.underscore
 
-            Gitlab::Memory::Watchdog::MonitorState.new(monitor, max_strikes: max_strikes)
+            Gitlab::Memory::Watchdog::MonitorState.new(monitor, max_strikes: max_strikes, monitor_name: monitor_name)
           end
 
           def build_monitor(monitor_class, *args, **kwargs, &block)

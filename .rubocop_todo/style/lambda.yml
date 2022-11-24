@@ -49,7 +49,6 @@ Style/Lambda:
     - 'lib/gitlab/action_cable/request_store_callbacks.rb'
     - 'lib/gitlab/checks/diff_check.rb'
     - 'lib/gitlab/database/load_balancing/action_cable_callbacks.rb'
-    - 'lib/gitlab/memory/watchdog/configurator.rb'
     - 'lib/gitlab/middleware/rack_multipart_tempfile_factory.rb'
     - 'lib/gitlab/omniauth_initializer.rb'
     - 'lib/gitlab/prometheus/queries/query_additional_metrics.rb'

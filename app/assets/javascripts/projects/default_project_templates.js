@@ -113,4 +113,8 @@ export default {
     text: s__('ProjectTemplates|Jsonnet for Dynamic Child Pipelines'),
     icon: '.template-option .icon-gitlab_logo',
   },
+  bridgetown: {
+    text: s__('ProjectTemplates|Pages/Bridgetown'),
+    icon: '.template-option .icon-gitlab_logo',
+  },
 };

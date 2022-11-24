@@ -62,12 +62,10 @@ module Gitlab
 
           def root_variables
             strong_memoize(:root_variables) do
-              logger.instrument(:pipeline_seed_merge_variables, once: true) do
-                ::Gitlab::Ci::Variables::Helpers.merge_variables(
-                  @command.yaml_processor_result.root_variables,
-                  @command.workflow_rules_result.variables
-                )
-              end
+              ::Gitlab::Ci::Variables::Helpers.merge_variables(
+                @command.yaml_processor_result.root_variables,
+                @command.workflow_rules_result.variables
+              )
             end
           end
         end

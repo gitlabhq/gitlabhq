@@ -38,6 +38,8 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
 
   describe '#monitors' do
     context 'when monitors are configured to be used' do
+      let(:monitor_name1) { :monitor1 }
+      let(:monitor_name2) { :monitor2 }
       let(:payload1) do
         {
           message: 'monitor_1_text',
@@ -96,7 +98,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
             expect(payloads).to eq([payload1, payload2])
             expect(thresholds).to eq([false, true])
             expect(strikes).to eq([false, true])
-            expect(monitor_names).to eq([:monitor1, :monitor2])
+            expect(monitor_names).to eq([monitor_name1, monitor_name2])
           end
         end
 
@@ -119,18 +121,19 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
 
           include_examples 'executes monitors and returns correct results'
         end
-      end
 
-      context 'when same monitor class is configured twice' do
-        before do
-          configuration.monitors.push monitor_class_1, max_strikes: 1
-          configuration.monitors.push monitor_class_1, max_strikes: 1
-        end
+        context 'when monitors are configured with monitor name' do
+          let(:monitor_name1) { :mon_one }
+          let(:monitor_name2) { :mon_two }
 
-        it 'calls same monitor only once' do
-          expect do |b|
-            configuration.monitors.call_each(&b)
-          end.to yield_control.once
+          before do
+            configuration.monitors do |stack|
+              stack.push monitor_class_1, false, { message: 'monitor_1_text' }, max_strikes: 5, monitor_name: :mon_one
+              stack.push monitor_class_2, true, { message: 'monitor_2_text' }, max_strikes: 0, monitor_name: :mon_two
+            end
+          end
+
+          include_examples 'executes monitors and returns correct results'
         end
       end
     end
