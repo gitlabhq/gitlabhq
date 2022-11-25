@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
 module Repositories
-  class TreeFinder < GitRefsFinder
-    attr_reader :user_project
-
+  class TreeFinder
     CommitMissingError = Class.new(StandardError)
 
-    def initialize(user_project, params = {})
-      super(user_project.repository, params)
-
-      @user_project = user_project
+    def initialize(project, params = {})
+      @project = project
+      @repository = project.repository
+      @params = params
     end
 
     def execute(gitaly_pagination: false)
@@ -17,15 +15,15 @@ module Repositories
 
       request_params = { recursive: recursive }
       request_params[:pagination_params] = pagination_params if gitaly_pagination
-      tree = user_project.repository.tree(commit.id, path, **request_params)
 
-      tree.sorted_entries
+      repository.tree(commit.id, path, **request_params).sorted_entries
     end
 
     def total
       # This is inefficient and we'll look at replacing this implementation
-      Gitlab::Cache.fetch_once([user_project, repository.commit, :tree_size, commit.id, path, recursive]) do
-        user_project.repository.tree(commit.id, path, recursive: recursive).entries.size
+      cache_key = [project, repository.commit, :tree_size, commit.id, path, recursive]
+      Gitlab::Cache.fetch_once(cache_key) do
+        repository.tree(commit.id, path, recursive: recursive).entries.size
       end
     end
 
@@ -35,12 +33,14 @@ module Repositories
 
     private
 
+    attr_reader :project, :repository, :params
+
     def commit
-      @commit ||= user_project.commit(ref)
+      @commit ||= project.commit(ref)
     end
 
     def ref
-      params[:ref] || user_project.default_branch
+      params[:ref] || project.default_branch
     end
 
     def path

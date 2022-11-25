@@ -107,19 +107,17 @@ GitLab can display the results of coverage report in the merge request
 
 ## `artifacts:reports:codequality`
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
+> - [Added support for multiple reports in diff annotations and full pipeline report](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in 15.7.
 
 The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
 
-GitLab can display the results of:
+GitLab can display the results of one or more reports in:
 
-- One or more reports in the merge request [code quality widget](../testing/code_quality.md#code-quality-widget).
-- Only one report in:
-  - The merge request [diff annotations](../testing/code_quality.md#code-quality-in-diff-view).
-    Track progress on adding support for multiple reports in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/328257).
-  - The [full report](../testing/metrics_reports.md). Track progress on adding support for multiple reports in
-    [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/9014).
+- The merge request [code quality widget](../testing/code_quality.md#code-quality-widget).
+- The merge request [diff annotations](../testing/code_quality.md#code-quality-in-diff-view).
+- The [full report](../testing/metrics_reports.md).
 
 ## `artifacts:reports:container_scanning` **(ULTIMATE)**
 
