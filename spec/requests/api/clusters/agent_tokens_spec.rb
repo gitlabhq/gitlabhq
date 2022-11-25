@@ -181,6 +181,21 @@ RSpec.describe API::Clusters::AgentTokens do
       expect(agent_token_one.reload).to be_revoked
     end
 
+    it 'returns a success response when revoking an already revoked agent token', :aggregate_failures do
+      delete api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{revoked_agent_token.id}", user)
+
+      expect(response).to have_gitlab_http_status(:no_content)
+      expect(revoked_agent_token.reload).to be_revoked
+    end
+
+    it 'returns a 404 error when given agent_id does not exist' do
+      path = "/projects/#{project.id}/cluster_agents/#{non_existing_record_id}/tokens/#{non_existing_record_id}"
+
+      delete api(path, user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
     it 'returns a 404 error when revoking non existent agent token' do
       delete api("/projects/#{project.id}/cluster_agents/#{agent.id}/tokens/#{non_existing_record_id}", user)
 

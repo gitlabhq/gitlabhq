@@ -378,6 +378,21 @@ RSpec.describe 'Git LFS API and storage' do
               it_behaves_like 'LFS http 401 response'
             end
 
+            context 'when deploy token is from an unrelated group to the project' do
+              let(:group) { create(:group) }
+              let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+              it_behaves_like 'LFS http 401 response'
+            end
+
+            context 'when deploy token is from a parent group of the project and valid' do
+              let(:group) { create(:group) }
+              let(:project) { create(:project, group: group) }
+              let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
+
+              it_behaves_like 'an authorized request', renew_authorization: false
+            end
+
             # TODO: We should fix this test case that causes flakyness by alternating the result of the above test cases.
             context 'when Deploy Token is valid' do
               let(:deploy_token) { create(:deploy_token, projects: [project]) }

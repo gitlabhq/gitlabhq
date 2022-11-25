@@ -60,6 +60,7 @@ Authorization configuration can take one or two minutes to propagate.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327850) in GitLab 14.4.
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/346566) to remove hierarchy restrictions in GitLab 15.6.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/356831) to allow authorizing projects in a user namespace in GitLab 15.7.
 
 To authorize the agent to access the GitLab project where you keep Kubernetes manifests:
 
@@ -73,7 +74,7 @@ To authorize the agent to access the GitLab project where you keep Kubernetes ma
        - id: path/to/project
    ```
 
-   - Authorized projects must have the same root group as the agent's configuration project.
+   - Authorized projects must have the same root group or user namespace as the agent's configuration project.
    - You can install additional agents into the same cluster to accommodate additional hierarchies.
    - You can authorize up to 100 projects.
 

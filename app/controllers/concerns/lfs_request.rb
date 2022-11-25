@@ -85,8 +85,7 @@ module LfsRequest
 
   def deploy_token_can_download_code?
     deploy_token.present? &&
-      deploy_token.project == project &&
-      deploy_token.active? &&
+      deploy_token.has_access_to?(project) &&
       deploy_token.read_repository?
   end
 

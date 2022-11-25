@@ -1236,7 +1236,7 @@ RSpec.describe API::Groups do
           expect(json_response.length).to eq(6)
         end
 
-        it 'avoids N+1 queries', :use_sql_query_cache do
+        it 'avoids N+1 queries', :use_sql_query_cache, quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/383788' do
           control = ActiveRecord::QueryRecorder.new(skip_cached: false) do
             get api("/groups/#{group1.id}/projects", user1), params: { include_subgroups: true }
           end

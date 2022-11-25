@@ -27,23 +27,16 @@ export const OPERATORS_IS_NOT_OR = [...OPERATORS_IS, ...OPERATORS_NOT, ...OPERAT
 export const OPTION_NONE = { value: FILTER_NONE, text: __('None'), title: __('None') };
 export const OPTION_ANY = { value: FILTER_ANY, text: __('Any'), title: __('Any') };
 export const OPTION_CURRENT = { value: FILTER_CURRENT, text: __('Current') };
-
-export const OPTIONS_NONE_ANY = [OPTION_NONE, OPTION_ANY];
-
-export const DEFAULT_MILESTONE_UPCOMING = {
+export const OPTION_STARTED = { value: FILTER_STARTED, text: __('Started'), title: __('Started') };
+export const OPTION_UPCOMING = {
   value: FILTER_UPCOMING,
   text: __('Upcoming'),
   title: __('Upcoming'),
 };
-export const DEFAULT_MILESTONE_STARTED = {
-  value: FILTER_STARTED,
-  text: __('Started'),
-  title: __('Started'),
-};
-export const DEFAULT_MILESTONES = OPTIONS_NONE_ANY.concat([
-  DEFAULT_MILESTONE_UPCOMING,
-  DEFAULT_MILESTONE_STARTED,
-]);
+
+export const OPTIONS_NONE_ANY = [OPTION_NONE, OPTION_ANY];
+
+export const DEFAULT_MILESTONES = OPTIONS_NONE_ANY.concat([OPTION_UPCOMING, OPTION_STARTED]);
 
 export const SORT_DIRECTION = {
   descending: 'descending',

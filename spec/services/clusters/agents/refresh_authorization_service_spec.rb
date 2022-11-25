@@ -113,6 +113,16 @@ RSpec.describe Clusters::Agents::RefreshAuthorizationService do
         expect(modified_authorization.config).to eq({ 'default_namespace' => 'new-namespace' })
       end
 
+      context 'project does not belong to a group, and is in the same namespace as the agent' do
+        let(:root_ancestor) { create(:namespace) }
+        let(:added_project) { create(:project, namespace: root_ancestor) }
+
+        it 'creates an authorization record for the project' do
+          expect(subject).to be_truthy
+          expect(agent.authorized_projects).to contain_exactly(added_project)
+        end
+      end
+
       context 'project does not belong to a group, and is authorizing itself' do
         let(:root_ancestor) { create(:namespace) }
         let(:added_project) { project }
