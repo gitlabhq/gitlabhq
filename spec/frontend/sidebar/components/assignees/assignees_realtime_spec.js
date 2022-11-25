@@ -6,7 +6,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import AssigneesRealtime from '~/sidebar/components/assignees/assignees_realtime.vue';
 import issuableAssigneesSubscription from '~/sidebar/queries/issuable_assignees.subscription.graphql';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
-import getIssueAssigneesQuery from '~/vue_shared/components/sidebar/queries/get_issue_assignees.query.graphql';
+import getIssueAssigneesQuery from '~/sidebar/queries/get_issue_assignees.query.graphql';
 import Mock, {
   issuableQueryResponse,
   subscriptionNullResponse,

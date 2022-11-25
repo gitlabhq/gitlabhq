@@ -216,6 +216,7 @@ module API
         mount ::API::GroupImport
         mount ::API::GroupPackages
         mount ::API::GroupVariables
+        mount ::API::HelmPackages
         mount ::API::ImportBitbucketServer
         mount ::API::ImportGithub
         mount ::API::Integrations
@@ -300,7 +301,6 @@ module API
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
       mount ::API::Groups
-      mount ::API::HelmPackages
       mount ::API::Issues
       mount ::API::Labels
       mount ::API::MavenPackages

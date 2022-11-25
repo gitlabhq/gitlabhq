@@ -12,7 +12,7 @@ import MockAdapter from 'axios-mock-adapter';
 
 import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
-import IssuableMoveDropdown from '~/vue_shared/components/sidebar/issuable_move_dropdown.vue';
+import IssuableMoveDropdown from '~/sidebar/components/move/issuable_move_dropdown.vue';
 
 const mockProjects = [
   {

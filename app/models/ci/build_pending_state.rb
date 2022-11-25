@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 class Ci::BuildPendingState < Ci::ApplicationRecord
+  include Ci::Partitionable
+
   belongs_to :build, class_name: 'Ci::Build', foreign_key: :build_id
+
+  partitionable scope: :build
 
   enum state: Ci::Stage.statuses
   enum failure_reason: CommitStatus.failure_reasons

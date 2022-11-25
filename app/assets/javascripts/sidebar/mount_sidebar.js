@@ -24,14 +24,14 @@ import CollapsedAssigneeList from './components/assignees/collapsed_assignee_lis
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
 import SidebarAssigneesWidget from './components/assignees/sidebar_assignees_widget.vue';
 import SidebarConfidentialityWidget from './components/confidential/sidebar_confidentiality_widget.vue';
-import CopyEmailToClipboard from './components/copy_email/copy_email_to_clipboard.vue';
+import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
 import SidebarDueDateWidget from './components/date/sidebar_date_widget.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import MilestoneDropdown from './components/milestone/milestone_dropdown.vue';
 import MoveIssuesButton from './components/move/move_issues_button.vue';
 import SidebarParticipantsWidget from './components/participants/sidebar_participants_widget.vue';
-import SidebarReferenceWidget from './components/reference/sidebar_reference_widget.vue';
+import SidebarReferenceWidget from './components/copy/sidebar_reference_widget.vue';
 import SidebarReviewers from './components/reviewers/sidebar_reviewers.vue';
 import SidebarReviewersInputs from './components/reviewers/sidebar_reviewers_inputs.vue';
 import SidebarSeverity from './components/severity/sidebar_severity.vue';

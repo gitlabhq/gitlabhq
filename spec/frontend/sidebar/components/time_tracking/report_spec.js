@@ -8,9 +8,9 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import Report from '~/sidebar/components/time_tracking/report.vue';
-import getIssueTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_issue_timelogs.query.graphql';
-import getMrTimelogsQuery from '~/vue_shared/components/sidebar/queries/get_mr_timelogs.query.graphql';
-import deleteTimelogMutation from '~/sidebar/components/time_tracking/graphql/mutations/delete_timelog.mutation.graphql';
+import getIssueTimelogsQuery from '~/sidebar/queries/get_issue_timelogs.query.graphql';
+import getMrTimelogsQuery from '~/sidebar/queries/get_mr_timelogs.query.graphql';
+import deleteTimelogMutation from '~/sidebar/queries/delete_timelog.mutation.graphql';
 import {
   getIssueTimelogsQueryResponse,
   getMrTimelogsQueryResponse,

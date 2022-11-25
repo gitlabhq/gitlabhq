@@ -8,7 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import createFlash from '~/flash';
 import { logError } from '~/lib/logger';
-import IssuableMoveDropdown from '~/vue_shared/components/sidebar/issuable_move_dropdown.vue';
+import IssuableMoveDropdown from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import issuableEventHub from '~/issues/list/eventhub';
 import MoveIssuesButton from '~/sidebar/components/move/move_issues_button.vue';
 import moveIssueMutation from '~/sidebar/queries/move_issue.mutation.graphql';

@@ -6,7 +6,7 @@ import { ApolloMutation } from 'vue-apollo';
 import { keysFor, ISSUE_CLOSE_DESIGN } from '~/behaviors/shortcuts/keybindings';
 import { createAlert } from '~/flash';
 import { fetchPolicies } from '~/lib/graphql';
-import { updateGlobalTodoCount } from '~/vue_shared/components/sidebar/todo_toggle/utils';
+import { updateGlobalTodoCount } from '~/sidebar/utils';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import DesignDestroyer from '../../components/design_destroyer.vue';
 import DesignReplyForm from '../../components/design_notes/design_reply_form.vue';

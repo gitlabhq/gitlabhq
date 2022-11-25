@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
-import CopyEmailToClipboard from '~/sidebar/components/copy_email/copy_email_to_clipboard.vue';
-import CopyableField from '~/vue_shared/components/sidebar/copyable_field.vue';
+import CopyEmailToClipboard from '~/sidebar/components/copy/copy_email_to_clipboard.vue';
+import CopyableField from '~/sidebar/components/copy/copyable_field.vue';
 
 describe('CopyEmailToClipboard component', () => {
   const mockIssueEmailAddress = 'sample+email@test.com';

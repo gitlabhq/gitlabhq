@@ -101,6 +101,34 @@
   }
 
   /**
+   * @param url - the URL
+   * @param method - the REST method
+   * @param clonedResponse - a cloned fetch response
+   * @return {Promise<void>}
+   */
+  async function checkForGraphQLErrors(url, method, clonedResponse) {
+    if (/api\/graphql/.test(url)) {
+      const body = await clonedResponse.json();
+      if (body.errors && body.errors instanceof Array) {
+        const errorMessages = body.errors.map((error) => error.message);
+
+        commitToCache((cache) => {
+          // eslint-disable-next-line no-param-reassign
+          cache.errors ||= [];
+          cache.errors.push({
+            status: clonedResponse.status,
+            url,
+            method,
+            errorData: `error-messages: ${errorMessages.join(', ')}`,
+            headers: { 'x-request-id': clonedResponse.headers.get('x-request-id') },
+          });
+          return cache;
+        });
+      }
+    }
+  }
+
+  /**
    * Replacement for fetch implementation
    * tracks active requests, and commits metadata to the cache
    * if the response is not ok or was cancelled.
@@ -115,7 +143,6 @@
     window.Interceptor.activeFetchRequests += 1;
     try {
       const response = await pureFetch(url, opts, ...args);
-      window.Interceptor.activeFetchRequests += -1;
       const clone = response.clone();
 
       if (!clone.ok) {
@@ -131,6 +158,9 @@
           return cache;
         });
       }
+
+      await checkForGraphQLErrors(url, method, clone);
+
       return response;
     } catch (error) {
       commitToCache((cache) => {
@@ -144,14 +174,24 @@
         return cache;
       });
 
-      window.Interceptor.activeFetchRequests += -1;
       throw error;
+    } finally {
+      window.Interceptor.activeFetchRequests += -1;
     }
   }
 
-  if (checkCache()) {
-    saveCache({});
-  }
+  /**
+   * Initializes the cache
+   * if the cache doesn't already exist.
+   */
+  const initCache = () => {
+    if (checkCache() && getCache() == null) {
+      saveCache({});
+    }
+  };
+
+  // Initialize cache on page load.
+  initCache();
 
   window.fetch = interceptedFetch;
   window.XMLHttpRequest.prototype.open = interceptXhr;

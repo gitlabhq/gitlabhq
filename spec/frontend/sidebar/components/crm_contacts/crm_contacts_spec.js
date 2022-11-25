@@ -5,8 +5,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import CrmContacts from '~/sidebar/components/crm_contacts/crm_contacts.vue';
-import getIssueCrmContactsQuery from '~/sidebar/components/crm_contacts/queries/get_issue_crm_contacts.query.graphql';
-import issueCrmContactsSubscription from '~/sidebar/components/crm_contacts/queries/issue_crm_contacts.subscription.graphql';
+import getIssueCrmContactsQuery from '~/sidebar/queries/get_issue_crm_contacts.query.graphql';
+import issueCrmContactsSubscription from '~/sidebar/queries/issue_crm_contacts.subscription.graphql';
 import {
   getIssueCrmContactsQueryResponse,
   issueCrmContactsUpdateResponse,

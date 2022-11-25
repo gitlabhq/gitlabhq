@@ -443,7 +443,7 @@ export default {
       </gl-avatar-link>
     </div>
 
-    <div v-else class="timeline-avatar gl-float-left">
+    <div v-else-if="!isDraft" class="timeline-avatar gl-float-left">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"

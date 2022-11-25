@@ -88,8 +88,8 @@ module QA
 
           grouped_errors = group_errors(cache['errors'])
 
-          errors = grouped_errors.map do |error_metadata, request_id_string|
-            "#{error_metadata} -- #{request_id_string}"
+          errors = grouped_errors.map do |error_metadata, error_body|
+            "#{error_metadata} -- #{error_body[:request_id_string]}\n#{error_body[:error_body]}"
           end
 
           QA::Runtime::Logger.error "Interceptor Api Errors\n#{errors.join("\n")}" unless errors.nil? || errors.empty?
@@ -120,7 +120,11 @@ module QA
           errors.each_with_object({}) do |error, memo|
             url = error['url']&.split('?')&.first || 'Unknown url'
             key = "[#{error['status']}] #{error['method']} #{url}"
-            memo[key] = "Correlation Id: #{error.dig('headers', 'x-request-id') || 'Correlation Id not found'}"
+            request_id_string = "Correlation Id: #{error.dig('headers', 'x-request-id') || 'Correlation Id not found'}"
+            memo[key] = {
+              request_id_string: request_id_string,
+              error_body: error['errorData']
+            }
           end
         end
       end

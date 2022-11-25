@@ -52,12 +52,10 @@ RSpec.configure do |config|
   end
 
   config.prepend_after do |example|
-    if example.exception
-      page = Capybara.page
+    page = Capybara.page
+    QA::Support::PageErrorChecker.log_request_errors(page)
 
-      QA::Support::PageErrorChecker.log_request_errors(page)
-      QA::Support::PageErrorChecker.check_page_for_error_code(page)
-    end
+    QA::Support::PageErrorChecker.check_page_for_error_code(page) if example.exception
   end
 
   # Add fabrication time to spec metadata

@@ -10,11 +10,11 @@ Set the title to: `Description of the original issue`
 
 - [ ] Read the [security process for developers] if you are not familiar with it.
 - [ ] Make sure the [issue really needs to follow the security release workflow].
+- [ ] Add a `~severity::x` label to the issue and all associated merge requests.
 - [ ] **IMPORTANT**: Mark this [issue as linked] to the Security Release Tracking Issue. You can find it [here](https://gitlab.com/gitlab-org/gitlab/-/issues?sort=created_date&state=opened&label_name[]=upcoming+security+release). This issue
 MUST be linked for the release bot to know that the associated merge requests should be merged for this security release.
 - Fill out the [Links section](#links):
   - [ ] Next to **Issue on GitLab**, add a link to the `gitlab-org/gitlab` issue that describes the security vulnerability.
-- [ ] Add one of the `~severity::x` labels to the issue and all associated merge requests.
 - [ ] If this change affects the public interface (public API or UI) of the product, post in the `#support_gitlab-com` Slack channel  to explain the impact and discuss a mitigation plan for users that might be affected. If you need Support feedback or approval, reach out in `#spt_managers` Slack channel or mention `@gitlab-com/support/managers`.
 
 ## Development
@@ -39,6 +39,7 @@ After your merge request has been approved according to our [approval guidelines
 ## Documentation and final details
 
 - [ ] To avoid release delays, please nominate a developer in a different timezone who will be able to respond to any pipeline or merge failures in your absence `@gitlab-username`
+- [ ] Ensure `~severity::x` label is on this issue, all associated issues, and merge requests
 - [ ] Ensure the [Links section](#links) is completed.
 - [ ] Add the GitLab [versions](https://gitlab.com/gitlab-org/release/docs/-/blob/master/general/security/developer.md#versions-affected) and editions affected to the [details section](#details)
   * The Git history of the files affected may help you associate the issue with a [release](https://about.gitlab.com/releases/)

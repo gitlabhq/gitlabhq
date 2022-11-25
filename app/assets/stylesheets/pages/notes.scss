@@ -81,7 +81,7 @@ $system-note-svg-size: 1rem;
               margin-top: 5px;
             }
 
-            .timeline-content {
+            .timeline-content:not(.flash-container) {
               margin-left: 2.5rem;
               border-left: 1px solid $border-color;
               border-right: 1px solid $border-color;
@@ -91,6 +91,11 @@ $system-note-svg-size: 1rem;
               background-color: $white;
               padding: $gl-padding-4 $gl-padding-8;
             }
+          }
+
+          &.draft-note .timeline-content:not(.flash-container) {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
           }
 
           &:not(:first-of-type) .timeline-entry-inner {

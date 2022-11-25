@@ -8,9 +8,9 @@ import { __ } from '~/locale';
 import eventHub from '~/sidebar/event_hub';
 import Store from '~/sidebar/stores/sidebar_store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import getMergeRequestReviewersQuery from '~/vue_shared/components/sidebar/queries/get_merge_request_reviewers.query.graphql';
-import mergeRequestReviewersUpdatedSubscription from '~/vue_shared/components/sidebar/queries/merge_request_reviewers.subscription.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
+import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
 import ReviewerTitle from './reviewer_title.vue';
 import Reviewers from './reviewers.vue';
 

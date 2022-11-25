@@ -1,6 +1,5 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import IssuableMoveDropdown from '~/vue_shared/components/sidebar/issuable_move_dropdown.vue';
 import createFlash from '~/flash';
 import { logError } from '~/lib/logger';
 import { s__ } from '~/locale';
@@ -14,6 +13,7 @@ import issuableEventHub from '~/issues/list/eventhub';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
 import moveIssueMutation from '../../queries/move_issue.mutation.graphql';
+import IssuableMoveDropdown from './issuable_move_dropdown.vue';
 
 export default {
   name: 'MoveIssuesButton',
