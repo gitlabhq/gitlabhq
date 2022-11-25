@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project issue boards', :js do
+RSpec.describe 'Project issue boards', :js, feature_category: :team_planning do
   include DragTo
   include MobileHelpers
   include BoardHelpers

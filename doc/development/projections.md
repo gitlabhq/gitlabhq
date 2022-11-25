@@ -20,7 +20,7 @@ Projections are a way to define relations between files. Every file can have a
 You can find a basic list of projection options in
 [projectionist.txt](https://github.com/tpope/vim-projectionist/blob/master/doc/projectionist.txt)
 
-## Which plugins can I use
+## Which plugins can you use
 
 - vim
   - [vim-projectionist](https://github.com/tpope/vim-projectionist)

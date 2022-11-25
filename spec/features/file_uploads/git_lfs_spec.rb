@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload a git lfs object', :js do
+RSpec.describe 'Upload a git lfs object', :js, feature_category: :source_code_management do
   include_context 'file upload requests helpers'
 
   let_it_be(:project) { create(:project) }

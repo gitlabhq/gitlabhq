@@ -1874,7 +1874,6 @@ Layout/LineLength:
     - 'ee/spec/finders/ee/group_members_finder_spec.rb'
     - 'ee/spec/finders/ee/projects_finder_spec.rb'
     - 'ee/spec/finders/epics_finder_spec.rb'
-    - 'ee/spec/finders/geo/container_repository_legacy_registry_finder_spec.rb'
     - 'ee/spec/finders/geo/project_registry_finder_spec.rb'
     - 'ee/spec/finders/geo/project_registry_status_finder_spec.rb'
     - 'ee/spec/finders/group_projects_finder_spec.rb'

@@ -110,7 +110,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
       expect(pipeline.user).to eq bridge.user
       expect(pipeline.project).to eq downstream_project
-      expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
+      expect(bridge.reload.sourced_pipeline.pipeline).to eq pipeline
       expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
       expect(pipeline.source_bridge).to eq bridge
       expect(pipeline.source_bridge).to be_a ::Ci::Bridge
@@ -131,7 +131,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
     context 'when bridge job has already any downstream pipelines' do
       before do
-        bridge.sourced_pipelines.create!(
+        bridge.create_sourced_pipeline!(
           source_pipeline: bridge.pipeline,
           source_project: bridge.project,
           project: bridge.project,
@@ -178,7 +178,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
         expect(pipeline.user).to eq bridge.user
         expect(pipeline.project).to eq downstream_project
-        expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
+        expect(bridge.reload.sourced_pipeline.pipeline).to eq pipeline
         expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
         expect(pipeline.source_bridge).to eq bridge
         expect(pipeline.source_bridge).to be_a ::Ci::Bridge
@@ -231,7 +231,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             expect(pipeline.builds.map(&:name)).to match_array(%w[rspec echo])
             expect(pipeline.user).to eq bridge.user
             expect(pipeline.project).to eq bridge.project
-            expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
+            expect(bridge.reload.sourced_pipeline.pipeline).to eq pipeline
             expect(pipeline.triggered_by_pipeline).to eq upstream_pipeline
             expect(pipeline.source_bridge).to eq bridge
             expect(pipeline.source_bridge).to be_a ::Ci::Bridge

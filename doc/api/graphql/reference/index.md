@@ -13001,11 +13001,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 ##### `GeoNode.containerRepositoryRegistries`
 
-Find Container Repository registries on this Geo node. Ignored if `geo_container_repository_replication` feature flag is disabled.
-
-WARNING:
-**Introduced** in 15.5.
-This feature is in Alpha. It can be changed or removed at any time.
+Find Container Repository registries on this Geo node.
 
 Returns [`ContainerRepositoryRegistryConnection`](#containerrepositoryregistryconnection).
 

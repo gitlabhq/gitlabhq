@@ -412,12 +412,10 @@ class ApplicationSetting < ApplicationRecord
             allow_nil: false,
             inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  # rubocop:disable Cop/StaticTranslationDefinition
   validates :deactivate_dormant_users_period,
             presence: true,
-            numericality: { only_integer: true, greater_than_or_equal_to: 90, message: _("'%{value}' days of inactivity must be greater than or equal to 90") },
+            numericality: { only_integer: true, greater_than_or_equal_to: 90, message: N_("'%{value}' days of inactivity must be greater than or equal to 90") },
             if: :deactivate_dormant_users?
-  # rubocop:enable Cop/StaticTranslationDefinition
 
   Gitlab::SSHPublicKey.supported_types.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }

@@ -22,7 +22,6 @@ Rails/TimeZone:
   - ee/spec/lib/gitlab/elastic/client_spec.rb
   - ee/spec/lib/gitlab/geo/base_request_spec.rb
   - ee/spec/lib/gitlab/geo/log_cursor/events/cache_invalidation_event_spec.rb
-  - ee/spec/lib/gitlab/geo/log_cursor/events/container_repository_updated_event_spec.rb
   - ee/spec/lib/gitlab/geo/log_cursor/events/design_repository_updated_event_spec.rb
   - ee/spec/lib/gitlab/geo/log_cursor/events/event_spec.rb
   - ee/spec/lib/gitlab/geo/log_cursor/events/hashed_storage_attachments_event_spec.rb

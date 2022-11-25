@@ -120,7 +120,7 @@ Therefore, for a production environment we use additional steps to ensure that a
 
 ## Where to go next
 
-Since this was a WordPress project, I gave real life code snippets. Some further ideas you can pursue:
+Since this was a WordPress project, it includes real code snippets. Some further ideas you can pursue:
 
 - Having a slightly different script for the default branch allows you to deploy to a production server from that branch and to a stage server from any other branches.
 - Instead of pushing it live, you can push it to WordPress official repository.

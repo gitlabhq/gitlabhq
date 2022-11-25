@@ -683,7 +683,7 @@ This can be used for offline setups or for anyone wishing to use [Auto DevOps](.
 
 Instructions are available in the [legacy template project](https://gitlab.com/gitlab-org/auto-devops-v12-10).
 
-#### Vulnerabilities are found, but the job succeeds. How can I have a pipeline fail instead?
+#### Vulnerabilities are found, but the job succeeds. How can you have a pipeline fail instead?
 
 In these circumstances, that the job succeeds is the default behavior. The job's status indicates
 success or failure of the analyzer itself. Analyzer results are displayed in the

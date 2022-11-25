@@ -96,7 +96,7 @@ Here are some common pitfalls and how to overcome them.
   a Lucene index.
 - **Replicas**: Failover mechanisms that duplicate indices.
 
-## How can I verify that my GitLab instance is using Elasticsearch?
+## How can you verify that your GitLab instance is using Elasticsearch?
 
 There are a couple of ways to achieve that:
 
@@ -184,13 +184,13 @@ If reindexing the project shows:
 - Elasticsearch errors or doesn't present any errors at all, reach out to your
   Elasticsearch administrator to check the instance.
 
-### I updated GitLab and now I can't find anything
+### You updated GitLab and now you can't find anything
 
 We continuously make updates to our indexing strategies and aim to support
 newer versions of Elasticsearch. When indexing changes are made, it may
 be necessary for you to [reindex](elasticsearch.md#zero-downtime-reindexing) after updating GitLab.
 
-### I indexed all the repositories but I can't get any hits for my search term in the UI
+### You indexed all the repositories but you can't get any hits for your search term in the UI
 
 Make sure you [indexed all the database data](elasticsearch.md#enable-advanced-search).
 
@@ -220,7 +220,7 @@ The above instructions are not to be used for scenarios that only index a [subse
 
 See [Elasticsearch Index Scopes](elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
-### I indexed all the repositories but then switched Elasticsearch servers and now I can't find anything
+### You indexed all the repositories but then switched Elasticsearch servers and now you can't find anything
 
 You must re-run all the Rake tasks to reindex the database, repositories, and wikis.
 
@@ -228,11 +228,11 @@ You must re-run all the Rake tasks to reindex the database, repositories, and wi
 
 The more data present in your GitLab instance, the longer the indexing process takes.
 
-### There are some projects that weren't indexed, but I don't know which ones
+### There are some projects that weren't indexed, but you don't know which ones
 
 You can run `sudo gitlab-rake gitlab:elastic:projects_not_indexed` to display projects that aren't indexed.
 
-### No new data is added to the Elasticsearch index when I push code
+### No new data is added to the Elasticsearch index when you push code
 
 NOTE:
 This was [fixed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35936) in GitLab 13.2 and the Rake task is not available for versions greater than that.

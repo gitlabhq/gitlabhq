@@ -225,7 +225,7 @@ RSpec.describe Ci::PipelineTriggerService do
               expect { result }.to change { Ci::PipelineVariable.count }.by(2)
                                .and change { Ci::Sources::Pipeline.count }.by(1)
               expect(result[:pipeline].variables.map { |v| { v.key => v.value } }.first).to eq(variables)
-              expect(job.sourced_pipelines.last.pipeline_id).to eq(result[:pipeline].id)
+              expect(job.sourced_pipeline.pipeline_id).to eq(result[:pipeline].id)
             end
           end
 

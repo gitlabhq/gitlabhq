@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Multi Select Issue', :js do
+RSpec.describe 'Multi Select Issue', :js, feature_category: :team_planning do
   include DragTo
 
   let(:group) { create(:group, :nested) }

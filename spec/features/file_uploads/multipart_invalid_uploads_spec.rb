@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Invalid uploads that must be rejected', :api, :js do
+RSpec.describe 'Invalid uploads that must be rejected', :api, :js, feature_category: :package_registry do
   include_context 'file upload requests helpers'
 
   let_it_be(:project) { create(:project) }

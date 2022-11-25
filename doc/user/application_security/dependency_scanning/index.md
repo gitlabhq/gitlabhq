@@ -1257,7 +1257,7 @@ file in the `CI_BUILDS_DIR` directory triggers the dependency scanning job.
 
 We recommend committing the lock files, which prevents this warning.
 
-### I no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
+### You no longer get the latest Docker image after setting `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE`
 
 If you have manually set `DS_MAJOR_VERSION` or `DS_ANALYZER_IMAGE` for specific reasons,
 and now must update your configuration to again get the latest patched versions of our

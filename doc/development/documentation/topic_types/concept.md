@@ -11,7 +11,7 @@ A concept introduces a single feature or concept.
 A concept should answer the questions:
 
 - What is this?
-- Why would I use it?
+- Why would you use it?
 
 Think of everything someone might want to know if they've never heard of this concept before.
 

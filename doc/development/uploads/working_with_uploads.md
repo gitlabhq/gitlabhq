@@ -8,9 +8,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 ## Recommendations
 
-- When creating an uploader, [make it a subclass](#where-should-i-store-my-files) of `AttachmentUploader`
+- When creating an uploader, [make it a subclass](#where-should-you-store-your-files) of `AttachmentUploader`
 - Add your uploader to the [tables](#tables) in this document
-- Do not add [new object storage buckets](#where-should-i-store-my-files)
+- Do not add [new object storage buckets](#where-should-you-store-your-files)
 - Implement [direct upload](#implementing-direct-upload-support)
 - If you need to process your uploads, decide [where to do that](#processing-uploads)
 
@@ -19,7 +19,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 - [CarrierWave Uploaders](#carrierwave-uploaders)
 - [GitLab modifications to CarrierWave](#gitlab-modifications-to-carrierwave)
 
-## Where should I store my files?
+## Where should you store your files?
 
 CarrierWave Uploaders determine where files get
 stored. When you create a new Uploader class you are deciding where to store the files of your new
@@ -169,8 +169,8 @@ class Project < ApplicationRecord
 end
 ```
 
-Now if I upload an avatar called `tanuki.png` the idea is that in the
-`projects.avatar` column for my project, CarrierWave stores the string
+Now if you upload an avatar called `tanuki.png` the idea is that in the
+`projects.avatar` column for your project, CarrierWave stores the string
 `tanuki.png`, and that the AttachmentUploader class contains the
 configuration data and directory schema. For example if the project ID
 is 123, the actual file may be in

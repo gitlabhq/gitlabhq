@@ -10434,12 +10434,6 @@ msgstr ""
 msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr ""
 
-msgid "Container repositories"
-msgstr ""
-
-msgid "Container repository"
-msgstr ""
-
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
 msgstr ""
 

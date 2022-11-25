@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload a group export archive', :api, :js do
+RSpec.describe 'Upload a group export archive', :api, :js, feature_category: :subgroups do
   include_context 'file upload requests helpers'
 
   let_it_be(:user) { create(:user, :admin) }
