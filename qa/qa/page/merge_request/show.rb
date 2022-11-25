@@ -390,6 +390,7 @@ module QA
         def click_open_in_web_ide
           click_element(:mr_code_dropdown)
           click_element(:open_in_web_ide_button)
+          page.driver.browser.switch_to.window(page.driver.browser.window_handles.last)
           wait_for_requests
         end
 

@@ -8,7 +8,9 @@ RSpec.describe Gitlab::BackgroundMigration::RenameTaskSystemNoteToChecklistItem 
 
   let(:namespace) { table(:namespaces).create!(name: 'batchtest1', type: 'Group', path: 'space1') }
   let(:project) { table(:projects).create!(name: 'proj1', path: 'proj1', namespace_id: namespace.id) }
-  let(:issue) { table(:issues).create!(title: 'Test issue') }
+  let(:issue_base_type_enum_value) { 0 }
+  let(:issue_type) { table(:work_item_types).find_by!(namespace_id: nil, base_type: issue_base_type_enum_value) }
+  let(:issue) { table(:issues).create!(title: 'Test issue', work_item_type_id: issue_type.id) }
 
   let!(:note1) do
     notes.create!(

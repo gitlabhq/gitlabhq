@@ -16958,6 +16958,7 @@ CREATE TABLE issues (
     work_item_type_id bigint,
     namespace_id bigint,
     start_date date,
+    CONSTRAINT check_2addf801cd CHECK ((work_item_type_id IS NOT NULL)),
     CONSTRAINT check_fba63f706d CHECK ((lock_version IS NOT NULL))
 );
 

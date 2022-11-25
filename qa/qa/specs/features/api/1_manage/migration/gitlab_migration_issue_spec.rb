@@ -45,7 +45,7 @@ module QA
           'successfully imports issue',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347608'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)
           expect(imported_issue).to eq(source_issue.reload!)
           expect(imported_issue_comments).to match_array(source_issue_comments)
@@ -77,7 +77,7 @@ module QA
           'successfully imports design',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/366449'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
           expect(imported_issues.count).to eq(1)
 
           expect(imported_design.full_path).to eq(source_design.full_path)

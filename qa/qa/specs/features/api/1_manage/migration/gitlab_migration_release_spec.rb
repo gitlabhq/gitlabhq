@@ -60,7 +60,7 @@ module QA
           'successfully imports project release',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/360243'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
 
           expect(imported_releases.size).to eq(1), "Expected to have 1 migrated release"
           expect(imported_release).to eq(source_release)

@@ -257,7 +257,7 @@ RSpec.describe Issue do
       end
 
       context 'when no type was set' do
-        let_it_be(:issue, refind: true) { build(:issue, project: project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
+        let(:issue) { build(:issue, project: project, work_item_type: nil) }
 
         it 'sets a work item type before validation' do
           expect(issue.work_item_type_id).to be_nil
@@ -446,17 +446,6 @@ RSpec.describe Issue do
       subject { described_class.order_escalation_status_desc }
 
       it { is_expected.to eq([resolved_incident, triggered_incident, issue_no_status]) }
-    end
-  end
-
-  # TODO: Remove when NOT NULL constraint is added to the relationship
-  describe '#work_item_type' do
-    let(:issue) { build(:issue, :incident, project: reusable_project, work_item_type: nil).tap { |issue| issue.save!(validate: false) } }
-
-    it 'returns a default type if the legacy issue does not have a work item type associated yet' do
-      expect(issue.work_item_type_id).to be_nil
-      expect(issue.issue_type).to eq('incident')
-      expect(issue.work_item_type).to eq(WorkItems::Type.default_by_type(:incident))
     end
   end
 

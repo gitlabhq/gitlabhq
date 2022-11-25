@@ -19,14 +19,8 @@ module QA
     let(:imported_projects) { imported_group.reload!.projects }
     let(:imported_project) { imported_projects.first }
 
-    let(:import_failures) do
-      imported_group.import_details.sum([]) { |details| details[:failures] }
-    end
-
-    def expect_import_finished
-      imported_group # trigger import
-
-      expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+    def expect_project_import_finished_successfully
+      expect_group_import_finished_successfully
       expect(imported_projects.count).to eq(1), "Expected to have 1 imported project. Found: #{imported_projects.count}"
     end
 

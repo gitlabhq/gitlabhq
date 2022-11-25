@@ -41,7 +41,7 @@ module QA
           'successfully imports groups and labels',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347674'
         ) do
-          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+          expect_group_import_finished_successfully
 
           aggregate_failures do
             expect(imported_group.reload!).to eq(source_group)
@@ -78,7 +78,7 @@ module QA
           'successfully imports group milestones and badges',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347628'
         ) do
-          expect { imported_group.import_status }.to eventually_eq('finished').within(import_wait_duration)
+          expect_group_import_finished_successfully
 
           imported_milestone = imported_group.reload!.milestones.find { |ml| ml.title == source_milestone.title }
           aggregate_failures do

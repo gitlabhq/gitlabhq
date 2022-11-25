@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor, quarantine: { issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/381530', type: :stale } do
+  RSpec.describe 'Create', product_group: :editor do
     describe 'Review a merge request in Web IDE' do
       let(:new_file) { 'awesome_new_file.txt' }
       let(:original_text) { 'Text' }

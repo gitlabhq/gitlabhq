@@ -47,7 +47,7 @@ module QA
           'successfully imports ci pipeline',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354650'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
 
           expect(imported_pipelines).to eq(source_pipelines)
         end

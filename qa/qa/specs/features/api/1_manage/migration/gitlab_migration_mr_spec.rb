@@ -72,7 +72,7 @@ module QA
           'successfully imports merge request',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348478'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
           expect(imported_mrs.count).to eq(1)
 
           aggregate_failures do

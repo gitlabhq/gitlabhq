@@ -35,7 +35,7 @@ module QA
           'member retains indirect membership in imported project',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354416'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
 
           aggregate_failures do
             expect(imported_project_member).to be_nil
@@ -55,7 +55,7 @@ module QA
           'member retains direct membership in imported project',
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417'
         ) do
-          expect_import_finished
+          expect_project_import_finished_successfully
 
           aggregate_failures do
             expect(imported_group_member).to be_nil

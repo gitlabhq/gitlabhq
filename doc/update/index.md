@@ -471,6 +471,13 @@ NOTE:
 Specific information that follow related to Ruby and Git versions do not apply to [Omnibus installations](https://docs.gitlab.com/omnibus/)
 and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with appropriate Ruby and Git versions and are not using system binaries for Ruby and Git. There is no need to install Ruby or Git when utilizing these two approaches.
 
+### 15.7.0
+
+- This version validates a `NOT NULL DB` constraint on the `issues.work_item_type_id` column.
+  To upgrade to this version, no records with a `NULL` `work_item_type_id` should exist on the `issues` table.
+  There are multiple `BackfillWorkItemTypeIdForIssues` background migrations that will be finalized with
+  the `EnsureWorkItemTypeBackfillMigrationFinished` post-deploy migration.
+
 ### 15.6.0
 
 - You should use one of the [officially supported PostgreSQL versions](../administration/package_information/postgresql_versions.md). Some database migrations can cause stability and performance issues with older PostgreSQL versions.
