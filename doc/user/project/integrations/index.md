@@ -77,7 +77,7 @@ You can configure the following integrations.
 | Pushover                                                                    | Get real-time notifications on your device.                           | **{dotted-circle}** No |
 | [Redmine](redmine.md)                                                       | Use Redmine as the issue tracker.                                     | **{dotted-circle}** No |
 | [Shimo Workspace](shimo.md)                                                 | Use Shimo instead of the GitLab Wiki.                    | **{dotted-circle}** No |
-| [Slack application](gitlab_slack_application.md)                            | Use Slack's official GitLab application.                              | **{dotted-circle}** No |
+| [GitLab for Slack app](gitlab_slack_application.md)                         | Use Slack's official GitLab application.                              | **{dotted-circle}** No |
 | [Slack notifications](slack.md)                                             | Send notifications about project events to Slack.                     | **{dotted-circle}** No |
 | [Slack slash commands](slack_slash_commands.md)                             | Enable slash commands in a workspace.                                 | **{dotted-circle}** No |
 | [Unify Circuit](unify_circuit.md)                                           | Send notifications about project events to Unify Circuit.             | **{dotted-circle}** No |

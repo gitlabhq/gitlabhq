@@ -25,10 +25,11 @@ module Ci
       PARTITIONABLE_MODELS = %w[
         CommitStatus
         Ci::BuildMetadata
+        Ci::BuildReportResult
         Ci::BuildTraceChunk
         Ci::JobArtifact
-        Ci::PipelineVariable
         Ci::Pipeline
+        Ci::PipelineVariable
         Ci::Stage
         Ci::UnitTestFailure
       ].freeze

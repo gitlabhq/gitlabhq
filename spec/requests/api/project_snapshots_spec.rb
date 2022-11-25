@@ -7,6 +7,7 @@ RSpec.describe API::ProjectSnapshots do
 
   let(:project) { create(:project) }
   let(:admin) { create(:admin) }
+  let(:features) { { 'gitaly-feature-foobar' => 'true' } }
 
   before do
     allow(Feature::Gitaly).to receive(:server_feature_flags).and_return({
@@ -21,7 +22,8 @@ RSpec.describe API::ProjectSnapshots do
       expect(type).to eq('git-snapshot')
       expect(params).to eq(
         'GitalyServer' => {
-          'features' => { 'gitaly-feature-foobar' => 'true' },
+          'call_metadata' => features,
+          'features' => features,
           'address' => Gitlab::GitalyClient.address(repository.project.repository_storage),
           'token' => Gitlab::GitalyClient.token(repository.project.repository_storage)
         },

@@ -22032,6 +22032,9 @@ msgstr ""
 msgid "Integrations|GitLab administrators can set up integrations that all projects in a group inherit and use by default. These integrations apply to all projects that don't already use custom settings. You can override custom settings for a project if the settings are necessary at that level. Learn more about %{integrations_link_start}group-level integration management%{link_end}."
 msgstr ""
 
+msgid "Integrations|GitLab for Slack app"
+msgstr ""
+
 msgid "Integrations|Group-level integration management"
 msgstr ""
 

@@ -20,7 +20,7 @@ module JiraConnect
     def show_application_id?
       return if Gitlab.com?
 
-      Feature.enabled?(:jira_connect_oauth_self_managed_setting) && jira_connect_application_key.present?
+      jira_connect_application_key.present?
     end
 
     def jira_connect_application_key

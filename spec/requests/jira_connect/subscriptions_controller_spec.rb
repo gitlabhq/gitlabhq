@@ -36,16 +36,6 @@ RSpec.describe JiraConnect::SubscriptionsController do
       it { is_expected.not_to include('http://self-managed-gitlab.com/oauth/') }
     end
 
-    context 'with jira_connect_oauth_self_managed_setting feature disabled' do
-      before do
-        stub_feature_flags(jira_connect_oauth_self_managed_setting: false)
-      end
-
-      it { is_expected.not_to include('http://self-managed-gitlab.com/-/jira_connect/') }
-      it { is_expected.not_to include('http://self-managed-gitlab.com/api/') }
-      it { is_expected.not_to include('http://self-managed-gitlab.com/oauth/') }
-    end
-
     context 'when json format' do
       let(:path) { '/-/jira_connect/subscriptions.json' }
 

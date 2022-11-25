@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Environment' do
+RSpec.describe 'Environment', feature_category: :projects do
   let_it_be(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:role) { :developer }

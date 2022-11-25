@@ -89,7 +89,7 @@ module Ci
     scope :with_downloadable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
-          .where('ci_builds.id = ci_job_artifacts.job_id')
+          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
           .where(file_type: Ci::JobArtifact::DOWNLOADABLE_TYPES)
       )
     end
@@ -97,7 +97,7 @@ module Ci
     scope :with_erasable_artifacts, -> do
       where('EXISTS (?)',
         Ci::JobArtifact.select(1)
-          .where('ci_builds.id = ci_job_artifacts.job_id')
+          .where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id")
         .where(file_type: Ci::JobArtifact.erasable_file_types)
       )
     end
@@ -107,11 +107,11 @@ module Ci
     end
 
     scope :with_existing_job_artifacts, ->(query) do
-      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').merge(query))
+      where('EXISTS (?)', ::Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").merge(query))
     end
 
     scope :without_archived_trace, -> do
-      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where("#{Ci::Build.quoted_table_name}.id = #{Ci::JobArtifact.quoted_table_name}.job_id").trace)
     end
 
     scope :with_artifacts, ->(artifact_scope) do
@@ -154,7 +154,7 @@ module Ci
     scope :manual_actions, -> { where(when: :manual, status: COMPLETED_STATUSES + %i[manual]) }
     scope :scheduled_actions, -> { where(when: :delayed, status: COMPLETED_STATUSES + %i[scheduled]) }
     scope :ref_protected, -> { where(protected: true) }
-    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
+    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where("#{quoted_table_name}.id = #{Ci::BuildTraceChunk.quoted_table_name}.build_id").select(1)) }
     scope :with_stale_live_trace, -> { with_live_trace.finished_before(12.hours.ago) }
     scope :finished_before, -> (date) { finished.where('finished_at < ?', date) }
     scope :license_management_jobs, -> { where(name: %i(license_management license_scanning)) } # handle license rename https://gitlab.com/gitlab-org/gitlab/issues/8911

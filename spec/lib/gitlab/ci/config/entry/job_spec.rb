@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
       subject { described_class.nodes.keys }
 
       let(:result) do
-        %i[before_script script stage after_script cache
+        %i[before_script script after_script hooks stage cache
            image services only except rules needs variables artifacts
            environment coverage retry interruptible timeout release tags
            inherit parallel]
@@ -717,7 +717,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
           { before_script: %w[ls pwd],
             script: 'rspec',
             after_script: %w[cleanup],
-            id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } } }
+            id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } },
+            hooks: { pre_get_sources_script: 'echo hello' } }
         end
 
         it 'returns correct value' do
@@ -728,11 +729,33 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job do
                    stage: 'test',
                    ignore: false,
                    after_script: %w[cleanup],
+                   hooks: { pre_get_sources_script: ['echo hello'] },
                    only: { refs: %w[branches tags] },
                    job_variables: {},
                    root_variables_inheritance: true,
                    scheduling_type: :stage,
                    id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
+        end
+
+        context 'when the FF ci_hooks_pre_get_sources_script is disabled' do
+          before do
+            stub_feature_flags(ci_hooks_pre_get_sources_script: false)
+          end
+
+          it 'returns correct value' do
+            expect(entry.value)
+              .to eq(name: :rspec,
+                     before_script: %w[ls pwd],
+                     script: %w[rspec],
+                     stage: 'test',
+                     ignore: false,
+                     after_script: %w[cleanup],
+                     only: { refs: %w[branches tags] },
+                     job_variables: {},
+                     root_variables_inheritance: true,
+                     scheduling_type: :stage,
+                     id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } })
+          end
         end
       end
     end

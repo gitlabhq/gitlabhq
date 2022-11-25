@@ -10,7 +10,8 @@ participating-stages: []
 
 <!--
 **Note:** Please remove comment blocks for sections you've filled in.
-When your blueprint is complete, all of these comment blocks should be removed.
+When your blueprint ready for review, all of these comment blocks should be
+removed.
 
 To get started with a blueprint you can use this template to inform you about
 what you may want to document in it at the beginning. This content will change

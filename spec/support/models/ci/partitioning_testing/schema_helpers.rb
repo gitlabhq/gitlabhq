@@ -8,10 +8,10 @@ module Ci
       module_function
 
       def with_routing_tables
-        Ci::BuildMetadata.table_name = :p_ci_builds_metadata
+        # model.table_name = :routing_table
         yield
-      ensure
-        Ci::BuildMetadata.table_name = :ci_builds_metadata
+        # ensure
+        # model.table_name = :regular_table
       end
 
       # We're dropping the default values here to ensure that the application code

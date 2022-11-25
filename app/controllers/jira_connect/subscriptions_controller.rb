@@ -65,8 +65,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   private
 
   def allow_self_managed_content_security_policy
-    return unless Feature.enabled?(:jira_connect_oauth_self_managed_setting)
-
     return unless current_jira_installation.instance_url?
 
     request.content_security_policy.directives['connect-src'] ||= []

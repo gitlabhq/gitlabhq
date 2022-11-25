@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Profile > Chat' do
+RSpec.describe 'Profile > Chat', feature_category: :users do
   let(:user) { create(:user) }
   let(:integration) { create(:integration) }
 

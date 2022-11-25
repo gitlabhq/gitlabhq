@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > Template Undo Button', :js do
+RSpec.describe 'Projects > Files > Template Undo Button', :js, feature_category: :projects do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
 

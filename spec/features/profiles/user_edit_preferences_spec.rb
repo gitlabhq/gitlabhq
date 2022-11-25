@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User edit preferences profile', :js do
+RSpec.describe 'User edit preferences profile', :js, feature_category: :users do
   include StubLanguagesTranslationPercentage
 
   # Empty value doesn't change the levels

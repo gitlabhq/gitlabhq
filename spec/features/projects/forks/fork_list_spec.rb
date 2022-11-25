@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'listing forks of a project' do
+RSpec.describe 'listing forks of a project', feature_category: :projects do
   include ProjectForksHelper
   include ExternalAuthorizationServiceHelpers
 

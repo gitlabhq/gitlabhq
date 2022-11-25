@@ -18,29 +18,13 @@ RSpec.describe GitlabShellWorker, :sidekiq_inline do
     end
 
     describe 'all other commands' do
-      context 'when verify_gitlab_shell_worker_method_names is enabled' do
-        it 'raises ArgumentError' do
-          allow_next_instance_of(described_class) do |job_instance|
-            expect(job_instance).not_to receive(:gitlab_shell)
-          end
-
-          expect { described_class.perform_async('foo', 'bar', 'baz') }
-            .to raise_error(ArgumentError, 'foo not allowed for GitlabShellWorker')
-        end
-      end
-
-      context 'when verify_gitlab_shell_worker_method_names is disabled' do
-        before do
-          stub_feature_flags(verify_gitlab_shell_worker_method_names: false)
+      it 'raises ArgumentError' do
+        allow_next_instance_of(described_class) do |job_instance|
+          expect(job_instance).not_to receive(:gitlab_shell)
         end
 
-        it 'forwards the message to Gitlab::Shell' do
-          expect_next_instance_of(Gitlab::Shell) do |instance|
-            expect(instance).to receive('foo').with('bar', 'baz')
-          end
-
-          described_class.perform_async('foo', 'bar', 'baz')
-        end
+        expect { described_class.perform_async('foo', 'bar', 'baz') }
+          .to raise_error(ArgumentError, 'foo not allowed for GitlabShellWorker')
       end
     end
   end

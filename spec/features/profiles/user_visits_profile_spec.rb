@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits their profile' do
+RSpec.describe 'User visits their profile', feature_category: :users do
   let_it_be_with_refind(:user) { create(:user) }
 
   before do

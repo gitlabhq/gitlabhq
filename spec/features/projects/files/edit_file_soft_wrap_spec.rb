@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User uses soft wrap while editing file', :js do
+RSpec.describe 'Projects > Files > User uses soft wrap while editing file', :js, feature_category: :projects do
   before do
     project = create(:project, :repository)
     user = project.first_owner

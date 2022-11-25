@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Environments page', :js do
+RSpec.describe 'Environments page', :js, feature_category: :projects do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:project) { create(:project) }

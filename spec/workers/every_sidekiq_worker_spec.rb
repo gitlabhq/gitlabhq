@@ -340,6 +340,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'MergeRequestMergeabilityCheckWorker' => 3,
         'MergeRequestResetApprovalsWorker' => 3,
         'MergeRequests::AssigneesChangeWorker' => 3,
+        'MergeRequests::CaptureSuggestedReviewersAcceptedWorker' => 3,
         'MergeRequests::CreatePipelineWorker' => 3,
         'MergeRequests::DeleteSourceBranchWorker' => 3,
         'MergeRequests::FetchSuggestedReviewersWorker' => 3,

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User browses files", :js do
+RSpec.describe "User browses files", :js, feature_category: :projects do
   include RepoHelpers
 
   let(:fork_message) do

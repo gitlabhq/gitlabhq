@@ -12,7 +12,7 @@ module Gitlab
 
           ALLOWED_WHEN = %w[on_success on_failure always manual delayed].freeze
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
-                            cache dependencies before_script after_script
+                            cache dependencies before_script after_script hooks
                             environment coverage retry parallel interruptible timeout
                             release id_tokens].freeze
 
@@ -58,6 +58,10 @@ module Gitlab
           entry :after_script, Entry::Commands,
             description: 'Commands that will be executed when finishing job.',
             inherit: true
+
+          entry :hooks, Entry::Hooks,
+            description: 'Commands that will be executed on Runner before/after some events; clone, build-script.',
+            inherit: false # This will be true in next iterations
 
           entry :cache, Entry::Caches,
             description: 'Cache definition for this job.',
@@ -160,6 +164,7 @@ module Gitlab
               artifacts: artifacts_value,
               release: release_value,
               after_script: after_script_value,
+              hooks: hooks_pre_get_sources_script_enabled? ? hooks_value : nil,
               ignore: ignored?,
               allow_failure_criteria: allow_failure_criteria,
               needs: needs_defined? ? needs_value : nil,
@@ -188,6 +193,10 @@ module Gitlab
             return false if allow_failure_value.is_a?(Hash)
 
             allow_failure_value
+          end
+
+          def hooks_pre_get_sources_script_enabled?
+            YamlProcessor::FeatureFlags.enabled?(:ci_hooks_pre_get_sources_script)
           end
         end
       end

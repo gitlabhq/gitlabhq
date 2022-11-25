@@ -1,8 +1,0 @@
----
-name: ci_partitioning_use_ci_builds_metadata_routing_table
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100935"
-rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/378601"
-milestone: '15.6'
-type: development
-group: "group::pipeline execution"
-default_enabled: false

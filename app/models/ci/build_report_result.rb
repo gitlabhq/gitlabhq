@@ -2,10 +2,14 @@
 
 module Ci
   class BuildReportResult < Ci::ApplicationRecord
+    include Ci::Partitionable
+
     self.primary_key = :build_id
 
     belongs_to :build, class_name: "Ci::Build", inverse_of: :report_results
     belongs_to :project, class_name: "Project", inverse_of: :build_report_results
+
+    partitionable scope: :build
 
     validates :build, :project, presence: true
     validates :data, json_schema: { filename: "build_report_result_data" }

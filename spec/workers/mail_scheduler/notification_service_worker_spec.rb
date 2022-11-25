@@ -53,31 +53,15 @@ RSpec.describe MailScheduler::NotificationServiceWorker do
     end
 
     context 'when the method is not allowed' do
-      context 'when verify_mail_scheduler_notification_service_worker_method_names is enabled' do
-        it 'raises ArgumentError' do
-          expect(worker.notification_service).not_to receive(:async)
-          expect(worker.notification_service).not_to receive(:foo)
+      it 'raises ArgumentError' do
+        expect(worker.notification_service).not_to receive(:async)
+        expect(worker.notification_service).not_to receive(:foo)
 
-          expect { worker.perform('async', *serialize(key)) }
-            .to raise_error(ArgumentError, 'async not allowed for MailScheduler::NotificationServiceWorker')
+        expect { worker.perform('async', *serialize(key)) }
+          .to raise_error(ArgumentError, 'async not allowed for MailScheduler::NotificationServiceWorker')
 
-          expect { worker.perform('foo', *serialize(key)) }
-            .to raise_error(ArgumentError, 'foo not allowed for MailScheduler::NotificationServiceWorker')
-        end
-      end
-
-      context 'when verify_mail_scheduler_notification_service_worker_method_names is disabled' do
-        before do
-          stub_feature_flags(verify_mail_scheduler_notification_service_worker_method_names: false)
-        end
-
-        it 'forwards the argument to the service' do
-          expect(worker.notification_service).to receive(:async)
-          expect(worker.notification_service).to receive(:foo)
-
-          worker.perform('async', *serialize(key))
-          worker.perform('foo', *serialize(key))
-        end
+        expect { worker.perform('foo', *serialize(key)) }
+          .to raise_error(ArgumentError, 'foo not allowed for MailScheduler::NotificationServiceWorker')
       end
     end
   end

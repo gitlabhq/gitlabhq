@@ -1,8 +1,0 @@
----
-name: verify_gitlab_shell_worker_method_names
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103783
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/371470
-milestone: '15.6'
-type: development
-group: group::scalability
-default_enabled: false

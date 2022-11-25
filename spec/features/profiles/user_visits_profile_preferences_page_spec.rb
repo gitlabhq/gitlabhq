@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User visits the profile preferences page', :js do
+RSpec.describe 'User visits the profile preferences page', :js, feature_category: :users do
   include Select2Helper
 
   let(:user) { create(:user) }

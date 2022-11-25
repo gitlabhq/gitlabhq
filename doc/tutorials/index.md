@@ -19,10 +19,8 @@ and running quickly.
 | [GitLab 101](https://levelup.gitlab.com/learn/course/gitlab101)  |  Learn the basics of GitLab in this certification course. | **{star}** |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for DevOps](https://www.youtube.com/watch?v=7q9Y1Cv-ib0) (12m 34s) | Use GitLab through the entire DevOps lifecycle, from planning to monitoring. | **{star}** |
 | [Use Markdown at GitLab](../user/markdown.md) |  GitLab Flavored Markdown (GLFM) is used in many areas of GitLab, for example, in merge requests. | **{star}** |
-| [GitLab 201](https://levelup.gitlab.com/learn/course/gitlab-201-certification)  |  Go beyond the basics to learn more about using GitLab for your work. | |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Learn GitLab project walkthrough](https://www.youtube.com/watch?v=-oaI2WEKdI4&list=PL05JrBw4t0KofkHq4GZJ05FnNGa11PQ4d) (59m 2s) | Step through the tutorial-style issues in the **Learn GitLab** project. If you don't have this project, download [the export file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/vendor/project_templates/learn_gitlab_ultimate.tar.gz) and [import it to a new project](../user/project/settings/import_export.md#import-a-project-and-its-data). | |
 | [Productivity tips](https://about.gitlab.com/blog/2021/02/18/improve-your-gitlab-productivity-with-these-10-tips/) | Get tips to help make you a productive GitLab user. | |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Structure a multi-team organization](https://www.youtube.com/watch?v=KmASFwSap7c) (37m 37s) | Learn to use issues, milestones, epics, labels, and more to plan and manage your work. | |
 
 ## Use Git
 
@@ -42,10 +40,9 @@ collaborating, and more.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | For hands-on learning, select **Sample GitLab Project** and create a project with example issues and merge requests. | **{star}** |
+| [Create a project from a template](https://gitlab.com/projects/new#create_from_template) | Choose a project template and create a project with files to get you started. | |
 | [Migrate to GitLab](../user/project/import/index.md) | If you are coming to GitLab from another platform, you can import or convert your projects. | |
 | [Run an agile iteration](agile_sprint.md) | Use group, projects, and iterations to run an agile development iteration. |
-| <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Use GitLab for multi-team planning (SAFe)](https://www.youtube.com/watch?v=KmASFwSap7c) (37m 37s) | A use case of a multi-team organization that uses GitLab with [Scaled Agile Framework (SAFe)](https://about.gitlab.com/solutions/agile-delivery/scaled-agile/). |
 
 ## Use CI/CD pipelines
 

@@ -36,7 +36,7 @@ workspace to be able to install a new application. See
 
 To enable the GitLab integration for your Slack workspace:
 
-1. Go to your project's **Settings > Integration > Slack application** (only
+1. Go to your project's **Settings > Integration > GitLab for Slack app** (only
    visible on GitLab.com).
 1. Select **Install Slack app**.
 1. Select **Allow** on Slack's confirmation screen.
@@ -50,7 +50,7 @@ To create a project alias on GitLab.com for Slack integration:
 
 1. Go to your project's home page.
 1. Go to **Settings > Integrations** (only visible on GitLab.com).
-1. On the **Integrations** page, select **Slack application**.
+1. On the **Integrations** page, select **GitLab for Slack app**.
 1. The current **Project Alias**, if any, is displayed. To edit this value,
    select **Edit**.
 1. Enter your desired alias, and select **Save changes**.

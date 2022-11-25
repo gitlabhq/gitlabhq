@@ -18,9 +18,7 @@ module MailScheduler
     def perform(meth, *args)
       check_arguments!(args)
 
-      if ::Feature.enabled?(:verify_mail_scheduler_notification_service_worker_method_names) &&
-          NotificationService.permitted_actions.exclude?(meth.to_sym)
-
+      if NotificationService.permitted_actions.exclude?(meth.to_sym)
         raise(ArgumentError, "#{meth} not allowed for #{self.class.name}")
       end
 

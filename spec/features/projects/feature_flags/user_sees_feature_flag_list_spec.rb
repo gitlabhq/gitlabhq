@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sees feature flag list', :js do
+RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
   let_it_be(:user) { create(:user) }

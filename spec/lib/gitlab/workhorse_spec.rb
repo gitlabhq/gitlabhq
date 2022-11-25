@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Workhorse do
   let_it_be(:project) { create(:project, :repository) }
+  let(:features) { { 'gitaly-feature-enforce-requests-limits' => 'true' } }
 
   let(:repository) { project.repository }
 
@@ -42,7 +43,8 @@ RSpec.describe Gitlab::Workhorse do
       expect(command).to eq('git-archive')
       expect(params).to eq({
         'GitalyServer' => {
-          features: { 'gitaly-feature-enforce-requests-limits' => 'true' },
+          'call_metadata' => features,
+          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -92,7 +94,8 @@ RSpec.describe Gitlab::Workhorse do
       expect(command).to eq("git-format-patch")
       expect(params).to eq({
         'GitalyServer' => {
-          features: { 'gitaly-feature-enforce-requests-limits' => 'true' },
+          'call_metadata' => features,
+          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -155,7 +158,8 @@ RSpec.describe Gitlab::Workhorse do
       expect(command).to eq("git-diff")
       expect(params).to eq({
         'GitalyServer' => {
-          features: { 'gitaly-feature-enforce-requests-limits' => 'true' },
+          'call_metadata' => features,
+          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -219,6 +223,13 @@ RSpec.describe Gitlab::Workhorse do
       }
     end
 
+    let(:call_metadata) do
+      features.merge({
+                       'user_id' => params[:GL_ID],
+                       'username' => params[:GL_USERNAME]
+                     })
+    end
+
     subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action) }
 
     it { expect(subject).to include(params) }
@@ -242,7 +253,8 @@ RSpec.describe Gitlab::Workhorse do
       let(:gitaly_params) do
         {
           GitalyServer: {
-            features: { 'gitaly-feature-enforce-requests-limits' => 'true' },
+            call_metadata: call_metadata,
+            features: features,
             address: Gitlab::GitalyClient.address('default'),
             token: Gitlab::GitalyClient.token('default')
           }
@@ -357,6 +369,7 @@ RSpec.describe Gitlab::Workhorse do
           result = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
         end
         expect(result[:RemoteIP]).to eql("1.2.3.4")
+        expect(result[:GitalyServer][:call_metadata]['remote_ip']).to eql("1.2.3.4")
       end
     end
 
@@ -364,6 +377,7 @@ RSpec.describe Gitlab::Workhorse do
       it 'does not include RemoteIP params' do
         result = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
         expect(result).not_to have_key(:RemoteIP)
+        expect(result[:GitalyServer][:call_metadata]).not_to have_key('remote_ip')
       end
     end
   end
@@ -445,7 +459,8 @@ RSpec.describe Gitlab::Workhorse do
       expect(command).to eq('git-blob')
       expect(params).to eq({
         'GitalyServer' => {
-          features: { 'gitaly-feature-enforce-requests-limits' => 'true' },
+          'call_metadata' => features,
+          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -525,7 +540,8 @@ RSpec.describe Gitlab::Workhorse do
       expect(command).to eq('git-snapshot')
       expect(params).to eq(
         'GitalyServer' => {
-          'features' => { 'gitaly-feature-enforce-requests-limits' => 'true' },
+          'call_metadata' => features,
+          'features' => features,
           'address' => Gitlab::GitalyClient.address(project.repository_storage),
           'token' => Gitlab::GitalyClient.token(project.repository_storage)
         },

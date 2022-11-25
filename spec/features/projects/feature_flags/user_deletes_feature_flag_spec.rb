@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User deletes feature flag', :js do
+RSpec.describe 'User deletes feature flag', :js, feature_category: :feature_flags do
   include FeatureFlagHelpers
 
   let(:user) { create(:user) }
