@@ -212,7 +212,7 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
     end
 
     describe ".schedule_to_delete" do
-      subject { described_class.for_id(deletable_environment).schedule_to_delete }
+      subject { described_class.id_in(deletable_environment).schedule_to_delete }
 
       it "schedules the record for deletion" do
         freeze_time do

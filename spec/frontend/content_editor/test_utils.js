@@ -15,6 +15,7 @@ import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
+import Diagram from '~/content_editor/extensions/diagram';
 import Emoji from '~/content_editor/extensions/emoji';
 import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
 import FootnoteReference from '~/content_editor/extensions/footnote_reference';
@@ -215,6 +216,7 @@ export const createTiptapEditor = (extensions = []) =>
       DescriptionList,
       Details,
       DetailsContent,
+      Diagram,
       Emoji,
       FootnoteDefinition,
       FootnoteReference,

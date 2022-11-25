@@ -68,7 +68,7 @@ module Environments
     end
 
     def mark_for_deletion(deletable_environments)
-      Environment.for_id(deletable_environments).schedule_to_delete
+      Environment.id_in(deletable_environments).schedule_to_delete
     end
 
     class Result

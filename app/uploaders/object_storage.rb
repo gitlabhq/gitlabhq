@@ -68,13 +68,7 @@ module ObjectStorage
       end
 
       def schedule_background_upload(*args)
-        return unless schedule_background_upload?
-        return unless upload
-
-        ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
-                                                upload.class.to_s,
-                                                mounted_as,
-                                                upload.id)
+        # TODO remove this method https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1690
       end
 
       def exclusive_lease_key
@@ -312,12 +306,7 @@ module ObjectStorage
     end
 
     def schedule_background_upload(*args)
-      return unless schedule_background_upload?
-
-      ObjectStorage::BackgroundMoveWorker.perform_async(self.class.name,
-                                                          model.class.name,
-                                                          mounted_as,
-                                                          model.id)
+      # TODO remove this method https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1690
     end
 
     def fog_directory

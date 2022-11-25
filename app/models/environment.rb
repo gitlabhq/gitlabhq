@@ -117,7 +117,6 @@ class Environment < ApplicationRecord
   scope :with_rank, -> do
     select('environments.*, rank() OVER (PARTITION BY project_id ORDER BY id DESC)')
   end
-  scope :for_id, -> (id) { where(id: id) }
 
   scope :with_deployment, -> (sha, status: nil) do
     deployments = Deployment.select(1).where('deployments.environment_id = environments.id').where(sha: sha)

@@ -63,7 +63,7 @@ module Environments
 
     def by_ids(environments)
       if params[:environment_ids].present?
-        environments.for_id(params[:environment_ids])
+        environments.id_in(params[:environment_ids])
       else
         environments
       end

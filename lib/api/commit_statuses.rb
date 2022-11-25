@@ -161,7 +161,7 @@ module API
         def all_matching_pipelines
           pipelines = user_project.ci_pipelines.newest_first(sha: commit.sha)
           pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
-          pipelines = pipelines.for_id(params[:pipeline_id]) if params[:pipeline_id]
+          pipelines = pipelines.id_in(params[:pipeline_id]) if params[:pipeline_id]
           pipelines
         end
 

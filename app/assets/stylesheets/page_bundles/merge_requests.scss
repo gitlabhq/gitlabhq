@@ -1080,6 +1080,10 @@ $tabs-holder-z-index: 250;
 }
 
 .merge-request-notification-toggle {
+  .gl-toggle {
+    @include gl-ml-auto;
+  }
+
   .gl-toggle-label {
     @include gl-font-weight-normal;
   }

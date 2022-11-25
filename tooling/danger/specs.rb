@@ -45,6 +45,13 @@ module Tooling
       for background information and alternative options.
       SUGGEST_COMMENT
 
+      FEATURE_CATEGORY_REGEX = /^\+.?RSpec\.describe(.+)(?!feature_category)/.freeze
+      FEATURE_CATEGORY_SUGGESTION = <<~SUGGESTION_MARKDOWN
+      Consider addding `feature_category: <feature_category_name>` for this example if it is not set already.
+      See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata).
+      SUGGESTION_MARKDOWN
+      FEATURE_CATEGORY_EXCLUDE = 'feature_category'
+
       def changed_specs_files(ee: :include)
         changed_files = helper.all_changed_files
         folder_prefix =
@@ -64,8 +71,8 @@ module Tooling
         add_suggestion(
           filename,
           MATCH_WITH_ARRAY_REGEX,
-          MATCH_WITH_ARRAY_REPLACEMENT,
-          MATCH_WITH_ARRAY_SUGGESTION
+          MATCH_WITH_ARRAY_SUGGESTION,
+          MATCH_WITH_ARRAY_REPLACEMENT
         )
       end
 
@@ -73,19 +80,30 @@ module Tooling
         add_suggestion(
           filename,
           PROJECT_FACTORY_REGEX,
-          PROJECT_FACTORY_REPLACEMENT,
-          PROJECT_FACTORY_SUGGESTION
+          PROJECT_FACTORY_SUGGESTION,
+          PROJECT_FACTORY_REPLACEMENT
+        )
+      end
+
+      def add_suggestions_for_feature_category(filename)
+        add_suggestion(
+          filename,
+          FEATURE_CATEGORY_REGEX,
+          FEATURE_CATEGORY_SUGGESTION,
+          nil,
+          FEATURE_CATEGORY_EXCLUDE
         )
       end
 
       private
 
       def added_lines_matching(filename, regex)
-        helper.changed_lines(filename).grep(/\A\+ /).grep(regex)
+        helper.changed_lines(filename).grep(/\A\+( )?/).grep(regex)
       end
 
-      def add_suggestion(filename, regex, replacement, comment_text)
+      def add_suggestion(filename, regex, comment_text, replacement = nil, exclude = nil)
         added_lines = added_lines_matching(filename, regex)
+
         return if added_lines.empty?
 
         spec_file_lines = project_helper.file_lines(filename)
@@ -93,9 +111,14 @@ module Tooling
         added_lines.each_with_object([]) do |added_line, processed_line_numbers|
           line_number = find_line_number(spec_file_lines, added_line.delete_prefix('+'), exclude_indexes: processed_line_numbers)
           next unless line_number
+          next if !exclude.nil? && added_line.include?(exclude)
 
           processed_line_numbers << line_number
-          text = format(comment(comment_text), suggested_line: spec_file_lines[line_number].gsub(regex, replacement))
+
+          suggested_line = spec_file_lines[line_number]
+          suggested_line = suggested_line.gsub(regex, replacement) unless replacement.nil?
+
+          text = format(comment(comment_text), suggested_line: suggested_line)
           markdown(text, file: filename, line: line_number.succ)
         end
       end

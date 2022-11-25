@@ -842,14 +842,6 @@ RSpec.describe 'Git LFS API and storage' do
                   lfs_object.destroy!
                 end
 
-                context 'with object storage disabled' do
-                  it "doesn't attempt to migrate file to object storage" do
-                    expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-                    put_finalize(with_tempfile: true)
-                  end
-                end
-
                 context 'with object storage enabled' do
                   context 'and direct upload enabled' do
                     let!(:fog_connection) do
@@ -909,18 +901,6 @@ RSpec.describe 'Git LFS API and storage' do
                         expect(LfsObject.last.file_store).to eq(ObjectStorage::Store::REMOTE)
                         expect(LfsObject.last.file).to be_exists
                       end
-                    end
-                  end
-
-                  context 'and background upload enabled' do
-                    before do
-                      stub_lfs_object_storage(background_upload: true)
-                    end
-
-                    it 'schedules migration of file to object storage' do
-                      expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('LfsObjectUploader', 'LfsObject', :file, kind_of(Numeric))
-
-                      put_finalize(with_tempfile: true)
                     end
                   end
                 end

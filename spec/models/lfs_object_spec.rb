@@ -99,58 +99,6 @@ RSpec.describe LfsObject do
 
     subject { create(:lfs_object, :with_file) }
 
-    context 'when object storage is disabled' do
-      before do
-        stub_lfs_object_storage(enabled: false)
-      end
-
-      it 'does not schedule the migration' do
-        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-        subject
-      end
-    end
-
-    context 'when object storage is enabled' do
-      context 'when background upload is enabled' do
-        context 'when is licensed' do
-          before do
-            stub_lfs_object_storage(background_upload: true)
-          end
-
-          it 'schedules the model for migration' do
-            expect(ObjectStorage::BackgroundMoveWorker)
-              .to receive(:perform_async)
-              .with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
-              .once
-
-            subject
-          end
-
-          it 'schedules the model for migration once' do
-            expect(ObjectStorage::BackgroundMoveWorker)
-              .to receive(:perform_async)
-              .with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
-              .once
-
-            create(:lfs_object, :with_file)
-          end
-        end
-      end
-
-      context 'when background upload is disabled' do
-        before do
-          stub_lfs_object_storage(background_upload: false)
-        end
-
-        it 'schedules the model for migration' do
-          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-          subject
-        end
-      end
-    end
-
     describe 'file is being stored' do
       subject { create(:lfs_object, :with_file) }
 

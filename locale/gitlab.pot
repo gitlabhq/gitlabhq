@@ -19148,7 +19148,7 @@ msgstr ""
 msgid "GroupActivityMetrics|Members added"
 msgstr ""
 
-msgid "GroupActivityMetrics|Merge Requests created"
+msgid "GroupActivityMetrics|Merge requests created"
 msgstr ""
 
 msgid "GroupActivityMetrics|Recent activity"
@@ -34942,6 +34942,9 @@ msgid "Restrict projects for this runner"
 msgstr ""
 
 msgid "Restricted shift times are not available for hourly shifts"
+msgstr ""
+
+msgid "Results limit reached"
 msgstr ""
 
 msgid "Resume"

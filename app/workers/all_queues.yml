@@ -1560,15 +1560,6 @@
   :weight: 1
   :idempotent: false
   :tags: []
-- :name: object_storage:object_storage_background_move
-  :worker_name: ObjectStorage::BackgroundMoveWorker
-  :feature_category: :not_owned
-  :has_external_dependencies: false
-  :urgency: :low
-  :resource_boundary: :unknown
-  :weight: 1
-  :idempotent: false
-  :tags: []
 - :name: object_storage:object_storage_migrate_uploads
   :worker_name: ObjectStorage::MigrateUploadsWorker
   :feature_category: :not_owned

@@ -350,7 +350,6 @@ module Ci
     scope :for_sha_or_source_sha, -> (sha) { for_sha(sha).or(for_source_sha(sha)) }
     scope :for_ref, -> (ref) { where(ref: ref) }
     scope :for_branch, -> (branch) { for_ref(branch).where(tag: false) }
-    scope :for_id, -> (id) { where(id: id) }
     scope :for_iid, -> (iid) { where(iid: iid) }
     scope :for_project, -> (project_id) { where(project_id: project_id) }
     scope :created_after, -> (time) { where(arel_table[:created_at].gt(time)) }

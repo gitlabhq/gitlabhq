@@ -198,12 +198,6 @@ RSpec.describe API::GroupImport do
         include_examples 'when all params are correct'
         include_examples 'when some params are missing'
       end
-
-      it "doesn't attempt to migrate file to object storage" do
-        expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-        subject
-      end
     end
 
     context 'with object storage enabled' do

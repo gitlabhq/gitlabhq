@@ -356,50 +356,6 @@ RSpec.describe Ci::JobArtifact do
     end
   end
 
-  describe 'callbacks' do
-    describe '#schedule_background_upload' do
-      subject { create(:ci_job_artifact, :archive) }
-
-      context 'when object storage is disabled' do
-        before do
-          stub_artifacts_object_storage(enabled: false)
-        end
-
-        it 'does not schedule the migration' do
-          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-          subject
-        end
-      end
-
-      context 'when object storage is enabled' do
-        context 'when background upload is enabled' do
-          before do
-            stub_artifacts_object_storage(background_upload: true)
-          end
-
-          it 'schedules the model for migration' do
-            expect(ObjectStorage::BackgroundMoveWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
-
-            subject
-          end
-        end
-
-        context 'when background upload is disabled' do
-          before do
-            stub_artifacts_object_storage(background_upload: false)
-          end
-
-          it 'schedules the model for migration' do
-            expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
-
-            subject
-          end
-        end
-      end
-    end
-  end
-
   context 'creating the artifact' do
     let(:project) { create(:project) }
     let(:artifact) { create(:ci_job_artifact, :archive, project: project) }

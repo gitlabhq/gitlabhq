@@ -31410,6 +31410,8 @@ CREATE INDEX scan_finding_approval_mr_rule_index_id ON approval_merge_request_ru
 
 CREATE INDEX scan_finding_approval_mr_rule_index_merge_request_id ON approval_merge_request_rules USING btree (merge_request_id) WHERE (report_type = 4);
 
+CREATE INDEX scan_finding_approval_mr_rule_index_mr_id_and_created_at ON approval_merge_request_rules USING btree (merge_request_id, created_at) WHERE (report_type = 4);
+
 CREATE INDEX scan_finding_approval_project_rule_index_created_at_project_id ON approval_project_rules USING btree (created_at, project_id) WHERE (report_type = 4);
 
 CREATE INDEX scan_finding_approval_project_rule_index_project_id ON approval_project_rules USING btree (project_id) WHERE (report_type = 4);
