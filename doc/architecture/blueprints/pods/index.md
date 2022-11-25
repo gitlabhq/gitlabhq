@@ -335,6 +335,7 @@ This is the list of known affected features with the proposed solutions.
 - [Pods: Snippets](pods-feature-snippets.md)
 - [Pods: Uploads](pods-feature-uploads.md)
 - [Pods: GitLab Pages](pods-feature-gitlab-pages.md)
+- [Pods: Agent for Kubernetes](pods-feature-agent-for-kubernetes.md)
 
 ## Links
 

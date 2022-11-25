@@ -49,7 +49,7 @@ To view a project's audit events:
 Project events can also be accessed using the [Project Audit Events API](../api/audit_events.md#project-audit-events).
 Project event queries are limited to a maximum of 30 days.
 
-### View instance audit events **(PREMIUM SELF)**
+## View instance audit events **(PREMIUM SELF)**
 
 You can view audit events from user actions across an entire GitLab instance.
 
@@ -57,6 +57,47 @@ To view instance audit events:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Monitoring > Audit Events**.
+
+### Export to CSV
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in GitLab 13.4.
+> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in GitLab 13.7.
+
+You can export the current view (including filters) of your instance audit events as a CSV file. To export the instance
+audit events to CSV:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Monitoring > Audit Events**.
+1. Select the available search [filters](#filter-audit-events).
+1. Select **Export as CSV**.
+
+The exported file:
+
+- Is sorted by `created_at` in ascending order.
+- Is limited to a maximum of 100 000 events. The remaining records are truncated when this limit is reached.
+
+Data is encoded with:
+
+- Comma as the column delimiter.
+- `"` to quote fields if necessary.
+- New lines separate rows.
+
+The first row contains the headers, which are listed in the following table along with a description of the values:
+
+| Column               | Description                                        |
+|:---------------------|:---------------------------------------------------|
+| **ID**               | Audit event `id`.                                  |
+| **Author ID**        | ID of the author.                                  |
+| **Author Name**      | Full name of the author.                           |
+| **Entity ID**        | ID of the scope.                                   |
+| **Entity Type**      | Type of the scope (`Project`, `Group`, or `User`). |
+| **Entity Path**      | Path of the scope.                                 |
+| **Target ID**        | ID of the target.                                  |
+| **Target Type**      | Type of the target.                                |
+| **Target Details**   | Details of the target.                             |
+| **Action**           | Description of the action.                         |
+| **IP Address**       | IP address of the author who performed the action. |
+| **Created At (UTC)** | Formatted as `YYYY-MM-DD HH:MM:SS`.                |
 
 ## Time zones
 
@@ -70,25 +111,38 @@ The time zone used for audit events depends on where you view them:
 - In `audit_json.log`, UTC is used.
 - In CSV exports, UTC is used.
 
-## List of events
+## Filter audit events
+
+From audit events pages, different filters are available depending on the page you're on.
+
+| Audit event page | Available filter                                                                                                       |
+|:-----------------|:-----------------------------------------------------------------------------------------------------------------------|
+| Project          | User (member of the project) who performed the action.                                                                 |
+| Group            | User (member of the group) who performed the action.                                                                   |
+| Instance         | Group, project, or user.                                                                                               |
+| All              | Date range buttons and pickers (maximum range of 31 days). Default is from the first day of the month to today's date. |
+
+## User impersonation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
+> - Impersonation session events included in group audit events in GitLab 14.8.
+
+When a user is [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events
+with additional details:
+
+- Audit events include information about the impersonating administrator. These audit events are visible in audit event
+  pages depending on the audit event type (group, project, or user).
+- Extra audit events are recorded for the start and end of the administrator's impersonation session. These audit events
+  are visible as:
+  - Instance audit events.
+  - Group audit events for all groups the user belongs to. For performance reasons, group audit events are limited to
+    the oldest 20 groups you belong to.
+
+![Audit event with impersonated user](img/impersonated_audit_events_v15_7.png)
+
+## Available audit events
 
 You can view different events depending on the version of GitLab you have.
-
-### Impersonation data
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536) in GitLab 13.0.
-
-When a user is being [impersonated](../user/admin_area/index.md#user-impersonation), their actions are logged as audit events as usual, with two additional details:
-
-1. Usual audit events include information about the impersonating administrator. These audit events are visible in their
-   respective audit event pages depending on their type (group, project, or user).
-1. Extra audit events are recorded for the start and stop of the administrator's impersonation session. These audit events
-   are visible in the:
-   - Instance audit events.
-   - Group audit events for all groups the user belongs to (GitLab 14.8 and later). For performance reasons, group audit
-     events are limited to the oldest 20 groups to which you belong.
-
-![audit events](img/impersonated_audit_events_v13_8.png)
 
 ### Group events
 
@@ -276,61 +330,3 @@ The repositories push events feature was:
 
 - [Deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 14.3.
 - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/337993) in GitLab 15.0.
-
-## Search
-
-The search filters you can see depends on which audit level you are at.
-
-| Filter | Available options |
-| ------ | ----------------- |
-| Scope (Project level) | A specific user who performed the action. |
-| Scope (Group level) | A specific user (in a group) who performed the action. |
-| Scope (Instance level) | A specific group, project, or user that the action was scoped to. |
-| Date range | Either via the date range buttons or pickers (maximum range of 31 days). Default is from the first day of the month to today's date. |
-
-![audit events](img/audit_events_v14_5.png)
-
-## Export to CSV **(PREMIUM SELF)**
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/1449) in GitLab 13.4.
-> - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/285441) in GitLab 13.7.
-
-Export to CSV allows customers to export the current filter view of your audit events as a
-CSV file, which stores tabular data in plain text. The data provides a comprehensive view with respect to
-audit events.
-
-To export the audit events to CSV:
-
-1. On the top bar, select **Main menu > Admin**.
-1. On the left sidebar, select **Monitoring > Audit Events**.
-1. Select the available search [filters](#search).
-1. Select **Export as CSV**.
-
-### Sort
-
-Exported events are always sorted by `created_at` in ascending order.
-
-### Format
-
-Data is encoded with a comma as the column delimiter, with `"` used to quote fields if needed, and newlines to separate rows.
-The first row contains the headers, which are listed in the following table along with a description of the values:
-
-| Column  | Description |
-|---------|-------------|
-| ID | Audit event `id` |
-| Author ID | ID of the author |
-| Author Name | Full name of the author |
-| Entity ID | ID of the scope |
-| Entity Type | Type of the scope (`Project`/`Group`/`User`) |
-| Entity Path | Path of the scope |
-| Target ID | ID of the target |
-| Target Type | Type of the target |
-| Target Details | Details of the target |
-| Action | Description of the action |
-| IP Address | IP address of the author who performed the action |
-| Created At (UTC) | Date (in ISO 8601 format) that the audit event was created. |
-
-### Limitation
-
-The audit events CSV file is limited to a maximum of `100,000` events.
-The remaining records are truncated when this limit is reached.

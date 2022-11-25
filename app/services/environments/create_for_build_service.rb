@@ -3,10 +3,10 @@
 module Environments
   # This class creates an environment record for a build (a pipeline job).
   class CreateForBuildService
-    def execute(build, merge_request: nil)
+    def execute(build)
       return unless build.instance_of?(::Ci::Build) && build.has_environment_keyword?
 
-      environment = to_resource(build, merge_request)
+      environment = to_resource(build)
 
       if environment.persisted?
         build.persisted_environment = environment
@@ -21,12 +21,12 @@ module Environments
     private
 
     # rubocop: disable Performance/ActiveRecordSubtransactionMethods
-    def to_resource(build, merge_request)
+    def to_resource(build)
       build.project.environments.safe_find_or_create_by(name: build.expanded_environment_name) do |environment|
         # Initialize the attributes at creation
         environment.auto_stop_in = expanded_auto_stop_in(build)
         environment.tier = build.environment_tier_from_options
-        environment.merge_request = merge_request
+        environment.merge_request = build.pipeline.merge_request
       end
     end
     # rubocop: enable Performance/ActiveRecordSubtransactionMethods

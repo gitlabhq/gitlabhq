@@ -4,7 +4,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
-import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
+import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 

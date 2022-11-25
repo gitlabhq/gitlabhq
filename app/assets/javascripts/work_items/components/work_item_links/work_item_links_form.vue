@@ -132,6 +132,9 @@ export default {
       }
       return workItemInput;
     },
+    workItemsMvcEnabled() {
+      return this.glFeatures.workItemsMvc;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -159,7 +162,7 @@ export default {
       return this.parentIteration?.id;
     },
     associateIteration() {
-      return this.parentIterationId && this.hasIterationsFeature && this.workItemsMvc2Enabled;
+      return this.parentIterationId && this.hasIterationsFeature;
     },
     parentMilestoneId() {
       return this.parentMilestone?.id;

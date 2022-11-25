@@ -3,6 +3,7 @@ import mockJobsPaginated from 'test_fixtures/graphql/jobs/get_jobs.query.graphql
 import mockJobs from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.json';
 import mockJobsAsGuest from 'test_fixtures/graphql/jobs/get_jobs.query.graphql.as_guest.json';
 import { TEST_HOST } from 'spec/test_constants';
+import { TOKEN_TYPE_STATUS } from '~/vue_shared/components/filtered_search_bar/constants';
 
 const threeWeeksAgo = new Date();
 threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
@@ -1365,7 +1366,10 @@ export const CIJobConnectionExistingCache = {
   statuses: 'PENDING',
 };
 
-export const mockFailedSearchToken = { type: 'status', value: { data: 'FAILED', operator: '=' } };
+export const mockFailedSearchToken = {
+  type: TOKEN_TYPE_STATUS,
+  value: { data: 'FAILED', operator: '=' },
+};
 
 export const retryMutationResponse = {
   data: {

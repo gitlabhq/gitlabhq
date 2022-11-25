@@ -33,7 +33,7 @@ describe('WorkItemLinksForm', () => {
     typesResponse = projectWorkItemTypesQueryResponse,
     parentConfidential = false,
     hasIterationsFeature = false,
-    workItemsMvc2Enabled = false,
+    workItemsMvcEnabled = false,
     parentIteration = null,
     formType = FORM_TYPES.create,
   } = {}) => {
@@ -52,7 +52,7 @@ describe('WorkItemLinksForm', () => {
       },
       provide: {
         glFeatures: {
-          workItemsMvc2: workItemsMvc2Enabled,
+          workItemsMvc: workItemsMvcEnabled,
         },
         projectPath: 'project/path',
         hasIterationsFeature,
@@ -165,23 +165,8 @@ describe('WorkItemLinksForm', () => {
   });
 
   describe('associate iteration with task', () => {
-    it('does not update iteration when mvc2 feature flag is not enabled', async () => {
-      await createComponent({
-        hasIterationsFeature: true,
-        parentIteration: mockParentIteration,
-      });
-
-      findInput().vm.$emit('input', 'Create task test');
-
-      findForm().vm.$emit('submit', {
-        preventDefault: jest.fn(),
-      });
-      await waitForPromises();
-      expect(updateMutationResolver).not.toHaveBeenCalled();
-    });
     it('updates when parent has an iteration associated', async () => {
       await createComponent({
-        workItemsMvc2Enabled: true,
         hasIterationsFeature: true,
         parentIteration: mockParentIteration,
       });
@@ -202,7 +187,6 @@ describe('WorkItemLinksForm', () => {
     });
     it('does not update when parent has no iteration associated', async () => {
       await createComponent({
-        workItemsMvc2Enabled: true,
         hasIterationsFeature: true,
       });
       findInput().vm.$emit('input', 'Create task test');

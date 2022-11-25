@@ -23465,9 +23465,6 @@ msgstr ""
 msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
 msgstr ""
 
-msgid "Jobs|Status"
-msgstr ""
-
 msgid "Jobs|There was a problem fetching the failed jobs."
 msgstr ""
 

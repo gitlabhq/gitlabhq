@@ -2,7 +2,13 @@ import { GlAlert, GlBadge, GlPagination, GlTabs, GlTab } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import Tracking from '~/tracking';
-import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  OPERATORS_IS,
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
 import PageWrapper from '~/vue_shared/components/paginated_table_with_search_and_tabs/paginated_table_with_search_and_tabs.vue';
@@ -166,7 +172,7 @@ describe('AlertManagementEmptyState', () => {
 
     it('renders the filter set with the tokens according to the prop filterSearchTokens', () => {
       mountComponent({
-        props: { filterSearchTokens: ['assignee_username'] },
+        props: { filterSearchTokens: [TOKEN_TYPE_ASSIGNEE] },
       });
 
       expect(Filters().exists()).toBe(true);
@@ -287,9 +293,9 @@ describe('AlertManagementEmptyState', () => {
       expect(Filters().props('searchInputPlaceholder')).toBe('Search or filter results…');
       expect(Filters().props('tokens')).toEqual([
         {
-          type: 'author_username',
+          type: TOKEN_TYPE_AUTHOR,
           icon: 'user',
-          title: 'Author',
+          title: TOKEN_TITLE_AUTHOR,
           unique: true,
           symbol: '@',
           token: AuthorToken,
@@ -298,9 +304,9 @@ describe('AlertManagementEmptyState', () => {
           fetchAuthors: expect.any(Function),
         },
         {
-          type: 'assignee_username',
+          type: TOKEN_TYPE_ASSIGNEE,
           icon: 'user',
-          title: 'Assignee',
+          title: TOKEN_TITLE_ASSIGNEE,
           unique: true,
           symbol: '@',
           token: AuthorToken,

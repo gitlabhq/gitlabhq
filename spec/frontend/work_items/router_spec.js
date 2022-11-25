@@ -1,14 +1,12 @@
 import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import workItemWeightSubscription from 'ee_component/work_items/graphql/work_item_weight.subscription.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import {
   workItemAssigneesSubscriptionResponse,
   workItemDatesSubscriptionResponse,
   workItemResponseFactory,
   workItemTitleSubscriptionResponse,
-  workItemWeightSubscriptionResponse,
   workItemLabelsSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
   workItemDescriptionSubscriptionResponse,
@@ -33,7 +31,6 @@ describe('Work items router', () => {
   const workItemQueryHandler = jest.fn().mockResolvedValue(workItemResponseFactory());
   const datesSubscriptionHandler = jest.fn().mockResolvedValue(workItemDatesSubscriptionResponse);
   const titleSubscriptionHandler = jest.fn().mockResolvedValue(workItemTitleSubscriptionResponse);
-  const weightSubscriptionHandler = jest.fn().mockResolvedValue(workItemWeightSubscriptionResponse);
   const assigneesSubscriptionHandler = jest
     .fn()
     .mockResolvedValue(workItemAssigneesSubscriptionResponse);
@@ -61,10 +58,6 @@ describe('Work items router', () => {
       [workItemDescriptionSubscription, descriptionSubscriptionHandler],
     ];
 
-    if (IS_EE) {
-      handlers.push([workItemWeightSubscription, weightSubscriptionHandler]);
-    }
-
     wrapper = mount(App, {
       apolloProvider: createMockApollo(handlers),
       router,
@@ -72,6 +65,11 @@ describe('Work items router', () => {
         fullPath: 'full-path',
         issuesListPath: 'full-path/-/issues',
         hasIssueWeightsFeature: false,
+        hasIterationsFeature: false,
+      },
+      stubs: {
+        WorkItemWeight: true,
+        WorkItemIteration: true,
       },
     });
   };

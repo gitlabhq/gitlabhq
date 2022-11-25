@@ -1,9 +1,9 @@
 <script>
 import { GlBadge, GlLink } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import Actions from '../action_buttons.vue';
 import { generateText } from '../extensions/utils';
 import ContentRow from './widget_content_row.vue';
+import Actions from './action_buttons.vue';
 
 export default {
   name: 'DynamicContent',

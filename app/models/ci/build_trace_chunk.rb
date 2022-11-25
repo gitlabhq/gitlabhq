@@ -2,6 +2,7 @@
 
 module Ci
   class BuildTraceChunk < Ci::ApplicationRecord
+    include Ci::Partitionable
     include ::Comparable
     include ::FastDestroyAll
     include ::Checksummable
@@ -9,6 +10,8 @@ module Ci
     include ::Gitlab::OptimisticLocking
 
     belongs_to :build, class_name: "Ci::Build", foreign_key: :build_id
+
+    partitionable scope: :build
 
     attribute :data_store, default: :redis_trace_chunks
 

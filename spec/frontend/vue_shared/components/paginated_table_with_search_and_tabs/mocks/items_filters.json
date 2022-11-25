@@ -1,14 +1,20 @@
 [
-    {
-      "type": "assignee_username",
-      "value": { "data": "root2" }
-    },
-    {
-      "type": "author_username",
-      "value": { "data": "root" }
-    },
-    {
-      "type": "filtered-search-term",
-      "value": { "data": "bar" }
+  {
+    "type": "assignee",
+    "value": {
+      "data": "root2"
     }
-  ]
+  },
+  {
+    "type": "author",
+    "value": {
+      "data": "root"
+    }
+  },
+  {
+    "type": "filtered-search-term",
+    "value": {
+      "data": "bar"
+    }
+  }
+]

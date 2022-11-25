@@ -3,9 +3,9 @@ import { GlLink } from '@gitlab/ui';
 import { __ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import { generateText } from '../extensions/utils';
+import ActionButtons from './action_buttons.vue';
 import StatusIcon from './status_icon.vue';
 
 export default {
@@ -68,6 +68,9 @@ export default {
     shouldShowHeaderActions() {
       return Boolean(this.helpPopover) || this.actionButtons?.length > 0;
     },
+    hasActionButtons() {
+      return this.actionButtons.length > 0;
+    },
   },
   i18n: {
     learnMore: __('Learn more'),
@@ -96,7 +99,12 @@ export default {
           v-if="shouldShowHeaderActions"
           class="gl-ml-auto gl-display-flex gl-align-items-baseline"
         >
-          <help-popover v-if="helpPopover" :options="helpPopover.options" icon="information-o">
+          <help-popover
+            v-if="helpPopover"
+            :options="helpPopover.options"
+            :class="{ 'gl-mr-3': hasActionButtons }"
+            icon="information-o"
+          >
             <template v-if="helpPopover.content">
               <p
                 v-if="helpPopover.content.text"
@@ -113,10 +121,9 @@ export default {
             </template>
           </help-popover>
           <action-buttons
-            v-if="actionButtons.length > 0"
+            v-if="hasActionButtons"
             :widget="widgetName"
             :tertiary-buttons="actionButtons"
-            :class="{ 'gl-ml-2': helpPopover }"
           />
         </div>
       </div>

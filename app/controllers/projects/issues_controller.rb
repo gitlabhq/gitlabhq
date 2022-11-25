@@ -55,6 +55,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action only: :show do
     push_frontend_feature_flag(:issue_assignees_widget, project)
     push_frontend_feature_flag(:work_items_mvc, project&.group)
+    push_force_frontend_feature_flag(:work_items_mvc, project&.work_items_mvc_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_mvc_2, project&.work_items_mvc_2_feature_flag_enabled?)
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
     push_frontend_feature_flag(:use_iid_in_work_items_path, project)

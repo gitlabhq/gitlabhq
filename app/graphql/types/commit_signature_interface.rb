@@ -21,7 +21,8 @@ module Types
                     description: 'Project of the associated commit.'
 
     orphan_types Types::CommitSignatures::GpgSignatureType,
-                 Types::CommitSignatures::X509SignatureType
+                 Types::CommitSignatures::X509SignatureType,
+                 Types::CommitSignatures::SshSignatureType
 
     def self.resolve_type(object, context)
       case object
@@ -29,6 +30,8 @@ module Types
         Types::CommitSignatures::GpgSignatureType
       when ::CommitSignatures::X509CommitSignature
         Types::CommitSignatures::X509SignatureType
+      when ::CommitSignatures::SshSignature
+        Types::CommitSignatures::SshSignatureType
       else
         raise 'Unsupported commit signature type'
       end

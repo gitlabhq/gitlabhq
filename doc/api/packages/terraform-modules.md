@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 This is the API documentation for [Terraform Modules](../../user/packages/terraform_module_registry/index.md).
 
 WARNING:
-This API is used by the [terraform cli](https://www.terraform.io/)
+This API is used by the [Terraform CLI](https://www.terraform.io/)
 and is generally not meant for manual consumption.
 
 For instructions on how to upload and install Terraform modules from the GitLab

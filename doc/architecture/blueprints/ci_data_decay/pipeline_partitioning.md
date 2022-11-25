@@ -370,7 +370,7 @@ system - any letter from `g` to `z` in Latin alphabet, for example `x`. In that
 case an example of an URI would look like `1e240x5ba0`. If we decide to update
 the primary identifier of a partitioned resource (today it is just a big
 integer) it is important to design a system that is resilient to migrating data
-between partitions, to avoid changing idenfiers when rebalancing happens.
+between partitions, to avoid changing identifiers when rebalancing happens.
 
 `ci_partitions` table will store information about a partition identifier,
 pipeline ids range it is valid for and whether the partitions have been

@@ -242,7 +242,7 @@ gem 're2', '~> 1.6.0'
 
 # Misc
 
-gem 'version_sorter', '~> 2.2.4'
+gem 'version_sorter', '~> 2.3'
 
 # Export Ruby Regex to Javascript
 gem 'js_regex', '~> 3.8'

@@ -18,7 +18,7 @@ ability to create top-level groups (does not affect existing users' setting), Gi
   - The [application setting API](../api/settings.md#change-application-settings).
 - In GitLab 15.4 and earlier, in a configuration file by following the steps in this section.
 
-To disable new users' ability to create top-level groups using the configuation file:
+To disable new users' ability to create top-level groups using the configuration file:
 
 **Omnibus GitLab installations**
 

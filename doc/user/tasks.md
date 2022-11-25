@@ -249,10 +249,13 @@ To set issue weight of a task:
 
 ## Add a task to an iteration **(PREMIUM)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) in GitLab 15.7.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On GitLab.com, this feature is available.
 
 You can add a task to an [iteration](group/iterations/index.md).
 You can see the iteration title and period only when you view a task.

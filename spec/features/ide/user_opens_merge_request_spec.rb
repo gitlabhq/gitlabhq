@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'IDE merge request', :js do
+RSpec.describe 'IDE merge request', :js, feature_category: :web_ide do
   let(:merge_request) { create(:merge_request, :simple, source_project: project) }
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.first_owner }

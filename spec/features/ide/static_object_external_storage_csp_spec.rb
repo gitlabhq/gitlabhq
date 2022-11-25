@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Static Object External Storage Content Security Policy' do
+RSpec.describe 'Static Object External Storage Content Security Policy', feature_category: :web_ide do
   let_it_be(:user) { create(:user) }
 
   shared_context 'disable feature' do

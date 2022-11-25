@@ -6,12 +6,12 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { sprintf, __ } from '~/locale';
 import Poll from '~/lib/utils/poll';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import ActionButtons from '../action_buttons.vue';
 import { EXTENSION_ICONS } from '../../constants';
 import { createTelemetryHub } from '../extensions/telemetry';
 import ContentRow from './widget_content_row.vue';
 import DynamicContent from './dynamic_content.vue';
 import StatusIcon from './status_icon.vue';
+import ActionButtons from './action_buttons.vue';
 
 const FETCH_TYPE_COLLAPSED = 'collapsed';
 const FETCH_TYPE_EXPANDED = 'expanded';

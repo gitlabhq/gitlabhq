@@ -36,9 +36,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failu
         end
 
         context 'and the pipeline is for a merge request' do
-          let(:command) do
-            Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user, merge_request: merge_request)
-          end
+          let(:pipeline) { build(:ci_pipeline, project: project, stages: [stage], merge_request: merge_request) }
 
           it 'associates the environment with the merge request' do
             expect { subject }.to change { Environment.count }.by(1)
@@ -62,9 +60,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::EnsureEnvironments, :aggregate_failu
         end
 
         context 'and the pipeline is for a merge request' do
-          let(:command) do
-            Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user, merge_request: merge_request)
-          end
+          let(:pipeline) { build(:ci_pipeline, project: project, stages: [stage], merge_request: merge_request) }
 
           it 'does not associate the environment with the merge request' do
             expect { subject }.not_to change { Environment.count }

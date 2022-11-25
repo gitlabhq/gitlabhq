@@ -172,7 +172,7 @@ add your namespace (username or group) to the path:
 Clone with HTTPS using a token if:
 
 - You want to use 2FA.
-- You want to have a revokable set of credentials scoped to one or more repositories.
+- You want to have a revocable set of credentials scoped to one or more repositories.
 
 You can use any of these tokens to authenticate when cloning over HTTPS:
 

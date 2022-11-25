@@ -1,13 +1,13 @@
 <script>
 import { GlFilteredSearch } from '@gitlab/ui';
-import { s__ } from '~/locale';
-import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import {
+  OPERATORS_IS,
+  TOKEN_TITLE_STATUS,
+  TOKEN_TYPE_STATUS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import JobStatusToken from './tokens/job_status_token.vue';
 
 export default {
-  tokenTypes: {
-    status: 'status',
-  },
   components: {
     GlFilteredSearch,
   },
@@ -22,9 +22,9 @@ export default {
     tokens() {
       return [
         {
-          type: this.$options.tokenTypes.status,
+          type: TOKEN_TYPE_STATUS,
           icon: 'status',
-          title: s__('Jobs|Status'),
+          title: TOKEN_TITLE_STATUS,
           unique: true,
           token: JobStatusToken,
           operators: OPERATORS_IS,
@@ -35,7 +35,7 @@ export default {
       if (this.queryString?.statuses) {
         return [
           {
-            type: 'status',
+            type: TOKEN_TYPE_STATUS,
             value: {
               data: this.queryString?.statuses,
               operator: '=',

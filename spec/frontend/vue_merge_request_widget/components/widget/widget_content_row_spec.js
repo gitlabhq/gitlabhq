@@ -1,7 +1,7 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widget_content_row.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/widget/status_icon.vue';
-import ActionButtons from '~/vue_merge_request_widget/components/action_buttons.vue';
+import ActionButtons from '~/vue_merge_request_widget/components/widget/action_buttons.vue';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 
 describe('~/vue_merge_request_widget/components/widget/widget_content_row.vue', () => {

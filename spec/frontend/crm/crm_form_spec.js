@@ -5,7 +5,7 @@ import VueRouter from 'vue-router';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import Form from '~/crm/components/form.vue';
+import CrmForm from '~/crm/components/crm_form.vue';
 import routes from '~/crm/contacts/routes';
 import createContactMutation from '~/crm/contacts/components/graphql/create_contact.mutation.graphql';
 import updateContactMutation from '~/crm/contacts/components/graphql/update_contact.mutation.graphql';
@@ -81,7 +81,7 @@ describe('Reusable form component', () => {
   const findFormGroup = (at) => wrapper.findAllComponents(GlFormGroup).at(at);
 
   const mountComponent = (propsData) => {
-    wrapper = shallowMountExtended(Form, {
+    wrapper = shallowMountExtended(CrmForm, {
       router,
       apolloProvider: fakeApollo,
       propsData: { drawerOpen: true, ...propsData },

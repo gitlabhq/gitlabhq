@@ -2,6 +2,10 @@ import { GlFilteredSearchToken, GlFilteredSearchSuggestion, GlIcon } from '@gitl
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import PipelineStatusToken from '~/pipelines/components/pipelines_list/tokens/pipeline_status_token.vue';
+import {
+  TOKEN_TITLE_STATUS,
+  TOKEN_TYPE_STATUS,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 
 describe('Pipeline Status Token', () => {
   let wrapper;
@@ -13,9 +17,9 @@ describe('Pipeline Status Token', () => {
 
   const defaultProps = {
     config: {
-      type: 'status',
+      type: TOKEN_TYPE_STATUS,
       icon: 'status',
-      title: 'Status',
+      title: TOKEN_TITLE_STATUS,
       unique: true,
     },
     value: {

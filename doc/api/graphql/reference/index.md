@@ -14675,6 +14675,20 @@ Represents the Geo replication and verification state of a job_artifact.
 | <a id="kasexternalurl"></a>`externalUrl` | [`String`](#string) | URL used by the Agents to communicate with KAS. |
 | <a id="kasversion"></a>`version` | [`String`](#string) | KAS version. |
 
+### `Key`
+
+Represents an SSH key.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="keycreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the key was created. |
+| <a id="keyexpiresat"></a>`expiresAt` | [`Time!`](#time) | Timestamp of when the key expires. It's null if it never expires. |
+| <a id="keyid"></a>`id` | [`ID!`](#id) | ID of the key. |
+| <a id="keykey"></a>`key` | [`String!`](#string) | Public key of the key pair. |
+| <a id="keytitle"></a>`title` | [`String!`](#string) | Title of the key. |
+
 ### `Label`
 
 #### Fields
@@ -19202,6 +19216,20 @@ Represents the Geo sync and verification state of a snippet repository.
 | <a id="snippetrepositoryregistryverificationretryat"></a>`verificationRetryAt` | [`Time`](#time) | Timestamp after which the SnippetRepositoryRegistry is reverified. |
 | <a id="snippetrepositoryregistryverifiedat"></a>`verifiedAt` | [`Time`](#time) | Timestamp of the most recent successful verification of the SnippetRepositoryRegistry. |
 
+### `SshSignature`
+
+SSH signature for a signed commit.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="sshsignaturecommitsha"></a>`commitSha` | [`String`](#string) | SHA of the associated commit. |
+| <a id="sshsignaturekey"></a>`key` | [`Key`](#key) | SSH key used for the signature. |
+| <a id="sshsignatureproject"></a>`project` | [`Project`](#project) | Project of the associated commit. |
+| <a id="sshsignatureuser"></a>`user` | [`UserCore`](#usercore) | User associated with the key. |
+| <a id="sshsignatureverificationstatus"></a>`verificationStatus` | [`VerificationStatus`](#verificationstatus) | Indicates verification status of the associated key or certificate. |
+
 ### `StatusAction`
 
 #### Fields
@@ -23572,6 +23600,7 @@ Represents signing information for a commit.
 Implementations:
 
 - [`GpgSignature`](#gpgsignature)
+- [`SshSignature`](#sshsignature)
 - [`X509Signature`](#x509signature)
 
 ##### Fields

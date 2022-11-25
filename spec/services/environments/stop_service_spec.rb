@@ -204,6 +204,8 @@ RSpec.describe Environments::StopService do
       context 'and merge request has associated created_environments' do
         let!(:environment1) { create(:environment, project: project, merge_request: merge_request) }
         let!(:environment2) { create(:environment, project: project, merge_request: merge_request) }
+        let!(:environment3) { create(:environment, project: project) }
+        let!(:environment3_deployment) { create(:deployment, environment: environment3, sha: pipeline.sha) }
 
         before do
           subject
@@ -215,8 +217,7 @@ RSpec.describe Environments::StopService do
         end
 
         it 'does not affect environments that are not associated to the merge request' do
-          expect(pipeline.environments_in_self_and_project_descendants.first.merge_request).to be_nil
-          expect(pipeline.environments_in_self_and_project_descendants.first).to be_available
+          expect(environment3.reload).to be_available
         end
       end
 

@@ -1,6 +1,6 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import OrganizationFormWrapper from '~/crm/organizations/components/organization_form_wrapper.vue';
-import OrganizationForm from '~/crm/components/form.vue';
+import CrmForm from '~/crm/components/crm_form.vue';
 import getGroupOrganizationsQuery from '~/crm/organizations/components/graphql/get_group_organizations.query.graphql';
 import createOrganizationMutation from '~/crm/organizations/components/graphql/create_organization.mutation.graphql';
 import updateOrganizationMutation from '~/crm/organizations/components/graphql/update_organization.mutation.graphql';
@@ -8,7 +8,7 @@ import updateOrganizationMutation from '~/crm/organizations/components/graphql/u
 describe('Customer relations organization form wrapper', () => {
   let wrapper;
 
-  const findOrganizationForm = () => wrapper.findComponent(OrganizationForm);
+  const findOrganizationForm = () => wrapper.findComponent(CrmForm);
 
   const $apollo = {
     queries: {

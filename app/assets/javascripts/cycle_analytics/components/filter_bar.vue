@@ -7,6 +7,10 @@ import {
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import {
@@ -47,7 +51,7 @@ export default {
         {
           icon: 'clock',
           title: TOKEN_TITLE_MILESTONE,
-          type: 'milestone',
+          type: TOKEN_TYPE_MILESTONE,
           token: MilestoneToken,
           initialMilestones: this.milestonesData,
           unique: true,
@@ -58,7 +62,7 @@ export default {
         {
           icon: 'labels',
           title: TOKEN_TITLE_LABEL,
-          type: 'labels',
+          type: TOKEN_TYPE_LABEL,
           token: LabelToken,
           defaultLabels: OPTIONS_NONE_ANY,
           initialLabels: this.labelsData,
@@ -70,7 +74,7 @@ export default {
         {
           icon: 'pencil',
           title: TOKEN_TITLE_AUTHOR,
-          type: 'author',
+          type: TOKEN_TYPE_AUTHOR,
           token: AuthorToken,
           initialAuthors: this.authorsData,
           unique: true,
@@ -80,7 +84,7 @@ export default {
         {
           icon: 'user',
           title: TOKEN_TITLE_ASSIGNEE,
-          type: 'assignees',
+          type: TOKEN_TYPE_ASSIGNEE,
           token: AuthorToken,
           initialAuthors: this.assigneesData,
           unique: false,
@@ -108,14 +112,19 @@ export default {
     ]),
     initialFilterValue() {
       return prepareTokens({
-        milestone: this.selectedMilestone,
-        author: this.selectedAuthor,
-        assignees: this.selectedAssigneeList,
-        labels: this.selectedLabelList,
+        [TOKEN_TYPE_MILESTONE]: this.selectedMilestone,
+        [TOKEN_TYPE_AUTHOR]: this.selectedAuthor,
+        [TOKEN_TYPE_ASSIGNEE]: this.selectedAssigneeList,
+        [TOKEN_TYPE_LABEL]: this.selectedLabelList,
       });
     },
     handleFilter(filters) {
-      const { labels, milestone, author, assignees } = processFilters(filters);
+      const {
+        [TOKEN_TYPE_LABEL]: labels,
+        [TOKEN_TYPE_MILESTONE]: milestone,
+        [TOKEN_TYPE_AUTHOR]: author,
+        [TOKEN_TYPE_ASSIGNEE]: assignees,
+      } = processFilters(filters);
 
       this.setFilters({
         selectedAuthor: author ? author[0] : null,

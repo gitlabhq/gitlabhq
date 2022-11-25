@@ -10,9 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363084) for self-managed instances in GitLab 15.1.
 
 WARNING:
-Changing Group Sync configuration can remove users from the mapped GitLab group.
+Adding or changing Group Sync configuration can remove users from the mapped GitLab group.
 Removal happens if there is any mismatch between the group names and the list of `groups` in the SAML response.
-If changes must be made, ensure either the SAML response includes the `groups` attribute
+Before making changes, ensure either the SAML response includes the `groups` attribute
 and the `AttributeValue` value matches the **SAML Group Name** in GitLab,
 or that all groups are removed from GitLab to disable Group Sync.
 
@@ -21,14 +21,18 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 
 ## Configure SAML Group Sync
 
+To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
+enabling Group Sync in GitLab.
+
 To configure SAML Group Sync:
 
-- For GitLab self-managed:
-  1. Configure the [SAML OmniAuth Provider](../../../integration/saml.md).
-  1. Ensure your SAML identity provider sends an attribute statement with the same name as the value of the `groups_attribute` setting.
-- For GitLab.com:
-  1. See [SAML SSO for GitLab.com groups](index.md).
-  1. Ensure your SAML identity provider sends an attribute statement named `Groups` or `groups`.
+1. Configure the identity Provider:
+   - For self-managed GitLab, see the [SAML OmniAuth Provider documentation](../../../integration/saml.md).
+   - For GitLab.com, see the [SAML SSO for GitLab.com groups documentation](index.md).
+
+1. Capture [a SAML response](troubleshooting.md#saml-debugging-tools) during the sign-in process to confirm your SAML identity provider sends an attribute statement:
+   - For self-managed GitLab, with the same name as the value of the `groups_attribute` setting.
+   - For GitLab.com, named `Groups` or `groups`.
 
 NOTE:
 The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.

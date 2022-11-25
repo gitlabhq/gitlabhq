@@ -11,6 +11,12 @@ import FilterBar from '~/cycle_analytics/components/filter_bar.vue';
 import storeConfig from '~/cycle_analytics/store';
 import * as commonUtils from '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
+import {
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_LABEL,
+  TOKEN_TYPE_MILESTONE,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBar from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
 import * as utils from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
 import initialFiltersState from '~/vue_shared/components/filtered_search_bar/store/modules/filters/state';
@@ -18,10 +24,10 @@ import UrlSync from '~/vue_shared/components/url_sync.vue';
 
 Vue.use(Vuex);
 
-const milestoneTokenType = 'milestone';
-const labelsTokenType = 'labels';
-const authorTokenType = 'author';
-const assigneesTokenType = 'assignees';
+const milestoneTokenType = TOKEN_TYPE_MILESTONE;
+const labelsTokenType = TOKEN_TYPE_LABEL;
+const authorTokenType = TOKEN_TYPE_AUTHOR;
+const assigneesTokenType = TOKEN_TYPE_ASSIGNEE;
 
 const initialFilterBarState = {
   selectedMilestone: null,
@@ -162,8 +168,8 @@ describe('Filter bar', () => {
 
     it('clicks on the search button, setFilters is dispatched', () => {
       const filters = [
-        { type: 'milestone', value: { data: selectedMilestone[0].title, operator: '=' } },
-        { type: 'labels', value: { data: selectedLabelList[0].title, operator: '=' } },
+        { type: TOKEN_TYPE_MILESTONE, value: { data: selectedMilestone[0].title, operator: '=' } },
+        { type: TOKEN_TYPE_LABEL, value: { data: selectedLabelList[0].title, operator: '=' } },
       ];
 
       findFilteredSearch().vm.$emit('onFilter', filters);

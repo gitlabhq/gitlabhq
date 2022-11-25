@@ -12,7 +12,7 @@ RSpec.describe Environments::CreateForBuildService do
   let(:merge_request) {}
 
   describe '#execute' do
-    subject { service.execute(job, merge_request: merge_request) }
+    subject { service.execute(job) }
 
     shared_examples_for 'returning a correct environment' do
       let(:expected_auto_stop_in_seconds) do
@@ -187,10 +187,11 @@ RSpec.describe Environments::CreateForBuildService do
     end
 
     context 'when merge_request is provided' do
+      let(:pipeline) { create(:ci_pipeline, project: project, merge_request: merge_request) }
       let(:environment_name) { 'development' }
       let(:attributes) { { environment: environment_name, options: { environment: { name: environment_name } } } }
       let(:merge_request) { create(:merge_request, source_project: project) }
-      let(:seed) { described_class.new(job, merge_request: merge_request) }
+      let(:seed) { described_class.new(job) }
 
       context 'and environment does not exist' do
         let(:environment_name) { 'review/$CI_COMMIT_REF_NAME' }
@@ -216,7 +217,8 @@ RSpec.describe Environments::CreateForBuildService do
     end
 
     context 'when a pipeline contains a deployment job' do
-      let!(:job) { build(:ci_build, :start_review_app, project: project) }
+      let(:pipeline) { create(:ci_pipeline, project: project, merge_request: merge_request) }
+      let!(:job) { build(:ci_build, :start_review_app, project: project, pipeline: pipeline) }
 
       context 'and the environment does not exist' do
         it 'creates the environment specified by the job' do

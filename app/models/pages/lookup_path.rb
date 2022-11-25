@@ -19,11 +19,13 @@ module Pages
     def access_control
       project.private_pages?
     end
+    strong_memoize_attr :access_control
 
     def https_only
       domain_https = domain ? domain.https? : true
       project.pages_https_only? && domain_https
     end
+    strong_memoize_attr :https_only
 
     def source
       return unless deployment&.file
@@ -41,6 +43,7 @@ module Pages
         file_count: deployment.file_count
       }
     end
+    strong_memoize_attr :source
 
     def prefix
       if project.pages_group_root?
@@ -49,6 +52,7 @@ module Pages
         project.full_path.delete_prefix(trim_prefix) + '/'
       end
     end
+    strong_memoize_attr :prefix
 
     private
 

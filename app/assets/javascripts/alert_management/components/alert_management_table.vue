@@ -17,6 +17,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { joinPaths, visitUrl } from '~/lib/utils/url_utility';
 import { s__, __, n__ } from '~/locale';
 import AlertStatus from '~/vue_shared/alert_details/components/alert_status.vue';
+import { TOKEN_TYPE_ASSIGNEE } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   tdClass,
   thClass,
@@ -96,6 +97,7 @@ export default {
       sortable: true,
     },
   ],
+  filterSearchTokens: [TOKEN_TYPE_ASSIGNEE],
   severityLabels: SEVERITY_LEVELS,
   statusTabs: ALERTS_STATUS_TABS,
   components: {
@@ -294,9 +296,7 @@ export default {
       :status-tabs="$options.statusTabs"
       :track-views-options="$options.trackAlertListViewsOptions"
       :server-error-message="serverErrorMessage"
-      :filter-search-tokens="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ [
-        'assignee_username',
-      ] /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+      :filter-search-tokens="$options.filterSearchTokens"
       filter-search-key="alerts"
       @page-changed="pageChanged"
       @tabs-changed="statusChanged"

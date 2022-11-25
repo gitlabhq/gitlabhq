@@ -158,6 +158,97 @@ nodes. In this example, we exclude all import-related jobs from a Sidekiq node.
    sudo gitlab-ctl reconfigure
    ```
 
+### Migrating from queue selectors to routing rules
+
+We recommend GitLab deployments add more Sidekiq processes listening to all queues, as in the
+[Reference Architectures](../reference_architectures/index.md). For very large-scale deployments, we recommend
+[routing rules](#routing-rules) instead of [queue selectors](#queue-selectors). We use routing rules on GitLab.com as
+it helps to lower the load on Redis.
+
+To migrate from queue selectors to routing rules:
+
+1. Open `/etc/gitlab/gitlab.rb`.
+1. Set `sidekiq['queue_selector']` to `false`.
+1. Take all queue `selector`s in the `sidekiq['queue_groups']`.
+1. Give each `selector` a `queue_name` and put them in `[selector, queue_name]` format.
+1. Replace `sidekiq['routing_rules']` with an array of `[selector, queue_name]` entries.
+1. Add a wildcard match of `['*', 'default']` as the last entry in `sidekiq['routing_rules']`. This "catchall" queue has
+   to be named as `default`.
+1. Replace `sidekiq['queue_groups']` with `queue_name`s.
+1. Add at least one `default` queue to the `sidekiq['queue_groups']`.
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Run the Rake task to [migrate existing jobs](sidekiq_job_migration.md):
+
+   ```shell
+   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
+   ```
+
+NOTE:
+It is important to run the Rake task immediately after reconfiguring GitLab.
+After reconfiguring GitLab, existing jobs are not processed until the Rake task starts to migrate the jobs.
+
+The following example better illustrates the migration process above:
+
+1. Check the following content of `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   sidekiq['routing_rules'] = []
+   sidekiq['queue_selector'] = true
+   sidekiq['queue_groups'] = [
+     'urgency=high',
+     'urgency=low',
+     'urgency=throttled',
+     '*'
+   ]
+   ```
+
+1. Update `/etc/gitlab/gitlab.rb` to use routing rules:
+
+   ```ruby
+   sidekiq['min_concurrency'] = 20
+   sidekiq['max_concurrency'] = 20
+
+   sidekiq['routing_rules'] = [
+     ['urgency=high', 'high_urgency'],
+     ['urgency=low', 'low_urgency'],
+     ['urgency=throttled', 'throttled_urgency'],
+     # Wildcard matching, route the rest to `default` queue
+     ['*', 'default']
+   ]
+
+   sidekiq['queue_selector'] = false
+   sidekiq['queue_groups'] = [
+     'high_urgency',
+     'low_urgency',
+     'throttled_urgency',
+     'default'
+   ]
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+1. Run the Rake task to [migrate existing jobs](sidekiq_job_migration.md):
+
+   ```shell
+   sudo gitlab-rake gitlab:sidekiq:migrate_jobs:retry gitlab:sidekiq:migrate_jobs:schedule gitlab:sidekiq:migrate_jobs:queued
+   ```
+
+WARNING:
+As described in [the concurrency section](extra_sidekiq_processes.md#manage-thread-counts-explicitly), we
+recommend setting `min_concurrency` and `max_concurrency` to the same value. For example, if the number of queues
+in a queue group entry is 1, while `min_concurrency` is set to `0`, and `max_concurrency` is set to `20`, the resulting
+concurrency will be set to `2` instead. A concurrency of `2` might be too low in most cases, except for very highly-CPU
+bound tasks.
+
 ## Worker matching query
 
 GitLab provides a query syntax to match a worker based on its attributes. This

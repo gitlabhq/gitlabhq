@@ -205,6 +205,9 @@ export default {
     fullPath() {
       return this.workItem?.project.fullPath;
     },
+    workItemsMvcEnabled() {
+      return this.glFeatures.workItemsMvc;
+    },
     workItemsMvc2Enabled() {
       return this.glFeatures.workItemsMvc2;
     },
@@ -494,20 +497,18 @@ export default {
         :query-variables="queryVariables"
         @error="updateError = $event"
       />
-      <template v-if="workItemsMvc2Enabled">
-        <work-item-iteration
-          v-if="workItemIteration"
-          class="gl-mb-5"
-          :iteration="workItemIteration.iteration"
-          :can-update="canUpdate"
-          :work-item-id="workItem.id"
-          :work-item-type="workItemType"
-          :fetch-by-iid="fetchByIid"
-          :query-variables="queryVariables"
-          :full-path="fullPath"
-          @error="updateError = $event"
-        />
-      </template>
+      <work-item-iteration
+        v-if="workItemIteration"
+        class="gl-mb-5"
+        :iteration="workItemIteration.iteration"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        :full-path="fullPath"
+        @error="updateError = $event"
+      />
       <work-item-description
         v-if="hasDescriptionWidget"
         :work-item-id="workItem.id"

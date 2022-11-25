@@ -30747,11 +30747,11 @@ CREATE INDEX index_secure_ci_builds_on_user_id_name_created_at ON ci_builds USIN
 
 CREATE INDEX index_security_ci_builds_on_name_and_id_parser_features ON ci_builds USING btree (name, id) WHERE (((name)::text = ANY (ARRAY[('container_scanning'::character varying)::text, ('dast'::character varying)::text, ('dependency_scanning'::character varying)::text, ('license_management'::character varying)::text, ('sast'::character varying)::text, ('secret_detection'::character varying)::text, ('coverage_fuzzing'::character varying)::text, ('license_scanning'::character varying)::text, ('apifuzzer_fuzz'::character varying)::text, ('apifuzzer_fuzz_dnd'::character varying)::text])) AND ((type)::text = 'Ci::Build'::text));
 
+CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
+
 CREATE INDEX index_security_scans_on_created_at ON security_scans USING btree (created_at);
 
 CREATE INDEX index_security_scans_on_date_created_at_and_id ON security_scans USING btree (date(timezone('UTC'::text, created_at)), id);
-
-CREATE INDEX index_security_scans_on_id_for_non_purged_records ON security_scans USING btree (id) WHERE (status <> 6);
 
 CREATE INDEX index_security_scans_on_length_of_errors ON security_scans USING btree (pipeline_id, jsonb_array_length(COALESCE((info -> 'errors'::text), '[]'::jsonb)));
 
