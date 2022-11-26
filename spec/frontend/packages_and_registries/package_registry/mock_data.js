@@ -239,6 +239,7 @@ export const packageDetailsQuery = (extendPackage) => ({
         __typename: 'PackageFileConnection',
       },
       versions: {
+        count: packageVersions().length,
         nodes: packageVersions(),
         pageInfo: {
           hasNextPage: true,

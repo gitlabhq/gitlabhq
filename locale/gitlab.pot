@@ -29179,6 +29179,9 @@ msgstr ""
 msgid "PackageRegistry|Number of duplicate assets to keep"
 msgstr ""
 
+msgid "PackageRegistry|Other versions"
+msgstr ""
+
 msgid "PackageRegistry|Package Registry"
 msgstr ""
 

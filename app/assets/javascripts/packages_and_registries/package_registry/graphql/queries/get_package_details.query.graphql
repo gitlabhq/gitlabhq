@@ -62,6 +62,7 @@ query getPackageDetails(
       }
     }
     versions(after: $after, before: $before, first: $first, last: $last) {
+      count
       nodes {
         id
         name
