@@ -149,6 +149,7 @@ class Packages::Package < ApplicationRecord
   end
   scope :preload_composer, -> { preload(:composer_metadatum) }
   scope :preload_npm_metadatum, -> { preload(:npm_metadatum) }
+  scope :preload_pypi_metadatum, -> { preload(:pypi_metadatum) }
 
   scope :without_nuget_temporary_name, -> { where.not(name: Packages::Nuget::TEMPORARY_PACKAGE_NAME) }
 

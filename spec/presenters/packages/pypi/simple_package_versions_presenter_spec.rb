@@ -36,6 +36,14 @@ RSpec.describe ::Packages::Pypi::SimplePackageVersionsPresenter, :aggregate_fail
 
         it { is_expected.to include expected_link }
       end
+
+      it 'avoids N+1 database queries' do
+        control = ActiveRecord::QueryRecorder.new { subject }
+
+        create(:pypi_package, project: project, name: package_name)
+
+        expect { described_class.new(project.packages, project_or_group).body }.not_to exceed_query_limit(control)
+      end
     end
 
     context 'for project' do

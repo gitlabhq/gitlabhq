@@ -13,7 +13,10 @@ module Packages
       def links
         refs = []
 
-        available_packages.each_batch do |batch|
+        available_packages.each_batch do |relation|
+          batch = relation.preload_files
+                          .preload_pypi_metadatum
+
           batch.each do |package|
             package_files = package.installable_package_files
 
