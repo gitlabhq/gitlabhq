@@ -110,7 +110,7 @@ module Gitlab
             logger.observe(:pipeline_creation_duration_s, duration, once: true)
 
             metrics.pipeline_creation_duration_histogram
-              .observe({}, duration.seconds)
+              .observe({ gitlab: gitlab_org_project?.to_s }, duration.seconds)
           end
 
           def observe_pipeline_size(pipeline)
@@ -156,6 +156,10 @@ module Gitlab
 
           def full_git_ref_name_unavailable?
             ref == origin_ref
+          end
+
+          def gitlab_org_project?
+            project.full_path == 'gitlab-org/gitlab'
           end
         end
       end

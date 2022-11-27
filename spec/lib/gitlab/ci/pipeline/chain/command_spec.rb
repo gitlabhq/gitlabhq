@@ -374,21 +374,57 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
     end
   end
 
+  describe '#observe_creation_duration' do
+    let(:histogram) { instance_double(Prometheus::Client::Histogram) }
+    let(:duration) { 1.hour }
+    let(:command) { described_class.new(project: project) }
+
+    subject(:observe_creation_duration) do
+      command.observe_creation_duration(duration)
+    end
+
+    it 'records the duration as histogram' do
+      expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_creation_duration_histogram)
+        .and_return(histogram)
+      expect(histogram).to receive(:observe)
+        .with({ gitlab: 'false' }, duration.seconds)
+
+      observe_creation_duration
+    end
+
+    context 'when project is gitlab-org/gitlab' do
+      before do
+        allow(project).to receive(:full_path).and_return('gitlab-org/gitlab')
+      end
+
+      it 'tracks the duration with the expected label' do
+        expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_creation_duration_histogram)
+          .and_return(histogram)
+        expect(histogram).to receive(:observe)
+          .with({ gitlab: 'true' }, duration.seconds)
+
+        observe_creation_duration
+      end
+    end
+  end
+
   describe '#observe_step_duration' do
+    let(:histogram) { instance_double(Prometheus::Client::Histogram) }
+    let(:duration) { 1.hour }
+    let(:command) { described_class.new }
+
+    subject(:observe_step_duration) do
+      command.observe_step_duration(Gitlab::Ci::Pipeline::Chain::Build, duration)
+    end
+
     context 'when ci_pipeline_creation_step_duration_tracking is enabled' do
       it 'adds the duration to the step duration histogram' do
-        histogram = instance_double(Prometheus::Client::Histogram)
-        duration = 1.hour
-
         expect(::Gitlab::Ci::Pipeline::Metrics).to receive(:pipeline_creation_step_duration_histogram)
           .and_return(histogram)
         expect(histogram).to receive(:observe)
           .with({ step: 'Gitlab::Ci::Pipeline::Chain::Build' }, duration.seconds)
 
-        described_class.new.observe_step_duration(
-          Gitlab::Ci::Pipeline::Chain::Build,
-          duration
-        )
+        observe_step_duration
       end
     end
 
@@ -398,14 +434,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Command do
       end
 
       it 'does nothing' do
-        duration = 1.hour
-
         expect(::Gitlab::Ci::Pipeline::Metrics).not_to receive(:pipeline_creation_step_duration_histogram)
 
-        described_class.new.observe_step_duration(
-          Gitlab::Ci::Pipeline::Chain::Build,
-          duration
-        )
+        observe_step_duration
       end
     end
   end
