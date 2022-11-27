@@ -4,8 +4,6 @@ import {
   GlEmptyState,
   GlFilteredSearchToken,
   GlIcon,
-  GlLink,
-  GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
@@ -24,7 +22,6 @@ import axios from '~/lib/utils/axios_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
-import { helpPagePath } from '~/helpers/help_page_helper';
 import {
   OPTIONS_NONE_ANY,
   FILTERED_SEARCH_TERM,
@@ -91,6 +88,8 @@ import {
   getSortOptions,
   isSortKey,
 } from '../utils';
+import EmptyStateSignedIn from './empty_state_signed_in.vue';
+import EmptyStateSignedOut from './empty_state_signed_out.vue';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const AuthorToken = () =>
@@ -113,11 +112,11 @@ export default {
   IssuableListTabs,
   components: {
     CsvImportExportButtons,
+    EmptyStateSignedIn,
+    EmptyStateSignedOut,
     GlButton,
     GlEmptyState,
     GlIcon,
-    GlLink,
-    GlSprintf,
     IssuableByEmail,
     IssuableList,
     IssueCardTimeInfo,
@@ -131,7 +130,6 @@ export default {
     'autocompleteAwardEmojisPath',
     'calendarPath',
     'canBulkUpdate',
-    'canCreateProjects',
     'canReadCrmContact',
     'canReadCrmOrganization',
     'emptyStateSvgPath',
@@ -149,13 +147,10 @@ export default {
     'isProject',
     'isPublicVisibilityRestricted',
     'isSignedIn',
-    'jiraIntegrationPath',
     'newIssuePath',
-    'newProjectPath',
     'releasesPath',
     'rssPath',
     'showNewIssueLink',
-    'signInPath',
   ],
   props: {
     eeSearchTokens: {
@@ -474,9 +469,6 @@ export default {
         page_after: this.pageParams.afterCursor ?? undefined,
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
-    },
-    issuesHelpPagePath() {
-      return helpPagePath('user/project/issues/index');
     },
     shouldDisableSomeFilters() {
       return this.isAnonymousSearchDisabled && !this.isSignedIn;
@@ -934,61 +926,15 @@ export default {
       </template>
     </issuable-list>
 
-    <template v-else-if="isSignedIn">
-      <gl-empty-state :title="$options.i18n.noIssuesSignedInTitle" :svg-path="emptyStateSvgPath">
-        <template #description>
-          <gl-link :href="issuesHelpPagePath" target="_blank">{{
-            $options.i18n.noIssuesSignedInDescription
-          }}</gl-link>
-          <p v-if="canCreateProjects">
-            <strong>{{ $options.i18n.noGroupIssuesSignedInDescription }}</strong>
-          </p>
-        </template>
-        <template #actions>
-          <gl-button v-if="canCreateProjects" :href="newProjectPath" variant="confirm">
-            {{ $options.i18n.newProjectLabel }}
-          </gl-button>
-          <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-            {{ $options.i18n.newIssueLabel }}
-          </gl-button>
-          <csv-import-export-buttons
-            v-if="showCsvButtons"
-            class="gl-w-full gl-sm-w-auto gl-sm-mr-3"
-            :export-csv-path="exportCsvPathWithQuery"
-            :issuable-count="currentTabCount"
-          />
-          <new-issue-dropdown v-if="showNewIssueDropdown" class="gl-align-self-center" />
-        </template>
-      </gl-empty-state>
-      <hr />
-      <p class="gl-text-center gl-font-weight-bold gl-mb-0">
-        {{ $options.i18n.jiraIntegrationTitle }}
-      </p>
-      <p class="gl-text-center gl-mb-0">
-        <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
-          <template #jiraDocsLink="{ content }">
-            <gl-link :href="jiraIntegrationPath">{{ content }}</gl-link>
-          </template>
-        </gl-sprintf>
-      </p>
-      <p class="gl-text-center gl-text-gray-500">
-        {{ $options.i18n.jiraIntegrationSecondaryMessage }}
-      </p>
-    </template>
+    <empty-state-signed-in
+      v-else-if="isSignedIn"
+      :current-tab-count="currentTabCount"
+      :export-csv-path-with-query="exportCsvPathWithQuery"
+      :show-csv-buttons="showCsvButtons"
+      :show-new-issue-dropdown="showNewIssueDropdown"
+    />
 
-    <gl-empty-state
-      v-else
-      :title="$options.i18n.noIssuesSignedOutTitle"
-      :svg-path="emptyStateSvgPath"
-      :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
-      :primary-button-link="signInPath"
-    >
-      <template #description>
-        <gl-link :href="issuesHelpPagePath" target="_blank">{{
-          $options.i18n.noIssuesSignedOutDescription
-        }}</gl-link>
-      </template>
-    </gl-empty-state>
+    <empty-state-signed-out v-else />
 
     <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
   </div>

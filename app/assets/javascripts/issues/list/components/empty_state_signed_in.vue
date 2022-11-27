@@ -1,0 +1,97 @@
+<script>
+import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
+import { i18n } from '../constants';
+import NewIssueDropdown from './new_issue_dropdown.vue';
+
+export default {
+  i18n,
+  issuesHelpPagePath: helpPagePath('user/project/issues/index'),
+  components: {
+    CsvImportExportButtons,
+    GlButton,
+    GlEmptyState,
+    GlLink,
+    GlSprintf,
+    NewIssueDropdown,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
+  inject: [
+    'canCreateProjects',
+    'emptyStateSvgPath',
+    'jiraIntegrationPath',
+    'newIssuePath',
+    'newProjectPath',
+    'showNewIssueLink',
+  ],
+  props: {
+    currentTabCount: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
+    exportCsvPathWithQuery: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    showCsvButtons: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showNewIssueDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+};
+</script>
+
+<template>
+  <div>
+    <gl-empty-state :title="$options.i18n.noIssuesTitle" :svg-path="emptyStateSvgPath">
+      <template #description>
+        <gl-link :href="$options.issuesHelpPagePath">
+          {{ $options.i18n.noIssuesDescription }}
+        </gl-link>
+        <p v-if="canCreateProjects">
+          <strong>{{ $options.i18n.noGroupIssuesSignedInDescription }}</strong>
+        </p>
+      </template>
+      <template #actions>
+        <gl-button v-if="canCreateProjects" :href="newProjectPath" variant="confirm">
+          {{ $options.i18n.newProjectLabel }}
+        </gl-button>
+        <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
+          {{ $options.i18n.newIssueLabel }}
+        </gl-button>
+        <csv-import-export-buttons
+          v-if="showCsvButtons"
+          class="gl-w-full gl-sm-w-auto gl-sm-mr-3"
+          :export-csv-path="exportCsvPathWithQuery"
+          :issuable-count="currentTabCount"
+        />
+        <new-issue-dropdown v-if="showNewIssueDropdown" class="gl-align-self-center" />
+      </template>
+    </gl-empty-state>
+    <hr />
+    <p class="gl-text-center gl-font-weight-bold gl-mb-0">
+      {{ $options.i18n.jiraIntegrationTitle }}
+    </p>
+    <p class="gl-text-center gl-mb-0">
+      <gl-sprintf :message="$options.i18n.jiraIntegrationMessage">
+        <template #jiraDocsLink="{ content }">
+          <gl-link :href="jiraIntegrationPath">{{ content }}</gl-link>
+        </template>
+      </gl-sprintf>
+    </p>
+    <p class="gl-text-center gl-text-secondary">
+      {{ $options.i18n.jiraIntegrationSecondaryMessage }}
+    </p>
+  </div>
+</template>

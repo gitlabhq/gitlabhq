@@ -27,6 +27,8 @@ import CsvImportExportButtons from '~/issuable/components/csv_import_export_butt
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+import EmptyStateSignedIn from '~/issues/list/components/empty_state_signed_in.vue';
+import EmptyStateSignedOut from '~/issues/list/components/empty_state_signed_out.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import {
@@ -122,7 +124,6 @@ describe('CE IssuesListApp component', () => {
 
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
-  const findGlButton = () => wrapper.findComponent(GlButton);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -533,89 +534,32 @@ describe('CE IssuesListApp component', () => {
     });
 
     describe('when there are no issues', () => {
-      describe('when user is logged in', () => {
+      describe('when user is signed in', () => {
         beforeEach(() => {
           wrapper = mountComponent({
             provide: { hasAnyIssues: false, isSignedIn: true },
-            mountFn: mount,
           });
         });
 
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            title: IssuesListApp.i18n.noIssuesSignedInTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
+        it('shows signed in empty state', () => {
+          expect(wrapper.findComponent(EmptyStateSignedIn).props()).toEqual({
+            currentTabCount: 0,
+            exportCsvPathWithQuery: defaultProvide.exportCsvPath,
+            showCsvButtons: true,
+            showNewIssueDropdown: false,
           });
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noIssuesSignedInDescription,
-          );
-        });
-
-        it('shows "New issue" and import/export buttons', () => {
-          expect(findGlButton().text()).toBe(IssuesListApp.i18n.newIssueLabel);
-          expect(findGlButton().attributes('href')).toBe(defaultProvide.newIssuePath);
-          expect(findCsvImportExportButtons().props()).toMatchObject({
-            exportCsvPath: defaultProvide.exportCsvPath,
-            issuableCount: 0,
-          });
-        });
-
-        it('shows Jira integration information', () => {
-          const paragraphs = wrapper.findAll('p');
-          const links = wrapper.findAll('.gl-link');
-          expect(paragraphs.at(1).text()).toContain(IssuesListApp.i18n.jiraIntegrationTitle);
-          expect(paragraphs.at(2).text()).toContain(
-            'Enable the Jira integration to view your Jira issues in GitLab.',
-          );
-          expect(paragraphs.at(3).text()).toContain(
-            IssuesListApp.i18n.jiraIntegrationSecondaryMessage,
-          );
-          expect(links.at(1).text()).toBe('Enable the Jira integration');
-          expect(links.at(1).attributes('href')).toBe(defaultProvide.jiraIntegrationPath);
         });
       });
 
-      describe('when user is logged in and can create projects', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { canCreateProjects: true, hasAnyIssues: false, isSignedIn: true },
-            stubs: { GlEmptyState },
-          });
-        });
-
-        it('shows empty state with additional description about creating projects', () => {
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noIssuesSignedInDescription,
-          );
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noGroupIssuesSignedInDescription,
-          );
-        });
-
-        it('shows "New project" button', () => {
-          expect(findGlButton().text()).toBe(IssuesListApp.i18n.newProjectLabel);
-          expect(findGlButton().attributes('href')).toBe(defaultProvide.newProjectPath);
-        });
-      });
-
-      describe('when user is logged out', () => {
+      describe('when user is signed out', () => {
         beforeEach(() => {
           wrapper = mountComponent({
             provide: { hasAnyIssues: false, isSignedIn: false },
-            mountFn: mount,
           });
         });
 
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            title: IssuesListApp.i18n.noIssuesSignedOutTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-            primaryButtonText: IssuesListApp.i18n.noIssuesSignedOutButtonText,
-            primaryButtonLink: defaultProvide.signInPath,
-          });
-          expect(findGlEmptyState().text()).toContain(
-            IssuesListApp.i18n.noIssuesSignedOutDescription,
-          );
+        it('shows signed out empty state', () => {
+          expect(wrapper.findComponent(EmptyStateSignedOut).exists()).toBe(true);
         });
       });
     });

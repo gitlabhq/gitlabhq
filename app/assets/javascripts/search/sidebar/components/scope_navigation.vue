@@ -1,7 +1,7 @@
 <script>
-import { GlNav, GlNavItem } from '@gitlab/ui';
+import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { formatNumber } from '~/locale';
+import { formatNumber, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import {
   NAV_LINK_DEFAULT_CLASSES,
@@ -11,9 +11,13 @@ import {
 
 export default {
   name: 'ScopeNavigation',
+  i18n: {
+    countOverLimitLabel: s__('GlobalSearch|Result count is over limit.'),
+  },
   components: {
     GlNav,
     GlNavItem,
+    GlIcon,
   },
   mixins: [Tracking.mixin()],
   computed: {
@@ -30,6 +34,9 @@ export default {
       }
       const countNumber = parseInt(count.replace(/,/g, ''), 10);
       return formatNumber(countNumber, NUMBER_FORMATING_OPTIONS);
+    },
+    isCountOverLimit(count) {
+      return count.includes('+');
     },
     handleClick(scope) {
       this.track('click_menu_item', { label: `vertical_navigation_${scope}` });
@@ -65,7 +72,13 @@ export default {
         @click="handleClick(scope)"
         ><span>{{ item.label }}</span
         ><span v-if="item.count" :class="countClasses(isActive(scope, index))">
-          {{ showFormatedCount(item.count) }}
+          {{ showFormatedCount(item.count)
+          }}<gl-icon
+            v-if="isCountOverLimit(item.count)"
+            name="plus"
+            :aria-label="$options.i18n.countOverLimitLabel"
+            :size="8"
+          />
         </span>
       </gl-nav-item>
     </gl-nav>

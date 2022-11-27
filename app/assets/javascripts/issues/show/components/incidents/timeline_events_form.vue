@@ -1,7 +1,6 @@
 <script>
 import { GlDatepicker, GlFormInput, GlFormGroup, GlButton } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import autofocusonshow from '~/vue_shared/directives/autofocusonshow';
 import { MAX_TEXT_LENGTH, timelineFormI18n } from './constants';
 import { getUtcShiftedDate } from './utils';
 
@@ -27,9 +26,6 @@ export default {
   },
   i18n: timelineFormI18n,
   MAX_TEXT_LENGTH,
-  directives: {
-    autofocusonshow,
-  },
   props: {
     showSaveAndAdd: {
       type: Boolean,
@@ -97,7 +93,7 @@ export default {
       this.timelineText = '';
     },
     focusDate() {
-      this.$refs.datepicker.$el.querySelector('input').focus();
+      this.$refs.datepicker.$el.querySelector('input')?.focus();
     },
     handleSave(addAnotherEvent) {
       const event = {

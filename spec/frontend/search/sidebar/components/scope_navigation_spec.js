@@ -1,4 +1,4 @@
-import { GlNav, GlNavItem } from '@gitlab/ui';
+import { GlNav, GlNavItem, GlIcon } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
@@ -57,7 +57,7 @@ describe('ScopeNavigation', () => {
       expect(findGlNavItems()).toHaveLength(9);
     });
 
-    it('nav items have proper links', () => {
+    it('has all proper links', () => {
       const linkAtPosition = 3;
       const { link } = MOCK_NAVIGATION[Object.keys(MOCK_NAVIGATION)[linkAtPosition]];
 
@@ -70,16 +70,20 @@ describe('ScopeNavigation', () => {
       createComponent();
     });
 
-    it('correct item is active', () => {
+    it('has correct active item', () => {
       expect(findGlNavItemActive()).toHaveLength(1);
       expect(findGlNavItemActiveLabel()).toBe('Issues');
     });
 
-    it('correct active item count', () => {
+    it('has correct active item count', () => {
       expect(findGlNavItemActiveCount().text()).toBe('2.4K');
     });
 
-    it('correct active item count is highlighted', () => {
+    it('does not have plus sign after count text', () => {
+      expect(findGlNavItemActive().at(0).findComponent(GlIcon).exists()).toBe(false);
+    });
+
+    it('has count is highlighted correctly', () => {
       expect(findGlNavItemActiveCount().classes('gl-text-gray-900')).toBe(true);
     });
   });
@@ -91,9 +95,17 @@ describe('ScopeNavigation', () => {
       });
     });
 
-    it('correct item is active', () => {
+    it('has correct active item', () => {
       expect(findGlNavItems().at(0).attributes('active')).toBe('true');
       expect(findGlNavItemActiveLabel()).toBe('Projects');
+    });
+
+    it('has correct active item count', () => {
+      expect(findGlNavItemActiveCount().text()).toBe('10K');
+    });
+
+    it('has correct active item count and over limit sign', () => {
+      expect(findGlNavItemActive().at(0).findComponent(GlIcon).exists()).toBe(true);
     });
   });
 });

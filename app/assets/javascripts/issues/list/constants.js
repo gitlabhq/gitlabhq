@@ -57,11 +57,9 @@ export const i18n = {
   ),
   noOpenIssuesDescription: __('To keep this project going, create a new issue'),
   noOpenIssuesTitle: __('There are no open issues'),
-  noIssuesSignedInDescription: __('Learn more about issues.'),
-  noIssuesSignedInTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
+  noIssuesDescription: __('Learn more about issues.'),
+  noIssuesTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noIssuesSignedOutButtonText: __('Register / Sign In'),
-  noIssuesSignedOutDescription: __('Learn more about issues.'),
-  noIssuesSignedOutTitle: __('Use issues to collaborate on ideas, solve problems, and plan work'),
   noSearchResultsDescription: __('To widen your search, change or remove filters above'),
   noSearchResultsTitle: __('Sorry, your filter produced no results'),
   relatedMergeRequests: __('Related merge requests'),
@@ -74,7 +72,6 @@ export const i18n = {
 export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
 export const PAGE_SIZE = 20;
-export const PAGE_SIZE_MANUAL = 100;
 export const PARAM_ASSIGNEE_ID = 'assignee_id';
 export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
 export const PARAM_LAST_PAGE_SIZE = 'last_page_size';
