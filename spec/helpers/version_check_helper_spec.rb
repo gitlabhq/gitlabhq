@@ -46,4 +46,30 @@ RSpec.describe VersionCheckHelper do
       expect(helper.gitlab_version_check).to eq({ "severity" => "success" })
     end
   end
+
+  describe '#show_security_patch_upgrade_alert?' do
+    describe 'return conditions' do
+      where(:show_version_check, :gitlab_version_check, :result) do
+        [
+          [false, nil, false],
+          [false, { "severity" => "success" }, false],
+          [false, { "severity" => "danger" }, false],
+          [true, nil, false],
+          [true, { "severity" => "success" }, false],
+          [true, { "severity" => "danger" }, true]
+        ]
+      end
+
+      with_them do
+        before do
+          allow(helper).to receive(:show_version_check?).and_return(show_version_check)
+          allow(helper).to receive(:gitlab_version_check).and_return(gitlab_version_check)
+        end
+
+        it 'returns correct results' do
+          expect(helper.show_security_patch_upgrade_alert?).to eq result
+        end
+      end
+    end
+  end
 end

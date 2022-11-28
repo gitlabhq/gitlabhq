@@ -50,6 +50,9 @@ RSpec.describe API::BulkImports do
           .to receive(:instance_version)
           .and_return(
             Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION, ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT))
+        allow(instance)
+          .to receive(:instance_enterprise)
+          .and_return(false)
       end
     end
 

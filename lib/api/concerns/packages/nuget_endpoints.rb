@@ -55,6 +55,13 @@ module API
           # https://docs.microsoft.com/en-us/nuget/api/service-index
           desc 'The NuGet Service Index' do
             detail 'This feature was introduced in GitLab 12.6'
+            success code: 200
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[nuget_packages]
           end
           get 'index', format: :json, urgency: :default do
             authorize_read_package!(project_or_group)
@@ -67,7 +74,7 @@ module API
 
           # https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
           params do
-            requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX
+            requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'MyNuGetPkg' }
           end
           namespace '/metadata/*package_name' do
             after_validation do
@@ -76,6 +83,13 @@ module API
 
             desc 'The NuGet Metadata Service - Package name level' do
               detail 'This feature was introduced in GitLab 12.8'
+              success code: 200
+              failure [
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[nuget_packages]
             end
             get 'index', format: :json, urgency: :low do
               present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages(params[:package_name])),
@@ -84,9 +98,16 @@ module API
 
             desc 'The NuGet Metadata Service - Package name and version level' do
               detail 'This feature was introduced in GitLab 12.8'
+              success code: 200
+              failure [
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[nuget_packages]
             end
             params do
-              requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX
+              requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.0.0' }
             end
             get '*package_version', format: :json, urgency: :low do
               present ::Packages::Nuget::PackageMetadataPresenter.new(find_package(params[:package_name], params[:package_version])),
@@ -96,9 +117,9 @@ module API
 
           # https://docs.microsoft.com/en-us/nuget/api/search-query-service-resource
           params do
-            optional :q, type: String, desc: 'The search term'
-            optional :skip, type: Integer, desc: 'The number of results to skip', default: 0, regexp: NON_NEGATIVE_INTEGER_REGEX
-            optional :take, type: Integer, desc: 'The number of results to return', default: Kaminari.config.default_per_page, regexp: POSITIVE_INTEGER_REGEX
+            optional :q, type: String, desc: 'The search term', documentation: { example: 'MyNuGet' }
+            optional :skip, type: Integer, desc: 'The number of results to skip', default: 0, regexp: NON_NEGATIVE_INTEGER_REGEX, documentation: { example: 1 }
+            optional :take, type: Integer, desc: 'The number of results to return', default: Kaminari.config.default_per_page, regexp: POSITIVE_INTEGER_REGEX, documentation: { example: 1 }
             optional :prerelease, type: ::Grape::API::Boolean, desc: 'Include prerelease versions', default: true
           end
           namespace '/query' do
@@ -108,6 +129,13 @@ module API
 
             desc 'The NuGet Search Service' do
               detail 'This feature was introduced in GitLab 12.8'
+              success code: 200
+              failure [
+                { code: 401, message: 'Unauthorized' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[nuget_packages]
             end
             get format: :json, urgency: :low do
               search_options = {

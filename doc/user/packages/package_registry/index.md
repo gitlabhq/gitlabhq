@@ -118,18 +118,22 @@ determine actions such as downloading, pushing, or deleting packages.
 
 The visibility of the Package Registry is independent of the repository and can't be controlled from
 your project's settings. For example, if you have a public project and set the repository visibility
-to **Only Project Members**, the Package Registry is then public. However, disabling the Package
+to **Only Project Members**, the Package Registry is then public. Disabling the Package
 Registry disables all Package Registry operations.
 
-[GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253)
-proposes adding the ability to control Package Registry visibility from the UI.
+| Project visibility | Action | [Role](../../permissions.md#roles) required |
+| ---- | ---- | ---- |
+| Public | View Package Registry | `n/a`, everyone on the internet can perform this action |
+| Public | Publish a package | Developer or higher |
+| Public | Pull a package | `n/a`, everyone on the internet can perform this action |
+| Internal | View Package Registry | Guest or higher |
+| Internal | Publish a package | Developer or higher |
+| Internal | Pull a package | Guest or higher(1) |
+| Private | View Package Registry | Reporter or higher |
+| Private | Publish a package | Developer or higher |
+| Private | Pull a package | Reporter or higher(1) |
 
-|                      |                       | Anonymous<br/>(everyone on internet) | Guest | Reporter, Developer, Maintainer, Owner |
-| -------------------- | --------------------- | --------- | ----- | ------------------------------------------ |
-| Public project with Package Registry enabled | View Package Registry <br/> and pull packages | Yes       | Yes   | Yes      |
-| Internal project with Package Registry enabled | View Package Registry <br/> and pull packages | No       | Yes   | Yes      |
-| Private project with Package Registry enabled | View Package Registry <br/> and pull packages | No        | No    | Yes      |
-| Any project with Package Registry disabled | All operations on Package Registry | No | No | No |
+1. [GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253) proposes adding a setting to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is.
 
 ## Supported package managers
 

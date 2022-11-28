@@ -51,6 +51,7 @@
     "@babel/core": "^7.18.5",
     "@babel/preset-env": "^7.18.2",
     "@codesandbox/sandpack-client": "^1.2.2",
+    "@cubejs-client/core": "^0.31.0",
     "@gitlab/at.js": "1.5.7",
     "@gitlab/favicon-overlay": "2.0.0",
     "@gitlab/svgs": "3.11.0",

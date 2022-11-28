@@ -1,3 +1,5 @@
 # frozen_string_literal: true
 
 product_intelligence.check!
+
+product_intelligence.check_affected_scopes!

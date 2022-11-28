@@ -31225,6 +31225,9 @@ msgstr ""
 msgid "ProductAnalytics|Add to Dashboard"
 msgstr ""
 
+msgid "ProductAnalytics|An error occured while loading the %{widgetTitle} widget."
+msgstr ""
+
 msgid "ProductAnalytics|Audience"
 msgstr ""
 
@@ -31232,9 +31235,6 @@ msgid "ProductAnalytics|New Analytics Widget Title"
 msgstr ""
 
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
-msgstr ""
-
-msgid "ProductAnalytics|Widgets content"
 msgstr ""
 
 msgid "Productivity"
@@ -45024,6 +45024,12 @@ msgstr ""
 msgid "Version %{versionNumber} (latest)"
 msgstr ""
 
+msgid "VersionCheck|Critical security upgrade available"
+msgstr ""
+
+msgid "VersionCheck|Learn more about this critical security release."
+msgstr ""
+
 msgid "VersionCheck|Up to date"
 msgstr ""
 
@@ -45031,6 +45037,12 @@ msgid "VersionCheck|Update ASAP"
 msgstr ""
 
 msgid "VersionCheck|Update available"
+msgstr ""
+
+msgid "VersionCheck|Upgrade now"
+msgstr ""
+
+msgid "VersionCheck|You are currently on version %{currentVersion}. We strongly recommend upgrading your GitLab installation. %{link}"
 msgstr ""
 
 msgid "VersionCheck|Your GitLab Version"

@@ -204,7 +204,7 @@ Commands that change data can cause damage if not run correctly or under the rig
    ```
 
 1. This will cause the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 A similar thing can be done for all Models handled by the [Geo Self-Service Framework](../../../development/geo/framework.md) which have implemented verification:
 
@@ -1335,7 +1335,7 @@ status
    ```
 
 1. This will cause the primary to start checksumming all Uploads.
-1. When a primary successfully checksums a record, then all secondaries rechecksum as well, and they compare the values.
+1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 For other SSF data types replace `Upload` in the command above with the desired model class.
 

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > Searching by image repository name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/31322) in GitLab 13.0.
 
 NOTE:
-If you pull container images from Docker Hub, you can use the [GitLab Dependency Proxy](../dependency_proxy/index.md#use-the-dependency-proxy-for-docker-images) 
+If you pull container images from Docker Hub, you can use the [GitLab Dependency Proxy](../dependency_proxy/index.md#use-the-dependency-proxy-for-docker-images)
 to avoid rate limits and speed up your pipelines.
 
 With the Docker Container Registry integrated into GitLab, every GitLab project can
@@ -32,6 +32,7 @@ You can search, sort, filter, and [delete](#delete-images-using-the-gitlab-ui)
 containers on this page. You can share a filtered view by copying the URL from your browser.
 
 Only members of the project or group can access a private project's Container Registry.
+Images downloaded from a private registry may be [available to other users in a shared runner](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
 If a project is public, so is the Container Registry.
 

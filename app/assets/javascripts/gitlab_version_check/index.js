@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import GitlabVersionCheckBadge from './components/gitlab_version_check_badge.vue';
+import SecurityPatchUpgradeAlert from './components/security_patch_upgrade_alert.vue';
 
 const mountGitlabVersionCheckBadge = (el) => {
   const { size, version } = el.dataset;
@@ -31,8 +32,36 @@ const mountGitlabVersionCheckBadge = (el) => {
   }
 };
 
+const mountSecurityPatchUpgradeAlert = (el) => {
+  const { currentVersion } = el.dataset;
+
+  try {
+    return new Vue({
+      el,
+      render(createElement) {
+        return createElement(SecurityPatchUpgradeAlert, {
+          props: {
+            currentVersion,
+          },
+        });
+      },
+    });
+  } catch {
+    return null;
+  }
+};
+
 export default () => {
+  const renderedApps = [];
+
+  const securityPatchUpgradeAlert = document.getElementById('js-security-patch-upgrade-alert');
   const versionCheckBadges = [...document.querySelectorAll('.js-gitlab-version-check-badge')];
 
-  return versionCheckBadges.map((el) => mountGitlabVersionCheckBadge(el));
+  if (securityPatchUpgradeAlert) {
+    renderedApps.push(mountSecurityPatchUpgradeAlert(securityPatchUpgradeAlert));
+  }
+
+  renderedApps.push(...versionCheckBadges.map((el) => mountGitlabVersionCheckBadge(el)));
+
+  return renderedApps;
 };

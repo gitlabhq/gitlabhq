@@ -9,13 +9,23 @@ RSpec.describe BulkImports::Clients::HTTP do
   let(:token) { 'token' }
   let(:resource) { 'resource' }
   let(:version) { "#{BulkImport::MIN_MAJOR_VERSION}.0.0" }
+  let(:enterprise) { false }
   let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
-  let(:version_response) { double(code: 200, success?: true, parsed_response: { 'version' => version }) }
+  let(:metadata_response) do
+    double(
+      code: 200,
+      success?: true,
+      parsed_response: {
+        'version' => version,
+        'enterprise' => enterprise
+      }
+    )
+  end
 
   before do
     allow(Gitlab::HTTP).to receive(:get)
       .with('http://gitlab.example/api/v4/version', anything)
-      .and_return(version_response)
+      .and_return(metadata_response)
   end
 
   subject { described_class.new(url: url, token: token) }
@@ -213,9 +223,23 @@ RSpec.describe BulkImports::Clients::HTTP do
 
         expect(Gitlab::HTTP).to receive(:get)
           .with('http://gitlab.example/api/v4/metadata', anything)
-          .and_return(version_response)
+          .and_return(metadata_response)
 
         expect(subject.instance_version).to eq(Gitlab::VersionInfo.parse(version))
+      end
+    end
+  end
+
+  describe '#instance_enterprise' do
+    it 'returns source instance enterprise information' do
+      expect(subject.instance_enterprise).to eq(false)
+    end
+
+    context 'when enterprise information is missing' do
+      let(:enterprise) { nil }
+
+      it 'defaults to true' do
+        expect(subject.instance_enterprise).to eq(true)
       end
     end
   end
@@ -254,7 +278,7 @@ RSpec.describe BulkImports::Clients::HTTP do
     before do
       allow(Gitlab::HTTP).to receive(:get)
         .with('http://website.example/gitlab/api/v4/version', anything)
-        .and_return(version_response)
+        .and_return(metadata_response)
     end
 
     it 'performs network request to a relative gitlab url' do

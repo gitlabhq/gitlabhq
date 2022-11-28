@@ -1177,6 +1177,11 @@ Always follow these words with a noun. For example:
 - Use: **Those settings** need to be configured. (Or even better, **Configure those settings.**)
 - Instead of: **Those** need to be configured.
 
+## to which, of which
+
+Try to avoid **to which** and **of which**, and let the preposition dangle at the end of the sentence instead.
+For examples, see [Prepositions](index.md#prepositions).
+
 ## to-do item
 
 Use lowercase and hyphenate **to-do** item. ([Vale](../testing.md#vale) rule: [`ToDo.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ToDo.yml))

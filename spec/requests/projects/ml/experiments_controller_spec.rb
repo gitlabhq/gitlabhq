@@ -17,7 +17,7 @@ RSpec.describe Projects::Ml::ExperimentsController do
 
   let(:params) { basic_params }
   let(:ff_value) { true }
-  let(:threshold) { 4 }
+  let(:threshold) { 5 }
   let(:project) { project_with_feature }
   let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
 

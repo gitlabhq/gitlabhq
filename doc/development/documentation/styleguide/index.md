@@ -345,6 +345,19 @@ Some contractions, however, should be avoided:
 
 <!-- vale gitlab.Possessive = YES -->
 
+### Prepositions
+
+Use prepositions at the end of the sentence when needed.
+Dangling or stranded prepositions are fine. For example:
+
+- You can leave the group you're a member of.
+- Share the credentials with users you want to give access to.
+
+These constructions are more casual than the alternatives:
+
+- You can leave the group of which you're a member.
+- Share the credentials with users to which you want to give access.
+
 ### Acronyms
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.

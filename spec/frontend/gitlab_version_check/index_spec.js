@@ -5,6 +5,11 @@ import {
   VERSION_CHECK_BADGE_NO_PROP_FIXTURE,
   VERSION_CHECK_BADGE_NO_SEVERITY_FIXTURE,
   VERSION_CHECK_BADGE_FIXTURE,
+  VERSION_CHECK_BADGE_FINDER,
+  VERSION_BADGE_TEXT,
+  SECURITY_PATCH_FIXTURE,
+  SECURITY_PATCH_FINDER,
+  SECURITY_BATCH_TEXT,
 } from './mock_data';
 
 describe('initGitlabVersionCheck', () => {
@@ -20,21 +25,25 @@ describe('initGitlabVersionCheck', () => {
   });
 
   describe.each`
-    description                                           | fixture                                    | badgeTexts
-    ${'with no version check badge el'}                   | ${'<div></div>'}                           | ${[]}
-    ${'with version check badge el but no prop data'}     | ${VERSION_CHECK_BADGE_NO_PROP_FIXTURE}     | ${[undefined]}
-    ${'with version check badge el but no severity data'} | ${VERSION_CHECK_BADGE_NO_SEVERITY_FIXTURE} | ${[undefined]}
-    ${'with version check badge el and version data'}     | ${VERSION_CHECK_BADGE_FIXTURE}             | ${['Up to date']}
-  `('$description', ({ fixture, badgeTexts }) => {
+    description                                           | fixture                                                      | finders                                                | componentTexts
+    ${'with no version check elements'}                   | ${'<div></div>'}                                             | ${[]}                                                  | ${[]}
+    ${'with version check badge el but no prop data'}     | ${VERSION_CHECK_BADGE_NO_PROP_FIXTURE}                       | ${[VERSION_CHECK_BADGE_FINDER]}                        | ${[undefined]}
+    ${'with version check badge el but no severity data'} | ${VERSION_CHECK_BADGE_NO_SEVERITY_FIXTURE}                   | ${[VERSION_CHECK_BADGE_FINDER]}                        | ${[undefined]}
+    ${'with version check badge el and version data'}     | ${VERSION_CHECK_BADGE_FIXTURE}                               | ${[VERSION_CHECK_BADGE_FINDER]}                        | ${[VERSION_BADGE_TEXT]}
+    ${'with security patch el'}                           | ${SECURITY_PATCH_FIXTURE}                                    | ${[SECURITY_PATCH_FINDER]}                             | ${[SECURITY_BATCH_TEXT]}
+    ${'with security patch and version badge els'}        | ${`${SECURITY_PATCH_FIXTURE}${VERSION_CHECK_BADGE_FIXTURE}`} | ${[SECURITY_PATCH_FINDER, VERSION_CHECK_BADGE_FINDER]} | ${[SECURITY_BATCH_TEXT, VERSION_BADGE_TEXT]}
+  `('$description', ({ fixture, finders, componentTexts }) => {
     beforeEach(() => {
       createApp(fixture);
     });
 
-    it(`correctly renders the Version Check Badge`, () => {
+    it(`correctly renders the Version Check Components`, () => {
       const vueAppInstances = vueApps.map((v) => v && createWrapper(v));
-      const renderedBadgeTexts = vueAppInstances.map((i) => i?.text());
+      const renderedComponentTexts = vueAppInstances.map((v, index) =>
+        v?.find(finders[index]).text(),
+      );
 
-      expect(renderedBadgeTexts).toStrictEqual(badgeTexts);
+      expect(renderedComponentTexts).toStrictEqual(componentTexts);
     });
   });
 });

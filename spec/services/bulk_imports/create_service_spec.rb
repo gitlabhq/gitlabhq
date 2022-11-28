@@ -41,6 +41,7 @@ RSpec.describe BulkImports::CreateService do
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
         allow(instance).to receive(:instance_version).and_return(source_version)
+        allow(instance).to receive(:instance_enterprise).and_return(false)
       end
     end
 
@@ -53,6 +54,7 @@ RSpec.describe BulkImports::CreateService do
       expect(last_bulk_import.user).to eq(user)
       expect(last_bulk_import.source_version).to eq(source_version.to_s)
       expect(last_bulk_import.user).to eq(user)
+      expect(last_bulk_import.source_enterprise).to eq(false)
 
       expect_snowplow_event(
         category: 'BulkImports::CreateService',

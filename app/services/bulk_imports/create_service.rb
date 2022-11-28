@@ -57,7 +57,8 @@ module BulkImports
         bulk_import = BulkImport.create!(
           user: current_user,
           source_type: 'gitlab',
-          source_version: client.instance_version
+          source_version: client.instance_version,
+          source_enterprise: client.instance_enterprise
         )
         bulk_import.create_configuration!(credentials.slice(:url, :access_token))
 
