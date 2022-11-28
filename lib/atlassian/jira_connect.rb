@@ -17,7 +17,15 @@ module Atlassian
       private
 
       def gitlab_host
+        return host_from_settings if Gitlab::CurrentSettings.jira_connect_proxy_url?
+
         Gitlab.config.gitlab.host
+      end
+
+      def host_from_settings
+        uri = URI(Gitlab::CurrentSettings.jira_connect_proxy_url)
+
+        uri.hostname + uri.path
       end
     end
   end

@@ -25,5 +25,13 @@ RSpec.describe Atlassian::JiraConnect do
         expect(app_key).to eq('gitlab-jira-connect-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
       end
     end
+
+    context 'with jira_connect_proxy_url setting' do
+      before do
+        stub_application_setting(jira_connect_proxy_url: 'https://example.com')
+      end
+
+      it { is_expected.to eq('gitlab-jira-connect-example.com') }
+    end
   end
 end

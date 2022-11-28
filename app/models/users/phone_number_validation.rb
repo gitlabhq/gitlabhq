@@ -31,11 +31,17 @@ module Users
     validates :telesign_reference_xid,
               length: { maximum: 255 }
 
+    scope :for_user, -> (user_id) { where(user_id: user_id) }
+
     def self.related_to_banned_user?(international_dial_code, phone_number)
       joins(:banned_user).where(
         international_dial_code: international_dial_code,
         phone_number: phone_number
       ).exists?
+    end
+
+    def validated?
+      validated_at.present?
     end
   end
 end

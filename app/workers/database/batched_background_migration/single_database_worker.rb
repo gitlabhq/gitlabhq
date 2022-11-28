@@ -39,7 +39,7 @@ module Database
         unless base_model
           Sidekiq.logger.info(
             class: self.class.name,
-            database: self.class.tracking_database,
+            database: tracking_database,
             message: 'skipping migration execution for unconfigured database')
 
           return
@@ -48,7 +48,7 @@ module Database
         if shares_db_config?
           Sidekiq.logger.info(
             class: self.class.name,
-            database: self.class.tracking_database,
+            database: tracking_database,
             message: 'skipping migration execution for database that shares database configuration with another database')
 
           return
@@ -70,12 +70,16 @@ module Database
       end
 
       def run_active_migration
-        Database::BatchedBackgroundMigration::ExecutionWorker.new.perform(self.class.tracking_database, active_migration.id)
+        execution_worker_class.new.perform(tracking_database, active_migration.id)
+      end
+
+      def tracking_database
+        self.class.tracking_database
       end
 
       def base_model
         strong_memoize(:base_model) do
-          Gitlab::Database.database_base_models[self.class.tracking_database]
+          Gitlab::Database.database_base_models[tracking_database]
         end
       end
 

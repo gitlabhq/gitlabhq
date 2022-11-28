@@ -51,6 +51,7 @@ module Gitlab
           project_testing_integration: { threshold: 5, interval: 1.minute },
           email_verification: { threshold: 10, interval: 10.minutes },
           email_verification_code_send: { threshold: 10, interval: 1.hour },
+          phone_verification_send_code: { threshold: 10, interval: 1.hour },
           namespace_exists: { threshold: 20, interval: 1.minute },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute }
         }.freeze

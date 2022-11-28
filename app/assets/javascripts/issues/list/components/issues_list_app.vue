@@ -867,7 +867,7 @@ export default {
         <li
           v-if="issuable.upvotes"
           v-gl-tooltip
-          class="issuable-upvotes gl-display-none gl-sm-display-block"
+          class="gl-display-none gl-sm-display-block"
           :title="$options.i18n.upvotes"
           data-testid="issuable-upvotes"
         >
@@ -877,7 +877,7 @@ export default {
         <li
           v-if="issuable.downvotes"
           v-gl-tooltip
-          class="issuable-downvotes gl-display-none gl-sm-display-block"
+          class="gl-display-none gl-sm-display-block"
           :title="$options.i18n.downvotes"
           data-testid="issuable-downvotes"
         >

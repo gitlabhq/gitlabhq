@@ -78,4 +78,42 @@ RSpec.describe Users::PhoneNumberValidation do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#for_user' do
+    let_it_be(:user_1) { create(:user) }
+    let_it_be(:user_2) { create(:user) }
+
+    let_it_be(:phone_number_record_1) { create(:phone_number_validation, user: user_1) }
+    let_it_be(:phone_number_record_2) { create(:phone_number_validation, user: user_2) }
+
+    context 'when multiple records exist for multiple users' do
+      it 'returns the correct phone number record for user' do
+        records = described_class.for_user(user_1.id)
+
+        expect(records.count).to be(1)
+        expect(records.first).to eq(phone_number_record_1)
+      end
+    end
+  end
+
+  describe '#validated?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:phone_number_record) { create(:phone_number_validation, user: user) }
+
+    context 'when phone number record is not validated' do
+      it 'returns false' do
+        expect(phone_number_record.validated?).to be(false)
+      end
+    end
+
+    context 'when phone number record is validated' do
+      before do
+        phone_number_record.update!(validated_at: Time.now.utc)
+      end
+
+      it 'returns true' do
+        expect(phone_number_record.validated?).to be(true)
+      end
+    end
+  end
 end

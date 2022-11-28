@@ -297,6 +297,8 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.
 
+A streaming destination that has an event type filter set has a **filtered** (**{filter}**) label.
+
 ### Use the API to add an event type filter
 
 Prerequisites:

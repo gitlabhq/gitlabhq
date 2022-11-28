@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Package', :skip_live_env, :orchestrated, :packages, :object_storage, :reliable, product_group: :package_registry do
+  RSpec.describe 'Package', :orchestrated, :packages, :object_storage, :reliable, product_group: :package_registry do
     describe 'Maven group level endpoint' do
       include Runtime::Fixtures
+      include Support::Helpers::MaskToken
       include_context 'packages registry qa scenario'
 
       let(:group_id) { 'com.gitlab.qa' }
@@ -11,6 +12,18 @@ module QA
       let(:package_name) { "#{group_id}/#{artifact_id}".tr('.', '/') }
       let(:package_version) { '1.3.7' }
       let(:package_type) { 'maven' }
+
+      let(:group_deploy_token) do
+        Resource::GroupDeployToken.fabricate_via_api! do |deploy_token|
+          deploy_token.name = 'maven-group-deploy-token'
+          deploy_token.group = package_project.group
+          deploy_token.scopes = %w[
+            read_repository
+            read_package_registry
+            write_package_registry
+          ]
+        end
+      end
 
       context 'via maven' do
         where do
@@ -37,11 +50,13 @@ module QA
           let(:token) do
             case authentication_token_type
             when :personal_access_token
-              personal_access_token
+              use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
+              use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
             when :ci_job_token
-              '${env.CI_JOB_TOKEN}'
+              '${CI_JOB_TOKEN}'
             when :project_deploy_token
-              project_deploy_token.token
+              use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: package_project)
+              use_ci_variable(name: 'GROUP_DEPLOY_TOKEN', value: group_deploy_token.token, project: client_project)
             end
           end
 
@@ -121,8 +136,9 @@ module QA
 
       context 'duplication setting' do
         before do
+          use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: package_project)
+          use_ci_variable(name: 'PERSONAL_ACCESS_TOKEN', value: personal_access_token, project: client_project)
           package_project.group.visit!
-
           Page::Group::Menu.perform(&:go_to_package_settings)
         end
 
@@ -132,16 +148,19 @@ module QA
           end
 
           it 'prevents users from publishing duplicates', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377491' do
-            create_duplicated_package
+            create_package(package_project)
+            show_latest_deploy_job
 
-            push_duplicated_package
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_successful(timeout: 400)
+            end
 
-            client_project.visit!
+            Page::Project::Job::Show.perform(&:retry!)
 
             show_latest_deploy_job
 
             Page::Project::Job::Show.perform do |job|
-              expect(job).not_to be_successful(timeout: 800)
+              expect(job).not_to be_successful(timeout: 400)
             end
           end
         end
@@ -152,52 +171,32 @@ module QA
           end
 
           it 'allows users to publish duplicates', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/377492' do
-            create_duplicated_package
-
-            push_duplicated_package
+            create_package(package_project)
 
             show_latest_deploy_job
 
             Page::Project::Job::Show.perform do |job|
-              expect(job).to be_successful(timeout: 800)
+              expect(job).to be_successful(timeout: 400)
+            end
+
+            Page::Project::Job::Show.perform(&:retry!)
+
+            show_latest_deploy_job
+
+            Page::Project::Job::Show.perform do |job|
+              expect(job).to be_successful(timeout: 400)
             end
           end
         end
 
-        def create_duplicated_package
-          settings_xml_with_pat = ERB.new(read_fixture('package_managers/maven/group', 'settings_with_pat.xml.erb')).result(binding)
-          pom_xml = ERB.new(read_fixture('package_managers/maven/group/producer', 'pom.xml.erb')).result(binding)
-
-          with_fixtures([
-                          {
-                            file_path: 'pom.xml',
-                            content: pom_xml
-                          },
-                          {
-                            file_path: 'settings.xml',
-                            content: settings_xml_with_pat
-                          }
-                        ]) do |dir|
-            Service::DockerRun::Maven.new(dir).publish!
-          end
-
-          package_project.visit!
-
-          Page::Project::Menu.perform(&:click_packages_link)
-
-          Page::Project::Packages::Index.perform do |index|
-            expect(index).to have_package(package_name)
-          end
-        end
-
-        def push_duplicated_package
+        def create_package(project)
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             Resource::Repository::Commit.fabricate_via_api! do |commit|
               gitlab_ci_yaml = ERB.new(read_fixture('package_managers/maven/group/producer', 'gitlab_ci.yaml.erb')).result(binding)
               pom_xml = ERB.new(read_fixture('package_managers/maven/group/producer', 'pom.xml.erb')).result(binding)
               settings_xml_with_pat = ERB.new(read_fixture('package_managers/maven/group', 'settings_with_pat.xml.erb')).result(binding)
 
-              commit.project = client_project
+              commit.project = project
               commit.commit_message = 'Add .gitlab-ci.yml'
               commit.add_files(
                 [
@@ -210,7 +209,7 @@ module QA
         end
 
         def show_latest_deploy_job
-          client_project.visit!
+          package_project.visit!
 
           Flow::Pipeline.visit_latest_pipeline
 

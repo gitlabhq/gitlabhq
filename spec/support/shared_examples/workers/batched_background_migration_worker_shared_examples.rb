@@ -145,6 +145,15 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             )
           end
 
+          let(:execution_worker_class) do
+            case tracking_database
+            when :main
+              Database::BatchedBackgroundMigration::MainExecutionWorker
+            when :ci
+              Database::BatchedBackgroundMigration::CiExecutionWorker
+            end
+          end
+
           before do
             allow(Gitlab::Database::BackgroundMigration::BatchedMigration).to receive(:active_migration)
               .with(connection: base_model.connection)
@@ -161,7 +170,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             it 'sets the lease timeout to the minimum value' do
               expect_to_obtain_exclusive_lease(lease_key, timeout: minimum_timeout)
 
-              expect_next_instance_of(Database::BatchedBackgroundMigration::ExecutionWorker) do |worker|
+              expect_next_instance_of(execution_worker_class) do |worker|
                 expect(worker).to receive(:perform).with(tracking_database, migration_id)
               end
 
@@ -186,7 +195,7 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
             base_model = Gitlab::Database.database_base_models[tracking_database]
 
             expect(Gitlab::Database::SharedModel).to receive(:using_connection).with(base_model.connection).and_yield
-            expect_next_instance_of(Database::BatchedBackgroundMigration::ExecutionWorker) do |worker|
+            expect_next_instance_of(execution_worker_class) do |worker|
               expect(worker).to receive(:perform).with(tracking_database, migration_id)
             end
 

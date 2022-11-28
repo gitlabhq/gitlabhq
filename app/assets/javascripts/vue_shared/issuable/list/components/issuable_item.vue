@@ -318,8 +318,8 @@ export default {
         <slot name="statistics"></slot>
         <li
           v-if="showDiscussions"
-          data-testid="issuable-discussions"
-          class="issuable-comments gl-display-none gl-sm-display-block"
+          class="gl-display-none gl-sm-display-block"
+          data-testid="issuable-comments"
         >
           <gl-link
             v-gl-tooltip.top

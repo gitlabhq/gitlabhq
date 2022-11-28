@@ -120,7 +120,7 @@ module QA
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/381486',
         quarantine: {
           issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/381806',
-          only: { pipeline: %w[staging staging-canary] },
+          only: { pipeline: %w[staging staging-canary staging-ref] },
           type: :waiting_on
         } do
         before do

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-
-RSpec.describe Database::BatchedBackgroundMigration::ExecutionWorker, :clean_gitlab_redis_shared_state do
+RSpec.shared_examples 'batched background migrations execution worker' do
   include ExclusiveLeaseHelpers
 
   describe '#perform' do

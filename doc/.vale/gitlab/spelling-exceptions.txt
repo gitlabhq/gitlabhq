@@ -1,5 +1,6 @@
 accessor
 accessors
+ACLs
 Akismet
 Alertmanager
 Algolia
@@ -15,6 +16,8 @@ anonymized
 Ansible
 Anthos
 Apdex
+API
+APIs
 Apparmor
 approvers
 architected
@@ -22,12 +25,14 @@ architecting
 archiver
 Arel
 arity
+armhf
 Artifactory
 Asana
 Asciidoctor
 asdf
 Assembla
 Atlassian
+auditable
 auditability
 Auth0
 Authentiq
@@ -110,6 +115,7 @@ ChaosKube
 chatbot
 chatbots
 ChatOps
+checksummable
 checksummed
 checksumming
 Chemlab
@@ -117,10 +123,14 @@ Citrix
 Citus
 clonable
 Cloudwatch
+clusterized
+CMK
+CMKs
 Cobertura
 Codeception
 Codepen
 Cognito
+colocate
 colocated
 colocating
 compilable
@@ -131,6 +141,8 @@ Consul
 Contentful
 Corosync
 Coursier
+CPU
+CPUs
 cron
 cronjob
 cronjobs
@@ -202,6 +214,7 @@ downvotes
 Dpl
 Dreamweaver
 Ecto
+eden
 ElastiCache
 Elasticsearch
 enablement
@@ -209,6 +222,7 @@ enqueued
 enqueues
 enum
 enums
+ESXi
 ETag
 Excon
 exfiltration
@@ -231,6 +245,7 @@ Fio
 firewalled
 firewalling
 fixup
+Flamegraph
 Flawfinder
 Flowdock
 Fluentd
@@ -274,6 +289,7 @@ Grype
 Gzip
 Hackathon
 Haml
+HAProxy
 hardcode
 hardcoded
 hardcodes
@@ -294,6 +310,7 @@ hotfixes
 hotfixing
 http
 https
+iCloud
 idempotence
 idmapper
 Iglu
@@ -307,6 +324,7 @@ innersourcing
 interdependencies
 interdependency
 interruptible
+IPs
 irker
 issuables
 Istio
@@ -322,6 +340,8 @@ jQuery
 jsdom
 Jsonnet
 JupyterHub
+JWT
+JWTs
 Kaminari
 kanban
 kanbans
@@ -339,6 +359,7 @@ Klar
 Knative
 Kramdown
 Kroki
+kubeconfig
 Kubecost
 kubectl
 Kubernetes
@@ -369,6 +390,7 @@ Mailgun
 Mailroom
 Makefile
 Makefiles
+malloc
 Markdown
 markdownlint
 Marketo
@@ -408,6 +430,7 @@ Monokai
 monorepo
 monorepos
 monospace
+MRs
 multiline
 mutex
 nameserver
@@ -440,11 +463,14 @@ onboarding
 OpenID
 OpenShift
 Opsgenie
+OS
+OSs
 outdent
 Overcommit
 Packagist
 parallelization
 parallelizations
+passthrough
 passwordless
 Patroni
 performant
@@ -524,6 +550,7 @@ rebased
 rebases
 rebasing
 reCAPTCHA
+recoverability
 Redcarpet
 redirection
 redirections
@@ -595,7 +622,9 @@ scalers
 scatterplot
 scatterplots
 Schemastore
+scriptable
 scrollable
+SELinux
 Semgrep
 Sendmail
 Sentry
@@ -634,6 +663,7 @@ sparklines
 spidering
 Splunk
 SpotBugs
+SSDs
 Stackdriver
 Stackprof
 starrer
@@ -734,6 +764,7 @@ truthy
 Twilio
 Twitter
 TypeScript
+TZInfo
 Ubuntu
 Udemy
 unapplied
@@ -846,6 +877,7 @@ viewport
 viewports
 virtualized
 virtualizing
+VMs
 Vue
 Vuex
 walkthrough
@@ -853,6 +885,7 @@ walkthroughs
 WebdriverIO
 Webex
 webpack
+WEBrick
 webserver
 Webservice
 websocket

@@ -225,7 +225,7 @@ describe('IssuableItem', () => {
             },
           });
 
-          expect(wrapper.findByTestId('issuable-discussions').exists()).toBe(returnValue);
+          expect(wrapper.findByTestId('issuable-comments').exists()).toBe(returnValue);
         },
       );
     });
@@ -489,7 +489,7 @@ describe('IssuableItem', () => {
     it('renders discussions count', () => {
       wrapper = createComponent();
 
-      const discussionsEl = wrapper.find('[data-testid="issuable-discussions"]');
+      const discussionsEl = wrapper.findByTestId('issuable-comments');
 
       expect(discussionsEl.exists()).toBe(true);
       expect(discussionsEl.findComponent(GlLink).attributes()).toMatchObject({

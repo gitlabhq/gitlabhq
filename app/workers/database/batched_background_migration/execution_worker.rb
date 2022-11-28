@@ -2,7 +2,7 @@
 
 module Database
   module BatchedBackgroundMigration
-    class ExecutionWorker # rubocop:disable Scalability/IdempotentWorker
+    module ExecutionWorker
       include ExclusiveLeaseGuard
       include Gitlab::Utils::StrongMemoize
 
