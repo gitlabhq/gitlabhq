@@ -225,7 +225,7 @@ RSpec.describe Tooling::Danger::Specs, feature_category: :tooling do
       %<suggested_line>s
       ```
 
-      Consider addding `feature_category: <feature_category_name>` for this example if it is not set already.
+      Consider adding `feature_category: <feature_category_name>` for this example if it is not set already.
       See [testing best practices](https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata).
       SUGGESTION_MARKDOWN
     end

@@ -507,6 +507,10 @@ class Namespace < ApplicationRecord
     root? && actual_plan.paid?
   end
 
+  def prevent_delete?
+    paid?
+  end
+
   def actual_limits
     # We default to PlanLimits.new otherwise a lot of specs would fail
     # On production each plan should already have associated limits record

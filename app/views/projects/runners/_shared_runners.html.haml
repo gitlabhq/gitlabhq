@@ -5,8 +5,9 @@
 - if @shared_runners_count == 0
   = _('This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area.')
 - else
-  %h5.gl-mt-6.gl-mb-0 #{_('Available shared runners:')} #{@shared_runners_count}
   %div{ data: { testid: 'available-shared-runners' } }
+    %h5.gl-mt-6.gl-mb-0
+      = s_('Runners|Available shared runners: %{count}') % {count: @shared_runners_count}
     %ul.bordered-list
       = render partial: 'projects/runners/runner', collection: @shared_runners, as: :runner
     = paginate @shared_runners, theme: "gitlab", param_name: "shared_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }

@@ -24,10 +24,19 @@ module API
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Download the artifacts archive from a job' do
           detail 'This feature was introduced in GitLab 8.10'
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :ref_name, type: String, desc: 'The ref from repository'
-          requires :job,      type: String, desc: 'The name for the job'
+          requires :ref_name, type: String,
+                              desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
+          requires :job,      type: String, desc: 'The name of the job.'
+          optional :job_token, type: String,
+                               desc: 'To be used with triggers for multi-project pipelines, ' \
+                                     'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/artifacts/:ref_name/download',
@@ -43,11 +52,21 @@ module API
 
         desc 'Download a specific file from artifacts archive from a ref' do
           detail 'This feature was introduced in GitLab 11.5'
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
-          requires :ref_name, type: String, desc: 'The ref from repository'
-          requires :job, type: String, desc: 'The name for the job'
-          requires :artifact_path, type: String, desc: 'Artifact path'
+          requires :ref_name, type: String,
+                              desc: 'Branch or tag name in repository. `HEAD` or `SHA` references are not supported.'
+          requires :job, type: String, desc: 'The name of the job.'
+          requires :artifact_path, type: String, desc: 'Path to a file inside the artifacts archive.'
+          optional :job_token, type: String,
+                               desc: 'To be used with triggers for multi-project pipelines, ' \
+                                     'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/artifacts/:ref_name/raw/*artifact_path',
@@ -69,9 +88,17 @@ module API
 
         desc 'Download the artifacts archive from a job' do
           detail 'This feature was introduced in GitLab 8.5'
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
+          optional :job_token, type: String,
+                               desc: 'To be used with triggers for multi-project pipelines, ' \
+                                     'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/:job_id/artifacts', urgency: :low do
@@ -85,10 +112,19 @@ module API
 
         desc 'Download a specific file from artifacts archive' do
           detail 'This feature was introduced in GitLab 10.0'
+          failure [
+            { code: 400, message: 'Bad request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
-          requires :artifact_path, type: String, desc: 'Artifact path'
+          requires :artifact_path, type: String, desc: 'Path to a file inside the artifacts archive.'
+          optional :job_token, type: String,
+                               desc: 'To be used with triggers for multi-project pipelines, ' \
+                                     'available only on Premium and Ultimate tiers.'
         end
         route_setting :authentication, job_token_allowed: true
         get ':id/jobs/:job_id/artifacts/*artifact_path', urgency: :low, format: false do
@@ -113,6 +149,11 @@ module API
 
         desc 'Keep the artifacts to prevent them from being deleted' do
           success ::API::Entities::Ci::Job
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not found' }
+          ]
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -132,6 +173,12 @@ module API
 
         desc 'Delete the artifacts files from a job' do
           detail 'This feature was introduced in GitLab 11.9'
+          success code: 204
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 409, message: 'Conflict' }
+          ]
         end
         params do
           requires :job_id, type: Integer, desc: 'The ID of a job'
@@ -148,7 +195,14 @@ module API
           status :no_content
         end
 
-        desc 'Expire the artifacts files from a project'
+        desc 'Expire the artifacts files from a project' do
+          success code: 202
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 409, message: 'Conflict' }
+          ]
+        end
         delete ':id/artifacts' do
           authorize_destroy_artifacts!
 

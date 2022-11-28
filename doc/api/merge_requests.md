@@ -1101,6 +1101,74 @@ Supported attributes:
 }
 ```
 
+WARNING:
+This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
+and will be removed in API v5. Use the [List merge request diffs](#list-merge-request-diffs) endpoint instead.
+
+## List merge request diffs
+
+List diffs of the files changed in a merge request.
+
+```plaintext
+GET /projects/:id/merge_requests/:merge_request_iid/diffs
+```
+
+Supported attributes:
+
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `id` | integer or string | **{check-circle}** Yes | The ID or [URL-encoded path of the project](index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer | **{check-circle}** Yes | The internal ID of the merge request. |
+| `page` | integer | **{dotted-circle}** no | The page of results to return. Defaults to 1. |
+| `per_page` | integer | **{dotted-circle}** no | The number of results per page. Defaults to 20. |
+
+If successful, returns [`200 OK`](index.md#status-codes) and the
+following response attributes:
+
+| Attribute | Type | Description |
+|:----------|:-----|:------------|
+| `old_path` | string | Old path of the file. |
+| `new_path` | string | New path of the file. |
+| `a_mode` | string | Old file mode of the file. |
+| `b_mode` | string | New file mode of the file. |
+| `diff` | string | Diff representation of the changes made on the file. |
+| `new_file` | boolean | Indicates if the file has just been added. |
+| `renamed_file` | boolean | Indicates if the file has been renamed. |
+| `deleted_file` | boolean | Indicates if the file has been removed. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/diffs?page=1&per_page=2"
+```
+
+Example response:
+
+```json
+[
+  {
+    "old_path": "README",
+    "new_path": "README",
+    "a_mode": "100644",
+    "b_mode": "100644",
+    "diff": "--- a/README\ +++ b/README\ @@ -1 +1 @@\ -Title\ +README",
+    "new_file": false,
+    "renamed_file": false,
+    "deleted_file": false
+  },
+  {
+    "old_path": "VERSION",
+    "new_path": "VERSION",
+    "a_mode": "100644",
+    "b_mode": "100644",
+    "diff": "--- a/VERSION\ +++ b/VERSION\ @@ -1 +1 @@\ -1.9.7\ +1.9.8",
+    "new_file": false,
+    "renamed_file": false,
+    "deleted_file": false
+  }
+]
+```
+
 ## List merge request pipelines
 
 Get a list of merge request pipelines.

@@ -19,8 +19,10 @@ RSpec.describe Projects::Settings::CiCdController do
       let_it_be(:group) { create(:group, parent: parent_group) }
       let_it_be(:other_project) { create(:project, group: group) }
 
+      subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
+
       it 'renders show with 200 status code' do
-        get :show, params: { namespace_id: project.namespace, project_id: project }
+        subject
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template(:show)
@@ -32,27 +34,40 @@ RSpec.describe Projects::Settings::CiCdController do
         end
 
         it 'renders show with 404 status code' do
-          get :show, params: { namespace_id: project.namespace, project_id: project }
+          subject
+
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
 
-      context 'with group runners' do
-        let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      context 'with assignable project runners' do
         let_it_be(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
-        let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
         before do
           group.add_maintainer(user)
         end
 
-        subject { get :show, params: { namespace_id: project.namespace, project_id: project } }
-
-        it 'sets assignable project runners only' do
+        it 'sets assignable project runners' do
           subject
 
           expect(assigns(:assignable_runners)).to contain_exactly(project_runner)
         end
+      end
+
+      context 'with group runners' do
+        let_it_be(:group) { create :group }
+        let_it_be(:project) { create :project, group: group }
+        let_it_be(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+
+        it 'sets group runners' do
+          subject
+
+          expect(assigns(:group_runners)).to contain_exactly(group_runner)
+        end
+      end
+
+      context 'with instance runners' do
+        let_it_be(:shared_runner) { create(:ci_runner, :instance) }
 
         it 'sets shared runners' do
           subject

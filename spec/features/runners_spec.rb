@@ -123,7 +123,15 @@ RSpec.describe 'Runners' do
         end
 
         context 'when multiple shared runners are configured' do
-          let!(:shared_runner_2) { create(:ci_runner, :instance) }
+          let_it_be(:shared_runner_2) { create(:ci_runner, :instance) }
+
+          it 'shows the runner count' do
+            visit project_runners_path(project)
+
+            within '[data-testid="available-shared-runners"]' do
+              expect(page).to have_content format(_('Available shared runners: %{count}'), { count: 2 })
+            end
+          end
 
           it 'adds pagination to the shared runner list' do
             stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
@@ -322,7 +330,7 @@ RSpec.describe 'Runners' do
         end
 
         context 'project with a group and a group runner' do
-          let_it_be(:ci_runner) do
+          let_it_be(:group_runner) do
             create(:ci_runner, :group, groups: [group], description: 'group-runner')
           end
 
@@ -345,6 +353,28 @@ RSpec.describe 'Runners' do
 
             expect(page).to have_content 'Disable group runners'
             expect(project.reload.group_runners_enabled).to be true
+          end
+
+          context 'when multiple group runners are configured' do
+            let_it_be(:group_runner_2) { create(:ci_runner, :group, groups: [group]) }
+
+            it 'shows the runner count' do
+              visit project_runners_path(project)
+
+              within '[data-testid="group-runners"]' do
+                expect(page).to have_content format(_('Available group runners: %{runners}'), { runners: 2 })
+              end
+            end
+
+            it 'adds pagination to the group runner list' do
+              stub_const('Projects::Settings::CiCdController::NUMBER_OF_RUNNERS_PER_PAGE', 1)
+
+              visit project_runners_path(project)
+
+              within '[data-testid="group-runners"]' do
+                expect(find('.pagination')).not_to be_nil
+              end
+            end
           end
         end
       end

@@ -1788,6 +1788,58 @@ RSpec.describe API::MergeRequests do
     end
   end
 
+  describe 'GET /projects/:id/merge_requests/:merge_request_iid/diffs' do
+    let_it_be(:merge_request) do
+      create(
+        :merge_request,
+        :simple,
+        author: user,
+        assignees: [user],
+        source_project: project,
+        target_project: project,
+        source_branch: 'markdown',
+        title: "Test",
+        created_at: base_time
+      )
+    end
+
+    it 'returns a 404 when merge_request_iid not found' do
+      get api("/projects/#{project.id}/merge_requests/0/diffs", user)
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    it 'returns a 404 when merge_request id is used instead of iid' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.id}/diffs", user)
+
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
+
+    context 'when merge request author has only guest access' do
+      it_behaves_like 'rejects user from accessing merge request info' do
+        let(:url) { "/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs" }
+      end
+    end
+
+    it 'returns the diffs of the merge_request' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user)
+
+      expect(response).to have_gitlab_http_status(:ok)
+      expect(json_response.size).to eq(merge_request.diffs.size)
+    end
+
+    context 'when pagination params are present' do
+      it 'returns limited diffs' do
+        get(
+          api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/diffs", user),
+          params: { page: 1, per_page: 1 }
+        )
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.size).to eq(1)
+      end
+    end
+  end
+
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/pipelines' do
     let_it_be(:merge_request) { create(:merge_request, :simple, author: user, assignees: [user], source_project: project, target_project: project, source_branch: 'markdown', title: "Test", created_at: base_time) }
 

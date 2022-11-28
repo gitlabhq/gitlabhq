@@ -5899,9 +5899,6 @@ msgstr ""
 msgid "Available on-demand"
 msgstr ""
 
-msgid "Available shared runners:"
-msgstr ""
-
 msgid "Available specific runners"
 msgstr ""
 
@@ -8232,7 +8229,7 @@ msgstr ""
 msgid "Checkout|Failed to load states. Please try again."
 msgstr ""
 
-msgid "Checkout|Failed to load the payment form. Please try again."
+msgid "Checkout|Failed to load the payment form. Refresh the page and try again."
 msgstr ""
 
 msgid "Checkout|Failed to register credit card. Please try again."
@@ -35228,6 +35225,9 @@ msgid "Runners|Associated with one or more projects"
 msgstr ""
 
 msgid "Runners|Available"
+msgstr ""
+
+msgid "Runners|Available shared runners: %{count}"
 msgstr ""
 
 msgid "Runners|Available to all projects"

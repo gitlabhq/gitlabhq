@@ -35,7 +35,9 @@
     = _('Ask your group owner to set up a group runner.')
 
 - else
-  %h4.underlined-title
-    = _('Available group runners: %{runners}').html_safe % { runners: @group_runners.count }
-  %ul.bordered-list
-    = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
+  %div{ data: { testid: 'group-runners' } }
+    %h5.gl-mt-6.gl-mb-0
+      = _('Available group runners: %{runners}') % { runners: @group_runners_count }
+    %ul.bordered-list
+      = render partial: 'projects/runners/runner', collection: @group_runners, as: :runner
+    = paginate @group_runners, theme: "gitlab", param_name: "group_runners_page", params: { expand_runners: true, anchor: 'js-runners-settings' }

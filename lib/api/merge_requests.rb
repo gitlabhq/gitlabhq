@@ -505,6 +505,24 @@ module API
           access_raw_diffs: to_boolean(params.fetch(:access_raw_diffs, false))
       end
 
+      desc 'Get the merge request diffs' do
+        detail 'Get a list of merge request diffs.'
+        success Entities::Diff
+        failure [
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[merge_requests]
+      end
+      params do
+        use :pagination
+      end
+      get ':id/merge_requests/:merge_request_iid/diffs', feature_category: :code_review, urgency: :low do
+        merge_request = find_merge_request_with_access(params[:merge_request_iid])
+
+        present paginate(merge_request.merge_request_diff.paginated_diffs(params[:page], params[:per_page])).diffs, with: Entities::Diff
+      end
+
       desc 'Get single merge request pipelines' do
         detail 'Get a list of merge request pipelines.'
         success Entities::Ci::PipelineBasic

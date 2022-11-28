@@ -414,6 +414,29 @@ class MergeRequestDiff < ApplicationRecord
     end
   end
 
+  def paginated_diffs(page, per_page)
+    fetching_repository_diffs({}) do |comparison|
+      reorder_diff_files!
+
+      collection = Gitlab::Diff::FileCollection::PaginatedMergeRequestDiff.new(
+        self,
+        page,
+        per_page
+      )
+
+      if comparison
+        comparison.diffs(
+          paths: collection.diff_paths,
+          page: collection.current_page,
+          per_page: collection.limit_value,
+          count: collection.total_count
+        )
+      else
+        collection
+      end
+    end
+  end
+
   def diffs(diff_options = nil)
     fetching_repository_diffs(diff_options) do |comparison|
       # It should fetch the repository when diffs are cleaned by the system.
