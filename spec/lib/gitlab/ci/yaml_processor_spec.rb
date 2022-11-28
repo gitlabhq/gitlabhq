@@ -901,6 +901,37 @@ module Gitlab
               )
             end
           end
+
+          context 'when receiving from the default' do
+            let(:config) do
+              {
+                default: { hooks: { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] } },
+                test: { script: ["script"] }
+              }
+            end
+
+            it "inherits hooks" do
+              expect(subject[:options][:hooks]).to eq(
+                { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] }
+              )
+            end
+          end
+
+          context 'when overriding the default' do
+            let(:config) do
+              {
+                default: { hooks: { pre_get_sources_script: ["echo 1", "echo 2", "pwd"] } },
+                test: { script: ["script"],
+                        hooks: { pre_get_sources_script: ["echo 3", "echo 4", "pwd"] } }
+              }
+            end
+
+            it "overrides hooks" do
+              expect(subject[:options][:hooks]).to eq(
+                { pre_get_sources_script: ["echo 3", "echo 4", "pwd"] }
+              )
+            end
+          end
         end
       end
 

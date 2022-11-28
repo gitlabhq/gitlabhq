@@ -26,9 +26,8 @@ RSpec.describe Gitlab::Ci::Config::Entry::Default do
     context 'when filtering all the entry/node names' do
       it 'contains the expected node names' do
         expect(described_class.nodes.keys)
-          .to match_array(%i[before_script image services
-                             after_script cache interruptible
-                             timeout retry tags artifacts])
+          .to match_array(%i[before_script after_script hooks cache image services
+                             interruptible timeout retry tags artifacts])
       end
     end
   end

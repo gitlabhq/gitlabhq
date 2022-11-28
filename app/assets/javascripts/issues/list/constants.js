@@ -147,7 +147,7 @@ export const specialFilterValues = [
 
 export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
 export const TYPE_TOKEN_OBJECTIVE_OPTION = {
-  icon: 'issue-type-issue',
+  icon: 'issue-type-objective',
   title: 'objective',
   value: 'objective',
 };

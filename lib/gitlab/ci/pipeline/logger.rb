@@ -53,6 +53,7 @@ module Gitlab
           if once
             observations[operation.to_s] = value
           else
+            observations[operation.to_s] ||= []
             observations[operation.to_s].push(value)
           end
         end
@@ -116,13 +117,12 @@ module Gitlab
         end
 
         def enabled?
-          strong_memoize(:enabled) do
-            ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops)
-          end
+          ::Feature.enabled?(:ci_pipeline_creation_logger, project, type: :ops)
         end
+        strong_memoize_attr :enabled?, :enabled
 
         def observations
-          @observations ||= Hash.new { |hash, key| hash[key] = [] }
+          @observations ||= {}
         end
 
         def observe_sql_counters(operation, start_db_counters, end_db_counters, once: false)

@@ -61,7 +61,7 @@ module Gitlab
 
           entry :hooks, Entry::Hooks,
             description: 'Commands that will be executed on Runner before/after some events; clone, build-script.',
-            inherit: false # This will be true in next iterations
+            inherit: true
 
           entry :cache, Entry::Caches,
             description: 'Cache definition for this job.',

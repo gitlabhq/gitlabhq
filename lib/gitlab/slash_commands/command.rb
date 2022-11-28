@@ -3,7 +3,7 @@
 module Gitlab
   module SlashCommands
     class Command < BaseCommand
-      def commands
+      def self.commands
         commands = [
           Gitlab::SlashCommands::IssueShow,
           Gitlab::SlashCommands::IssueNew,
@@ -15,7 +15,7 @@ module Gitlab
           Gitlab::SlashCommands::Run
         ]
 
-        if Feature.enabled?(:incident_declare_slash_command, current_user)
+        if Feature.enabled?(:incident_declare_slash_command)
           commands << Gitlab::SlashCommands::IncidentManagement::IncidentNew
         end
 
@@ -50,7 +50,7 @@ module Gitlab
       private
 
       def available_commands
-        commands.keep_if do |klass|
+        self.class.commands.keep_if do |klass|
           klass.available?(project)
         end
       end

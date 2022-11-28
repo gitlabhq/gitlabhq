@@ -112,7 +112,7 @@ export const WORK_ITEMS_TYPE_MAP = {
     name: s__('WorkItem|Requirements'),
   },
   [WORK_ITEM_TYPE_ENUM_OBJECTIVE]: {
-    icon: `issue-type-issue`,
+    icon: `issue-type-objective`,
     name: s__('WorkItem|Objective'),
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {

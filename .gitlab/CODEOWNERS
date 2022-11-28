@@ -1043,7 +1043,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/assets/javascripts/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/authentication/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/ide/components/shared/tokened_input.vue @gitlab-org/manage/authentication-and-authorization/approvers
-/app/assets/javascripts/invite_members/components/members_token_select.vue @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/packages_and_registries/package_registry/components/list/tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/pages/admin/impersonation_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers
 /app/assets/javascripts/pages/groups/settings/access_tokens/ @gitlab-org/manage/authentication-and-authorization/approvers

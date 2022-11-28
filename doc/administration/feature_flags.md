@@ -45,8 +45,7 @@ Features that are disabled by default may change or be removed without notice in
 
 Data corruption, stability degradation, performance degradation, or security issues might occur if
 you enable a feature that's disabled by default. Problems caused by using a default
-disabled feature aren't covered by GitLab support, unless you were directed by GitLab
-to enable the feature.
+disabled feature aren't covered by GitLab Support.
 
 Security issues found in features that are disabled by default are patched in regular releases
 and do not follow our regular [maintenance policy](../policy/maintenance.md#security-releases)

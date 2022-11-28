@@ -150,6 +150,7 @@ To delete filter tokens one at a time, the <kbd>⌥</kbd> (Mac) / <kbd>Control</
 In the search bar, you can view autocomplete suggestions for:
 
 - Projects and groups
+- Users
 - Various help pages (try and type **API help**)
 - Project feature pages (try and type **milestones**)
 - Various settings pages (try and type **user settings**)

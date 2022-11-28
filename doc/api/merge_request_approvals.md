@@ -433,6 +433,7 @@ Supported attributes:
 | `applies_to_all_protected_branches` | boolean           | **{dotted-circle}** No       | Whether the rule is applied to all protected branches. If set to `true`, the value of `protected_branch_ids` is ignored. Default is `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3. |
 | `group_ids`                         | Array             | **{dotted-circle}** No       | The IDs of groups as approvers. |
 | `protected_branch_ids`              | Array             | **{dotted-circle}** No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
+| `remove_hidden_groups`              | boolean           | **{dotted-circle}** No       | Whether hidden groups should be removed. |
 | `user_ids`                          | Array             | **{dotted-circle}** No       | The IDs of users as approvers. |
 
 ```json
@@ -964,6 +965,7 @@ Supported attributes:
 | `merge_request_iid`  | integer | **{check-circle}** Yes      | The IID of a merge request.                     |
 | `name`               | string  | **{check-circle}** Yes      | The name of the approval rule.                  |
 | `group_ids`          | Array   | **{dotted-circle}** No       | The IDs of groups as approvers.                 |
+| `remove_hidden_groups` | boolean | **{dotted-circle}** No | Whether hidden groups should be removed. |
 | `user_ids`           | Array   | **{dotted-circle}** No       | The IDs of users as approvers.                  |
 
 ```json

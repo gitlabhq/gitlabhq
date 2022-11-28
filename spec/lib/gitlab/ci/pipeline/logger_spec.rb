@@ -213,6 +213,21 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
 
           expect(commit).to be_truthy
         end
+
+        context 'with unexistent observations in condition' do
+          it 'does not commit the log' do
+            logger.log_when do |observations|
+              value = observations['non_existent_value']
+              next false unless value
+
+              value > 0
+            end
+
+            expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+            expect(commit).to be_falsey
+          end
+        end
       end
 
       context 'when project is not passed and pipeline is not persisted' do

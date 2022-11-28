@@ -13,9 +13,8 @@ module Gitlab
           include ::Gitlab::Config::Entry::Configurable
           include ::Gitlab::Config::Entry::Inheritable
 
-          ALLOWED_KEYS = %i[before_script image services
-                            after_script cache interruptible
-                            timeout retry tags artifacts].freeze
+          ALLOWED_KEYS = %i[before_script after_script hooks cache image services
+                            interruptible timeout retry tags artifacts].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -25,20 +24,25 @@ module Gitlab
             description: 'Script that will be executed before each job.',
             inherit: true
 
+          entry :after_script, Entry::Commands,
+            description: 'Script that will be executed after each job.',
+            inherit: true
+
+          entry :hooks, Entry::Hooks,
+            description: 'Commands that will be executed on Runner before/after some events ' \
+                         'such as `clone` and `build-script`.',
+            inherit: false
+
+          entry :cache, Entry::Caches,
+            description: 'Configure caching between build jobs.',
+            inherit: true
+
           entry :image, Entry::Image,
             description: 'Docker image that will be used to execute jobs.',
             inherit: true
 
           entry :services, Entry::Services,
             description: 'Docker images that will be linked to the container.',
-            inherit: true
-
-          entry :after_script, Entry::Commands,
-            description: 'Script that will be executed after each job.',
-            inherit: true
-
-          entry :cache, Entry::Caches,
-            description: 'Configure caching between build jobs.',
             inherit: true
 
           entry :interruptible, ::Gitlab::Config::Entry::Boolean,

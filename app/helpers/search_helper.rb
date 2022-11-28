@@ -40,6 +40,7 @@ module SearchHelper
     [
       groups_autocomplete(term),
       projects_autocomplete(term),
+      users_autocomplete(term),
       issue_autocomplete(term)
     ].flatten
   end
@@ -347,6 +348,25 @@ module SearchHelper
         label: "#{search_result_sanitize(p.full_name)}",
         url: project_path(p),
         avatar_url: p.avatar_url || ''
+      }
+    end
+  end
+
+  def users_autocomplete(term, limit = 5)
+    return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
+
+    SearchService
+      .new(current_user, { scope: 'users', search: term })
+      .search_objects
+      .limit(limit)
+      .map do |user|
+      {
+        category: "Users",
+        id: user.id,
+        value: "#{search_result_sanitize(user.name)}",
+        label: "#{search_result_sanitize(user.username)}",
+        url: user_path(user),
+        avatar_url: user.avatar_url || ''
       }
     end
   end

@@ -114,6 +114,9 @@ if unused_flags.count > 0
   puts
   puts "If they are really no longer needed REMOVE their .yml definition".red
   puts "If they are needed you need to ENSURE that their usage is covered with specs to continue.".red
+  puts "Feature flag usage is detected via Rubocop, which is unable to resolve dynamic feature flag usage,".red.bold
+  puts "interpolated strings however are optimistically matched. For more details consult test suite:".red
+  puts "https://gitlab.com/gitlab-org/gitlab/-/blob/69cb5d36db95881b495966c95655672cfb816f62/spec/rubocop/cop/gitlab/mark_used_feature_flags_spec.rb".red
   puts
   unused_flags.keys.sort.each do |name|
     puts "- #{name}".yellow

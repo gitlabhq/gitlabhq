@@ -1031,7 +1031,7 @@ RSpec.describe 'Git LFS API and storage' do
         end
 
         describe 'to a forked project' do
-          let_it_be(:upstream_project) { create(:project, :public) }
+          let_it_be_with_reload(:upstream_project) { create(:project, :public) }
           let_it_be(:project_owner) { create(:user) }
 
           let(:project) { fork_project(upstream_project, project_owner) }
@@ -1065,6 +1065,56 @@ RSpec.describe 'Git LFS API and storage' do
 
                 it 'LFS object is linked to the forked project' do
                   expect(lfs_object.projects.pluck(:id)).to include(project.id)
+                end
+              end
+            end
+
+            describe 'when user has push access to upstream project' do
+              before do
+                upstream_project.add_maintainer(user)
+              end
+
+              context 'an MR exists on target forked project' do
+                let(:allow_collaboration) { true }
+                let(:merge_request) do
+                  create(:merge_request,
+                         target_project: upstream_project,
+                         source_project: project,
+                         allow_collaboration: allow_collaboration)
+                end
+
+                before do
+                  merge_request
+                end
+
+                context 'with allow_collaboration option set to true' do
+                  context 'and request is sent by gitlab-workhorse to authorize the request' do
+                    before do
+                      put_authorize
+                    end
+
+                    it_behaves_like 'LFS http 200 workhorse response'
+                  end
+
+                  context 'and request is sent by gitlab-workhorse to finalize the upload' do
+                    before do
+                      put_finalize
+                    end
+
+                    it_behaves_like 'LFS http 200 response'
+                  end
+                end
+
+                context 'with allow_collaboration option set to false' do
+                  context 'request is sent by gitlab-workhorse to authorize the request' do
+                    let(:allow_collaboration) { false }
+
+                    before do
+                      put_authorize
+                    end
+
+                    it_behaves_like 'forbidden'
+                  end
                 end
               end
             end

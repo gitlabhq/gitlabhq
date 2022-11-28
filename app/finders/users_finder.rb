@@ -55,7 +55,7 @@ class UsersFinder
   private
 
   def base_scope
-    scope = current_user&.admin? ? User.all : User.without_forbidden_states
+    scope = current_user&.can_admin_all_resources? ? User.all : User.without_forbidden_states
     scope.order_id_desc
   end
 
@@ -80,7 +80,7 @@ class UsersFinder
   def by_search(users)
     return users unless params[:search].present?
 
-    users.search(params[:search], with_private_emails: current_user&.admin?)
+    users.search(params[:search], with_private_emails: current_user&.can_admin_all_resources?)
   end
 
   def by_blocked(users)
@@ -97,7 +97,7 @@ class UsersFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def by_external_identity(users)
-    return users unless current_user&.admin? && params[:extern_uid] && params[:provider]
+    return users unless current_user&.can_admin_all_resources? && params[:extern_uid] && params[:provider]
 
     users.joins(:identities).merge(Identity.with_extern_uid(params[:provider], params[:extern_uid]))
   end

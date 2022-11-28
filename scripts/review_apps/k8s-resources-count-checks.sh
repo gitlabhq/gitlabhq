@@ -56,8 +56,6 @@ cat > k8s-resources-count.out <<COMMANDS
   $(k8s_resource_count daemonsets.apps) daemonsets.apps
   $(k8s_resource_count deployments.apps) deployments.apps
   $(k8s_resource_count endpoints) endpoints
-  $(k8s_resource_count endpointslices.discovery.k8s.io) endpointslices.discovery.k8s.io
-  $(k8s_resource_count events) events
   $(k8s_resource_count frontendconfigs.networking.gke.io) frontendconfigs.networking.gke.io
   $(k8s_resource_count horizontalpodautoscalers.autoscaling) horizontalpodautoscalers.autoscaling
   $(k8s_resource_count ingressclasses) ingressclasses
@@ -71,7 +69,6 @@ cat > k8s-resources-count.out <<COMMANDS
   $(k8s_resource_count orders.acme.cert-manager.io) orders.acme.cert-manager.io
   $(k8s_resource_count persistentvolumeclaims) persistentvolumeclaims
   $(k8s_resource_count poddisruptionbudgets.policy) poddisruptionbudgets.policy
-  $(k8s_resource_count pods.metrics.k8s.io) pods.metrics.k8s.io
   $(k8s_resource_count pods) pods
   $(k8s_resource_count podtemplates) podtemplates
   $(k8s_resource_count replicasets.apps) replicasets.apps

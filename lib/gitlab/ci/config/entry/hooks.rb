@@ -8,6 +8,8 @@ module Gitlab
           # `Configurable` alreadys adds `Validatable`
           include ::Gitlab::Config::Entry::Configurable
 
+          # NOTE: If a new hook is added, inheriting should be changed because a `job:hooks` overrides all
+          #       `default:hooks` now. We should implement merging; each hook must be overridden individually.
           ALLOWED_HOOKS = %i[pre_get_sources_script].freeze
 
           validations do

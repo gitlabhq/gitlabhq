@@ -1903,14 +1903,17 @@
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *controllers-patterns
       variables: *review-change-pattern
+      when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *models-patterns
       variables: *review-change-pattern
+      when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *lib-gitlab-patterns
       variables: *review-change-pattern
+      when: manual
       allow_failure: true
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *qa-patterns

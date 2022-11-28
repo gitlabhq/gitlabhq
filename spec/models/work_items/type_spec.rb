@@ -75,6 +75,32 @@ RSpec.describe WorkItems::Type do
     end
   end
 
+  describe '.default_by_type' do
+    let(:default_issue_type) { described_class.find_by(namespace_id: nil, base_type: :issue) }
+
+    subject { described_class.default_by_type(:issue) }
+
+    it 'returns default work item type by base type without calling importer' do
+      expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).not_to receive(:upsert_types)
+      expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).not_to receive(:upsert_restrictions)
+
+      expect(subject).to eq(default_issue_type)
+    end
+
+    context 'when default types are missing' do
+      before do
+        described_class.delete_all
+      end
+
+      it 'creates types and restrictions and returns default work item type by base type' do
+        expect(Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter).to receive(:upsert_types)
+        expect(Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter).to receive(:upsert_restrictions)
+
+        expect(subject).to eq(default_issue_type)
+      end
+    end
+  end
+
   describe '#default?' do
     subject { build(:work_item_type, namespace: namespace).default? }
 

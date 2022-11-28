@@ -467,8 +467,9 @@ export default {
 
 <template>
   <div
+    :class="{ 'gl-bg-gray-10': mr.state !== 'closed' && mr.state !== 'merged' }"
     data-testid="ready_to_merge_state"
-    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-bg-gray-10 gl-pl-7"
+    class="gl-border-t-1 gl-border-t-solid gl-border-gray-100 gl-pl-7"
   >
     <div v-if="loading" class="mr-widget-body">
       <div class="gl-w-full mr-ready-to-merge-loader">

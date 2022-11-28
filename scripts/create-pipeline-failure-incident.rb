@@ -7,6 +7,7 @@ require 'json'
 
 require_relative 'api/pipeline_failed_jobs'
 require_relative 'api/create_issue'
+require_relative 'api/create_issue_discussion'
 
 class CreatePipelineFailureIncident
   DEFAULT_OPTIONS = {
@@ -28,7 +29,12 @@ class CreatePipelineFailureIncident
       labels: incident_labels
     }
 
-    CreateIssue.new(project: project, api_token: api_token).execute(payload)
+    CreateIssue.new(project: project, api_token: api_token).execute(payload).tap do |incident|
+      CreateIssueDiscussion.new(project: project, api_token: api_token)
+        .execute(issue_iid: incident.iid, body: "## Root Cause Analysis")
+      CreateIssueDiscussion.new(project: project, api_token: api_token)
+        .execute(issue_iid: incident.iid, body: "## Investigation Steps")
+    end
   end
 
   private
@@ -44,8 +50,16 @@ class CreatePipelineFailureIncident
   end
 
   def title
-    "#{now.strftime('%A %F %R UTC')} - `#{ENV['CI_PROJECT_PATH']}` broken `#{ENV['CI_COMMIT_REF_NAME']}` " \
-      "with #{failed_jobs.size} failed jobs"
+    @title ||= begin
+      full_title = "#{now.strftime('%A %F %R UTC')} - `#{ENV['CI_PROJECT_PATH']}` " \
+        "broken `#{ENV['CI_COMMIT_REF_NAME']}` with #{failed_jobs.map(&:name).join(', ')}"
+
+      if full_title.size >= 255
+        "#{full_title[...252]}..." # max title length is 255, and we add an elipsis
+      else
+        full_title
+      end
+    end
   end
 
   def description

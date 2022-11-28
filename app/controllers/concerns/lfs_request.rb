@@ -94,8 +94,13 @@ module LfsRequest
       next false unless has_authentication_ability?(:push_code)
       next false if limit_exceeded?
 
-      lfs_deploy_token? || can?(user, :push_code, project) || can?(deploy_token, :push_code, project)
+      lfs_deploy_token? || can?(user, :push_code,
+project) || can?(deploy_token, :push_code, project) || any_branch_allows_collaboration?
     end
+  end
+
+  def any_branch_allows_collaboration?
+    project.merge_requests_allowing_push_to_user(user).any?
   end
 
   def lfs_deploy_token?
