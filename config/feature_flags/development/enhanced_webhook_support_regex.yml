@@ -1,8 +1,0 @@
----
-name: enhanced_webhook_support_regex
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97235
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/375728
-milestone: '15.6'
-type: development
-group: group::integrations
-default_enabled: false

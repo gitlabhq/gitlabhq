@@ -1053,15 +1053,14 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.mr-ready-merge-related-links,
-.mr-widget-merge-details {
-  a {
-    @include gl-text-decoration-underline;
+.mr-ready-merge-related-links a,
+.mr-widget-merge-details a,
+.mr-widget-author {
+  @include gl-text-decoration-underline;
 
-    &:hover,
-    &:focus {
-      @include gl-text-decoration-none;
-    }
+  &:hover,
+  &:focus {
+    @include gl-text-decoration-none;
   }
 }
 

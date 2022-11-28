@@ -32,6 +32,11 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
       expect(rendered).to have_text('Key titles are publicly visible.')
     end
 
+    it 'has the usage type field', :aggregate_failures do
+      expect(page).to have_select _('Usage type'),
+        selected: 'Authentication & Signing', options: ['Authentication & Signing', 'Authentication', 'Signing']
+    end
+
     it 'has the expires at field', :aggregate_failures do
       expect(rendered).to have_field('Expiration date', type: 'text')
       expect(page.find_field('Expiration date')['min']).to eq(l(1.day.from_now, format: "%Y-%m-%d"))
@@ -45,6 +50,19 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
 
     it 'has the submit button' do
       expect(rendered).to have_button('Add key')
+    end
+  end
+
+  context 'when ssh_key_usage_types is disabled' do
+    before do
+      stub_feature_flags(ssh_key_usage_types: false)
+    end
+
+    it 'has the usage type field', :aggregate_failures do
+      render
+
+      expect(rendered).not_to have_field('Usage type', type: 'text')
+      expect(rendered).not_to have_text('Authentication & Signing')
     end
   end
 end

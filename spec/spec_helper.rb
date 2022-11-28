@@ -457,6 +457,13 @@ RSpec.configure do |config|
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
   end
+
+  # Add warning for example missing feature_category
+  config.before do |example|
+    if example.metadata[:feature_category].blank? && !ENV['CI']
+      warn "Missing metadata feature_category: #{example.location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
+    end
+  end
 end
 
 ActiveRecord::Migration.maintain_test_schema!

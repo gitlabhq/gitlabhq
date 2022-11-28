@@ -29,6 +29,8 @@ metadata:
     description: Operations related to clusters
   - name: container_registry
     description: Operations related to container registry
+  - name: container_registry_event
+    description: Operations related to container registry events
   - name: dashboard_annotations
     description: Operations related to dashboard annotations
   - name: dependency_proxy
@@ -99,6 +101,8 @@ metadata:
     description: Operations related to project packages
   - name: protected environments
     description: Operations related to protected environments
+  - name: pypi_packages
+    description: Operations related to PyPI packages
   - name: release_links
     description: Operations related to release assets (links)
   - name: releases

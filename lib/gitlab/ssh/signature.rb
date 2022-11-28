@@ -30,7 +30,7 @@ module Gitlab
         strong_memoize(:signed_by_key) do
           next unless key_fingerprint
 
-          Key.find_by_fingerprint_sha256(key_fingerprint)
+          Key.signing.find_by_fingerprint_sha256(key_fingerprint)
         end
       end
 

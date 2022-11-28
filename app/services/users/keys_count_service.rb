@@ -11,7 +11,7 @@ module Users
     end
 
     def relation_for_count
-      user.keys
+      user.keys.auth
     end
 
     def raw?

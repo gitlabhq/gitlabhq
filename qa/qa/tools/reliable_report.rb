@@ -341,7 +341,7 @@ module QA
 
           runs = records.count
           failed = records.count { |r| r.values["status"] == "failed" }
-          failure_rate = (failed.to_f / runs.to_f) * 100
+          failure_rate = (failed.to_f / runs) * 100
 
           result[stage][name] = {
             file: file,
@@ -358,7 +358,7 @@ module QA
       # @return [String]
       def query(reliable)
         <<~QUERY
-          from(bucket: "#{Support::InfluxdbTools::INFLUX_TEST_METRICS_BUCKET}")
+          from(bucket: "#{Support::InfluxdbTools::INFLUX_MAIN_TEST_METRICS_BUCKET}")
             |> range(start: -#{range}d)
             |> filter(fn: (r) => r._measurement == "test-stats")
             |> filter(fn: (r) => r.run_type == "staging-full" or

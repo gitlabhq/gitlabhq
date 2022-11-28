@@ -154,28 +154,6 @@ RSpec.describe Projects::HooksController do
       expect(flash[:alert]).to be_blank
     end
 
-    it 'ignores branch_filter_strategy when flag is disabled' do
-      stub_feature_flags(enhanced_webhook_support_regex: false)
-      hook_params = {
-        url: 'http://example.com',
-        branch_filter_strategy: 'regex',
-        push_events: true
-      }
-      params = { namespace_id: project.namespace, project_id: project, hook: hook_params }
-
-      expect { post :create, params: params }.to change(ProjectHook, :count).by(1)
-
-      project_hook = ProjectHook.order_id_desc.take
-
-      expect(project_hook).to have_attributes(
-        url: 'http://example.com',
-        branch_filter_strategy: 'wildcard'
-      )
-
-      expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:alert]).to be_blank
-    end
-
     it 'alerts the user if the new hook is invalid' do
       hook_params = {
         token: "TEST\nTOKEN",

@@ -10,13 +10,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition do
     Gitlab::Ci::Pipeline::Chain::Command.new(project: project, current_user: user)
   end
 
-  let(:pipeline) { build(:ci_pipeline, project: project) }
+  let(:pipeline) { build(:ci_pipeline, project: project, partition_id: nil) }
   let(:step) { described_class.new(pipeline, command) }
   let(:current_partition_id) { 123 }
 
   describe '#perform!' do
+    include Ci::PartitioningHelpers
+
     before do
-      allow(Ci::Pipeline).to receive(:current_partition_value) { current_partition_id }
+      stub_current_partition_id(current_partition_id)
     end
 
     subject { step.perform! }

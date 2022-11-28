@@ -3090,6 +3090,14 @@ RSpec.describe User do
         expect(described_class.find_by_ssh_key_id(-1)).to be_nil
       end
     end
+
+    it 'does not return a signing-only key', :aggregate_failures do
+      signing_key = create(:key, usage_type: :signing, user: user)
+      auth_and_signing_key = create(:key, usage_type: :auth_and_signing, user: user)
+
+      expect(described_class.find_by_ssh_key_id(signing_key.id)).to be_nil
+      expect(described_class.find_by_ssh_key_id(auth_and_signing_key.id)).to eq(user)
+    end
   end
 
   shared_examples "find user by login" do

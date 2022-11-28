@@ -30,6 +30,8 @@ module Ci
         Ci::BuildPendingState
         Ci::JobArtifact
         Ci::Pipeline
+        Ci::PendingBuild
+        Ci::RunningBuild
         Ci::PipelineVariable
         Ci::Stage
         Ci::UnitTestFailure

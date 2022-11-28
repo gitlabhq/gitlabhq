@@ -365,3 +365,8 @@
         docker run --rm --privileged ${QEMU_IMAGE} --install all;
       fi
     - docker buildx create --use # creates and set's to active buildkit builder
+
+.use-kube-context:
+  before_script:
+    - export KUBE_CONTEXT="gitlab-org/gitlab:review-apps"
+    - kubectl config use-context ${KUBE_CONTEXT}

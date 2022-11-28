@@ -56,7 +56,7 @@ describe QA::Tools::ReliableReport do
 
   def flux_query(reliable:)
     <<~QUERY
-      from(bucket: "e2e-test-stats")
+      from(bucket: "e2e-test-stats-main")
         |> range(start: -#{range}d)
         |> filter(fn: (r) => r._measurement == "test-stats")
         |> filter(fn: (r) => r.run_type == "staging-full" or

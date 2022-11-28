@@ -2,6 +2,10 @@
 
 module Ci
   class RunningBuild < Ci::ApplicationRecord
+    include Ci::Partitionable
+
+    partitionable scope: :build
+
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :runner, class_name: 'Ci::Runner'

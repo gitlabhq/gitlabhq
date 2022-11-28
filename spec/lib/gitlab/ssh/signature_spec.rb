@@ -7,7 +7,7 @@ RSpec.describe Gitlab::Ssh::Signature do
   let_it_be(:committer_email) { 'ssh-commit-test@example.com' }
   let_it_be(:public_key_text) { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJKOfqOH0fDde+Ua/1SObkXB1CEDF5M6UfARMpW3F87u' }
   let_it_be_with_reload(:user) { create(:user, email: committer_email) }
-  let_it_be_with_reload(:key) { create(:key, key: public_key_text, user: user) }
+  let_it_be_with_reload(:key) { create(:key, usage_type: :signing, key: public_key_text, user: user) }
 
   let(:signed_text) { 'This message was signed by an ssh key' }
 
@@ -204,13 +204,25 @@ RSpec.describe Gitlab::Ssh::Signature do
       it_behaves_like 'unverified signature'
     end
 
-    context 'when key does not exist in GitLab' do
-      before do
-        key.delete
+    context 'when the signing key does not exist in GitLab' do
+      context 'when the key is not a signing one' do
+        before do
+          key.auth!
+        end
+
+        it 'reports unknown_key status' do
+          expect(signature.verification_status).to eq(:unknown_key)
+        end
       end
 
-      it 'reports unknown_key status' do
-        expect(signature.verification_status).to eq(:unknown_key)
+      context 'when the key is removed' do
+        before do
+          key.delete
+        end
+
+        it 'reports unknown_key status' do
+          expect(signature.verification_status).to eq(:unknown_key)
+        end
       end
     end
 

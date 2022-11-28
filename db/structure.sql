@@ -17126,7 +17126,8 @@ CREATE TABLE keys (
     fingerprint_sha256 bytea,
     expires_at timestamp with time zone,
     expiry_notification_delivered_at timestamp with time zone,
-    before_expiry_notification_delivered_at timestamp with time zone
+    before_expiry_notification_delivered_at timestamp with time zone,
+    usage_type smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE keys_id_seq

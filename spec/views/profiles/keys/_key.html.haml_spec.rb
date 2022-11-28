@@ -30,6 +30,38 @@ RSpec.describe 'profiles/keys/_key.html.haml' do
       expect(response).to render_template(partial: 'shared/ssh_keys/_key_delete')
     end
 
+    context 'displays the usage type' do
+      where(:usage_type, :usage_type_text) do
+        [
+          [:auth, 'Authentication'],
+          [:auth_and_signing, 'Authentication & Signing'],
+          [:signing, 'Signing']
+        ]
+      end
+
+      with_them do
+        let(:key) { create(:key, user: user, usage_type: usage_type) }
+
+        it 'renders usage type text' do
+          render
+
+          expect(rendered).to have_text(usage_type_text)
+        end
+
+        context 'when ssh_key_usage_types is disabled' do
+          before do
+            stub_feature_flags(ssh_key_usage_types: false)
+          end
+
+          it 'does not render usage type text' do
+            render
+
+            expect(rendered).not_to have_text(usage_type_text)
+          end
+        end
+      end
+    end
+
     context 'when the key has not been used' do
       let_it_be(:key) do
         create(:personal_key,

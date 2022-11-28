@@ -81,7 +81,7 @@ namespace :gitlab do
 
     authorized_keys.clear
 
-    Key.find_in_batches(batch_size: 1000) do |keys|
+    Key.auth.find_in_batches(batch_size: 1000) do |keys|
       unless authorized_keys.batch_add_keys(keys)
         puts "Failed to add keys...".color(:red)
         exit 1

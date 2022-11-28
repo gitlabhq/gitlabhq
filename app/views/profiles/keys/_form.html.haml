@@ -12,7 +12,12 @@
         = f.label :title, s_('Profiles|Title'), class: 'label-bold'
         = f.text_field :title, class: "form-control gl-form-input input-lg", required: true, placeholder: s_('Profiles|Example: MacBook key'), data: { qa_selector: 'key_title_field' }
         %p.form-text.text-muted= s_('Profiles|Key titles are publicly visible.')
-
+    - if Feature.enabled?(:ssh_key_usage_types, current_user)
+      .form-row
+        .col.form-group
+          = f.label :usage_type, s_('Profiles|Usage type')
+          .gl-md-form-input-lg
+            = f.select :usage_type, options_for_select(ssh_key_usage_types, :auth_and_signing), {}, { class: 'gl-form-select custom-select' }
     .form-row
       .col.form-group
         .js-access-tokens-expires-at{ data: {min_date: Date.tomorrow, max_date: max_date, default_date_offset: 365, description: ssh_key_expires_field_description } }

@@ -8,7 +8,7 @@ FactoryBot.define do
     sha { 'b83d6e391c22777fca1ed3012fce84f633d7fed0' }
     status { 'pending' }
     add_attribute(:protected) { false }
-    partition_id { 100 }
+    partition_id { Ci::Pipeline.current_partition_value }
 
     project
 
@@ -54,7 +54,6 @@ FactoryBot.define do
     end
 
     factory :ci_pipeline do
-      partition_id { 100 }
       transient { ci_ref_presence { true } }
 
       before(:create) do |pipeline, evaluator|

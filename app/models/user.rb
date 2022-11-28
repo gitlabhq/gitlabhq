@@ -811,7 +811,7 @@ class User < ApplicationRecord
 
     # Returns a user for the given SSH key.
     def find_by_ssh_key_id(key_id)
-      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').where(id: key_id))
+      find_by('EXISTS (?)', Key.select(1).where('keys.user_id = users.id').auth.where(id: key_id))
     end
 
     def find_by_full_path(path, follow_redirects: false)

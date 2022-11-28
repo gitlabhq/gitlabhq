@@ -1,13 +1,8 @@
 <script>
-import {
-  GlButton,
-  GlEmptyState,
-  GlFilteredSearchToken,
-  GlIcon,
-  GlTooltipDirective,
-} from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
@@ -116,9 +111,9 @@ export default {
     EmptyStateSignedOut,
     GlButton,
     GlEmptyState,
-    GlIcon,
     IssuableByEmail,
     IssuableList,
+    IssueCardStatistics,
     IssueCardTimeInfo,
     NewIssueDropdown,
   },
@@ -854,37 +849,7 @@ export default {
       </template>
 
       <template #statistics="{ issuable = {} }">
-        <li
-          v-if="issuable.mergeRequestsCount"
-          v-gl-tooltip
-          class="gl-display-none gl-sm-display-block"
-          :title="$options.i18n.relatedMergeRequests"
-          data-testid="merge-requests"
-        >
-          <gl-icon name="merge-request" />
-          {{ issuable.mergeRequestsCount }}
-        </li>
-        <li
-          v-if="issuable.upvotes"
-          v-gl-tooltip
-          class="gl-display-none gl-sm-display-block"
-          :title="$options.i18n.upvotes"
-          data-testid="issuable-upvotes"
-        >
-          <gl-icon name="thumb-up" />
-          {{ issuable.upvotes }}
-        </li>
-        <li
-          v-if="issuable.downvotes"
-          v-gl-tooltip
-          class="gl-display-none gl-sm-display-block"
-          :title="$options.i18n.downvotes"
-          data-testid="issuable-downvotes"
-        >
-          <gl-icon name="thumb-down" />
-          {{ issuable.downvotes }}
-        </li>
-        <slot name="blocking-count" :issuable="issuable"></slot>
+        <issue-card-statistics :issue="issuable" />
       </template>
 
       <template #empty-state>

@@ -18,10 +18,6 @@ class ActiveHookFilter
 
     branch_name = Gitlab::Git.branch_name(data[:ref])
 
-    if Feature.disabled?(:enhanced_webhook_support_regex)
-      return RefMatcher.new(@hook.push_events_branch_filter).matches?(branch_name)
-    end
-
     case @hook.branch_filter_strategy
     when 'all_branches'
       true

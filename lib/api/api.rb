@@ -196,6 +196,7 @@ module API
         mount ::API::Clusters::Agents
         mount ::API::Commits
         mount ::API::CommitStatuses
+        mount ::API::ContainerRegistryEvent
         mount ::API::DependencyProxy
         mount ::API::DeployKeys
         mount ::API::DeployTokens
@@ -252,6 +253,7 @@ module API
         mount ::API::ProjectTemplates
         mount ::API::ProtectedBranches
         mount ::API::ProtectedTags
+        mount ::API::PypiPackages
         mount ::API::Releases
         mount ::API::Release::Links
         mount ::API::RemoteMirrors
@@ -289,7 +291,6 @@ module API
       mount ::API::ComposerPackages
       mount ::API::ConanInstancePackages
       mount ::API::ConanProjectPackages
-      mount ::API::ContainerRegistryEvent
       mount ::API::ContainerRepositories
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
@@ -318,7 +319,6 @@ module API
       mount ::API::ProjectMilestones
       mount ::API::Projects
       mount ::API::ProtectedTags
-      mount ::API::PypiPackages
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
       mount ::API::RpmProjectPackages

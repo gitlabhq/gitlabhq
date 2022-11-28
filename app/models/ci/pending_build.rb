@@ -3,10 +3,13 @@
 module Ci
   class PendingBuild < Ci::ApplicationRecord
     include EachBatch
+    include Ci::Partitionable
 
     belongs_to :project
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :namespace, inverse_of: :pending_builds, class_name: 'Namespace'
+
+    partitionable scope: :build
 
     validates :namespace, presence: true
 

@@ -123,7 +123,7 @@ http://mattermost.example.com/signup/gitlab/complete
 http://mattermost.example.com/login/gitlab/complete
 ```
 
-Note that you do not need to select any options under **Scopes**. Choose **Save application**.
+Make sure to select the **Trusted** and **Confidential** settings. Under **Scopes**, select `read_user`. Then, choose **Save application**.
 
 Once the application is created you are provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
 Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you received above:
@@ -132,7 +132,7 @@ Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.
 mattermost['gitlab_enable'] = true
 mattermost['gitlab_id'] = "12345656"
 mattermost['gitlab_secret'] = "123456789"
-mattermost['gitlab_scope'] = ""
+mattermost['gitlab_scope'] = "read_user"
 mattermost['gitlab_auth_endpoint'] = "http://gitlab.example.com/oauth/authorize"
 mattermost['gitlab_token_endpoint'] = "http://gitlab.example.com/oauth/token"
 mattermost['gitlab_user_api_endpoint'] = "http://gitlab.example.com/api/v4/user"

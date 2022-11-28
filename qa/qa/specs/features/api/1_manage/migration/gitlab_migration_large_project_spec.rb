@@ -225,8 +225,8 @@ module QA
         comment_diff = verify_comments(type, actual, expected)
 
         {
-          "missing_#{type}s": (expected.keys - actual.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
-          "extra_#{type}s": (actual.keys - expected.keys).map { |it| expected[it]&.slice(:title, :url) }.compact,
+          "missing_#{type}s": (expected.keys - actual.keys).map { |it| expected[it]&.slice(:title, :url) }.compact,
+          "extra_#{type}s": (actual.keys - expected.keys).map { |it| actual[it]&.slice(:title, :url) }.compact,
           "#{type}_comments": comment_diff
         }
       end

@@ -19,16 +19,7 @@
   = form.label :url, s_('Webhooks|Trigger'), class: 'label-bold'
   %ul.list-unstyled
     %li.gl-pb-5
-      - if Feature.enabled?(:enhanced_webhook_support_regex)
-        - is_new_hook = hook.id.nil?
-        .js-vue-push-events{ data: { push_events: hook.push_events.to_s, strategy: hook.branch_filter_strategy, is_new_hook: is_new_hook.to_s, push_events_branch_filter: hook.push_events_branch_filter } }
-      - else
-        = form.gitlab_ui_checkbox_component :push_events, s_('Webhooks|Push events')
-        .gl-pl-6
-          = form.text_field :push_events_branch_filter, class: 'form-control gl-form-input',
-            placeholder: 'Branch name or wildcard pattern to trigger on (leave blank for all)'
-        %p.form-text.text-muted.custom-control
-          = s_('Webhooks|Push to the repository.')
+      .js-vue-push-events{ data: { push_events: hook.push_events.to_s, strategy: hook.branch_filter_strategy, is_new_hook: hook.new_record?.to_s, push_events_branch_filter: hook.push_events_branch_filter } }
     %li.gl-pb-5
       = form.gitlab_ui_checkbox_component :tag_push_events,
           s_('Webhooks|Tag push events'),
