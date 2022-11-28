@@ -93,7 +93,7 @@ module QA
 
         # override transformation only for /bulk_imports endpoint which doesn't have web_url in response and
         # ignore others so import_id is not overwritten incorrectly
-        api_resource[:web_url] = "#{source_gitlab_address}/#{full_path}"
+        api_resource[:web_url] = "#{QA::Runtime::Scenario.gitlab_address}/#{full_path}"
         api_resource[:import_id] = api_resource[:id]
         api_resource
       end

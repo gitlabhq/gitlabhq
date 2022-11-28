@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['Environment'] do
   specify { expect(described_class.graphql_name).to eq('Environment') }
+  specify { expect(described_class).to expose_permissions_using(Types::PermissionTypes::Environment) }
 
   it 'includes the expected fields' do
     expected_fields = %w[

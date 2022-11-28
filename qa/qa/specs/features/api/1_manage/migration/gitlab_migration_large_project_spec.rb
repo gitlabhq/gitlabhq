@@ -13,13 +13,7 @@ module QA
       let!(:source_gitlab_address) { ENV["QA_LARGE_IMPORT_SOURCE_URL"] || "https://gitlab.com" }
       let!(:gitlab_source_group) { ENV["QA_LARGE_IMPORT_GROUP"] || "gitlab-migration-large-import-test" }
       let!(:gitlab_source_project) { ENV["QA_LARGE_IMPORT_REPO"] || "migration-test-project" }
-
-      let!(:import_wait_duration) do
-        {
-          max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i,
-          sleep_interval: 30
-        }
-      end
+      let!(:import_wait_duration) { { max_duration: (ENV["QA_LARGE_IMPORT_DURATION"] || 3600).to_i, sleep_interval: 30 } }
 
       let!(:source_admin_user) { "no-op" }
       let!(:source_admin_api_client) do
@@ -56,8 +50,8 @@ module QA
       let(:source_labels) { source_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:source_milestones) { source_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
       let(:source_pipelines) { source_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
-      let(:source_mrs) { fetch_mrs(source_project, source_api_client) }
-      let(:source_issues) { fetch_issues(source_project, source_api_client) }
+      let(:source_mrs) { fetch_mrs(source_project, source_api_client, transform_urls: true) }
+      let(:source_issues) { fetch_issues(source_project, source_api_client, transform_urls: true) }
 
       # Imported objects
       #
@@ -66,11 +60,9 @@ module QA
       let(:commits) { imported_project.commits(auto_paginate: true).map { |c| c[:id] } }
       let(:labels) { imported_project.labels(auto_paginate: true).map { |l| l.except(:id) } }
       let(:milestones) { imported_project.milestones(auto_paginate: true).map { |ms| ms.except(:id, :web_url, :project_id) } }
-      let(:pipelines) { imported_project.pipelines.map { |pp| pp.except(:id, :web_url, :project_id) } }
+      let(:pipelines) { imported_project.pipelines(auto_paginate: true).map { |pp| pp.except(:id, :web_url, :project_id) } }
       let(:mrs) { fetch_mrs(imported_project, api_client) }
       let(:issues) { fetch_issues(imported_project, api_client) }
-
-      let(:import_failures) { imported_group.import_details.sum([]) { |details| details[:failures] } }
 
       before do
         Runtime::Feature.enable(:bulk_import_projects) unless Runtime::Feature.enabled?(:bulk_import_projects)
@@ -139,10 +131,7 @@ module QA
 
         # wait for import to finish and save import time
         logger.info("== Waiting for import to be finished ==")
-        expect { imported_group.import_status }.not_to eventually_eq("started").within(import_wait_duration)
-        # finished status actually means success, don't wait for finished status explicitly
-        # because test would wait full duration if returned status is "failed"
-        expect(imported_group.import_status).to eq("finished")
+        expect_group_import_finished_successfully
 
         @import_time = Time.now - start
 
@@ -305,11 +294,12 @@ module QA
       #
       # @param [QA::Resource::Project]
       # @param [Runtime::API::Client] client
+      # @param [Boolean] transform_urls
       # @return [Hash]
-      def fetch_mrs(project, client)
+      def fetch_mrs(project, client, transform_urls: false)
         imported_mrs = project.merge_requests(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_mrs, in_threads: 4) do |mr|
+        Parallel.map(imported_mrs, in_threads: 6) do |mr|
           resource = Resource::MergeRequest.init do |resource|
             resource.project = project
             resource.iid = mr[:iid]
@@ -319,11 +309,11 @@ module QA
           [mr[:iid], {
             url: mr[:web_url],
             title: mr[:title],
-            body: sanitize_description(mr[:description]) || '',
+            body: sanitize_description(mr[:description], transform_urls) || '',
             state: mr[:state],
             comments: resource
               .comments(auto_paginate: true, attempts: 2)
-              .map { |c| sanitize_comment(c[:body]) }
+              .map { |c| sanitize_comment(c[:body], transform_urls) }
           }]
         end.to_h
       end
@@ -332,11 +322,12 @@ module QA
       #
       # @param [QA::Resource::Project]
       # @param [Runtime::API::Client] client
+      # @param [Boolean] transform_urls
       # @return [Hash]
-      def fetch_issues(project, client)
+      def fetch_issues(project, client, transform_urls: false)
         imported_issues = project.issues(auto_paginate: true, attempts: 2)
 
-        Parallel.map(imported_issues, in_threads: 4) do |issue|
+        Parallel.map(imported_issues, in_threads: 6) do |issue|
           resource = Resource::Issue.init do |issue_resource|
             issue_resource.project = project
             issue_resource.iid = issue[:iid]
@@ -347,42 +338,66 @@ module QA
             url: issue[:web_url],
             title: issue[:title],
             state: issue[:state],
-            body: sanitize_description(issue[:description]) || '',
+            body: sanitize_description(issue[:description], transform_urls) || '',
             comments: resource
               .comments(auto_paginate: true, attempts: 2)
-              .map { |c| sanitize_comment(c[:body]) }
+              .map { |c| sanitize_comment(c[:body], transform_urls) }
           }]
         end.to_h
       end
+
+      # Remove added postfixes and transform urls
+      #
+      # Source urls need to be replaced with target urls for comparison to work
+      #
+      # @param [String] body
+      # @param [Boolean] transform_urls
+      # @return [String]
+      def sanitize_comment(body, transform_urls)
+        comment = body&.gsub(created_by_pattern, "")
+        return comment unless transform_urls
+
+        comment&.gsub(source_project_url, imported_project_url)
+      end
+
+      # Remove added postfixes and transform urls
+      #
+      # Source urls need to be replaced with target urls for comparison to work
+      #
+      # @param [String] body
+      # @param [Boolean] transform_urls
+      # @return [String]
+      def sanitize_description(body, transform_urls)
+        description = body&.gsub(created_by_pattern, "")
+        return description unless transform_urls
+
+        description&.gsub(source_project_url, imported_project_url)
+      end
+
+      # Following objects are memoized via instance variables due to Parallel having some type of issue calling
+      # helpers defined via rspec let method
 
       # Importer user mention pattern
       #
       # @return [Regex]
       def created_by_pattern
-        @created_by_pattern ||= /\n\n \*By #{importer_username_pattern} on \S+ \(imported from GitLab\)\*/
+        @created_by_pattern ||= /\n\n \*By .+ on \S+ \(imported from GitLab\)\*/
       end
 
-      # Username of importer user for removal from comments and descriptions
+      # Source project url
       #
       # @return [String]
-      def importer_username_pattern
-        @importer_username_pattern ||= ENV['QA_LARGE_IMPORT_USER_PATTERN'] || "(gitlab-migration|GitLab QA Bot)"
+      def source_project_url
+        @source_group_url ||= "#{source_gitlab_address}/#{source_project.full_path}"
       end
 
-      # Remove added prefixes from comments
+      # Imported project url
       #
-      # @param [String] body
-      # @return [String]
-      def sanitize_comment(body)
-        body&.gsub(created_by_pattern, "")
-      end
-
-      # Remove created by prefix from descripion
+      # This needs to be constructed manually because it is called before project import finishes
       #
-      # @param [String] body
       # @return [String]
-      def sanitize_description(body)
-        body&.gsub(created_by_pattern, "")
+      def imported_project_url
+        @imported_group_url ||= "#{Runtime::Scenario.gitlab_address}/#{imported_group.full_path}/#{source_project.path}"
       end
 
       # Save json as file

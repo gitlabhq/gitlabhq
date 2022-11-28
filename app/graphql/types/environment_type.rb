@@ -9,6 +9,12 @@ module Types
 
     authorize :read_environment
 
+    expose_permissions Types::PermissionTypes::Environment,
+      description: 'Permissions for the current user on the resource. '\
+                   'This field can only be resolved for one environment in any single request.' do
+      extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+    end
+
     field :name, GraphQL::Types::String, null: false,
                                          description: 'Human-readable name of the environment.'
 

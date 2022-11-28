@@ -47,6 +47,60 @@ RSpec.describe 'Project Environments query' do
     expect(environment_data['environmentType']).to eq(production.environment_type)
   end
 
+  describe 'user permissions' do
+    let(:query) do
+      %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            environment(name: "#{production.name}") {
+              userPermissions {
+                updateEnvironment
+                destroyEnvironment
+                stopEnvironment
+              }
+            }
+          }
+        }
+      )
+    end
+
+    it 'returns user permissions of the environment', :aggregate_failures do
+      subject
+
+      permission_data = graphql_data.dig('project', 'environment', 'userPermissions')
+      expect(permission_data['updateEnvironment']).to eq(true)
+      expect(permission_data['destroyEnvironment']).to eq(false)
+      expect(permission_data['stopEnvironment']).to eq(true)
+    end
+
+    context 'when fetching user permissions for multiple environments' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              environments {
+                nodes {
+                  userPermissions {
+                    updateEnvironment
+                    destroyEnvironment
+                    stopEnvironment
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it 'limits the result', :aggregate_failures do
+        subject
+
+        expect_graphql_errors_to_include('"userPermissions" field can be requested only ' \
+                                         'for 1 Environment(s) at a time.')
+      end
+    end
+  end
+
   describe 'last deployments of environments' do
     ::Deployment.statuses.each do |status, _|
       let_it_be(:"production_#{status}_deployment") do

@@ -79,13 +79,13 @@ module QA
       imported_group # trigger import
 
       status = nil
-      Support::Retrier.retry_until(**import_wait_duration, message: "Import did not complete") do
+      Support::Retrier.retry_until(**import_wait_duration, raise_on_failure: false) do
         status = imported_group.import_status
         %w[finished failed].include?(status)
       end
 
       # finished status means success, all other statuses are considered to fail the test
-      expect(status).to eq('finished')
+      expect(status).to eq('finished'), "Expected import to finish successfully, but status was: #{status}"
     end
 
     before do

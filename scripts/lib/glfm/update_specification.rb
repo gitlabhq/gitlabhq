@@ -306,7 +306,7 @@ module Glfm
     end
 
     def write_spec_html(spec_html_string)
-      output("Writing #{GLFM_SPEC_TXT_PATH}...")
+      output("Writing #{GLFM_SPEC_HTML_PATH}...")
       FileUtils.mkdir_p(Pathname.new(GLFM_SPEC_HTML_PATH).dirname)
       write_file(GLFM_SPEC_HTML_PATH, "#{spec_html_string}\n")
     end

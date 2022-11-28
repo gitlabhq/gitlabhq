@@ -12375,6 +12375,7 @@ Describes where code is deployed for a project.
 | <a id="environmentstate"></a>`state` | [`String!`](#string) | State of the environment, for example: available/stopped. |
 | <a id="environmenttier"></a>`tier` | [`DeploymentTier`](#deploymenttier) | Deployment tier of the environment. |
 | <a id="environmentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the environment was updated. |
+| <a id="environmentuserpermissions"></a>`userPermissions` | [`EnvironmentPermissions!`](#environmentpermissions) | Permissions for the current user on the resource. This field can only be resolved for one environment in any single request. |
 
 #### Fields with arguments
 
@@ -12418,6 +12419,16 @@ Returns [`MetricsDashboard`](#metricsdashboard).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="environmentmetricsdashboardpath"></a>`path` | [`String!`](#string) | Path to a file which defines a metrics dashboard eg: `"config/prometheus/common_metrics.yml"`. |
+
+### `EnvironmentPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="environmentpermissionsdestroyenvironment"></a>`destroyEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_environment` on this resource. |
+| <a id="environmentpermissionsstopenvironment"></a>`stopEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `stop_environment` on this resource. |
+| <a id="environmentpermissionsupdateenvironment"></a>`updateEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_environment` on this resource. |
 
 ### `Epic`
 
