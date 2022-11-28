@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates branch and merge request on issue page', :js do
+RSpec.describe 'User creates branch and merge request on issue page', :js, feature_category: :team_planning do
   let(:membership_level) { :developer }
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, :public) }

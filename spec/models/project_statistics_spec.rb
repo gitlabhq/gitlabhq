@@ -506,20 +506,28 @@ RSpec.describe ProjectStatistics do
     context 'when adjusting :packages_size' do
       let(:stat) { :packages_size }
 
-      it_behaves_like 'a statistic that increases storage_size'
+      it_behaves_like 'a statistic that increases storage_size asynchronously'
+
+      context 'with packages_size_counter_attribute disabled' do
+        before do
+          stub_feature_flags(packages_size_counter_attribute: false)
+        end
+
+        it_behaves_like 'a statistic that increases storage_size'
+      end
     end
 
     context 'when the amount is 0' do
       it 'does not execute a query' do
         project
-        expect { described_class.increment_statistic(project.id, :build_artifacts_size, 0) }
+        expect { described_class.increment_statistic(project, :build_artifacts_size, 0) }
           .not_to exceed_query_limit(0)
       end
     end
 
     context 'when using an invalid column' do
       it 'raises an error' do
-        expect { described_class.increment_statistic(project.id, :id, 13) }
+        expect { described_class.increment_statistic(project, :id, 13) }
           .to raise_error(ArgumentError, "Cannot increment attribute: id")
       end
     end

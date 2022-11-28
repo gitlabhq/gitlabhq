@@ -8,12 +8,12 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
   let(:project_statistics) { create(:project_statistics) }
   let(:model) { CounterAttributeModel.find(project_statistics.id) }
 
-  it_behaves_like CounterAttribute, [:build_artifacts_size, :commit_count] do
+  it_behaves_like CounterAttribute, [:build_artifacts_size, :commit_count, :packages_size] do
     let(:model) { CounterAttributeModel.find(project_statistics.id) }
   end
 
   describe 'after_flush callbacks' do
-    let(:attribute) { model.class.counter_attributes.first }
+    let(:attribute) { model.class.counter_attributes.first[:attribute] }
 
     subject { model.flush_increments_to_database!(attribute) }
 
@@ -80,13 +80,28 @@ RSpec.describe CounterAttribute, :counter_attribute, :clean_gitlab_redis_shared_
     end
   end
 
-  describe '.counter_attribute_enabled?' do
+  describe '#counter_attribute_enabled?' do
     it 'is true when counter attribute is defined' do
-      expect(CounterAttributeModel.counter_attribute_enabled?(:build_artifacts_size)).to be_truthy
+      expect(project_statistics.counter_attribute_enabled?(:build_artifacts_size))
+        .to be_truthy
     end
 
     it 'is false when counter attribute is not defined' do
-      expect(CounterAttributeModel.counter_attribute_enabled?(:nope)).to be_falsey
+      expect(model.counter_attribute_enabled?(:nope)).to be_falsey
+    end
+
+    context 'with a conditional counter attribute' do
+      [true, false].each do |enabled|
+        context "where the condition evaluates to #{enabled}" do
+          subject { model.counter_attribute_enabled?(:packages_size) }
+
+          before do
+            model.allow_package_size_counter = enabled
+          end
+
+          it { is_expected.to eq(enabled) }
+        end
+      end
     end
   end
 end

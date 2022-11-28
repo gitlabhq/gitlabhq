@@ -18,6 +18,9 @@ module Projects
       urgency :low
 
       def show
+        @entity = :project
+        @variable_limit = ::Plan.default.actual_limits.project_ci_variables
+
         if Feature.enabled?(:ci_pipeline_triggers_settings_vue_ui, @project)
           triggers = ::Ci::TriggerSerializer.new.represent(
             @project.triggers, current_user: current_user, project: @project

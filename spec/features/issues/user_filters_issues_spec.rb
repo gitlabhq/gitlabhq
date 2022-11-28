@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User filters issues', :js do
+RSpec.describe 'User filters issues', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project_empty_repo, :public) }
 

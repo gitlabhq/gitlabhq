@@ -1,8 +1,21 @@
 <script>
-import { GlButton, GlLoadingIcon, GlModalDirective, GlTable, GlTooltipDirective } from '@gitlab/ui';
-import { s__, __ } from '~/locale';
+import {
+  GlAlert,
+  GlButton,
+  GlLoadingIcon,
+  GlModalDirective,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
+import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { ADD_CI_VARIABLE_MODAL_ID, variableText } from '../constants';
+import {
+  ADD_CI_VARIABLE_MODAL_ID,
+  DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
+  EXCEEDS_VARIABLE_LIMIT_TEXT,
+  MAXIMUM_VARIABLE_LIMIT_REACHED,
+  variableText,
+} from '../constants';
 import { convertEnvironmentScope } from '../utils';
 
 export default {
@@ -41,6 +54,7 @@ export default {
     },
   ],
   components: {
+    GlAlert,
     GlButton,
     GlLoadingIcon,
     GlTable,
@@ -51,8 +65,17 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
+    entity: {
+      type: String,
+      required: false,
+      default: '',
+    },
     isLoading: {
       type: Boolean,
+      required: true,
+    },
+    maxVariableLimit: {
+      type: Number,
       required: true,
     },
     variables: {
@@ -66,6 +89,23 @@ export default {
     };
   },
   computed: {
+    exceedsVariableLimit() {
+      return this.maxVariableLimit > 0 && this.variables.length >= this.maxVariableLimit;
+    },
+    exceedsVariableLimitText() {
+      if (this.exceedsVariableLimit && this.entity) {
+        return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, {
+          entity: this.entity,
+          currentVariableCount: this.variables.length,
+          maxVariableLimit: this.maxVariableLimit,
+        });
+      }
+
+      return DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT;
+    },
+    showAlert() {
+      return !this.isLoading && this.exceedsVariableLimit;
+    },
     valuesButtonText() {
       return this.areValuesHidden ? __('Reveal values') : __('Hide values');
     },
@@ -107,14 +147,23 @@ export default {
       return options.join(', ');
     },
   },
+  maximumVariableLimitReached: MAXIMUM_VARIABLE_LIMIT_REACHED,
 };
 </script>
 
 <template>
   <div class="ci-variable-table" data-testid="ci-variable-table">
     <gl-loading-icon v-if="isLoading" />
+    <gl-alert
+      v-if="showAlert"
+      :dismissible="false"
+      :title="$options.maximumVariableLimitReached"
+      variant="info"
+    >
+      {{ exceedsVariableLimitText }}
+    </gl-alert>
     <gl-table
-      v-else
+      v-if="!isLoading"
       :fields="fields"
       :items="variablesWithOptions"
       tbody-tr-class="js-ci-variable-row"
@@ -215,6 +264,14 @@ export default {
         </p>
       </template>
     </gl-table>
+    <gl-alert
+      v-if="showAlert"
+      :dismissible="false"
+      :title="$options.maximumVariableLimitReached"
+      variant="info"
+    >
+      {{ exceedsVariableLimitText }}
+    </gl-alert>
     <div class="ci-variable-actions gl-display-flex gl-mt-5">
       <gl-button
         v-gl-modal-directive="$options.modalId"
@@ -223,6 +280,7 @@ export default {
         variant="confirm"
         category="primary"
         :aria-label="__('Add')"
+        :disabled="exceedsVariableLimit"
         @click="setSelectedVariable()"
         >{{ __('Add variable') }}</gl-button
       >

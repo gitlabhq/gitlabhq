@@ -108,15 +108,13 @@ module Integrations
     end
 
     def execute(data)
-      return unless supported_events.include?(data[:object_kind])
-
-      return unless webhook.present?
-
       object_kind = data[:object_kind]
+
+      return false unless should_execute?(object_kind)
 
       data = custom_data(data)
 
-      return unless notify_label?(data)
+      return false unless notify_label?(data)
 
       # WebHook events often have an 'update' event that follows a 'open' or
       # 'close' action. Ignore update events for now to prevent duplicate
@@ -181,6 +179,11 @@ module Integrations
     end
 
     private
+
+    def should_execute?(object_kind)
+      supported_events.include?(object_kind) &&
+        (!requires_webhook? || webhook.present?)
+    end
 
     def log_usage(_, _)
       # Implement in child class

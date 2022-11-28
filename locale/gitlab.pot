@@ -8520,6 +8520,9 @@ msgstr ""
 msgid "CiVariables|Masked"
 msgstr ""
 
+msgid "CiVariables|Maximum number of variables reached."
+msgstr ""
+
 msgid "CiVariables|Options"
 msgstr ""
 
@@ -8544,6 +8547,9 @@ msgstr ""
 msgid "CiVariables|State"
 msgstr ""
 
+msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
+msgstr ""
+
 msgid "CiVariables|Type"
 msgstr ""
 
@@ -8551,6 +8557,12 @@ msgid "CiVariables|Value"
 msgstr ""
 
 msgid "CiVariables|Variables"
+msgstr ""
+
+msgid "CiVariables|Variables store information, like passwords and secret keys, that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
+msgstr ""
+
+msgid "CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables."
 msgstr ""
 
 msgid "CiVariable|* (All environments)"
@@ -44935,9 +44947,6 @@ msgid "Variables"
 msgstr ""
 
 msgid "Variables can be:"
-msgstr ""
-
-msgid "Variables store information, like passwords and secret keys, that you can use in job scripts."
 msgstr ""
 
 msgid "Variables store information, like passwords and secret keys, that you can use in job scripts. All projects on the instance can use these variables."

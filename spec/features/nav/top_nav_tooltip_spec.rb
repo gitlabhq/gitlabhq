@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'top nav tooltips', :js do
+RSpec.describe 'top nav tooltips', :js, feature_category: :navigation do
   let_it_be(:user) { create(:user) }
 
   before do

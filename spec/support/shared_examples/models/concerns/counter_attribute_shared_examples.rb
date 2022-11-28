@@ -12,7 +12,8 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
   end
 
   it 'defines a method to store counters' do
-    expect(model.class.counter_attributes.to_a).to eq(counter_attributes)
+    registered_attributes = model.class.counter_attributes.map { |e| e[:attribute] } # rubocop:disable Rails/Pluck
+    expect(registered_attributes).to contain_exactly(*counter_attributes)
   end
 
   counter_attributes.each do |attribute|

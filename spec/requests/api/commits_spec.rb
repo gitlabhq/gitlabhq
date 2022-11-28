@@ -498,6 +498,23 @@ RSpec.describe API::Commits do
           let(:action) { 'g_edit_by_web_ide' }
           let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
+
+        context 'counts.web_ide_commits Snowplow event tracking' do
+          before do
+            allow(::Gitlab::UsageDataCounters::EditorUniqueCounter).to receive(:track_web_ide_edit_action)
+          end
+
+          it_behaves_like 'Snowplow event tracking' do
+            let(:action) { :commit }
+            let(:category) { described_class.to_s }
+            let(:namespace) { project.namespace.reload }
+            let(:label) { 'counts.web_ide_commits' }
+            let(:feature_flag_name) { 'route_hll_to_snowplow_phase3' }
+            let(:context) do
+              [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.web_ide_commits').to_context.to_json]
+            end
+          end
+        end
       end
 
       context 'a new file in project repo' do

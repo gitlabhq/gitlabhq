@@ -760,30 +760,38 @@ describe('IntegrationForm', () => {
         );
       });
 
-      it.each`
-        prefix        | integration                    | shouldUpgradeSlack | flagIsOn | shouldShowAlert
-        ${'does'}     | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${true}  | ${true}
-        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${false}           | ${true}  | ${false}
-        ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${false} | ${false}
-        ${'does not'} | ${'foo'}                       | ${true}            | ${true}  | ${false}
-        ${'does not'} | ${'foo'}                       | ${false}           | ${true}  | ${false}
-        ${'does not'} | ${'foo'}                       | ${true}            | ${false} | ${false}
-      `(
-        '$prefix render the upgrade warnning when we are in "$integration" integration with the flag "$flagIsOn" and Slack-needs-upgrade is "$shouldUpgradeSlack"',
-        ({ integration, shouldUpgradeSlack, flagIsOn, shouldShowAlert }) => {
-          createComponent({
-            provide: {
-              glFeatures: { integrationSlackAppNotifications: flagIsOn },
-            },
-            customStateProps: {
-              shouldUpgradeSlack,
-              type: integration,
-              sections: [mockSectionConnection],
-            },
-          });
-          expect(findAlert().exists()).toBe(shouldShowAlert);
-        },
-      );
+      describe.each`
+        hasSections | hasFieldsWithoutSections | description
+        ${true}     | ${true}                  | ${'When having both: the sections and the fields without a section'}
+        ${true}     | ${false}                 | ${'When having the sections only'}
+        ${false}    | ${true}                  | ${'When having only the fields without a section'}
+      `('$description', ({ hasSections, hasFieldsWithoutSections }) => {
+        it.each`
+          prefix        | integration                    | shouldUpgradeSlack | flagIsOn | shouldShowAlert
+          ${'does'}     | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${true}  | ${true}
+          ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${false}           | ${true}  | ${false}
+          ${'does not'} | ${INTEGRATION_FORM_TYPE_SLACK} | ${true}            | ${false} | ${false}
+          ${'does not'} | ${'foo'}                       | ${true}            | ${true}  | ${false}
+          ${'does not'} | ${'foo'}                       | ${false}           | ${true}  | ${false}
+          ${'does not'} | ${'foo'}                       | ${true}            | ${false} | ${false}
+        `(
+          '$prefix render the upgrade warning when we are in "$integration" integration with the flag "$flagIsOn" and Slack-needs-upgrade is "$shouldUpgradeSlack" and have sections',
+          ({ integration, shouldUpgradeSlack, flagIsOn, shouldShowAlert }) => {
+            createComponent({
+              provide: {
+                glFeatures: { integrationSlackAppNotifications: flagIsOn },
+              },
+              customStateProps: {
+                shouldUpgradeSlack,
+                type: integration,
+                sections: hasSections ? [mockSectionConnection] : [],
+                fields: hasFieldsWithoutSections ? [mockField] : [],
+              },
+            });
+            expect(findAlert().exists()).toBe(shouldShowAlert);
+          },
+        );
+      });
     });
   });
 });

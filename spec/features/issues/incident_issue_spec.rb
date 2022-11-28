@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Incident Detail', :js do
+RSpec.describe 'Incident Detail', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:payload) do
     {

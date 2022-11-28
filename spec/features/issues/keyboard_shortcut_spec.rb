@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues shortcut', :js do
+RSpec.describe 'Issues shortcut', :js, feature_category: :team_planning do
   context 'New Issue shortcut' do
     context 'issues are enabled' do
       let(:project) { create(:project) }

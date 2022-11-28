@@ -63,6 +63,7 @@ const createDefaultVars = ({ withScope = true, kind } = {}) => {
 
   return {
     __typename: `Ci${kind}VariableConnection`,
+    limit: 200,
     pageInfo: {
       startCursor: 'adsjsd12kldpsa',
       endCursor: 'adsjsd12kldpsa',
@@ -140,6 +141,7 @@ export const newVariable = {
 export const createProjectProps = () => {
   return {
     componentName: 'ProjectVariable',
+    entity: 'project',
     fullPath: '/namespace/project/',
     id: 'gid://gitlab/Project/20',
     mutationData: {
@@ -163,6 +165,7 @@ export const createProjectProps = () => {
 export const createGroupProps = () => {
   return {
     componentName: 'GroupVariable',
+    entity: 'group',
     fullPath: '/my-group',
     id: 'gid://gitlab/Group/20',
     mutationData: {
@@ -182,6 +185,7 @@ export const createGroupProps = () => {
 export const createInstanceProps = () => {
   return {
     componentName: 'InstanceVariable',
+    entity: '',
     mutationData: {
       [ADD_MUTATION_ACTION]: addAdminVariable,
       [UPDATE_MUTATION_ACTION]: updateAdminVariable,
@@ -195,3 +199,13 @@ export const createInstanceProps = () => {
     },
   };
 };
+
+export const createGroupProvide = () => ({
+  isGroup: true,
+  isProject: false,
+});
+
+export const createProjectProvide = () => ({
+  isGroup: false,
+  isProject: true,
+});

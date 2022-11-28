@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New/edit issue', :js do
+RSpec.describe 'New/edit issue', :js, feature_category: :team_planning do
   include ActionView::Helpers::JavaScriptHelper
 
   let_it_be(:project)   { create(:project, :repository) }

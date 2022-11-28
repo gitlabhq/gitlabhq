@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issue state', :js do
+RSpec.describe 'issue state', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 

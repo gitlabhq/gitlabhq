@@ -46,6 +46,7 @@ export default {
     :id="graphqlId"
     :are-scoped-variables-available="areScopedVariablesAvailable"
     component-name="GroupVariables"
+    entity="group"
     :full-path="groupPath"
     :mutation-data="$options.mutationData"
     :query-data="$options.queryData"

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User toggles subscription", :js do
+RSpec.describe "User toggles subscription", :js, feature_category: :team_planning do
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Visual tokens', :js do
+RSpec.describe 'Visual tokens', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let_it_be(:project) { create(:project) }

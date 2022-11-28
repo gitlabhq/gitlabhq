@@ -17,6 +17,18 @@
 #     counter_attribute :storage_size
 #   end
 #
+# It's possible to define a conditional counter attribute. You need to pass a proc
+# that must accept a single argument, the object instance on which this concern is
+# included.
+#
+# @example:
+#
+#   class ProjectStatistics
+#     include CounterAttribute
+#
+#     counter_attribute :conditional_one, if: -> { |object| object.use_counter_attribute? }
+#   end
+#
 # To increment the counter we can use the method:
 #   delayed_increment_counter(:commit_count, 3)
 #
@@ -49,12 +61,15 @@ module CounterAttribute
   WORKER_LOCK_TTL = 10.minutes
 
   class_methods do
-    def counter_attribute(attribute)
-      counter_attributes << attribute
+    def counter_attribute(attribute, if: nil)
+      counter_attributes << {
+        attribute: attribute,
+        if_proc: binding.local_variable_get(:if) # can't read `if` directly
+      }
     end
 
     def counter_attributes
-      @counter_attributes ||= Set.new
+      @counter_attributes ||= []
     end
 
     def after_flush_callbacks
@@ -65,10 +80,14 @@ module CounterAttribute
     def counter_attribute_after_flush(&callback)
       after_flush_callbacks << callback
     end
+  end
 
-    def counter_attribute_enabled?(attribute)
-      counter_attributes.include?(attribute)
-    end
+  def counter_attribute_enabled?(attribute)
+    counter_attribute = self.class.counter_attributes.find { |registered| registered[:attribute] == attribute }
+    return false unless counter_attribute
+    return true unless counter_attribute[:if_proc]
+
+    counter_attribute[:if_proc].call(self)
   end
 
   # This method must only be called by FlushCounterIncrementsWorker
@@ -165,10 +184,6 @@ module CounterAttribute
 
   def counter_lock_key(attribute)
     counter_key(attribute) + ':lock'
-  end
-
-  def counter_attribute_enabled?(attribute)
-    self.class.counter_attribute_enabled?(attribute)
   end
 
   private

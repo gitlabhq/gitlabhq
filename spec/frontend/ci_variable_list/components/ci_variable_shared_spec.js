@@ -29,6 +29,8 @@ import {
   createGroupProps,
   createInstanceProps,
   createProjectProps,
+  createGroupProvide,
+  createProjectProvide,
   devName,
   mockProjectEnvironments,
   mockProjectVariables,
@@ -44,6 +46,8 @@ Vue.use(VueApollo);
 
 const mockProvide = {
   endpoint: '/variables',
+  isGroup: false,
+  isProject: false,
 };
 
 const defaultProps = {
@@ -68,6 +72,7 @@ describe('Ci Variable Shared Component', () => {
     customHandlers = null,
     isLoading = false,
     props = { ...createProjectProps() },
+    provide = {},
   } = {}) {
     const handlers = customHandlers || [
       [getProjectEnvironments, mockEnvironments],
@@ -81,7 +86,10 @@ describe('Ci Variable Shared Component', () => {
         ...defaultProps,
         ...props,
       },
-      provide: mockProvide,
+      provide: {
+        ...mockProvide,
+        ...provide,
+      },
       apolloProvider: mockApollo,
       stubs: { ciVariableSettings, ciVariableTable },
     });
@@ -108,12 +116,18 @@ describe('Ci Variable Shared Component', () => {
   });
 
   describe('when queries are resolved', () => {
-    describe('successfuly', () => {
+    describe('successfully', () => {
       beforeEach(async () => {
         mockEnvironments.mockResolvedValue(mockProjectEnvironments);
         mockVariables.mockResolvedValue(mockProjectVariables);
 
-        await createComponentWithApollo();
+        await createComponentWithApollo({ provide: createProjectProvide() });
+      });
+
+      it('passes down the expected max variable limit as props', () => {
+        expect(findCiSettings().props('maxVariableLimit')).toBe(
+          mockProjectVariables.data.project.ciVariables.limit,
+        );
       });
 
       it('passes down the expected environments as props', () => {
@@ -285,23 +299,29 @@ describe('Ci Variable Shared Component', () => {
   });
 
   describe('Props', () => {
+    const mockGroupCiVariables = mockGroupVariables.data.group.ciVariables;
+    const mockProjectCiVariables = mockProjectVariables.data.project.ciVariables;
+
     describe('in a specific context as', () => {
       it.each`
-        name          | mockVariablesValue      | mockEnvironmentsValue      | withEnvironments | expectedEnvironments | propsFn                | mutation
-        ${'project'}  | ${mockProjectVariables} | ${mockProjectEnvironments} | ${true}          | ${['prod', 'dev']}   | ${createProjectProps}  | ${null}
-        ${'group'}    | ${mockGroupVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createGroupProps}    | ${getGroupVariables}
-        ${'instance'} | ${mockAdminVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createInstanceProps} | ${getAdminVariables}
+        name          | mockVariablesValue      | mockEnvironmentsValue      | withEnvironments | expectedEnvironments | propsFn                | provideFn               | mutation             | maxVariableLimit
+        ${'project'}  | ${mockProjectVariables} | ${mockProjectEnvironments} | ${true}          | ${['prod', 'dev']}   | ${createProjectProps}  | ${createProjectProvide} | ${null}              | ${mockProjectCiVariables.limit}
+        ${'group'}    | ${mockGroupVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createGroupProps}    | ${createGroupProvide}   | ${getGroupVariables} | ${mockGroupCiVariables.limit}
+        ${'instance'} | ${mockAdminVariables}   | ${[]}                      | ${false}         | ${[]}                | ${createInstanceProps} | ${() => {}}             | ${getAdminVariables} | ${0}
       `(
         'passes down all the required props when its a $name component',
         async ({
           mutation,
+          maxVariableLimit,
           mockVariablesValue,
           mockEnvironmentsValue,
           withEnvironments,
           expectedEnvironments,
           propsFn,
+          provideFn,
         }) => {
           const props = propsFn();
+          const provide = provideFn();
 
           mockVariables.mockResolvedValue(mockVariablesValue);
 
@@ -315,13 +335,15 @@ describe('Ci Variable Shared Component', () => {
             customHandlers = [[mutation, mockVariables]];
           }
 
-          await createComponentWithApollo({ customHandlers, props });
+          await createComponentWithApollo({ customHandlers, props, provide });
 
           expect(findCiSettings().props()).toEqual({
             areScopedVariablesAvailable: wrapper.props().areScopedVariablesAvailable,
             hideEnvironmentScope: defaultProps.hideEnvironmentScope,
             isLoading: false,
+            maxVariableLimit,
             variables: wrapper.props().queryData.ciVariables.lookup(mockVariablesValue.data)?.nodes,
+            entity: props.entity,
             environments: expectedEnvironments,
           });
         },

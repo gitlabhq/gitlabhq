@@ -11,6 +11,7 @@ class ProjectStatistics < ApplicationRecord
   attribute :snippets_size, default: 0
 
   counter_attribute :build_artifacts_size
+  counter_attribute :packages_size, if: -> (statistics) { Feature.enabled?(:packages_size_counter_attribute, statistics.project) }
 
   counter_attribute_after_flush do |project_statistic|
     project_statistic.refresh_storage_size!
@@ -22,7 +23,7 @@ class ProjectStatistics < ApplicationRecord
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size, :container_registry_size].freeze
   INCREMENTABLE_COLUMNS = {
-    packages_size: %i[storage_size],
+    packages_size: %i[storage_size], # remove this along with packages_size_counter_attribute
     pipeline_artifacts_size: %i[storage_size],
     snippets_size: %i[storage_size]
   }.freeze
@@ -124,20 +125,20 @@ class ProjectStatistics < ApplicationRecord
   #
   # For non-counter attributes, storage_size is updated depending on key => [columns] in INCREMENTABLE_COLUMNS
   def self.increment_statistic(project, key, amount)
-    raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
-    return if amount == 0
-
     project.statistics.try do |project_statistics|
-      if counter_attribute_enabled?(key)
-        project_statistics.delayed_increment_counter(key, amount)
-      else
-        project_statistics.legacy_increment_statistic(key, amount)
-      end
+      project_statistics.increment_statistic(key, amount)
     end
   end
 
-  def self.incrementable_attribute?(key)
-    INCREMENTABLE_COLUMNS.key?(key) || counter_attribute_enabled?(key)
+  def increment_statistic(key, amount)
+    raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
+    return if amount == 0
+
+    if counter_attribute_enabled?(key)
+      delayed_increment_counter(key, amount)
+    else
+      legacy_increment_statistic(key, amount)
+    end
   end
 
   def legacy_increment_statistic(key, amount)
@@ -148,6 +149,10 @@ class ProjectStatistics < ApplicationRecord
   end
 
   private
+
+  def incrementable_attribute?(key)
+    INCREMENTABLE_COLUMNS.key?(key) || counter_attribute_enabled?(key)
+  end
 
   def storage_size_components
     STORAGE_SIZE_COMPONENTS

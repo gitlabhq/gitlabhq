@@ -25,7 +25,7 @@ module.exports = (path, options = {}) => {
     ]);
   }
 
-  const glob = `${path}/**/*@([._])spec.js`;
+  const glob = `${path}/**/*_spec.js`;
   let testMatch = [`<rootDir>/${glob}`];
   if (IS_EE) {
     testMatch.push(`<rootDir>/ee/${glob}`);

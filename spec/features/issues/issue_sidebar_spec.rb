@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issue Sidebar' do
+RSpec.describe 'Issue Sidebar', feature_category: :team_planning do
   include MobileHelpers
 
   let_it_be(:group) { create(:group, :nested) }

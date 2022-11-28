@@ -5,6 +5,7 @@ query getGroupVariables($after: String, $first: Int = 100, $fullPath: ID!) {
   group(fullPath: $fullPath) {
     id
     ciVariables(after: $after, first: $first) {
+      limit
       pageInfo {
         ...PageInfo
       }

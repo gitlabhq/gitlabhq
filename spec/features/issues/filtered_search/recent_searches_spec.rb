@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Recent searches', :js do
+RSpec.describe 'Recent searches', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let_it_be(:project_1) { create(:project, :public) }

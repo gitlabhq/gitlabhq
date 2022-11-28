@@ -1,15 +1,21 @@
+import { GlAlert } from '@gitlab/ui';
+import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CiVariableTable from '~/ci_variable_list/components/ci_variable_table.vue';
-import { projectString } from '~/ci_variable_list/constants';
+import { EXCEEDS_VARIABLE_LIMIT_TEXT, projectString } from '~/ci_variable_list/constants';
 import { mockVariables } from '../mocks';
 
 describe('Ci variable table', () => {
   let wrapper;
 
   const defaultProps = {
+    entity: 'project',
     isLoading: false,
+    maxVariableLimit: mockVariables(projectString).length + 1,
     variables: mockVariables(projectString),
   };
+
+  const mockMaxVariableLimit = defaultProps.variables.length;
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = mountExtended(CiVariableTable, {
@@ -26,7 +32,12 @@ describe('Ci variable table', () => {
   const findEditButton = () => wrapper.findByLabelText('Edit');
   const findEmptyVariablesPlaceholder = () => wrapper.findByText('There are no variables yet.');
   const findHiddenValues = () => wrapper.findAll('[data-testid="hiddenValue"]');
+  const findLimitReachedAlerts = () => wrapper.findAllComponents(GlAlert);
   const findRevealedValues = () => wrapper.findAll('[data-testid="revealedValue"]');
+
+  const generateExceedsVariableLimitText = (entity, currentVariableCount, maxVariableLimit) => {
+    return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, { entity, currentVariableCount, maxVariableLimit });
+  };
 
   beforeEach(() => {
     createComponent();
@@ -65,6 +76,62 @@ describe('Ci variable table', () => {
 
     it('displays the correct amount of variables', async () => {
       expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(defaultProps.variables.length);
+    });
+
+    it('enables the Add Variable button', () => {
+      expect(findAddButton().props('disabled')).toBe(false);
+    });
+  });
+
+  describe('When variables have exceeded the max limit', () => {
+    beforeEach(() => {
+      createComponent({ props: { maxVariableLimit: mockVariables(projectString).length } });
+    });
+
+    it('disables the Add Variable button', () => {
+      expect(findAddButton().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('max limit reached alert', () => {
+    describe('when there is no variable limit', () => {
+      beforeEach(() => {
+        createComponent({
+          props: { maxVariableLimit: 0 },
+        });
+      });
+
+      it('hides alert', () => {
+        expect(findLimitReachedAlerts().length).toBe(0);
+      });
+    });
+
+    describe('when variable limit exists', () => {
+      it('hides alert when limit has not been reached', () => {
+        createComponent();
+
+        expect(findLimitReachedAlerts().length).toBe(0);
+      });
+
+      it('shows alert when limit has been reached', () => {
+        const exceedsVariableLimitText = generateExceedsVariableLimitText(
+          defaultProps.entity,
+          defaultProps.variables.length,
+          mockMaxVariableLimit,
+        );
+
+        createComponent({
+          props: { maxVariableLimit: mockMaxVariableLimit },
+        });
+
+        expect(findLimitReachedAlerts().length).toBe(2);
+
+        expect(findLimitReachedAlerts().at(0).props('dismissible')).toBe(false);
+        expect(findLimitReachedAlerts().at(0).text()).toContain(exceedsVariableLimitText);
+
+        expect(findLimitReachedAlerts().at(1).props('dismissible')).toBe(false);
+        expect(findLimitReachedAlerts().at(1).text()).toContain(exceedsVariableLimitText);
+      });
     });
   });
 

@@ -5,10 +5,6 @@ RSpec.shared_examples Integrations::BaseSlackNotification do |factory:|
     let_it_be(:project) { create(:project, :repository, :wiki_repo) }
     let_it_be(:integration) { create(factory, branches_to_be_notified: 'all', project: project) }
 
-    before do
-      stub_request(:post, integration.webhook)
-    end
-
     def usage_tracking_key(action)
       prefix = integration.send(:metrics_key_prefix)
 

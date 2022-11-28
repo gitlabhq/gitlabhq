@@ -24,6 +24,26 @@ module API
           forbidden!("You are not allowed to push into this branch")
         end
       end
+
+      def track_commit_events
+        return unless find_user_from_warden
+
+        Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count
+        Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user, project: user_project)
+        namespace = user_project.namespace
+
+        return unless Feature.enabled?(:route_hll_to_snowplow_phase3, namespace)
+
+        Gitlab::Tracking.event(
+          'API::Commits',
+          :commit,
+          project: user_project,
+          namespace: namespace,
+          user: current_user,
+          label: 'counts.web_ide_commits',
+          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: 'counts.web_ide_commits').to_context]
+        )
+      end
     end
 
     params do
@@ -204,10 +224,7 @@ module API
         if result[:status] == :success
           commit_detail = user_project.repository.commit(result[:result])
 
-          if find_user_from_warden
-            Gitlab::UsageDataCounters::WebIdeCounter.increment_commits_count
-            Gitlab::UsageDataCounters::EditorUniqueCounter.track_web_ide_edit_action(author: current_user, project: user_project)
-          end
+          track_commit_events
 
           present commit_detail, with: Entities::CommitDetail, include_stats: params[:stats], current_user: current_user
         else

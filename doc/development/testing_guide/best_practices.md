@@ -431,6 +431,8 @@ results are available, and not just the first failure.
 You must set feature category metadata for each RSpec example. This information is used for flaky test
 issues to identify the group that owns the feature.
 
+The `feature_category` should be a value from [`categories.json`](https://about.gitlab.com/categories.json).
+
 The `feature_category` metadata can be set:
 
 - [In the top-level `RSpec.describe` blocks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104274/diffs#6bd01173381e873f3e1b6c55d33cdaa3d897156b_5_5).

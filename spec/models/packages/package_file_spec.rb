@@ -104,14 +104,20 @@ RSpec.describe Packages::PackageFile, type: :model do
     let_it_be(:package, reload: true) { create(:package) }
 
     context 'when the package file has an explicit size' do
-      it_behaves_like 'UpdateProjectStatistics' do
-        subject { build(:package_file, :jar, package: package, size: 42) }
-      end
-    end
+      subject { build(:package_file, :jar, package: package, size: 42) }
 
-    context 'when the package file does not have a size' do
-      it_behaves_like 'UpdateProjectStatistics' do
-        subject { build(:package_file, package: package, size: nil) }
+      it_behaves_like 'UpdateProjectStatistics', :packages_size
+
+      context 'when packages_size_counter_attribute is disabled' do
+        before do
+          stub_feature_flags(packages_size_counter_attribute: false)
+        end
+
+        it 'uses the legacy increment function' do
+          expect(package.project.statistics).to receive(:legacy_increment_statistic)
+          expect(package.project.statistics).not_to receive(:delayed_increment_counter)
+          subject.save!
+        end
       end
     end
   end

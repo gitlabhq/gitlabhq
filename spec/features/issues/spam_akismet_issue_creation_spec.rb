@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Spam detection on issue creation', :js do
+RSpec.describe 'Spam detection on issue creation', :js, feature_category: :team_planning do
   include StubENV
 
   let(:project) { create(:project, :public) }

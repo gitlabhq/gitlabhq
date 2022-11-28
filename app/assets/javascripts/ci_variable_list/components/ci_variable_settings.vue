@@ -14,6 +14,11 @@ export default {
       required: false,
       default: false,
     },
+    entity: {
+      type: String,
+      required: false,
+      default: '',
+    },
     environments: {
       type: Array,
       required: false,
@@ -27,7 +32,11 @@ export default {
     isLoading: {
       type: Boolean,
       required: false,
-      default: false,
+    },
+    maxVariableLimit: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     variables: {
       type: Array,
@@ -75,7 +84,9 @@ export default {
   <div class="row">
     <div class="col-lg-12">
       <ci-variable-table
+        :entity="entity"
         :is-loading="isLoading"
+        :max-variable-limit="maxVariableLimit"
         :variables="variables"
         @set-selected-variable="setSelectedVariable"
       />

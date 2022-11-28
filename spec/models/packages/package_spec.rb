@@ -708,12 +708,26 @@ RSpec.describe Packages::Package, type: :model do
   describe '#destroy' do
     let(:package) { create(:npm_package) }
     let(:package_file) { package.package_files.first }
-    let(:project_statistics) { ProjectStatistics.for_project_ids(package.project.id).first }
+    let(:project_statistics) { package.project.statistics }
 
-    it 'affects project statistics' do
-      expect { package.destroy! }
-        .to change { project_statistics.reload.packages_size }
-              .from(package_file.size).to(0)
+    subject(:destroy!) { package.destroy! }
+
+    it 'updates the project statistics' do
+      expect(project_statistics).to receive(:delayed_increment_counter).with(:packages_size, -package_file.size)
+
+      destroy!
+    end
+
+    context 'when packages_size_counter_attribute is disabled' do
+      before do
+        stub_feature_flags(packages_size_counter_attribute: false)
+      end
+
+      it 'affects project statistics' do
+        expect { destroy! }
+          .to change { project_statistics.reload.packages_size }
+                .from(package_file.size).to(0)
+      end
     end
   end
 

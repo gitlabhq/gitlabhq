@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User interacts with awards' do
+RSpec.describe 'User interacts with awards', feature_category: :team_planning do
   include MobileHelpers
 
   let(:user) { create(:user) }

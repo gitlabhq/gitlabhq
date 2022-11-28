@@ -14,9 +14,6 @@ module Gitlab
 
         def initialize_slis!
           Gitlab::Metrics::Sli::Apdex.initialize_sli(:global_search, possible_labels)
-
-          return unless Feature.enabled?(:global_search_error_rate_sli)
-
           Gitlab::Metrics::Sli::ErrorRate.initialize_sli(:global_search, possible_labels)
         end
 
@@ -28,8 +25,6 @@ module Gitlab
         end
 
         def record_error_rate(error:, search_type:, search_level:, search_scope:)
-          return unless Feature.enabled?(:global_search_error_rate_sli)
-
           Gitlab::Metrics::Sli::ErrorRate[:global_search].increment(
             labels: labels(search_type: search_type, search_level: search_level, search_scope: search_scope),
             error: error

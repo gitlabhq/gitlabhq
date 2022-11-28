@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues > User sees empty state', :js do
+RSpec.describe 'Issues > User sees empty state', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { project.creator }
 

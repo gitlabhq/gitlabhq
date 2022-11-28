@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issue move to another project' do
+RSpec.describe 'issue move to another project', feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:old_project) { create(:project, :repository) }
   let(:text) { 'Some issue description' }

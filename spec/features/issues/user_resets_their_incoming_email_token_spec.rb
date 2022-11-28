@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Issues > User resets their incoming email token' do
+RSpec.describe 'Issues > User resets their incoming email token', feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, namespace: user.namespace) }
   let_it_be(:issue) { create(:issue, project: project) }

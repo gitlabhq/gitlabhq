@@ -48,6 +48,7 @@ export default {
     :id="graphqlId"
     :are-scoped-variables-available="true"
     component-name="ProjectVariables"
+    entity="project"
     :full-path="projectFullPath"
     :mutation-data="$options.mutationData"
     :query-data="$options.queryData"

@@ -4,7 +4,6 @@ import MockAdapter from 'axios-mock-adapter';
 import $ from 'jquery';
 import '~/behaviors/markdown/render_gfm';
 import { loadHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
-import { createSpyObj } from 'helpers/jest_helpers';
 import { TEST_HOST } from 'helpers/test_constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -254,16 +253,20 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
         note: 'heya',
         html: '<div>heya</div>',
       };
-      $notesList = createSpyObj('$notesList', ['find', 'append']);
-
-      notes = createSpyObj('notes', [
-        'setupNewNote',
-        'refresh',
-        'collapseLongCommitList',
-        'updateNotesCount',
-        'putConflictEditWarningInPlace',
-      ]);
-      notes.taskList = createSpyObj('tasklist', ['init']);
+      $notesList = {
+        find: jest.fn(),
+        append: jest.fn(),
+      };
+      notes = {
+        setupNewNote: jest.fn(),
+        refresh: jest.fn(),
+        collapseLongCommitList: jest.fn(),
+        updateNotesCount: jest.fn(),
+        putConflictEditWarningInPlace: jest.fn(),
+      };
+      notes.taskList = {
+        init: jest.fn(),
+      };
       notes.note_ids = [];
       notes.updatedNotesTrackingMap = {};
 
@@ -383,11 +386,21 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
         discussion_resolvable: false,
         diff_discussion_html: false,
       };
-      $form = createSpyObj('$form', ['closest', 'find']);
+      $form = {
+        closest: jest.fn(),
+        find: jest.fn(),
+      };
       $form.length = 1;
-      row = createSpyObj('row', ['prevAll', 'first', 'find']);
+      row = {
+        prevAll: jest.fn(),
+        first: jest.fn(),
+        find: jest.fn(),
+      };
 
-      notes = createSpyObj('notes', ['isParallelView', 'updateNotesCount']);
+      notes = {
+        isParallelView: jest.fn(),
+        updateNotesCount: jest.fn(),
+      };
       notes.note_ids = [];
 
       jest.spyOn(Notes, 'isNewNote');
@@ -403,7 +416,9 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       let body;
 
       beforeEach(() => {
-        body = createSpyObj('body', ['attr']);
+        body = {
+          attr: jest.fn(),
+        };
         discussionContainer = { length: 0 };
 
         $form.closest.mockReturnValueOnce(row).mockReturnValue($form);
@@ -462,7 +477,9 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
     beforeEach(() => {
       noteHTML = '<div></div>';
-      $notesList = createSpyObj('$notesList', ['append']);
+      $notesList = {
+        append: jest.fn(),
+      };
 
       $resultantNote = Notes.animateAppendNote(noteHTML, $notesList);
     });
@@ -483,7 +500,9 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
 
     beforeEach(() => {
       noteHTML = '<div></div>';
-      $note = createSpyObj('$note', ['replaceWith']);
+      $note = {
+        replaceWith: jest.fn(),
+      };
 
       $updatedNote = Notes.animateUpdateNote(noteHTML, $note);
     });

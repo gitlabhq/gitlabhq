@@ -128,6 +128,14 @@ export default {
       }
       return !this.hasSections && this.helpHtml;
     },
+    shouldUpgradeSlack() {
+      return (
+        this.isSlackIntegration &&
+        this.glFeatures.integrationSlackAppNotifications &&
+        this.customState.shouldUpgradeSlack &&
+        (this.hasFieldsWithoutSection || this.hasSections)
+      );
+    },
   },
   methods: {
     ...mapActions(['setOverride', 'requestJiraIssueTypes']),
@@ -278,16 +286,18 @@ export default {
       </div>
     </section>
 
+    <div v-if="shouldUpgradeSlack" class="gl-border-t">
+      <gl-alert
+        :dismissible="false"
+        :title="$options.slackUpgradeInfo.title"
+        variant="warning"
+        :primary-button-link="customState.upgradeSlackUrl"
+        :primary-button-text="$options.slackUpgradeInfo.btnText"
+        class="gl-mb-8 gl-mt-5"
+      />
+    </div>
+
     <template v-if="hasSections">
-      <div v-if="customState.shouldUpgradeSlack && isSlackIntegration" class="gl-border-t">
-        <gl-alert
-          :title="$options.slackUpgradeInfo.title"
-          variant="warning"
-          :primary-button-link="customState.upgradeSlackUrl"
-          :primary-button-text="$options.slackUpgradeInfo.btnText"
-          class="gl-mb-8 gl-mt-5"
-        />
-      </div>
       <div
         v-for="(section, index) in customState.sections"
         :key="section.type"
