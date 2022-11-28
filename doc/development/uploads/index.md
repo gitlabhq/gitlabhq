@@ -87,6 +87,7 @@ this HTTP request is sent.
 
 - [Rails controller upload](#rails-controller-upload).
 - [Direct upload](#direct-upload).
+- [Workhorse assisted uploads](#workhorse-assisted-uploads).
 
 ### Rails controller upload
 

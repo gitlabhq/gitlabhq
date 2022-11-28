@@ -18,7 +18,7 @@ On self-managed GitLab, by default [migrating project items](#migrated-project-i
 this feature, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named
 `bulk_import_projects`. On GitLab.com, migration of both groups and projects is available.
 
-Users with the Owner role on a top-level group can use GitLab Migration to migrate the group to:
+Users with the Owner role on a top-level group can use GitLab Migration to migrate that top-level group to:
 
 - Another top-level group.
 - The subgroup of any existing top-level group.
@@ -28,7 +28,7 @@ Migrating groups using GitLab Migration is not the same as [migrating groups usi
 Importing and exporting groups using file exports requires you to export a group to a file and then import that file in
 another GitLab instance. Migrating groups using GitLab Migration automates this step.
 
-## Import your groups into GitLab
+## Import your groups and projects into GitLab
 
 When you migrate a group, you connect to your GitLab instance and then choose
 groups to import. Not all the data is migrated. See:
@@ -37,6 +37,14 @@ groups to import. Not all the data is migrated. See:
 - [Migrated project items](#migrated-project-items).
 
 Leave feedback about group migration in [the relevant issue](https://gitlab.com/gitlab-org/gitlab/-/issues/284495).
+
+GitLab maps users and their contributions correctly provided:
+
+- Users already exists on the target GitLab instance.
+- Users have a public email on the source GitLab instance that matches their primary email on the target GitLab instance.
+
+When using an OmniAuth provider like SAML, GitLab and SAML accounts of users on GitLab must be linked. All users on the target GitLab instance must sign in and verify
+their account on the target GitLab instance. If the accounts are not linked, the user contribution mapping doesn't work correctly.
 
 NOTE:
 You might need to reconfigure your firewall to prevent blocking the connection on the self-managed

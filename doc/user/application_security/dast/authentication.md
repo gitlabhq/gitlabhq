@@ -53,6 +53,7 @@ To run a DAST authenticated scan:
 
 | CI/CD variable                                 | Type          | Description                                                                                                                                                                                                                                                                          |
 |:-----------------------------------------------|:--------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `DAST_AUTH_COOKIES`                            | string        | Set to a comma-separated list of cookie names to specify which cookies are used for authentication.                                                                                                                                                                                  |
 | `DAST_AUTH_REPORT`                             | boolean       | Used in combination with exporting the `gl-dast-debug-auth-report.html` artifact to aid in debugging authentication issues.                                                                                                                                                          |
 | `DAST_AUTH_URL` <sup>1</sup>                   | URL           | The URL of the page containing the sign-in HTML form on the target website. `DAST_USERNAME` and `DAST_PASSWORD` are submitted with the login form to create an authenticated scan. Example: `https://login.example.com`.                                                             |
 | `DAST_AUTH_VERIFICATION_LOGIN_FORM`            | boolean       | Verifies successful authentication by checking for the absence of a login form once the login form has been submitted.                                                                                                                                                               |
@@ -314,6 +315,22 @@ by the authentication process.
 DAST considers cookies, local storage and session storage values set with sufficiently "random" values to be authentication tokens.
 For example, `sessionID=HVxzpS8GzMlPAc2e39uyIVzwACIuGe0H` would be viewed as an authentication token, while `ab_testing_group=A1` would not.
 
+The CI/CD variable `DAST_AUTH_COOKIES` can be used to specify the names of authentication cookies and bypass the randomness check used by DAST.
+Not only can this make the authentication process more robust, but it can also increase vulnerability check accuracy for checks that
+inspect authentication tokens.
+
+For example:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_WEBSITE: "https://example.com"
+    DAST_AUTH_COOKIES: "sessionID,refreshToken"
+```
+
 ## Known limitations
 
 - DAST cannot bypass a CAPTCHA if the authentication flow includes one. Please turn these off in the testing environment for the application being scanned.
@@ -333,10 +350,25 @@ Authentication failed because a home page should be displayed after login. Inste
 2022-11-16T13:43:02.000 INF AUTH  attempting to authenticate
 2022-11-16T13:43:02.000 INF AUTH  loading login page LoginURL=https://example.com/login
 2022-11-16T13:43:10.000 INF AUTH  multi-step authentication detected
-2022-11-16T13:43:20.000 INF AUTH  verifying if login attempt was successful true_when="no login form found (no element found when searching using selector css:[id=email] or css:[id=password] or css:[id=submit])"
+2022-11-16T13:43:15.000 INF AUTH  verifying if user submit was successful true_when="HTTP status code < 400"
+2022-11-16T13:43:15.000 INF AUTH  requirement is satisfied, no login HTTP message detected want="HTTP status code < 400"
+2022-11-16T13:43:20.000 INF AUTH  verifying if login attempt was successful true_when="HTTP status code < 400 and has authentication token and no login form found (no element found when searching using selector css:[id=email] or css:[id=password] or css:[id=submit])"
+2022-11-24T14:43:20.000 INF AUTH  requirement is satisfied, HTTP login request returned status code 200 url=https://example.com/user/login?error=invalid%20credentials want="HTTP status code < 400"
 2022-11-16T13:43:21.000 INF AUTH  requirement is unsatisfied, login form was found want="no login form found (no element found when searching using selector css:[id=email] or css:[id=password] or css:[id=submit])"
 2022-11-16T13:43:21.000 INF AUTH  login attempt failed error="authentication failed: failed to authenticate user"
 ```
+
+### When authentication succeeds and the scan doesn't crawl authenticated pages
+
+Verify the captured authentication tokens are correct when a scan appears to authenticate and fails to crawl the authenticated pages of the application.
+Names of cookies and session tokens determined by DAST to be authentication tokens are written to the log. For example:
+
+```plaintext
+2022-11-24T14:42:31.492 INF AUTH  authentication token cookies names=["sessionID"]
+2022-11-24T14:42:31.492 INF AUTH  authentication token storage events keys=["token"]
+```
+
+See [authentication tokens](#authentication-tokens) for more information.
 
 ### Configure the authentication debug report
 

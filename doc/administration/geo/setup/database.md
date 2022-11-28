@@ -196,7 +196,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    for more details.
 
    NOTE:
-   If you need to use `0.0.0.0` or `*` as the listen_address, you also must add
+   If you need to use `0.0.0.0` or `*` as the `listen_address`, you also must add
    `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
    `127.0.0.1`. For more information, see [omnibus-5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
