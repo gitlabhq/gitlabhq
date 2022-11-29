@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleResetDuplicateCiRunnersTokenValues, migration: :gitlab_ci do
+RSpec.describe ScheduleResetDuplicateCiRunnersTokenValues, feature_category: :runner, migration: :gitlab_ci do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

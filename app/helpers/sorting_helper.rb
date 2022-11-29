@@ -188,13 +188,6 @@ module SortingHelper
     }
   end
 
-  def runners_sort_options_hash
-    {
-      sort_value_created_date => sort_title_created_date,
-      sort_value_contacted_date => sort_title_contacted_date
-    }
-  end
-
   def starrers_sort_options_hash
     {
       sort_value_name => sort_title_name,

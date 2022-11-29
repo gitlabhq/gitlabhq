@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Key'] do
+RSpec.describe GitlabSchema.types['Key'], feature_category: :authentication_and_authorization do
   specify { expect(described_class.graphql_name).to eq('Key') }
 
   it 'contains attributes for SSH keys' do

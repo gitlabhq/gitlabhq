@@ -20,9 +20,15 @@ module API
     end
     route_setting :authentication, job_token_allowed: true, job_token_scope: :project
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Get a project container repositories' do
+      desc 'List container repositories within a project' do
         detail 'This feature was introduced in GitLab 11.8.'
         success Entities::ContainerRegistry::Repository
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        is_array true
+        tags %w[container_registry]
       end
       params do
         use :pagination
@@ -41,6 +47,13 @@ module API
 
       desc 'Delete repository' do
         detail 'This feature was introduced in GitLab 11.8.'
+        success status: :accepted, message: 'Success'
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        is_array true
+        tags %w[container_registry]
       end
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
@@ -58,9 +71,15 @@ module API
         status :accepted
       end
 
-      desc 'Get a list of repositories tags' do
+      desc 'List tags of a repository' do
         detail 'This feature was introduced in GitLab 11.8.'
         success Entities::ContainerRegistry::Tag
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        is_array true
+        tags %w[container_registry]
       end
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
@@ -77,6 +96,13 @@ module API
 
       desc 'Delete repository tags (in bulk)' do
         detail 'This feature was introduced in GitLab 11.8.'
+        success status: :accepted, message: 'Success'
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[container_registry]
       end
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
@@ -104,9 +130,15 @@ module API
         status :accepted
       end
 
-      desc 'Get a details about repository tag' do
+      desc 'Get details about a repository tag' do
         detail 'This feature was introduced in GitLab 11.8.'
         success Entities::ContainerRegistry::TagDetails
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[container_registry]
       end
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'
@@ -121,6 +153,13 @@ module API
 
       desc 'Delete repository tag' do
         detail 'This feature was introduced in GitLab 11.8.'
+        success status: :ok, message: 'Success'
+        failure [
+          { code: 400, message: 'Bad Request' },
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[container_registry]
       end
       params do
         requires :repository_id, type: Integer, desc: 'The ID of the repository'

@@ -546,9 +546,12 @@ FactoryBot.define do
       options do
         {
           image: { name: 'image:1.0', entrypoint: '/bin/sh' },
-          services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }, { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
+          services: ['postgres',
+                     { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' },
+                     { name: 'mysql:latest', variables: { MYSQL_ROOT_PASSWORD: 'root123.' } }],
           script: %w(echo),
           after_script: %w(ls date),
+          hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] },
           artifacts: {
             name: 'artifacts_file',
             untracked: false,

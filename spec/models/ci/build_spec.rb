@@ -5616,4 +5616,19 @@ RSpec.describe Ci::Build do
       end
     end
   end
+
+  describe '#runtime_hooks' do
+    let(:build1) do
+      FactoryBot.build(:ci_build,
+                       options: { hooks: { pre_get_sources_script: ["echo 'hello pre_get_sources_script'"] } })
+    end
+
+    subject(:runtime_hooks) { build1.runtime_hooks }
+
+    it 'returns an array of hook objects' do
+      expect(runtime_hooks.size).to eq(1)
+      expect(runtime_hooks[0].name).to eq('pre_get_sources_script')
+      expect(runtime_hooks[0].script).to eq(["echo 'hello pre_get_sources_script'"])
+    end
+  end
 end

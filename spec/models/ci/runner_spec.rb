@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runner do
+RSpec.describe Ci::Runner, feature_category: :runner do
   include StubGitlabCalls
 
   it_behaves_like 'having unique enum values'

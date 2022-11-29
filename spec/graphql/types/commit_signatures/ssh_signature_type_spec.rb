@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['SshSignature'] do
+RSpec.describe GitlabSchema.types['SshSignature'], feature_category: :source_code_management do
   specify { expect(described_class.graphql_name).to eq('SshSignature') }
 
   specify { expect(described_class).to require_graphql_authorizations(:download_code) }

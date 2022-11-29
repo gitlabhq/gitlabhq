@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateWorker do
+RSpec.describe Ci::Runners::ProcessRunnerVersionUpdateWorker, feature_category: :runner do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

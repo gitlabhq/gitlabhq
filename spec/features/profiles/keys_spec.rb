@@ -80,7 +80,7 @@ RSpec.describe 'Profile > SSH Keys', feature_category: :users do
     shared_examples 'removes key' do
       it 'removes key' do
         visit path
-        click_button('Delete')
+        find('[data-testid=remove-icon]').click
 
         page.within('.modal') do
           page.click_button('Delete')

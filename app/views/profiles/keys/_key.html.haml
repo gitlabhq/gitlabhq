@@ -32,4 +32,4 @@
     %span.key-created-at.gl-display-flex.gl-align-items-center
       - if key.can_delete?
         .gl-ml-3
-          = render 'shared/ssh_keys/key_delete', html_class: "btn gl-button btn-icon btn-default js-confirm-modal-button", button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))
+          = render 'shared/ssh_keys/key_delete', icon: true, button_data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin))

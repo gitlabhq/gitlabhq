@@ -7,19 +7,49 @@
     "expires_at",
     "key",
     "fingerprint_sha256",
+    "usage_type",
     "projects_with_write_access"
   ],
   "properties": {
-    "id": { "type": "integer" },
-    "title": { "type": "string" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "expires_at": { "type": ["string", "null"], "format": "date-time" },
-    "key": { "type": "string" },
-    "fingerprint": { "type": "string" },
-    "fingerprint_sha256": { "type": "string" },
+    "id": {
+      "type": "integer"
+    },
+    "title": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "expires_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "key": {
+      "type": "string"
+    },
+    "fingerprint": {
+      "type": "string"
+    },
+    "fingerprint_sha256": {
+      "type": "string"
+    },
+    "usage_type": {
+      "type": "string",
+      "enum": [
+        "auth",
+        "signing",
+        "auth_and_signing"
+      ]
+    },
     "projects_with_write_access": {
       "type": "array",
-      "items": { "$ref": "project/identity.json" }
+      "items": {
+        "$ref": "project/identity.json"
+      }
     }
   },
   "additionalProperties": false

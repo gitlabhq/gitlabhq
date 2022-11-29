@@ -6,6 +6,6 @@
       %label.label-bold Token
       %p.form-control-plaintext= @trigger.token
   .form-group
-    = f.label :key, "Description", class: "label-bold"
-    = f.text_field :description, class: 'form-control gl-form-input', required: true, title: 'Trigger description is required.', placeholder: "Trigger description"
+    = f.label :key, s_("Trigger|Description"), class: "label-bold"
+    = f.text_field :description, class: 'form-control gl-form-input', required: true, title: 'Trigger description is required.', placeholder: s_("Trigger|Trigger description")
   = f.submit btn_text, pajamas_button: true

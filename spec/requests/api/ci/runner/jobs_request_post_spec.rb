@@ -175,6 +175,10 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                'allow_failure' => true }]
           end
 
+          let(:expected_hooks) do
+            [{ 'name' => 'pre_get_sources_script', 'script' => ["echo 'hello pre_get_sources_script'"] }]
+          end
+
           let(:expected_variables) do
             [{ 'key' => 'CI_JOB_NAME', 'value' => 'spinach', 'public' => true, 'masked' => false },
              { 'key' => 'CI_JOB_STAGE', 'value' => 'test', 'public' => true, 'masked' => false },
@@ -230,6 +234,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   'variables' => [{ 'key' => 'MYSQL_ROOT_PASSWORD', 'value' => 'root123.' }], 'pull_policy' => nil }
               ])
             expect(json_response['steps']).to eq(expected_steps)
+            expect(json_response['hooks']).to eq(expected_hooks)
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to match(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
@@ -767,6 +772,19 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
                   expect(json_response['runner_info']).to include({ 'timeout' => 1234 })
                 end
               end
+            end
+          end
+
+          context 'when the FF ci_hooks_pre_get_sources_script is disabled' do
+            before do
+              stub_feature_flags(ci_hooks_pre_get_sources_script: false)
+            end
+
+            it 'does not return the pre_get_sources_script' do
+              request_job
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response).not_to have_key('hooks')
             end
           end
         end

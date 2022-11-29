@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerVersion do
+RSpec.describe Ci::RunnerVersion, feature_category: :runner do
   it_behaves_like 'having unique enum values'
 
   let_it_be(:runner_version_not_available) do

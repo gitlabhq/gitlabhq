@@ -10,7 +10,7 @@ RSpec.describe Gitlab::FIPS do
     let(:fips_mode_env_var) { nil }
 
     before do
-      expect(OpenSSL).to receive(:fips_mode).and_return(openssl_fips_mode)
+      allow(OpenSSL).to receive(:fips_mode).and_return(openssl_fips_mode)
       stub_env("FIPS_MODE", fips_mode_env_var)
     end
 

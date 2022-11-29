@@ -4,7 +4,7 @@ module Gitlab
   module Database
     module QueryAnalyzers
       class QueryRecorder < Base
-        LOG_PATH = 'query_recorder/'
+        LOG_FILE = 'rspec/query_recorder.ndjson'
 
         class << self
           def raw?
@@ -24,14 +24,11 @@ module Gitlab
             log_query(payload)
           end
 
-          def log_file
-            Rails.root.join(LOG_PATH, "#{ENV.fetch('CI_JOB_NAME_SLUG', 'rspec')}.ndjson")
-          end
-
           private
 
           def log_query(payload)
-            log_dir = Rails.root.join(LOG_PATH)
+            log_path = Rails.root.join(LOG_FILE)
+            log_dir = File.dirname(log_path)
 
             # Create log directory if it does not exist since it is only created
             # ahead of time by certain CI jobs
@@ -39,7 +36,7 @@ module Gitlab
 
             log_line = "#{Gitlab::Json.dump(payload)}\n"
 
-            File.write(log_file, log_line, mode: 'a')
+            File.write(log_path, log_line, mode: 'a')
           end
         end
       end
