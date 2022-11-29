@@ -29610,8 +29610,6 @@ CREATE INDEX index_issues_on_closed_by_id ON issues USING btree (closed_by_id);
 
 CREATE INDEX index_issues_on_confidential ON issues USING btree (confidential);
 
-CREATE INDEX index_issues_on_description_trigram ON issues USING gin (description gin_trgm_ops) WITH (fastupdate='false');
-
 CREATE INDEX index_issues_on_description_trigram_non_latin ON issues USING gin (description gin_trgm_ops) WHERE (((title)::text !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)) OR (description !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)));
 
 CREATE INDEX index_issues_on_duplicated_to_id ON issues USING btree (duplicated_to_id) WHERE (duplicated_to_id IS NOT NULL);
@@ -29647,8 +29645,6 @@ CREATE INDEX index_issues_on_project_id_health_status_created_at_id ON issues US
 CREATE INDEX index_issues_on_promoted_to_epic_id ON issues USING btree (promoted_to_epic_id) WHERE (promoted_to_epic_id IS NOT NULL);
 
 CREATE INDEX index_issues_on_sprint_id ON issues USING btree (sprint_id);
-
-CREATE INDEX index_issues_on_title_trigram ON issues USING gin (title gin_trgm_ops) WITH (fastupdate='false');
 
 CREATE INDEX index_issues_on_title_trigram_non_latin ON issues USING gin (title gin_trgm_ops) WHERE (((title)::text !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)) OR (description !~ similar_escape('[\u0000-\u02FF\u1E00-\u1EFF\u2070-\u218F]*'::text, NULL::text)));
 
@@ -31495,6 +31491,8 @@ CREATE UNIQUE INDEX snippet_user_mentions_on_snippet_id_index ON snippet_user_me
 CREATE UNIQUE INDEX taggings_idx ON taggings USING btree (tag_id, taggable_id, taggable_type, context, tagger_id, tagger_type);
 
 CREATE UNIQUE INDEX term_agreements_unique_index ON term_agreements USING btree (user_id, term_id);
+
+CREATE INDEX tmp_idx_for_feedback_comment_processing ON vulnerability_feedback USING btree (id) WHERE (char_length(comment) > 50000);
 
 CREATE INDEX tmp_idx_for_vulnerability_feedback_migration ON vulnerability_feedback USING btree (id) WHERE ((migrated_to_state_transition = false) AND (feedback_type = 0));
 

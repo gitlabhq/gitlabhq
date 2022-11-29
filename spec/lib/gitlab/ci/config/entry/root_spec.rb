@@ -5,7 +5,8 @@ require 'spec_helper'
 RSpec.describe Gitlab::Ci::Config::Entry::Root do
   let(:user) {}
   let(:project) {}
-  let(:root) { described_class.new(hash, user: user, project: project) }
+  let(:logger) { Gitlab::Ci::Pipeline::Logger.new(project: project) }
+  let(:root) { described_class.new(hash, user: user, project: project, logger: logger) }
 
   describe '.nodes' do
     it 'returns a hash' do
@@ -227,6 +228,14 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
                          scheduling_type: :stage }
             )
           end
+        end
+
+        it 'tracks log entries' do
+          expect(logger.observations_hash).to match(
+            a_hash_including(
+              'config_root_compose_jobs_factory_duration_s' => a_kind_of(Numeric)
+            )
+          )
         end
       end
     end

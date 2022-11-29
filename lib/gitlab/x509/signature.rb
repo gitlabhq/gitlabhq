@@ -27,8 +27,8 @@ module Gitlab
         X509Certificate.safe_create!(certificate_attributes) unless verified_signature.nil?
       end
 
-      def user
-        strong_memoize(:user) { User.find_by_any_email(@email) }
+      def signed_by_user
+        strong_memoize(:signed_by_user) { User.find_by_any_email(@email) }
       end
 
       def verified_signature
@@ -40,9 +40,9 @@ module Gitlab
           x509_certificate.nil? ||
           x509_certificate.revoked? ||
           !verified_signature ||
-          user.nil?
+          signed_by_user.nil?
 
-        if user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
+        if signed_by_user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
           :verified
         else
           :unverified

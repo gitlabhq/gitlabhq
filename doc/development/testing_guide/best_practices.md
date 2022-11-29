@@ -447,6 +447,14 @@ Example:
  RSpec.describe Admin::Geo::SettingsController, :geo, feature_category: :geo_replication do
  ```
 
+For examples that don't have a `feature_category` set we add a warning when running them in local environment.
+
+In order to disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when running RSpec tests:
+
+```shell
+RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
+```
+
 ### Coverage
 
 [`simplecov`](https://github.com/colszowka/simplecov) is used to generate code test coverage reports.

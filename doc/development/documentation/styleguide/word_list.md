@@ -1112,11 +1112,11 @@ To describe tiers:
 
 | Instead of                      | Use                                    |
 |---------------------------------|----------------------------------------|
-| In the Free tier or greater     | In any tier                            |
-| In the Free tier or higher      | In any tier                            |
-| In the Premium tier or greater  | In the Premium or Ultimate tier        |
-| In the Premium tier or higher   | In the Premium or Ultimate tier        |
-| In the Premium tier or lower    | In the Free or Premium tier            |
+| In the Free tier or greater     | In all tiers                           |
+| In the Free tier or higher      | In all tiers                           |
+| In the Premium tier or greater  | In the Premium and Ultimate tier       |
+| In the Premium tier or higher   | In the Premium and Ultimate tier       |
+| In the Premium tier or lower    | In the Free and Premium tier           |
 
 ## that
 

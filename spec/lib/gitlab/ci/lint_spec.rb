@@ -338,26 +338,21 @@ RSpec.describe Gitlab::Ci::Lint do
   end
 
   describe 'pipeline logger' do
-    let(:counters) do
-      {
-        'count' => a_kind_of(Numeric),
-        'max' => a_kind_of(Numeric),
-        'sum' => a_kind_of(Numeric)
-      }
-    end
-
     let(:expected_data) do
       {
         'class' => 'Gitlab::Ci::Pipeline::Logger',
-        'config_build_context_duration_s' => counters,
-        'config_build_variables_duration_s' => counters,
-        'config_compose_duration_s' => counters,
-        'config_expand_duration_s' => counters,
-        'config_external_process_duration_s' => counters,
-        'config_stages_inject_duration_s' => counters,
-        'config_tags_resolve_duration_s' => counters,
-        'config_yaml_extend_duration_s' => counters,
-        'config_yaml_load_duration_s' => counters,
+        'config_build_context_duration_s' => a_kind_of(Numeric),
+        'config_build_variables_duration_s' => a_kind_of(Numeric),
+        'config_root_duration_s' => a_kind_of(Numeric),
+        'config_root_compose_duration_s' => a_kind_of(Numeric),
+        'config_root_compose_jobs_factory_duration_s' => a_kind_of(Numeric),
+        'config_root_compose_jobs_create_duration_s' => a_kind_of(Numeric),
+        'config_expand_duration_s' => a_kind_of(Numeric),
+        'config_external_process_duration_s' => a_kind_of(Numeric),
+        'config_stages_inject_duration_s' => a_kind_of(Numeric),
+        'config_tags_resolve_duration_s' => a_kind_of(Numeric),
+        'config_yaml_extend_duration_s' => a_kind_of(Numeric),
+        'config_yaml_load_duration_s' => a_kind_of(Numeric),
         'pipeline_creation_caller' => 'Gitlab::Ci::Lint',
         'pipeline_creation_service_duration_s' => a_kind_of(Numeric),
         'pipeline_persisted' => false,

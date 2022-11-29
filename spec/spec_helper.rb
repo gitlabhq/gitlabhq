@@ -39,6 +39,8 @@ require 'test_prof/factory_default'
 require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 
+warn_missing_feature_category = Gitlab::Utils.to_boolean(ENV['RSPEC_WARN_MISSING_FEATURE_CATEGORY'], default: true)
+
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
@@ -460,7 +462,7 @@ RSpec.configure do |config|
 
   # Add warning for example missing feature_category
   config.before do |example|
-    if example.metadata[:feature_category].blank? && !ENV['CI']
+    if warn_missing_feature_category && example.metadata[:feature_category].blank? && !ENV['CI']
       warn "Missing metadata feature_category: #{example.location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
     end
   end

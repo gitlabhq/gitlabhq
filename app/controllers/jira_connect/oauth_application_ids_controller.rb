@@ -5,7 +5,6 @@ module JiraConnect
     feature_category :integrations
 
     skip_before_action :verify_atlassian_jwt!
-    before_action :set_cors_headers
 
     def show
       if show_application_id?

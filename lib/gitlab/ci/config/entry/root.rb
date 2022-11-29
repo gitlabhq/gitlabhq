@@ -103,12 +103,16 @@ module Gitlab
 
           # rubocop: disable CodeReuse/ActiveRecord
           def compose_jobs!
-            factory = ::Gitlab::Config::Entry::Factory.new(Entry::Jobs)
-              .value(jobs_config)
-              .with(key: :jobs, parent: self,
-                    description: 'Jobs definition for this pipeline')
+            factory = logger.instrument(:config_root_compose_jobs_factory, once: true) do
+              ::Gitlab::Config::Entry::Factory.new(Entry::Jobs)
+                .value(jobs_config)
+                .with(key: :jobs, parent: self,
+                      description: 'Jobs definition for this pipeline')
+            end
 
-            @entries[:jobs] = factory.create!
+            @entries[:jobs] = logger.instrument(:config_root_compose_jobs_create, once: true) do
+              factory.create!
+            end
           end
           # rubocop: enable CodeReuse/ActiveRecord
 
@@ -122,6 +126,10 @@ module Gitlab
             end
 
             @config = @config.except(*@jobs_config.keys)
+          end
+
+          def logger
+            metadata[:logger]
           end
         end
       end

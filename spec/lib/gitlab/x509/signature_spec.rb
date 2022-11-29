@@ -282,21 +282,21 @@ RSpec.describe Gitlab::X509::Signature do
     end
   end
 
-  describe '#user' do
+  describe '#signed_by_user' do
     subject do
       described_class.new(
         X509Helpers::User1.signed_tag_signature,
         X509Helpers::User1.signed_tag_base_data,
         X509Helpers::User1.certificate_email,
         X509Helpers::User1.signed_commit_time
-      ).user
+      ).signed_by_user
     end
 
     context 'if email is assigned to a user' do
-      let!(:user) { create(:user, email: X509Helpers::User1.certificate_email) }
+      let!(:signed_by_user) { create(:user, email: X509Helpers::User1.certificate_email) }
 
       it 'returns user' do
-        is_expected.to eq(user)
+        is_expected.to eq(signed_by_user)
       end
     end
 

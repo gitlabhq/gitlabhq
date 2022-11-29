@@ -23,7 +23,6 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
     push_frontend_feature_flag(:jira_connect_oauth_self_managed, @user)
   end
 
-  before_action :set_cors_headers
   before_action :allow_rendering_in_iframe, only: :index
   before_action :verify_qsh_claim!, only: :index
   before_action :allow_self_managed_content_security_policy, only: :index

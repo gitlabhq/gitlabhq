@@ -728,6 +728,11 @@ Refer to the documentation for your SAML Identity Provider for information on ho
 
 The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
 
+Users authenticated with SSO or SAML must not use a password for Git operations over HTTPS. These users can do one of the following instead:
+
+- Set up a [personal access token](../user/profile/personal_access_tokens.md).
+- Use the [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager) which securely authenticates using OAuth.
+
 ## Link SAML identity for an existing user
 
 A user can manually link their SAML identity to an existing GitLab account by following the steps in

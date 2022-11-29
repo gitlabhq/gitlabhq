@@ -3,12 +3,12 @@
 module API
   module Entities
     class BatchedBackgroundMigration < Grape::Entity
-      expose :id
-      expose :job_class_name
-      expose :table_name
-      expose :status, &:status_name
-      expose :progress
-      expose :created_at
+      expose :id, documentation: { type: :string, example: "1234" }
+      expose :job_class_name, documentation: { type: :string, example: "CopyColumnUsingBackgroundMigrationJob" }
+      expose :table_name, documentation: { type: :string, example: "events" }
+      expose :status_name, as: :status, override: true, documentation: { type: :string, example: "active" }
+      expose :progress, documentation: { type: :float, example: 50 }
+      expose :created_at, documentation: { type: :dateTime, example: "2022-11-28T16:26:39+02:00" }
     end
   end
 end

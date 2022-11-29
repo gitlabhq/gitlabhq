@@ -12,7 +12,15 @@ module API
 
       namespace 'admin' do
         resources 'batched_background_migrations/:id' do
-          desc 'Retrieve a batched background migration'
+          desc 'Retrieve a batched background migration' do
+            success ::API::Entities::BatchedBackgroundMigration
+            failure [
+              { code: 401, message: '401 Unauthorized' },
+              { code: 403, message: '403 Forbidden' },
+              { code: 404, message: '404 Not found' }
+            ]
+            tags %w[batched_background_migrations]
+          end
           params do
             optional :database,
               type: String,
@@ -31,7 +39,15 @@ module API
         end
 
         resources 'batched_background_migrations' do
-          desc 'Get the list of the batched background migrations'
+          desc 'Get the list of batched background migrations' do
+            success ::API::Entities::BatchedBackgroundMigration
+            failure [
+              { code: 401, message: '401 Unauthorized' },
+              { code: 403, message: '403 Forbidden' }
+            ]
+            is_array true
+            tags %w[batched_background_migrations]
+          end
           params do
             optional :database,
               type: String,
@@ -48,7 +64,16 @@ module API
         end
 
         resources 'batched_background_migrations/:id/resume' do
-          desc 'Resume a batched background migration'
+          desc 'Resume a batched background migration' do
+            success ::API::Entities::BatchedBackgroundMigration
+            failure [
+              { code: 401, message: '401 Unauthorized' },
+              { code: 403, message: '403 Forbidden' },
+              { code: 404, message: '404 Not found' },
+              { code: 422, message: 'You can resume only `paused` batched background migrations.' }
+            ]
+            tags %w[batched_background_migrations]
+          end
           params do
             optional :database,
               type: String,
@@ -73,7 +98,16 @@ module API
         end
 
         resources 'batched_background_migrations/:id/pause' do
-          desc 'Pause a batched background migration'
+          desc 'Pause a batched background migration' do
+            success ::API::Entities::BatchedBackgroundMigration
+            failure [
+              { code: 401, message: '401 Unauthorized' },
+              { code: 403, message: '403 Forbidden' },
+              { code: 404, message: '404 Not found' },
+              { code: 422, message: 'You can pause only `active` batched background migrations.' }
+            ]
+            tags %w[batched_background_migrations]
+          end
           params do
             optional :database,
               type: String,

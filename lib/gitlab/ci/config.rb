@@ -26,7 +26,7 @@ module Gitlab
         @source_ref_path = pipeline&.source_ref_path
         @project = project
 
-        @context = self.logger.instrument(:config_build_context) do
+        @context = self.logger.instrument(:config_build_context, once: true) do
           pipeline ||= ::Ci::Pipeline.new(project: project, sha: sha, user: user, source: source)
           build_context(project: project, pipeline: pipeline, sha: sha, user: user, parent_pipeline: parent_pipeline)
         end
@@ -35,12 +35,16 @@ module Gitlab
 
         @source = source
 
-        @config = self.logger.instrument(:config_expand) do
+        @config = self.logger.instrument(:config_expand, once: true) do
           expand_config(config)
         end
 
-        @root = self.logger.instrument(:config_compose) do
-          Entry::Root.new(@config, project: project, user: user).tap(&:compose!)
+        @root = self.logger.instrument(:config_root, once: true) do
+          Entry::Root.new(@config, project: project, user: user, logger: self.logger)
+        end
+
+        self.logger.instrument(:config_root_compose, once: true) do
+          @root.compose!
         end
       rescue *rescue_errors => e
         raise Config::ConfigError, e.message
@@ -123,23 +127,23 @@ module Gitlab
       end
 
       def build_config(config)
-        initial_config = logger.instrument(:config_yaml_load) do
+        initial_config = logger.instrument(:config_yaml_load, once: true) do
           Config::Yaml.load!(config)
         end
 
-        initial_config = logger.instrument(:config_external_process) do
+        initial_config = logger.instrument(:config_external_process, once: true) do
           Config::External::Processor.new(initial_config, @context).perform
         end
 
-        initial_config = logger.instrument(:config_yaml_extend) do
+        initial_config = logger.instrument(:config_yaml_extend, once: true) do
           Config::Extendable.new(initial_config).to_hash
         end
 
-        initial_config = logger.instrument(:config_tags_resolve) do
+        initial_config = logger.instrument(:config_tags_resolve, once: true) do
           Config::Yaml::Tags::Resolver.new(initial_config).to_hash
         end
 
-        logger.instrument(:config_stages_inject) do
+        logger.instrument(:config_stages_inject, once: true) do
           Config::EdgeStagesInjector.new(initial_config).to_hash
         end
       end
@@ -163,7 +167,7 @@ module Gitlab
       end
 
       def build_variables(pipeline:)
-        logger.instrument(:config_build_variables) do
+        logger.instrument(:config_build_variables, once: true) do
           pipeline
             .variables_builder
             .config_variables

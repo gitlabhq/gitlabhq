@@ -351,7 +351,7 @@ export default {
       }
 
       return s__(
-        'ProjectSettings|View and edit files in this project. Non-project members have only read access.',
+        'ProjectSettings|View and edit files in this project. When set to **Everyone With Access** non-project members have only read access.',
       );
     },
     cveIdRequestIsDisabled() {

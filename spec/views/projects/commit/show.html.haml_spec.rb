@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/commit/show.html.haml' do
+RSpec.describe 'projects/commit/show.html.haml', feature_category: :source_code do
   let(:project) { create(:project, :repository) }
   let(:commit) { project.commit }
 
@@ -73,6 +73,46 @@ RSpec.describe 'projects/commit/show.html.haml' do
 
       it 'renders the page' do
         expect { rendered }.not_to raise_error
+      end
+    end
+  end
+
+  context 'when commit is signed' do
+    let(:page) { Nokogiri::HTML.parse(rendered) }
+    let(:badge) { page.at('.gpg-status-box') }
+    let(:badge_attributes) { badge.attributes }
+    let(:title) { badge_attributes['data-title'].value }
+    let(:content) { badge_attributes['data-content'].value }
+
+    before do
+      render
+    end
+
+    context 'with GPG' do
+      let(:commit) { project.commit(GpgHelpers::SIGNED_COMMIT_SHA) }
+
+      it 'renders unverified badge' do
+        expect(title).to include('This commit was signed with an <strong>unverified</strong> signature.')
+        expect(content).to include(commit.signature.gpg_key_primary_keyid)
+      end
+    end
+
+    context 'with SSH' do
+      let(:commit) { project.commit('7b5160f9bb23a3d58a0accdbe89da13b96b1ece9') }
+
+      it 'renders unverified badge' do
+        expect(title).to include('This commit was signed with an <strong>unverified</strong> signature.')
+        expect(content).to match(/SSH key fingerprint:[\s\S]+Unknown/)
+      end
+    end
+
+    context 'with X.509' do
+      let(:commit) { project.commit('189a6c924013fc3fe40d6f1ec1dc20214183bc97') }
+
+      it 'renders unverified badge' do
+        expect(title).to include('This commit was signed with an <strong>unverified</strong> signature.')
+        expect(content).to include(commit.signature.x509_certificate.subject_key_identifier.tr(":", " "))
+        expect(content).to include(commit.signature.x509_certificate.email)
       end
     end
   end

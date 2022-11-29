@@ -417,6 +417,21 @@ module Gitlab
           expose: headers_to_expose
       end
 
+      allow do
+        origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
+        resource '/-/jira_connect/oauth_application_id', headers: :any, credentials: false, methods: %i(get options)
+      end
+
+      allow do
+        origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
+        resource '/-/jira_connect/subscriptions.json', headers: :any, credentials: false, methods: %i(get options)
+      end
+
+      allow do
+        origins { |source, env| source == Gitlab::CurrentSettings.jira_connect_proxy_url }
+        resource '/-/jira_connect/subscriptions/*', headers: :any, credentials: false, methods: %i(delete options)
+      end
+
       # Cross-origin requests must be enabled for the Authorization code with PKCE OAuth flow when used from a browser.
       %w(/oauth/token /oauth/revoke).each do |oauth_path|
         allow do
