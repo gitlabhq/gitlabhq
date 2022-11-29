@@ -11,6 +11,7 @@ module Ml
     belongs_to :user
     has_many :metrics, class_name: 'Ml::CandidateMetric'
     has_many :params, class_name: 'Ml::CandidateParam'
+    has_many :metadata, class_name: 'Ml::CandidateMetadata'
     has_many :latest_metrics, -> { latest }, class_name: 'Ml::CandidateMetric', inverse_of: :candidate
 
     attribute :iid, default: -> { SecureRandom.uuid }

@@ -149,6 +149,7 @@
     "WorkItemWidgetIteration",
     "WorkItemWidgetLabels",
     "WorkItemWidgetMilestone",
+    "WorkItemWidgetNotes",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetWeight"

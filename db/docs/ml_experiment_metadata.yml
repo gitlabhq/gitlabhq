@@ -1,0 +1,11 @@
+---
+table_name: ml_experiment_metadata
+classes:
+  - Ml::ExperimentMetadata
+feature_categories:
+  - mlops
+  - incubation
+gitlab_schema: gitlab_main
+description: An Experiment Metadata record holds extra information about the experiment
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104267
+milestone: '15.7'

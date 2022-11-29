@@ -189,7 +189,7 @@ the default value [is the same as for self-managed instances](../admin_area/sett
 |-------------------------------|--------------------|
 | [Repository size including LFS](../admin_area/settings/account_and_limit_settings.md#repository-size-limit) | 10 GB |
 | [Maximum import size](../project/settings/import_export.md#maximum-import-file-size)                        | 5 GB  |
-| Maximum attachment size       | 10 MB              |
+| Maximum attachment size       | 100 MB              |
 
 If you are near or over the repository size limit, you can either
 [reduce your repository size with Git](../project/repository/reducing_the_repo_size_using_git.md)

@@ -10,6 +10,7 @@ RSpec.describe Ml::Candidate, factory_default: :keep do
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:params) }
     it { is_expected.to have_many(:metrics) }
+    it { is_expected.to have_many(:metadata) }
   end
 
   describe '.artifact_root' do

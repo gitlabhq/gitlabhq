@@ -522,7 +522,7 @@ it('waits for an event', () => {
 
 ### Ensuring that tests are isolated
 
-Tests are normally architected in a pattern which requires a recurring setup and breakdown of the component under test. This is done by making use of the `beforeEach` and `afterEach` hooks.
+Tests are normally architected in a pattern which requires a recurring setup of the component under test. This is often achieved by making use of the `beforeEach` hook.
 
 Example
 
@@ -532,15 +532,21 @@ Example
   beforeEach(() => {
     wrapper = mount(Component);
   });
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 ```
 
-When looking at this initially you'd suspect that the component is setup before each test and then broken down afterwards, providing isolation between tests.
+With [enableAutoDestroy](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100389), it is no longer neccessary to manually call `wrapper.destroy()`.
+However, some mocks, spies, and fixtures do need to be torn down, and we can leverage the `afterEach` hook.
 
-This is however not entirely true as the `destroy` method does not remove everything which has been mutated on the `wrapper` object. For functional components, destroy only removes the rendered DOM elements from the document.
+Example
+
+```javascript
+  let wrapper;
+
+  afterEach(() => {
+    fakeApollo = null;
+    store = null;
+  });
+```
 
 ### Jest best practices
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for comments', :js, :disable_rate_limiter do
+RSpec.describe 'User searches for comments', :js, :disable_rate_limiter, feature_category: :global_search do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:project) { create(:project, :repository) }

@@ -1,0 +1,10 @@
+---
+view_name: postgres_indexes
+description: TODO
+classes:
+- Gitlab::Database::PostgresIndex
+feature_categories:
+- database
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42967
+milestone: '13.5'
+gitlab_schema: gitlab_shared

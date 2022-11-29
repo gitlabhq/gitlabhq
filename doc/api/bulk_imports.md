@@ -33,6 +33,7 @@ POST /bulk_imports
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports" \
+  --header "Content-Type: application/json" \
   --data '{
     "configuration": {
       "url": "http://gitlab.example/",

@@ -7,7 +7,6 @@ module WebHooks
     def show_project_hook_failed_callout?(project:)
       return false if project_hook_page?
       return false unless current_user
-      return false unless Feature.enabled?(:webhooks_failed_callout, project)
       return false unless Ability.allowed?(current_user, :read_web_hooks, project)
 
       # Assumes include of Users::CalloutsHelper

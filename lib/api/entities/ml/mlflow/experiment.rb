@@ -9,6 +9,7 @@ module API
           expose :name
           expose(:lifecycle_stage) { |experiment| experiment.deleted_on? ? 'deleted' : 'active' }
           expose(:artifact_location) { |experiment| 'not_implemented' }
+          expose :metadata, as: :tags, using: KeyValue
         end
       end
     end

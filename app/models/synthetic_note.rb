@@ -10,6 +10,7 @@ class SyntheticNote < Note
       system: true,
       author: event.user,
       created_at: event.created_at,
+      updated_at: event.created_at,
       discussion_id: event.discussion_id,
       noteable: resource,
       event: event,

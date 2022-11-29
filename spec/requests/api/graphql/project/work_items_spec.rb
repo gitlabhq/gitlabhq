@@ -188,6 +188,60 @@ RSpec.describe 'getting a work item list for a project' do
     end
   end
 
+  describe 'fetching work item notes widget' do
+    let(:item_filter_params) { { iid: item2.iid.to_s } }
+    let(:fields) do
+      <<~GRAPHQL
+        edges {
+          node {
+            widgets {
+              type
+              ... on WorkItemWidgetNotes {
+                system: discussions(filter: ONLY_ACTIVITY, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+                comments: discussions(filter: ONLY_COMMENTS, first: 10) { nodes { id  notes { nodes { id system internal body } } } },
+                all_notes: discussions(filter: ALL_NOTES, first: 10) { nodes { id  notes { nodes { id system internal body } } } }
+              }
+            }
+          }
+        }
+      GRAPHQL
+    end
+
+    before do
+      create_notes(item1, "some note1")
+      create_notes(item2, "some note2")
+    end
+
+    shared_examples 'fetches work item notes' do |user_comments_count:, system_notes_count:|
+      it "fetches notes" do
+        post_graphql(query, current_user: current_user)
+
+        all_widgets = graphql_dig_at(items_data, :node, :widgets)
+        notes_widget = all_widgets.find { |x| x["type"] == "NOTES" }
+
+        all_notes = graphql_dig_at(notes_widget["all_notes"], :nodes)
+        system_notes = graphql_dig_at(notes_widget["system"], :nodes)
+        comments = graphql_dig_at(notes_widget["comments"], :nodes)
+
+        expect(comments.count).to eq(user_comments_count)
+        expect(system_notes.count).to eq(system_notes_count)
+        expect(all_notes.count).to eq(user_comments_count + system_notes_count)
+      end
+    end
+
+    context 'when user has permission to view internal notes' do
+      before do
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'fetches work item notes', user_comments_count: 2, system_notes_count: 5
+    end
+
+    context 'when user cannot view internal notes' do
+      it_behaves_like 'fetches work item notes', user_comments_count: 1, system_notes_count: 5
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :node, :id)
   end
@@ -198,5 +252,27 @@ RSpec.describe 'getting a work item list for a project' do
       { 'fullPath' => project.full_path },
       query_graphql_field('workItems', params, fields)
     )
+  end
+
+  def create_notes(work_item, note_body)
+    create(:note, system: true, project: work_item.project, noteable: work_item)
+
+    disc_start = create(:discussion_note_on_issue, noteable: work_item, project: work_item.project, note: note_body)
+    create(:note,
+      discussion_id: disc_start.discussion_id, noteable: work_item,
+      project: work_item.project, note: "reply on #{note_body}")
+
+    create(:resource_label_event, user: current_user, issue: work_item, label: label1, action: 'add')
+    create(:resource_label_event, user: current_user, issue: work_item, label: label1, action: 'remove')
+
+    create(:resource_milestone_event, issue: work_item, milestone: milestone1, action: 'add')
+    create(:resource_milestone_event, issue: work_item, milestone: milestone1, action: 'remove')
+
+    # confidential notes are currently available only on issues and epics
+    conf_disc_start = create(:discussion_note_on_issue, :confidential,
+      noteable: work_item, project: work_item.project, note: "confidential #{note_body}")
+    create(:note, :confidential,
+      discussion_id: conf_disc_start.discussion_id, noteable: work_item,
+      project: work_item.project, note: "reply on confidential #{note_body}")
   end
 end

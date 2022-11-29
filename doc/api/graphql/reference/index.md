@@ -20666,6 +20666,34 @@ Represents a milestone widget.
 | <a id="workitemwidgetmilestonemilestone"></a>`milestone` | [`Milestone`](#milestone) | Milestone of the work item. |
 | <a id="workitemwidgetmilestonetype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetNotes`
+
+Represents a notes widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetnotestype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
+#### Fields with arguments
+
+##### `WorkItemWidgetNotes.discussions`
+
+Notes on this work item.
+
+Returns [`DiscussionConnection`](#discussionconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetnotesdiscussionsfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
+
 ### `WorkItemWidgetStartAndDueDate`
 
 Represents a start and due date widget.
@@ -22025,6 +22053,16 @@ Kind of the network policy.
 | <a id="networkpolicykindciliumnetworkpolicy"></a>`CiliumNetworkPolicy` | Policy kind of Cilium Network Policy. |
 | <a id="networkpolicykindnetworkpolicy"></a>`NetworkPolicy` | Policy kind of Network Policy. |
 
+### `NotesFilterType`
+
+Work item notes collection type.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="notesfiltertypeall_notes"></a>`ALL_NOTES` | Show all activity. |
+| <a id="notesfiltertypeonly_activity"></a>`ONLY_ACTIVITY` | Show history only. |
+| <a id="notesfiltertypeonly_comments"></a>`ONLY_COMMENTS` | Show comments only. |
+
 ### `OncallRotationUnitEnum`
 
 Rotation length unit of an on-call rotation.
@@ -22816,6 +22854,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypeiteration"></a>`ITERATION` | Iteration widget. |
 | <a id="workitemwidgettypelabels"></a>`LABELS` | Labels widget. |
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
+| <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
 | <a id="workitemwidgettypestatus"></a>`STATUS` | Status widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
@@ -24111,6 +24150,7 @@ Implementations:
 - [`WorkItemWidgetIteration`](#workitemwidgetiteration)
 - [`WorkItemWidgetLabels`](#workitemwidgetlabels)
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
+- [`WorkItemWidgetNotes`](#workitemwidgetnotes)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
 - [`WorkItemWidgetStatus`](#workitemwidgetstatus)
 - [`WorkItemWidgetWeight`](#workitemwidgetweight)

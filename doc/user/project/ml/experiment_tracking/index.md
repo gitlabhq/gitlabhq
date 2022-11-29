@@ -64,7 +64,6 @@ package registry. The package name for a candidate is `ml_candidate_<candidate_i
 ### Limitations and future
 
 - Searching experiments, searching trials, visual comparison of trials, and creating, deleting and updating experiments and trials through GitLab UI is under development.
-- No support for experiment and trial metadata that do not classify as parameters or metrics.
 
 ## Disabling or enabling the Feature
 

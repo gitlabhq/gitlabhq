@@ -2,109 +2,95 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Database Documentation' do
-  context 'for each table' do
-    # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
-    let(:database_base_models) { Gitlab::Database.database_base_models.select { |k, _| k != 'geo' } }
-
-    let(:all_tables) do
-      database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
-    end
-
-    let(:metadata_required_fields) do
-      %i(
-        feature_categories
-        table_name
-      )
-    end
+RSpec.shared_examples 'validate dictionary' do |objects, directory_path, required_fields|
+  context 'for each object' do
+    let(:directory_path) {  directory_path }
 
     let(:metadata_allowed_fields) do
-      metadata_required_fields + %i(
+      required_fields + %i[
         classes
         description
         introduced_by_url
         milestone
         gitlab_schema
-      )
+      ]
     end
 
     let(:metadata) do
-      all_tables.each_with_object({}) do |table_name, hash|
-        next unless File.exist?(table_metadata_file_path(table_name))
+      objects.each_with_object({}) do |object_name, hash|
+        next unless File.exist?(object_metadata_file_path(object_name))
 
-        hash[table_name] ||= load_table_metadata(table_name)
+        hash[object_name] ||= load_object_metadata(required_fields, object_name)
       end
     end
 
-    let(:tables_without_metadata) do
-      all_tables.reject { |t| metadata.has_key?(t) }
+    let(:objects_without_metadata) do
+      objects.reject { |t| metadata.has_key?(t) }
     end
 
-    let(:tables_without_valid_metadata) do
+    let(:objects_without_valid_metadata) do
       metadata.select { |_, t| t.has_key?(:error) }.keys
     end
 
-    let(:tables_with_disallowed_fields) do
+    let(:objects_with_disallowed_fields) do
       metadata.select { |_, t| t.has_key?(:disallowed_fields) }.keys
     end
 
-    let(:tables_with_missing_required_fields) do
+    let(:objects_with_missing_required_fields) do
       metadata.select { |_, t| t.has_key?(:missing_required_fields) }.keys
     end
 
     it 'has a metadata file' do
-      expect(tables_without_metadata).to be_empty, multiline_error(
+      expect(objects_without_metadata).to be_empty, multiline_error(
         'Missing metadata files',
-        tables_without_metadata.map { |t| "  #{table_metadata_file(t)}" }
+        objects_without_metadata.map { |t| "  #{object_metadata_file(t)}" }
       )
     end
 
     it 'has a valid metadata file' do
-      expect(tables_without_valid_metadata).to be_empty, table_metadata_errors(
+      expect(objects_without_valid_metadata).to be_empty, object_metadata_errors(
         'Table metadata files with errors',
         :error,
-        tables_without_valid_metadata
+        objects_without_valid_metadata
       )
     end
 
     it 'has a valid metadata file with allowed fields' do
-      expect(tables_with_disallowed_fields).to be_empty, table_metadata_errors(
+      expect(objects_with_disallowed_fields).to be_empty, object_metadata_errors(
         'Table metadata files with disallowed fields',
         :disallowed_fields,
-        tables_with_disallowed_fields
+        objects_with_disallowed_fields
       )
     end
 
     it 'has a valid metadata file without missing fields' do
-      expect(tables_with_missing_required_fields).to be_empty, table_metadata_errors(
+      expect(objects_with_missing_required_fields).to be_empty, object_metadata_errors(
         'Table metadata files with missing fields',
         :missing_required_fields,
-        tables_with_missing_required_fields
+        objects_with_missing_required_fields
       )
     end
   end
 
   private
 
-  def table_metadata_file(table_name)
-    File.join('db', 'docs', "#{table_name}.yml")
+  def object_metadata_file(object_name)
+    File.join(directory_path, "#{object_name}.yml")
   end
 
-  def table_metadata_file_path(table_name)
-    Rails.root.join(table_metadata_file(table_name))
+  def object_metadata_file_path(object_name)
+    Rails.root.join(object_metadata_file(object_name))
   end
 
-  def load_table_metadata(table_name)
+  def load_object_metadata(required_fields, object_name)
     result = {}
     begin
-      result[:metadata] = YAML.safe_load(File.read(table_metadata_file_path(table_name))).deep_symbolize_keys
+      result[:metadata] = YAML.safe_load(File.read(object_metadata_file_path(object_name))).deep_symbolize_keys
 
       disallowed_fields = (result[:metadata].keys - metadata_allowed_fields)
-      unless disallowed_fields.empty?
-        result[:disallowed_fields] = "fields not allowed: #{disallowed_fields.join(', ')}"
-      end
+      result[:disallowed_fields] = "fields not allowed: #{disallowed_fields.join(', ')}" unless disallowed_fields.empty?
 
-      missing_required_fields = (metadata_required_fields - result[:metadata].reject { |_, v| v.blank? }.keys)
+      missing_required_fields = (required_fields - result[:metadata].reject { |_, v| v.blank? }.keys)
       unless missing_required_fields.empty?
         result[:missing_required_fields] = "missing required fields: #{missing_required_fields.join(', ')}"
       end
@@ -114,11 +100,12 @@ RSpec.describe 'Database Documentation' do
     result
   end
 
-  def table_metadata_errors(title, field, tables)
-    lines = tables.map do |table_name|
+  # rubocop:disable Naming/HeredocDelimiterNaming
+  def object_metadata_errors(title, field, objects)
+    lines = objects.map do |object_name|
       <<~EOM
-        #{table_metadata_file(table_name)}
-          #{metadata[table_name][field]}
+        #{object_metadata_file(object_name)}
+          #{metadata[object_name][field]}
       EOM
     end
 
@@ -132,4 +119,23 @@ RSpec.describe 'Database Documentation' do
       #{lines.join("\n")}
     EOM
   end
+  # rubocop:enable Naming/HeredocDelimiterNaming
+end
+
+RSpec.describe 'Views documentation', feature_category: :database do
+  database_base_models = Gitlab::Database.database_base_models.select { |k, _| k != 'geo' }
+  views = database_base_models.flat_map { |_, m| m.connection.views }.sort.uniq
+  directory_path = File.join('db', 'docs', 'views')
+  required_fields = %i[feature_categories view_name]
+
+  include_examples 'validate dictionary', views, directory_path, required_fields
+end
+
+RSpec.describe 'Tables documentation', feature_category: :database do
+  database_base_models = Gitlab::Database.database_base_models.select { |k, _| k != 'geo' }
+  tables = database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
+  directory_path = File.join('db', 'docs')
+  required_fields = %i[feature_categories table_name]
+
+  include_examples 'validate dictionary', tables, directory_path, required_fields
 end

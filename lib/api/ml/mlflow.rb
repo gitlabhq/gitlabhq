@@ -126,13 +126,30 @@ module API
             end
             params do
               requires :name, type: String, desc: 'Experiment name'
+              optional :tags, type: Array, desc: 'Tags with information about the experiment'
               optional :artifact_location, type: String, desc: 'This will be ignored'
-              optional :tags, type: Array, desc: 'This will be ignored'
             end
             post 'create', urgency: :low do
-              present experiment_repository.create!(params[:name]), with: Entities::Ml::Mlflow::NewExperiment
+              present experiment_repository.create!(params[:name], params[:tags]),
+                      with: Entities::Ml::Mlflow::NewExperiment
             rescue ActiveRecord::RecordInvalid
               resource_already_exists!
+            end
+
+            desc 'Sets a tag for an experiment.' do
+              summary 'Sets a tag for an experiment. '
+
+              detail  'https://www.mlflow.org/docs/1.28.0/rest-api.html#set-experiment-tag'
+            end
+            params do
+              requires :experiment_id, type: String, desc: 'ID of the experiment.'
+              requires :key, type: String, desc: 'Name for the tag.'
+              requires :value, type: String, desc: 'Value for the tag.'
+            end
+            post 'set-experiment-tag', urgency: :low do
+              bad_request! unless experiment_repository.add_tag!(experiment, params[:key], params[:value])
+
+              {}
             end
           end
 
@@ -148,10 +165,10 @@ module API
                                     desc: 'Unix timestamp in milliseconds of when the run started.',
                                     default: 0
               optional :user_id, type: String, desc: 'This will be ignored'
-              optional :tags, type: Array, desc: 'This will be ignored'
+              optional :tags, type: Array, desc: 'Tags are stored, but not displayed'
             end
             post 'create', urgency: :low do
-              present candidate_repository.create!(experiment, params[:start_time]),
+              present candidate_repository.create!(experiment, params[:start_time], params[:tags]),
                       with: Entities::Ml::Mlflow::Run, packages_url: packages_url
             end
 
@@ -229,6 +246,22 @@ module API
               {}
             end
 
+            desc 'Sets a tag for a run.' do
+              summary 'Sets a tag for a run. '
+
+              detail  'https://www.mlflow.org/docs/1.28.0/rest-api.html#set-tag'
+            end
+            params do
+              requires :run_id, type: String, desc: 'UUID of the run.'
+              requires :key, type: String, desc: 'Name for the tag.'
+              requires :value, type: String, desc: 'Value for the tag.'
+            end
+            post 'set-tag', urgency: :low do
+              bad_request! unless candidate_repository.add_tag!(candidate, params[:key], params[:value])
+
+              {}
+            end
+
             desc 'Logs multiple parameters and metrics.' do
               summary 'Log a batch of metrics and params for a run. Validation errors will block the entire batch, '\
                       'duplicate errors will be ignored.'
@@ -251,6 +284,7 @@ module API
             post 'log-batch', urgency: :low do
               candidate_repository.add_metrics(candidate, params[:metrics])
               candidate_repository.add_params(candidate, params[:params])
+              candidate_repository.add_tags(candidate, params[:tags])
 
               {}
             end

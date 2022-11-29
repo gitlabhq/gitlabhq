@@ -1551,13 +1551,13 @@ When testing an API it can be useful to exclude certain paths. For example, you 
 To verify the paths are excluded, review the `Tested Operations` and `Excluded Operations` portion of the job output. You should not see any excluded paths listed under `Tested Operations`.
 
 ```plaintext
-2021-05-27 21:51:08 [INF] API Security: --[ Tested Operations ]-------------------------
-2021-05-27 21:51:08 [INF] API Security: 201 POST http://target:7777/api/users CREATED
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
-2021-05-27 21:51:08 [INF] API Security: --[ Excluded Operations ]-----------------------
-2021-05-27 21:51:08 [INF] API Security: GET http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: POST http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: --[ Tested Operations ]-------------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: 201 POST http://target:7777/api/users CREATED
+2021-05-27 21:51:08 [INF] API Fuzzing: ------------------------------------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: --[ Excluded Operations ]-----------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: GET http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Fuzzing: POST http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Fuzzing: ------------------------------------------------
 ```
 
 #### Examples of excluding paths
@@ -1821,13 +1821,13 @@ As an alternative to excluding by paths, you can filter by any other component i
 In your job output you can check if any URLs matched any provided regular expression from `FUZZAPI_EXCLUDE_URLS`. Matching operations are listed in the **Excluded Operations** section. Operations listed in the **Excluded Operations** should not be listed in the **Tested Operations** section. For example the following portion of a job output:
 
 ```plaintext
-2021-05-27 21:51:08 [INF] API Security: --[ Tested Operations ]-------------------------
-2021-05-27 21:51:08 [INF] API Security: 201 POST http://target:7777/api/users CREATED
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
-2021-05-27 21:51:08 [INF] API Security: --[ Excluded Operations ]-----------------------
-2021-05-27 21:51:08 [INF] API Security: GET http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: POST http://target:7777/api/messages
-2021-05-27 21:51:08 [INF] API Security: ------------------------------------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: --[ Tested Operations ]-------------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: 201 POST http://target:7777/api/users CREATED
+2021-05-27 21:51:08 [INF] API Fuzzing: ------------------------------------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: --[ Excluded Operations ]-----------------------
+2021-05-27 21:51:08 [INF] API Fuzzing: GET http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Fuzzing: POST http://target:7777/api/messages
+2021-05-27 21:51:08 [INF] API Fuzzing: ------------------------------------------------
 ```
 
 NOTE:
@@ -2242,18 +2242,18 @@ The first step to resolving performance issues is to understand what is contribu
 The API Fuzzing job output contains helpful information about how fast we are testing, how fast each operation being tested responds, and summary information. Let's take a look at some sample output to see how it can be used in tracking down performance issues:
 
 ```shell
-API Security: Loaded 10 operations from: assets/har-large-response/large_responses.har
-API Security:
-API Security: Testing operation [1/10]: 'GET http://target:7777/api/large_response_json'.
-API Security:  - Parameters: (Headers: 4, Query: 0, Body: 0)
-API Security:  - Request body size: 0 Bytes (0 bytes)
-API Security:
-API Security: Finished testing operation 'GET http://target:7777/api/large_response_json'.
-API Security:  - Excluded Parameters: (Headers: 0, Query: 0, Body: 0)
-API Security:  - Performed 767 requests
-API Security:  - Average response body size: 130 MB
-API Security:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 seconds)
-API Security:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
+API Fuzzing: Loaded 10 operations from: assets/har-large-response/large_responses.har
+API Fuzzing:
+API Fuzzing: Testing operation [1/10]: 'GET http://target:7777/api/large_response_json'.
+API Fuzzing:  - Parameters: (Headers: 4, Query: 0, Body: 0)
+API Fuzzing:  - Request body size: 0 Bytes (0 bytes)
+API Fuzzing:
+API Fuzzing: Finished testing operation 'GET http://target:7777/api/large_response_json'.
+API Fuzzing:  - Excluded Parameters: (Headers: 0, Query: 0, Body: 0)
+API Fuzzing:  - Performed 767 requests
+API Fuzzing:  - Average response body size: 130 MB
+API Fuzzing:  - Average call time: 2 seconds and 82.69 milliseconds (2.082693 seconds)
+API Fuzzing:  - Time to complete: 14 minutes, 8 seconds and 788.36 milliseconds (848.788358 seconds)
 ```
 
 This job console output snippet starts by telling us how many operations were found (10), followed by notifications that testing has started on a specific operation and a summary of the operation has been completed. The summary is the most interesting part of this log output. In the summary, we can see that it took API Fuzzing 767 requests to fully test this operation and its related fields. We can also see that the average response time was 2 seconds and the time to complete was 14 minutes for this one operation.
@@ -2443,7 +2443,7 @@ See the following documentation sections for assistance:
 
 See [Performance Tuning and Testing Speed](#performance-tuning-and-testing-speed)
 
-### Error waiting for API Security 'http://127.0.0.1:5000' to become available
+### Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available
 
 A bug exists in versions of the API Fuzzing analyzer prior to v1.6.196 that can cause a background process to fail under certain conditions. The solution is to update to a newer version of the API Fuzzing analyzer.
 
@@ -2455,6 +2455,11 @@ If the issue is occurring with versions v1.6.196 or greater, contact Support and
 1. The full console output of the job.
 1. The `gl-api-security-scanner.log` file available as a job artifact. In the right-hand panel of the job details page, select the **Browse** button.
 1. The `apifuzzer_fuzz` job definition from your `.gitlab-ci.yml` file.
+
+**Error message**
+
+- In [GitLab 15.6 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/376078), `Error waiting for API Fuzzing 'http://127.0.0.1:5000' to become available`
+- In GitLab 15.5 and earlier, `Error waiting for API Security 'http://127.0.0.1:5000' to become available`.
 
 ### `Failed to start session with scanner. Please retry, and if the problem persists reach out to support.`
 

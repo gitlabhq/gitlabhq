@@ -506,6 +506,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+- New Git repositories created in Gitaly cluster [no longer use the `@hashed` storage path](#change-to-praefect-generated-replica-paths-in-gitlab-153). Server
+  hooks for new repositories must be copied into a different location.
 - The structure of `/etc/gitlab/gitlab-secrets.json` was modified in [GitLab 15.4](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/6310),
   and new configuration was added to `gitlab_pages`, `grafana`, and `mattermost` sections.
   In a highly available or GitLab Geo environment, secrets need to be the same on all nodes.
@@ -521,6 +523,8 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 
 - [Incorrect deletion of object storage files on Geo secondary sites](https://gitlab.com/gitlab-org/gitlab/-/issues/371397) can occur in certain situations. See [Geo: Incorrect object storage LFS file deletion on secondary site issue in GitLab 15.0.0 to 15.3.2](#geo-incorrect-object-storage-lfs-file-deletion-on-secondary-sites-in-gitlab-1500-to-1532).
 - LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later. See [Geo: LFS transfer redirect to primary from secondary site mid-session issue in GitLab 15.1.0 to 15.3.2](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session-in-gitlab-1510-to-1532) for more details.
+- New Git repositories created in Gitaly cluster [no longer use the `@hashed` storage path](#change-to-praefect-generated-replica-paths-in-gitlab-153). Server
+  hooks for new repositories must be copied into a different location.
 
 ### 15.2.0
 
@@ -1196,6 +1200,19 @@ After upgraded to 11.11.8 you can safely upgrade to 12.0.Z.
 
 See our [documentation on upgrade paths](../policy/maintenance.md#upgrade-recommendations)
 for more information.
+
+### Change to Praefect-generated replica paths in GitLab 15.3
+
+New Git repositories created in Gitaly cluster no longer use the `@hashed` storage path.
+
+Praefect now generates replica paths for use by Gitaly cluster.
+This change is a pre-requisite for Gitaly cluster atomically creating, deleting, and
+renaming Git repositories.
+
+To identify the replica path, [query the Praefect repository metadata](../administration/gitaly/troubleshooting.md#view-repository-metadata)
+and pass the `@hashed` storage path to `-relative-path`.
+
+With this information, you can correctly install [server hooks](../administration/server_hooks.md).
 
 ### Maintenance mode issue in GitLab 13.9 to 14.4
 

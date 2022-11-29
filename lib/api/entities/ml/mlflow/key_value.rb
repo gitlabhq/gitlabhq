@@ -4,7 +4,7 @@ module API
   module Entities
     module Ml
       module Mlflow
-        class RunParam < Grape::Entity
+        class KeyValue < Grape::Entity
           expose :name, as: :key
           expose :value
         end

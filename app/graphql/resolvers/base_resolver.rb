@@ -15,6 +15,13 @@ module Resolvers
       @calls_gitaly = true
     end
 
+    # This is a flag to allow us to use `complexity_multiplier` to compute complexity for connection
+    # fields(see BaseField#connection_complexity_multiplier) in resolvers that do external connection pagination,
+    # thus disabling the default `connection` option(see self.field_options method above).
+    def self.calculate_ext_conn_complexity
+      false
+    end
+
     def self.field_options
       extra_options = {
         requires_argument: @requires_argument,
@@ -116,7 +123,7 @@ module Resolvers
       # When fetching many items, additional complexity is added to the field
       # depending on how many items is fetched. For each item we add 1% of the
       # original complexity - this means that loading 100 items (our default
-      # maxp_age_size limit) doubles the original complexity.
+      # max_page_size limit) doubles the original complexity.
       #
       # Complexity is not increased when searching by specific ID(s), because
       # complexity difference is minimal in this case.

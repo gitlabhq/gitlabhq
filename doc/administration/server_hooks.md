@@ -47,14 +47,29 @@ To create server hooks for a repository:
      `pre-receive` server hook, the filename should be `pre-receive` with no extension.
    - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
      `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
-1. Make the server hook files executable and ensure that they are owned by the Git user.
+1. **Make the server hook files executable** and ensure that they are owned by the Git user.
 1. Write the code to make the server hook function as expected. Git server hooks can be in any programming language. Ensure
    the [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.
-1. Make the hook file executable, ensure that it's owned by the Git user, and ensure it does not match the backup file
+1. Ensure the hook file does not match the backup file
    pattern (`*~`).
 
 If the server hook code is properly implemented, it should execute when the Git hook is next triggered.
+
+### Gitaly Cluster
+
+If you use [Gitaly Cluster](gitaly/index.md), the scripts must be copied to every Gitaly node that has a replica of the repository. Every Gitaly node
+needs a copy because any node can be made a primary at any time. Server hooks only run on primary nodes.
+
+The location to copy the scripts to depends on where repositories are stored:
+
+- In GitLab 15.2 and earlier, Gitaly Cluster uses the [hashed storage path](repository_storage_types.md#hashed-storage)
+  reported by the GitLab application.
+- In GitLab 15.3 and later, new repositories are created using
+  [Praefect-generated replica paths](gitaly/index.md#praefect-generated-replica-paths-gitlab-150-and-later),
+  which are not the hashed storage path. The replica path can be identified by
+  [querying the Praefect repository metadata](../administration/gitaly/troubleshooting.md#view-repository-metadata)
+  using `-relative-path` to specify the expected GitLab hashed storage path.
 
 ## Create global server hooks for all repositories
 

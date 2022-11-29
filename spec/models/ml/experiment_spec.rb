@@ -13,6 +13,7 @@ RSpec.describe Ml::Experiment do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }
     it { is_expected.to have_many(:candidates) }
+    it { is_expected.to have_many(:metadata) }
   end
 
   describe '#by_project_id_and_iid' do

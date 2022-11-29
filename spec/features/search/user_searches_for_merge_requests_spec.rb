@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate_limiting do
+RSpec.describe 'User searches for merge requests', :js, :clean_gitlab_redis_rate_limiting, feature_category: :global_search do
   using RSpec::Parameterized::TableSyntax
 
   let(:user) { create(:user) }

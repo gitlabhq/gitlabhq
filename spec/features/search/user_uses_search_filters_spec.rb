@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User uses search filters', :js do
+RSpec.describe 'User uses search filters', :js, feature_category: :global_search do
   let(:group) { create(:group) }
   let!(:group_project) { create(:project, group: group) }
   let(:project) { create(:project, namespace: user.namespace) }

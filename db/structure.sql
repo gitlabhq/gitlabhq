@@ -17894,6 +17894,26 @@ CREATE SEQUENCE milestones_id_seq
 
 ALTER SEQUENCE milestones_id_seq OWNED BY milestones.id;
 
+CREATE TABLE ml_candidate_metadata (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    candidate_id bigint NOT NULL,
+    name text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_6b38a286a5 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_9453f4a8e9 CHECK ((char_length(value) <= 5000))
+);
+
+CREATE SEQUENCE ml_candidate_metadata_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_candidate_metadata_id_seq OWNED BY ml_candidate_metadata.id;
+
 CREATE TABLE ml_candidate_metrics (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -17956,6 +17976,26 @@ CREATE SEQUENCE ml_candidates_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ml_candidates_id_seq OWNED BY ml_candidates.id;
+
+CREATE TABLE ml_experiment_metadata (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    experiment_id bigint NOT NULL,
+    name text NOT NULL,
+    value text NOT NULL,
+    CONSTRAINT check_112fe5002d CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_a91c633d68 CHECK ((char_length(value) <= 5000))
+);
+
+CREATE SEQUENCE ml_experiment_metadata_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ml_experiment_metadata_id_seq OWNED BY ml_experiment_metadata.id;
 
 CREATE TABLE ml_experiments (
     id bigint NOT NULL,
@@ -24138,11 +24178,15 @@ ALTER TABLE ONLY metrics_users_starred_dashboards ALTER COLUMN id SET DEFAULT ne
 
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
 
+ALTER TABLE ONLY ml_candidate_metadata ALTER COLUMN id SET DEFAULT nextval('ml_candidate_metadata_id_seq'::regclass);
+
 ALTER TABLE ONLY ml_candidate_metrics ALTER COLUMN id SET DEFAULT nextval('ml_candidate_metrics_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_candidate_params ALTER COLUMN id SET DEFAULT nextval('ml_candidate_params_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_candidates ALTER COLUMN id SET DEFAULT nextval('ml_candidates_id_seq'::regclass);
+
+ALTER TABLE ONLY ml_experiment_metadata ALTER COLUMN id SET DEFAULT nextval('ml_experiment_metadata_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_experiments ALTER COLUMN id SET DEFAULT nextval('ml_experiments_id_seq'::regclass);
 
@@ -26207,6 +26251,9 @@ ALTER TABLE ONLY milestone_releases
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY ml_candidate_metadata
+    ADD CONSTRAINT ml_candidate_metadata_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY ml_candidate_metrics
     ADD CONSTRAINT ml_candidate_metrics_pkey PRIMARY KEY (id);
 
@@ -26215,6 +26262,9 @@ ALTER TABLE ONLY ml_candidate_params
 
 ALTER TABLE ONLY ml_candidates
     ADD CONSTRAINT ml_candidates_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ml_experiment_metadata
+    ADD CONSTRAINT ml_experiment_metadata_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ml_experiments
     ADD CONSTRAINT ml_experiments_pkey PRIMARY KEY (id);
@@ -29902,6 +29952,10 @@ CREATE INDEX index_milestones_on_title_trigram ON milestones USING gin (title gi
 
 CREATE INDEX index_mirror_data_non_scheduled_or_started ON project_mirror_data USING btree (next_execution_timestamp, retry_count) WHERE ((status)::text <> ALL ('{scheduled,started}'::text[]));
 
+CREATE UNIQUE INDEX index_ml_candidate_metadata_on_candidate_id_and_name ON ml_candidate_metadata USING btree (candidate_id, name);
+
+CREATE INDEX index_ml_candidate_metadata_on_name ON ml_candidate_metadata USING btree (name);
+
 CREATE INDEX index_ml_candidate_metrics_on_candidate_id ON ml_candidate_metrics USING btree (candidate_id);
 
 CREATE INDEX index_ml_candidate_params_on_candidate_id ON ml_candidate_params USING btree (candidate_id);
@@ -29911,6 +29965,8 @@ CREATE UNIQUE INDEX index_ml_candidate_params_on_candidate_id_on_name ON ml_cand
 CREATE UNIQUE INDEX index_ml_candidates_on_experiment_id_and_iid ON ml_candidates USING btree (experiment_id, iid);
 
 CREATE INDEX index_ml_candidates_on_user_id ON ml_candidates USING btree (user_id);
+
+CREATE UNIQUE INDEX index_ml_experiment_metadata_on_experiment_id_and_name ON ml_experiment_metadata USING btree (experiment_id, name);
 
 CREATE UNIQUE INDEX index_ml_experiments_on_project_id_and_iid ON ml_experiments USING btree (project_id, iid);
 
@@ -34352,6 +34408,9 @@ ALTER TABLE ONLY ci_pipeline_metadata
 ALTER TABLE ONLY project_repository_storage_moves
     ADD CONSTRAINT fk_rails_5106dbd44a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ml_candidate_metadata
+    ADD CONSTRAINT fk_rails_5117dddf22 FOREIGN KEY (candidate_id) REFERENCES ml_candidates(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY bulk_import_configurations
     ADD CONSTRAINT fk_rails_536b96bff1 FOREIGN KEY (bulk_import_id) REFERENCES bulk_imports(id) ON DELETE CASCADE;
 
@@ -34528,6 +34587,9 @@ ALTER TABLE ONLY plan_limits
 
 ALTER TABLE ONLY operations_feature_flags_issues
     ADD CONSTRAINT fk_rails_6a8856ca4f FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ml_experiment_metadata
+    ADD CONSTRAINT fk_rails_6b39844d44 FOREIGN KEY (experiment_id) REFERENCES ml_experiments(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY error_tracking_errors
     ADD CONSTRAINT fk_rails_6b41f837ba FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

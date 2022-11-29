@@ -77,6 +77,14 @@ module Types
       def author
         Gitlab::Graphql::Loaders::BatchModelLoader.new(User, object.author_id).find
       end
+
+      # We now support also SyntheticNote notes as a NoteType, but SyntheticNote does not have a real note ID,
+      # as SyntheticNote is generated dynamically from a ResourceEvent instance.
+      def id
+        return super unless object.is_a?(SyntheticNote)
+
+        ::Gitlab::GlobalId.build(object, model_name: object.class.to_s, id: "not-persisted")
+      end
     end
   end
 end

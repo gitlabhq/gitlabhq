@@ -36,15 +36,52 @@ module WorkItems
     }.freeze
 
     WIDGETS_FOR_TYPE = {
-      issue: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
-              Widgets::Milestone],
-      incident: [Widgets::Description, Widgets::Hierarchy],
-      test_case: [Widgets::Description],
-      requirement: [Widgets::Description],
-      task: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::StartAndDueDate,
-             Widgets::Milestone],
-      objective: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::Hierarchy, Widgets::Milestone],
-      key_result: [Widgets::Assignees, Widgets::Labels, Widgets::Description, Widgets::StartAndDueDate]
+      issue: [
+        Widgets::Assignees,
+        Widgets::Labels,
+        Widgets::Description,
+        Widgets::Hierarchy,
+        Widgets::StartAndDueDate,
+        Widgets::Milestone,
+        Widgets::Notes
+      ],
+      incident: [
+        Widgets::Description,
+        Widgets::Hierarchy,
+        Widgets::Notes
+      ],
+      test_case: [
+        Widgets::Description,
+        Widgets::Notes
+      ],
+      requirement: [
+        Widgets::Description,
+        Widgets::Notes
+      ],
+      task: [
+        Widgets::Assignees,
+        Widgets::Labels,
+        Widgets::Description,
+        Widgets::Hierarchy,
+        Widgets::StartAndDueDate,
+        Widgets::Milestone,
+        Widgets::Notes
+      ],
+      objective: [
+        Widgets::Assignees,
+        Widgets::Labels,
+        Widgets::Description,
+        Widgets::Hierarchy,
+        Widgets::Milestone,
+        Widgets::Notes
+      ],
+      key_result: [
+        Widgets::Assignees,
+        Widgets::Labels,
+        Widgets::Description,
+        Widgets::StartAndDueDate,
+        Widgets::Notes
+      ]
     }.freeze
 
     WI_TYPES_WITH_CREATED_HEADER = %w[issue incident].freeze

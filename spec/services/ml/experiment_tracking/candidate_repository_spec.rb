@@ -31,12 +31,16 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
   end
 
   describe '#create!' do
-    subject { repository.create!(experiment, 1234) }
+    subject { repository.create!(experiment, 1234, [{ key: 'hello', value: 'world' }]) }
 
     it 'creates the candidate' do
       expect(subject.start_time).to eq(1234)
       expect(subject.iid).not_to be_nil
       expect(subject.end_time).to be_nil
+    end
+
+    it 'creates with tag' do
+      expect(subject.metadata.length).to eq(1)
     end
   end
 
@@ -118,6 +122,32 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
     end
   end
 
+  describe '#add_tag!' do
+    let(:props) { { name: 'abc', value: 'def' } }
+
+    subject { repository.add_tag!(candidate, props[:name], props[:value]) }
+
+    it 'adds a new tag' do
+      expect { subject }.to change { candidate.reload.metadata.size }.by(1)
+    end
+
+    context 'when name missing' do
+      let(:props) { { value: 1234 } }
+
+      it 'throws RecordInvalid' do
+        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'when tag was already added' do
+      it 'throws RecordInvalid' do
+        repository.add_tag!(candidate, 'new', props[:value])
+
+        expect { repository.add_tag!(candidate, 'new', props[:value]) }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+  end
+
   describe "#add_params" do
     let(:params) do
       [{ key: 'model_class', value: 'LogisticRegression' }, { 'key': 'pythonEnv', value: '3.10' }]
@@ -193,6 +223,52 @@ RSpec.describe ::Ml::ExperimentTracking::CandidateRepository do
 
       it 'adds all of them' do
         expect { subject }.to change { candidate.reload.metrics.size }.by(3)
+      end
+    end
+  end
+
+  describe "#add_tags" do
+    let(:tags) do
+      [{ key: 'gitlab.tag1', value: 'hello' }, { 'key': 'gitlab.tag2', value: 'world' }]
+    end
+
+    subject { repository.add_tags(candidate, tags) }
+
+    it 'adds the tags' do
+      expect { subject }.to change { candidate.reload.metadata.size }.by(2)
+    end
+
+    context 'if tags misses key' do
+      let(:tags) { [{ value: 'hello' }] }
+
+      it 'does throw and does not add' do
+        expect { subject }.to raise_error(ActiveRecord::ActiveRecordError)
+      end
+    end
+
+    context 'if tag misses value' do
+      let(:tags) { [{ key: 'gitlab.tag1' }] }
+
+      it 'does throw and does not add' do
+        expect { subject }.to raise_error(ActiveRecord::ActiveRecordError)
+      end
+    end
+
+    context 'if tag repeated' do
+      let(:params) do
+        [
+          { 'key': 'gitlab.tag1', value: 'hello' },
+          { 'key': 'gitlab.tag2', value: 'world' },
+          { 'key': 'gitlab.tag1', value: 'gitlab' }
+        ]
+      end
+
+      before do
+        repository.add_tag!(candidate, 'gitlab.tag2', '0')
+      end
+
+      it 'does not throw and adds only the first of each kind' do
+        expect { subject }.to change { candidate.reload.metadata.size }.by(1)
       end
     end
   end

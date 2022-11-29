@@ -336,8 +336,10 @@ milestone_releases: :gitlab_main
 milestones: :gitlab_main
 ml_candidates: :gitlab_main
 ml_experiments: :gitlab_main
+ml_experiment_metadata: :gitlab_main
 ml_candidate_metrics: :gitlab_main
 ml_candidate_params: :gitlab_main
+ml_candidate_metadata: :gitlab_main
 namespace_admin_notes: :gitlab_main
 namespace_aggregation_schedules: :gitlab_main
 namespace_bans: :gitlab_main

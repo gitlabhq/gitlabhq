@@ -611,10 +611,10 @@ class MyMigration < Gitlab::Database::Migration[2.0]
 end
 ```
 
-Verify the index is not being used anymore with this Thanos query:
+You can verify that the index is not being used with [Thanos](https://thanos-query.ops.gitlab.net/graph?g0.expr=sum%20by%20(type)(rate(pg_stat_user_indexes_idx_scan%7Benv%3D%22gprd%22%2C%20indexrelname%3D%22INSERT%20INDEX%20NAME%20HERE%22%7D%5B30d%5D))&g0.tab=1&g0.stacked=0&g0.range_input=1h&g0.max_source_resolution=0s&g0.deduplicate=1&g0.partial_response=0&g0.store_matches=%5B%5D):
 
 ```sql
-sum by (type)(rate(pg_stat_user_indexes_idx_scan{env="gprd", indexrelname="index_groups_on_parent_id_id"}[5m]))
+sum by (type)(rate(pg_stat_user_indexes_idx_scan{env="gprd", indexrelname="INSERT INDEX NAME HERE"}[30d]))
 ```
 
 Note that it is not necessary to check if the index exists prior to

@@ -20,6 +20,8 @@ RSpec.describe MilestoneNote do
       it 'creates the expected note' do
         expect(subject.note_html).to include('removed milestone')
         expect(subject.note_html).not_to include('changed milestone to')
+        expect(subject.created_at).to eq(event.created_at)
+        expect(subject.updated_at).to eq(event.created_at)
       end
     end
   end

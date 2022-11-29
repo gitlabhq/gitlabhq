@@ -14,11 +14,15 @@ module Ml
         ::Ml::Candidate.with_project_id_and_iid(project.id, iid)
       end
 
-      def create!(experiment, start_time)
-        experiment.candidates.create!(
+      def create!(experiment, start_time, tags = nil)
+        candidate = experiment.candidates.create!(
           user: user,
           start_time: start_time || 0
         )
+
+        add_tags(candidate, tags)
+
+        candidate
       end
 
       def update(candidate, status, end_time)
@@ -41,36 +45,21 @@ module Ml
         candidate.params.create!(name: name, value: value)
       end
 
+      def add_tag!(candidate, name, value)
+        candidate.metadata.create!(name: name, value: value)
+      end
+
       def add_metrics(candidate, metric_definitions)
-        return unless candidate.present?
-
-        metrics = metric_definitions.map do |metric|
-          {
-            candidate_id: candidate.id,
-            name: metric[:key],
-            value: metric[:value],
-            tracked_at: metric[:timestamp],
-            step: metric[:step],
-            **timestamps
-          }
-        end
-
-        ::Ml::CandidateMetric.insert_all(metrics, returning: false) unless metrics.empty?
+        extra_keys = { tracked_at: :timestamp, step: :step }
+        insert_many(candidate, metric_definitions, ::Ml::CandidateMetric, extra_keys)
       end
 
       def add_params(candidate, param_definitions)
-        return unless candidate.present?
+        insert_many(candidate, param_definitions, ::Ml::CandidateParam)
+      end
 
-        parameters = param_definitions.map do |p|
-          {
-            candidate_id: candidate.id,
-            name: p[:key],
-            value: p[:value],
-            **timestamps
-          }
-        end
-
-        ::Ml::CandidateParam.insert_all(parameters, returning: false) unless parameters.empty?
+      def add_tags(candidate, tag_definitions)
+        insert_many(candidate, tag_definitions, ::Ml::CandidateMetadata)
       end
 
       private
@@ -79,6 +68,22 @@ module Ml
         current_time = Time.zone.now
 
         { created_at: current_time, updated_at: current_time }
+      end
+
+      def insert_many(candidate, definitions, entity_class, extra_keys = {})
+        return unless candidate.present? && definitions.present?
+
+        entities = definitions.map do |d|
+          {
+            candidate_id: candidate.id,
+            name: d[:key],
+            value: d[:value],
+            **extra_keys.transform_values { |old_key| d[old_key] },
+            **timestamps
+          }
+        end
+
+        entity_class.insert_all(entities, returning: false) unless entities.empty?
       end
     end
   end
