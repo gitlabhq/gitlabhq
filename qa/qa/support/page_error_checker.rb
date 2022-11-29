@@ -107,7 +107,7 @@ module QA
         end
 
         def logs(page)
-          page.driver.browser.manage.logs.get(:browser)
+          page.driver.browser.logs.get(:browser)
         end
 
         private

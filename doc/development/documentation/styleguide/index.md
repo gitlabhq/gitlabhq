@@ -1429,9 +1429,7 @@ When names change, it is more complicated to search or grep text that has line b
 ### Product tier badges
 
 Tier badges are displayed as orange text next to a topic title. These badges link to the GitLab
-pricing page. For example:
-
-![Tier badge](img/tier_badge.png)
+pricing page.
 
 You must assign a tier badge:
 
@@ -1451,17 +1449,17 @@ functionality is described.
 
 #### Available product tier badges
 
-| Tier in which feature is available                                      | Tier badge            |
-|:------------------------------------------------------------------------|:----------------------|
-| GitLab Free self-managed and SaaS, and higher tiers                     | `**(FREE)**`          |
-| GitLab Premium self-managed and SaaS, and their higher tiers            | `**(PREMIUM)**`       |
-| GitLab Ultimate self-managed and SaaS                                   | `**(ULTIMATE)**`      |
-| Only GitLab Free self-managed and higher tiers (no SaaS-based tiers)    | `**(FREE SELF)**`     |
-| Only GitLab Premium self-managed and higher tiers (no SaaS-based tiers) | `**(PREMIUM SELF)**`  |
-| Only GitLab Ultimate self-managed (no SaaS-based tiers)                 | `**(ULTIMATE SELF)**` |
-| Only GitLab Free SaaS and higher tiers (no self-managed instances)      | `**(FREE SAAS)**`     |
-| Only GitLab Premium SaaS and higher tiers (no self-managed instances)   | `**(PREMIUM SAAS)**`  |
-| Only GitLab Ultimate SaaS (no self-managed instances)                   | `**(ULTIMATE SAAS)**` |
+| Where feature is available                                                               | Tier badge            |
+|:-----------------------------------------------------------------------------------------|:----------------------|
+| On GitLab self-managed and GitLab SaaS, available in all tiers.                          | `**(FREE)**`          |
+| On GitLab self-managed and GitLab SaaS, available in Premium and Ultimate.               | `**(PREMIUM)**`       |
+| On GitLab self-managed and GitLab SaaS, available in Ultimate.                           | `**(ULTIMATE)**`      |
+| On GitLab self-managed, available in all tiers. Not available on GitLab SaaS.            | `**(FREE SELF)**`     |
+| On GitLab self-managed, available in Premium and Ultimate. Not available on GitLab SaaS. | `**(PREMIUM SELF)**`  |
+| On GitLab self-managed, available in Ultimate. Not available on GitLab SaaS.             | `**(ULTIMATE SELF)**` |
+| On GitLab SaaS, available in all tiers. Not available on self-managed.                   | `**(FREE SAAS)**`     |
+| On GitLab SaaS, available in Premium and Ultimate. Not available on self-managed.        | `**(PREMIUM SAAS)**`  |
+| On GitLab SaaS, available in Ultimate. Not available on self-managed.                    | `**(ULTIMATE SAAS)**` |
 
 Topics that are only for instance administrators should be badged `<TIER> SELF`. Instance
 administrator documentation often includes sections that mention:

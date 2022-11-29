@@ -196,18 +196,14 @@ Our pipeline is most performant if we use the following `.gitlab-ci.yml`:
 
 ```yaml
 variables:
-  GIT_DEPTH: 10
   GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_CONCURRENT_ID/$CI_PROJECT_NAME
 
 build:
   script: ls -al
 ```
 
-The above configures a:
-
-- Shallow clone of 10, to speed up subsequent `git fetch` commands.
-- Custom clone path to make it possible to re-use worktrees between parent project and all forks
-  because we use the same clone path for all forks.
+This YAML setting configures a custom clone path. This path makes it possible to re-use worktrees 
+between the parent project and forks because we use the same clone path for all forks.
 
 Why use `$CI_CONCURRENT_ID`? The main reason is to ensure that worktrees used are not conflicting
 between projects. The `$CI_CONCURRENT_ID` represents a unique identifier within the given executor.

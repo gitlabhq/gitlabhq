@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Group' do
+RSpec.describe 'Dashboard Group', feature_category: :subgroups do
   before do
     sign_in(create(:user))
   end

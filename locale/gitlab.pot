@@ -16209,7 +16209,19 @@ msgstr ""
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
+msgid "Example: (feature|hotfix)\\/*"
+msgstr ""
+
+msgid "Example: (jar|exe)$"
+msgstr ""
+
 msgid "Example: @sub\\.company\\.com$"
+msgstr ""
+
+msgid "Example: Fixes \\d+\\..*"
+msgstr ""
+
+msgid "Example: ssh\\:\\/\\/"
 msgstr ""
 
 msgid "Examples"

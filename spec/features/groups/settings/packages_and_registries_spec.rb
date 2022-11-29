@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Package and registry settings' do
+RSpec.describe 'Group Package and registry settings', feature_category: :package_registry do
   include WaitForRequests
 
   let(:user) { create(:user) }

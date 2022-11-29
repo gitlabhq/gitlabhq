@@ -5,6 +5,8 @@ module QA
     type: :broken,
     issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/382166"
   } do
+    include QA::Support::Data::Github
+
     let!(:api_client) { Runtime::API::Client.as_admin }
 
     let!(:group) do
@@ -28,7 +30,7 @@ module QA
         project.name = 'imported-project'
         project.group = group
         project.github_personal_access_token = Runtime::Env.github_access_token
-        project.github_repository_path = 'gitlab-qa-github/import-test'
+        project.github_repository_path = "#{github_username}/import-test"
         project.api_client = user_api_client
         project.issue_events_import = true
         project.full_notes_import = true

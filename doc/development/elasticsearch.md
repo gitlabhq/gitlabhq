@@ -115,7 +115,7 @@ Patterns:
 
 - `"(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)"`: captures CamelCased and lowedCameCased strings as separate tokens
 - `"(\\d+)"`: extracts digits
-- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCased strings recursively. Ex: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
+- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCased strings recursively. For example: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
 - `'"((?:\\"|[^"]|\\")*)"'`: captures terms inside quotes, removing the quotes
 - `"'((?:\\'|[^']|\\')*)'"`: same as above, for single-quotes
 - `'\.([^.]+)(?=\.|\s|\Z)'`: separate terms with periods in-between

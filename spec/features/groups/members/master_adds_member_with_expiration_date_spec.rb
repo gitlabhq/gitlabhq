@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Owner adds member with expiration date', :js do
+RSpec.describe 'Groups > Members > Owner adds member with expiration date', :js, feature_category: :subgroups do
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper
 

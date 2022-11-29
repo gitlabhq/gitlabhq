@@ -22,8 +22,7 @@ module QA
     let!(:source_admin_user) do
       Resource::User.fabricate_via_api! do |usr|
         usr.api_client = source_admin_api_client
-        usr.username = "root"
-        usr.email = "admin@example.com"
+        usr.username = Runtime::Env.admin_username || "root"
       end.tap(&:set_public_email)
     end
     let!(:source_group) do
@@ -40,8 +39,7 @@ module QA
     let!(:admin_user) do
       Resource::User.fabricate_via_api! do |usr|
         usr.api_client = admin_api_client
-        usr.username = "root"
-        usr.email = "admin@example.com"
+        usr.username = Runtime::Env.admin_username || "root"
       end.tap(&:set_public_email)
     end
     let!(:user) do

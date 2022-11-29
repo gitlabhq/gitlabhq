@@ -5,8 +5,10 @@ module QA
   # Keep spec in reliable bucket but don't run in blocking pipelines
   RSpec.describe 'Manage', :github, :reliable, :skip_live_env, :requires_admin, product_group: :import do
     describe 'GitHub import' do
+      include QA::Support::Data::Github
+
       context 'when imported via UI' do
-        let(:github_repo) { 'gitlab-qa-github/import-test' }
+        let(:github_repo) { "#{github_username}/import-test" }
         let(:api_client) { Runtime::API::Client.as_admin }
         let(:group) { Resource::Group.fabricate_via_api! { |resource| resource.api_client = api_client } }
         let(:user) do

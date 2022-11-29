@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > Milestones' do
+RSpec.describe 'Dashboard > Milestones', feature_category: :team_planning do
   describe 'as anonymous user' do
     before do
       visit dashboard_milestones_path

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Projects' do
+RSpec.describe 'Dashboard Projects', feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project, reload: true) { create(:project, :repository) }
   let_it_be(:project2) { create(:project, :public) }

@@ -463,7 +463,7 @@ Read more about when and how feature flags should be used in
 
 We can consider the following types of storages:
 
-- **Local temporary storage** (very-very short-term storage) This type of storage is system-provided storage, ex. `/tmp` folder.
+- **Local temporary storage** (very-very short-term storage) This type of storage is system-provided storage, like a `/tmp` folder.
   This is the type of storage that you should ideally use for all your temporary tasks.
   The fact that each node has its own temporary storage makes scaling significantly easier.
   This storage is also very often SSD-based, thus is significantly faster.
@@ -480,7 +480,7 @@ We can consider the following types of storages:
   Be respectful of that.
 
 - **Shared persistent storage** (long-term storage) This type of storage uses
-  shared network-based storage (ex. NFS). This solution is mostly used by customers running small
+  shared network-based storage (for example, NFS). This solution is mostly used by customers running small
   installations consisting of a few nodes. The files on shared storage are easily accessible,
   but any job that is uploading or downloading data can create a serious contention to all other jobs.
   This is also an approach by default used by Omnibus.
@@ -531,7 +531,7 @@ The move operation on the same destination is instantaneous.
 The system instead of performing `copy` operation just re-attaches file into a new place.
 
 Since this introduces extra complexity into application, you should only try
-to re-use well established patterns (ex.: `ObjectStorage` concern) instead of re-implementing it.
+to re-use well established patterns (for example, `ObjectStorage` concern) instead of re-implementing it.
 
 The usage of shared temporary storage is otherwise deprecated for all other usages.
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group Export', :js do
+RSpec.describe 'Group Export', :js, feature_category: :importers do
   include ExportFileHelper
 
   let_it_be(:user) { create(:user) }

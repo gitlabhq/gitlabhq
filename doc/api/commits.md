@@ -100,15 +100,15 @@ POST /projects/:id/repository/commits
 | `stats` | boolean | no | Include commit stats. Default is true |
 | `force` | boolean | no | When `true` overwrites the target branch with a new commit based on the `start_branch` or `start_sha` |
 
-| `actions[]` Attribute | Type | Required | Description |
-| --------------------- | ---- | -------- | ----------- |
-| `action` | string | yes | The action to perform, `create`, `delete`, `move`, `update`, `chmod`|
-| `file_path` | string | yes | Full path to the file. Ex. `lib/class.rb` |
-| `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb`. Only considered for `move` action. |
-| `content` | string | no | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` preserve the existing file content, and any other value of `content` overwrites the file content. |
-| `encoding` | string | no | `text` or `base64`. `text` is default. |
-| `last_commit_id` | string | no | Last known file commit ID. Only considered in update, move, and delete actions. |
-| `execute_filemode` | boolean | no | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
+| `actions[]` Attribute | Type    | Required | Description |
+|-----------------------|---------|----------|-------------|
+| `action`              | string  | yes      | The action to perform: `create`, `delete`, `move`, `update`, or `chmod`. |
+| `file_path`           | string  | yes      | Full path to the file. For example: `lib/class.rb`. |
+| `previous_path`       | string  | no       | Original full path to the file being moved. For example `lib/class1.rb`. Only considered for `move` action. |
+| `content`             | string  | no       | File content, required for all except `delete`, `chmod`, and `move`. Move actions that do not specify `content` preserve the existing file content, and any other value of `content` overwrites the file content. |
+| `encoding`            | string  | no       | `text` or `base64`. `text` is default. |
+| `last_commit_id`      | string  | no       | Last known file commit ID. Only considered in update, move, and delete actions. |
+| `execute_filemode`    | boolean | no       | When `true/false` enables/disables the execute flag on the file. Only considered for `chmod` action. |
 
 ```shell
 PAYLOAD=$(cat << 'JSON'

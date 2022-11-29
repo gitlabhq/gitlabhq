@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Container Registry', :js do
+RSpec.describe 'Container Registry', :js, feature_category: :container_registry do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }

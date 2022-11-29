@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group labels' do
+RSpec.describe 'Group labels', feature_category: :team_planning do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
   let!(:label) { create(:group_label, group: group) }

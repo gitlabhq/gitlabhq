@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Group Runners" do
+RSpec.describe "Group Runners", feature_category: :runner do
   include Spec::Support::Helpers::Features::RunnersHelpers
   include Spec::Support::Helpers::ModalHelpers
 

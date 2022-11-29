@@ -4,59 +4,67 @@ group: Incubation
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Tutorial: Use the GitLab UI to deploy your static site **(FREE)**
+# Create a Pages deployment for your static site **(FREE)**
 
-This tutorial assumes you have a project that either:
+To generate a GitLab Pages website, you can fill out forms that
+automatically generate a `.gitlab-ci.yml` file and open a
+merge request with your changes. When you commit the merge request,
+a pipeline deploys your Pages website.
 
-- Generates static sites or a client-rendered single-page application (SPA),
-  such as [Eleventy](https://www.11ty.dev), [Astro](https://astro.build), or [Jekyll](https://jekyllrb.com).
-- Contains a framework configured for static output, such as [Next.js](https://nextjs.org),
-  [Nuxt.js](https://nuxtjs.org), or [SvelteKit](https://kit.svelte.dev).
+## Prerequisites
 
-## Update your app to output files to the `public` folder
+- Your app must [output files to the `public` folder](../public_folder.md). If you create
+  this folder during the build pipeline, you do not need to commit it to Git.
 
-GitLab Pages requires all files intended to be part of the published website to
-be in a root-level folder called `public`. If you create this folder during the build
-pipeline, committing it to Git is not required.
+  WARNING:
+  This step is important. Ensure your files are in a root-level `public` folder.
 
-For detailed instructions, read [Configure the public files folder](../public_folder.md).
+- You must have a project that either:
+  - Generates static sites or a client-rendered single-page application (SPA),
+    like [Eleventy](https://www.11ty.dev), [Astro](https://astro.build), or [Jekyll](https://jekyllrb.com).
+  - Contains a framework configured for static output, such as [Next.js](https://nextjs.org),
+    [Nuxt.js](https://nuxtjs.org), or [SvelteKit](https://kit.svelte.dev).
+- GitLab Pages must be enabled for the project. (To enable, go to **Settings > General**,
+  expand **Visibility, project features, permissions**, and turn on the **Pages** toggle.)
 
-## Set up the `.gitlab-ci.yml` file
+## Create the Pages deployment
 
-GitLab helps you write the `.gitlab-ci.yml` needed to create your first GitLab Pages
-deployment pipeline. Rather than building the file from scratch, it asks you to
-provide the build commands, and creates the necessary boilerplate for you.
-
-To build your YAML file from the GitLab UI:
+To complete the setup and generate a GitLab Pages deployment:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages** to display the friendly
-   interface **Get Started With Pages**.
-1. If your framework's build process does not need one of the provided build
-   commands, you can either:
+1. On the left sidebar, select **Settings > Pages**. A **Get Started with Pages** form appears.
+   If this form is not available, see [Troubleshooting](#if-the-get-started-with-pages-form-is-not-available).
+1. For **Step 1**, enter an image name and verify that your files are in a `public` folder.
+1. Select **Next**.
+1. For **Step 2**, enter your installation steps. If your framework's build process does not
+   need one of the provided build commands, you can either:
    - Skip the step by selecting **Next**.
    - Enter `:` (the bash "do nothing" command) if you still want to incorporate that
      step's boilerplate into your `.gitlab-ci.yml` file.
-1. Optional. Edit and adjust the generated `.gitlab-ci.yml` file as needed.
-1. Commit your `.gitlab-ci.yml` to your repository. This commit triggers your first
+1. Select **Next**.
+1. For **Step 3**, enter scripts that indicate how to build your application.
+1. Select **Next**.
+1. Optional. Edit the generated `.gitlab-ci.yml` file as needed.
+1. For **Step 4**, add a commit message and select **Commit**. This commit triggers your first
    GitLab Pages deployment.
 
-To view the HTMl and other assets that were created for the site,
-go to **CI/CD > Pipelines**, view the job, and on the right side,
-select **Download artifacts**.
+To view the running pipeline, go to **CI/CD > Pipelines**.
+
+To view the artifacts that were created during the deployment, view the job,
+and on the right side, select **Download artifacts**.
 
 ## Troubleshooting
 
-### If you can't see the "Get Started with Pages" interface
+### If the `Get Started with Pages` form is not available
 
-GitLab doesn't show this interface if you have either:
+When you go to **Settings > Pages**, the form is not available if you:
 
 - Deployed a GitLab Pages site before.
-- Committed a `.gitlab-ci.yml` through this interface at least once.
+- Committed a `.gitlab-ci.yml` through the forms at least one time.
 
-To fix this problem:
+To fix this issue:
 
-- If you see the message **Waiting for the Pages Pipeline to complete**, select
-  **Start over** to start the wizard again.
+- If the message **Waiting for the Pages Pipeline to complete** appears, select
+  **Start over** to start the form again.
 - If your project has previously deployed GitLab Pages successfully,
-  [manually update](pages_from_scratch.md) your `.gitlab-ci.yml`.
+  [manually update](pages_from_scratch.md) your `.gitlab-ci.yml` file.

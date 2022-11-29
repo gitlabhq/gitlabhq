@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Edit group settings' do
+RSpec.describe 'Edit group settings', feature_category: :subgroups do
   let(:user)  { create(:user) }
   let(:group) { create(:group, path: 'foo') }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > Members > Filter members', :js do
+RSpec.describe 'Groups > Members > Filter members', :js, feature_category: :subgroups do
   include Spec::Support::Helpers::Features::MembersHelpers
 
   let(:user)              { create(:user) }

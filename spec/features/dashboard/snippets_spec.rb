@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard snippets' do
+RSpec.describe 'Dashboard snippets', feature_category: :snippets do
   let_it_be(:user) { create(:user) }
 
   context 'when the project has snippets' do

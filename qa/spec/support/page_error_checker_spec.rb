@@ -387,15 +387,9 @@ RSpec.describe QA::Support::PageErrorChecker do
         end
       end
       stub_const('Logs', logs_class)
-      manage_class = Class.new do
+      browser_class = Class.new do
         def self.logs
           Logs
-        end
-      end
-      stub_const('Manage', manage_class)
-      browser_class = Class.new do
-        def self.manage
-          Manage
         end
       end
       stub_const('Browser', browser_class)

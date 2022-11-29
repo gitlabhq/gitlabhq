@@ -86,6 +86,33 @@ This port is used for much more than just metrics, which warranted this change t
 
 </div>
 
+<div class="deprecation removal-160 breaking-change">
+
+### Support for REST API endpoints that reset runner registration tokens
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The support for runner registration tokens is deprecated. As a consequence, the REST API endpoints to reset a registration token are also deprecated and will
+be removed in GitLab 16.0.
+The deprecated endpoints are:
+
+- `POST /runners/reset_registration_token`
+- `POST /projects/:id/runners/reset_registration_token`
+- `POST /groups/:id/runners/reset_registration_token`
+
+In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
+as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
+This new architecture introduces a new method for registering runners and will eliminate the legacy
+[runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
+From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+
+</div>
+
 <div class="deprecation removal-1600 breaking-change">
 
 ### `POST ci/lint` API endpoint deprecated

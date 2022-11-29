@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Import/Export - Connect to another instance', :js do
+RSpec.describe 'Import/Export - Connect to another instance', :js, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 

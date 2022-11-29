@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Groups > User sees users dropdowns in issuables list', :js do
+RSpec.describe 'Groups > User sees users dropdowns in issuables list', :js, feature_category: :subgroups do
   include FilteredSearchHelpers
 
   let(:group) { create(:group) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Edit group label' do
+RSpec.describe 'Edit group label', feature_category: :team_planning do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:user)  { create(:user) }

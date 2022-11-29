@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'The group page' do
+RSpec.describe 'The group page', feature_category: :subgroups do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

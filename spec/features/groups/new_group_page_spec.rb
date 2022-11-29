@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New group page', :js do
+RSpec.describe 'New group page', :js, feature_category: :subgroups do
   let(:user)  { create(:user) }
   let(:group) { create(:group) }
 

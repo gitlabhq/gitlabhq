@@ -42,7 +42,7 @@ or [feature group](../../feature_flags/index.md#feature-groups).
   with administrator access, such as staging.
 
 **Note on `requires_admin`:** This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
-feature flag (ex: creating a user via the API).
+feature flag (like creating a user via the API).
 
 The code below would enable a feature flag named `:feature_flag_name` for the project
 created by the test:
