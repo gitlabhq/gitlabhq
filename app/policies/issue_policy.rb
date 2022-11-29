@@ -9,7 +9,7 @@ class IssuePolicy < IssuablePolicy
 
   desc "User can read confidential issues"
   condition(:can_read_confidential) do
-    @user && IssueCollection.new([@subject]).visible_to(@user).any?
+    @user && (@user.admin? || can?(:reporter_access) || assignee_or_author?) # rubocop:disable Cop/UserAdmin
   end
 
   desc "Project belongs to a group, crm is enabled and user can read contacts in the root group"

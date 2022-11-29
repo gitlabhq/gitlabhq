@@ -7,12 +7,14 @@ import { GROUP_FILTERS, GROUP_MODAL_LABELS } from '../constants';
 import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import GroupSelect from './group_select.vue';
+import InviteGroupNotification from './invite_group_notification.vue';
 
 export default {
   name: 'InviteMembersModal',
   components: {
     GroupSelect,
     InviteModalBase,
+    InviteGroupNotification,
   },
   props: {
     id: {
@@ -59,6 +61,10 @@ export default {
     },
     invalidGroups: {
       type: Array,
+      required: true,
+    },
+    freeUserCapEnabled: {
+      type: Boolean,
       required: true,
     },
   },
@@ -163,6 +169,10 @@ export default {
     @reset="resetFields"
     @submit="sendInvite"
   >
+    <template #alert>
+      <invite-group-notification v-if="freeUserCapEnabled" :name="name" />
+    </template>
+
     <template #select>
       <group-select
         v-model="groupToBeSharedWith"

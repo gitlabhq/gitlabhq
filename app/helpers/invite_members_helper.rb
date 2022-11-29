@@ -20,6 +20,7 @@ module InviteMembersHelper
     end
   end
 
+  # Overridden in EE
   def common_invite_group_modal_data(source, member_class, is_project)
     {
       id: source.id,

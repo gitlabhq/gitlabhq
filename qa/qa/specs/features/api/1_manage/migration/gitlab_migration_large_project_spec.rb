@@ -72,6 +72,8 @@ module QA
       after do |example|
         next unless defined?(@import_time)
 
+        # add additional import time metric
+        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
         # save data for comparison notification creation
         save_json(
           "data",

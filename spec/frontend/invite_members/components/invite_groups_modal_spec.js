@@ -6,6 +6,7 @@ import InviteGroupsModal from '~/invite_members/components/invite_groups_modal.v
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import GroupSelect from '~/invite_members/components/group_select.vue';
+import InviteGroupNotification from '~/invite_members/components/invite_group_notification.vue';
 import { stubComponent } from 'helpers/stub_component';
 import { propsData, sharedGroup } from '../mock_data/group_modal';
 
@@ -44,6 +45,7 @@ describe('InviteGroupsModal', () => {
 
   const findModal = () => wrapper.findComponent(GlModal);
   const findGroupSelect = () => wrapper.findComponent(GroupSelect);
+  const findInviteGroupAlert = () => wrapper.findComponent(InviteGroupNotification);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
   const findMembersFormGroup = () => wrapper.findByTestId('members-form-group');
   const membersFormGroupInvalidFeedback = () =>
@@ -71,6 +73,20 @@ describe('InviteGroupsModal', () => {
 
         expect(findIntroText()).toBe("You're inviting a group to the test name group.");
       });
+    });
+  });
+
+  describe('rendering the invite group notification', () => {
+    it('shows the user limit notification alert when free user cap is enabled', () => {
+      createComponent({ freeUserCapEnabled: true });
+
+      expect(findInviteGroupAlert().exists()).toBe(true);
+    });
+
+    it('does not show the user limit notification alert', () => {
+      createComponent();
+
+      expect(findInviteGroupAlert().exists()).toBe(false);
     });
   });
 

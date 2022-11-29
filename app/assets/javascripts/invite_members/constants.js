@@ -57,6 +57,10 @@ export const GROUP_MODAL_TO_PROJECT_DEFAULT_INTRO_TEXT = s__(
   "InviteMembersModal|You're inviting a group to the %{strongStart}%{name}%{strongEnd} project.",
 );
 
+export const GROUP_MODAL_ALERT_BODY = s__(
+  'InviteMembersModal| Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit.',
+);
+
 export const GROUP_SEARCH_FIELD = s__('InviteMembersModal|Select a group to invite');
 export const GROUP_PLACEHOLDER = s__('InviteMembersModal|Search for a group to invite');
 

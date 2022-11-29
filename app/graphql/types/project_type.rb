@@ -540,6 +540,11 @@ module Types
           description: "Programming languages used in the project.",
           calls_gitaly: true
 
+    field :runners, Types::Ci::RunnerType.connection_type,
+          null: true,
+          resolver: ::Resolvers::Ci::ProjectRunnersResolver,
+          description: "Find runners visible to the current user."
+
     def timelog_categories
       object.project_namespace.timelog_categories if Feature.enabled?(:timelog_categories)
     end

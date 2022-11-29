@@ -473,4 +473,153 @@ RSpec.describe Ci::RunnersFinder do
       end
     end
   end
+
+  context 'project' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:group) { create(:group) }
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:other_project) { create(:project) }
+
+    let(:extra_params) { {} }
+    let(:params) { { project: project }.merge(extra_params).reject { |_, v| v.nil? } }
+
+    describe '#execute' do
+      subject { described_class.new(current_user: user, params: params).execute }
+
+      context 'with user as project admin' do
+        before do
+          project.add_maintainer(user)
+        end
+
+        context 'with project runners' do
+          let_it_be(:runner_project) { create(:ci_runner, :project, contacted_at: 7.minutes.ago, projects: [project]) }
+
+          it 'returns runners available to project' do
+            expect(subject).to match_array([runner_project])
+          end
+        end
+
+        context 'with ancestor group runners' do
+          let_it_be(:runner_instance) { create(:ci_runner, contacted_at: 13.minutes.ago) }
+          let_it_be(:runner_group) { create(:ci_runner, :group, contacted_at: 12.minutes.ago, groups: [group]) }
+
+          it 'returns runners available to project' do
+            expect(subject).to match_array([runner_instance, runner_group])
+          end
+        end
+
+        context 'with allowed shared runners' do
+          let_it_be(:runner_instance) { create(:ci_runner, :instance, contacted_at: 13.minutes.ago) }
+
+          it 'returns runners available to project' do
+            expect(subject).to match_array([runner_instance])
+          end
+        end
+
+        context 'with project, ancestor group, and allowed shared runners' do
+          let_it_be(:runner_project) { create(:ci_runner, :project, contacted_at: 7.minutes.ago, projects: [project]) }
+          let_it_be(:runner_group) { create(:ci_runner, :group, contacted_at: 12.minutes.ago, groups: [group]) }
+          let_it_be(:runner_instance) { create(:ci_runner, :instance, contacted_at: 13.minutes.ago) }
+
+          it 'returns runners available to project' do
+            expect(subject).to match_array([runner_project, runner_group, runner_instance])
+          end
+        end
+
+        context 'filtering' do
+          let_it_be(:runner_instance_inactive) { create(:ci_runner, :instance, active: false, contacted_at: 13.minutes.ago) }
+          let_it_be(:runner_instance_active) { create(:ci_runner, :instance, active: true, contacted_at: 13.minutes.ago) }
+          let_it_be(:runner_project_active) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: true, projects: [project]) }
+          let_it_be(:runner_project_inactive) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: false, projects: [project]) }
+          let_it_be(:runner_other_project_inactive) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, active: false, projects: [other_project]) }
+
+          context 'by search term' do
+            let_it_be(:runner_project_1) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, description: 'runner_project_search', projects: [project]) }
+            let_it_be(:runner_project_2) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, description: 'runner_project', projects: [project]) }
+            let_it_be(:runner_another_project) { create(:ci_runner, :project, contacted_at: 5.minutes.ago, description: 'runner_project_search', projects: [other_project]) }
+
+            let(:extra_params) { { search: 'runner_project_search' } }
+
+            it 'returns the correct runner' do
+              expect(subject).to match_array([runner_project_1])
+            end
+          end
+
+          context 'by active status' do
+            let(:extra_params) { { active: false } }
+
+            it 'returns the correct runners' do
+              expect(subject).to match_array([runner_instance_inactive, runner_project_inactive])
+            end
+          end
+
+          context 'by status' do
+            let(:extra_params) { { status_status: 'paused' } }
+
+            it 'returns correct runner' do
+              expect(subject).to match_array([runner_instance_inactive, runner_project_inactive])
+            end
+          end
+
+          context 'by tag_name' do
+            let_it_be(:runner_project_1) { create(:ci_runner, :project, contacted_at: 3.minutes.ago, tag_list: %w[runner_tag], projects: [project]) }
+            let_it_be(:runner_project_2) { create(:ci_runner, :project, contacted_at: 3.minutes.ago, tag_list: %w[other_tag], projects: [project]) }
+            let_it_be(:runner_other_project) { create(:ci_runner, :project, contacted_at: 3.minutes.ago, tag_list: %w[runner_tag], projects: [other_project]) }
+
+            let(:extra_params) { { tag_name: %w[runner_tag] } }
+
+            it 'returns correct runner' do
+              expect(subject).to match_array([runner_project_1])
+            end
+          end
+
+          context 'by runner type' do
+            let(:extra_params) { { type_type: 'project_type' } }
+
+            it 'returns correct runners' do
+              expect(subject).to match_array([runner_project_active, runner_project_inactive])
+            end
+          end
+        end
+      end
+
+      context 'with user as project developer' do
+        let(:user) { create(:user) }
+
+        before do
+          project.add_developer(user)
+        end
+
+        it 'returns no runners' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'when user is nil' do
+        let_it_be(:user) { nil }
+
+        it 'returns no runners' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'with nil project_full_path' do
+        let(:project_full_path) { nil }
+
+        it 'returns no runners' do
+          expect(subject).to be_empty
+        end
+      end
+
+      context 'when on_demand_scans_runner_tags feature flag is disabled' do
+        before do
+          stub_feature_flags(on_demand_scans_runner_tags: false)
+        end
+
+        it 'returns no runners' do
+          expect(subject).to be_empty
+        end
+      end
+    end
+  end
 end

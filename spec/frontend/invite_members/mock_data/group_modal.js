@@ -8,6 +8,7 @@ export const propsData = {
   defaultAccessLevel: 10,
   helpLink: 'https://example.com',
   fullPath: 'project',
+  freeUserCapEnabled: false,
 };
 
 export const sharedGroup = { id: '981' };

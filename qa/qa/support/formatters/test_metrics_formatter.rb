@@ -8,6 +8,8 @@ module QA
       class TestMetricsFormatter < RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
 
+        CUSTOM_METRICS_KEY = :custom_test_metrics
+
         RSpec::Core::Formatters.register(self, :stop)
 
         # Finish test execution
@@ -106,7 +108,8 @@ module QA
               run_type: run_type,
               stage: devops_stage(file_path),
               product_group: example.metadata[:product_group],
-              testcase: example.metadata[:testcase]
+              testcase: example.metadata[:testcase],
+              **custom_metrics_tags(example.metadata)
             },
             fields: {
               id: example.id,
@@ -119,7 +122,8 @@ module QA
               pipeline_url: env('CI_PIPELINE_URL'),
               pipeline_id: env('CI_PIPELINE_ID'),
               job_id: env('CI_JOB_ID'),
-              merge_request_iid: merge_request_iid
+              merge_request_iid: merge_request_iid,
+              **custom_metrics_fields(example.metadata)
             }
           }
         rescue StandardError => e
@@ -144,7 +148,7 @@ module QA
               resource: resource,
               fabrication_method: fabrication_method,
               http_method: http_method,
-              run_type: env('QA_RUN_TYPE') || run_type,
+              run_type: run_type,
               merge_request: merge_request
             },
             fields: {
@@ -223,6 +227,40 @@ module QA
         # @return [Integer]
         def retry_attempts(metadata)
           metadata[:retry_attempts] || 0
+        end
+
+        # Additional custom metrics tags
+        #
+        # @param [Hash] metadata
+        # @return [Hash]
+        def custom_metrics_tags(metadata)
+          custom_metrics(metadata, :tags)
+        end
+
+        # Additional custom metrics fields
+        #
+        # @param [Hash] metadata
+        # @return [Hash]
+        def custom_metrics_fields(metadata)
+          custom_metrics(metadata, :fields)
+        end
+
+        # Custom test metrics
+        #
+        # @param [Hash] metadata
+        # @param [Symbol] type type of metric, :fields or :tags
+        # @return [Hash]
+        def custom_metrics(metadata, type)
+          custom_metrics = metadata[CUSTOM_METRICS_KEY]
+          return {} unless custom_metrics
+          return {} unless custom_metrics.is_a?(Hash) && custom_metrics[type].is_a?(Hash)
+
+          custom_metrics[type].to_h do |key, value|
+            k = key.to_sym
+            v = value.is_a?(Numeric) || value.nil? ? value : value.to_s
+
+            [k, v]
+          end
         end
 
         # Print log message

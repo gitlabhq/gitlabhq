@@ -207,6 +207,8 @@ module QA
       after do |example|
         next unless defined?(@import_time)
 
+        # add additional import time metric
+        example.metadata[:custom_test_metrics] = { fields: { import_time: @import_time } }
         # save data for comparison notification creation
         save_json(
           "data",
@@ -269,7 +271,7 @@ module QA
         # fetch all objects right after import has started
         fetch_github_objects
 
-        import_status = lambda do
+        import_status = -> {
           imported_project.project_import_status.yield_self do |status|
             @stats = status.dig(:stats, :imported)
 
@@ -278,7 +280,7 @@ module QA
 
             status[:import_status]
           end
-        end
+        }
 
         logger.info("== Waiting for import to be finished ==")
         expect(import_status).to eventually_eq('finished').within(max_duration: import_max_duration, sleep_interval: 30)

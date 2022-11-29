@@ -8,6 +8,7 @@ RSpec.describe IssuePolicy do
   include ProjectHelpers
   include UserHelpers
 
+  let(:admin) { create(:user, :admin) }
   let(:guest) { create(:user) }
   let(:author) { create(:user) }
   let(:assignee) { create(:user) }
@@ -305,7 +306,6 @@ RSpec.describe IssuePolicy do
 
       let(:issue) { create(:issue, project: project, author: author) }
       let(:visitor) { create(:user) }
-      let(:admin) { create(:user, :admin) }
 
       it 'forbids visitors from viewing issues' do
         expect(permissions(visitor, issue)).to be_disallowed(:read_issue)
@@ -394,12 +394,15 @@ RSpec.describe IssuePolicy do
 
         expect(permissions(assignee, confidential_issue_no_assignee)).to be_disallowed(:read_issue, :read_issue_iid, :update_issue, :admin_issue, :set_issue_metadata, :set_confidentiality)
       end
+
+      it 'allows admins to read confidential issues' do
+        expect(permissions(admin, confidential_issue)).to be_allowed(:read_issue)
+      end
     end
 
     context 'with a hidden issue' do
       let(:user) { create(:user) }
       let(:banned_user) { create(:user, :banned) }
-      let(:admin) { create(:user, :admin) }
       let(:hidden_issue) { create(:issue, project: project, author: banned_user) }
 
       it 'does not allow non-admin user to read the issue' do

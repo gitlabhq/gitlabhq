@@ -253,6 +253,27 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       end
     end
 
+    context 'with additional custom metrics' do
+      it 'exports data to influxdb with additional metrics' do
+        run_spec do
+          it(
+            'spec',
+            custom_test_metrics: { tags: { custom_tag: "tag" }, fields: { custom_field: 1 } },
+            testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234'
+          ) {}
+        end
+
+        custom_data = data.merge({
+                                   **data,
+                                   tags: data[:tags].merge({ custom_tag: "tag" }),
+                                   fields: data[:fields].merge({ custom_field: 1 })
+                                 })
+
+        expect(influx_write_api).to have_received(:write).once
+        expect(influx_write_api).to have_received(:write).with(data: [custom_data])
+      end
+    end
+
     context 'with fabrication runtimes' do
       let(:api_fabrication) { 4 }
       let(:ui_fabrication) { 10 }
