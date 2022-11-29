@@ -192,6 +192,8 @@ When an npm package is not found in the Package Registry, the request is forward
 
 Administrators can disable this behavior in the [Continuous Integration settings](../../admin_area/settings/continuous_integration.md).
 
+Group owners can disable this behavior in the group Packages and Registries settings.
+
 ### Install npm packages from other organizations
 
 You can route package requests to organizations and users outside of GitLab.

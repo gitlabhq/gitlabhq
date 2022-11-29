@@ -616,6 +616,7 @@ Install the gems (if you want to use Kerberos for user authentication, omit
 ```shell
 sudo -u git -H bundle config set --local deployment 'true'
 sudo -u git -H bundle config set --local without 'development test mysql aws kerberos'
+sudo -u git -H bundle config path /home/git/gitlab/vendor/bundle
 sudo -u git -H bundle install
 ```
 

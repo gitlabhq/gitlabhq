@@ -750,7 +750,7 @@ WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The `push_rules_supersede_code_owners` feature flag has been removed in GitLab 15.0. From now on, push rules will supersede the `CODEOWNERS` file. The code owners feature is no longer available for access control.
+The `push_rules_supersede_code_owners` feature flag has been removed in GitLab 15.0. From now on, push rules will supersede the `CODEOWNERS` file. Even if Code Owner approval is required, a push rule that explicitly allows a specific user to push code supersedes the Code Owners setting.
 
 ### `type` and `types` keyword from CI/CD configuration
 

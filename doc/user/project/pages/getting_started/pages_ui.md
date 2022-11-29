@@ -6,9 +6,11 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Create a Pages deployment for your static site **(FREE)**
 
-To generate a GitLab Pages website, you can fill out forms that
-automatically generate a `.gitlab-ci.yml` file and open a
-merge request with your changes. When you commit the merge request,
+If you already have a GitLab project that contains your static site or framework,
+you can generate a GitLab Pages website from it.
+
+When you provide basic information in the UI, a `.gitlab-ci.yml` file is created
+and a merge request opened. When you commit the merge request,
 a pipeline deploys your Pages website.
 
 ## Prerequisites

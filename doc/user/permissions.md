@@ -412,6 +412,7 @@ The following table lists group permissions available for each role:
 | Pull [packages](packages/index.md)                                                      |       | ✓        | ✓         | ✓          | ✓     |
 | Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |
 | Create/edit/delete [Maven and generic package duplicate settings](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages)                                                    |       |          |           | ✓          | ✓     |
+| Enable/disable package request forwarding                                               |       |          |           | ✓          | ✓     |
 | Pull a Container Registry image                                                         | ✓ (6) | ✓        | ✓         | ✓          | ✓     |
 | Remove a Container Registry image                                                       |       |          | ✓         | ✓          | ✓     |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |
