@@ -11,7 +11,7 @@ class BuildDetailsEntity < Ci::JobEntity
   expose :metadata, using: BuildMetadataEntity
   expose :pipeline, using: Ci::PipelineEntity
 
-  expose :deployment_status, if: -> (*) { build.starts_environment? } do
+  expose :deployment_status, if: -> (*) { build.deployment_job? } do
     expose :deployment_status, as: :status
     expose :persisted_environment, as: :environment do |build, options|
       options.merge(deployment_details: false).yield_self do |opts|

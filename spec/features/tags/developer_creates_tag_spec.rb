@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Developer creates tag' do
+RSpec.describe 'Developer creates tag', feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }

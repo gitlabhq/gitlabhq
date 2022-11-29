@@ -296,8 +296,8 @@ could also be used, those load balancers have not been validated.
 
 ### Balancing algorithm
 
-We recommend that a least-connection load balancing algorithm or equivalent
-is used wherever possible to ensure equal spread of calls to the nodes and good performance.
+You should use a least-connection load balancing algorithm or equivalent
+wherever possible to ensure equal spread of calls to the nodes and good performance.
 
 We don't recommend the use of round-robin algorithms as they are known to not
 spread connections equally in practice.

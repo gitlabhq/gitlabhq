@@ -74,6 +74,10 @@ Rails.application.configure do
   # Do not log asset requests
   config.assets.quiet = true
 
+  # Use 'listen' gem to watch for file changes and improve performance
+  # See: https://guides.rubyonrails.org/configuring.html#config-file-watcher
+  config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
   # BetterErrors live shell (REPL) on every stack frame
   BetterErrors::Middleware.allow_ip!("127.0.0.1/0")
 

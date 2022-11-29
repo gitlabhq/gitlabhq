@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Comments on personal snippets', :js do
+RSpec.describe 'Comments on personal snippets', :js, feature_category: :snippets do
   include NoteInteractionHelpers
   include Spec::Support::Helpers::ModalHelpers
 

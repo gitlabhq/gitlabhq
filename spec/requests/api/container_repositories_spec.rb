@@ -75,6 +75,13 @@ RSpec.describe API::ContainerRepositories do
 
           expect(json_response['id']).to eq(repository.id)
           expect(response.body).to include('tags')
+          expect(json_response['tags']).to eq(repository.tags.map do |tag|
+            {
+              "location" => tag.location,
+              "name" => tag.name,
+              "path" => tag.path
+            }
+          end)
         end
 
         context 'with a network error' do

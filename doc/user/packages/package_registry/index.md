@@ -77,7 +77,7 @@ Learn more about using the GitLab Package Registry with CI/CD:
 - [Conan](../conan_repository/index.md#publish-a-conan-package-by-using-cicd)
 - [Generic](../generic_packages/index.md#publish-a-generic-package-by-using-cicd)
 - [Maven](../maven_repository/index.md#create-maven-packages-with-gitlab-cicd)
-- [npm](../npm_registry/index.md#publish-an-npm-package-by-using-cicd)
+- [npm](../npm_registry/index.md#publishing-a-package-via-a-cicd-pipeline)
 - [NuGet](../nuget_repository/index.md#publish-a-nuget-package-by-using-cicd)
 - [PyPI](../pypi_repository/index.md#authenticate-with-a-ci-job-token)
 - [RubyGems](../rubygems_registry/index.md#authenticate-with-a-ci-job-token)
@@ -143,19 +143,19 @@ table's **Status** column.
 
 The Package Registry supports the following formats:
 
-| Package type | GitLab version | Status |
-| ------------ | -------------- |------- |
-| [Maven](../maven_repository/index.md) | 11.3+ | GA |
-| [npm](../npm_registry/index.md) | 11.7+ | GA |
-| [NuGet](../nuget_repository/index.md) | 12.8+ | GA |
-| [PyPI](../pypi_repository/index.md) | 12.10+ | GA |
-| [Generic packages](../generic_packages/index.md) | 13.5+ | GA |
-| [Composer](../composer_repository/index.md) | 13.2+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
-| [Conan](../conan_repository/index.md) | 12.6+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
-| [Helm](../helm_repository/index.md) | 14.1+ | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366) |
-| [Debian](../debian_repository/index.md) | 14.2+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
-| [Go](../go_proxy/index.md) | 13.1+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
-| [Ruby gems](../rubygems_registry/index.md) | 13.10+ | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
+| Package type                                     | GitLab version | Status                                                     |
+| ------------------------------------------------ | -------------- | ---------------------------------------------------------- |
+| [Maven](../maven_repository/index.md)            | 11.3+          | GA                                                         |
+| [npm](../npm_registry/index.md)                  | 11.7+          | GA                                                         |
+| [NuGet](../nuget_repository/index.md)            | 12.8+          | GA                                                         |
+| [PyPI](../pypi_repository/index.md)              | 12.10+         | GA                                                         |
+| [Generic packages](../generic_packages/index.md) | 13.5+          | GA                                                         |
+| [Composer](../composer_repository/index.md)      | 13.2+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817)  |
+| [Conan](../conan_repository/index.md)            | 12.6+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816)  |
+| [Helm](../helm_repository/index.md)              | 14.1+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366)  |
+| [Debian](../debian_repository/index.md)          | 14.2+          | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
+| [Go](../go_proxy/index.md)                       | 13.1+          | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
+| [Ruby gems](../rubygems_registry/index.md)       | 13.10+         | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
 
 [Status](../../../policy/alpha-beta-support.md):
 
@@ -173,8 +173,8 @@ guides you through the process.
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Format | Status |
-| ------ | ------ |
+| Format    | Status                                                        |
+| --------- | ------------------------------------------------------------- |
 | Chef      | [#36889](https://gitlab.com/gitlab-org/gitlab/-/issues/36889) |
 | CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
 | Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |

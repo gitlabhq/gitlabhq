@@ -20,6 +20,10 @@ module Gitlab
       status.to_i.between?(200, 499)
     end
 
+    def self.server_error?(status)
+      status.to_i >= 500
+    end
+
     # Tracks an event.
     #
     # See `Gitlab::Metrics::Transaction#add_event` for more details.

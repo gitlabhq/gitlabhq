@@ -3,47 +3,91 @@
 module Gitlab
   module Memory
     class Reporter
-      def initialize
+      attr_reader :reports_path
+
+      def initialize(reports_path: nil, logger: Gitlab::AppLogger)
+        @reports_path = reports_path || ENV["GITLAB_DIAGNOSTIC_REPORTS_PATH"] || Dir.mktmpdir
+        @logger = logger
+
+        @worker_id = ::Prometheus::PidProvider.worker_id
         @worker_uuid = SecureRandom.uuid
 
         init_prometheus_metrics
       end
 
       def run_report(report)
+        @logger.info(
+          log_labels(
+            message: 'started',
+            perf_report: report.name
+          ))
+
         start_monotonic_time = Gitlab::Metrics::System.monotonic_time
         start_thread_cpu_time = Gitlab::Metrics::System.thread_cpu_time
 
-        file_path = report.run(report_id)
+        report_file = store_report(report)
 
         cpu_s = Gitlab::Metrics::System.thread_cpu_duration(start_thread_cpu_time)
         duration_s = Gitlab::Metrics::System.monotonic_time - start_monotonic_time
 
-        log_report(name: report.name, cpu_s: cpu_s, duration_s: duration_s, size: file_size(file_path))
+        @logger.info(
+          log_labels(
+            message: 'finished',
+            perf_report: report.name,
+            cpu_s: cpu_s.round(2),
+            duration_s: duration_s.round(2),
+            perf_report_file: report_file,
+            perf_report_size_bytes: file_size(report_file)
+          ))
 
         @report_duration_counter.increment({ report: report.name }, duration_s)
+
+        true
+      rescue StandardError => e
+        @logger.error(
+          log_labels(
+            message: 'failed',
+            perf_report: report.name,
+            error: e.inspect
+          ))
+
+        false
       end
 
       private
 
-      def log_report(name:, duration_s:, cpu_s:, size:)
-        Gitlab::AppLogger.info(
-          message: 'finished',
+      def store_report(report)
+        # Store report in tmp subdir while it is still streaming.
+        # This will clearly separate finished reports from the files we are still writing to.
+        tmp_dir = File.join(@reports_path, 'tmp')
+        FileUtils.mkdir_p(tmp_dir)
+
+        report_file = file_name(report)
+        tmp_file_path = File.join(tmp_dir, report_file)
+
+        File.open(tmp_file_path, 'wb') do |io|
+          report.run(io)
+        end
+
+        File.join(@reports_path, report_file).tap do |report_file_path|
+          FileUtils.mv(tmp_file_path, report_file_path)
+        end
+      end
+
+      def log_labels(**extra_labels)
+        {
           pid: $$,
-          worker_id: worker_id,
-          perf_report: name,
-          duration_s: duration_s.round(2),
-          cpu_s: cpu_s.round(2),
-          perf_report_size_bytes: size,
+          worker_id: @worker_id,
           perf_report_worker_uuid: @worker_uuid
-        )
+        }.merge(extra_labels)
       end
 
-      def report_id
-        [worker_id, @worker_uuid].join(".")
-      end
+      def file_name(report)
+        timestamp = Time.current.strftime('%Y-%m-%d.%H:%M:%S:%L')
 
-      def worker_id
-        ::Prometheus::PidProvider.worker_id
+        report_id = [@worker_id, @worker_uuid].join(".")
+
+        [report.name, timestamp, report_id].reject(&:blank?).join('.')
       end
 
       def file_size(file_path)
@@ -53,7 +97,7 @@ module Gitlab
       end
 
       def init_prometheus_metrics
-        default_labels = { pid: worker_id }
+        default_labels = { pid: @worker_id }
 
         @report_duration_counter = Gitlab::Metrics.counter(
           :gitlab_diag_report_duration_seconds_total,

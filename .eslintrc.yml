@@ -75,6 +75,8 @@ rules:
         - sibling
         - index
       pathGroups:
+        - pattern: '@sentry/browser'
+          group: external
         - pattern: ~/**
           group: internal
         - pattern: emojis/**

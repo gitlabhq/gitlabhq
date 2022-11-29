@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Developer deletes tag', :js do
+RSpec.describe 'Developer deletes tag', :js, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, namespace: group) }

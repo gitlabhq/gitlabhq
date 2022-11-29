@@ -7,9 +7,7 @@ module Gitlab
       DEFAULT_SLEEP_MAX_DELTA_S = 600 # 0..10 minutes
       DEFAULT_SLEEP_BETWEEN_REPORTS_S = 120 # 2 minutes
 
-      DEFAULT_REPORTS_PATH = Dir.tmpdir
-
-      def initialize(reporter: Reporter.new, reports: nil, **options)
+      def initialize(reporter: nil, reports: nil, **options)
         super
 
         @alive = true
@@ -21,16 +19,13 @@ module Gitlab
         @sleep_between_reports_s =
           ENV['GITLAB_DIAGNOSTIC_REPORTS_SLEEP_BETWEEN_REPORTS_S']&.to_i || DEFAULT_SLEEP_BETWEEN_REPORTS_S
 
-        @reports_path =
-          ENV["GITLAB_DIAGNOSTIC_REPORTS_PATH"] || DEFAULT_REPORTS_PATH
-
-        @reporter = reporter
+        @reporter = reporter || Reporter.new
         @reports = reports || [
-          Gitlab::Memory::Reports::JemallocStats.new(reports_path: reports_path)
+          Gitlab::Memory::Reports::JemallocStats.new
         ]
       end
 
-      attr_reader :sleep_s, :sleep_max_delta_s, :sleep_between_reports_s, :reports_path
+      attr_reader :sleep_s, :sleep_max_delta_s, :sleep_between_reports_s
 
       def run_thread
         while alive

@@ -8,6 +8,10 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
   Gitlab::Memory::ReportsDaemon.instance.start
 end
 
+return unless Gitlab::Utils.to_boolean(ENV['GITLAB_MEMWD_DUMP_HEAP'])
+
 Gitlab::Cluster::LifecycleEvents.on_worker_stop do
-  Gitlab::Memory::Reports::HeapDump.write_conditionally
+  Gitlab::Memory::Reporter.new.run_report(
+    Gitlab::Memory::Reports::HeapDump.new
+  )
 end

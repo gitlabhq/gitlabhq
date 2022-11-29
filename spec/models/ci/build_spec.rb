@@ -1753,8 +1753,8 @@ RSpec.describe Ci::Build do
       end
     end
 
-    describe '#starts_environment?' do
-      subject { build.starts_environment? }
+    describe '#deployment_job?' do
+      subject { build.deployment_job? }
 
       context 'when environment is defined' do
         before do

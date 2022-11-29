@@ -63,6 +63,7 @@ module.exports = (path, options = {}) => {
     '^jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^ee_else_ce_jest/(.*)$': '<rootDir>/spec/frontend/$1',
     '^jquery$': '<rootDir>/node_modules/jquery/dist/jquery.slim.js',
+    '^@sentry/browser$': '<rootDir>/app/assets/javascripts/sentry/sentry_browser_wrapper.js',
     ...extModuleNameMapper,
   };
 

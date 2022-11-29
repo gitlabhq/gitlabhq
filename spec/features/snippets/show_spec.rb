@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Snippet', :js do
+RSpec.describe 'Snippet', :js, feature_category: :snippets do
   let_it_be(:user) { create(:user) }
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository, author: user) }
 

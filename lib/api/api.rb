@@ -184,6 +184,7 @@ module API
         mount ::API::BroadcastMessages
         mount ::API::BulkImports
         mount ::API::Ci::JobArtifacts
+        mount ::API::Groups
         mount ::API::Ci::Jobs
         mount ::API::Ci::ResourceGroups
         mount ::API::Ci::Runner
@@ -198,6 +199,7 @@ module API
         mount ::API::Commits
         mount ::API::CommitStatuses
         mount ::API::ContainerRegistryEvent
+        mount ::API::ContainerRepositories
         mount ::API::DependencyProxy
         mount ::API::DeployKeys
         mount ::API::DeployTokens
@@ -230,6 +232,7 @@ module API
         mount ::API::Keys
         mount ::API::Lint
         mount ::API::Markdown
+        mount ::API::Members
         mount ::API::MergeRequestApprovals
         mount ::API::MergeRequests
         mount ::API::MergeRequestDiffs
@@ -294,7 +297,6 @@ module API
       mount ::API::ComposerPackages
       mount ::API::ConanInstancePackages
       mount ::API::ConanProjectPackages
-      mount ::API::ContainerRepositories
       mount ::API::DebianGroupPackages
       mount ::API::DebianProjectPackages
       mount ::API::Discussions
@@ -304,11 +306,9 @@ module API
       mount ::API::GroupDebianDistributions
       mount ::API::GroupLabels
       mount ::API::GroupMilestones
-      mount ::API::Groups
       mount ::API::Issues
       mount ::API::Labels
       mount ::API::MavenPackages
-      mount ::API::Members
       mount ::API::Notes
       mount ::API::NotificationSettings
       mount ::API::NpmInstancePackages

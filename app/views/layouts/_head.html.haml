@@ -22,7 +22,7 @@
     = render 'layouts/startup_css', { startup_filename: local_assigns.fetch(:startup_filename, nil) }
   - else
     - diffs_colors = user_diffs_colors
-    = stylesheet_link_tag "themes/#{user_application_theme_css_filename}"
+    = stylesheet_link_tag "themes/#{user_application_theme_css_filename}" if user_application_theme_css_filename
     = render 'layouts/diffs_colors_css', diffs_colors if diffs_colors.present? || request.path == profile_preferences_path
 
   - if user_application_theme == 'gl-dark'
@@ -47,7 +47,10 @@
   = Gon::Base.render_data(nonce: content_security_policy_nonce)
 
   = render_if_exists 'layouts/header/translations'
-  = webpack_bundle_tag "sentry" if Gitlab.config.sentry.enabled
+  - if Feature.enabled?(:enable_new_sentry_clientside_integration, current_user) && Gitlab::CurrentSettings.sentry_enabled
+    = webpack_bundle_tag 'sentry'
+  - elsif Gitlab.config.sentry.enabled
+    = webpack_bundle_tag 'legacy_sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
   = yield :page_specific_javascripts

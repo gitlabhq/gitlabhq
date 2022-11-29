@@ -6,13 +6,7 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
   let(:reporter) { instance_double(Gitlab::Memory::Reporter) }
   let(:reports) { nil }
 
-  let_it_be(:tmp_dir) { Dir.mktmpdir }
-
   subject(:daemon) { described_class.new(reporter: reporter, reports: reports) }
-
-  after(:all) do
-    FileUtils.remove_entry(tmp_dir)
-  end
 
   describe '#run_thread' do
     before do
@@ -58,8 +52,9 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
     context 'sleep timers logic' do
       it 'wakes up every (fixed interval + defined delta), sleeps between reports each cycle' do
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_MAX_DELTA_S', 1) # rand(1) == 0, so we will have fixed sleep interval
-        daemon = described_class.new
+        daemon = described_class.new(reporter: reporter, reports: reports)
         allow(daemon).to receive(:alive).and_return(true, true, false)
+        allow(reporter).to receive(:run_report)
 
         expect(daemon).to receive(:sleep).with(described_class::DEFAULT_SLEEP_S).ordered
         expect(daemon).to receive(:sleep).with(described_class::DEFAULT_SLEEP_BETWEEN_REPORTS_S).ordered
@@ -85,7 +80,6 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
         expect(daemon.sleep_s).to eq(described_class::DEFAULT_SLEEP_S)
         expect(daemon.sleep_max_delta_s).to eq(described_class::DEFAULT_SLEEP_MAX_DELTA_S)
         expect(daemon.sleep_between_reports_s).to eq(described_class::DEFAULT_SLEEP_BETWEEN_REPORTS_S)
-        expect(daemon.reports_path).to eq(described_class::DEFAULT_REPORTS_PATH)
       end
     end
 
@@ -94,7 +88,6 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_S', 100)
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_MAX_DELTA_S', 50)
         stub_env('GITLAB_DIAGNOSTIC_REPORTS_SLEEP_BETWEEN_REPORTS_S', 2)
-        stub_env('GITLAB_DIAGNOSTIC_REPORTS_PATH', tmp_dir)
       end
 
       it 'uses provided values' do
@@ -103,7 +96,6 @@ RSpec.describe Gitlab::Memory::ReportsDaemon, :aggregate_failures do
         expect(daemon.sleep_s).to eq(100)
         expect(daemon.sleep_max_delta_s).to eq(50)
         expect(daemon.sleep_between_reports_s).to eq(2)
-        expect(daemon.reports_path).to eq(tmp_dir)
       end
     end
   end

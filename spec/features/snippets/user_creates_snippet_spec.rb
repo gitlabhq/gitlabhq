@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User creates snippet', :js do
+RSpec.describe 'User creates snippet', :js, feature_category: :snippets do
   include DropzoneHelper
   include Spec::Support::Helpers::Features::SnippetSpecHelpers
 

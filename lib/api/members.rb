@@ -20,6 +20,8 @@ module API
       resource source_type.pluralize, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         desc 'Gets a list of group or project members viewable by the authenticated user.' do
           success Entities::Member
+          is_array true
+          tags %w[members]
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
@@ -42,6 +44,8 @@ module API
 
         desc 'Gets a list of group or project members viewable by the authenticated user, including those who gained membership through ancestor group.' do
           success Entities::Member
+          is_array true
+          tags %w[members]
         end
         params do
           optional :query, type: String, desc: 'A query string to search for members'
@@ -63,6 +67,7 @@ module API
 
         desc 'Gets a member of a group or project.' do
           success Entities::Member
+          tags %w[members]
         end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
@@ -82,6 +87,7 @@ module API
 
         desc 'Gets a member of a group or project, including those who gained membership through ancestor group' do
           success Entities::Member
+          tags %w[members]
         end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
@@ -101,6 +107,7 @@ module API
 
         desc 'Adds a member to a group or project.' do
           success Entities::Member
+          tags %w[members]
         end
         params do
           requires :access_level, type: Integer, desc: 'A valid access level (defaults: `30`, developer access level)'
@@ -126,6 +133,7 @@ module API
 
         desc 'Updates a member of a group or project.' do
           success Entities::Member
+          tags %w[members]
         end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the new member'
@@ -153,7 +161,9 @@ module API
         end
         # rubocop: enable CodeReuse/ActiveRecord
 
-        desc 'Removes a user from a group or project.'
+        desc 'Removes a user from a group or project.' do
+          tags %w[members]
+        end
         params do
           requires :user_id, type: Integer, desc: 'The user ID of the member'
           optional :skip_subresources, type: Boolean, default: false,

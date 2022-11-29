@@ -23254,7 +23254,7 @@ CREATE TABLE vulnerability_state_transitions (
     comment text,
     dismissal_reason smallint,
     CONSTRAINT check_d1ca8ec043 CHECK ((from_state <> to_state)),
-    CONSTRAINT check_fca4a7ca39 CHECK ((char_length(comment) <= 255))
+    CONSTRAINT check_fe2eb6a0f3 CHECK ((char_length(comment) <= 50000))
 );
 
 CREATE SEQUENCE vulnerability_state_transitions_id_seq
@@ -28382,8 +28382,6 @@ CREATE UNIQUE INDEX index_audit_events_external_audit_on_verification_token ON a
 
 CREATE INDEX index_authentication_events_on_provider ON authentication_events USING btree (provider);
 
-CREATE INDEX index_authentication_events_on_provider_user_id_created_at ON authentication_events USING btree (provider, user_id, created_at) WHERE (result = 1);
-
 CREATE INDEX index_authentication_events_on_user_and_ip_address_and_result ON authentication_events USING btree (user_id, ip_address, result);
 
 CREATE INDEX index_award_emoji_on_awardable_type_and_awardable_id ON award_emoji USING btree (awardable_type, awardable_id);
@@ -30941,6 +30939,8 @@ CREATE INDEX index_status_page_settings_on_project_id ON status_page_settings US
 CREATE INDEX index_subscriptions_on_project_id ON subscriptions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_subscriptions_on_subscribable_and_user_id_and_project_id ON subscriptions USING btree (subscribable_id, subscribable_type, user_id, project_id);
+
+CREATE INDEX index_successful_authentication_events_for_metrics ON authentication_events USING btree (user_id, provider, created_at) WHERE (result = 1);
 
 CREATE INDEX index_successful_deployments_on_cluster_id_and_environment_id ON deployments USING btree (cluster_id, environment_id) WHERE (status = 2);
 

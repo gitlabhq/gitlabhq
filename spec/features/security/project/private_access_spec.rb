@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Private Project Access" do
+RSpec.describe "Private Project Access", feature_category: :permissions do
   include AccessMatchers
 
   let_it_be(:project, reload: true) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Public Group access' do
+RSpec.describe 'Public Group access', feature_category: :permissions do
   include AccessMatchers
 
   let(:group)   { create(:group, :public) }

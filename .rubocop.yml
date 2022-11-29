@@ -498,8 +498,16 @@ RSpec/FactoryBot/AvoidCreate:
   Include:
     - 'spec/presenters/**/*.rb'
     - 'spec/serializers/**/*.rb'
+    - 'spec/helpers/**/*.rb'
+    - 'spec/views/**/*.rb'
+    - 'spec/components/**/*.rb'
+    - 'spec/mailers/**/*.rb'
     - 'ee/spec/presenters/**/*.rb'
     - 'ee/spec/serializers/**/*.rb'
+    - 'ee/spec/helpers/**/*.rb'
+    - 'ee/spec/views/**/*.rb'
+    - 'ee/spec/components/**/*.rb'
+    - 'ee/spec/mailers/**/*.rb'
 
 RSpec/FactoryBot/StrategyInCallback:
   Enabled: true

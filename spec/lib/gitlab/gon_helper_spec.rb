@@ -44,7 +44,7 @@ RSpec.describe Gitlab::GonHelper do
       let(:clientside_dsn) { 'https://xxx@sentry.example.com/1' }
       let(:environment) { 'staging' }
 
-      describe 'sentry integration' do
+      describe 'legacy sentry integration' do
         before do
           stub_config(sentry: { enabled: true, clientside_dsn: clientside_dsn, environment: environment })
         end
@@ -57,7 +57,7 @@ RSpec.describe Gitlab::GonHelper do
         end
       end
 
-      describe 'new sentry integration' do
+      describe 'sentry integration' do
         before do
           stub_application_setting(sentry_enabled: true)
           stub_application_setting(sentry_clientside_dsn: clientside_dsn)

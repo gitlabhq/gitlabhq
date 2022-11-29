@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Embedded Snippets' do
+RSpec.describe 'Embedded Snippets', feature_category: :snippets do
   let_it_be(:snippet) { create(:personal_snippet, :public, :repository) }
 
   let(:blobs) { snippet.blobs.first(3) }

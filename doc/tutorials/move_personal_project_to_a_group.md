@@ -60,7 +60,7 @@ Before you move your project to a group:
 
 - You must have the Owner role for the project.
 - Remove any [container images](../user/packages/container_registry/index.md#known-issues)
-  and [NPM packages](../user/packages/npm_registry/index.md#limitations).
+- Remove any npm packages. If you transfer a project to a different root namespace, the project must not contain any npm packages. When you update the path of a user or group, or transfer a subgroup or project, you must remove any npm packages first. You cannot update the root namespace of a project with npm packages. Make sure you update your .npmrc files to follow the naming convention and run npm publish if necessary.
 
 Now you're ready to move your project:
 

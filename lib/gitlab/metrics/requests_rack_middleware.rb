@@ -75,14 +75,15 @@ module Gitlab
 
         begin
           status, headers, body = @app.call(env)
+          return [status, headers, body] if health_endpoint
 
-          elapsed = ::Gitlab::Metrics::System.monotonic_time - started
-
-          if !health_endpoint && ::Gitlab::Metrics.record_duration_for_status?(status)
+          if ::Gitlab::Metrics.record_duration_for_status?(status)
+            elapsed = ::Gitlab::Metrics::System.monotonic_time - started
             self.class.http_request_duration_seconds.observe({ method: method }, elapsed)
-
             record_apdex(env, elapsed)
           end
+
+          record_error(env, status)
 
           [status, headers, body]
         rescue StandardError
@@ -121,6 +122,15 @@ module Gitlab
         Gitlab::Metrics::RailsSlis.request_apdex.increment(
           labels: labels_from_context.merge(request_urgency: urgency.name),
           success: elapsed < urgency.duration
+        )
+      end
+
+      def record_error(env, status)
+        return unless Feature.enabled?(:gitlab_metrics_error_rate_sli, type: :development)
+
+        Gitlab::Metrics::RailsSlis.request_error_rate.increment(
+          labels: labels_from_context,
+          error: ::Gitlab::Metrics.server_error?(status)
         )
       end
 

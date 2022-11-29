@@ -73,7 +73,7 @@
       .form-group
         = f.label :layout, class: 'label-bold' do
           = s_('Preferences|Layout width')
-        = f.select :layout, layout_choices, {}, class: 'select2'
+        = f.select :layout, layout_choices, {}, class: 'gl-form-select custom-select'
         .form-text.text-muted
           = s_('Preferences|Choose between fixed (max. 1280px) and fluid (%{percentage}) application layout.').html_safe % { percentage: '100%' }
       .form-group
@@ -88,7 +88,7 @@
       .form-group
         = f.label :project_view, class: 'label-bold' do
           = s_('Preferences|Project overview content')
-        = f.select :project_view, project_view_choices, {}, class: 'select2'
+        = f.select :project_view, project_view_choices, {}, class: 'gl-form-select custom-select'
         .form-text.text-muted
           = s_('Preferences|Choose what content you want to see on a project’s overview page.')
       .form-group
@@ -144,7 +144,7 @@
       .form-group
         = f.label :first_day_of_week, class: 'label-bold' do
           = _('First day of the week')
-        = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'select2'
+        = f.select :first_day_of_week, first_day_of_week_choices_with_default, {}, class: 'gl-form-select custom-select'
     .col-sm-12
       %hr
   .row.js-preferences-form.js-search-settings-section

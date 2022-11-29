@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Internal Group access' do
+RSpec.describe 'Internal Group access', feature_category: :permissions do
   include AccessMatchers
 
   let(:group)   { create(:group, :internal) }

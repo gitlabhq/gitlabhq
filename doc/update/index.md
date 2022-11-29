@@ -1177,9 +1177,14 @@ any downgrades would result to all sessions being invalidated and users are logg
 
 ### 12.1.0
 
-If you are planning to upgrade from `12.0.Z` to `12.10.Z`, it is necessary to
-perform an intermediary upgrade to `12.1.Z` before upgrading to `12.10.Z` to
-avoid issues like [#215141](https://gitlab.com/gitlab-org/gitlab/-/issues/215141).
+- If you are planning to upgrade from `12.0.Z` to `12.10.Z`, it is necessary to
+  perform an intermediary upgrade to `12.1.Z` before upgrading to `12.10.Z` to
+  avoid issues like [#215141](https://gitlab.com/gitlab-org/gitlab/-/issues/215141).
+
+- Support for MySQL was removed in GitLab 12.1. Existing users using GitLab with
+  MySQL/MariaDB should
+  [migrate to PostgreSQL](https://gitlab.com/gitlab-org/gitlab/-/blob/v15.6.0-ee/doc/update/mysql_to_postgresql.md)
+  before upgrading.
 
 ### 12.0.0
 
@@ -1265,8 +1270,6 @@ This issue is resolved in GitLab 15.3.3, so customers with the following configu
 
 ## Miscellaneous
 
-- [MySQL to PostgreSQL](mysql_to_postgresql.md) guides you through migrating
-  your database from MySQL to PostgreSQL.
 - [Restoring from backup after a failed upgrade](restore_after_failure.md)
 - [Upgrading PostgreSQL Using Slony](upgrading_postgresql_using_slony.md), for
   upgrading a PostgreSQL database with minimal downtime.

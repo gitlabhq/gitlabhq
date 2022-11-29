@@ -61,6 +61,10 @@ describe('Clusters', () => {
   let captureException;
 
   beforeEach(() => {
+    jest.spyOn(Sentry, 'withScope').mockImplementation((fn) => {
+      const mockScope = { setTag: () => {} };
+      fn(mockScope);
+    });
     captureException = jest.spyOn(Sentry, 'captureException');
 
     mock = new MockAdapter(axios);

@@ -302,7 +302,7 @@ The npm version is shown in the output:
    ```
 
 1. Enter responses to the questions. Ensure the **package name** follows
-   the [naming convention](../npm_registry/index.md#package-naming-convention) and is scoped to the project or group where the registry exists.
+   the [naming convention](../npm_registry/index.md#naming-convention) and is scoped to the project or group where the registry exists.
 
 ## Yarn
 
@@ -334,7 +334,7 @@ The Yarn version is shown in the output:
    ```
 
 1. Enter responses to the questions. Ensure the **package name** follows
-   the [naming convention](../npm_registry/index.md#package-naming-convention) and is scoped to the
+   the [naming convention](../npm_registry/index.md#naming-convention) and is scoped to the
    project or group where the registry exists.
 
 A `package.json` file is created.

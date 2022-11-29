@@ -28,10 +28,10 @@ RSpec.describe 'diagnostic reports' do
       end
 
       let(:report_daemon) { instance_double(Gitlab::Memory::ReportsDaemon) }
+      let(:reporter) { instance_double(Gitlab::Memory::Reporter) }
 
       it 'modifies worker startup hooks, starts Gitlab::Memory::ReportsDaemon' do
         expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start).and_call_original
-        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop)
         expect_next_instance_of(Gitlab::Memory::ReportsDaemon) do |daemon|
           expect(daemon).to receive(:start)
         end
@@ -39,14 +39,30 @@ RSpec.describe 'diagnostic reports' do
         load_initializer
       end
 
-      it 'writes scheduled heap dumps in on_worker_stop' do
-        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
-        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop).and_call_original
-        expect(Gitlab::Memory::Reports::HeapDump).to receive(:write_conditionally)
+      context 'when GITLAB_MEMWD_DUMP_HEAP is set' do
+        before do
+          stub_env('GITLAB_MEMWD_DUMP_HEAP', '1')
+        end
 
-        load_initializer
-        # This is necessary because this hook normally fires during worker shutdown.
-        Gitlab::Cluster::LifecycleEvents.do_worker_stop
+        it 'writes scheduled heap dumps in on_worker_stop' do
+          expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
+          expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop).and_call_original
+          expect(Gitlab::Memory::Reporter).to receive(:new).and_return(reporter)
+          expect(reporter).to receive(:run_report).with(an_instance_of(Gitlab::Memory::Reports::HeapDump))
+
+          load_initializer
+          # This is necessary because this hook normally fires during worker shutdown.
+          Gitlab::Cluster::LifecycleEvents.do_worker_stop
+        end
+      end
+
+      context 'when GITLAB_MEMWD_DUMP_HEAP is not set' do
+        it 'does not write heap dumps' do
+          expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
+          expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_stop)
+
+          load_initializer
+        end
       end
     end
 

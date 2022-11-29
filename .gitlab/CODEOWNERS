@@ -108,6 +108,9 @@ Dangerfile @gl-quality/eng-prod
 /ee/app/models/project_alias.rb @patrickbajao
 /ee/lib/api/project_aliases.rb @patrickbajao
 
+^[Distribution]
+/lib/support/ @gitlab-org/distribution
+
 # Secure & Threat Management ownership delineation
 # https://about.gitlab.com/handbook/engineering/development/threat-management/delineate-secure-threat-management.html#technical-boundaries
 ^[Threat Insights]

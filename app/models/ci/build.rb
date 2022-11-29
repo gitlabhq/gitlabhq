@@ -418,12 +418,12 @@ module Ci
     end
 
     def waiting_for_deployment_approval?
-      manual? && starts_environment? && deployment&.blocked?
+      manual? && deployment_job? && deployment&.blocked?
     end
 
     def outdated_deployment?
       strong_memoize(:outdated_deployment) do
-        starts_environment? &&
+        deployment_job? &&
           incomplete? &&
           project.ci_forward_deployment_enabled? &&
           deployment&.older_than_last_successful_deployment?
@@ -527,7 +527,7 @@ module Ci
       environment.present?
     end
 
-    def starts_environment?
+    def deployment_job?
       has_environment_keyword? && self.environment_action == 'start'
     end
 
@@ -998,7 +998,7 @@ module Ci
 
     # Virtual deployment status depending on the environment status.
     def deployment_status
-      return unless starts_environment?
+      return unless deployment_job?
 
       if success?
         return successful_deployment_status

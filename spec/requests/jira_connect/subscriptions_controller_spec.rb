@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::SubscriptionsController do
+RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrations do
   describe 'GET /-/jira_connect/subscriptions' do
     let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'http://self-managed-gitlab.com') }
     let(:qsh) do
