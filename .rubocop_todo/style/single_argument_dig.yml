@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/SingleArgumentDig:
   Exclude:
     - 'app/graphql/resolvers/namespace_projects_resolver.rb'
@@ -38,7 +38,6 @@ Style/SingleArgumentDig:
     - 'lib/gitlab/auth/o_auth/auth_hash.rb'
     - 'lib/gitlab/ci/badge/coverage/template.rb'
     - 'lib/gitlab/ci/badge/template.rb'
-    - 'lib/gitlab/ci/lint.rb'
     - 'lib/gitlab/ci/parsers/accessibility/pa11y.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
     - 'lib/gitlab/ci/reports/codequality_reports.rb'

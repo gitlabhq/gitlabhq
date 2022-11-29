@@ -643,7 +643,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/diff/file.rb'
     - 'lib/gitlab/diff/file_collection/base.rb'
     - 'lib/gitlab/diff/file_collection/merge_request_diff_base.rb'
-    - 'lib/gitlab/diff/file_collection/merge_request_diff_batch.rb'
     - 'lib/gitlab/diff/highlight_cache.rb'
     - 'lib/gitlab/diff/lines_unfolder.rb'
     - 'lib/gitlab/diff/rendered/notebook/diff_file.rb'

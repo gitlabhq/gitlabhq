@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Performance/RedundantBlockCall:
   Exclude:
     - 'ee/app/models/gitlab_subscription.rb'

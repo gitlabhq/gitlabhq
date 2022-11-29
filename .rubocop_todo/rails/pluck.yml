@@ -1,5 +1,5 @@
 ---
-# Cop supports --autocorrect but disabled.
+# Cop supports --autocorrect.
 Rails/Pluck:
   Details: grace period
   Exclude:

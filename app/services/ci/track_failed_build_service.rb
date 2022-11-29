@@ -42,7 +42,8 @@ module Ci
         build_name: @build.name,
         build_artifact_types: @build.job_artifact_types,
         exit_code: @exit_code,
-        failure_reason: @failure_reason
+        failure_reason: @failure_reason,
+        project: @build.project_id
       }
     end
   end

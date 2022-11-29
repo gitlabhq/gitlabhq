@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/RedundantInterpolation:
   Exclude:
     - 'app/components/diffs/stats_component.rb'
@@ -16,8 +16,6 @@ Style/RedundantInterpolation:
     - 'app/helpers/tooling/visual_review_helper.rb'
     - 'app/models/concerns/issuable.rb'
     - 'app/models/integrations/base_chat_notification.rb'
-    - 'app/models/integrations/hangouts_chat.rb'
-    - 'app/models/integrations/microsoft_teams.rb'
     - 'app/models/integrations/pushover.rb'
     - 'app/models/merge_request.rb'
     - 'app/services/jira_import/start_import_service.rb'
@@ -31,9 +29,6 @@ Style/RedundantInterpolation:
     - 'ee/app/helpers/ee/geo_helper.rb'
     - 'ee/app/services/geo/event_store.rb'
     - 'ee/app/services/geo/repository_updated_service.rb'
-    - 'ee/app/services/security/security_orchestration_policies/create_pipeline_service.rb'
-    - 'ee/app/services/users/abuse/excessive_projects_download_ban_service.rb'
-    - 'ee/app/services/users/abuse/git_abuse/namespace_throttle_service.rb'
     - 'ee/db/fixtures/development/31_devops_adoption.rb'
     - 'ee/lib/gitlab/insights/serializers/chartjs/base_serializer.rb'
     - 'ee/spec/features/epics/epic_issues_spec.rb'
@@ -72,7 +67,6 @@ Style/RedundantInterpolation:
     - 'lib/gitlab/repository_cache_adapter.rb'
     - 'lib/gitlab/repository_hash_cache.rb'
     - 'lib/gitlab/repository_set_cache.rb'
-    - 'lib/gitlab/usage/metrics/names_suggestions/relation_parsers/constraints.rb'
     - 'lib/gitlab/usage/metrics/names_suggestions/relation_parsers/joins.rb'
     - 'lib/gitlab/usage_data_counters/hll_redis_counter.rb'
     - 'lib/gitlab/usage_data_counters/search_counter.rb'
@@ -88,7 +82,6 @@ Style/RedundantInterpolation:
     - 'qa/qa/service/praefect_manager.rb'
     - 'qa/qa/specs/features/browser_ui/4_verify/pipeline/include_multiple_files_from_a_project_spec.rb'
     - 'qa/qa/specs/features/browser_ui/5_package/container_registry/container_registry_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/13_secure/scan_result_policy_vulnerabilities_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/project_templates_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/4_verify/parent_child_pipelines_dependent_relationship_spec.rb'
     - 'qa/qa/tools/generate_perf_testdata.rb'

@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Rails/ActiveRecordCallbacksOrder:
   Exclude:
     - 'app/models/award_emoji.rb'

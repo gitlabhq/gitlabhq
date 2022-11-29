@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/ExplicitBlockArgument:
   Exclude:
     - 'app/controllers/admin/background_migrations_controller.rb'
@@ -38,7 +38,6 @@ Style/ExplicitBlockArgument:
     - 'lib/gitlab/application_context.rb'
     - 'lib/gitlab/authorized_keys.rb'
     - 'lib/gitlab/cache.rb'
-    - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'
     - 'lib/gitlab/ci/variables/collection.rb'
     - 'lib/gitlab/cleanup/remote_uploads.rb'
@@ -81,7 +80,6 @@ Style/ExplicitBlockArgument:
     - 'qa/qa/ee/page/project/wiki/show.rb'
     - 'qa/qa/flow/login.rb'
     - 'qa/qa/page/admin/menu.rb'
-    - 'qa/qa/page/base.rb'
     - 'qa/qa/page/component/blob_content.rb'
     - 'qa/qa/page/group/settings/group_deploy_tokens.rb'
     - 'qa/qa/page/profile/menu.rb'

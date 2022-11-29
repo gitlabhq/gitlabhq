@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/RedundantSelf:
   Exclude:
     - 'app/channels/awareness_channel.rb'
@@ -71,7 +71,6 @@ Style/RedundantSelf:
     - 'app/models/concerns/mentionable.rb'
     - 'app/models/concerns/merge_request_reviewer_state.rb'
     - 'app/models/concerns/noteable.rb'
-    - 'app/models/concerns/packages/debian/distribution.rb'
     - 'app/models/concerns/participable.rb'
     - 'app/models/concerns/pg_full_text_searchable.rb'
     - 'app/models/concerns/protected_ref.rb'
@@ -112,7 +111,6 @@ Style/RedundantSelf:
     - 'app/models/integrations/emails_on_push.rb'
     - 'app/models/integrations/jira.rb'
     - 'app/models/integrations/pipelines_email.rb'
-    - 'app/models/integrations/slack.rb'
     - 'app/models/integrations/zentao.rb'
     - 'app/models/internal_id.rb'
     - 'app/models/issue.rb'
@@ -190,7 +188,6 @@ Style/RedundantSelf:
     - 'config/initializers/active_record_keyset_pagination.rb'
     - 'config/initializers/forbid_sidekiq_in_transactions.rb'
     - 'config/initializers/mail_encoding_patch.rb'
-    - 'config/initializers/wikicloth_redos_patch.rb'
     - 'db/post_migrate/20210329102724_add_new_trail_plans.rb'
     - 'db/post_migrate/20211029102822_add_open_source_plan.rb'
     - 'ee/app/graphql/resolvers/geo/registries_resolver.rb'
@@ -223,7 +220,6 @@ Style/RedundantSelf:
     - 'ee/app/models/ee/issue.rb'
     - 'ee/app/models/ee/iteration.rb'
     - 'ee/app/models/ee/member.rb'
-    - 'ee/app/models/ee/merge_request.rb'
     - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/ee/packages/package_file.rb'
     - 'ee/app/models/ee/project.rb'
@@ -420,7 +416,6 @@ Style/RedundantSelf:
     - 'qa/qa/resource/user_gpg.rb'
     - 'qa/qa/runtime/release.rb'
     - 'qa/qa/scenario/bootable.rb'
-    - 'qa/qa/scenario/test/instance.rb'
     - 'sidekiq_cluster/sidekiq_cluster.rb'
     - 'spec/graphql/resolvers/group_labels_resolver_spec.rb'
     - 'spec/helpers/emails_helper_spec.rb'

@@ -218,7 +218,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/serializers/impersonation_access_token_serializer_spec.rb'
     - 'spec/serializers/import/manifest_provider_repo_entity_spec.rb'
     - 'spec/serializers/integrations/event_entity_spec.rb'
-    - 'spec/serializers/integrations/field_entity_spec.rb'
     - 'spec/serializers/integrations/harbor_serializers/artifact_entity_spec.rb'
     - 'spec/serializers/integrations/harbor_serializers/repository_entity_spec.rb'
     - 'spec/serializers/integrations/harbor_serializers/tag_entity_spec.rb'

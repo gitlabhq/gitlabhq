@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Layout/FirstArrayElementIndentation:
   Exclude:
     - 'spec/lib/gitlab/github_import/importer/issues_importer_spec.rb'

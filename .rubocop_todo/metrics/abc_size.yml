@@ -1,15 +1,11 @@
 ---
 Metrics/AbcSize:
   Exclude:
-    - 'app/controllers/concerns/issuable_actions.rb'
     - 'app/helpers/issuables_helper.rb'
     - 'app/helpers/nav/top_nav_helper.rb'
-    - 'app/helpers/search_helper.rb'
     - 'app/models/instance_configuration.rb'
     - 'app/services/projects/create_service.rb'
-    - 'ee/app/workers/elastic/migration_worker.rb'
-    - 'ee/lib/ee/audit/project_changes_auditor.rb'
+    - 'ee/db/seeds/awesome_co/awesome_co.rb'
     - 'lib/gitlab/analytics/cycle_analytics/request_params.rb'
     - 'lib/gitlab/sidekiq_middleware/server_metrics.rb'
     - 'qa/qa/resource/repository/push.rb'
-    - 'ee/db/seeds/awesome_co/**/*.rb'

@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/KeywordParametersOrder:
   Exclude:
     - 'app/controllers/concerns/product_analytics_tracking.rb'

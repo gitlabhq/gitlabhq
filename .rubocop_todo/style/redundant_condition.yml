@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/RedundantCondition:
   Exclude:
     - 'ee/app/models/license.rb'

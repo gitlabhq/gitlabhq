@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/Next:
   Exclude:
     - 'lib/gitlab/fogbugz_import/importer.rb'

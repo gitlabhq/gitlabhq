@@ -5086,6 +5086,7 @@ Input type: `TimelineEventUpdateInput`
 | <a id="mutationtimelineeventupdateid"></a>`id` | [`IncidentManagementTimelineEventID!`](#incidentmanagementtimelineeventid) | ID of the timeline event to update. |
 | <a id="mutationtimelineeventupdatenote"></a>`note` | [`String`](#string) | Text note of the timeline event. |
 | <a id="mutationtimelineeventupdateoccurredat"></a>`occurredAt` | [`Time`](#time) | Timestamp when the event occurred. |
+| <a id="mutationtimelineeventupdatetimelineeventtagnames"></a>`timelineEventTagNames` | [`[String!]`](#string) | Tags for the incident timeline event. |
 
 #### Fields
 

@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 RSpec/ScatteredLet:
   Exclude:
     - 'ee/spec/features/boards/user_visits_board_spec.rb'
@@ -30,7 +30,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/helpers/ee/subscribable_banner_helper_spec.rb'
     - 'ee/spec/lib/audit/external_status_check_changes_auditor_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/members_helpers_spec.rb'
-    - 'ee/spec/lib/ee/audit/compliance_framework_changes_auditor_spec.rb'
     - 'ee/spec/lib/ee/gitlab/scim/provisioning_service_spec.rb'
     - 'ee/spec/lib/gitlab/background_migration/migrate_requirements_to_work_items_spec.rb'
     - 'ee/spec/lib/gitlab/ci/parsers/security/dast_spec.rb'
@@ -62,7 +61,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/requests/api/graphql/project/dast_profile_schedule_spec.rb'
     - 'ee/spec/requests/api/graphql/project/environments_spec.rb'
     - 'ee/spec/requests/api/graphql/project/pipeline/dast_profile_spec.rb'
-    - 'ee/spec/requests/api/graphql/project/pipeline/security_report_finding_spec.rb'
     - 'ee/spec/requests/api/graphql/project/pipeline/security_report_summary_spec.rb'
     - 'ee/spec/requests/api/graphql/project/pipelines/dast_profile_spec.rb'
     - 'ee/spec/requests/api/graphql/project/requirements_management/requirements_spec.rb'
@@ -83,7 +81,6 @@ RSpec/ScatteredLet:
     - 'ee/spec/services/ee/issue_links/create_service_spec.rb'
     - 'ee/spec/services/ee/issues/create_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/base_service_spec.rb'
-    - 'ee/spec/services/ee/merge_requests/update_assignees_service_spec.rb'
     - 'ee/spec/services/ee/merge_requests/update_reviewers_service_spec.rb'
     - 'ee/spec/services/epic_issues/create_service_spec.rb'
     - 'ee/spec/services/epics/issue_promote_service_spec.rb'
@@ -95,12 +92,10 @@ RSpec/ScatteredLet:
     - 'ee/spec/services/incident_management/oncall_rotations/remove_participant_service_spec.rb'
     - 'ee/spec/services/members/activate_service_spec.rb'
     - 'ee/spec/services/personal_access_tokens/groups/update_lifetime_service_spec.rb'
-    - 'ee/spec/services/sbom/ingestion/occurrence_map_spec.rb'
     - 'ee/spec/services/security/report_summary_service_spec.rb'
     - 'ee/spec/services/vulnerabilities/security_finding/create_issue_service_spec.rb'
     - 'ee/spec/views/subscriptions/groups/edit.html.haml_spec.rb'
     - 'ee/spec/workers/concerns/update_orchestration_policy_configuration_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/1_manage/group/group_audit_logs_1_spec.rb'
     - 'spec/controllers/concerns/metrics_dashboard_spec.rb'
     - 'spec/controllers/import/bitbucket_server_controller_spec.rb'
     - 'spec/controllers/projects/deploy_keys_controller_spec.rb'
@@ -166,7 +161,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'spec/lib/gitlab/cycle_analytics/stage_summary_spec.rb'
     - 'spec/lib/gitlab/database/background_migration/batched_migration_spec.rb'
-    - 'spec/lib/gitlab/database/migrations/test_batched_background_runner_spec.rb'
     - 'spec/lib/gitlab/database/partitioning/partition_manager_spec.rb'
     - 'spec/lib/gitlab/database/postgresql_adapter/empty_query_ping_spec.rb'
     - 'spec/lib/gitlab/database/reindexing/grafana_notifier_spec.rb'
@@ -205,7 +199,6 @@ RSpec/ScatteredLet:
     - 'spec/lib/gitlab/tree_summary_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/instrumentations/gitlab_for_jira_app_proxy_installations_count_metric_spec.rb'
     - 'spec/lib/gitlab/usage_data_metrics_spec.rb'
-    - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/lib/gitlab/utils/measuring_spec.rb'
     - 'spec/lib/gitlab/zentao/client_spec.rb'
     - 'spec/lib/peek/views/external_http_spec.rb'
@@ -263,8 +256,6 @@ RSpec/ScatteredLet:
     - 'spec/serializers/ci/job_entity_spec.rb'
     - 'spec/serializers/merge_requests/pipeline_entity_spec.rb'
     - 'spec/services/ci/create_downstream_pipeline_service_spec.rb'
-    - 'spec/services/ci/create_pipeline_service/include_spec.rb'
-    - 'spec/services/ci/create_pipeline_service/logger_spec.rb'
     - 'spec/services/ci/create_pipeline_service/rules_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
     - 'spec/services/ci/destroy_pipeline_service_spec.rb'

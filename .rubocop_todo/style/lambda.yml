@@ -56,7 +56,6 @@ Style/Lambda:
     - 'lib/gitlab/sidekiq_config/worker_matcher.rb'
     - 'lib/gitlab/sidekiq_middleware.rb'
     - 'lib/gitlab/utils/usage_data.rb'
-    - 'qa/qa/page/base.rb'
     - 'qa/qa/runtime/allure_report.rb'
     - 'qa/qa/specs/features/api/1_manage/import/import_large_github_repo_spec.rb'
     - 'qa/qa/support/api.rb'

@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 RSpec/SharedExamples:
   Exclude:
     - 'ee/spec/lib/ee/gitlab/auth/ldap/sync/group_spec.rb'

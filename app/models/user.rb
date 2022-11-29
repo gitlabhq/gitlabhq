@@ -906,6 +906,17 @@ class User < ApplicationRecord
       end
     end
 
+    def admin_bot
+      email_pattern = "admin-bot%s@#{Settings.gitlab.host}"
+
+      unique_internal(where(user_type: :admin_bot), 'GitLab-Admin-Bot', email_pattern) do |u|
+        u.bio = 'Admin bot used for tasks that require admin privileges'
+        u.name = 'GitLab Admin Bot'
+        u.avatar = bot_avatar(image: 'admin-bot.png')
+        u.admin = true
+      end
+    end
+
     # Return true if there is only single non-internal user in the deployment,
     # ghost user is ignored.
     def single_user?

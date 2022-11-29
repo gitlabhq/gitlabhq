@@ -173,6 +173,8 @@ module QA
 
         raise PrometheusQueryError, "Unable to query read distribution metrics" unless result['status'] == 'success'
 
+        raise PrometheusQueryError, "No read distribution metrics found" if result['data']['result'].empty?
+
         result['data']['result'].map { |result| { node: result['metric']['storage'], value: result['value'][1].to_i } }
       end
 

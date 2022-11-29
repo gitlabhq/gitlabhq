@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Style/IfInsideElse:
   Exclude:
     - 'app/controllers/application_controller.rb'
@@ -12,12 +13,9 @@ Style/IfInsideElse:
     - 'app/presenters/project_presenter.rb'
     - 'app/services/system_notes/commit_service.rb'
     - 'app/services/task_list_toggle_service.rb'
-    - 'app/services/user_project_access_changed_service.rb'
     - 'app/uploaders/gitlab_uploader.rb'
     - 'config/settings.rb'
-    - 'ee/app/controllers/ee/registrations/welcome_controller.rb'
     - 'ee/app/controllers/groups/omniauth_callbacks_controller.rb'
-    - 'ee/app/models/ee/namespace.rb'
     - 'ee/app/models/iterations/cadence.rb'
     - 'ee/app/models/protected_environments/authorizable.rb'
     - 'ee/app/policies/ee/group_policy.rb'
@@ -28,7 +26,6 @@ Style/IfInsideElse:
     - 'ee/app/services/gitlab_subscriptions/fetch_subscription_plans_service.rb'
     - 'ee/app/services/vulnerability_external_issue_links/create_service.rb'
     - 'ee/app/workers/elastic/project_transfer_worker.rb'
-    - 'ee/app/workers/project_import_schedule_worker.rb'
     - 'ee/lib/gitlab/geo/base_batcher.rb'
     - 'lib/api/projects.rb'
     - 'lib/gitlab/auth.rb'

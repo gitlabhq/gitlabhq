@@ -6808,7 +6808,8 @@ RSpec.describe User do
             { user_type: :support_bot },
             { user_type: :security_bot },
             { user_type: :automation_bot },
-            { user_type: :security_policy_bot }
+            { user_type: :security_policy_bot },
+            { user_type: :admin_bot }
           ]
         end
 
@@ -6896,6 +6897,7 @@ RSpec.describe User do
         'security_bot'        | false
         'automation_bot'      | false
         'security_policy_bot' | false
+        'admin_bot'           | false
       end
 
       with_them do
@@ -7045,17 +7047,25 @@ RSpec.describe User do
     it_behaves_like 'bot users', :ghost
     it_behaves_like 'bot users', :automation_bot
     it_behaves_like 'bot users', :security_policy_bot
+    it_behaves_like 'bot users', :admin_bot
 
     it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
     it_behaves_like 'bot user avatars', :support_bot, 'support-bot.png'
     it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
     it_behaves_like 'bot user avatars', :security_policy_bot, 'security-bot.png'
     it_behaves_like 'bot user avatars', :automation_bot, 'support-bot.png'
+    it_behaves_like 'bot user avatars', :admin_bot, 'admin-bot.png'
 
     context 'when bot is the support_bot' do
       subject { described_class.support_bot }
 
       it { is_expected.to be_confirmed }
+    end
+
+    context 'when bot is the admin bot' do
+      subject { described_class.admin_bot }
+
+      it { is_expected.to be_admin }
     end
   end
 

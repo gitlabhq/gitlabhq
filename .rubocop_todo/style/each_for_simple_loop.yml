@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/EachForSimpleLoop:
   Exclude:
     - 'ee/spec/lib/gitlab/insights/reducers/count_per_period_reducer_spec.rb'

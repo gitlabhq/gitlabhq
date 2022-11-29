@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/AccessorGrouping:
   Exclude:
     - 'app/finders/template_finder.rb'

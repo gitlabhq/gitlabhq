@@ -88,14 +88,22 @@ To enable Secret Detection, either:
 
 ### Enable Secret Detection by including the template
 
-You should use this method if you have an existing GitLab CI/CD configuration file.
+Use this method if you have an existing GitLab CI/CD configuration file.
 
-Add the following extract to your `.gitlab-ci.yml` file:
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **CI/CD > Editor**.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file:
 
-```yaml
-include:
-  - template: Jobs/Secret-Detection.gitlab-ci.yml
-```
+   ```yaml
+   include:
+     - template: Jobs/Secret-Detection.gitlab-ci.yml
+   ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+   The message **Simulation completed successfully** indicates the file is valid.
+1. Select the **Edit** tab.
+1. Optional. In **Commit message**, customize the commit message.
+1. Select **Commit changes**.
 
 Pipelines now include a Secret Detection job, and the results are included in the merge request
 widget.

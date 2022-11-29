@@ -46,7 +46,7 @@ The item text must include these words in order. Capitalization doesn't matter.
 
 - `introduced`, `enabled`, `deprecated`, `changed`, `moved`, `recommended`, `removed`, or `renamed`
 - `in` or `to`
-- `GitLab`
+- `GitLab` (or, for external projects, the name of the project)
 
 If possible, include a link to the related issue, merge request, or epic.
 Do not link to the pricing page. Do not include the subscription tier.

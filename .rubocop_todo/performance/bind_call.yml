@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Performance/BindCall:
   Exclude:
     - 'app/services/metrics/dashboard/grafana_metric_embed_service.rb'

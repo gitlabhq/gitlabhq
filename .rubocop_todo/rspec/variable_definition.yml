@@ -1,6 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 RSpec/VariableDefinition:
   Exclude:
-    - 'spec/lib/gitlab/usage_data_spec.rb'
     - 'spec/presenters/packages/npm/package_presenter_spec.rb'

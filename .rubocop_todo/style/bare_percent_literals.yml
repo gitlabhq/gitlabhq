@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/BarePercentLiterals:
   Exclude:
     - 'app/models/commit.rb'
@@ -75,7 +75,6 @@ Style/BarePercentLiterals:
     - 'spec/lib/banzai/pipeline/full_pipeline_spec.rb'
     - 'spec/lib/banzai/pipeline/incident_management/timeline_event_pipeline_spec.rb'
     - 'spec/lib/banzai/pipeline/plain_markdown_pipeline_spec.rb'
-    - 'spec/lib/banzai/reference_parser/commit_parser_spec.rb'
     - 'spec/lib/banzai/reference_parser/issue_parser_spec.rb'
     - 'spec/lib/banzai/reference_parser/merge_request_parser_spec.rb'
     - 'spec/lib/gitlab/diff/highlight_spec.rb'

@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Rails/IndexWith:
   Exclude:
     - 'app/helpers/ci/jobs_helper.rb'
@@ -30,7 +30,6 @@ Rails/IndexWith:
     - 'lib/gitlab/ci/reports/security/identifier.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'
     - 'lib/gitlab/database/count/exact_count_strategy.rb'
-    - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/obsolete_ignored_columns.rb'
     - 'lib/gitlab/database/tables_sorted_by_foreign_keys.rb'
     - 'lib/gitlab/issuable_metadata.rb'
@@ -47,7 +46,6 @@ Rails/IndexWith:
     - 'spec/lib/google_api/cloud_platform/client_spec.rb'
     - 'spec/models/event_spec.rb'
     - 'spec/presenters/projects/security/configuration_presenter_spec.rb'
-    - 'spec/support/database/multiple_databases.rb'
     - 'spec/support/shared_contexts/services/projects/container_repository/delete_tags_service_shared_context.rb'
     - 'spec/support/shared_examples/models/concerns/sanitizable_shared_examples.rb'
     - 'spec/views/admin/dashboard/index.html.haml_spec.rb'

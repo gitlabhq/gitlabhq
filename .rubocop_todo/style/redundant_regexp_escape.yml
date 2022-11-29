@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/RedundantRegexpEscape:
   Exclude:
     - 'app/controllers/help_controller.rb'
@@ -11,7 +11,6 @@ Style/RedundantRegexpEscape:
     - 'app/models/deploy_token.rb'
     - 'app/models/design_management/design.rb'
     - 'app/models/integrations/chat_message/base_message.rb'
-    - 'app/models/integrations/datadog.rb'
     - 'app/models/integrations/teamcity.rb'
     - 'app/models/issue.rb'
     - 'app/models/label.rb'
@@ -23,7 +22,6 @@ Style/RedundantRegexpEscape:
     - 'app/models/snippet.rb'
     - 'app/services/metrics/dashboard/grafana_metric_embed_service.rb'
     - 'app/uploaders/file_uploader.rb'
-    - 'config/initializers/wikicloth_redos_patch.rb'
     - 'config/routes/project.rb'
     - 'config/routes/uploads.rb'
     - 'ee/app/models/ee/epic.rb'
@@ -60,7 +58,6 @@ Style/RedundantRegexpEscape:
     - 'lib/gitlab/git/repository.rb'
     - 'lib/gitlab/gitaly_client.rb'
     - 'lib/gitlab/harbor/query.rb'
-    - 'lib/gitlab/incoming_email.rb'
     - 'lib/gitlab/jira/dvcs.rb'
     - 'lib/gitlab/path_regex.rb'
     - 'lib/gitlab/private_commit_email.rb'
@@ -68,7 +65,6 @@ Style/RedundantRegexpEscape:
     - 'lib/gitlab/quick_actions/extractor.rb'
     - 'lib/gitlab/regex.rb'
     - 'lib/gitlab/search/abuse_detection.rb'
-    - 'lib/gitlab/service_desk_email.rb'
     - 'lib/gitlab/task_helpers.rb'
     - 'lib/gitlab/url_sanitizer.rb'
     - 'lib/gitlab/utils.rb'
@@ -78,11 +74,9 @@ Style/RedundantRegexpEscape:
     - 'lib/tasks/gettext.rake'
     - 'lib/tasks/gitlab/info.rake'
     - 'qa/qa/specs/features/ee/browser_ui/13_secure/license_compliance_spec.rb'
-    - 'qa/qa/specs/features/ee/browser_ui/13_secure/security_reports_spec.rb'
     - 'qa/spec/runtime/key/ecdsa_spec.rb'
     - 'qa/spec/runtime/key/ed25519_spec.rb'
     - 'qa/spec/runtime/key/rsa_spec.rb'
-    - 'rubocop/cop/gitlab/finder_with_find_by.rb'
     - 'scripts/qa/testcases-check'
     - 'scripts/setup/find-jh-branch.rb'
     - 'spec/controllers/projects_controller_spec.rb'

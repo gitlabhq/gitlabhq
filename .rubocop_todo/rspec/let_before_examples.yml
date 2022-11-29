@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 RSpec/LetBeforeExamples:
   Exclude:
     - 'ee/spec/lib/ee/gitlab/scim/provisioning_service_spec.rb'

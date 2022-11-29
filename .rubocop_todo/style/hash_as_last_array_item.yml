@@ -1,11 +1,10 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/HashAsLastArrayItem:
   Exclude:
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/admin/groups_controller.rb'
     - 'app/controllers/admin/users_controller.rb'
-    - 'app/controllers/boards/issues_controller.rb'
     - 'app/controllers/concerns/issuable_actions.rb'
     - 'app/controllers/concerns/issuable_collections.rb'
     - 'app/controllers/profiles_controller.rb'
@@ -17,7 +16,6 @@ Style/HashAsLastArrayItem:
     - 'app/controllers/projects/settings/operations_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/graphql/resolvers/clusters/agents_resolver.rb'
-    - 'app/graphql/resolvers/concerns/issue_resolver_arguments.rb'
     - 'app/graphql/types/boards/board_issuable_input_base_type.rb'
     - 'app/graphql/types/boards/board_issue_input_base_type.rb'
     - 'app/helpers/namespaces_helper.rb'
@@ -35,7 +33,6 @@ Style/HashAsLastArrayItem:
     - 'ee/app/controllers/ee/admin/groups_controller.rb'
     - 'ee/app/controllers/ee/admin/users_controller.rb'
     - 'ee/app/controllers/groups/epics_controller.rb'
-    - 'ee/app/graphql/ee/resolvers/base_issues_resolver.rb'
     - 'ee/app/graphql/types/epics/negated_epic_filter_input_type.rb'
     - 'ee/app/models/ee/merge_request.rb'
     - 'ee/app/models/ee/vulnerability.rb'

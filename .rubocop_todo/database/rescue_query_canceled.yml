@@ -6,4 +6,3 @@ Database/RescueQueryCanceled:
     - 'lib/gitlab/background_migration/backfill_work_item_type_id_for_issues.rb'
     - 'lib/gitlab/database/batch_counter.rb'
     - 'lib/gitlab/issuables_count_for_state.rb'
-    - 'lib/tasks/gitlab/db/lock_writes.rake'

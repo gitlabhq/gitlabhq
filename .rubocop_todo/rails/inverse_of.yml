@@ -9,7 +9,6 @@ Rails/InverseOf:
     - 'app/models/board.rb'
     - 'app/models/bulk_imports/entity.rb'
     - 'app/models/bulk_imports/tracker.rb'
-    - 'app/models/ci/bridge.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_pending_state.rb'
     - 'app/models/ci/build_trace_chunk.rb'

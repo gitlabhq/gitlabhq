@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Layout/EmptyLineBetweenDefs:
   Exclude:
     - 'db/post_migrate/20220202105733_delete_service_template_records.rb'

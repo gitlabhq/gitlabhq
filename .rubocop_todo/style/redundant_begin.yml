@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/RedundantBegin:
   Exclude:
     - 'app/controllers/concerns/membership_actions.rb'
@@ -27,7 +27,6 @@ Style/RedundantBegin:
     - 'ee/app/validators/ee/json_schema_validator.rb'
     - 'ee/lib/ee/api/helpers/award_emoji.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/adapter/multiple/records.rb'
-    - 'ee/lib/gitlab/ci/parsers/security/dast.rb'
     - 'ee/lib/omni_auth/strategies/group_saml.rb'
     - 'ee/lib/system_check/geo/authorized_keys_check.rb'
     - 'lib/api/helpers/award_emoji.rb'
@@ -39,7 +38,6 @@ Style/RedundantBegin:
     - 'lib/gitlab.rb'
     - 'lib/gitlab/changes_list.rb'
     - 'lib/gitlab/color.rb'
-    - 'lib/gitlab/database/migration_helpers.rb'
     - 'lib/gitlab/database/schema_cache_with_renamed_table.rb'
     - 'lib/gitlab/favicon.rb'
     - 'lib/gitlab/import_export/base/relation_factory.rb'

@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/EmptyMethod:
   Exclude:
     - 'app/controllers/admin/application_settings/appearances_controller.rb'
@@ -11,7 +11,6 @@ Style/EmptyMethod:
     - 'app/controllers/admin/runners_controller.rb'
     - 'app/controllers/admin/topics_controller.rb'
     - 'app/controllers/admin/usage_trends_controller.rb'
-    - 'app/controllers/admin/users_controller.rb'
     - 'app/controllers/concerns/boards_actions.rb'
     - 'app/controllers/groups/milestones_controller.rb'
     - 'app/controllers/groups/runners_controller.rb'
@@ -44,7 +43,6 @@ Style/EmptyMethod:
     - 'app/controllers/projects/mattermosts_controller.rb'
     - 'app/controllers/projects/pages_domains_controller.rb'
     - 'app/controllers/projects/pipeline_schedules_controller.rb'
-    - 'app/controllers/projects/product_analytics_controller.rb'
     - 'app/controllers/projects/runners_controller.rb'
     - 'app/controllers/projects/settings/integrations_controller.rb'
     - 'app/controllers/projects/settings/packages_and_registries_controller.rb'
@@ -191,4 +189,3 @@ Style/EmptyMethod:
     - 'spec/lib/gitlab/utils/delegator_override_spec.rb'
     - 'spec/lib/gitlab/utils/override_spec.rb'
     - 'spec/lib/gitlab/utils/strong_memoize_spec.rb'
-    - 'spec/workers/concerns/waitable_worker_spec.rb'

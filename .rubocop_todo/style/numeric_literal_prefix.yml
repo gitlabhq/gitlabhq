@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Style/NumericLiteralPrefix:
   Exclude:
     - 'app/models/container_repository.rb'

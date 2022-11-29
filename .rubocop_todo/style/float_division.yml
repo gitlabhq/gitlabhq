@@ -1,7 +1,7 @@
 ---
+# Cop supports --autocorrect.
 Style/FloatDivision:
   Exclude:
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/models/namespaces/storage/root_size.rb'
-    - 'qa/qa/support/formatters/allure_metadata_formatter.rb'
     - 'qa/qa/tools/reliable_report.rb'

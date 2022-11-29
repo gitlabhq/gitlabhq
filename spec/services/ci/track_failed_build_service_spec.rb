@@ -21,19 +21,22 @@ RSpec.describe Ci::TrackFailedBuildService do
 
         expect(response.success?).to be true
 
+        context = {
+          schema: described_class::SCHEMA_URL,
+          data: {
+            build_id: build.id,
+            build_name: build.name,
+            build_artifact_types: ["sast"],
+            exit_code: exit_code,
+            failure_reason: failure_reason,
+            project: project.id
+          }
+        }
+
         expect_snowplow_event(
           category: 'ci::build',
           action: 'failed',
-          context: [{
-            schema: described_class::SCHEMA_URL,
-            data: {
-              build_id: build.id,
-              build_name: build.name,
-              build_artifact_types: ["sast"],
-              exit_code: exit_code,
-              failure_reason: failure_reason
-            }
-          }],
+          context: [context],
           user: user,
           project: project.id)
       end

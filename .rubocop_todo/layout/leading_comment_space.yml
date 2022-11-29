@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Layout/LeadingCommentSpace:
   Exclude:
     - 'config/initializers/kaminari_active_record_relation_methods_with_limit.rb'

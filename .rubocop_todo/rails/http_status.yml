@@ -1,5 +1,5 @@
 ---
-# Cop supports --auto-correct.
+# Cop supports --autocorrect.
 Rails/HttpStatus:
   Exclude:
     - 'app/controllers/concerns/invisible_captcha_on_signup.rb'

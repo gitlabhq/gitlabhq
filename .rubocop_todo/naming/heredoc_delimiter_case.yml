@@ -1,4 +1,5 @@
 ---
+# Cop supports --autocorrect.
 Naming/HeredocDelimiterCase:
   Exclude:
     - 'spec/lib/gitlab/diff/parser_spec.rb'
