@@ -2136,8 +2136,8 @@ class Project < ApplicationRecord
   end
 
   def after_import
-    repository.remove_prohibited_branches
     repository.expire_content_cache
+    repository.remove_prohibited_branches
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)

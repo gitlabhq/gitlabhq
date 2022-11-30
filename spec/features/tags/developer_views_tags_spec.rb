@@ -53,6 +53,8 @@ RSpec.describe 'Developer views tags' do
     end
 
     it 'views a specific tag page' do
+      create(:release, project: project, tag: 'v1.0.0', name: 'v1.0.0', description: nil)
+
       click_on 'v1.0.0'
 
       expect(page).to have_current_path(
