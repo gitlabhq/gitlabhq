@@ -5,6 +5,7 @@ module Namespaces
     rule { anonymous }.prevent_all
 
     condition(:can_create_personal_project, scope: :user) { @user.can_create_project? }
+    condition(:bot_user_namespace) { @subject.bot_user_namespace? }
     condition(:owner) { @subject.owner == @user }
 
     rule { owner | admin }.policy do
@@ -20,6 +21,8 @@ module Namespaces
     end
 
     rule { ~can_create_personal_project }.prevent :create_projects
+
+    rule { bot_user_namespace }.prevent :create_projects
 
     rule { (owner | admin) & can?(:create_projects) }.enable :transfer_projects
   end

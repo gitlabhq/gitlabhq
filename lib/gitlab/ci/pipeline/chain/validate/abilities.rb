@@ -14,7 +14,7 @@ module Gitlab
                 return error('Project is deleted!')
               end
 
-              unless builds_enabled?
+              unless project.builds_enabled?
                 return error('Pipelines are disabled!')
               end
 
@@ -35,10 +35,6 @@ module Gitlab
 
             def allowed_to_create_pipeline?
               can?(current_user, :create_pipeline, project)
-            end
-
-            def builds_enabled?
-              project.builds_enabled?
             end
 
             def allowed_to_write_ref?

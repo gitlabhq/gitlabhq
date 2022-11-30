@@ -64,16 +64,10 @@ Example response:
 ### Import a public project through the API using a group access token
 
 When you import a project from GitHub to GitLab through the API using a group access
-token, the GitLab project inherits the original project's visibility settings.
-The API imports the project into the bot account's namespace and makes the project
-publicly accessible if the:
+token:
 
-- Original project is public.
-- `path` or `target_namespace` do not exist.
-
-Because the project cannot be deleted by an end user with a valid token, this
-could be a security risk. Make sure the `path` or `target_namespace` exist before
-importing a public project from GitHub into GitLab.
+- The GitLab project inherits the original project's visibility settings. As a result, the project is publicly accessible if the original project is public.
+- If the `path` or `target_namespace` does not exist, the project import fails.
 
 ## Cancel GitHub project import
 

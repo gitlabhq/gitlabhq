@@ -145,6 +145,20 @@ RSpec.describe Projects::CreateService, '#execute' do
         end
       end
     end
+
+    context 'when the passed in namespace is for a bot user' do
+      let(:bot_user) { create(:user, :project_bot) }
+      let(:opts) do
+        { name: project_name, namespace_id: bot_user.namespace.id }
+      end
+
+      it 'raises an error' do
+        project = create_project(bot_user, opts)
+
+        expect(project.errors.errors.length).to eq 1
+        expect(project.errors.messages[:namespace].first).to eq(("is not valid"))
+      end
+    end
   end
 
   describe 'after create actions' do

@@ -86,7 +86,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
         'active' => runner.active,
         'paused' => !runner.active,
         'status' => runner.status('14.5').to_s.upcase,
-        'jobExecutionStatus' => runner.running_builds.any? ? 'RUNNING' : 'IDLE',
+        'jobExecutionStatus' => runner.builds.running.any? ? 'RUNNING' : 'IDLE',
         'maximumTimeout' => runner.maximum_timeout,
         'accessLevel' => runner.access_level.to_s.upcase,
         'runUntagged' => runner.run_untagged,
@@ -98,9 +98,9 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
         'maintenanceNote' => runner.maintenance_note,
         'maintenanceNoteHtml' =>
           runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
-        'jobCount' => runner.running_builds.count,
+        'jobCount' => runner.builds.count,
         'jobs' => a_hash_including(
-          "count" => runner.running_builds.count,
+          "count" => runner.builds.count,
           "nodes" => an_instance_of(Array),
           "pageInfo" => anything
         ),
@@ -189,11 +189,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
       before do
         project = create(:project, :repository)
         pipeline = create(:ci_pipeline, project: project)
-        build = create(:ci_build, runner: runner, pipeline: pipeline)
-        create(:ci_running_build, build: build, project: project, runner: runner)
+        create(:ci_build, :running, runner: runner, pipeline: pipeline)
       end
-
-      specify { expect(runner.running_builds.count).to eq 1 }
 
       it_behaves_like 'runner details fetch'
     end

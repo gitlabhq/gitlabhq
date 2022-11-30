@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::BuildReportResult do
-  let_it_be(:build_report_result) { create(:ci_build_report_result, :with_junit_success) }
+  let_it_be_with_reload(:build_report_result) { create(:ci_build_report_result, :with_junit_success) }
 
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:parent) { create(:project) }

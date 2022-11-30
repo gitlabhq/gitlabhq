@@ -24,7 +24,7 @@ gem 'rspec-parameterized', '~> 0.5.2'
 gem 'octokit', '~> 6.0.1'
 gem "faraday-retry", "~> 2.0"
 gem 'webdrivers', '~> 5.2'
-gem 'zeitwerk', '~> 2.4'
+gem 'zeitwerk', '~> 2.6', '>= 2.6.6'
 gem 'influxdb-client', '~> 2.8'
 gem 'terminal-table', '~> 3.0.2', require: false
 gem 'slack-notifier', '~> 2.4', require: false

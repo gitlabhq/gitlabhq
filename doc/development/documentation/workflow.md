@@ -77,7 +77,7 @@ A member of the Technical Writing team adds these labels:
 - The [`~Technical Writing` team label](../contributing/issue_workflow.md#team-labels).
 - A type label: either `~"type::feature"` or `~"type::maintenance"`.
 
-### Reviewing and merging
+## Reviewing and merging
 
 Anyone with the Maintainer role to the relevant GitLab project can
 merge documentation changes. Maintainers must make a good-faith effort to ensure that the content:
@@ -111,13 +111,24 @@ The process involves the following:
 The process is reflected in the **Documentation**
 [merge request template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/merge_request_templates/Documentation.md).
 
-## Other ways to help
+### Before merging
 
-If you have ideas for further documentation resources please
-[create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Documentation)
-using the Documentation template.
+Ensure the following if skipping an initial Technical Writer review:
 
-## Post-merge reviews
+- [Product badges](styleguide/index.md#product-tier-badges) are applied.
+- The GitLab [version](versions.md) that
+  introduced the feature is included.
+- Changes to topic titles don't affect in-app hyperlinks.
+- Specific [user permissions](../../user/permissions.md) are documented.
+- New documents are linked from higher-level indexes, for discoverability.
+- The style guide is followed:
+  - For [directories and files](site_architecture/folder_structure.md).
+  - For [images](styleguide/index.md#images).
+
+Merge requests that change the location of documentation must always be reviewed by a Technical
+Writer before merging.
+
+### Post-merge reviews
 
 If not assigned to a Technical Writer for review prior to merging, a review must be scheduled
 immediately after merge by the developer or maintainer. For this,
@@ -146,19 +157,8 @@ Remember:
 - The Technical Writer can also help decide that documentation can be merged without Technical
   writer review, with the review to occur soon after merge.
 
-### Before merging
+## Other ways to help
 
-Ensure the following if skipping an initial Technical Writer review:
-
-- [Product badges](styleguide/index.md#product-tier-badges) are applied.
-- The GitLab [version](versions.md) that
-  introduced the feature is included.
-- Changes to topic titles don't affect in-app hyperlinks.
-- Specific [user permissions](../../user/permissions.md) are documented.
-- New documents are linked from higher-level indexes, for discoverability.
-- The style guide is followed:
-  - For [directories and files](site_architecture/folder_structure.md).
-  - For [images](styleguide/index.md#images).
-
-Merge requests that change the location of documentation must always be reviewed by a Technical
-Writer before merging.
+If you have ideas for further documentation resources please
+[create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Documentation)
+using the Documentation template.

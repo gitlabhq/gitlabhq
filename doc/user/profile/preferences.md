@@ -203,6 +203,23 @@ NOTE:
 This feature is experimental, and choosing absolute times might break certain layouts.
 Open an issue if you notice that using absolute times breaks a layout.
 
+## Web IDE
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/370139) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named 'vscode_web_ide'. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `vscode_web_ide`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+
+The [VS Code-based Web IDE](../project/web_ide/index.md#vscode-reimplementation) is
+the default editing environment when the `vscode_web_ide` feature
+flag is enabled.
+
+To use the legacy Web IDE:
+
+1. On the **Preferences** page, go to **Web IDE**.
+1. Select the **Use legacy Web IDE** checkbox.
+1. Select **Save changes**.
+
 ## Integrations
 
 Configure your preferences with third-party services which provide enhancements to your GitLab experience.

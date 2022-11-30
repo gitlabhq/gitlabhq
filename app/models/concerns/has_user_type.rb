@@ -14,11 +14,10 @@ module HasUserType
     migration_bot: 7,
     security_bot: 8,
     automation_bot: 9,
-    security_policy_bot: 10,
     admin_bot: 11
   }.with_indifferent_access.freeze
 
-  BOT_USER_TYPES = %w[alert_bot project_bot support_bot visual_review_bot migration_bot security_bot automation_bot security_policy_bot admin_bot].freeze
+  BOT_USER_TYPES = %w[alert_bot project_bot support_bot visual_review_bot migration_bot security_bot automation_bot admin_bot].freeze
   NON_INTERNAL_USER_TYPES = %w[human project_bot service_user].freeze
   INTERNAL_USER_TYPES = (USER_TYPES.keys - NON_INTERNAL_USER_TYPES).freeze
 

@@ -1340,13 +1340,15 @@ module Ci
       persistent_ref.create
     end
 
+    # For dependent bridge jobs we reset the upstream bridge recursively
+    # to reflect that a downstream pipeline is running again
     def reset_source_bridge!(current_user)
       # break recursion when no source_pipeline bridge (first upstream pipeline)
       return unless bridge_waiting?
       return unless current_user.can?(:update_pipeline, source_bridge.pipeline)
 
       source_bridge.pending!
-      Ci::AfterRequeueJobService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
+      Ci::ResetSkippedJobsService.new(project, current_user).execute(source_bridge) # rubocop:disable CodeReuse/ServiceClass
     end
 
     # EE-only

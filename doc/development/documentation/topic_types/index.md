@@ -66,9 +66,9 @@ Some pages are solely a list of links to other documentation.
 We do not encourage this page type. Lists of links can get out-of-date quickly
 and offer little value to users, who prefer to search to find information.
 
-## Topic text guidelines
+## Topic title guidelines
 
-In general, for topic text:
+In general, for topic titles:
 
 - Be clear and direct. Make every word count.
 - Use articles and prepositions.

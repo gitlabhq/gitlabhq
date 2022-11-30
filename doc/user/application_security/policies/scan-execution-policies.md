@@ -102,8 +102,6 @@ Other elements of the [CRON syntax]((https://docs.oracle.com/cd/E12058_01/doc/do
 NOTE:
 If using the `agents` field, required for `Operational Container Scanning`, the CRON expression is evaluated in [UTC](https://www.timeanddate.com/worldclock/timezone/utc) using the system-time of the Kubernetes-agent pod. If not using the `agents` field, the CRON expression is evaluated in standard [UTC](https://www.timeanddate.com/worldclock/timezone/utc) time from GitLab.com. If you have a self-managed GitLab instance and have [changed the server timezone](../../../administration/timezone.md), the CRON expression is evaluated with the new timezone.
 
-The scan execution policy for the `schedule` rule type triggers the `GitLab Security Policy Bot` user to create a new pipeline. This user does not count toward the license limit count.
-
 ### `agent` schema
 
 Use this schema to define `agents` objects in the [`schedule` rule type](#schedule-rule-type).

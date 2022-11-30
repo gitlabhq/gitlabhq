@@ -84,36 +84,6 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
     end
   end
 
-  context 'when CI/CD disabled' do
-    before do
-      project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
-
-      step.perform!
-    end
-
-    it 'adds an error about disabled pipeline' do
-      expect(pipeline.errors.to_a).to include('Pipelines are disabled!')
-    end
-
-    it 'breaks the pipeline builder chain' do
-      expect(step.break?).to eq true
-    end
-  end
-
-  describe '#builds_enabled?' do
-    subject { step.send(:builds_enabled?) }
-
-    it { is_expected.to be_truthy }
-
-    context 'when CI/CD disabled' do
-      before do
-        project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
-      end
-
-      it { is_expected.to be_falsey }
-    end
-  end
-
   describe '#allowed_to_write_ref?' do
     subject { step.send(:allowed_to_write_ref?) }
 
@@ -130,7 +100,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
         it { is_expected.to be_truthy }
       end
 
-      context 'when the branch is protected', :use_clean_rails_redis_caching do
+      context 'when the branch is protected' do
         let!(:protected_branch) do
           create(:protected_branch, project: project, name: ref)
         end
@@ -190,7 +160,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
 
       it { is_expected.to be_truthy }
 
-      context 'when the branch is protected', :use_clean_rails_redis_caching do
+      context 'when the branch is protected' do
         let!(:protected_branch) do
           create(:protected_branch, project: project, name: ref)
         end

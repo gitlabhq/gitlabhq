@@ -452,6 +452,22 @@ RSpec.describe Projects::TransferService do
     end
   end
 
+  context 'target namespace belongs to bot user', :enable_admin_mode do
+    let(:bot) { create(:user, :project_bot) }
+    let(:target) { bot.namespace }
+    let(:executor) { create(:user, :admin) }
+
+    it 'does not allow project transfer' do
+      namespace = project.namespace
+
+      transfer_result = execute_transfer
+
+      expect(transfer_result).to eq false
+      expect(project.namespace).to eq(namespace)
+      expect(project.errors[:new_namespace]).to include("You don't have permission to transfer projects into that namespace.")
+    end
+  end
+
   context 'when user does not own the project' do
     let(:project) { create(:project, :repository, :legacy_storage) }
 

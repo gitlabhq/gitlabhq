@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
+RSpec.describe Ci::ResetSkippedJobsService, :sidekiq_inline, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :empty_repo) }
   let_it_be(:user) { project.first_owner }
 
@@ -12,9 +12,9 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
 
   subject(:service) { described_class.new(project, user) }
 
-  context 'stage-dag mixed pipeline' do
+  context 'with a stage-dag mixed pipeline' do
     let(:config) do
-      <<-EOY
+      <<-YAML
       stages: [a, b, c]
 
       a1:
@@ -49,7 +49,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       c2:
         stage: c
         script: exit 0
-      EOY
+      YAML
     end
 
     let(:pipeline) do
@@ -150,9 +150,9 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
     end
   end
 
-  context 'stage-dag mixed pipeline with some same-stage needs' do
+  context 'with stage-dag mixed pipeline with some same-stage needs' do
     let(:config) do
-      <<-EOY
+      <<-YAML
       stages: [a, b, c]
 
       a1:
@@ -181,7 +181,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       c2:
         stage: c
         script: exit 0
-      EOY
+      YAML
     end
 
     let(:pipeline) do
@@ -239,7 +239,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
 
   context 'with same-stage needs' do
     let(:config) do
-      <<-EOY
+      <<-YAML
       a:
         script: exit $(($RANDOM % 2))
 
@@ -250,7 +250,7 @@ RSpec.describe Ci::AfterRequeueJobService, :sidekiq_inline do
       c:
         script: exit 0
         needs: [b]
-      EOY
+      YAML
     end
 
     let(:pipeline) do

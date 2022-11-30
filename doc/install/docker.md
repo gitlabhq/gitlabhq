@@ -263,7 +263,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
 1. Create a `root_password.txt` file:
 
    ```plaintext
-   MySuperSecretAndSecurePass0rd!
+   MySuperSecretAndSecurePassw0rd!
    ```
 
 1. Make sure you are in the same directory as `docker-compose.yml` and run:

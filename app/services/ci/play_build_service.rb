@@ -10,7 +10,7 @@ module Ci
         build.job_variables_attributes = job_variables_attributes || []
         build.enqueue!
 
-        AfterRequeueJobService.new(project, current_user).execute(build)
+        ResetSkippedJobsService.new(project, current_user).execute(build)
 
         build
       else

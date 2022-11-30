@@ -8,10 +8,12 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :users do
   # Empty value doesn't change the levels
   let(:language_percentage_levels) { nil }
   let(:user) { create(:user) }
+  let(:vscode_web_ide) { true }
 
   before do
     stub_languages_translation_percentage(language_percentage_levels)
     stub_feature_flags(user_time_settings: true)
+    stub_feature_flags(vscode_web_ide: vscode_web_ide)
     sign_in(user)
     visit(profile_preferences_path)
   end
@@ -34,6 +36,24 @@ RSpec.describe 'User edit preferences profile', :js, feature_category: :users do
     field.click
 
     expect(field).not_to be_checked
+  end
+
+  it 'allows the user to toggle using the legacy web ide' do
+    field = page.find_field("user[use_legacy_web_ide]")
+
+    expect(field).not_to be_checked
+
+    field.click
+
+    expect(field).to be_checked
+  end
+
+  describe 'when vscode_web_ide feature flag is disabled' do
+    let(:vscode_web_ide) { false }
+
+    it 'does not display the legacy web ide user preference' do
+      expect(page).not_to have_field("user[use_legacy_web_ide]")
+    end
   end
 
   describe 'User changes tab width to acceptable value' do

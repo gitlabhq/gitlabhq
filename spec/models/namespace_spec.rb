@@ -1895,6 +1895,30 @@ RSpec.describe Namespace do
     end
   end
 
+  describe '#bot_user_namespace?' do
+    subject { namespace.bot_user_namespace? }
+
+    context 'when owner is a bot user user' do
+      let(:user) { create(:user, :project_bot) }
+      let(:namespace) { user.namespace }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when owner is a non-bot user' do
+      let(:user) { create(:user) }
+      let(:namespace) { user.namespace }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when type is a group' do
+      let(:namespace) { create(:group) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#aggregation_scheduled?' do
     let(:namespace) { create(:namespace) }
 

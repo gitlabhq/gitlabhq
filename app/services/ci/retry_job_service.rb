@@ -64,7 +64,7 @@ module Ci
 
         next if new_job.failed?
 
-        AfterRequeueJobService.new(project, current_user).execute(job)
+        ResetSkippedJobsService.new(project, current_user).execute(job)
 
         Ci::PipelineCreation::StartPipelineService.new(job.pipeline).execute
         new_job.reset

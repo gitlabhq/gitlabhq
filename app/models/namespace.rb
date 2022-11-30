@@ -330,6 +330,13 @@ class Namespace < ApplicationRecord
     type.nil? || type == Namespaces::UserNamespace.sti_name || !(group_namespace? || project_namespace?)
   end
 
+  def bot_user_namespace?
+    return false unless user_namespace?
+    return false unless owner && owner.bot?
+
+    true
+  end
+
   def owner_required?
     user_namespace?
   end

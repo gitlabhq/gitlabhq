@@ -52,9 +52,9 @@ GEM
     coderay (1.1.2)
     colorize (0.8.1)
     concurrent-ruby (1.1.10)
-    confiner (0.3.0)
+    confiner (0.4.0)
       gitlab (>= 4.17)
-      zeitwerk (~> 2.5.1)
+      zeitwerk (>= 2.5, < 3)
     declarative (0.0.20)
     deprecation_toolkit (2.0.1)
       activesupport (>= 5.2)
@@ -293,7 +293,7 @@ GEM
     websocket (1.2.9)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.5.4)
+    zeitwerk (2.6.6)
 
 PLATFORMS
   ruby
@@ -334,7 +334,7 @@ DEPENDENCIES
   terminal-table (~> 3.0.2)
   warning (~> 1.3)
   webdrivers (~> 5.2)
-  zeitwerk (~> 2.4)
+  zeitwerk (~> 2.6, >= 2.6.6)
 
 BUNDLED WITH
    2.3.26

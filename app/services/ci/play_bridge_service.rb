@@ -9,7 +9,7 @@ module Ci
         bridge.user = current_user
         bridge.enqueue!
 
-        AfterRequeueJobService.new(project, current_user).execute(bridge)
+        ResetSkippedJobsService.new(project, current_user).execute(bridge)
       end
     end
 

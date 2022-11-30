@@ -31063,6 +31063,9 @@ msgstr ""
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
 msgstr ""
 
+msgid "Preferences|Choose which Web IDE version you want to use."
+msgstr ""
+
 msgid "Preferences|Color for added lines"
 msgstr ""
 
@@ -31147,6 +31150,9 @@ msgstr ""
 msgid "Preferences|Tab width"
 msgstr ""
 
+msgid "Preferences|The legacy Web IDE remains available while the new Web IDE is in Beta."
+msgstr ""
+
 msgid "Preferences|This feature is experimental and translations are not yet complete."
 msgstr ""
 
@@ -31159,7 +31165,13 @@ msgstr ""
 msgid "Preferences|Time preferences"
 msgstr ""
 
+msgid "Preferences|Use legacy Web IDE"
+msgstr ""
+
 msgid "Preferences|Use relative times"
+msgstr ""
+
+msgid "Preferences|Web IDE"
 msgstr ""
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below."
