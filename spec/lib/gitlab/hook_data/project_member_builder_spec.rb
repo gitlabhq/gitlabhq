@@ -27,7 +27,7 @@ RSpec.describe Gitlab::HookData::ProjectMemberBuilder do
           expect(data[:user_username]).to eq('johndoe')
           expect(data[:user_name]).to eq('John Doe')
           expect(data[:user_id]).to eq(user.id)
-          expect(data[:user_email]).to eq('john@example.com')
+          expect(data[:user_email]).to eq(_('[REDACTED]'))
           expect(data[:access_level]).to eq('Developer')
           expect(data[:project_visibility]).to eq('internal')
         end
