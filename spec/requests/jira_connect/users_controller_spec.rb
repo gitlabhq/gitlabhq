@@ -31,5 +31,16 @@ RSpec.describe JiraConnect::UsersController do
         expect(response.body).not_to include('Return to GitLab')
       end
     end
+
+    context 'with a script injected' do
+      let(:return_to) { 'javascript://test.atlassian.net/%250dalert(document.domain)' }
+
+      it 'does not include a return url' do
+        get '/-/jira_connect/users', params: { return_to: return_to }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).not_to include('Return to GitLab')
+      end
+    end
   end
 end

@@ -53,6 +53,8 @@ module Projects
 
     private
 
+    attr_reader :resolved_address
+
     def after_execute_hook
       # Defined in EE::Projects::ImportService
     end
@@ -64,11 +66,7 @@ module Projects
     def add_repository_to_project
       if project.external_import? && !unknown_url?
         begin
-          Gitlab::UrlBlocker.validate!(
-            project.import_url,
-            schemes: Project::VALID_IMPORT_PROTOCOLS,
-            ports: Project::VALID_IMPORT_PORTS
-          )
+          @resolved_address = get_resolved_address
         rescue Gitlab::UrlBlocker::BlockedUrlError => e
           raise e, s_("ImportProjects|Blocked import URL: %{message}") % { message: e.message }
         end
@@ -97,9 +95,9 @@ module Projects
 
       if refmap
         project.ensure_repository
-        project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
+        project.repository.fetch_as_mirror(project.import_url, refmap: refmap, resolved_address: resolved_address)
       else
-        project.repository.import_repository(project.import_url)
+        project.repository.import_repository(project.import_url, resolved_address: resolved_address)
       end
     rescue ::Gitlab::Git::CommandError => e
       # Expire cache to prevent scenarios such as:
@@ -156,6 +154,26 @@ module Projects
 
     def importer_imports_repository?
       has_importer? && importer_class.try(:imports_repository?)
+    end
+
+    def get_resolved_address
+      Gitlab::UrlBlocker
+        .validate!(
+          project.import_url,
+          schemes: Project::VALID_IMPORT_PROTOCOLS,
+          ports: Project::VALID_IMPORT_PORTS,
+          dns_rebind_protection: dns_rebind_protection?)
+        .then do |(import_url, resolved_host)|
+          next '' if resolved_host.nil? || !import_url.scheme.in?(%w[http https])
+
+          import_url.host.to_s
+        end
+    end
+
+    def dns_rebind_protection?
+      return false if Gitlab.http_proxy_env?
+
+      Gitlab::CurrentSettings.dns_rebinding_protection_enabled?
     end
   end
 end

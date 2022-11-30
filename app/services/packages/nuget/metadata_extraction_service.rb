@@ -104,9 +104,15 @@ module Packages
           entry = zip_file.glob('*.nuspec').first
 
           raise ExtractionError, 'nuspec file not found' unless entry
-          raise ExtractionError, 'nuspec file too big' if entry.size > MAX_FILE_SIZE
+          raise ExtractionError, 'nuspec file too big' if MAX_FILE_SIZE < entry.size
 
-          entry.get_input_stream.read
+          Tempfile.open("nuget_extraction_package_file_#{@package_file_id}") do |file|
+            entry.extract(file.path) { true } # allow #extract to overwrite the file
+            file.unlink
+            file.read
+          end
+        rescue Zip::EntrySizeError => e
+          raise ExtractionError, "nuspec file has the wrong entry size: #{e.message}"
         end
       end
 

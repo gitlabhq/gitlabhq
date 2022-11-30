@@ -114,6 +114,18 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver do
 
         it_behaves_like 'an unauthorized request'
       end
+
+      context 'when the external_authorization_service is enabled' do
+        before do
+          stub_application_setting(external_authorization_service_enabled: true)
+        end
+
+        context 'with a valid deploy token' do
+          let(:raw) { username_and_password(token.username, token.token) }
+
+          it_behaves_like 'an unauthorized request'
+        end
+      end
     end
 
     context 'with :personal_access_token' do

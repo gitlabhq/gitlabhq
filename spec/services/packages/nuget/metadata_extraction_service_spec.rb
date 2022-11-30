@@ -114,5 +114,16 @@ RSpec.describe Packages::Nuget::MetadataExtractionService do
 
       it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, 'nuspec file too big') }
     end
+
+    context 'with a corrupted nupkg file with a wrong entry size' do
+      let(:nupkg_fixture_path) { expand_fixture_path('packages/nuget/corrupted_package.nupkg') }
+      let(:expected_error) { "nuspec file has the wrong entry size: entry 'DummyProject.DummyPackage.nuspec' should be 255B, but is larger when inflated." }
+
+      before do
+        allow(Zip::File).to receive(:new).and_return(Zip::File.new(nupkg_fixture_path, false, false))
+      end
+
+      it { expect { subject }.to raise_error(::Packages::Nuget::MetadataExtractionService::ExtractionError, expected_error) }
+    end
   end
 end

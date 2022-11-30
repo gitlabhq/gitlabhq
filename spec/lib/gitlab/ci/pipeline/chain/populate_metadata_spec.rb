@@ -89,6 +89,18 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata do
 
           expect(pipeline.pipeline_metadata).to be_nil
         end
+
+        context 'with empty name after variable substitution' do
+          let(:config) do
+            { workflow: { name: '$VAR1' }, rspec: { script: 'rspec' } }
+          end
+
+          it 'does not save empty name' do
+            run_chain
+
+            expect(pipeline.pipeline_metadata).to be_nil
+          end
+        end
       end
 
       context 'with variables' do
@@ -106,7 +118,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::PopulateMetadata do
         it 'substitutes variables' do
           run_chain
 
-          expect(pipeline.pipeline_metadata.name).to eq('Pipeline value value1 value2 ')
+          expect(pipeline.pipeline_metadata.name).to eq('Pipeline value value1 value2')
         end
       end
 
