@@ -30,6 +30,9 @@ project to a web server or to any S3-compatible platform. For exports, GitLab:
 
 The `upload[url]` parameter is required if the `upload` parameter is present.
 
+For uploads to Amazon S3, refer to [Generating a pre-signed URL for uploading objects](https://docs.aws.amazon.com/AmazonS3/latest/userguide/PresignedUrlUploadObject.html)
+documentation scripts to generate the `upload[url]`.
+
 ```plaintext
 POST /projects/:id/export
 ```

@@ -44,7 +44,6 @@ RSpec.describe Gitlab::Workhorse do
       expect(params).to eq({
         'GitalyServer' => {
           'call_metadata' => features,
-          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -95,7 +94,6 @@ RSpec.describe Gitlab::Workhorse do
       expect(params).to eq({
         'GitalyServer' => {
           'call_metadata' => features,
-          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -159,7 +157,6 @@ RSpec.describe Gitlab::Workhorse do
       expect(params).to eq({
         'GitalyServer' => {
           'call_metadata' => features,
-          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -254,7 +251,6 @@ RSpec.describe Gitlab::Workhorse do
         {
           GitalyServer: {
             call_metadata: call_metadata,
-            features: features,
             address: Gitlab::GitalyClient.address('default'),
             token: Gitlab::GitalyClient.token('default')
           }
@@ -299,24 +295,24 @@ RSpec.describe Gitlab::Workhorse do
           it 'sets the flag to true for that project' do
             response = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
 
-            expect(response.dig(:GitalyServer, :features)).to eq('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                 'gitaly-feature-mep-mep' => 'true')
+            expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
+                                                                           'gitaly-feature-mep-mep' => 'true')
           end
 
           it 'sets the flag to false for other projects' do
             other_project = create(:project, :public, :repository)
             response = described_class.git_http_ok(other_project.repository, Gitlab::GlRepository::PROJECT, user, action)
 
-            expect(response.dig(:GitalyServer, :features)).to eq('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                 'gitaly-feature-mep-mep' => 'false')
+            expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
+                                                                           'gitaly-feature-mep-mep' => 'false')
           end
 
           it 'sets the flag to false when there is no project' do
             snippet = create(:personal_snippet, :repository)
             response = described_class.git_http_ok(snippet.repository, Gitlab::GlRepository::SNIPPET, user, action)
 
-            expect(response.dig(:GitalyServer, :features)).to eq('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                 'gitaly-feature-mep-mep' => 'false')
+            expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
+                                                                           'gitaly-feature-mep-mep' => 'false')
           end
         end
       end
@@ -368,7 +364,6 @@ RSpec.describe Gitlab::Workhorse do
         Gitlab::ApplicationContext.with_context(remote_ip: "1.2.3.4") do
           result = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
         end
-        expect(result[:RemoteIP]).to eql("1.2.3.4")
         expect(result[:GitalyServer][:call_metadata]['remote_ip']).to eql("1.2.3.4")
       end
     end
@@ -376,7 +371,6 @@ RSpec.describe Gitlab::Workhorse do
     context 'when remote_ip is not available in the application context' do
       it 'does not include RemoteIP params' do
         result = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
-        expect(result).not_to have_key(:RemoteIP)
         expect(result[:GitalyServer][:call_metadata]).not_to have_key('remote_ip')
       end
     end
@@ -460,7 +454,6 @@ RSpec.describe Gitlab::Workhorse do
       expect(params).to eq({
         'GitalyServer' => {
           'call_metadata' => features,
-          'features' => features,
           address: Gitlab::GitalyClient.address(project.repository_storage),
           token: Gitlab::GitalyClient.token(project.repository_storage)
         },
@@ -541,7 +534,6 @@ RSpec.describe Gitlab::Workhorse do
       expect(params).to eq(
         'GitalyServer' => {
           'call_metadata' => features,
-          'features' => features,
           'address' => Gitlab::GitalyClient.address(project.repository_storage),
           'token' => Gitlab::GitalyClient.token(project.repository_storage)
         },

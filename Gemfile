@@ -19,7 +19,7 @@ gem 'bootsnap', '~> 1.15.0', require: false
 
 # Pin openssl to match the version bundled with our supported Rubies.
 # See https://stdgems.org/openssl/#gem-version.
-gem 'openssl', '2.2.1'
+gem 'openssl', '2.2.2'
 # This gem was originally bundled with Ruby 2.7, but is unbundled as of Ruby 3.
 # Since the latest version caused problems with GitLab, we pin this to an older
 # version for now.

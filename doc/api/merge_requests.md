@@ -971,6 +971,10 @@ Supported attributes:
 
 ## Get single merge request changes
 
+WARNING:
+This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
+and will be removed in API v5. Use the [List merge request diffs](#list-merge-request-diffs) endpoint instead.
+
 Shows information about the merge request including its files and changes.
 
 [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/46190) in GitLab 13.6,
@@ -1100,10 +1104,6 @@ Supported attributes:
   "overflow": false
 }
 ```
-
-WARNING:
-This endpoint was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/322117) in GitLab 15.7
-and will be removed in API v5. Use the [List merge request diffs](#list-merge-request-diffs) endpoint instead.
 
 ## List merge request diffs
 

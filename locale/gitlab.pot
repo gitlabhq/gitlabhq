@@ -720,6 +720,12 @@ msgstr ""
 msgid "%{host} sign-in from new location"
 msgstr ""
 
+msgid "%{human_readable_key} exceeds %{max_value_length} characters"
+msgstr ""
+
+msgid "%{human_readable_key} is less than %{min_value_length} characters"
+msgstr ""
+
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr ""
 
@@ -24006,6 +24012,9 @@ msgstr ""
 msgid "Last event"
 msgstr ""
 
+msgid "Last login"
+msgstr ""
+
 msgid "Last modified"
 msgstr ""
 
@@ -34767,6 +34776,9 @@ msgid "Request"
 msgstr ""
 
 msgid "Request Access"
+msgstr ""
+
+msgid "Request Headers"
 msgstr ""
 
 msgid "Request a new one"
@@ -48687,9 +48699,6 @@ msgid "example.com"
 msgstr ""
 
 msgid "exceeds maximum length (100 usernames)"
-msgstr ""
-
-msgid "exceeds the %{max_value_length} character limit"
 msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes"

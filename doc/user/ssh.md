@@ -270,6 +270,7 @@ You can use [1Password](https://1password.com/) and the [1Password browser exten
 1. You can then select **Create SSH Key** or select an existing SSH key to fill in the public key.
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
+1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date.
 1. Select **Add key**.
 
@@ -314,6 +315,7 @@ To use SSH with GitLab, copy your public key to your GitLab account:
    `ssh-ed25519`, `sk-ecdsa-sha2-nistp256@openssh.com`, or `sk-ssh-ed25519@openssh.com`, and may end with a comment.
 1. In the **Title** box, type a description, like `Work Laptop` or
    `Home Workstation`.
+1. Optional. Select the **Usage type** of the key. It can be used either for `Authentication` or `Signing` or both. `Authentication & Signing` is the default value.
 1. Optional. Update **Expiration date** to modify the default expiration date.
    In:
    - GitLab 13.12 and earlier, the expiration date is informational only. It doesn't prevent

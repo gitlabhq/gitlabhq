@@ -20,12 +20,7 @@ func handleReceivePack(w *HttpResponseWriter, r *http.Request, a *api.Response) 
 
 	gitProtocol := r.Header.Get("Git-Protocol")
 
-	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(
-		r.Context(),
-		a.GitalyServer,
-		gitaly.WithFeatures(a.GitalyServer.Features),
-		gitaly.WithLoggingMetadata(a),
-	)
+	ctx, smarthttp, err := gitaly.NewSmartHTTPClient(r.Context(), a.GitalyServer)
 	if err != nil {
 		return fmt.Errorf("smarthttp.ReceivePack: %v", err)
 	}

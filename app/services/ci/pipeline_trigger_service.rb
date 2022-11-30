@@ -62,7 +62,7 @@ module Ci
       response = Ci::CreatePipelineService
         .new(project, job.user, ref: params[:ref], variables_attributes: variables)
         .execute(:pipeline, ignore_skip_ci: true) do |pipeline|
-          source = job.build_sourced_pipeline(
+          source = job.sourced_pipelines.build(
             source_pipeline: job.pipeline,
             source_project: job.project,
             pipeline: pipeline,

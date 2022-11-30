@@ -55,18 +55,21 @@ RSpec.describe RuboCop::Cop::Gitlab::StrongMemoizeAttr do
   end
 
   context 'when strong_memoize() is not the entire body of the method' do
-    it 'does not register an offense or autocorrect' do
-      expect_no_offenses(<<~RUBY)
+    it 'registers an offense and does not autocorrect' do
+      expect_offense(<<~RUBY)
         class Foo
           def memoized_method
             msg = 'This is a memoized method'
 
             strong_memoize(:memoized_method) do
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Use `strong_memoize_attr`, instead of using `strong_memoize` directly
               msg
             end
           end
         end
       RUBY
+
+      expect_no_corrections
     end
   end
 end

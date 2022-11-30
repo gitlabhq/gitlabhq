@@ -34,11 +34,7 @@ func (p *patch) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 		return
 	}
 
-	ctx, diffClient, err := gitaly.NewDiffClient(
-		r.Context(),
-		params.GitalyServer,
-		gitaly.WithFeatures(params.GitalyServer.Features),
-	)
+	ctx, diffClient, err := gitaly.NewDiffClient(r.Context(), params.GitalyServer)
 
 	if err != nil {
 		helper.Fail500(w, r, fmt.Errorf("diff.RawPatch: %v", err))

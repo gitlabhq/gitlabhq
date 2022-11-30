@@ -21,17 +21,9 @@ func TestNewSmartHTTPClient(t *testing.T) {
 	ctx, client, err := NewSmartHTTPClient(
 		context.Background(),
 		serverFixture(),
-		WithFeatures(features()),
-		WithLoggingMetadata(&api.Response{
-			GL_USERNAME: "gl_username",
-			GL_ID:       "gl_id",
-			RemoteIp:    "1.2.3.4",
-		}),
 	)
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
-	testOutgoingIDAndUsername(t, ctx)
-	testOutgoingRemoteIP(t, ctx)
 	require.NotNil(t, client.sidechannelRegistry)
 }
 
@@ -39,7 +31,6 @@ func TestNewBlobClient(t *testing.T) {
 	ctx, _, err := NewBlobClient(
 		context.Background(),
 		serverFixture(),
-		WithFeatures(features()),
 	)
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
@@ -49,7 +40,6 @@ func TestNewRepositoryClient(t *testing.T) {
 	ctx, _, err := NewRepositoryClient(
 		context.Background(),
 		serverFixture(),
-		WithFeatures(features()),
 	)
 
 	require.NoError(t, err)
@@ -60,7 +50,6 @@ func TestNewNamespaceClient(t *testing.T) {
 	ctx, _, err := NewNamespaceClient(
 		context.Background(),
 		serverFixture(),
-		WithFeatures(features()),
 	)
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
@@ -70,69 +59,45 @@ func TestNewDiffClient(t *testing.T) {
 	ctx, _, err := NewDiffClient(
 		context.Background(),
 		serverFixture(),
-		WithFeatures(features()),
 	)
 	require.NoError(t, err)
 	testOutgoingMetadata(t, ctx)
 }
 
 func testOutgoingMetadata(t *testing.T, ctx context.Context) {
+	t.Helper()
 	md, ok := metadata.FromOutgoingContext(ctx)
 	require.True(t, ok, "get metadata from context")
 
-	for k, v := range allowedFeatures() {
-		actual := md[k]
-		require.Len(t, actual, 1, "expect one value for %v", k)
-		require.Equal(t, v, actual[0], "value for %v", k)
-	}
-
-	for k := range badFeatureMetadata() {
-		require.Empty(t, md[k], "value for bad key %v", k)
-	}
-}
-
-func testOutgoingIDAndUsername(t *testing.T, ctx context.Context) {
-	md, ok := metadata.FromOutgoingContext(ctx)
-	require.True(t, ok, "get metadata from context")
-
-	require.Equal(t, md["user_id"], []string{"gl_id"})
-	require.Equal(t, md["username"], []string{"gl_username"})
-}
-
-func testOutgoingRemoteIP(t *testing.T, ctx context.Context) {
-	md, ok := metadata.FromOutgoingContext(ctx)
-	require.True(t, ok, "get metadata from context")
-
-	require.Equal(t, md["remote_ip"], []string{"1.2.3.4"})
-}
-
-func features() map[string]string {
-	features := make(map[string]string)
-	for k, v := range allowedFeatures() {
-		features[k] = v
-	}
-
-	for k, v := range badFeatureMetadata() {
-		features[k] = v
-	}
-
-	return features
+	require.Equal(t, metadata.MD{"username": {"janedoe"}}, md)
 }
 
 func serverFixture() api.GitalyServer {
-	return api.GitalyServer{Address: "tcp://localhost:123"}
-}
-
-func allowedFeatures() map[string]string {
-	return map[string]string{
-		"gitaly-feature-foo": "bar",
-		"gitaly-feature-qux": "baz",
+	return api.GitalyServer{
+		Address:      "tcp://localhost:123",
+		CallMetadata: map[string]string{"username": "janedoe"},
 	}
 }
 
-func badFeatureMetadata() map[string]string {
-	return map[string]string{
-		"bad-metadata-1": "bad-value-1",
-		"bad-metadata-2": "bad-value-2",
-	}
+func TestWithOutgoingMetadata(t *testing.T) {
+	ctx := withOutgoingMetadata(context.Background(), api.GitalyServer{
+		CallMetadata: map[string]string{
+			"gitaly-feature-abc":    "true",
+			"gitaly-featuregarbage": "blocked",
+			"bad-header":            "blocked",
+			"user_id":               "234",
+			"username":              "janedoe",
+			"remote_ip":             "1.2.3.4",
+		},
+	})
+
+	md, ok := metadata.FromOutgoingContext(ctx)
+	require.True(t, ok)
+
+	require.Equal(t, metadata.MD{
+		"gitaly-feature-abc": {"true"},
+		"user_id":            {"234"},
+		"username":           {"janedoe"},
+		"remote_ip":          {"1.2.3.4"},
+	}, md)
 }

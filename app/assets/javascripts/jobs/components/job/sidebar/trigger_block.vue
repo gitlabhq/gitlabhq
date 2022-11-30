@@ -2,9 +2,7 @@
 import { GlButton, GlTableLite } from '@gitlab/ui';
 import { __ } from '~/locale';
 
-const DEFAULT_TD_CLASSES = 'gl-w-half gl-font-sm! gl-border-gray-200!';
-const DEFAULT_TH_CLASSES =
-  'gl-bg-transparent! gl-border-b-solid! gl-border-b-gray-200! gl-border-b-1!';
+const DEFAULT_TD_CLASSES = 'gl-font-sm!';
 
 export default {
   fields: [
@@ -13,14 +11,12 @@ export default {
       label: __('Key'),
       tdAttr: { 'data-testid': 'trigger-build-key' },
       tdClass: DEFAULT_TD_CLASSES,
-      thClass: DEFAULT_TH_CLASSES,
     },
     {
       key: 'value',
       label: __('Value'),
       tdAttr: { 'data-testid': 'trigger-build-value' },
       tdClass: DEFAULT_TD_CLASSES,
-      thClass: DEFAULT_TH_CLASSES,
     },
   ],
   components: {

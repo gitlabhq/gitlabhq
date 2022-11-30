@@ -18,6 +18,9 @@ module Ci
 
     belongs_to :project
     belongs_to :trigger_request
+    has_many :sourced_pipelines, class_name: "::Ci::Sources::Pipeline",
+                                 foreign_key: :source_job_id,
+                                 inverse_of: :source_bridge
 
     has_one :downstream_pipeline, through: :sourced_pipeline, source: :pipeline
 
@@ -85,7 +88,7 @@ module Ci
     end
 
     def has_downstream_pipeline?
-      sourced_pipeline.present?
+      sourced_pipelines.exists?
     end
 
     def downstream_pipeline_params

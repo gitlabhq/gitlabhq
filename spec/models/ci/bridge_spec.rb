@@ -21,8 +21,8 @@ RSpec.describe Ci::Bridge do
     { trigger: { project: 'my/project', branch: 'master' } }
   end
 
-  it 'has one sourced pipeline' do
-    expect(bridge).to have_one(:sourced_pipeline)
+  it 'has many sourced pipelines' do
+    expect(bridge).to have_many(:sourced_pipelines)
   end
 
   it_behaves_like 'has ID tokens', :ci_bridge

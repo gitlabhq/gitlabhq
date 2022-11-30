@@ -41,11 +41,7 @@ func (s *snapshot) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 		return
 	}
 
-	ctx, c, err := gitaly.NewRepositoryClient(
-		r.Context(),
-		params.GitalyServer,
-		gitaly.WithFeatures(params.GitalyServer.Features),
-	)
+	ctx, c, err := gitaly.NewRepositoryClient(r.Context(), params.GitalyServer)
 
 	if err != nil {
 		helper.Fail500(w, r, fmt.Errorf("SendSnapshot: gitaly.NewRepositoryClient: %v", err))

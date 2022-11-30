@@ -58,7 +58,6 @@ func ensureGitalyRepository(t *testing.T, apiResponse *api.Response) error {
 	ctx, namespace, err := gitaly.NewNamespaceClient(
 		context.Background(),
 		apiResponse.GitalyServer,
-		gitaly.WithFeatures(apiResponse.GitalyServer.Features),
 	)
 
 	if err != nil {

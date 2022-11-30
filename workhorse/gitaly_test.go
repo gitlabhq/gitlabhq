@@ -78,7 +78,7 @@ func TestGetInfoRefsProxiedToGitalySuccessfully(t *testing.T) {
 	for k, v := range badMetadata {
 		features[k] = v
 	}
-	apiResponse.GitalyServer.Features = features
+	apiResponse.GitalyServer.CallMetadata = features
 
 	testCases := []struct {
 		showAllRefs bool
@@ -272,7 +272,6 @@ func TestPostReceivePackProxiedToGitalySuccessfully(t *testing.T) {
 	require.Equal(t, apiResponse.Repository.RelativePath, gitalyRequest.Repository.RelativePath)
 	require.Equal(t, apiResponse.GL_ID, gitalyRequest.GlId)
 	require.Equal(t, apiResponse.GL_USERNAME, gitalyRequest.GlUsername)
-	require.Equal(t, apiResponse.RemoteIp, "1.2.3.4")
 	require.Equal(t, apiResponse.GitConfigOptions, gitalyRequest.GitConfigOptions)
 	require.Equal(t, gitProtocol, gitalyRequest.GitProtocol)
 

@@ -132,11 +132,7 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 
 func handleArchiveWithGitaly(r *http.Request, params *archiveParams, format gitalypb.GetArchiveRequest_Format) (io.Reader, error) {
 	var request *gitalypb.GetArchiveRequest
-	ctx, c, err := gitaly.NewRepositoryClient(
-		r.Context(),
-		params.GitalyServer,
-		gitaly.WithFeatures(params.GitalyServer.Features),
-	)
+	ctx, c, err := gitaly.NewRepositoryClient(r.Context(), params.GitalyServer)
 
 	if err != nil {
 		return nil, err

@@ -12,8 +12,8 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       expect(data[:object_kind]).to eq('deployment')
     end
 
-    it 'returns data for the given build' do
-      environment = create(:environment, name: "somewhere")
+    it 'returns data for the given build', :aggregate_failures do
+      environment = create(:environment, name: 'somewhere/1', external_url: 'https://test.com')
       project = create(:project, :repository, name: 'myproj')
       commit = project.commit('HEAD')
       deployment = create(:deployment, status: :failed, environment: environment, sha: commit.sha, project: project)
@@ -30,7 +30,9 @@ RSpec.describe Gitlab::DataBuilder::Deployment do
       expect(data[:deployment_id]).to eq(deployment.id)
       expect(data[:deployable_id]).to eq(deployable.id)
       expect(data[:deployable_url]).to eq(expected_deployable_url)
-      expect(data[:environment]).to eq("somewhere")
+      expect(data[:environment]).to eq('somewhere/1')
+      expect(data[:environment_slug]).to eq('somewhere-1-78avk6')
+      expect(data[:environment_external_url]).to eq('https://test.com')
       expect(data[:project]).to eq(project.hook_attrs)
       expect(data[:short_sha]).to eq(deployment.short_sha)
       expect(data[:user]).to eq(deployment.deployed_by.hook_attrs)

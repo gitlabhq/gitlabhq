@@ -33,7 +33,7 @@ module Gitlab
           GitalyServer: {
             address: Gitlab::GitalyClient.address(repository.storage),
             token: Gitlab::GitalyClient.token(repository.storage),
-            features: Feature::Gitaly.server_feature_flags(
+            call_metadata: Feature::Gitaly.server_feature_flags(
               user: ::Feature::Gitaly.user_actor(user),
               repository: repository,
               project: ::Feature::Gitaly.project_actor(repository.container),
@@ -48,14 +48,11 @@ module Gitlab
           attrs[:GitConfigOptions] << "receive.maxInputSize=#{receive_max_input_size.megabytes}"
         end
 
-        remote_ip = Gitlab::ApplicationContext.current_context_attribute(:remote_ip)
-        attrs[:RemoteIP] = remote_ip if remote_ip.present?
-
-        attrs[:GitalyServer][:call_metadata] = attrs[:GitalyServer][:features].merge(
+        attrs[:GitalyServer][:call_metadata].merge!(
           'user_id' => attrs[:GL_ID].presence,
           'username' => attrs[:GL_USERNAME].presence,
-          'remote_ip' => attrs[:RemoteIP]
-        ).compact
+          'remote_ip' => Gitlab::ApplicationContext.current_context_attribute(:remote_ip).presence
+        ).compact!
 
         attrs
       end
@@ -263,18 +260,15 @@ module Gitlab
       end
 
       def gitaly_server_hash(repository)
-        features = Feature::Gitaly.server_feature_flags(
-          user: ::Feature::Gitaly.user_actor,
-          repository: repository,
-          project: ::Feature::Gitaly.project_actor(repository.container),
-          group: ::Feature::Gitaly.group_actor(repository.container)
-        )
-
         {
           address: Gitlab::GitalyClient.address(repository.shard),
           token: Gitlab::GitalyClient.token(repository.shard),
-          features: features,
-          call_metadata: features
+          call_metadata: Feature::Gitaly.server_feature_flags(
+            user: ::Feature::Gitaly.user_actor,
+            repository: repository,
+            project: ::Feature::Gitaly.project_actor(repository.container),
+            group: ::Feature::Gitaly.group_actor(repository.container)
+          )
         }
       end
 

@@ -209,11 +209,15 @@ Prerequisites:
 
 - You must have at least the Developer role. Read more about [Release permissions](#release-permissions).
 
-To delete a release in the UI:
+To delete a release, use either the
+[Delete a release API](../../../api/releases/index.md#delete-a-release) or the UI.
+
+In the UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Deployments > Releases**.
-1. In the top-right corner of the release you want to delete, select **Edit this release** (**{pencil}**).
+1. In the top-right corner of the release you want to delete, select **Edit this release**
+   (**{pencil}**).
 1. On the **Edit Release** page, select **Delete**.
 1. Select **Delete release**.
 

@@ -81,7 +81,7 @@ RSpec.describe Ci::Processable do
            commit_id deployment erased_by_id project_id
            runner_id tag_taggings taggings tags trigger_request_id
            user_id auto_canceled_by_id retried failure_reason
-           sourced_pipeline artifacts_file_store artifacts_metadata_store
+           sourced_pipelines sourced_pipeline artifacts_file_store artifacts_metadata_store
            metadata runner_session trace_chunks upstream_pipeline_id
            artifacts_file artifacts_metadata artifacts_size commands
            resource resource_group_id processed security_scans author
