@@ -131,6 +131,36 @@ RSpec.describe WebHook do
         expect(hook.push_events_branch_filter).to eq('')
       end
     end
+
+    describe 'before_validation :reset_token' do
+      subject(:hook) { build_stubbed(:project_hook, :token, project: project) }
+
+      it 'resets token if url changed' do
+        hook.url = 'https://webhook.example.com/new-hook'
+
+        expect(hook).to be_valid
+        expect(hook.token).to be_nil
+      end
+
+      it 'does not reset token if new url is set together with the same token' do
+        hook.url = 'https://webhook.example.com/new-hook'
+        current_token = hook.token
+        hook.token = current_token
+
+        expect(hook).to be_valid
+        expect(hook.token).to eq(current_token)
+        expect(hook.url).to eq('https://webhook.example.com/new-hook')
+      end
+
+      it 'does not reset token if new url is set together with a new token' do
+        hook.url = 'https://webhook.example.com/new-hook'
+        hook.token = 'token'
+
+        expect(hook).to be_valid
+        expect(hook.token).to eq('token')
+        expect(hook.url).to eq('https://webhook.example.com/new-hook')
+      end
+    end
   end
 
   describe 'encrypted attributes' do
@@ -232,7 +262,7 @@ RSpec.describe WebHook do
   end
 
   describe '#executable?' do
-    let(:web_hook) { create(:project_hook, project: project) }
+    let_it_be(:web_hook) { create(:project_hook, project: project) }
 
     where(:recent_failures, :not_until, :executable) do
       [
