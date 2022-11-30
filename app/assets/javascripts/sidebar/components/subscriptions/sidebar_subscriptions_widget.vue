@@ -4,10 +4,10 @@ import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __, sprintf } from '~/locale';
-import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import toast from '~/vue_shared/plugins/global_toast';
-import { subscribedQueries, Tracking } from '~/sidebar/constants';
+import { subscribedQueries, Tracking } from '../../constants';
+import SidebarEditableItem from '../sidebar_editable_item.vue';
 
 const ICON_ON = 'notifications';
 const ICON_OFF = 'notifications-off';

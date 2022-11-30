@@ -1,9 +1,9 @@
-import Store from '~/sidebar/stores/sidebar_store';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
-import { visitUrl } from '../lib/utils/url_utility';
+import { visitUrl } from '~/lib/utils/url_utility';
 import Service from './services/sidebar_service';
+import Store from './stores/sidebar_store';
 
 export default class SidebarMediator {
   constructor(options) {

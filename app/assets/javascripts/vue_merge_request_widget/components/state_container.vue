@@ -54,7 +54,7 @@ export default {
 
 <template>
   <div
-    class="mr-widget-body media mr-widget-body-line-height-1 gl-line-height-normal"
+    class="mr-widget-body media gl-display-flex gl-align-items-center"
     :class="wrapperClasses"
     v-on="$listeners"
   >

@@ -21307,6 +21307,7 @@ Scan method to be used by the scanner.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="dastscanmethodtypegraphql"></a>`GRAPHQL` | GraphQL scan method. |
 | <a id="dastscanmethodtypehar"></a>`HAR` | HAR scan method. |
 | <a id="dastscanmethodtypeopenapi"></a>`OPENAPI` | OpenAPI scan method. |
 | <a id="dastscanmethodtypepostman_collection"></a>`POSTMAN_COLLECTION` | Postman scan method. |

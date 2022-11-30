@@ -3,11 +3,7 @@ import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import EscalationStatus from '~/sidebar/components/incidents/escalation_status.vue';
-import {
-  STATUS_LABELS,
-  STATUS_TRIGGERED,
-  STATUS_ACKNOWLEDGED,
-} from '~/sidebar/components/incidents/constants';
+import { STATUS_LABELS, STATUS_TRIGGERED, STATUS_ACKNOWLEDGED } from '~/sidebar/constants';
 
 describe('EscalationStatus', () => {
   let wrapper;

@@ -3,8 +3,8 @@ import produce from 'immer';
 import Vue from 'vue';
 import { createAlert } from '~/flash';
 import { __, sprintf } from '~/locale';
-import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { confidentialityQueries, Tracking } from '~/sidebar/constants';
+import { confidentialityQueries, Tracking } from '../../constants';
+import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarConfidentialityContent from './sidebar_confidentiality_content.vue';
 import SidebarConfidentialityForm from './sidebar_confidentiality_form.vue';
 

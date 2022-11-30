@@ -3,7 +3,7 @@ import { GlSprintf, GlButton } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
-import { confidentialityQueries } from '~/sidebar/constants';
+import { confidentialityQueries } from '../../constants';
 
 export default {
   i18n: {

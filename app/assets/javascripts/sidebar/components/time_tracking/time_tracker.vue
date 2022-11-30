@@ -10,8 +10,8 @@ import {
 } from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
 import { s__, __ } from '~/locale';
-import { HOW_TO_TRACK_TIME, timeTrackingQueries } from '~/sidebar/constants';
 
+import { HOW_TO_TRACK_TIME, timeTrackingQueries } from '../../constants';
 import eventHub from '../../event_hub';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingComparisonPane from './comparison_pane.vue';

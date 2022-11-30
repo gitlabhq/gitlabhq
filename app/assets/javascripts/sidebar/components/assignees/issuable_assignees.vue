@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { n__ } from '~/locale';
-import UncollapsedAssigneeList from '~/sidebar/components/assignees/uncollapsed_assignee_list.vue';
+import UncollapsedAssigneeList from './uncollapsed_assignee_list.vue';
 
 export default {
   components: {

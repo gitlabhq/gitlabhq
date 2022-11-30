@@ -4,14 +4,8 @@ import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
-import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import {
-  dateFields,
-  dateTypes,
-  dueDateQueries,
-  startDateQueries,
-  Tracking,
-} from '~/sidebar/constants';
+import { dateFields, dateTypes, dueDateQueries, startDateQueries, Tracking } from '../../constants';
+import SidebarEditableItem from '../sidebar_editable_item.vue';
 import SidebarFormattedDate from './sidebar_formatted_date.vue';
 import SidebarInheritDate from './sidebar_inherit_date.vue';
 

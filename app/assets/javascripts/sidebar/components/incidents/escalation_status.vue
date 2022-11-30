@@ -1,7 +1,12 @@
 <script>
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
-import { i18n, STATUS_ACKNOWLEDGED, STATUS_TRIGGERED, STATUS_RESOLVED } from './constants';
-import { getStatusLabel } from './utils';
+import {
+  INCIDENTS_I18N as i18n,
+  STATUS_ACKNOWLEDGED,
+  STATUS_TRIGGERED,
+  STATUS_RESOLVED,
+} from '../../constants';
+import { getStatusLabel } from '../../utils';
 
 const STATUS_LIST = [STATUS_TRIGGERED, STATUS_ACKNOWLEDGED, STATUS_RESOLVED];
 

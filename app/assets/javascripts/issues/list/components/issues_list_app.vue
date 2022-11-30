@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlEmptyState, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlFilteredSearchToken, GlTooltipDirective } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
@@ -83,8 +83,8 @@ import {
   getSortOptions,
   isSortKey,
 } from '../utils';
-import EmptyStateSignedIn from './empty_state_signed_in.vue';
-import EmptyStateSignedOut from './empty_state_signed_out.vue';
+import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
 const AuthorToken = () =>
@@ -107,10 +107,9 @@ export default {
   IssuableListTabs,
   components: {
     CsvImportExportButtons,
-    EmptyStateSignedIn,
-    EmptyStateSignedOut,
+    EmptyStateWithAnyIssues,
+    EmptyStateWithoutAnyIssues,
     GlButton,
-    GlEmptyState,
     IssuableByEmail,
     IssuableList,
     IssueCardStatistics,
@@ -127,7 +126,6 @@ export default {
     'canBulkUpdate',
     'canReadCrmContact',
     'canReadCrmOrganization',
-    'emptyStateSvgPath',
     'exportCsvPath',
     'fullPath',
     'hasAnyIssues',
@@ -260,11 +258,11 @@ export default {
       return this.glFeatures.orIssuableQueries;
     },
     hasSearch() {
-      return (
+      return Boolean(
         this.searchQuery ||
-        Object.keys(this.urlFilterParams).length ||
-        this.pageParams.afterCursor ||
-        this.pageParams.beforeCursor
+          Object.keys(this.urlFilterParams).length ||
+          this.pageParams.afterCursor ||
+          this.pageParams.beforeCursor,
       );
     },
     isBulkEditButtonDisabled() {
@@ -853,37 +851,7 @@ export default {
       </template>
 
       <template #empty-state>
-        <gl-empty-state
-          v-if="hasSearch"
-          :description="$options.i18n.noSearchResultsDescription"
-          :title="$options.i18n.noSearchResultsTitle"
-          :svg-path="emptyStateSvgPath"
-        >
-          <template #actions>
-            <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-              {{ $options.i18n.newIssueLabel }}
-            </gl-button>
-          </template>
-        </gl-empty-state>
-
-        <gl-empty-state
-          v-else-if="isOpenTab"
-          :description="$options.i18n.noOpenIssuesDescription"
-          :title="$options.i18n.noOpenIssuesTitle"
-          :svg-path="emptyStateSvgPath"
-        >
-          <template #actions>
-            <gl-button v-if="showNewIssueLink" :href="newIssuePath" variant="confirm">
-              {{ $options.i18n.newIssueLabel }}
-            </gl-button>
-          </template>
-        </gl-empty-state>
-
-        <gl-empty-state
-          v-else
-          :title="$options.i18n.noClosedIssuesTitle"
-          :svg-path="emptyStateSvgPath"
-        />
+        <empty-state-with-any-issues :has-search="hasSearch" :is-open-tab="isOpenTab" />
       </template>
 
       <template #list-body>
@@ -891,15 +859,13 @@ export default {
       </template>
     </issuable-list>
 
-    <empty-state-signed-in
-      v-else-if="isSignedIn"
+    <empty-state-without-any-issues
+      v-else
       :current-tab-count="currentTabCount"
       :export-csv-path-with-query="exportCsvPathWithQuery"
       :show-csv-buttons="showCsvButtons"
       :show-new-issue-dropdown="showNewIssueDropdown"
     />
-
-    <empty-state-signed-out v-else />
 
     <issuable-by-email v-if="showIssuableByEmail" class="gl-text-center gl-pt-5 gl-pb-7" />
   </div>

@@ -1,4 +1,4 @@
-import { GlButton, GlEmptyState } from '@gitlab/ui';
+import { GlButton } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import { mount, shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
@@ -27,8 +27,8 @@ import CsvImportExportButtons from '~/issuable/components/csv_import_export_butt
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
-import EmptyStateSignedIn from '~/issues/list/components/empty_state_signed_in.vue';
-import EmptyStateSignedOut from '~/issues/list/components/empty_state_signed_out.vue';
+import EmptyStateWithAnyIssues from '~/issues/list/components/empty_state_with_any_issues.vue';
+import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import NewIssueDropdown from '~/issues/list/components/new_issue_dropdown.vue';
 import {
@@ -126,7 +126,6 @@ describe('CE IssuesListApp component', () => {
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findGlButtonAt = (index) => findGlButtons().at(index);
-  const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findNewIssueDropdown = () => wrapper.findComponent(NewIssueDropdown);
 
@@ -487,79 +486,29 @@ describe('CE IssuesListApp component', () => {
 
   describe('empty states', () => {
     describe('when there are issues', () => {
-      describe('when search returns no results', () => {
-        beforeEach(() => {
-          setWindowLocation(`?search=no+results`);
-
-          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noSearchResultsDescription,
-            title: IssuesListApp.i18n.noSearchResultsTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
-        });
+      beforeEach(() => {
+        wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
       });
 
-      describe('when "Open" tab has no issues', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            description: IssuesListApp.i18n.noOpenIssuesDescription,
-            title: IssuesListApp.i18n.noOpenIssuesTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
-        });
-      });
-
-      describe('when "Closed" tab has no issues', () => {
-        beforeEach(() => {
-          setWindowLocation(`?state=${IssuableStates.Closed}`);
-
-          wrapper = mountComponent({ provide: { hasAnyIssues: true }, mountFn: mount });
-        });
-
-        it('shows empty state', () => {
-          expect(findGlEmptyState().props()).toMatchObject({
-            title: IssuesListApp.i18n.noClosedIssuesTitle,
-            svgPath: defaultProvide.emptyStateSvgPath,
-          });
+      it('shows EmptyStateWithAnyIssues empty state', () => {
+        expect(wrapper.findComponent(EmptyStateWithAnyIssues).props()).toEqual({
+          hasSearch: false,
+          isOpenTab: true,
         });
       });
     });
 
     describe('when there are no issues', () => {
-      describe('when user is signed in', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { hasAnyIssues: false, isSignedIn: true },
-          });
-        });
-
-        it('shows signed in empty state', () => {
-          expect(wrapper.findComponent(EmptyStateSignedIn).props()).toEqual({
-            currentTabCount: 0,
-            exportCsvPathWithQuery: defaultProvide.exportCsvPath,
-            showCsvButtons: true,
-            showNewIssueDropdown: false,
-          });
-        });
+      beforeEach(() => {
+        wrapper = mountComponent({ provide: { hasAnyIssues: false } });
       });
 
-      describe('when user is signed out', () => {
-        beforeEach(() => {
-          wrapper = mountComponent({
-            provide: { hasAnyIssues: false, isSignedIn: false },
-          });
-        });
-
-        it('shows signed out empty state', () => {
-          expect(wrapper.findComponent(EmptyStateSignedOut).exists()).toBe(true);
+      it('shows EmptyStateWithoutAnyIssues empty state', () => {
+        expect(wrapper.findComponent(EmptyStateWithoutAnyIssues).props()).toEqual({
+          currentTabCount: 0,
+          exportCsvPathWithQuery: defaultProvide.exportCsvPath,
+          showCsvButtons: true,
+          showNewIssueDropdown: false,
         });
       });
     });

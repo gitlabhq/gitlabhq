@@ -482,7 +482,9 @@ export default {
       </div>
     </div>
     <template v-else>
-      <div class="mr-widget-body mr-widget-body-ready-merge media mr-widget-body-line-height-1">
+      <div
+        class="mr-widget-body mr-widget-body-ready-merge media gl-display-flex gl-align-items-center"
+      >
         <div class="media-body">
           <div class="mr-widget-body-controls gl-display-flex gl-align-items-center gl-flex-wrap">
             <template v-if="shouldShowMergeControls">

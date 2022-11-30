@@ -673,10 +673,6 @@ $tabs-holder-z-index: 250;
   }
 
   .mr-widget-body {
-    &:not(.mr-widget-body-line-height-1) {
-      line-height: 24px;
-    }
-
     @include clearfix;
 
     .approve-btn {

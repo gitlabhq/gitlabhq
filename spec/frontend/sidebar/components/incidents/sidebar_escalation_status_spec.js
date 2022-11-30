@@ -12,10 +12,13 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SidebarEscalationStatus from '~/sidebar/components/incidents/sidebar_escalation_status.vue';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import { escalationStatusQuery, escalationStatusMutation } from '~/sidebar/constants';
+import {
+  escalationStatusQuery,
+  escalationStatusMutation,
+  STATUS_ACKNOWLEDGED,
+} from '~/sidebar/constants';
 import waitForPromises from 'helpers/wait_for_promises';
 import EscalationStatus from 'ee_else_ce/sidebar/components/incidents/escalation_status.vue';
-import { STATUS_ACKNOWLEDGED } from '~/sidebar/components/incidents/constants';
 import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
 

@@ -5,12 +5,12 @@ import Vue from 'vue';
 import { refreshUserMergeRequestCounts } from '~/commons/nav/user_merge_requests';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
-import eventHub from '~/sidebar/event_hub';
-import Store from '~/sidebar/stores/sidebar_store';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import eventHub from '../../event_hub';
 import getMergeRequestReviewersQuery from '../../queries/get_merge_request_reviewers.query.graphql';
 import mergeRequestReviewersUpdatedSubscription from '../../queries/merge_request_reviewers.subscription.graphql';
+import Store from '../../stores/sidebar_store';
 import ReviewerTitle from './reviewer_title.vue';
 import Reviewers from './reviewers.vue';
 

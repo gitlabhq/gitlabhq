@@ -5,7 +5,7 @@ import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { formatDate, parseSeconds, stringifyTime } from '~/lib/utils/datetime_utility';
 import { __, s__ } from '~/locale';
-import { timelogQueries } from '~/sidebar/constants';
+import { timelogQueries } from '../../constants';
 import deleteTimelogMutation from '../../queries/delete_timelog.mutation.graphql';
 
 const TIME_DATE_FORMAT = 'mmmm d, yyyy, HH:MM ("UTC:" o)';

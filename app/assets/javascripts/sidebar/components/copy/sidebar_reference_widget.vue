@@ -1,6 +1,6 @@
 <script>
 import { __ } from '~/locale';
-import { referenceQueries } from '~/sidebar/constants';
+import { referenceQueries } from '../../constants';
 import CopyableField from './copyable_field.vue';
 
 export default {

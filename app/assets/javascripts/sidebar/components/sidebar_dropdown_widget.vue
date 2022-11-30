@@ -6,7 +6,6 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { IssuableType } from '~/issues/constants';
 import { timeFor } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
-import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   dropdowni18nText,
@@ -17,6 +16,7 @@ import {
   Tracking,
 } from 'ee_else_ce/sidebar/constants';
 import SidebarDropdown from './sidebar_dropdown.vue';
+import SidebarEditableItem from './sidebar_editable_item.vue';
 
 export default {
   i18n: {

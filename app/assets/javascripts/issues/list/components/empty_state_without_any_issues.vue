@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlEmptyState, GlLink, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlEmptyState, GlLink, GlSprintf } from '@gitlab/ui';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import { i18n } from '../constants';
@@ -16,16 +16,15 @@ export default {
     GlSprintf,
     NewIssueDropdown,
   },
-  directives: {
-    GlTooltip: GlTooltipDirective,
-  },
   inject: [
     'canCreateProjects',
     'emptyStateSvgPath',
+    'isSignedIn',
     'jiraIntegrationPath',
     'newIssuePath',
     'newProjectPath',
     'showNewIssueLink',
+    'signInPath',
   ],
   props: {
     currentTabCount: {
@@ -53,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div v-if="isSignedIn">
     <gl-empty-state :title="$options.i18n.noIssuesTitle" :svg-path="emptyStateSvgPath">
       <template #description>
         <gl-link :href="$options.issuesHelpPagePath">
@@ -94,4 +93,18 @@ export default {
       {{ $options.i18n.jiraIntegrationSecondaryMessage }}
     </p>
   </div>
+
+  <gl-empty-state
+    v-else
+    :title="$options.i18n.noIssuesTitle"
+    :svg-path="emptyStateSvgPath"
+    :primary-button-text="$options.i18n.noIssuesSignedOutButtonText"
+    :primary-button-link="signInPath"
+  >
+    <template #description>
+      <gl-link :href="$options.issuesHelpPagePath">
+        {{ $options.i18n.noIssuesDescription }}
+      </gl-link>
+    </template>
+  </gl-empty-state>
 </template>
