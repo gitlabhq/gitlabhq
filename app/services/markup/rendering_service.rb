@@ -2,8 +2,6 @@
 
 module Markup
   class RenderingService
-    include ActionView::Helpers::TextHelper
-
     # Let's increase the render timeout
     # For a smaller one, a test that renders the blob content statically fails
     # We can consider removing this custom timeout when markup_rendering_timeout FF is removed:
@@ -51,7 +49,7 @@ module Markup
     rescue StandardError => e
       Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, file_name: file_name)
 
-      simple_format(text)
+      ActionController::Base.helpers.simple_format(text)
     end
 
     def markdown_unsafe
@@ -63,7 +61,9 @@ module Markup
     end
 
     def plain_unsafe
-      "<pre class=\"plain-readme\">#{text}</pre>"
+      ActionController::Base.helpers.content_tag :pre, class: 'plain-readme' do
+        text
+      end
     end
 
     def other_markup_unsafe

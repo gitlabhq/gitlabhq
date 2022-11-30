@@ -524,12 +524,13 @@ RSpec.describe Gitlab::Git::Repository do
         prune: false,
         check_tags_changed: false,
         refmap: nil,
-        http_authorization_header: ""
+        http_authorization_header: "",
+        resolved_address: '172.16.123.1'
       }
 
       expect(repository.gitaly_repository_client).to receive(:fetch_remote).with(url, expected_opts)
 
-      repository.fetch_remote(url, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false)
+      repository.fetch_remote(url, ssh_auth: ssh_auth, forced: true, no_tags: true, prune: false, check_tags_changed: false, resolved_address: '172.16.123.1')
     end
 
     it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RepositoryService, :fetch_remote do
@@ -2448,7 +2449,7 @@ RSpec.describe Gitlab::Git::Repository do
 
     it 'delegates to Gitaly' do
       expect_next_instance_of(Gitlab::GitalyClient::RepositoryService) do |svc|
-        expect(svc).to receive(:import_repository).with(url, http_authorization_header: '', mirror: false).and_return(nil)
+        expect(svc).to receive(:import_repository).with(url, http_authorization_header: '', mirror: false, resolved_address: '').and_return(nil)
       end
 
       repository.import_repository(url)
