@@ -24,6 +24,8 @@ module WebHooks
     private
 
     def log_execution
+      log_data[:request_headers]['X-Gitlab-Token'] = _('[REDACTED]') if hook.token?
+
       WebHookLog.create!(web_hook: hook, **log_data)
     end
 

@@ -185,4 +185,22 @@ RSpec.describe WebHookLog do
       it { expect(web_hook_log.internal_error?).to be_truthy }
     end
   end
+
+  describe '#request_headers' do
+    let(:hook) { build(:project_hook, :token) }
+    let(:web_hook_log) { build(:web_hook_log, request_headers: request_headers) }
+    let(:expected_headers) { { 'X-Gitlab-Token' => _('[REDACTED]') } }
+
+    context 'with redacted headers token' do
+      let(:request_headers) { { 'X-Gitlab-Token' => _('[REDACTED]') } }
+
+      it { expect(web_hook_log.request_headers).to eq(expected_headers) }
+    end
+
+    context 'with exposed headers token' do
+      let(:request_headers) { { 'X-Gitlab-Token' => hook.token } }
+
+      it { expect(web_hook_log.request_headers).to eq(expected_headers) }
+    end
+  end
 end

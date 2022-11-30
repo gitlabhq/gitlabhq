@@ -11,14 +11,15 @@ RSpec.describe WebHooks::LogExecutionService do
       travel_to(Time.current) { example.run }
     end
 
-    let_it_be_with_reload(:project_hook) { create(:project_hook) }
+    let_it_be_with_reload(:project_hook) { create(:project_hook, :token) }
 
     let(:response_category) { :ok }
+    let(:request_headers) { { 'Header' => 'header value' } }
     let(:data) do
       {
         trigger: 'trigger_name',
         url: 'https://example.com',
-        request_headers: { 'Header' => 'header value' },
+        request_headers: request_headers,
         request_data: { 'Request Data' => 'request data value' },
         response_body: 'Response body',
         response_status: '200',
@@ -176,6 +177,16 @@ RSpec.describe WebHooks::LogExecutionService do
         it 'sets the disabled_until attribute' do
           expect { service.execute }.to change(project_hook, :disabled_until).to(1.day.from_now)
         end
+      end
+    end
+
+    context 'with X-Gitlab-Token' do
+      let(:request_headers) { { 'X-Gitlab-Token' => project_hook.token } }
+
+      it 'redacts the token' do
+        service.execute
+
+        expect(WebHookLog.recent.first.request_headers).to include('X-Gitlab-Token' => '[REDACTED]')
       end
     end
   end
