@@ -133,6 +133,40 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
     end
   end
 
+  describe '#import_repository' do
+    let(:source) { 'https://example.com/git/repo.git' }
+
+    it 'sends a create_repository_from_url message' do
+      expected_request = gitaly_request_with_params(
+        url: source,
+        resolved_address: ''
+      )
+
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:create_repository_from_url)
+        .with(expected_request, kind_of(Hash))
+        .and_return(double(value: true))
+
+      client.import_repository(source)
+    end
+
+    context 'when http_host is provided' do
+      it 'sends a create_repository_from_url message with http_host provided in the request' do
+        expected_request = gitaly_request_with_params(
+          url: source,
+          resolved_address: '172.16.123.1'
+        )
+
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:create_repository_from_url)
+          .with(expected_request, kind_of(Hash))
+          .and_return(double(value: true))
+
+        client.import_repository(source, resolved_address: '172.16.123.1')
+      end
+    end
+  end
+
   describe '#fetch_remote' do
     let(:url) { 'https://example.com/git/repo.git' }
 
@@ -141,7 +175,8 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         remote_params: Gitaly::Remote.new(
           url: url,
           http_authorization_header: "",
-          mirror_refmaps: []
+          mirror_refmaps: [],
+          resolved_address: ''
         ),
         ssh_key: '',
         known_hosts: '',
@@ -157,6 +192,32 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService do
         .and_return(double(value: true))
 
       client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false)
+    end
+
+    context 'with resolved address' do
+      it 'sends a fetch_remote_request message' do
+        expected_request = gitaly_request_with_params(
+          remote_params: Gitaly::Remote.new(
+            url: url,
+            http_authorization_header: "",
+            mirror_refmaps: [],
+            resolved_address: '172.16.123.1'
+          ),
+          ssh_key: '',
+          known_hosts: '',
+          force: false,
+          no_tags: false,
+          no_prune: false,
+          check_tags_changed: false
+        )
+
+        expect_any_instance_of(Gitaly::RepositoryService::Stub)
+          .to receive(:fetch_remote)
+          .with(expected_request, kind_of(Hash))
+          .and_return(double(value: true))
+
+        client.fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, timeout: 1, check_tags_changed: false, resolved_address: '172.16.123.1')
+      end
     end
 
     context 'SSH auth' do

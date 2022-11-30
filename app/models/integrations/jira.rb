@@ -98,7 +98,10 @@ module Integrations
     def self.valid_jira_cloud_url?(url)
       return false unless url.present?
 
-      !!URI(url).hostname&.end_with?(JIRA_CLOUD_HOST)
+      uri = URI.parse(url)
+      uri.is_a?(URI::HTTPS) && !!uri.hostname&.end_with?(JIRA_CLOUD_HOST)
+    rescue URI::InvalidURIError
+      false
     end
 
     def data_fields
