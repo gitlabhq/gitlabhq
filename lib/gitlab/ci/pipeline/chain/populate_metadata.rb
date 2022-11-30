@@ -28,7 +28,9 @@ module Gitlab
             name = @command.yaml_processor_result.workflow_name
             name = ExpandVariables.expand(name, -> { global_context.variables.sort_and_expand_all })
 
-            pipeline.build_pipeline_metadata(project: pipeline.project, name: name)
+            return if name.blank?
+
+            pipeline.build_pipeline_metadata(project: pipeline.project, name: name.strip)
           end
 
           def global_context
