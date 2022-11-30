@@ -25,6 +25,8 @@ Deploy tokens are tied to the project and stay enabled even when the user who cr
 If you have a key pair, you might want to use [deploy keys](../../project/deploy_keys/index.md)
 instead.
 
+Deploy tokens can't be used for Git operations and Package Registry operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
+
 ## Creating a Deploy token
 
 You can create as many deploy tokens as you need from the settings of your

@@ -1380,7 +1380,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       {
         'Channel' => {
           'Subprotocols' => ["terminal.gitlab.com"],
-          'Url' => 'wss://localhost/proxy/build/default_port/',
+          'Url' => 'wss://gitlab.example.com/proxy/build/default_port/',
           'Header' => {
             'Authorization' => [nil]
           },
@@ -1536,7 +1536,8 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_return(nil)
 
       expect(job.runner_session_url).to start_with('https://')
-      expect(Gitlab::Workhorse).to receive(:channel_websocket).with(a_hash_including(url: "wss://localhost/proxy/build/default_port/"))
+      expect(Gitlab::Workhorse).to receive(:channel_websocket)
+        .with(a_hash_including(url: "wss://gitlab.example.com/proxy/build/default_port/"))
 
       make_request
     end

@@ -388,6 +388,15 @@ RSpec.describe Gitlab::Auth::AuthFinders do
         it { is_expected.to be_nil }
       end
     end
+
+    context 'when the external_authorization_service is enabled' do
+      before do
+        stub_application_setting(external_authorization_service_enabled: true)
+        set_header(described_class::DEPLOY_TOKEN_HEADER, deploy_token.token)
+      end
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#find_user_from_access_token' do

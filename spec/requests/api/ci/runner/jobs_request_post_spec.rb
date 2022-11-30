@@ -947,6 +947,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state do
           end
         end
 
+        context 'with session url set to local URL' do
+          let(:job_params) { { session: { url: 'https://127.0.0.1:7777' } } }
+
+          context 'with allow_local_requests_from_web_hooks_and_services? stubbed' do
+            before do
+              allow(ApplicationSetting).to receive(:current).and_return(ApplicationSetting.new)
+              stub_application_setting(allow_local_requests_from_web_hooks_and_services: allow_local_requests)
+              ci_build
+            end
+
+            let(:ci_build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
+
+            context 'as returning true' do
+              let(:allow_local_requests) { true }
+
+              it 'creates a new session' do
+                request_job(**job_params)
+
+                expect(response).to have_gitlab_http_status(:created)
+              end
+            end
+
+            context 'as returning false' do
+              let(:allow_local_requests) { false }
+
+              it 'returns :unprocessable_entity status code', :aggregate_failures do
+                request_job(**job_params)
+
+                expect(response).to have_gitlab_http_status(:conflict)
+                expect(response.body).to include('409 Conflict')
+              end
+            end
+          end
+        end
+
         def request_job(token = runner.token, **params)
           new_params = params.merge(token: token, last_update: last_update)
           post api('/jobs/request'), params: new_params.to_json, headers: { 'User-Agent' => user_agent, 'Content-Type': 'application/json' }

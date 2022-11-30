@@ -367,7 +367,7 @@ module Gitlab
     end
 
     def deploy_key?
-      actor.is_a?(DeployKey)
+      actor.is_a?(DeployKey) && !Gitlab::ExternalAuthorization.enabled?
     end
 
     def deploy_token
@@ -375,7 +375,7 @@ module Gitlab
     end
 
     def deploy_token?
-      actor.is_a?(DeployToken)
+      actor.is_a?(DeployToken) && !Gitlab::ExternalAuthorization.enabled?
     end
 
     def ci?
