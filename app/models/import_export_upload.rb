@@ -2,7 +2,6 @@
 
 class ImportExportUpload < ApplicationRecord
   include WithUploads
-  include ObjectStorage::BackgroundMove
 
   belongs_to :project
   belongs_to :group

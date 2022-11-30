@@ -10,13 +10,13 @@ module API
       RELEASE_ENDPOINT_REQUIREMENTS = API::NAMESPACE_OR_PROJECT_REQUIREMENTS
         .merge(tag_name: API::NO_SLASH_URL_PART_REGEX)
 
-      before { authorize! :read_release, user_project }
+      after_validation { authorize! :read_release, user_project }
 
       feature_category :release_orchestration
       urgency :low
 
       params do
-        requires :id, type: [String, Integer], desc: 'The ID or URL-encoded path of the project'
+        requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
       resource 'projects/:id', requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
         params do

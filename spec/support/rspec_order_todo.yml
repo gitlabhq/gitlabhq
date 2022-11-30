@@ -10420,7 +10420,6 @@
 - './spec/uploaders/records_uploads_spec.rb'
 - './spec/uploaders/terraform/state_uploader_spec.rb'
 - './spec/uploaders/uploader_helper_spec.rb'
-- './spec/uploaders/workers/object_storage/background_move_worker_spec.rb'
 - './spec/uploaders/workers/object_storage/migrate_uploads_worker_spec.rb'
 - './spec/validators/addressable_url_validator_spec.rb'
 - './spec/validators/any_field_validator_spec.rb'

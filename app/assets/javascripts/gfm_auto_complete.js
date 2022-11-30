@@ -997,7 +997,7 @@ GfmAutoComplete.Issues = {
     return value.reference || '${atwho-at}${id}';
   },
   templateFunction({ id, title, reference }) {
-    return `<li><small>${reference || id}</small> ${escape(title)}</li>`;
+    return `<li><small>${escape(reference || id)}</small> ${escape(title)}</li>`;
   },
 };
 // Milestones

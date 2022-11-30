@@ -125,6 +125,12 @@ RSpec.describe Users::MigrateRecordsToGhostUserService do
         let(:created_record) { create(:review, author: user) }
       end
     end
+
+    context 'for releases' do
+      include_examples 'migrating records to the ghost user', Release, [:author] do
+        let(:created_record) { create(:release, author: user) }
+      end
+    end
   end
 
   context 'on post-migrate cleanups' do

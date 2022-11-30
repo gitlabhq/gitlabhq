@@ -57,12 +57,6 @@ RSpec.describe FileMover do
             .to change { tmp_upload.reload.attributes.values_at('model_id', 'model_type') }
             .from([user.id, 'User']).to([snippet.id, 'Snippet'])
         end
-
-        it 'schedules a background migration' do
-          expect_any_instance_of(PersonalFileUploader).to receive(:schedule_background_upload).once
-
-          subject
-        end
       end
 
       context 'when update_markdown fails' do

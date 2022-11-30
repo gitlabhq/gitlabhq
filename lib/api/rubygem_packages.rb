@@ -28,11 +28,14 @@ module API
     before do
       require_packages_enabled!
       authenticate_non_get!
+    end
+
+    after_validation do
       not_found! unless Feature.enabled?(:rubygem_packages, user_project)
     end
 
     params do
-      requires :id, type: [Integer, String], desc: 'The ID or full path of a project'
+      requires :id, types: [Integer, String], desc: 'The ID or URL-encoded path of the project'
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/rubygems' do

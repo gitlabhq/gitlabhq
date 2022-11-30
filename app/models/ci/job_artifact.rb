@@ -5,7 +5,6 @@ module Ci
     include Ci::Partitionable
     include IgnorableColumns
     include AfterCommitQueue
-    include ObjectStorage::BackgroundMove
     include UpdateProjectStatistics
     include UsageStatistics
     include Sortable

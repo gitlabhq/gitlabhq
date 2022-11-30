@@ -56,6 +56,7 @@ When deleting users, you can either:
   - Issues.
   - Merge requests.
   - Notes and comments.
+  - Releases.
   - Personal access tokens.
   - Snippets.
 

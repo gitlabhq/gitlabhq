@@ -92,7 +92,7 @@ RSpec.describe LfsObject do
     end
   end
 
-  describe '#schedule_background_upload' do
+  describe 'storage types' do
     before do
       stub_lfs_setting(enabled: true)
     end

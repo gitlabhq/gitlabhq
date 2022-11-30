@@ -27,10 +27,6 @@ class FileUploader < GitlabUploader
 
   after :remove, :prune_store_dir
 
-  # FileUploader do not run in a model transaction, so we can simply
-  # enqueue a job after the :store hook.
-  after :store, :schedule_background_upload
-
   def self.root
     File.join(options.storage_path, 'uploads')
   end

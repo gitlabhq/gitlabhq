@@ -580,7 +580,7 @@ export default class AccessDropdown {
     return `
       <li>
         <a href="#" class="${isActiveClass} item-${role.type}" data-role-id="${role.id}">
-          ${role.text}
+          ${escape(role.text)}
         </a>
       </li>
     `;

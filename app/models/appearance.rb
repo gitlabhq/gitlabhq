@@ -3,7 +3,6 @@
 class Appearance < ApplicationRecord
   include CacheableAttributes
   include CacheMarkdownField
-  include ObjectStorage::BackgroundMove
   include WithUploads
 
   attribute :title, default: ''

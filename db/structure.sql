@@ -14183,6 +14183,7 @@ CREATE TABLE container_repositories (
     migration_plan text,
     last_cleanup_deleted_tags_count integer,
     delete_started_at timestamp with time zone,
+    status_updated_at timestamp with time zone,
     CONSTRAINT check_05e9012f36 CHECK ((char_length(migration_plan) <= 255)),
     CONSTRAINT check_13c58fe73a CHECK ((char_length(migration_state) <= 255)),
     CONSTRAINT check_97f0249439 CHECK ((char_length(migration_aborted_in_state) <= 255))

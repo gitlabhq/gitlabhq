@@ -16,7 +16,6 @@ module Avatarable
 
   included do
     prepend ShadowMethods
-    include ObjectStorage::BackgroundMove
     include Gitlab::Utils::StrongMemoize
     include ApplicationHelper
 

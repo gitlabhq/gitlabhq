@@ -7,7 +7,6 @@ module Ci
     include Ci::Contextable
     include TokenAuthenticatable
     include AfterCommitQueue
-    include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
     include Ci::HasRef

@@ -6,9 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Log system **(FREE SELF)**
 
-GitLab has an advanced log system where everything is logged, so you
-can analyze your instance using various system log files. In addition to
-system log files, GitLab Enterprise Edition provides [Audit Events](../audit_events.md).
+GitLab has an advanced log system where everything is logged, so you can analyze your instance using various system log
+files. The log system is similar to [audit events](../audit_events.md).
 
 System log files are typically plain text in a standard log file format.
 This guide talks about how to read and use these system log files.

@@ -4,7 +4,7 @@
 
 import { GlBreakpointInstance as breakpointInstance } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
-import { isFunction, defer } from 'lodash';
+import { isFunction, defer, escape } from 'lodash';
 import Cookies from '~/lib/utils/cookies';
 import { SCOPED_LABEL_DELIMITER } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import { convertToCamelCase, convertToSnakeCase } from './text_utility';
@@ -469,7 +469,7 @@ export const backOff = (fn, timeout = 60000) => {
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';
 
-  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${icon}" /></svg>`;
+  return `<svg ${classAttribute}><use xlink:href="${gon.sprite_icons}#${escape(icon)}" /></svg>`;
 };
 
 /**

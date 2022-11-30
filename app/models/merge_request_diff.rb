@@ -6,7 +6,6 @@ class MergeRequestDiff < ApplicationRecord
   include ManualInverseAssociation
   include EachBatch
   include Gitlab::Utils::StrongMemoize
-  include ObjectStorage::BackgroundMove
   include BulkInsertableAssociations
 
   # Don't display more than 100 commits at once

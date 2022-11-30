@@ -67,10 +67,6 @@ module ObjectStorage
         super
       end
 
-      def schedule_background_upload(*args)
-        # TODO remove this method https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1690
-      end
-
       def exclusive_lease_key
         # For FileUploaders, model may have many uploaders. In that case
         # we want to use exclusive key per upload, not per model to allow
@@ -89,40 +85,6 @@ module ObjectStorage
         paths.include?(upload.path) &&
           upload.model_id == model.id &&
           upload.model_type == model.class.base_class.sti_name
-      end
-    end
-  end
-
-  # Add support for automatic background uploading after the file is stored.
-  #
-  module BackgroundMove
-    extend ActiveSupport::Concern
-
-    def background_upload(mount_points = [])
-      return unless mount_points.any?
-
-      run_after_commit do
-        mount_points.each { |mount| send(mount).schedule_background_upload } # rubocop:disable GitlabSecurity/PublicSend
-      end
-    end
-
-    def changed_mounts
-      self.class.uploaders.select do |mount, uploader_class|
-        mounted_as = uploader_class.serialization_column(self.class, mount)
-        uploader = send(:"#{mounted_as}") # rubocop:disable GitlabSecurity/PublicSend
-
-        next unless uploader
-        next unless uploader.exists?
-        next unless send(:"saved_change_to_#{mounted_as}?") # rubocop:disable GitlabSecurity/PublicSend
-
-        mount
-      end.keys
-    end
-
-    included do
-      include AfterCommitQueue
-      after_save do
-        background_upload(changed_mounts)
       end
     end
   end
@@ -303,10 +265,6 @@ module ObjectStorage
       with_exclusive_lease do
         unsafe_migrate!(new_store)
       end
-    end
-
-    def schedule_background_upload(*args)
-      # TODO remove this method https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1690
     end
 
     def fog_directory

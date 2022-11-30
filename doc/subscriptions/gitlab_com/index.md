@@ -78,7 +78,7 @@ A top-level group can be [changed](../../user/group/manage.md#change-a-groups-pa
 Every user is included in seat usage, with the following exceptions:
 
 - Users who are pending approval.
-- Members with the Guest role on an Ultimate subscription.
+- Members with the [Guest role on an Ultimate subscription](#free-guest-users).
 - GitLab-created service accounts:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
@@ -159,6 +159,16 @@ For example, if you purchase a subscription for 10 users:
 | Three users leave and their accounts are removed.  | 9                | 12            |
 
 Seats owed = 12 - 10 (Maximum users - users in subscription)
+
+### Free Guest users **(ULTIMATE)**
+
+In the **Ultimate** tier, users who are assigned the Guest role do not consume a seat.
+The user must not be assigned any other role, anywhere in the instance.
+
+- If your project is private or internal, a user with the Guest role has
+  [a set of permissions](../../user/permissions.md#project-members-permissions).
+- If your project is public, all users, including those with the Guest role
+  can access your project.
 
 ### Add users to your subscription
 

@@ -12,9 +12,6 @@ The role determines which actions they can take in GitLab.
 If you add a user to both a project's group and the
 project itself, the higher role is used.
 
-On [public and internal projects](../api/projects.md#project-visibility-level), the Guest role
-(not to be confused with [Guest user](#free-guest-users)) is not enforced.
-
 When a member leaves a team's project, all the assigned [issues](project/issues/index.md) and
 [merge requests](project/merge_requests/index.md) are automatically unassigned.
 
@@ -27,7 +24,7 @@ To add or import a user, you can follow the
 
 The available roles are:
 
-- Guest
+- Guest (This role applies to [private and internal projects](../user/public_access.md) only.)
 - Reporter
 - Developer
 - Maintainer
@@ -547,27 +544,6 @@ and the ignore case flag is set (`/regex pattern/i`). Here are some examples:
 WARNING:
 Be aware that this regex could lead to a
 [regular expression denial of service (ReDoS) attack](https://en.wikipedia.org/wiki/ReDoS).
-
-## Free Guest users **(ULTIMATE)**
-
-When a user is given the Guest role on a project, group, or both, and holds no
-higher permission level on any other project or group on the GitLab instance,
-the user is considered a guest user by GitLab and does not consume a license seat.
-There is no other specific "guest" designation for newly created users.
-
-If the user is assigned a higher role on any projects or groups, the user
-takes a license seat. If a user creates a project, the user becomes a Maintainer
-on the project, resulting in the use of a license seat. Also, note that if your
-project is internal or private, Guest users have all the abilities that are
-mentioned in the [permissions table above](#project-members-permissions) (they
-are unable to browse the project's repository, for example).
-
-NOTE:
-To prevent a guest user from creating projects, as an administrator, you can edit the
-user's profile to mark the user as [external](#external-users).
-Beware though that even if a user is external, if they already have Reporter or
-higher permissions in any project or group, they are **not** counted as a
-free guest user.
 
 ## Auditor users **(PREMIUM SELF)**
 

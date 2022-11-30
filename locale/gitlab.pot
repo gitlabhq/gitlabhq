@@ -35980,6 +35980,9 @@ msgstr ""
 msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
 msgstr ""
 
+msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{selector}"
+msgstr ""
+
 msgid "ScanResultPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require approval from %{approvalsRequired} of the following approvers:"
 msgstr ""
 
@@ -36680,6 +36683,9 @@ msgstr ""
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
 msgstr ""
 
+msgid "SecurityOrchestration|License Scan"
+msgstr ""
+
 msgid "SecurityOrchestration|New policy"
 msgstr ""
 
@@ -36791,6 +36797,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security Approvals"
 msgstr ""
 
+msgid "SecurityOrchestration|Security Scan"
+msgstr ""
+
 msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
@@ -36804,6 +36813,9 @@ msgid "SecurityOrchestration|Select groups"
 msgstr ""
 
 msgid "SecurityOrchestration|Select policy"
+msgstr ""
+
+msgid "SecurityOrchestration|Select scan type"
 msgstr ""
 
 msgid "SecurityOrchestration|Select security project"
@@ -38379,7 +38391,7 @@ msgstr ""
 msgid "Slack logo"
 msgstr ""
 
-msgid "SlackIntegration|Are you sure you want to remove this project from the Slack application?"
+msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"
@@ -38394,7 +38406,7 @@ msgstr ""
 msgid "SlackIntegration|GitLab for Slack was successfully installed."
 msgstr ""
 
-msgid "SlackIntegration|Install Slack app"
+msgid "SlackIntegration|Install GitLab for Slack app"
 msgstr ""
 
 msgid "SlackIntegration|Notifications only work if you're on the latest version of the GitLab for Slack app"
@@ -38403,7 +38415,7 @@ msgstr ""
 msgid "SlackIntegration|Project alias"
 msgstr ""
 
-msgid "SlackIntegration|Reinstall Slack app"
+msgid "SlackIntegration|Reinstall GitLab for Slack app"
 msgstr ""
 
 msgid "SlackIntegration|Remove project"
@@ -38436,7 +38448,7 @@ msgstr ""
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."
 msgstr ""
 
-msgid "SlackIntegration|You may need to reinstall the Slack application when we %{linkStart}make updates or change permissions%{linkEnd}."
+msgid "SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}."
 msgstr ""
 
 msgid "SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:"
