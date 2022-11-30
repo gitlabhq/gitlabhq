@@ -134,7 +134,7 @@ one to many of these sections per analyzer.
 
 | Setting | Description |
 | --------| ----------- |
-| `disabled` | Whether the rule should be disabled. (Default: `false`) |
+| `disable` | Whether the rule should be disabled. (Default: `false`) |
 | `[$analyzer.ruleset.identifier]` | Selects the predefined rule to be modified. |
 | `[$analyzer.ruleset.override]` | Defines the overrides for the rule. |
 

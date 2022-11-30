@@ -70,12 +70,26 @@ RSpec.describe Gitlab::Git::Repository do
     it { is_expected.to include("master") }
     it { is_expected.not_to include("branch-from-space") }
 
-    it 'gets the branch names from GitalyClient' do
-      expect_any_instance_of(Gitlab::GitalyClient::RefService).to receive(:branch_names)
-      subject
-    end
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :list_refs
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branch_names
+    context 'feature list_refs_for_find_all_tags_branches disabled' do
+      before do
+        stub_feature_flags(list_refs_for_find_all_tags_branches: false)
+      end
+
+      it 'has TestRepo::BRANCH_SHA.size elements' do
+        expect(subject.size).to eq(TestEnv::BRANCH_SHA.size)
+      end
+
+      it 'returns UTF-8' do
+        expect(subject.first).to be_utf8
+      end
+
+      it { is_expected.to include("master") }
+      it { is_expected.not_to include("branch-from-space") }
+
+      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :branch_names
+    end
   end
 
   describe '#tag_names' do
@@ -100,7 +114,34 @@ RSpec.describe Gitlab::Git::Repository do
     it { is_expected.to include("v1.0.0") }
     it { is_expected.not_to include("v5.0.0") }
 
-    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
+    it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :list_refs
+
+    context 'feature list_refs_for_find_all_tags_branches disabled' do
+      before do
+        stub_feature_flags(list_refs_for_find_all_tags_branches: false)
+      end
+
+      it { is_expected.to be_kind_of Array }
+
+      it 'has some elements' do
+        expect(subject.size).to be >= 1
+      end
+
+      it 'returns UTF-8' do
+        expect(subject.first).to be_utf8
+      end
+
+      describe '#last' do
+        subject { super().last }
+
+        it { is_expected.to eq("v1.1.1") }
+      end
+
+      it { is_expected.to include("v1.0.0") }
+      it { is_expected.not_to include("v5.0.0") }
+
+      it_behaves_like 'wrapping gRPC errors', Gitlab::GitalyClient::RefService, :tag_names
+    end
   end
 
   describe '#tags' do
@@ -1433,10 +1474,23 @@ RSpec.describe Gitlab::Git::Repository do
       it 'returns the count of local branches' do
         expect(repository.branch_count).to eq(repository.local_branches.count)
       end
+    end
 
-      context 'with Gitaly disabled' do
+    context 'feature list_refs_for_find_all_tags_branches disabled' do
+      before do
+        stub_feature_flags(list_refs_for_find_all_tags_branches: false)
+      end
+
+      it 'returns the number of branches' do
+        expect(repository.branch_count).to eq(TestEnv::BRANCH_SHA.size)
+      end
+
+      context 'with local and remote branches' do
+        let(:repository) { mutable_repository }
+
         before do
-          allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
+          create_remote_branch('joe', 'remote_branch', 'master')
+          repository.create_branch('local_branch')
         end
 
         it 'returns the count of local branches' do

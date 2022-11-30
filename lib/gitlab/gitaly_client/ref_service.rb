@@ -68,14 +68,6 @@ module Gitlab
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
-      def count_tag_names
-        tag_names.count
-      end
-
-      def count_branch_names
-        branch_names.count
-      end
-
       def local_branches(sort_by: nil, pagination_params: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_local_branches_by_param(sort_by) if sort_by

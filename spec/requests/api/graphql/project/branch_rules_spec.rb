@@ -75,7 +75,6 @@ RSpec.describe 'getting list of branch rules for a project' do
             .and_return(project)
         end
         allow(project.repository).to receive(:branch_names).and_call_original
-        allow(project.repository.gitaly_ref_client).to receive(:branch_names).and_call_original
       end
 
       it 'avoids N+1 queries', :use_sql_query_cache, :aggregate_failures do
@@ -95,7 +94,6 @@ RSpec.describe 'getting list of branch rules for a project' do
 
         expect_n_matching_branches_count_fields(3)
         expect(project.repository).to have_received(:branch_names).at_least(2).times
-        expect(project.repository.gitaly_ref_client).to have_received(:branch_names).once
       end
 
       def expect_n_matching_branches_count_fields(count)

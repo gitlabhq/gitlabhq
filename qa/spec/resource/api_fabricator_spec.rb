@@ -113,7 +113,6 @@ RSpec.describe QA::Resource::ApiFabricator do
           it 'raises a ResourceFabricationFailedError exception' do
             expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
             expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(raw_post)
-            allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(nil)
 
             expect { subject.fabricate_via_api! }.to raise_error do |error|
               expect(error.class).to eql(described_class::ResourceFabricationFailedError)
@@ -126,7 +125,7 @@ RSpec.describe QA::Resource::ApiFabricator do
 
           it 'logs a correlation id' do
             response = double('Raw POST response', code: 400, body: post_response.to_json, headers: { x_request_id: 'foobar' })
-            allow(QA::Support::Loglinking).to receive(:logging_environment).and_return(nil)
+            allow(QA::Support::Loglinking).to receive(:get_logging_environment).and_return(nil)
 
             expect(api_request).to receive(:new).with(api_client_instance, subject.api_post_path).and_return(double(url: resource_web_url))
             expect(subject).to receive(:post).with(resource_web_url, subject.api_post_body).and_return(response)
@@ -158,7 +157,7 @@ RSpec.describe QA::Resource::ApiFabricator do
                 Fabrication of FooBarResource using the API failed (400) with `#{raw_post}`.
                 Correlation Id: foobar
                 Sentry Url: https://sentry.gitlab.net/gitlab/staginggitlabcom/?environment=gstg&query=correlation_id%3A%22foobar%22
-                Kibana Url: https://nonprod-log.gitlab.net/app/discover#/?_a=%28query%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foobar%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
+                Kibana Url: https://nonprod-log.gitlab.net/app/discover#/?_a=%28index:pubsub-rails-inf-gstg%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foobar%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
               ERROR
             end
           end
