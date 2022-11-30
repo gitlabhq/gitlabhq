@@ -43,6 +43,9 @@ using Omnibus, learn to install a custom CA in the
 Alternatively, learn where to install custom certificates by using
 `openssl version -d`.
 
+When external authorization is enabled, [deploy tokens](../../project/deploy_tokens/index.md)
+ and [deploy keys](../../project/deploy_keys/index.md) can't be used for Git operations.
+
 ## Configuration
 
 The external authorization service can be enabled by an administrator:
