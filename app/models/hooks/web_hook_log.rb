@@ -48,6 +48,13 @@ class WebHookLog < ApplicationRecord
     request_data == OVERSIZE_REQUEST_DATA
   end
 
+  def request_headers
+    super unless web_hook.token?
+    super if self[:request_headers]['X-Gitlab-Token'] == _('[REDACTED]')
+
+    self[:request_headers].merge('X-Gitlab-Token' => _('[REDACTED]'))
+  end
+
   private
 
   def obfuscate_basic_auth

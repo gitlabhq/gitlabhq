@@ -6,6 +6,7 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
   include TermsHelper
   include GitHelpers
   include AdminModeHelper
+  include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }
 
@@ -113,6 +114,19 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
               end
             end
           end
+
+          context 'when the external_authorization_service is enabled' do
+            before do
+              stub_application_setting(external_authorization_service_enabled: true)
+            end
+
+            it 'blocks push and pull with "not found"' do
+              aggregate_failures do
+                expect { push_access_check }.to raise_not_found
+                expect { pull_access_check }.to raise_not_found
+              end
+            end
+          end
         end
 
         context 'when actor is a User' do
@@ -178,6 +192,20 @@ RSpec.describe Gitlab::GitAccess, :aggregate_failures do
           context 'when DeployToken does not belong to project' do
             let(:another_project) { create(:project) }
             let(:actor) { create(:deploy_token, projects: [another_project]) }
+
+            it 'blocks pull access' do
+              expect { pull_access_check }.to raise_not_found
+            end
+
+            it 'blocks the push' do
+              expect { push_access_check }.to raise_not_found
+            end
+          end
+
+          context 'when the external_authorization_service is enabled' do
+            before do
+              stub_application_setting(external_authorization_service_enabled: true)
+            end
 
             it 'blocks pull access' do
               expect { pull_access_check }.to raise_not_found

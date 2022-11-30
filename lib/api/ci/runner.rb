@@ -94,7 +94,8 @@ module API
           success Entities::Ci::JobRequest::Response
           http_codes [[201, 'Job was scheduled'],
                       [204, 'No job for Runner'],
-                      [403, 'Forbidden']]
+                      [403, 'Forbidden'],
+                      [409, 'Conflict']]
         end
         params do
           requires :token, type: String, desc: %q(Runner's authentication token)

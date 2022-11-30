@@ -227,9 +227,12 @@ RSpec.describe Integrations::Jira do
 
     where(:url, :result) do
       'https://abc.atlassian.net' | true
+      'http://abc.atlassian.net'  | false
       'abc.atlassian.net'         | false # This is how it behaves currently, but we may need to consider adding scheme if missing
       'https://somethingelse.com' | false
-      nil                         | false
+      'javascript://test.atlassian.net/%250dalert(document.domain)' | false
+      'https://example.com".atlassian.net' | false
+      nil | false
     end
 
     with_them do
@@ -286,7 +289,7 @@ RSpec.describe Integrations::Jira do
         let(:server_info_results) { { 'deploymentType' => 'FutureCloud' } }
 
         context 'and URL ends in .atlassian.net' do
-          let(:api_url) { 'http://example-api.atlassian.net' }
+          let(:api_url) { 'https://example-api.atlassian.net' }
 
           it 'deployment_type is set to cloud' do
             expect(integration.jira_tracker_data).to be_deployment_cloud
@@ -294,7 +297,7 @@ RSpec.describe Integrations::Jira do
         end
 
         context 'and URL is something else' do
-          let(:api_url) { 'http://my-jira-api.someserver.com' }
+          let(:api_url) { 'https://my-jira-api.someserver.com' }
 
           it 'deployment_type is set to server' do
             expect(integration.jira_tracker_data).to be_deployment_server
@@ -306,7 +309,7 @@ RSpec.describe Integrations::Jira do
         let(:server_info_results) { {} }
 
         context 'and URL ends in .atlassian.net' do
-          let(:api_url) { 'http://example-api.atlassian.net' }
+          let(:api_url) { 'https://example-api.atlassian.net' }
 
           it 'deployment_type is set to cloud' do
             expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)
@@ -315,7 +318,7 @@ RSpec.describe Integrations::Jira do
         end
 
         context 'and URL is something else' do
-          let(:api_url) { 'http://my-jira-api.someserver.com' }
+          let(:api_url) { 'https://my-jira-api.someserver.com' }
 
           it 'deployment_type is set to server' do
             expect(Gitlab::AppLogger).to receive(:warn).with(message: "Jira API returned no ServerInfo, setting deployment_type from URL", server_info: server_info_results, url: api_url)

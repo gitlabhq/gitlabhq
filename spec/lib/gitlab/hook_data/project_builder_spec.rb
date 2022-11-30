@@ -29,8 +29,8 @@ RSpec.describe Gitlab::HookData::ProjectBuilder do
           expect(data[:path_with_namespace]).to eq(project.full_path)
           expect(data[:project_id]).to eq(project.id)
           expect(data[:owner_name]).to eq('John')
-          expect(data[:owner_email]).to eq('john@example.com')
-          expect(data[:owners]).to contain_exactly({ name: 'John', email: 'john@example.com' })
+          expect(data[:owner_email]).to eq(_('[REDACTED]'))
+          expect(data[:owners]).to contain_exactly({ name: 'John', email: _('[REDACTED]') })
           expect(data[:project_visibility]).to eq('internal')
         end
       end

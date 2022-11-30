@@ -5509,8 +5509,8 @@ RSpec.describe Project, factory_default: :keep do
     let(:import_state) { create(:import_state, project: project) }
 
     it 'runs the correct hooks' do
-      expect(project.repository).to receive(:remove_prohibited_branches)
-      expect(project.repository).to receive(:expire_content_cache)
+      expect(project.repository).to receive(:expire_content_cache).ordered
+      expect(project.repository).to receive(:remove_prohibited_branches).ordered
       expect(project.wiki.repository).to receive(:expire_content_cache)
       expect(import_state).to receive(:finish)
       expect(project).to receive(:update_project_counter_caches)

@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.4.6 (2022-11-30)
+
+### Security (11 changes)
+
+- [Send resolved_address param to gitaly during repository import](gitlab-org/security/gitlab@6f1547edf1540be3f5cbb03e1ae210e8a0fd2bab) ([merge request](gitlab-org/security/gitlab!2940))
+- [Add size validation during nuspec file extraction](gitlab-org/security/gitlab@23109b73e8e2570d53401ff97deb893d61764ee1) ([merge request](gitlab-org/security/gitlab!2937))
+- [Cross-site scripting in Jira Integration](gitlab-org/security/gitlab@11182e3f7dfb288473bd6974e80b0caf22b838d8) ([merge request](gitlab-org/security/gitlab!2932))
+- [Protect web-hook secret tokens after changing URL](gitlab-org/security/gitlab@693efefacfbc960b9b9725aef482759e635c9233) ([merge request](gitlab-org/security/gitlab!2922))
+- [Redact secret tokens from web-hook logs](gitlab-org/security/gitlab@28fae3d04c458602a04bf01bc34cf81ff05b897d) ([merge request](gitlab-org/security/gitlab!2918))
+- [Prevent unauthorized users from seeing Release information on tag pages](gitlab-org/security/gitlab@c766fbf97b931f767e98c6c734aa273e85045766) ([merge request](gitlab-org/security/gitlab!2925))
+- [Update after_import to expire cache before removing prohibited branches](gitlab-org/security/gitlab@178b2e45a5792480854d50cdb19b6cafeb38b30d) ([merge request](gitlab-org/security/gitlab!2903))
+- [Deny all package permissions when group access is restricted by IP](gitlab-org/security/gitlab@d2e007409076a96eaef6a0ae3256a63260e019f7) ([merge request](gitlab-org/security/gitlab!2900))
+- [Redact user emails from project webhook data](gitlab-org/security/gitlab@28a93bd8a7d4e55720031e7195c9c2e73ed5056d) ([merge request](gitlab-org/security/gitlab!2908))
+- [Disallow local URls for build_runner_session if dictated by app setting](gitlab-org/security/gitlab@581da1e429952d50ac6762423c2be8bc7fbd957b) ([merge request](gitlab-org/security/gitlab!2868))
+- [Prevent token bypass for extenal authorisation](gitlab-org/security/gitlab@e47447744cfe3b7e91b411c7ac64b20f916222a8) ([merge request](gitlab-org/security/gitlab!2887))
+
 ## 15.4.5 (2022-11-15)
 
 ### Fixed (1 change)

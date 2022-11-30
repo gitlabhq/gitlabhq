@@ -18,6 +18,8 @@ Depending on your needs, you might want to use a [deploy token](../deploy_tokens
 | Validity         | Valid as long as it's registered and enabled. | Can be given an expiration date. |
 | Registry access  | Cannot access a package registry. | Can read from and write to a package registry. |
 
+Deploy keys can't be used for Git operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
+
 ## Scope
 
 A deploy key has a defined scope when it is created:
