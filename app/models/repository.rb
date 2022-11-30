@@ -978,12 +978,12 @@ class Repository
     end
   end
 
-  def clone_as_mirror(url, http_authorization_header: "")
-    import_repository(url, http_authorization_header: http_authorization_header, mirror: true)
+  def clone_as_mirror(url, http_authorization_header: "", resolved_address: "")
+    import_repository(url, http_authorization_header: http_authorization_header, mirror: true, resolved_address: resolved_address)
   end
 
-  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "")
-    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, http_authorization_header: http_authorization_header)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, prune: true, http_authorization_header: "", resolved_address: "")
+    fetch_remote(url, refmap: refmap, forced: forced, prune: prune, http_authorization_header: http_authorization_header, resolved_address: resolved_address)
   end
 
   def fetch_source_branch!(source_repository, source_branch, local_ref)
