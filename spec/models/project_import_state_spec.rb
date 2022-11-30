@@ -22,7 +22,7 @@ RSpec.describe ProjectImportState, type: :model do
 
     before do
       allow_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository)
-        .with(project.import_url, http_authorization_header: '', mirror: false).and_return(true)
+        .with(project.import_url, http_authorization_header: '', mirror: false, resolved_address: '').and_return(true)
 
       # Works around https://github.com/rspec/rspec-mocks/issues/910
       allow(Project).to receive(:find).with(project.id).and_return(project)

@@ -1224,10 +1224,21 @@ RSpec.describe Repository do
     it 'fetches the URL without creating a remote' do
       expect(repository)
         .to receive(:fetch_remote)
-        .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "")
+        .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "", resolved_address: '')
         .and_return(nil)
 
       repository.fetch_as_mirror(url)
+    end
+
+    context 'with http_host provided' do
+      it 'fetches the URL with resolved_address value' do
+        expect(repository)
+          .to receive(:fetch_remote)
+          .with(url, forced: false, prune: true, refmap: :all_refs, http_authorization_header: "", resolved_address: '172.16.123.1')
+          .and_return(nil)
+
+        repository.fetch_as_mirror(url, resolved_address: '172.16.123.1')
+      end
     end
   end
 

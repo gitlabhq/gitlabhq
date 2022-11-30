@@ -147,6 +147,7 @@ module Gitlab
       # deploy tokens are accepted with deploy token headers and basic auth headers
       def deploy_token_from_request
         return unless route_authentication_setting[:deploy_token_allowed]
+        return if Gitlab::ExternalAuthorization.enabled?
 
         token = current_request.env[DEPLOY_TOKEN_HEADER].presence || parsed_oauth_token
 

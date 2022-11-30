@@ -62,6 +62,7 @@ For most package types, the following credential types are valid:
 
 NOTE:
 If you have not activated the "Packages" feature for your project at **Settings > General > Project features**, you will receive a 403 Forbidden response.
+Accessing package registry via deploy token is not available when external authorization is enabled.
 
 ## Use GitLab CI/CD to build packages
 

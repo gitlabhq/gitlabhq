@@ -41,6 +41,7 @@ class WebHook < ApplicationRecord
   validate :no_missing_url_variables
 
   after_initialize :initialize_url_variables
+  before_validation :reset_token
 
   scope :executable, -> do
     next all unless Feature.enabled?(:web_hooks_disable_failed)
@@ -199,6 +200,10 @@ class WebHook < ApplicationRecord
   end
 
   private
+
+  def reset_token
+    self.token = nil if url_changed? && !encrypted_token_changed?
+  end
 
   def web_hooks_disable_failed?
     self.class.web_hooks_disable_failed?(self)
