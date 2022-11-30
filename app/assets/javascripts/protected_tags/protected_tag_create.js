@@ -42,7 +42,7 @@ export default class ProtectedTagCreate {
     const $allowedToCreateInput = this.$form.find('#create_access_levels_attributes');
 
     this.$form
-      .find('input[type="submit"]')
+      .find('button[type="submit"]')
       .prop('disabled', !($tagInput.val() && $allowedToCreateInput.length));
   }
 

@@ -447,24 +447,9 @@ however, searches only surface results that can be viewed by the user.
 Advanced Search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
 
-## Access requirements for the self-managed AWS OpenSearch Service
+### Role mapping when using fine-grained access control with AWS Elasticsearch or OpenSearch
 
-To use the self-managed AWS OpenSearch Service with GitLab, configure your instance's domain access policies
-to contain the actions below.
-See [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html) for details.
-
-```plaintext
-es:ESHttpDelete
-es:ESHttpGet
-es:ESHttpHead
-es:ESHttpPost
-es:ESHttpPut
-es:ESHttpPatch
-```
-
-## Role-mapping when using AWS Elasticsearch or AWS OpenSearch fine-grained access control
-
-When using fine-grained access control with an IAM role, you might encounter the following error:
+When using fine-grained access control with an IAM role or a role created using OpenSearch Dashboards, you might encounter the following error:
 
 ```plaintext
 {"error":{"root_cause":[{"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"}],"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"},"status":403}

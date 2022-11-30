@@ -182,7 +182,11 @@ describe('CE IssuesListApp component', () => {
         namespace: defaultProvide.fullPath,
         recentSearchesStorageKey: 'issues',
         searchInputPlaceholder: IssuesListApp.i18n.searchPlaceholder,
-        sortOptions: getSortOptions(true, true),
+        sortOptions: getSortOptions({
+          hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
+          hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
+          hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
+        }),
         initialSortBy: CREATED_DESC,
         issuables: getIssuesQueryResponse.data.project.issues.nodes,
         tabs: IssuableListTabs,

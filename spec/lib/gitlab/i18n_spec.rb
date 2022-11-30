@@ -8,13 +8,19 @@ RSpec.describe Gitlab::I18n do
   describe '.selectable_locales' do
     include StubLanguagesTranslationPercentage
 
-    it 'does not return languages with low translation levels' do
+    it 'does not return languages with default translation levels 60%' do
       stub_languages_translation_percentage(pt_BR: 0, en: 100, es: 65)
 
       expect(described_class.selectable_locales).to eq({
         'en' => 'English',
         'es' => 'Spanish - español'
       })
+    end
+
+    it 'does not return languages with less than 100% translation levels' do
+      stub_languages_translation_percentage(pt_BR: 0, en: 100, es: 65)
+
+      expect(described_class.selectable_locales(100)).to eq({ 'en' => 'English' })
     end
   end
 

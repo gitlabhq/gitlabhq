@@ -954,7 +954,7 @@ svg {
 }
 .devise-layout-html body .footer-container,
 .devise-layout-html body hr.footer-fixed {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
@@ -987,6 +987,9 @@ svg {
 }
 .gl-justify-content-center {
   justify-content: center;
+}
+.gl-justify-content-space-between {
+  justify-content: space-between;
 }
 .gl-float-right {
   float: right;

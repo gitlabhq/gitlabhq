@@ -1,4 +1,5 @@
 import { DOMParser as ProseMirrorDOMParser } from 'prosemirror-model';
+import { replaceCommentsWith } from '~/lib/utils/dom_utils';
 
 export default ({ render }) => {
   /**
@@ -22,7 +23,9 @@ export default ({ render }) => {
       if (!html) return {};
 
       const parser = new DOMParser();
-      const { body } = parser.parseFromString(html, 'text/html');
+      const { body } = parser.parseFromString(`<body>${html}</body>`, 'text/html');
+
+      replaceCommentsWith(body, 'comment');
 
       // append original source as a comment that nodes can access
       body.append(document.createComment(markdown));

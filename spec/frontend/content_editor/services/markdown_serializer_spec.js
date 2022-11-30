@@ -3,6 +3,7 @@ import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import Code from '~/content_editor/extensions/code';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
+import Comment from '~/content_editor/extensions/comment';
 import DescriptionItem from '~/content_editor/extensions/description_item';
 import DescriptionList from '~/content_editor/extensions/description_list';
 import Details from '~/content_editor/extensions/details';
@@ -50,6 +51,7 @@ const {
     bulletList,
     code,
     codeBlock,
+    comment,
     details,
     detailsContent,
     div,
@@ -89,6 +91,7 @@ const {
     bulletList: { nodeType: BulletList.name },
     code: { markType: Code.name },
     codeBlock: { nodeType: CodeBlockHighlight.name },
+    comment: { nodeType: Comment.name },
     details: { nodeType: Details.name },
     detailsContent: { nodeType: DetailsContent.name },
     descriptionItem: { nodeType: DescriptionItem.name },
@@ -166,6 +169,17 @@ describe('markdownSerializer', () => {
   it('correctly serializes highlight', () => {
     expect(serialize(paragraph('this is some ', highlight('highlighted'), ' text'))).toBe(
       'this is some <mark>highlighted</mark> text',
+    );
+  });
+
+  it('correctly serializes a comment node', () => {
+    expect(serialize(paragraph('hi'), comment(' this is a\ncomment '))).toBe(
+      `
+hi
+
+<!-- this is a
+comment -->
+    `.trim(),
     );
   });
 

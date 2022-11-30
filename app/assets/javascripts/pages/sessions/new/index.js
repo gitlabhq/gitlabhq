@@ -1,6 +1,7 @@
 import $ from 'jquery';
 import initVueAlerts from '~/vue_alerts';
 import NoEmojiValidator from '~/emoji/no_emoji_validator';
+import { initLanguageSwitcher } from '~/language_switcher';
 import LengthValidator from './length_validator';
 import OAuthRememberMe from './oauth_remember_me';
 import preserveUrlFragment from './preserve_url_fragment';
@@ -20,3 +21,4 @@ new OAuthRememberMe({
 // redirected to sign-in after attempting to access a protected URL that included a fragment.
 preserveUrlFragment(window.location.hash);
 initVueAlerts();
+initLanguageSwitcher();

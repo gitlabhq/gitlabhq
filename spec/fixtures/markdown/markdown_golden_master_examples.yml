@@ -347,6 +347,16 @@
     <li data-sourcepos="9:1-9:25"><code>HSLA(540,70%,50%,0.3)<span class="gfm-color_chip"><span style="background-color: HSLA(540,70%,50%,0.3);"></span></span></code></li>
     </ul>
 
+- name: comment
+  markdown: |-
+    <!-- this is a
+    multiline markdown
+    comment -->
+  html: |-
+    <!-- this is a
+    multiline markdown
+    comment -->
+
 - name: description_list
   markdown: |-
     <dl>

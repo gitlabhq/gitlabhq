@@ -69,24 +69,38 @@ describe('isSortKey', () => {
 
 describe('getSortOptions', () => {
   describe.each`
-    hasIssueWeightsFeature | hasBlockedIssuesFeature | length | containsWeight | containsBlocking
-    ${false}               | ${false}                | ${10}  | ${false}       | ${false}
-    ${true}                | ${false}                | ${11}  | ${true}        | ${false}
-    ${false}               | ${true}                 | ${11}  | ${false}       | ${true}
-    ${true}                | ${true}                 | ${12}  | ${true}        | ${true}
+    hasIssuableHealthStatusFeature | hasIssueWeightsFeature | hasBlockedIssuesFeature | length | containsHealthStatus | containsWeight | containsBlocking
+    ${false}                       | ${false}               | ${false}                | ${10}  | ${false}             | ${false}       | ${false}
+    ${false}                       | ${false}               | ${true}                 | ${11}  | ${false}             | ${false}       | ${true}
+    ${false}                       | ${true}                | ${false}                | ${11}  | ${false}             | ${true}        | ${false}
+    ${false}                       | ${true}                | ${true}                 | ${12}  | ${false}             | ${true}        | ${true}
+    ${true}                        | ${false}               | ${false}                | ${11}  | ${true}              | ${false}       | ${false}
+    ${true}                        | ${false}               | ${true}                 | ${12}  | ${true}              | ${false}       | ${true}
+    ${true}                        | ${true}                | ${false}                | ${12}  | ${true}              | ${true}        | ${false}
+    ${true}                        | ${true}                | ${true}                 | ${13}  | ${true}              | ${true}        | ${true}
   `(
-    'when hasIssueWeightsFeature=$hasIssueWeightsFeature and hasBlockedIssuesFeature=$hasBlockedIssuesFeature',
+    'when hasIssuableHealthStatusFeature=$hasIssuableHealthStatusFeature, hasIssueWeightsFeature=$hasIssueWeightsFeature and hasBlockedIssuesFeature=$hasBlockedIssuesFeature',
     ({
+      hasIssuableHealthStatusFeature,
       hasIssueWeightsFeature,
       hasBlockedIssuesFeature,
       length,
+      containsHealthStatus,
       containsWeight,
       containsBlocking,
     }) => {
-      const sortOptions = getSortOptions(hasIssueWeightsFeature, hasBlockedIssuesFeature);
+      const sortOptions = getSortOptions({
+        hasBlockedIssuesFeature,
+        hasIssuableHealthStatusFeature,
+        hasIssueWeightsFeature,
+      });
 
       it('returns the correct length of sort options', () => {
         expect(sortOptions).toHaveLength(length);
+      });
+
+      it(`${containsHealthStatus ? 'contains' : 'does not contain'} health status option`, () => {
+        expect(sortOptions.some((option) => option.title === 'Health')).toBe(containsHealthStatus);
       });
 
       it(`${containsWeight ? 'contains' : 'does not contain'} weight option`, () => {

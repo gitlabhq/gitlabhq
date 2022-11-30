@@ -324,6 +324,13 @@ export function renderPlayable(state, node) {
   renderImage(state, node);
 }
 
+export function renderComment(state, node) {
+  state.text('<!--');
+  state.text(node.textContent);
+  state.text('-->');
+  state.closeBlock(node);
+}
+
 export function renderCodeBlock(state, node) {
   state.write(`\`\`\`${node.attrs.language || ''}\n`);
   state.text(node.textContent, false);

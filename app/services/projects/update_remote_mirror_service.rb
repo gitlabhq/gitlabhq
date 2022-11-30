@@ -10,7 +10,7 @@ module Projects
       return success unless remote_mirror.enabled?
 
       # Blocked URLs are a hard failure, no need to attempt to retry
-      if Gitlab::UrlBlocker.blocked_url?(normalized_url(remote_mirror.url))
+      if Gitlab::UrlBlocker.blocked_url?(normalized_url(remote_mirror.url), schemes: Project::VALID_MIRROR_PROTOCOLS)
         hard_retry_or_fail(remote_mirror, _('The remote mirror URL is invalid.'), tries)
         return error(remote_mirror.last_error)
       end

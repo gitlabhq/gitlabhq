@@ -78,6 +78,7 @@ eslint-report.html
 /test_results/
 /deprecations/
 /knapsack/
+/query_recorder/
 /rspec_flaky/
 /rspec/
 /locale/**/LC_MESSAGES

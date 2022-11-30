@@ -90,7 +90,9 @@ RSpec.describe API::RemoteMirrors do
       }
 
       expect(response).to have_gitlab_http_status(:bad_request)
-      expect(json_response['message']['url']).to eq(["is blocked: Only allowed schemes are ssh, git, http, https"])
+      expect(json_response['message']['url']).to match_array(
+        ["is blocked: Only allowed schemes are http, https, ssh, git"]
+      )
     end
   end
 

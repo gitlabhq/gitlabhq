@@ -26,6 +26,8 @@ import {
   DUE_DATE_ASC,
   DUE_DATE_DESC,
   filters,
+  HEALTH_STATUS_ASC,
+  HEALTH_STATUS_DESC,
   LABEL_PRIORITY_ASC,
   LABEL_PRIORITY_DESC,
   MILESTONE_DUE_ASC,
@@ -68,7 +70,11 @@ export const getSortKey = (sort) =>
 
 export const isSortKey = (sort) => Object.keys(urlSortParams).includes(sort);
 
-export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) => {
+export const getSortOptions = ({
+  hasBlockedIssuesFeature,
+  hasIssuableHealthStatusFeature,
+  hasIssueWeightsFeature,
+}) => {
   const sortOptions = [
     {
       id: 1,
@@ -151,6 +157,17 @@ export const getSortOptions = (hasIssueWeightsFeature, hasBlockedIssuesFeature) 
       },
     },
   ];
+
+  if (hasIssuableHealthStatusFeature) {
+    sortOptions.push({
+      id: sortOptions.length + 1,
+      title: __('Health'),
+      sortDirection: {
+        ascending: HEALTH_STATUS_ASC,
+        descending: HEALTH_STATUS_DESC,
+      },
+    });
+  }
 
   if (hasIssueWeightsFeature) {
     sortOptions.push({

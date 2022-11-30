@@ -20392,6 +20392,9 @@ msgstr ""
 msgid "Identities"
 msgstr ""
 
+msgid "IdentityVerification|%{linkStart}Enter a new phone number%{linkEnd}"
+msgstr ""
+
 msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
@@ -20414,6 +20417,9 @@ msgid "IdentityVerification|Create a project"
 msgstr ""
 
 msgid "IdentityVerification|Didn't receive a code?"
+msgstr ""
+
+msgid "IdentityVerification|Didn't receive a code? %{linkStart}Send a new code%{linkEnd}"
 msgstr ""
 
 msgid "IdentityVerification|Enter a code."
@@ -20497,6 +20503,12 @@ msgstr ""
 msgid "IdentityVerification|Verification code"
 msgstr ""
 
+msgid "IdentityVerification|Verification code can't be blank."
+msgstr ""
+
+msgid "IdentityVerification|Verification code must be a number."
+msgstr ""
+
 msgid "IdentityVerification|Verification successful"
 msgstr ""
 
@@ -20509,7 +20521,13 @@ msgstr ""
 msgid "IdentityVerification|Verify payment method"
 msgstr ""
 
+msgid "IdentityVerification|Verify phone number"
+msgstr ""
+
 msgid "IdentityVerification|Verify your identity"
+msgstr ""
+
+msgid "IdentityVerification|We sent a new code to +%{phoneNumber}"
 msgstr ""
 
 msgid "IdentityVerification|We've sent a verification code to +%{phoneNumber}"
@@ -29783,6 +29801,9 @@ msgid "PhoneVerification|There was a problem with the phone number you entered. 
 msgstr ""
 
 msgid "PhoneVerification|There was a problem with the phone number you entered. Enter a valid phone number."
+msgstr ""
+
+msgid "PhoneVerification|Verification code can't be blank."
 msgstr ""
 
 msgid "PhoneVerification|You've reached the maximum number of tries. Request a new code and try again."

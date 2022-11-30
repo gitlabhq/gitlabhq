@@ -94,8 +94,8 @@ Some high level differences between the products worth mentioning are:
   contain scripts or other reusable code.
 - You can also use the [`extends` keyword](../yaml/index.md#extends) to reuse configuration
   in a single pipeline configuration.
-- All jobs in a single stage always run in parallel, and all stages run in sequence. We are planning
-  to allow certain jobs to break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063)
+- All jobs in a single stage always run in parallel, and all stages run in sequence.
+  Certain jobs might break this sequencing as needed with our [directed acyclic graph](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063)
   feature.
 - The [`parallel`](../yaml/index.md#parallel) keyword can automatically parallelize tasks,
   like tests that support parallelization.

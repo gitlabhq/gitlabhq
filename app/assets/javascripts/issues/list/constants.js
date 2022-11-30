@@ -87,6 +87,8 @@ export const CREATED_ASC = 'CREATED_ASC';
 export const CREATED_DESC = 'CREATED_DESC';
 export const DUE_DATE_ASC = 'DUE_DATE_ASC';
 export const DUE_DATE_DESC = 'DUE_DATE_DESC';
+export const HEALTH_STATUS_ASC = 'HEALTH_STATUS_ASC';
+export const HEALTH_STATUS_DESC = 'HEALTH_STATUS_DESC';
 export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
 export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
 export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
@@ -123,12 +125,14 @@ export const urlSortParams = {
   [LABEL_PRIORITY_ASC]: 'label_priority',
   [LABEL_PRIORITY_DESC]: 'label_priority_desc',
   [RELATIVE_POSITION_ASC]: RELATIVE_POSITION,
+  [TITLE_ASC]: 'title_asc',
+  [TITLE_DESC]: 'title_desc',
+  [HEALTH_STATUS_ASC]: 'health_status_asc',
+  [HEALTH_STATUS_DESC]: 'health_status_desc',
   [WEIGHT_ASC]: 'weight',
   [WEIGHT_DESC]: 'weight_desc',
   [BLOCKING_ISSUES_ASC]: 'blocking_issues_asc',
   [BLOCKING_ISSUES_DESC]: 'blocking_issues_desc',
-  [TITLE_ASC]: 'title_asc',
-  [TITLE_DESC]: 'title_desc',
 };
 
 export const API_PARAM = 'apiParam';

@@ -26,13 +26,12 @@ these steps, you may have to do additional configuration for the Pages site to g
 
 If everything is configured correctly, the site can take approximately 30 minutes to deploy.
 
-You can watch the pipeline run by navigating to **CI/CD > Pipelines**.
+To view the pipeline, go to **CI/CD > Pipelines**.
 When the pipeline is finished, go to **Settings > Pages** to find the link to
 your Pages website.
 
-To view the HTML and other assets that were created for the site,
-go to the **Pipelines** tab, view the job, and on the right side,
-select **Download artifacts**.
-
 For every change pushed to your repository, GitLab CI/CD runs a new pipeline
 that immediately publishes your changes to the Pages site.
+
+To view the HTML and other assets that were created for the site,
+[download the job artifacts](../../../../ci/pipelines/job_artifacts.md#download-job-artifacts).

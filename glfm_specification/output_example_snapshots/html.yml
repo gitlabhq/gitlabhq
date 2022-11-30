@@ -1911,7 +1911,7 @@
     <!-- foo -->*bar*
     <p><em>baz</em></p>
   static: |-
-    *bar*
+    <!-- foo -->*bar*
     <p data-sourcepos="2:1-2:5" dir="auto"><em>baz</em></p>
   wysiwyg: |-
     <p>*bar*
@@ -1933,8 +1933,11 @@
     bar
        baz -->
     <p>okay</p>
-  static: |2-
+  static: |-
+    <!-- Foo
 
+    bar
+       baz -->
     <p data-sourcepos="5:1-5:4" dir="auto">okay</p>
   wysiwyg: |-
     <p>okay</p>
@@ -1988,10 +1991,12 @@
       <!-- foo -->
     <pre><code>&lt;!-- foo --&gt;
     </code></pre>
-  static: "  \n<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre
-    data-sourcepos=\"3:5-3:16\" lang=\"plaintext\" class=\"code highlight js-syntax-highlight
-    language-plaintext\" data-canonical-lang=\"\" v-pre=\"true\"><code><span id=\"LC1\"
-    class=\"line\" lang=\"plaintext\">&lt;!-- foo --&gt;</span></code></pre>\n<copy-code></copy-code>\n</div>"
+  static: |2-
+      <!-- foo -->
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="3:5-3:16" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;!-- foo --&gt;</span></code></pre>
+    <copy-code></copy-code>
+    </div>
   wysiwyg: |-
     <pre class="content-editor-code-block undefined code highlight"><code>&lt;!-- foo --&gt;</code></pre>
 04_06_00__leaf_blocks__html_blocks__036:
@@ -4311,7 +4316,7 @@
     <li data-sourcepos="1:1-1:5">foo</li>
     <li data-sourcepos="2:1-3:0">bar</li>
     </ul>
-
+    <!-- -->
     <ul data-sourcepos="6:1-7:5" dir="auto">
     <li data-sourcepos="6:1-6:5">baz</li>
     <li data-sourcepos="7:1-7:5">bim</li>
@@ -4343,7 +4348,7 @@
     <p data-sourcepos="5:5-5:7">foo</p>
     </li>
     </ul>
-
+    <!-- -->
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="9:5-9:8" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code</span></code></pre>
     <copy-code></copy-code>
@@ -7382,7 +7387,8 @@
     <p>foo <!-- this is a
     comment - with hyphen --></p>
   static: |-
-    <p data-sourcepos="1:1-2:25" dir="auto">foo </p>
+    <p data-sourcepos="1:1-2:25" dir="auto">foo <!-- this is a
+    comment - with hyphen --></p>
   wysiwyg: |-
     <p>foo </p>
 06_11_00__inlines__raw_html__014:

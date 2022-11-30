@@ -130,6 +130,18 @@
   background-color: var(--gl-color-chip-color);
 }
 
+.content-editor-comment {
+  &::before {
+    content: '<!--';
+  }
+
+  &::after {
+    content: '-->';
+  }
+}
+
+
+
 .bubble-menu-form {
   width: 320px;
 }

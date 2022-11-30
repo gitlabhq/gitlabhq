@@ -58,6 +58,9 @@ export default {
     right
     lazy
   >
+    <gl-dropdown-item @click="insert('comment')">
+      {{ __('Comment') }}
+    </gl-dropdown-item>
     <gl-dropdown-item @click="insert('codeBlock')">
       {{ __('Code block') }}
     </gl-dropdown-item>

@@ -71,9 +71,9 @@ module Gitlab
     }.freeze
     private_constant :TRANSLATION_LEVELS
 
-    def selectable_locales
+    def selectable_locales(minimum_translation_level = MINIMUM_TRANSLATION_LEVEL)
       AVAILABLE_LANGUAGES.reject do |code, _name|
-        percentage_translated_for(code) < MINIMUM_TRANSLATION_LEVEL
+        percentage_translated_for(code) < minimum_translation_level
       end
     end
 
