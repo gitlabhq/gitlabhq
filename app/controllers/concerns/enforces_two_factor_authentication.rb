@@ -10,11 +10,6 @@
 module EnforcesTwoFactorAuthentication
   extend ActiveSupport::Concern
 
-  MFA_HELP_PAGE = Rails.application.routes.url_helpers.help_page_url(
-    'user/profile/account/two_factor_authentication.html',
-    anchor: 'enable-two-factor-authentication'
-  )
-
   included do
     before_action :check_two_factor_requirement, except: [:route_not_found]
 
@@ -33,7 +28,7 @@ module EnforcesTwoFactorAuthentication
       when GraphqlController
         render_error(
           _("Authentication error: enable 2FA in your profile settings to continue using GitLab: %{mfa_help_page}") %
-          { mfa_help_page: MFA_HELP_PAGE },
+          { mfa_help_page: mfa_help_page_url },
           status: :unauthorized
         )
       else
@@ -83,6 +78,13 @@ module EnforcesTwoFactorAuthentication
 
   def two_factor_verifier
     @two_factor_verifier ||= Gitlab::Auth::TwoFactorAuthVerifier.new(current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def mfa_help_page_url
+    Rails.application.routes.url_helpers.help_page_url(
+      'user/profile/account/two_factor_authentication.html',
+      anchor: 'enable-two-factor-authentication'
+    )
   end
 end
 

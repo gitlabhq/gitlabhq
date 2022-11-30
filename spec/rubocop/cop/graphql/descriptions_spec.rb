@@ -60,6 +60,33 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
       TYPE
     end
 
+    it 'adds an offense when description contains the demonstrative "this"' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+            ^^^^^^^^^^^^^^^ #{described_class::MSG_CONTAINS_THIS}
+              GraphQL::Types::String,
+              null: false,
+              description: 'Description of this thing.'
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when a word contains the substring "this"' do
+      expect_no_offenses(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::Types::String,
+              null: false,
+              description: 'Description of thistle.'
+          end
+        end
+      TYPE
+    end
+
     it 'does not add an offense when description is correct' do
       expect_no_offenses(<<~TYPE.strip)
         module Types
@@ -140,6 +167,33 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
       TYPE
     end
 
+    it 'adds an offense when description contains the demonstrative "this"' do
+      expect_offense(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            argument :a_thing,
+            ^^^^^^^^^^^^^^^^^^ #{described_class::MSG_CONTAINS_THIS}
+              GraphQL::Types::String,
+              null: false,
+              description: 'Description of this thing.'
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when a word contains the substring "this"' do
+      expect_no_offenses(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            argument :a_thing,
+              GraphQL::Types::String,
+              null: false,
+              description: 'Description of thistle.'
+          end
+        end
+      TYPE
+    end
+
     it 'does not add an offense when description is correct' do
       expect_no_offenses(<<~TYPE.strip)
         module Types
@@ -194,6 +248,27 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           class FakeEnum < BaseEnum
             value 'FOO', value: 'foo', description: 'A description.'
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_BAD_START}
+          end
+        end
+      TYPE
+    end
+
+    it 'adds an offense when description contains the demonstrative "this"' do
+      expect_offense(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'Description of this issue.'
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_CONTAINS_THIS}
+          end
+        end
+      TYPE
+    end
+
+    it 'does not add an offense when a word contains the substring "this"' do
+      expect_no_offenses(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'Description of thistle.'
           end
         end
       TYPE

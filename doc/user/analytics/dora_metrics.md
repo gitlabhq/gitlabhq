@@ -104,7 +104,7 @@ To retrieve metrics for change failure rate, use the [GraphQL](../../api/graphql
 
 ### Insights: Custom DORA reporting
 
-Custom charts to visualize DORA data with Insights YAML-based reports.
+Custom charts to visualize DORA data with [Insights YAML-based reports](../../user/project/insights/index.md#dora-query-parameters).
 
 With this new visualization, software leaders can track metrics improvements, understand patterns in their metrics trends, and compare performance between groups and projects.
 

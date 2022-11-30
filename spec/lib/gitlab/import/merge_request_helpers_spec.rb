@@ -37,11 +37,8 @@ RSpec.describe Gitlab::Import::MergeRequestHelpers, type: :helper do
             attributes.merge(iid: iid, source_branch: iid.to_s))
         end
 
-        # does ensure that we only load object twice
-        # 1. by #insert_and_return_id
-        # 2. by project.merge_requests.find
-        expect_any_instance_of(MergeRequest).to receive(:attributes)
-          .twice.times.and_call_original
+        # ensures that we only load object once by project.merge_requests.find
+        expect(MergeRequest).to receive(:allocate).once.and_call_original
 
         expect(subject.first).not_to be_nil
         expect(subject.second).to eq(false)

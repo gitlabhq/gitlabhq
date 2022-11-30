@@ -5,6 +5,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata/contentprocessor"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -88,7 +89,7 @@ func (s *sendDataResponseWriter) tryInject() bool {
 	for _, injecter := range s.injecters {
 		if injecter.Match(header) {
 			s.hijacked = true
-			helper.DisableResponseBuffering(s.rw)
+			nginx.DisableResponseBuffering(s.rw)
 			crw := helper.NewCountingResponseWriter(s.rw)
 			injecter.Inject(crw, s.req, header)
 			sendDataResponses.WithLabelValues(injecter.Name()).Inc()

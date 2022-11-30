@@ -17,6 +17,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/mask"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/command"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
@@ -83,7 +84,7 @@ func unpackFileFromZip(ctx context.Context, archivePath, encodedFilename string,
 	if err := catFile.Start(); err != nil {
 		return fmt.Errorf("start %v: %v", catFile.Args, err)
 	}
-	defer helper.CleanUpProcessGroup(catFile)
+	defer command.KillProcessGroup(catFile)
 
 	basename := filepath.Base(fileName)
 	reader := bufio.NewReader(stdout)
@@ -114,7 +115,7 @@ func waitCatFile(cmd *exec.Cmd) error {
 		return nil
 	}
 
-	st, ok := helper.ExitStatus(err)
+	st, ok := command.ExitStatus(err)
 
 	if ok && (st == zipartifacts.CodeArchiveNotFound || st == zipartifacts.CodeEntryNotFound) {
 		return os.ErrNotExist

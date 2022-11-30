@@ -400,8 +400,30 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemType().exists()).toBe(false);
       });
 
-      it('sets the parent breadcrumb URL', () => {
+      it('shows parent breadcrumb icon', () => {
+        expect(findParentButton().props('icon')).toBe(mockParent.parent.workItemType.iconName);
+      });
+
+      it('sets the parent breadcrumb URL pointing to issue page when parent type is `Issue`', () => {
         expect(findParentButton().attributes().href).toBe('../../issues/5');
+      });
+
+      it('sets the parent breadcrumb URL based on parent webUrl when parent type is not `Issue`', async () => {
+        const mockParentObjective = {
+          parent: {
+            ...mockParent.parent,
+            workItemType: {
+              id: mockParent.parent.workItemType.id,
+              name: 'Objective',
+              iconName: 'issue-type-objective',
+            },
+          },
+        };
+        const parentResponse = workItemResponseFactory(mockParentObjective);
+        createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
+        await waitForPromises();
+
+        expect(findParentButton().attributes().href).toBe(mockParentObjective.parent.webUrl);
       });
     });
   });

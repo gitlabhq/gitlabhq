@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
 
 var (
@@ -86,7 +87,7 @@ func (p *Proxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if p.AllowResponseBuffering {
-		helper.AllowResponseBuffering(w)
+		nginx.AllowResponseBuffering(w)
 	}
 
 	// If the ultimate client disconnects when the response isn't fully written

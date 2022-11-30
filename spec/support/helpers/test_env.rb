@@ -420,6 +420,8 @@ module TestEnv
   end
 
   def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])
+    puts "==> Starting #{component} set up...\n"
+
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)

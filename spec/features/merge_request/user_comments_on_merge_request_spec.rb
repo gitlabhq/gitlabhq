@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User comments on a merge request', :js do
+RSpec.describe 'User comments on a merge request', :js, feature_category: :code_review do
   include RepoHelpers
 
   let(:project) { create(:project, :repository) }

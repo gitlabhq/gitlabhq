@@ -85,8 +85,6 @@ RSpec.describe 'OAuth tokens' do
 
         context 'with invalid credentials' do
           it 'does not create an access token' do
-            pending 'Enable this example after https://github.com/doorkeeper-gem/doorkeeper/pull/1488 is merged and released'
-
             user = create(:user)
 
             request_oauth_token(user, basic_auth_header(client.uid, 'invalid secret'))

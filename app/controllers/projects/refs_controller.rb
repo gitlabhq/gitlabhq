@@ -26,7 +26,11 @@ class Projects::RefsController < Projects::ApplicationController
           when "graph"
             project_network_path(@project, @id, @options)
           when "graphs"
-            project_graph_path(@project, @id)
+            if Feature.enabled?(:use_ref_type_parameter, @project)
+              project_graph_path(@project, @id, ref_type: ref_type)
+            else
+              project_graph_path(@project, @id)
+            end
           when "find_file"
             project_find_file_path(@project, @id)
           when "graphs_commits"

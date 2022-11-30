@@ -32,8 +32,24 @@ RSpec.describe Autocomplete::RoutesFinder do
       context 'when user is admin' do
         let(:current_user) { admin }
 
-        it 'finds all namespaces matching the search excluding project namespaces' do
-          is_expected.to match_array([group.route, group2.route, user_route])
+        context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+          it 'finds all namespaces matching the search excluding project namespaces' do
+            is_expected.to match_array([group.route, group2.route, user_route])
+          end
+        end
+
+        context 'when admin mode setting is enabled' do
+          context 'when in admin mode', :enable_admin_mode do
+            it 'finds all namespaces matching the search excluding project namespaces' do
+              is_expected.to match_array([group.route, group2.route, user_route])
+            end
+          end
+
+          context 'when not in admin mode' do
+            it 'does not find all namespaces' do
+              is_expected.to match_array([])
+            end
+          end
         end
       end
     end
@@ -48,8 +64,24 @@ RSpec.describe Autocomplete::RoutesFinder do
       context 'when user is admin' do
         let(:current_user) { admin }
 
-        it 'finds all projects matching the search' do
-          is_expected.to match_array([project.route, project2.route])
+        context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+          it 'finds all projects matching the search' do
+            is_expected.to match_array([project.route, project2.route])
+          end
+        end
+
+        context 'when admin mode setting is enabled' do
+          context 'when in admin mode', :enable_admin_mode do
+            it 'finds all projects matching the search' do
+              is_expected.to match_array([project.route, project2.route])
+            end
+          end
+
+          context 'when not in admin mode' do
+            it 'does not find all projects' do
+              is_expected.to match_array([])
+            end
+          end
         end
       end
     end

@@ -24,7 +24,21 @@ module WebHooks
     private
 
     def log_execution
+      mask_response_headers
+
       WebHookLog.create!(web_hook: hook, **log_data)
+    end
+
+    def mask_response_headers
+      return unless hook.url_variables?
+      return unless log_data.key?(:response_headers)
+
+      variables_map = hook.url_variables.invert.transform_values { "{#{_1}}" }
+      regex = Regexp.union(variables_map.keys)
+
+      log_data[:response_headers].transform_values! do |value|
+        regex === value ? value.gsub(regex, variables_map) : value
+      end
     end
 
     # Perform this operation within an `Gitlab::ExclusiveLease` lock to make it

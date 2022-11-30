@@ -405,7 +405,8 @@ RSpec.describe Issues::CreateService do
               iid: { current: kind_of(Integer), previous: nil },
               project_id: { current: project.id, previous: nil },
               title: { current: opts[:title], previous: nil },
-              updated_at: { current: kind_of(Time), previous: nil }
+              updated_at: { current: kind_of(Time), previous: nil },
+              time_estimate: { current: 0, previous: nil }
             },
             object_attributes: include(
               opts.merge(

@@ -55,7 +55,7 @@ module API
           # https://docs.microsoft.com/en-us/nuget/api/service-index
           desc 'The NuGet Service Index' do
             detail 'This feature was introduced in GitLab 12.6'
-            success code: 200
+            success code: 200, model: ::API::Entities::Nuget::ServiceIndex
             failure [
               { code: 401, message: 'Unauthorized' },
               { code: 403, message: 'Forbidden' },
@@ -83,7 +83,7 @@ module API
 
             desc 'The NuGet Metadata Service - Package name level' do
               detail 'This feature was introduced in GitLab 12.8'
-              success code: 200
+              success code: 200, model: ::API::Entities::Nuget::PackagesMetadata
               failure [
                 { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },
@@ -98,7 +98,7 @@ module API
 
             desc 'The NuGet Metadata Service - Package name and version level' do
               detail 'This feature was introduced in GitLab 12.8'
-              success code: 200
+              success code: 200, model: ::API::Entities::Nuget::PackageMetadata
               failure [
                 { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },
@@ -129,7 +129,7 @@ module API
 
             desc 'The NuGet Search Service' do
               detail 'This feature was introduced in GitLab 12.8'
-              success code: 200
+              success code: 200, model: ::API::Entities::Nuget::SearchResults
               failure [
                 { code: 401, message: 'Unauthorized' },
                 { code: 403, message: 'Forbidden' },

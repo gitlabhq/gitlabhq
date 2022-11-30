@@ -20,6 +20,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
 
 var (
@@ -93,7 +94,7 @@ func (s *sendFileResponseWriter) WriteHeader(status int) {
 		s.hijacked = true
 
 		// Serve the file
-		helper.DisableResponseBuffering(s.rw)
+		nginx.DisableResponseBuffering(s.rw)
 		sendFileFromDisk(s.rw, s.req, file)
 		return
 	}

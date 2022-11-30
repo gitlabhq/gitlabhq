@@ -65,7 +65,7 @@ RSpec.describe Projects::RefsController do
         'graph'          | nil     | lazy { project_network_path(project, id) }
         'graph'          | 'heads' | lazy { project_network_path(project, id) }
         'graphs'         | nil     | lazy { project_graph_path(project, id) }
-        'graphs'         | 'heads' | lazy { project_graph_path(project, id) }
+        'graphs'         | 'heads' | lazy { project_graph_path(project, id, ref_type: 'heads') }
         'find_file'      | nil     | lazy { project_find_file_path(project, id) }
         'find_file'      | 'heads' | lazy { project_find_file_path(project, id) }
         'graphs_commits' | nil     | lazy { commits_project_graph_path(project, id) }

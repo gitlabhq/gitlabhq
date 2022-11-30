@@ -57,7 +57,7 @@ module Sidebars
 
         def commits_menu_item
           link = if Feature.enabled?(:use_ref_type_parameter, context.project)
-                   project_commits_path(context.project, context.current_ref, ref_type: context.try(:ref_type) || 'heads')
+                   project_commits_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
                  else
                    project_commits_path(context.project, context.current_ref)
                  end
@@ -93,9 +93,15 @@ module Sidebars
         def contributors_menu_item
           return false unless context.project.analytics_enabled?
 
+          link = if Feature.enabled?(:use_ref_type_parameter, context.project)
+                   project_graph_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
+                 else
+                   project_graph_path(context.project, context.current_ref)
+                 end
+
           ::Sidebars::MenuItem.new(
             title: _('Contributors'),
-            link: project_graph_path(context.project, context.current_ref),
+            link: link,
             active_routes: { path: 'graphs#show' },
             item_id: :contributors
           )
@@ -117,6 +123,12 @@ module Sidebars
             active_routes: { controller: :compare },
             item_id: :compare
           )
+        end
+
+        def ref_type_from_context(context)
+          ref_type = context.try(:ref_type)
+          ref_type ||= 'heads' if context.current_ref == context.project.repository.root_ref
+          ref_type
         end
       end
     end

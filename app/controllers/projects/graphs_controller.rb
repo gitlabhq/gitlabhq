@@ -21,11 +21,24 @@ class Projects::GraphsController < Projects::ApplicationController
   feature_category :continuous_integration, [:ci]
   urgency :low, [:ci]
 
+  MAX_COMMITS = 6000
+
   def show
+    @ref_type = ref_type
+
     respond_to do |format|
       format.html
       format.json do
-        fetch_graph
+        commits = @project.repository.commits(ref, limit: MAX_COMMITS, skip_merges: true)
+        log = commits.map do |commit|
+          {
+            author_name: commit.author_name,
+            author_email: commit.author_email,
+            date: commit.committed_date.strftime("%Y-%m-%d")
+          }
+        end
+
+        render json: Gitlab::Json.dump(log)
       end
     end
   end
@@ -50,9 +63,13 @@ class Projects::GraphsController < Projects::ApplicationController
 
   private
 
+  def ref
+    @fully_qualified_ref || @ref
+  end
+
   def get_commits
     @commits_limit = 2000
-    @commits = @project.repository.commits(@ref, limit: @commits_limit, skip_merges: true)
+    @commits = @project.repository.commits(ref, limit: @commits_limit, skip_merges: true)
     @commits_graph = Gitlab::Graphs::Commits.new(@commits)
     @commits_per_week_days = @commits_graph.commits_per_week_days
     @commits_per_time = @commits_graph.commits_per_time
@@ -76,7 +93,7 @@ class Projects::GraphsController < Projects::ApplicationController
       base_params: {
         start_date: date_today - report_window,
         end_date: date_today,
-        ref_path: @project.repository.expand_ref(@ref),
+        ref_path: @project.repository.expand_ref(ref),
         param_type: 'coverage'
       },
       download_path: namespace_project_ci_daily_build_group_report_results_path(
@@ -90,21 +107,6 @@ class Projects::GraphsController < Projects::ApplicationController
         format: :json
       )
     }
-  end
-
-  def fetch_graph
-    @commits = @project.repository.commits(@ref, limit: 6000, skip_merges: true)
-    @log = []
-
-    @commits.each do |commit|
-      @log << {
-        author_name: commit.author_name,
-        author_email: commit.author_email,
-        date: commit.committed_date.strftime("%Y-%m-%d")
-      }
-    end
-
-    render json: Gitlab::Json.dump(@log)
   end
 
   def tracking_namespace_source

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Merge request > User posts diff notes', :js do
+RSpec.describe 'Merge request > User posts diff notes', :js, feature_category: :code_review do
   include MergeRequestDiffHelpers
   include Spec::Support::Helpers::ModalHelpers
 

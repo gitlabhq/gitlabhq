@@ -266,7 +266,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   # This method will rely on repository branch sha
-  # in case start_commit_sha is nil. Its necesarry for old merge request diff
+  # in case start_commit_sha is nil. It's necessary for old merge request diff
   # created before version 8.4 to work
   def safe_start_commit_sha
     start_commit_sha || merge_request.target_branch_sha

@@ -15,12 +15,13 @@ module TimeTrackable
 
     alias_method :time_spent?, :time_spent
 
-    default_value_for :time_estimate, value: 0, allows_nil: false
+    attribute :time_estimate, default: 0
 
     validates :time_estimate, numericality: { message: 'has an invalid format' }, allow_nil: false
     validate  :check_negative_time_spent
 
     has_many :timelogs, dependent: :destroy, autosave: true # rubocop:disable Cop/ActiveRecordDependent
+    after_initialize :set_time_estimate_default_value
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -65,6 +66,13 @@ module TimeTrackable
 
   def time_estimate=(val)
     val.is_a?(Integer) ? super([val, Gitlab::Database::MAX_INT_VALUE].min) : super(val)
+  end
+
+  def set_time_estimate_default_value
+    return if new_record?
+    return unless has_attribute?(:time_estimate)
+
+    self.time_estimate ||= self.class.column_defaults['time_estimate']
   end
 
   private

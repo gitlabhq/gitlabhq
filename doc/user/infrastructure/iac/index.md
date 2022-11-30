@@ -91,6 +91,10 @@ To use a Terraform template:
 1. Optional. Override in your `.gitlab-ci.yml` file the attributes present
 in the template you fetched to customize your configuration.
 
+### Terraform template recipes
+
+For GitLab-curated template recipes, see [Terraform template recipes](tf_template_recipes.md).
+
 ## Related topics
 
 - View [the images that contain the `gitlab-terraform` shell script](https://gitlab.com/gitlab-org/terraform-images).

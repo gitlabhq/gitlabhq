@@ -24,6 +24,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/rejectmethods"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload"
@@ -126,7 +127,7 @@ func (u *upstream) configureURLPrefix() {
 func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	helper.FixRemoteAddr(r)
 
-	helper.DisableResponseBuffering(w)
+	nginx.DisableResponseBuffering(w)
 
 	// Drop RequestURI == "*" (FIXME: why?)
 	if r.RequestURI == "*" {

@@ -19,6 +19,20 @@ module Spec
             page.refresh if refresh
           end
 
+          def invite_member_by_email(role)
+            click_on _('Invite members')
+
+            page.within invite_modal_selector do
+              choose_options(role, nil)
+              find(member_dropdown_selector).set('new_email@gitlab.com')
+              wait_for_requests
+
+              find('.dropdown-item', text: 'Invite "new_email@gitlab.com" by email').click
+
+              submit_invites
+            end
+          end
+
           def input_invites(names)
             click_on 'Invite members'
 

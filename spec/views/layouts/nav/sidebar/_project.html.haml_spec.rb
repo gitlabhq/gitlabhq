@@ -134,10 +134,24 @@ RSpec.describe 'layouts/nav/sidebar/_project' do
     end
 
     describe 'Contributors' do
-      it 'has a link to the project contributors path' do
-        render
+      context 'and the use_ref_type_parameter flag is disabled' do
+        before do
+          stub_feature_flags(use_ref_type_parameter: false)
+        end
 
-        expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref))
+        it 'has a link to the project contributors path' do
+          render
+
+          expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref))
+        end
+      end
+
+      context 'and the use_ref_type_parameter flag is enabled' do
+        it 'has a link to the project contributors path' do
+          render
+
+          expect(rendered).to have_link('Contributors', href: project_graph_path(project, current_ref, ref_type: 'heads'))
+        end
       end
     end
 

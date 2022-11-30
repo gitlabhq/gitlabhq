@@ -29,6 +29,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream"
@@ -853,7 +854,7 @@ func httpPost(t *testing.T, url string, headers map[string]string, reqBody io.Re
 }
 
 func requireNginxResponseBuffering(t *testing.T, expected string, resp *http.Response, msgAndArgs ...interface{}) {
-	actual := resp.Header.Get(helper.NginxResponseBufferHeader)
+	actual := resp.Header.Get(nginx.ResponseBufferHeader)
 	require.Equal(t, expected, actual, msgAndArgs...)
 }
 

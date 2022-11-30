@@ -90,6 +90,12 @@ export const workItemQueryResponse = {
             iid: '5',
             title: 'Parent title',
             confidential: false,
+            webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
+            workItemType: {
+              id: 'gid://gitlab/WorkItems::Type/1',
+              name: 'Issue',
+              iconName: 'issue-type-issue',
+            },
           },
           children: {
             nodes: [
@@ -191,6 +197,12 @@ export const mockParent = {
     iid: '5',
     title: 'Parent title',
     confidential: false,
+    webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/1',
+      name: 'Issue',
+      iconName: 'issue-type-issue',
+    },
   },
 };
 

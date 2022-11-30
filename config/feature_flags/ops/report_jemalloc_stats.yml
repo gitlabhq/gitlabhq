@@ -5,4 +5,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/367845
 milestone: '15.2'
 type: ops
 group: group::memory
-default_enabled: true
+default_enabled: false

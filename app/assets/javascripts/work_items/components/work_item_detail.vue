@@ -28,6 +28,7 @@ import {
   WORK_ITEM_VIEWED_STORAGE_KEY,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
+  WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '../constants';
 
@@ -214,11 +215,22 @@ export default {
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
+    parentWorkItemType() {
+      return this.parentWorkItem?.workItemType?.name;
+    },
+    parentWorkItemIconName() {
+      return this.parentWorkItem?.workItemType?.iconName;
+    },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
     },
     parentUrl() {
-      return `../../issues/${this.parentWorkItem?.iid}`;
+      // Once more types are moved to have Work Items involved
+      // we need to handle this properly.
+      if (this.parentWorkItemType === WORK_ITEM_TYPE_VALUE_ISSUE) {
+        return `../../issues/${this.parentWorkItem?.iid}`;
+      }
+      return this.parentWorkItem?.webUrl;
     },
     workItemIconName() {
       return this.workItem?.workItemType?.iconName;
@@ -362,7 +374,7 @@ export default {
             <gl-button
               v-gl-tooltip.hover
               class="gl-text-truncate gl-max-w-full"
-              icon="issues"
+              :icon="parentWorkItemIconName"
               category="tertiary"
               :href="parentUrl"
               :title="parentWorkItem.title"

@@ -118,7 +118,7 @@ API or the UI.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293755) in GitLab 13.12.
 > - [Required permissions](https://gitlab.com/gitlab-org/gitlab/-/issues/350682) changed from developer to maintainer in GitLab 15.0.
 
-To prevent users from publishing duplicate generic packages, you can use the [GraphQl API](../../../api/graphql/reference/index.md#packagesettings)
+To prevent users from publishing duplicate generic packages, you can use the [GraphQL API](../../../api/graphql/reference/index.md#packagesettings)
 or the UI.
 
 In the UI:

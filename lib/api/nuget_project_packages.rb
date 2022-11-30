@@ -102,6 +102,14 @@ module API
         # https://docs.microsoft.com/en-us/nuget/api/package-publish-resource
         desc 'The NuGet Package Publish endpoint' do
           detail 'This feature was introduced in GitLab 12.6'
+          success code: 201
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[nuget_packages]
         end
 
         params do
@@ -123,6 +131,17 @@ module API
 
           forbidden!
         end
+
+        desc 'The NuGet Package Authorize endpoint' do
+          detail 'This feature was introduced in GitLab 14.1'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[nuget_packages]
+        end
         put 'authorize', urgency: :low do
           authorize_nuget_upload
         end
@@ -130,8 +149,15 @@ module API
         # https://docs.microsoft.com/en-us/nuget/api/symbol-package-publish-resource
         desc 'The NuGet Symbol Package Publish endpoint' do
           detail 'This feature was introduced in GitLab 14.1'
+          success code: 201
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[nuget_packages]
         end
-
         params do
           use :file_params
         end
@@ -151,13 +177,24 @@ module API
 
           forbidden!
         end
+
+        desc 'The NuGet Symbol Package Authorize endpoint' do
+          detail 'This feature was introduced in GitLab 14.1'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[nuget_packages]
+        end
         put 'symbolpackage/authorize', urgency: :low do
           authorize_nuget_upload
         end
 
         # https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
         params do
-          requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX
+          requires :package_name, type: String, desc: 'The NuGet package name', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
         end
         namespace '/download/*package_name' do
           after_validation do
@@ -166,6 +203,13 @@ module API
 
           desc 'The NuGet Content Service - index request' do
             detail 'This feature was introduced in GitLab 12.8'
+            success code: 200, model: ::API::Entities::Nuget::PackagesVersions
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[nuget_packages]
           end
           get 'index', format: :json, urgency: :low do
             present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages(params[:package_name])),
@@ -174,10 +218,17 @@ module API
 
           desc 'The NuGet Content Service - content request' do
             detail 'This feature was introduced in GitLab 12.8'
+            success code: 200
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[nuget_packages]
           end
           params do
-            requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX
-            requires :package_filename, type: String, desc: 'The NuGet package filename', regexp: API::NO_SLASH_URL_PART_REGEX
+            requires :package_version, type: String, desc: 'The NuGet package version', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.3.0.17' }
+            requires :package_filename, type: String, desc: 'The NuGet package filename', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
           end
           get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
             filename = "#{params[:package_filename]}.#{params[:format]}"
