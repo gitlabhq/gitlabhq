@@ -214,19 +214,3 @@ Prerequisites:
 - A deploy token with `read_registry` and `write_registry` scopes.
 
 Follow the dependency proxy [authentication instructions](../../packages/dependency_proxy/index.md).
-
-## Troubleshooting
-
-### Error: `api error: Repository or object not found:`
-
-When using a group deploy token to clone from LFS objects, you might get `404 Not Found` responses
-and this error message. This occurs because of a bug, documented in
-[issue 235398](https://gitlab.com/gitlab-org/gitlab/-/issues/235398).
-
-```plaintext
-api error: Repository or object not found:
-https://<URL-with-token>.git/info/lfs/objects/batch
-Check that it exists and that you have proper access to it
-```
-
-The workaround is to use a project deploy token.

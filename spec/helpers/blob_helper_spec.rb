@@ -80,6 +80,7 @@ RSpec.describe BlobHelper do
       end
     end
   end
+
   context 'viewer related' do
     include FakeBlobHelpers
 

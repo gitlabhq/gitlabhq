@@ -301,6 +301,7 @@ RSpec.describe 'project routing' do
       expect(get('/gitlab/gitlabhq/-/merge_requests/1/conflicts')).to route_to('projects/merge_requests/conflicts#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: '1')
     end
   end
+
   #  raw_project_snippet GET    /:project_id/snippets/:id/raw(.:format)  snippets#raw
   #     project_snippets GET    /:project_id/snippets(.:format)          snippets#index
   #  new_project_snippet GET    /:project_id/snippets/new(.:format)      snippets#new

@@ -291,6 +291,7 @@ RSpec.describe ProjectFeature do
       end
     end
   end
+
   # rubocop:disable Gitlab/FeatureAvailableUsage
   describe '#feature_available?' do
     let(:features) { ProjectFeature::FEATURES }

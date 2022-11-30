@@ -405,6 +405,8 @@
   - 1
 - - projects_git_garbage_collect
   - 1
+- - projects_import_export_parallel_project_export
+  - 1
 - - projects_import_export_relation_export
   - 1
 - - projects_inactive_projects_deletion_notification

@@ -2,7 +2,7 @@
 
 - ref = local_assigns.fetch(:ref, @ref)
 - form_path = local_assigns.fetch(:form_path, switch_project_refs_path(@project))
-- dropdown_toggle_text = @id || @project.default_branch
+- dropdown_toggle_text = ref || @project.default_branch
 - field_name = local_assigns.fetch(:field_name, 'ref')
 
 = form_tag form_path, method: :get, class: "project-refs-form" do

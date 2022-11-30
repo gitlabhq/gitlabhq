@@ -89,6 +89,7 @@ RSpec.describe BulkImports::Projects::Pipelines::IssuesPipeline do
         expect(award_emoji.user).to eq(user)
       end
     end
+
     context 'issue state' do
       let(:issue_attributes) { { 'state' => 'closed' } }
 

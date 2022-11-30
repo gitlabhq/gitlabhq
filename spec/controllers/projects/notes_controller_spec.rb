@@ -757,6 +757,7 @@ RSpec.describe Projects::NotesController do
         expect { put :update, params: request_params }.to change { note.reload.note }
       end
     end
+
     context "doesnt update the note" do
       let(:issue)   { create(:issue, :confidential, project: project) }
       let(:note)    { create(:note, noteable: issue, project: project) }

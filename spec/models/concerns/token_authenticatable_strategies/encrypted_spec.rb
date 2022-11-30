@@ -237,6 +237,7 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted do
         expect(subject.set_token(instance, 'my-value')).to eq 'my-value'
       end
     end
+
     context 'when encryption is optional' do
       let(:options) { { encrypted: :optional } }
 

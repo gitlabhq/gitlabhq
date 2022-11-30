@@ -4,8 +4,6 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline, :logger
 
-    CreateError = Class.new(StandardError)
-
     LOG_MAX_DURATION_THRESHOLD = 3.seconds
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds

@@ -452,6 +452,7 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
           expect(subject).to eq("current_rss(#{rss}) > soft_limit_rss(#{soft_limit}) longer than GRACE_BALLOON_SECONDS(#{grace_balloon_seconds})")
         end
       end
+
       context 'deadline not exceeded' do
         let(:deadline_exceeded) { false }
 

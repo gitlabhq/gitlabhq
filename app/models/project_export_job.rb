@@ -6,6 +6,13 @@ class ProjectExportJob < ApplicationRecord
 
   validates :project, :jid, :status, presence: true
 
+  STATUS = {
+    queued: 0,
+    started: 1,
+    finished: 2,
+    failed: 3
+  }.freeze
+
   state_machine :status, initial: :queued do
     event :start do
       transition [:queued] => :started
@@ -19,9 +26,9 @@ class ProjectExportJob < ApplicationRecord
       transition [:queued, :started] => :failed
     end
 
-    state :queued, value: 0
-    state :started, value: 1
-    state :finished, value: 2
-    state :failed, value: 3
+    state :queued, value: STATUS[:queued]
+    state :started, value: STATUS[:started]
+    state :finished, value: STATUS[:finished]
+    state :failed, value: STATUS[:failed]
   end
 end

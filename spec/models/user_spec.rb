@@ -3217,6 +3217,7 @@ RSpec.describe User do
             expect(described_class.find_by_full_path('unknown')).to eq(nil)
           end
         end
+
         context 'with the follow_redirects option set to true' do
           it 'returns nil' do
             expect(described_class.find_by_full_path('unknown', follow_redirects: true)).to eq(nil)

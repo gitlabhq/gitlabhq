@@ -4687,6 +4687,7 @@ RSpec.describe API::Projects do
       end
     end
   end
+
   describe 'PUT /projects/:id/transfer' do
     context 'when authenticated as owner' do
       let(:group) { create :group }

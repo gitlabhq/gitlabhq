@@ -96,7 +96,7 @@ RSpec.describe 'lograge', type: :request do
         skip_memory_instrumentation!
       end
 
-      it 'logs memory usage metrics' do
+      it 'logs memory usage metrics', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384081' do
         expect(Lograge.formatter).to receive(:call)
           .with(a_hash_including(:mem_objects))
           .and_call_original

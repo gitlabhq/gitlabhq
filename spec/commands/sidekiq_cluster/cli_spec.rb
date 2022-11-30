@@ -245,9 +245,9 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
         it 'expands multiple queue groups correctly' do
           expected_workers =
             if Gitlab.ee?
-              [%w[chat_notification], %w[project_export projects_import_export_relation_export project_template_export]]
+              [%w[chat_notification], %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export project_template_export]]
             else
-              [%w[chat_notification], %w[project_export projects_import_export_relation_export]]
+              [%w[chat_notification], %w[project_export projects_import_export_parallel_project_export projects_import_export_relation_export]]
             end
 
           expect(Gitlab::SidekiqCluster)

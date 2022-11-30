@@ -29,7 +29,7 @@ POST /bulk_imports
 | `entities[source_full_path]`      | String | yes      | Source full path of the entity to import. |
 | `entities[destination_name]`      | String | yes      | Deprecated: Use :destination_slug instead. Destination slug for the entity. |
 | `entities[destination_slug]`      | String | yes      | Destination slug for the entity. |
-| `entities[destination_namespace]` | String | no       | Destination namespace for the entity. |
+| `entities[destination_namespace]` | String | yes      | Destination namespace for the entity. |
 
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/bulk_imports" \

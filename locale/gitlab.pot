@@ -22032,6 +22032,9 @@ msgstr ""
 msgid "Integrations|Enable comments"
 msgstr ""
 
+msgid "Integrations|Enable slash commands and notifications for a Slack workspace."
+msgstr ""
+
 msgid "Integrations|Ensure your instance URL is correct and your instance is configured correctly. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
