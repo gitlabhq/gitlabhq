@@ -57,7 +57,7 @@ module Gitlab
       end
 
       def user_email(user)
-        user.respond_to?(:email) ? user.email : ""
+        user.respond_to?(:webhook_email) ? user.webhook_email : ""
       end
 
       def event_specific_project_data(event)

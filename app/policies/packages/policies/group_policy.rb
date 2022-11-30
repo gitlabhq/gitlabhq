@@ -25,3 +25,5 @@ module Packages
     end
   end
 end
+
+Packages::Policies::GroupPolicy.prepend_mod_with('Packages::Policies::GroupPolicy')
