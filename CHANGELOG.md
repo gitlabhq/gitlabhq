@@ -2,6 +2,27 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.6.1 (2022-11-30)
+
+### Fixed (1 change)
+
+- [Do not save PipelineMetadata if name is blank [15.6]](gitlab-org/security/gitlab@340cd5f74dbe8318105574303d49d6cda54b43bf) ([merge request](gitlab-org/security/gitlab!2947))
+
+### Security (12 changes)
+
+- [Send resolved_address param to gitaly during repository import](gitlab-org/security/gitlab@5b3540629cb8d113d96d721549be77ef35060c15) ([merge request](gitlab-org/security/gitlab!2938))
+- [Add size validation during nuspec file extraction](gitlab-org/security/gitlab@d7048d0bf20574a5b1c926ac25b8c15504723da3) ([merge request](gitlab-org/security/gitlab!2935))
+- [Cross-site scripting in Jira Integration](gitlab-org/security/gitlab@1419e9d1513d481472b89d36e9e22b7b20c3a5c5) ([merge request](gitlab-org/security/gitlab!2930))
+- [Protect web-hook secret tokens after changing URL](gitlab-org/security/gitlab@d3df2d08f7ec59d2e4ebba64770c6b7309733d9b) ([merge request](gitlab-org/security/gitlab!2920))
+- [HTML content injection in README file](gitlab-org/security/gitlab@c64a283ee09115d1edefb5fcd81a9766658757e4) ([merge request](gitlab-org/security/gitlab!2928))
+- [Redact secret tokens from web-hook logs](gitlab-org/security/gitlab@bca8656f7a04759acec00170f9e3cabbdda45558) ([merge request](gitlab-org/security/gitlab!2916))
+- [Prevent unauthorized users from seeing Release information on tag pages](gitlab-org/security/gitlab@f04b3cf159f40e98ea0d24df0ff168ae91522813) ([merge request](gitlab-org/security/gitlab!2927))
+- [Update after_import to expire cache before removing prohibited branches](gitlab-org/security/gitlab@49de4ce145d00adecf33c19c8413a87e6bb0c904) ([merge request](gitlab-org/security/gitlab!2905))
+- [Deny all package permissions when group access is restricted by IP](gitlab-org/security/gitlab@cca110162915b2cdca64181305bfed2044df2bba) ([merge request](gitlab-org/security/gitlab!2902))
+- [Redact user emails from project webhook data](gitlab-org/security/gitlab@9148dd7f77cab086d696d56907d2cbbc921e0e6d) ([merge request](gitlab-org/security/gitlab!2934))
+- [Disallow local URls for build_runner_session if dictated by app setting](gitlab-org/security/gitlab@1c98ba9dbe78e5969213e1a66f7b3922557e67ec) ([merge request](gitlab-org/security/gitlab!2924))
+- [Prevent token bypass for extenal authorisation](gitlab-org/security/gitlab@95eb5d2f641d7a5329aca37f92792de02f115eb8) ([merge request](gitlab-org/security/gitlab!2929))
+
 ## 15.6.0 (2022-11-21)
 
 ### Added (150 changes)
@@ -606,6 +627,22 @@ entry.
 - [Add delay when performing refresh with delay](gitlab-org/gitlab@736dcda28c106d820c3f29fd21a25e45c936cd38) ([merge request](gitlab-org/gitlab!101369))
 - [Update Gitlab Shell to 14.13.0](gitlab-org/gitlab@691262f5c25c17efcfa50307862afa66d07366a4) ([merge request](gitlab-org/gitlab!101372))
 - [Migrate card to Pajamas](gitlab-org/gitlab@10577294ed64b13d7668be0c2041ec133e8f7f87) ([merge request](gitlab-org/gitlab!98861)) **GitLab Enterprise Edition**
+
+## 15.5.5 (2022-11-30)
+
+### Security (11 changes)
+
+- [Send resolved_address param to gitaly during repository import](gitlab-org/security/gitlab@768edcdca74fa09f7ba50c324aacd86fb71ed7e7) ([merge request](gitlab-org/security/gitlab!2939))
+- [Add size validation during nuspec file extraction](gitlab-org/security/gitlab@27f79d015684896b66e0418db253613e3efa1df7) ([merge request](gitlab-org/security/gitlab!2936))
+- [Cross-site scripting in Jira Integration](gitlab-org/security/gitlab@efcb2fc3110b7cf997b3e1a1e173e6462a54f208) ([merge request](gitlab-org/security/gitlab!2931))
+- [Protect web-hook secret tokens after changing URL](gitlab-org/security/gitlab@00b75ba0c52c10a578091ad89440e8ae78cbe066) ([merge request](gitlab-org/security/gitlab!2921))
+- [Redact secret tokens from web-hook logs](gitlab-org/security/gitlab@27699db7e44e7808f5ec415860ed03c55ae554b0) ([merge request](gitlab-org/security/gitlab!2917))
+- [Prevent unauthorized users from seeing Release information on tag pages](gitlab-org/security/gitlab@112d45bdba5e0d34f77eec1ffaf86443e28b2c8c) ([merge request](gitlab-org/security/gitlab!2926))
+- [Update after_import to expire cache before removing prohibited branches](gitlab-org/security/gitlab@5e84ca50689dceb7614e181ee7addbc3671dc935) ([merge request](gitlab-org/security/gitlab!2904))
+- [Deny all package permissions when group access is restricted by IP](gitlab-org/security/gitlab@23a8ba46641053317c45f58037499235438b5ad8) ([merge request](gitlab-org/security/gitlab!2901))
+- [Redact user emails from project webhook data](gitlab-org/security/gitlab@9f49c4d34fffd598af19d2db548281847855f987) ([merge request](gitlab-org/security/gitlab!2907))
+- [Disallow local URls for build_runner_session if dictated by app setting](gitlab-org/security/gitlab@087415cf7a780c97b1d4055590858a98c673c64b) ([merge request](gitlab-org/security/gitlab!2867))
+- [Prevent token bypass for extenal authorisation](gitlab-org/security/gitlab@96a6193a6e03bd1f76c2792cca404d2e672dfcf4) ([merge request](gitlab-org/security/gitlab!2884))
 
 ## 15.5.4 (2022-11-11)
 
@@ -1302,6 +1339,22 @@ entry.
 - [Remove create_approval_todos_on_mr_update FF](gitlab-org/gitlab@7251da6b615d6aa2da649121f9e860aece1961c3) ([merge request](gitlab-org/gitlab!98084))
 - [Add environment keyword to pages job](gitlab-org/gitlab@73af406f9101da0a2f076ac023de5dfd60c85445) by @edith007 ([merge request](gitlab-org/gitlab!98283))
 - [Remove feature flag ci_variables_refactoring_to_variable](gitlab-org/gitlab@f5d1e8277fb8c326082e58536aeae21ab3fd289c) ([merge request](gitlab-org/gitlab!97967))
+
+## 15.4.6 (2022-11-30)
+
+### Security (11 changes)
+
+- [Send resolved_address param to gitaly during repository import](gitlab-org/security/gitlab@6f1547edf1540be3f5cbb03e1ae210e8a0fd2bab) ([merge request](gitlab-org/security/gitlab!2940))
+- [Add size validation during nuspec file extraction](gitlab-org/security/gitlab@23109b73e8e2570d53401ff97deb893d61764ee1) ([merge request](gitlab-org/security/gitlab!2937))
+- [Cross-site scripting in Jira Integration](gitlab-org/security/gitlab@11182e3f7dfb288473bd6974e80b0caf22b838d8) ([merge request](gitlab-org/security/gitlab!2932))
+- [Protect web-hook secret tokens after changing URL](gitlab-org/security/gitlab@693efefacfbc960b9b9725aef482759e635c9233) ([merge request](gitlab-org/security/gitlab!2922))
+- [Redact secret tokens from web-hook logs](gitlab-org/security/gitlab@28fae3d04c458602a04bf01bc34cf81ff05b897d) ([merge request](gitlab-org/security/gitlab!2918))
+- [Prevent unauthorized users from seeing Release information on tag pages](gitlab-org/security/gitlab@c766fbf97b931f767e98c6c734aa273e85045766) ([merge request](gitlab-org/security/gitlab!2925))
+- [Update after_import to expire cache before removing prohibited branches](gitlab-org/security/gitlab@178b2e45a5792480854d50cdb19b6cafeb38b30d) ([merge request](gitlab-org/security/gitlab!2903))
+- [Deny all package permissions when group access is restricted by IP](gitlab-org/security/gitlab@d2e007409076a96eaef6a0ae3256a63260e019f7) ([merge request](gitlab-org/security/gitlab!2900))
+- [Redact user emails from project webhook data](gitlab-org/security/gitlab@28a93bd8a7d4e55720031e7195c9c2e73ed5056d) ([merge request](gitlab-org/security/gitlab!2908))
+- [Disallow local URls for build_runner_session if dictated by app setting](gitlab-org/security/gitlab@581da1e429952d50ac6762423c2be8bc7fbd957b) ([merge request](gitlab-org/security/gitlab!2868))
+- [Prevent token bypass for extenal authorisation](gitlab-org/security/gitlab@e47447744cfe3b7e91b411c7ac64b20f916222a8) ([merge request](gitlab-org/security/gitlab!2887))
 
 ## 15.4.5 (2022-11-15)
 

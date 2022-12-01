@@ -5,7 +5,8 @@ module Gitlab
     class MergeRequestWidgetExtensionCounter < BaseCounter
       KNOWN_EVENTS = %w[view full_report_clicked expand expand_success expand_warning expand_failed].freeze
       PREFIX = 'i_code_review_merge_request_widget'
-      WIDGETS = %w[accessibility code_quality license_compliance status_checks terraform test_summary metrics].freeze
+      WIDGETS = %w[accessibility code_quality license_compliance load_performance status_checks terraform test_summary
+                   metrics].freeze
 
       class << self
         private

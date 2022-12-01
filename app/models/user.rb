@@ -1567,7 +1567,7 @@ class User < ApplicationRecord
       name: name,
       username: username,
       avatar_url: avatar_url(only_path: false),
-      email: public_email.presence || _('[REDACTED]')
+      email: webhook_email
     }
   end
 

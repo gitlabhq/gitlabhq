@@ -68,6 +68,19 @@ export const removeProjectSuccess = {
   },
 };
 
+export const updateScopeSuccess = {
+  data: {
+    ciCdSettingsUpdate: {
+      ciCdSettings: {
+        jobTokenScopeEnabled: false,
+        __typename: 'ProjectCiCdSetting',
+      },
+      errors: [],
+      __typename: 'CiCdSettingsUpdatePayload',
+    },
+  },
+};
+
 export const mockProjects = [
   {
     id: '1',

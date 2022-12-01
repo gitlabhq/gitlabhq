@@ -878,7 +878,11 @@ module Gitlab
       # no_tags - should we use --no-tags flag?
       # prune - should we use --prune flag?
       # check_tags_changed - should we ask gitaly to calculate whether any tags changed?
-      def fetch_remote(url, refmap: nil, ssh_auth: nil, forced: false, no_tags: false, prune: true, check_tags_changed: false, http_authorization_header: "")
+      # resolved_address - resolved IP address for provided URL
+      def fetch_remote( # rubocop:disable Metrics/ParameterLists
+        url,
+        refmap: nil, ssh_auth: nil, forced: false, no_tags: false, prune: true,
+        check_tags_changed: false, http_authorization_header: "", resolved_address: "")
         wrapped_gitaly_errors do
           gitaly_repository_client.fetch_remote(
             url,
@@ -889,16 +893,17 @@ module Gitlab
             prune: prune,
             check_tags_changed: check_tags_changed,
             timeout: GITLAB_PROJECTS_TIMEOUT,
-            http_authorization_header: http_authorization_header
+            http_authorization_header: http_authorization_header,
+            resolved_address: resolved_address
           )
         end
       end
 
-      def import_repository(url, http_authorization_header: '', mirror: false)
+      def import_repository(url, http_authorization_header: '', mirror: false, resolved_address: '')
         raise ArgumentError, "don't use disk paths with import_repository: #{url.inspect}" if url.start_with?('.', '/')
 
         wrapped_gitaly_errors do
-          gitaly_repository_client.import_repository(url, http_authorization_header: http_authorization_header, mirror: mirror)
+          gitaly_repository_client.import_repository(url, http_authorization_header: http_authorization_header, mirror: mirror, resolved_address: resolved_address)
         end
       end
 

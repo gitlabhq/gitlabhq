@@ -195,6 +195,36 @@ RSpec.describe WebHook do
       end
     end
 
+    describe 'before_validation :reset_token' do
+      subject(:hook) { build_stubbed(:project_hook, :token, project: project) }
+
+      it 'resets token if url changed' do
+        hook.url = 'https://webhook.example.com/new-hook'
+
+        expect(hook).to be_valid
+        expect(hook.token).to be_nil
+      end
+
+      it 'does not reset token if new url is set together with the same token' do
+        hook.url = 'https://webhook.example.com/new-hook'
+        current_token = hook.token
+        hook.token = current_token
+
+        expect(hook).to be_valid
+        expect(hook.token).to eq(current_token)
+        expect(hook.url).to eq('https://webhook.example.com/new-hook')
+      end
+
+      it 'does not reset token if new url is set together with a new token' do
+        hook.url = 'https://webhook.example.com/new-hook'
+        hook.token = 'token'
+
+        expect(hook).to be_valid
+        expect(hook.token).to eq('token')
+        expect(hook.url).to eq('https://webhook.example.com/new-hook')
+      end
+    end
+
     it "only consider these branch filter strategies are valid" do
       expected_valid_types = %w[all_branches regex wildcard]
       expect(described_class.branch_filter_strategies.keys).to contain_exactly(*expected_valid_types)

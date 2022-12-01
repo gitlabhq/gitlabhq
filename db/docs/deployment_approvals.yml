@@ -4,7 +4,9 @@ classes:
 - Deployments::Approval
 feature_categories:
 - continuous_delivery
-description: https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html
+description: >-
+  Stores the user that approved/rejected a deployment and which approval rule was used.
+  See https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74932
 milestone: '14.6'
 gitlab_schema: gitlab_main

@@ -110,9 +110,12 @@ RSpec.describe Markup::RenderingService do
 
     context 'when file is a regular text file' do
       let(:file_name) { 'foo.txt' }
+      let(:text) { 'Noël <form>' }
 
       it 'returns html (rendered by ActionView::TagHelper)' do
-        is_expected.to eq('<pre class="plain-readme">Noël</pre>')
+        expect(ActionController::Base.helpers).to receive(:content_tag).and_call_original
+
+        is_expected.to eq('<pre class="plain-readme">Noël &lt;form&gt;</pre>')
       end
     end
 

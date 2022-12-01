@@ -126,7 +126,7 @@ RSpec.describe 'Views documentation', feature_category: :database do
   database_base_models = Gitlab::Database.database_base_models.select { |k, _| k != 'geo' }
   views = database_base_models.flat_map { |_, m| m.connection.views }.sort.uniq
   directory_path = File.join('db', 'docs', 'views')
-  required_fields = %i[feature_categories view_name]
+  required_fields = %i[feature_categories view_name gitlab_schema]
 
   include_examples 'validate dictionary', views, directory_path, required_fields
 end
@@ -135,7 +135,7 @@ RSpec.describe 'Tables documentation', feature_category: :database do
   database_base_models = Gitlab::Database.database_base_models.select { |k, _| k != 'geo' }
   tables = database_base_models.flat_map { |_, m| m.connection.tables }.sort.uniq
   directory_path = File.join('db', 'docs')
-  required_fields = %i[feature_categories table_name]
+  required_fields = %i[feature_categories table_name gitlab_schema]
 
   include_examples 'validate dictionary', tables, directory_path, required_fields
 end

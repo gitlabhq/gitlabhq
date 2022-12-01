@@ -148,6 +148,34 @@ merge request. This prevents `rspec fail-fast` duration from exceeding the avera
 
 This number can be overridden by setting a CI/CD variable named `RSPEC_FAIL_FAST_TEST_FILE_COUNT_THRESHOLD`.
 
+## Re-run previously failed tests in merge request pipelines
+
+In order to reduce the feedback time after resolving failed tests for a merge request, the `rspec rspec-pg12-rerun-previous-failed-tests`
+and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs run the failed tests from the previous MR pipeline.
+
+This was introduced on August 25th 2021, with <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69053>.
+
+### How it works?
+
+1. The `detect-previous-failed-tests` job (`prepare` stage) detects the test files associated with failed RSpec
+   jobs from the previous MR pipeline.
+1. The `rspec rspec-pg12-rerun-previous-failed-tests` and `rspec rspec-ee-pg12-rerun-previous-failed-tests` jobs
+   will run the test files gathered by the `detect-previous-failed-tests` job.
+
+```mermaid
+graph LR
+    subgraph "prepare stage";
+        A["detect-previous-failed-tests"]
+    end
+
+    subgraph "test stage";
+        B["rspec rspec-pg12-rerun-previous-failed-tests"];
+        C["rspec rspec-ee-pg12-rerun-previous-failed-tests"];
+    end
+
+    A --"artifact: list of test files"--> B & C
+```
+
 ## Faster feedback for merge requests that fix a broken `master`
 
 When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite-master-fixing` label to expedite the pipelines that run on the merge request.

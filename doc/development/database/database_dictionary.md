@@ -38,6 +38,7 @@ milestone: '13.0'
 | `description`              | String        | no       | Text description of the information stored in the table or view, and its purpose. |
 | `introduced_by_url`        | URL           | no       | URL to the merge request or commit which introduced this table or view.           |
 | `milestone`                | String        | no       | The milestone that introduced this table or view.                                 |
+| `gitlab_schema`            | String        | yes      | GitLab schema name.                                                               |
 
 ## Adding tables
 

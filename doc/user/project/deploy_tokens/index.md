@@ -41,6 +41,8 @@ You can create deploy tokens at either the project or group level:
 By default, a deploy token does not expire. You can optionally set an expiry date when you create
 it. Expiry occurs at midnight UTC on that date.
 
+Deploy tokens can't be used for Git operations and Package Registry operations if [external authorization](../../admin_area/settings/external_authorization.md) is enabled.
+
 ## Scope
 
 A deploy token's scope determines the actions it can perform.

@@ -57,12 +57,13 @@
     %pre.wrap{ data: { qa_selector: 'tag_message_content' } }
       = strip_signature(@tag.message)
 
-.gl-mb-3.gl-mt-3
-  - if @release&.description.present?
-    .description.md{ data: { qa_selector: 'tag_release_notes_content' } }
-      = markdown_field(@release, :description)
-  - else
-    = s_('TagsPage|This tag has no release notes.')
+- if can?(current_user, :read_release, @release)
+  .gl-mb-3.gl-mt-3
+    - if @release&.description.present?
+      .description.md{ data: { qa_selector: 'tag_release_notes_content' } }
+        = markdown_field(@release, :description)
+    - else
+      = s_('TagsPage|This tag has no release notes.')
 
 - if can?(current_user, :admin_tag, @project)
   .js-delete-tag-modal

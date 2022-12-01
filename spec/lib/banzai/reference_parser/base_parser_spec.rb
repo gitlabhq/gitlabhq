@@ -18,6 +18,29 @@ RSpec.describe Banzai::ReferenceParser::BaseParser do
     parser_class.new(context)
   end
 
+  describe '.reference_class' do
+    context 'when the method is not defined' do
+      it 'build the reference class' do
+        dummy = Class.new(described_class)
+        dummy.reference_type = :issue
+
+        expect(dummy.reference_class).to eq(Issue)
+      end
+    end
+
+    context 'when the method is redefined' do
+      it 'uses specified reference class' do
+        dummy = Class.new(described_class) do
+          def self.reference_class
+            AlertManagement::Alert
+          end
+        end
+
+        expect(dummy.reference_class).to eq(AlertManagement::Alert)
+      end
+    end
+  end
+
   describe '.reference_type=' do
     it 'sets the reference type' do
       dummy = Class.new(described_class)

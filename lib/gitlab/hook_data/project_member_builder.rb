@@ -43,7 +43,7 @@ module Gitlab
           project_id: project.id,
           user_username: project_member.user.username,
           user_name: project_member.user.name,
-          user_email: project_member.user.email,
+          user_email: project_member.user.webhook_email,
           user_id: project_member.user.id,
           access_level: project_member.human_access,
           project_visibility: project.visibility

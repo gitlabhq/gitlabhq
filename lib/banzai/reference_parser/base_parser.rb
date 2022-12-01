@@ -47,6 +47,14 @@ module Banzai
         @data_attribute ||= "data-#{reference_type.to_s.dasherize}"
       end
 
+      # Returns a model class to use as a reference.
+      # By default, the method does not take namespaces into account,
+      # thus parser classes can customize the reference class to use
+      # a model name with a namespace
+      def self.reference_class
+        reference_type.to_s.classify.constantize
+      end
+
       # context - An instance of `Banzai::RenderContext`.
       def initialize(context)
         @context = context

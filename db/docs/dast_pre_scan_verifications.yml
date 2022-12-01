@@ -7,3 +7,4 @@ feature_categories:
 description: Verification status for DAST Profiles
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103063
 milestone: '15.6'
+gitlab_schema: gitlab_main

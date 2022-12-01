@@ -1091,6 +1091,9 @@ To enable the read-only mode:
 
 1. Next, trigger one of the garbage collect commands:
 
+   WARNING:
+   You must use `/opt/gitlab/embedded/bin/registry` to recycle unused tags. If you use `gitlab-ctl registry-garbage-collect`, you **will bring the container registry down**.
+
    ```shell
    # Recycling unused tags
    sudo /opt/gitlab/embedded/bin/registry garbage-collect /var/opt/gitlab/registry/config.yml

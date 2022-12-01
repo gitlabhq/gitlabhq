@@ -6,19 +6,18 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Documentation topic types (CTRT)
 
-At GitLab, we have not traditionally used types for our content. However, we are starting to
-move in this direction, and we now use four primary topic types:
+Each topic on a page should be one of the following topic types:
 
 - [Concept](concept.md)
 - [Task](task.md)
 - [Reference](reference.md)
 - [Troubleshooting](troubleshooting.md)
 
+Even if a page is short, the page usually starts with a concept and then
+includes a task or reference topic.
+
 The tech writing team sometimes uses the acronym `CTRT` to refer to our topic types.
 The acronym refers to the first letter of each topic type.
-
-In general, each page in the GitLab documentation contains multiple topics.
-Each topic on a page should be recognizable as a specific topic type.
 
 In addition to the four primary topic types, we also have a page type for
 [Tutorials](tutorial.md) and [Get started](#get-started).
