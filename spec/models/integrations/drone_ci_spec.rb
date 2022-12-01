@@ -37,7 +37,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
     end
   end
 
-  shared_context :drone_ci_integration do
+  shared_context 'drone ci integration' do
     subject(:drone) do
       described_class.new(
         project: project,
@@ -116,7 +116,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   end
 
   it_behaves_like Integrations::HasWebHook do
-    include_context :drone_ci_integration
+    include_context 'drone ci integration'
 
     let(:integration) { drone }
     let(:hook_url) { "#{drone_url}/hook?owner=#{project.namespace.full_path}&name=#{project.path}&access_token={token}" }
@@ -130,14 +130,14 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   end
 
   describe "integration page/path methods" do
-    include_context :drone_ci_integration
+    include_context 'drone ci integration'
 
     it { expect(drone.build_page(sha, branch)).to eq(build_page) }
     it { expect(drone.commit_status_path(sha, branch)).to eq(commit_status_path) }
   end
 
   describe '#commit_status' do
-    include_context :drone_ci_integration
+    include_context 'drone ci integration'
 
     it 'returns the contents of the reactive cache' do
       stub_reactive_cache(drone, { commit_status: 'foo' }, 'sha', 'ref')
@@ -147,7 +147,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   end
 
   describe '#calculate_reactive_cache' do
-    include_context :drone_ci_integration
+    include_context 'drone ci integration'
 
     describe '#commit_status' do
       subject { drone.calculate_reactive_cache(sha, branch)[:commit_status] }
@@ -193,7 +193,7 @@ RSpec.describe Integrations::DroneCi, :use_clean_rails_memory_store_caching do
   end
 
   describe "execute" do
-    include_context :drone_ci_integration
+    include_context 'drone ci integration'
 
     let(:user) { build(:user, username: 'username') }
     let(:push_sample_data) do

@@ -23,9 +23,9 @@ module NavHelper
 
     if page_has_markdown? && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'
-        ["page-gutter", "#{'right-sidebar-collapsed' unless moved_sidebar_enabled}"]
+        ["page-gutter", ('right-sidebar-collapsed' unless moved_sidebar_enabled).to_s]
       else
-        ["page-gutter", "#{'right-sidebar-expanded' unless moved_sidebar_enabled}"]
+        ["page-gutter", ('right-sidebar-expanded' unless moved_sidebar_enabled).to_s]
       end
     elsif current_path?('jobs#show')
       %w[page-gutter build-sidebar right-sidebar-expanded]

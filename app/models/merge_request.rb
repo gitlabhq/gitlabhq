@@ -1399,7 +1399,7 @@ class MergeRequest < ApplicationRecord
       message << "Closes #{closes_issues_references.to_sentence}"
     end
 
-    message << "#{description}" if include_description && description.present?
+    message << description if include_description && description.present?
     message << "See merge request #{to_reference(full: true)}"
 
     message.join("\n\n")

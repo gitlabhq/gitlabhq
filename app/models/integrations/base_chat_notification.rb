@@ -101,7 +101,7 @@ module Integrations
         next unless requires_webhook?
 
         fields.unshift(
-          { type: 'text', name: 'webhook', help: "#{webhook_help}", required: true }.freeze,
+          { type: 'text', name: 'webhook', help: webhook_help, required: true }.freeze,
           { type: 'text', name: 'username', placeholder: 'GitLab-integration' }.freeze
         )
       end.freeze

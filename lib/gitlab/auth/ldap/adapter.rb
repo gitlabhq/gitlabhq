@@ -11,7 +11,7 @@ module Gitlab
 
         def self.open(provider, &block)
           Net::LDAP.open(config(provider).adapter_options) do |ldap|
-            block.call(self.new(provider, ldap))
+            yield(self.new(provider, ldap))
           end
         end
 

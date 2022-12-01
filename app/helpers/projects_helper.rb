@@ -465,9 +465,9 @@ module ProjectsHelper
   def project_coverage_chart_data_attributes(daily_coverage_options, ref)
     {
       graph_endpoint: "#{daily_coverage_options[:graph_api_path]}?#{daily_coverage_options[:base_params].to_query}",
-      graph_start_date: "#{daily_coverage_options[:base_params][:start_date].strftime('%b %d')}",
-      graph_end_date: "#{daily_coverage_options[:base_params][:end_date].strftime('%b %d')}",
-      graph_ref: "#{ref}",
+      graph_start_date: daily_coverage_options[:base_params][:start_date].strftime('%b %d'),
+      graph_end_date: daily_coverage_options[:base_params][:end_date].strftime('%b %d'),
+      graph_ref: ref.to_s,
       graph_csv_path: "#{daily_coverage_options[:download_path]}?#{daily_coverage_options[:base_params].to_query}"
     }
   end

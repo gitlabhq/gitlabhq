@@ -89,7 +89,8 @@ They're responsible for defining a timestamp expression that is used in the calc
 
 #### Implementing an `Event` class
 
-There are a few methods that are required to be implemented, the `StageEvent` base class describes them in great detail. The most important ones are:
+You must implement a few methods, as described in the `StageEvent` base class.
+The most important methods are:
 
 - `object_type`
 - `timestamp_projection`

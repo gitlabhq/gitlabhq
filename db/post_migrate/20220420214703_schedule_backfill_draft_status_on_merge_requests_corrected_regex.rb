@@ -16,7 +16,7 @@ class ScheduleBackfillDraftStatusOnMergeRequestsCorrectedRegex < Gitlab::Databas
 
     eligible_mrs = MergeRequest.where(state_id: 1)
     .where(draft: false)
-    .where("title ~* ?", "#{CORRECTED_REGEXP_STR}")
+    .where("title ~* ?", CORRECTED_REGEXP_STR)
 
     queue_background_migration_jobs_by_range_at_intervals(
       eligible_mrs,

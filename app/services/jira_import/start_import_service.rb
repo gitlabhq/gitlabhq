@@ -73,7 +73,7 @@ module JiraImport
       jira_imports_for_project = project.jira_imports.by_jira_project_key(jira_project_key).size + 1
       title = "jira-import::#{jira_project_key}-#{jira_imports_for_project}"
       description = "Label for issues that were imported from Jira on #{import_start_time.strftime('%Y-%m-%d %H:%M:%S')}"
-      color = "#{::Gitlab::Color.color_for(title)}"
+      color = ::Gitlab::Color.color_for(title).to_s
       { title: title, description: description, color: color }
     end
 

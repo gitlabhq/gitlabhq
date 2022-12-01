@@ -6,8 +6,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project, sha: head_sha) }
+  let(:index) { 1 }
 
-  let(:processor) { described_class.new(pipeline, config) }
+  let(:processor) { described_class.new(pipeline, config, index) }
 
   describe '#attributes' do
     subject { processor.attributes }
@@ -40,10 +41,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           { key: { files: files } }
         end
 
-        it 'uses default key' do
-          expected = { key: 'default' }
+        context 'without a prefix' do
+          it 'uses default key with an index as a prefix' do
+            expected = { key: '1-default' }
 
-          is_expected.to include(expected)
+            is_expected.to include(expected)
+          end
         end
       end
 
@@ -57,13 +60,15 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           }
         end
 
-        it 'builds a string key' do
-          expected = {
-                key: '703ecc8fef1635427a1f86a8a1a308831c122392',
-                paths: ['vendor/ruby']
-            }
+        context 'without a prefix' do
+          it 'builds a string key with an index as a prefix' do
+            expected = {
+                  key: '1-703ecc8fef1635427a1f86a8a1a308831c122392',
+                  paths: ['vendor/ruby']
+              }
 
-          is_expected.to include(expected)
+            is_expected.to include(expected)
+          end
         end
       end
 
@@ -107,10 +112,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
             }
           end
 
-          it 'builds a string key' do
-            expected = { key: '74bf43fb1090f161bdd4e265802775dbda2f03d1' }
+          context 'without a prefix' do
+            it 'builds a string key with an index as a prefix' do
+              expected = { key: '1-74bf43fb1090f161bdd4e265802775dbda2f03d1' }
 
-            is_expected.to include(expected)
+              is_expected.to include(expected)
+            end
           end
         end
 

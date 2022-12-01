@@ -14,10 +14,10 @@ module Tooling
     GITLAB_ORG_GITLAB_PROJECT_PATH = 'gitlab-org/gitlab'
 
     def visual_review_toolbar_options
-      { 'data-merge-request-id': "#{ENV['REVIEW_APPS_MERGE_REQUEST_IID']}",
-        'data-mr-url': "#{GITLAB_INSTANCE_URL}",
-        'data-project-id': "#{GITLAB_ORG_GITLAB_PROJECT_ID}",
-        'data-project-path': "#{GITLAB_ORG_GITLAB_PROJECT_PATH}",
+      { 'data-merge-request-id': ENV['REVIEW_APPS_MERGE_REQUEST_IID'].to_s,
+        'data-mr-url': GITLAB_INSTANCE_URL,
+        'data-project-id': GITLAB_ORG_GITLAB_PROJECT_ID,
+        'data-project-path': GITLAB_ORG_GITLAB_PROJECT_PATH,
         'data-require-auth': false,
         'id': 'review-app-toolbar-script',
         'src': 'https://gitlab.com/assets/webpack/visual_review_toolbar.js' }

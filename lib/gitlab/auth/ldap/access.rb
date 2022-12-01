@@ -12,7 +12,7 @@ module Gitlab
 
         def self.open(user, &block)
           Gitlab::Auth::Ldap::Adapter.open(user.ldap_identity.provider) do |adapter|
-            block.call(self.new(user, adapter))
+            yield(self.new(user, adapter))
           end
         end
 

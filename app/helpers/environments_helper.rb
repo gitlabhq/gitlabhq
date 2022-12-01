@@ -67,7 +67,7 @@ module EnvironmentsHelper
       'external_dashboard_url' => project.metrics_setting_external_dashboard_url,
       'custom_metrics_path' => project_prometheus_metrics_path(project),
       'validate_query_path' => validate_query_project_prometheus_metrics_path(project),
-      'custom_metrics_available' => "#{custom_metrics_available?(project)}",
+      'custom_metrics_available' => custom_metrics_available?(project).to_s,
       'dashboard_timezone' => project.metrics_setting_dashboard_timezone.to_s.upcase
     }
   end
@@ -78,8 +78,8 @@ module EnvironmentsHelper
     {
       'metrics_dashboard_base_path' => metrics_dashboard_base_path(environment, project),
       'current_environment_name' => environment.name,
-      'has_metrics' => "#{environment.has_metrics?}",
-      'environment_state' => "#{environment.state}"
+      'has_metrics' => environment.has_metrics?.to_s,
+      'environment_state' => environment.state.to_s
     }
   end
 

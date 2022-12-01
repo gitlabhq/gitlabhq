@@ -24,8 +24,7 @@ To view Contribution Analytics:
 
 ## Using Contribution Analytics
 
-There are three main bar graphs that illustrate the number of contributions per group
-member for the following:
+Three bar graphs illustrate the number of contributions made by each group member:
 
 - Push events
 - Merge requests

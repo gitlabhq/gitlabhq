@@ -152,7 +152,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         it 'includes cache options' do
           cache_options = {
             options: {
-              cache: [a_hash_including(key: 'f155568ad0933d8358f66b846133614f76dd0ca4')]
+              cache: [a_hash_including(key: '0-f155568ad0933d8358f66b846133614f76dd0ca4')]
             }
           }
 

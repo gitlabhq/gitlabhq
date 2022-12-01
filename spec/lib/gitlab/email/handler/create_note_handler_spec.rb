@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
-  include_context :email_shared_context
+  include_context 'email shared context'
 
   let_it_be(:user)      { create(:user, email: 'jake@adventuretime.ooo') }
   let_it_be(:project)   { create(:project, :public, :repository) }
@@ -15,9 +15,9 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
     SentNotification.record_note(note, user.id, mail_key)
   end
 
-  it_behaves_like :reply_processing_shared_examples
+  it_behaves_like 'reply processing shared examples'
 
-  it_behaves_like :note_handler_shared_examples do
+  it_behaves_like 'note handler shared examples' do
     let(:recipient) { sent_notification.recipient }
 
     let(:update_commands_only) { fixture_file('emails/update_commands_only_reply.eml') }
@@ -92,7 +92,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
       issue.update_attribute(:confidential, true)
     end
 
-    it_behaves_like :checks_permissions_on_noteable_examples
+    it_behaves_like 'checks permissions on noteable examples'
   end
 
   shared_examples 'a reply to existing comment' do

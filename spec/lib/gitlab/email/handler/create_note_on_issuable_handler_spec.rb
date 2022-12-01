@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::CreateNoteOnIssuableHandler do
-  include_context :email_shared_context
+  include_context 'email shared context'
 
   let_it_be(:user)      { create(:user, email: 'jake@adventuretime.ooo', incoming_email_token: 'auth_token') }
   let_it_be(:namespace) { create(:namespace, path: 'gitlabhq') }
@@ -17,9 +17,9 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteOnIssuableHandler do
     stub_config_setting(host: 'localhost')
   end
 
-  it_behaves_like :reply_processing_shared_examples
+  it_behaves_like 'reply processing shared examples'
 
-  it_behaves_like :note_handler_shared_examples, true do
+  it_behaves_like 'note handler shared examples', true do
     let_it_be(:recipient) { user }
 
     let(:update_commands_only) { email_reply_fixture('emails/update_commands_only.eml') }
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteOnIssuableHandler do
       noteable.update_attribute(:confidential, true)
     end
 
-    it_behaves_like :checks_permissions_on_noteable_examples
+    it_behaves_like 'checks permissions on noteable examples'
   end
 
   def email_fixture(path)

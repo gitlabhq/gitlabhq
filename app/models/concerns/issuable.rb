@@ -366,7 +366,7 @@ module Issuable
 
       select(issuable_columns)
         .select(extra_select_columns)
-        .from("#{table_name}")
+        .from(table_name.to_s)
         .joins("JOIN LATERAL(#{highest_priority}) as highest_priorities ON TRUE")
         .group(group_columns)
         .reorder(highest_priority_arel_with_direction.nulls_last)

@@ -295,7 +295,7 @@ module BlobHelper
   end
 
   def edit_link_tag(link_text, edit_path, common_classes)
-    link_to link_text, edit_path, class: "#{common_classes}"
+    link_to link_text, edit_path, class: common_classes
   end
 
   def edit_button_tag(blob, common_classes, text, edit_path, project, ref)

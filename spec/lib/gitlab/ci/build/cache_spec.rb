@@ -14,8 +14,8 @@ RSpec.describe Gitlab::Ci::Build::Cache do
 
         cache = described_class.new(cache_config, pipeline)
 
-        expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new).with(pipeline, { key: 'key-a' })
-        expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new).with(pipeline, { key: 'key-b' })
+        expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new).with(pipeline, { key: 'key-a' }, 0)
+        expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new).with(pipeline, { key: 'key-b' }, 1)
         expect(cache.instance_variable_get(:@cache)).to eq([cache_seed_a, cache_seed_b])
       end
     end
@@ -29,7 +29,7 @@ RSpec.describe Gitlab::Ci::Build::Cache do
 
         cache = described_class.new(cache_config, pipeline)
 
-        expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new).with(pipeline, cache_config)
+        expect(Gitlab::Ci::Pipeline::Seed::Build::Cache).to have_received(:new).with(pipeline, cache_config, 0)
         expect(cache.instance_variable_get(:@cache)).to eq([cache_seed])
       end
     end

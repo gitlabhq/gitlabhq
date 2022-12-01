@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
-  include_context :email_shared_context
+  include_context 'email shared context'
   let!(:user) do
     create(
       :user,
@@ -16,7 +16,7 @@ RSpec.describe Gitlab::Email::Handler::CreateMergeRequestHandler do
   let(:namespace) { create(:namespace, path: 'gitlabhq') }
   let(:email_raw) { email_fixture('emails/valid_new_merge_request.eml') }
 
-  it_behaves_like :reply_processing_shared_examples
+  it_behaves_like 'reply processing shared examples'
 
   before do
     stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")

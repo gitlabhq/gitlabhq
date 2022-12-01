@@ -124,7 +124,7 @@ module CommitsHelper
       new_project_tag_path: new_project_tag_path(project, ref: commit),
       email_patches_path: project_commit_path(project, commit, format: :patch),
       plain_diff_path: project_commit_path(project, commit, format: :diff),
-      can_revert: "#{can_collaborate && !commit.has_been_reverted?(current_user)}",
+      can_revert: (can_collaborate && !commit.has_been_reverted?(current_user)).to_s,
       can_cherry_pick: can_collaborate.to_s,
       can_tag: can?(current_user, :push_code, project).to_s,
       can_email_patches: (commit.parents.length < 2).to_s

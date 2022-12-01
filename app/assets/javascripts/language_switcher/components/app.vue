@@ -1,11 +1,11 @@
 <script>
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { setCookie } from '~/lib/utils/common_utils';
 import { PREFERRED_LANGUAGE_COOKIE_KEY } from '../constants';
 
 export default {
   components: {
-    GlListbox,
+    GlCollapsibleListbox,
   },
   inject: {
     locales: {
@@ -29,7 +29,7 @@ export default {
 };
 </script>
 <template>
-  <gl-listbox
+  <gl-collapsible-listbox
     v-model="selected"
     :toggle-text="preferredLocale.text"
     :items="locales"
@@ -45,5 +45,5 @@ export default {
         {{ locale.text }}
       </span>
     </template>
-  </gl-listbox>
+  </gl-collapsible-listbox>
 </template>

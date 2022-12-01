@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler do
-  include_context :email_shared_context
+  include_context 'email shared context'
 
   before do
     stub_incoming_email_setting(enabled: true, address: "incoming+%{key}@appmail.adventuretime.ooo")

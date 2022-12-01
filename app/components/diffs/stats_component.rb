@@ -19,7 +19,7 @@ module Diffs
             name: f.file_path,
             path: diff_file_path_text(f),
             icon: diff_file_changed_icon(f),
-            iconColor: "#{diff_file_changed_icon_color(f)}",
+            iconColor: diff_file_changed_icon_color(f).to_s,
             added: f.added_lines,
             removed: f.removed_lines
         }

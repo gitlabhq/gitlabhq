@@ -56,7 +56,7 @@ database with a minimal development effort.
 
 ![vsa object hierarchy example](img/object_hierarchy_example_V14_10.png)
 
-In this example, there are two independent value streams set up for two teams that are using
+In this example, two independent value streams are set up for two teams that are using
 different development workflows within the `Test Group` (top-level namespace).
 
 The first value stream uses standard timestamp-based events for defining the stages. The second
@@ -102,7 +102,7 @@ High-level overview for each top-level namespace with Premium or Ultimate licens
 1. `INSERT` or `UPDATE` the data into the VSA database tables.
 
 The data loading is implemented within the [`Analytics::CycleAnalytics::DataLoaderService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/services/analytics/cycle_analytics/data_loader_service.rb)
-class. There are groups containing a lot of data, so to avoid overloading the primary database,
+class. Some groups contain a lot of data, so to avoid overloading the primary database,
 the service performs operations in batches and enforces strict application limits:
 
 - Load records in batches.

@@ -1,4 +1,4 @@
-import { GlListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import BackgroundMigrationsDatabaseListbox from '~/admin/background_migrations/components/database_listbox.vue';
 import { visitUrl, setUrlParams } from '~/lib/utils/url_utility';
@@ -30,15 +30,15 @@ describe('BackgroundMigrationsDatabaseListbox', () => {
     wrapper.destroy();
   });
 
-  const findGlListbox = () => wrapper.findComponent(GlListbox);
+  const findGlCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
 
   describe('template always', () => {
     beforeEach(() => {
       createComponent();
     });
 
-    it('renders GlListbox', () => {
-      expect(findGlListbox().exists()).toBe(true);
+    it('renders GlCollapsibleListbox', () => {
+      expect(findGlCollapsibleListbox().exists()).toBe(true);
     });
   });
 
@@ -48,7 +48,7 @@ describe('BackgroundMigrationsDatabaseListbox', () => {
     });
 
     it('selecting a listbox item fires visitUrl with the database param', () => {
-      findGlListbox().vm.$emit('select', MOCK_DATABASES[1].value);
+      findGlCollapsibleListbox().vm.$emit('select', MOCK_DATABASES[1].value);
 
       expect(setUrlParams).toHaveBeenCalledWith({ database: MOCK_DATABASES[1].value });
       expect(visitUrl).toHaveBeenCalled();

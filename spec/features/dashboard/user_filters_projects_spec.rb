@@ -145,7 +145,7 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :projects 
       end
 
       it 'filters any project' do
-        # Selecting the same option in the `GlListbox` does not emit `select` event
+        # Selecting the same option in the `GlCollapsibleListbox` does not emit `select` event
         # and that is why URL update won't be triggered. Given that `Any` is a default option
         # we need to explicitly switch from some other option (e.g. `Internal`) to `Any`
         # to trigger the page update

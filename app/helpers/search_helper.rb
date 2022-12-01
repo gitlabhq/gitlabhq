@@ -309,8 +309,8 @@ module SearchHelper
       {
         category: "Groups",
         id: group.id,
-        value: "#{search_result_sanitize(group.name)}",
-        label: "#{search_result_sanitize(group.full_name)}",
+        value: search_result_sanitize(group.name),
+        label: search_result_sanitize(group.full_name),
         url: group_path(group),
         avatar_url: group.avatar_url || ''
       }
@@ -344,8 +344,8 @@ module SearchHelper
       {
         category: "Projects",
         id: p.id,
-        value: "#{search_result_sanitize(p.name)}",
-        label: "#{search_result_sanitize(p.full_name)}",
+        value: search_result_sanitize(p.name),
+        label: search_result_sanitize(p.full_name),
         url: project_path(p),
         avatar_url: p.avatar_url || ''
       }
@@ -363,8 +363,8 @@ module SearchHelper
       {
         category: "Users",
         id: user.id,
-        value: "#{search_result_sanitize(user.name)}",
-        label: "#{search_result_sanitize(user.username)}",
+        value: search_result_sanitize(user.name),
+        label: search_result_sanitize(user.username),
         url: user_path(user),
         avatar_url: user.avatar_url || ''
       }
