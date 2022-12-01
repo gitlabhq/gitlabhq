@@ -1,10 +1,10 @@
 import { useFakeDate } from 'helpers/fake_date';
-import * as types from '~/cycle_analytics/store/mutation_types';
-import mutations from '~/cycle_analytics/store/mutations';
+import * as types from '~/analytics/cycle_analytics/store/mutation_types';
+import mutations from '~/analytics/cycle_analytics/store/mutations';
 import {
   PAGINATION_SORT_FIELD_END_EVENT,
   PAGINATION_SORT_DIRECTION_DESC,
-} from '~/cycle_analytics/constants';
+} from '~/analytics/cycle_analytics/constants';
 import {
   selectedStage,
   rawIssueEvents,

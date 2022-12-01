@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import TotalTime from '~/cycle_analytics/components/total_time.vue';
+import TotalTime from '~/analytics/cycle_analytics/components/total_time.vue';
 
 describe('TotalTime', () => {
   let wrapper = null;

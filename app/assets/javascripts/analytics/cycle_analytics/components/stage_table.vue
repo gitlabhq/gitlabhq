@@ -8,7 +8,7 @@ import {
   GlTable,
   GlBadge,
 } from '@gitlab/ui';
-import FormattedStageCount from '~/cycle_analytics/components/formatted_stage_count.vue';
+import FormattedStageCount from '~/analytics/cycle_analytics/components/formatted_stage_count.vue';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import {

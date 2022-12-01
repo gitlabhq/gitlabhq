@@ -1,8 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import Daterange from '~/analytics/shared/components/daterange.vue';
 import ProjectsDropdownFilter from '~/analytics/shared/components/projects_dropdown_filter.vue';
-import FilterBar from '~/cycle_analytics/components/filter_bar.vue';
-import ValueStreamFilters from '~/cycle_analytics/components/value_stream_filters.vue';
+import FilterBar from '~/analytics/cycle_analytics/components/filter_bar.vue';
+import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
 import {
   createdAfter as startDate,
   createdBefore as endDate,

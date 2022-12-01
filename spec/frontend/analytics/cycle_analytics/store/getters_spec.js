@@ -1,4 +1,4 @@
-import * as getters from '~/cycle_analytics/store/getters';
+import * as getters from '~/analytics/cycle_analytics/store/getters';
 
 import {
   allowedStages,

@@ -345,52 +345,33 @@ RSpec.describe User do
       context 'check_password_weakness' do
         let(:weak_password) { "qwertyuiop" }
 
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(block_weak_passwords: false)
-          end
-
-          it 'does not add an error when password is weak' do
-            expect(Security::WeakPasswords).not_to receive(:weak_for_user?)
-
-            user.password = weak_password
-            expect(user).to be_valid
-          end
+        it 'checks for password weakness when password changes' do
+          expect(Security::WeakPasswords).to receive(:weak_for_user?)
+            .with(weak_password, user).and_call_original
+          user.password = weak_password
+          expect(user).not_to be_valid
         end
 
-        context 'when feature flag is enabled' do
-          before do
-            stub_feature_flags(block_weak_passwords: true)
-          end
+        it 'adds an error when password is weak' do
+          user.password = weak_password
+          expect(user).not_to be_valid
+          expect(user.errors).to be_of_kind(:password, 'must not contain commonly used combinations of words and letters')
+        end
 
-          it 'checks for password weakness when password changes' do
-            expect(Security::WeakPasswords).to receive(:weak_for_user?)
-              .with(weak_password, user).and_call_original
-            user.password = weak_password
-            expect(user).not_to be_valid
-          end
+        it 'is valid when password is not weak' do
+          user.password = ::User.random_password
+          expect(user).to be_valid
+        end
 
-          it 'adds an error when password is weak' do
-            user.password = weak_password
-            expect(user).not_to be_valid
-            expect(user.errors).to be_of_kind(:password, 'must not contain commonly used combinations of words and letters')
-          end
+        it 'is valid when weak password was already set' do
+          user = build(:user, password: weak_password)
+          user.save!(validate: false)
 
-          it 'is valid when password is not weak' do
-            user.password = ::User.random_password
-            expect(user).to be_valid
-          end
+          expect(Security::WeakPasswords).not_to receive(:weak_for_user?)
 
-          it 'is valid when weak password was already set' do
-            user = build(:user, password: weak_password)
-            user.save!(validate: false)
-
-            expect(Security::WeakPasswords).not_to receive(:weak_for_user?)
-
-            # Change an unrelated value
-            user.name = "Example McExampleFace"
-            expect(user).to be_valid
-          end
+          # Change an unrelated value
+          user.name = "Example McExampleFace"
+          expect(user).to be_valid
         end
       end
     end

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import * as actions from '~/cycle_analytics/store/actions';
-import * as getters from '~/cycle_analytics/store/getters';
+import * as actions from '~/analytics/cycle_analytics/store/actions';
+import * as getters from '~/analytics/cycle_analytics/store/getters';
 import httpStatusCodes from '~/lib/utils/http_status';
 import {
   allowedStages,

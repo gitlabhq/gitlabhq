@@ -4,12 +4,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import ValueStreamMetrics from '~/analytics/shared/components/value_stream_metrics.vue';
-import BaseComponent from '~/cycle_analytics/components/base.vue';
-import PathNavigation from '~/cycle_analytics/components/path_navigation.vue';
-import StageTable from '~/cycle_analytics/components/stage_table.vue';
-import ValueStreamFilters from '~/cycle_analytics/components/value_stream_filters.vue';
-import { NOT_ENOUGH_DATA_ERROR } from '~/cycle_analytics/constants';
-import initState from '~/cycle_analytics/store/state';
+import BaseComponent from '~/analytics/cycle_analytics/components/base.vue';
+import PathNavigation from '~/analytics/cycle_analytics/components/path_navigation.vue';
+import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
+import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
+import { NOT_ENOUGH_DATA_ERROR } from '~/analytics/cycle_analytics/constants';
+import initState from '~/analytics/cycle_analytics/store/state';
 import {
   transformedProjectStagePathData,
   selectedStage,

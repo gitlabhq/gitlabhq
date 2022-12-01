@@ -1,7 +1,7 @@
 import {
   PAGINATION_SORT_FIELD_END_EVENT,
   PAGINATION_SORT_DIRECTION_DESC,
-} from '~/cycle_analytics/constants';
+} from '~/analytics/cycle_analytics/constants';
 
 export default () => ({
   id: null,

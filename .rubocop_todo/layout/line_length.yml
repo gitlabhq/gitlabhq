@@ -3160,7 +3160,6 @@ Layout/LineLength:
     - 'lib/gitlab/database/reindexing/coordinator.rb'
     - 'lib/gitlab/database/reindexing/grafana_notifier.rb'
     - 'lib/gitlab/database/reindexing/reindex_concurrently.rb'
-    - 'lib/gitlab/database/schema_cleaner.rb'
     - 'lib/gitlab/database/schema_migrations/context.rb'
     - 'lib/gitlab/database/similarity_score.rb'
     - 'lib/gitlab/database/with_lock_retries.rb'

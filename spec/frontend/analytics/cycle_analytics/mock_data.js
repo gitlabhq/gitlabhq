@@ -12,7 +12,7 @@ import {
   PAGINATION_TYPE,
   PAGINATION_SORT_DIRECTION_DESC,
   PAGINATION_SORT_FIELD_END_EVENT,
-} from '~/cycle_analytics/constants';
+} from '~/analytics/cycle_analytics/constants';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { getDateInPast } from '~/lib/utils/datetime_utility';
 

@@ -1,3 +1,3 @@
-import initCycleAnalytics from '~/cycle_analytics';
+import initCycleAnalytics from '~/analytics/cycle_analytics';
 
 initCycleAnalytics();

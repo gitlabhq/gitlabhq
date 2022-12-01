@@ -486,34 +486,22 @@ RSpec.describe RegistrationsController do
 
       subject { post(:create, params: new_user_params) }
 
-      context 'when block_weak_passwords is enabled (default)' do
-        it 'renders the form with errors' do
-          expect { subject }.not_to change(User, :count)
+      it 'renders the form with errors' do
+        expect { subject }.not_to change(User, :count)
 
-          expect(controller.current_user).to be_nil
-          expect(response).to render_template(:new)
-          expect(response.body).to include(_('Password must not contain commonly used combinations of words and letters'))
-        end
-
-        it 'tracks the error' do
-          subject
-          expect_snowplow_event(
-            category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
-            action: 'track_weak_password_error',
-            controller: 'RegistrationsController',
-            method: 'create'
-          )
-        end
+        expect(controller.current_user).to be_nil
+        expect(response).to render_template(:new)
+        expect(response.body).to include(_('Password must not contain commonly used combinations of words and letters'))
       end
 
-      context 'when block_weak_passwords is disabled' do
-        before do
-          stub_feature_flags(block_weak_passwords: false)
-        end
-
-        it 'permits weak passwords' do
-          expect { subject }.to change(User, :count).by(1)
-        end
+      it 'tracks the error' do
+        subject
+        expect_snowplow_event(
+          category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
+          action: 'track_weak_password_error',
+          controller: 'RegistrationsController',
+          method: 'create'
+        )
       end
     end
 

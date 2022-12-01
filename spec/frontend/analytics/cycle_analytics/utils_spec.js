@@ -4,7 +4,7 @@ import {
   formatMedianValues,
   filterStagesByHiddenStatus,
   buildCycleAnalyticsInitialData,
-} from '~/cycle_analytics/utils';
+} from '~/analytics/cycle_analytics/utils';
 import {
   selectedStage,
   allowedStages,

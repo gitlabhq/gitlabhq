@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
 
   describe '#restrict_gitlab_migration' do
     it 'invalid schema raises exception' do
-      expect { schema_class.restrict_gitlab_migration gitlab_schema: :gitlab_non_exisiting }
+      expect { schema_class.restrict_gitlab_migration gitlab_schema: :gitlab_non_existing }
         .to raise_error /Unknown 'gitlab_schema:/
     end
 
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, query_a
         "does add index to projects in gitlab_main and gitlab_ci" => {
           migration: ->(klass) do
             def change
-              # Due to running in transactin we cannot use `add_concurrent_index`
+              # Due to running in transaction we cannot use `add_concurrent_index`
               add_index :projects, :hidden
             end
           end,

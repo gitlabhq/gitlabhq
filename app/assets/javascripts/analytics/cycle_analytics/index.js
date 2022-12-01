@@ -3,7 +3,7 @@ import {
   extractFilterQueryParameters,
   extractPaginationQueryParameters,
 } from '~/analytics/shared/utils';
-import Translate from '../vue_shared/translate';
+import Translate from '~/vue_shared/translate';
 import CycleAnalytics from './components/base.vue';
 import createStore from './store';
 import { buildCycleAnalyticsInitialData } from './utils';

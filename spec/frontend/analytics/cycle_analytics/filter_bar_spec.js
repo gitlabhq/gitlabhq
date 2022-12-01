@@ -7,8 +7,8 @@ import {
   filterMilestones,
   filterLabels,
 } from 'jest/vue_shared/components/filtered_search_bar/store/modules/filters/mock_data';
-import FilterBar from '~/cycle_analytics/components/filter_bar.vue';
-import storeConfig from '~/cycle_analytics/store';
+import FilterBar from '~/analytics/cycle_analytics/components/filter_bar.vue';
+import storeConfig from '~/analytics/cycle_analytics/store';
 import * as commonUtils from '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 import {

@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import Component from '~/cycle_analytics/components/formatted_stage_count.vue';
+import Component from '~/analytics/cycle_analytics/components/formatted_stage_count.vue';
 
 describe('Formatted Stage Count', () => {
   let wrapper = null;

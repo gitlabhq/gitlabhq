@@ -2098,8 +2098,8 @@ Input type: `DastSiteProfileCreateInput`
 | <a id="mutationdastsiteprofilecreatefullpath"></a>`fullPath` | [`ID!`](#id) | Project the site profile belongs to. |
 | <a id="mutationdastsiteprofilecreateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofilecreaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
-| <a id="mutationdastsiteprofilecreatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. Will not be saved or updated if `dast_api_scanner` feature flag is disabled. |
-| <a id="mutationdastsiteprofilecreatescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method by the scanner. Is not saved or updated if `dast_api_scanner` feature flag is disabled. |
+| <a id="mutationdastsiteprofilecreatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. |
+| <a id="mutationdastsiteprofilecreatescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method by the scanner. |
 | <a id="mutationdastsiteprofilecreatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
 | <a id="mutationdastsiteprofilecreatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 
@@ -2146,8 +2146,8 @@ Input type: `DastSiteProfileUpdateInput`
 | <a id="mutationdastsiteprofileupdateid"></a>`id` | [`DastSiteProfileID!`](#dastsiteprofileid) | ID of the site profile to be updated. |
 | <a id="mutationdastsiteprofileupdateprofilename"></a>`profileName` | [`String!`](#string) | Name of the site profile. |
 | <a id="mutationdastsiteprofileupdaterequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
-| <a id="mutationdastsiteprofileupdatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. Will not be saved or updated if `dast_api_scanner` feature flag is disabled. |
-| <a id="mutationdastsiteprofileupdatescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method by the scanner. Is not saved or updated if `dast_api_scanner` feature flag is disabled. |
+| <a id="mutationdastsiteprofileupdatescanfilepath"></a>`scanFilePath` | [`String`](#string) | File Path or URL used as input for the scan method. |
+| <a id="mutationdastsiteprofileupdatescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method by the scanner. |
 | <a id="mutationdastsiteprofileupdatetargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
 | <a id="mutationdastsiteprofileupdatetargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 
@@ -11708,8 +11708,8 @@ Represents a DAST Site Profile.
 | <a id="dastsiteprofileprofilename"></a>`profileName` | [`String`](#string) | Name of the site profile. |
 | <a id="dastsiteprofilereferencedinsecuritypolicies"></a>`referencedInSecurityPolicies` | [`[String!]`](#string) | List of security policy names that are referencing given project. |
 | <a id="dastsiteprofilerequestheaders"></a>`requestHeaders` | [`String`](#string) | Comma-separated list of request header names and values to be added to every request made by DAST. |
-| <a id="dastsiteprofilescanfilepath"></a>`scanFilePath` | [`String`](#string) | Scan File Path used as input for the scanner. Will always return `null` if `dast_api_scanner` feature flag is disabled. |
-| <a id="dastsiteprofilescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method used by the scanner. Always returns `null` if `dast_api_scanner` feature flag is disabled. |
+| <a id="dastsiteprofilescanfilepath"></a>`scanFilePath` | [`String`](#string) | Scan File Path used as input for the scanner. |
+| <a id="dastsiteprofilescanmethod"></a>`scanMethod` | [`DastScanMethodType`](#dastscanmethodtype) | Scan method used by the scanner. |
 | <a id="dastsiteprofiletargettype"></a>`targetType` | [`DastTargetTypeEnum`](#dasttargettypeenum) | Type of target to be scanned. |
 | <a id="dastsiteprofiletargeturl"></a>`targetUrl` | [`String`](#string) | URL of the target to be scanned. |
 | <a id="dastsiteprofileuserpermissions"></a>`userPermissions` | [`DastSiteProfilePermissions!`](#dastsiteprofilepermissions) | Permissions for the current user on the resource. |
