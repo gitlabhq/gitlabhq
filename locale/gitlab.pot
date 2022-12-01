@@ -4680,9 +4680,6 @@ msgstr ""
 msgid "Any namespace"
 msgstr ""
 
-msgid "Anyone can register for an account."
-msgstr ""
-
 msgid "App ID"
 msgstr ""
 
@@ -8100,6 +8097,9 @@ msgid "Check your Docker images for known vulnerabilities."
 msgstr ""
 
 msgid "Check your Kubernetes cluster images for known vulnerabilities."
+msgstr ""
+
+msgid "Check your sign-up restrictions"
 msgstr ""
 
 msgid "Checking %{text} availability…"
@@ -12779,6 +12779,9 @@ msgid "Days of inactivity before deactivation"
 msgstr ""
 
 msgid "Days to merge"
+msgstr ""
+
+msgid "Deactivate"
 msgstr ""
 
 msgid "Deactivate dormant users after a period of inactivity"
@@ -28635,9 +28638,6 @@ msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLin
 msgstr ""
 
 msgid "Only active projects show up in the search and on the dashboard."
-msgstr ""
-
-msgid "Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable."
 msgstr ""
 
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
@@ -47564,6 +47564,9 @@ msgid "Your GitLab account request has been approved!"
 msgstr ""
 
 msgid "Your GitLab group"
+msgstr ""
+
+msgid "Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account."
 msgstr ""
 
 msgid "Your Groups"

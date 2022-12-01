@@ -3,7 +3,7 @@ status: proposed
 creation-date: "2022-09-14"
 authors: [ "@fabio", "@grzesiek" ]
 coach: "@kamil"
-approvers: [ "@dhershkovitch" ]
+approvers: [ "@dhershkovitch", "@marknuzzo" ]
 owning-stage: "~devops::verify"
 participating-stages: []
 ---
@@ -314,21 +314,21 @@ Proposal:
 
 <!-- vale gitlab.Spelling = NO -->
 
-| Role                         | Who
-|------------------------------|-------------------------|
-| Author                       | Fabio Pitino            |
-| Engineering Leader           | ?                       |
-| Product Manager              | Dov Hershkovitch        |
-| Architecture Evolution Coach | Kamil Trzciński, Grzegorz Bizon |
+| Role                           | Who
+|--------------------------------|-------------------------|
+| Author                         | Fabio Pitino            |
+| Engineering Leaders            | Cheryl Li, Mark Nuzzo   |
+| Product Manager                | Dov Hershkovitch        |
+| Architecture Evolution Coaches | Kamil Trzciński, Grzegorz Bizon |
 
 DRIs:
 
 | Role                         | Who
 |------------------------------|------------------------|
-| Leadership                   | ?                      |
+| Leadership                   | Mark Nuzzo             |
 | Product                      | Dov Hershkovitch       |
 | Engineering                  | Fabio Pitino           |
-| UX                           | Kevin Comoli              |
+| UX                           | Kevin Comoli           |
 
 Domain experts:
 

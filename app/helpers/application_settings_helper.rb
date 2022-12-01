@@ -216,6 +216,7 @@ module ApplicationSettingsHelper
       :default_branch_protection,
       :default_ci_config_path,
       :default_group_visibility,
+      :default_preferred_language,
       :default_project_creation,
       :default_project_visibility,
       :default_projects_limit,

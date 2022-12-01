@@ -36,6 +36,7 @@ Example response:
   "signup_enabled" : true,
   "id" : 1,
   "default_branch_protection" : 2,
+  "default_preferred_language" : "en",
   "restricted_visibility_levels" : [],
   "password_authentication_enabled_for_web" : true,
   "after_sign_out_path" : null,
@@ -146,6 +147,7 @@ Example response:
 {
   "id": 1,
   "default_projects_limit": 100000,
+  "default_preferred_language": "en",
   "signup_enabled": false,
   "password_authentication_enabled_for_web": true,
   "gravatar_enabled": true,
@@ -290,6 +292,7 @@ listed in the descriptions of the relevant settings.
 | `default_branch_protection`              | integer          | no                                   | Determine if developers can push to the default branch. Can take: `0` _(not protected, both users with the Developer role or Maintainer role can push new commits and force push)_, `1` _(partially protected, users with the Developer role or Maintainer role can push new commits, but cannot force push)_ or `2` _(fully protected, users with the Developer or Maintainer role cannot push new commits, but users with the Developer or Maintainer role can; no one can force push)_ as a parameter. Default is `2`. |
 | `default_ci_config_path`                  | string           | no                                   | Default CI/CD configuration file and path for new projects (`.gitlab-ci.yml` if not set). |
 | `default_group_visibility`               | string           | no                                   | What visibility level new groups receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
+| `default_preferred_language`             | string           | no                                   | Default preferred language for users who are not logged in. |
 | `default_project_creation`               | integer          | no                                   | Default project creation protection. Can take: `0` _(No one)_, `1` _(Maintainers)_ or `2` _(Developers + Maintainers)_|
 | `default_project_visibility`             | string           | no                                   | What visibility level new projects receive. Can take `private`, `internal` and `public` as a parameter. Default is `private`. |
 | `default_projects_limit`                 | integer          | no                                   | Project limit per user. Default is `100000`. |
