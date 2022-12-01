@@ -33,8 +33,8 @@
 
   .ci-action-icon-container {
     position: absolute;
-    right: 8px;
-    top: 8px;
+    right: 11px;
+    top: 7px;
 
     &.ci-action-icon-wrapper {
       height: $ci-action-dropdown-button-size;
@@ -83,25 +83,6 @@
       // Match dropdown.scss for all `a` tags
       &.non-details-job-component {
         padding: $gl-padding-8 $gl-btn-horz-padding;
-      }
-
-      .ci-job-name-component {
-        align-items: center;
-        display: flex;
-        flex: 1;
-      }
-
-      .ci-status-icon {
-        position: relative;
-
-        > svg {
-          width: $pipeline-dropdown-status-icon-size;
-          height: $pipeline-dropdown-status-icon-size;
-          margin: 3px 0;
-          position: relative;
-          overflow: visible;
-          display: block;
-        }
       }
     }
 

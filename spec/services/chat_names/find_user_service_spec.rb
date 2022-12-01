@@ -40,6 +40,14 @@ RSpec.describe ChatNames::FindUserService, :clean_gitlab_redis_shared_state do
 
           expect(chat_name.reload.last_used_at).to eq(time)
         end
+
+        context 'when integration is not passed' do
+          it 'returns chat name' do
+            requested_chat_name = described_class.new(nil, params).execute
+
+            expect(requested_chat_name).to eq(chat_name)
+          end
+        end
       end
 
       context 'when different user is requested' do

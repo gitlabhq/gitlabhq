@@ -225,18 +225,7 @@ and clear the user from the list of assignees, or select **Unassigned**.
 
 > [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/3066) in GitLab 13.1.
 
-You can manually create [To-Do list items](../../user/todos.md) for yourself
-from the Alert details screen, and view them later on your **To-Do List**. To
-add a to-do item:
+You can manually create a [to-do item](../../user/todos.md) for yourself
+from an alert, and view it later on your **To-Do List**.
 
-1. Display the list of current alerts:
-
-   1. On the top bar, select **Main menu > Projects** and find your project.
-   1. On the left sidebar, select **Monitor > Alerts**.
-
-1. Select your desired alert to display its **Alert Management Details View**.
-1. On the right sidebar, select **Add a to do**:
-
-   ![Alert Details Add a to do](img/alert_detail_add_todo_v13_9.png)
-
-To view your To-Do List, on the top bar, select **To-Do List** (**{todo-done}**).
+To add a to-do item, on the right sidebar, select **Add a to do**.

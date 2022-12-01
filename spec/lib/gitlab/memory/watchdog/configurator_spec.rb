@@ -6,17 +6,23 @@ require 'sidekiq'
 require_dependency 'gitlab/cluster/lifecycle_events'
 
 RSpec.describe Gitlab::Memory::Watchdog::Configurator do
-  shared_examples 'as configurator' do |handler_class, sleep_time_env, sleep_time|
+  shared_examples 'as configurator' do |handler_class, event_reporter_class, sleep_time_env, sleep_time|
     it 'configures the correct handler' do
       configurator.call(configuration)
 
       expect(configuration.handler).to be_an_instance_of(handler_class)
     end
 
+    it 'configures the correct event reporter' do
+      configurator.call(configuration)
+
+      expect(configuration.event_reporter).to be_an_instance_of(event_reporter_class)
+    end
+
     it 'configures the correct logger' do
       configurator.call(configuration)
 
-      expect(configuration.logger).to eq(logger)
+      expect(configuration.event_reporter.logger).to eq(logger)
     end
 
     it 'does not enable writing heap dumps by default' do
@@ -129,6 +135,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
 
     it_behaves_like 'as configurator',
                     Gitlab::Memory::Watchdog::PumaHandler,
+                    Gitlab::Memory::Watchdog::EventReporter,
                     'GITLAB_MEMWD_SLEEP_TIME_SEC',
                     described_class::DEFAULT_SLEEP_INTERVAL_S
 
@@ -236,6 +243,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
 
     it_behaves_like 'as configurator',
                     Gitlab::Memory::Watchdog::TermProcessHandler,
+                    Gitlab::Memory::Watchdog::EventReporter,
                     'SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL',
                     described_class::DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S
 

@@ -67,7 +67,6 @@
 - geo_replication
 - git_lfs
 - gitaly
-- gitlab_docs
 - global_search
 - helm_chart_registry
 - importers
@@ -105,6 +104,7 @@
 - pubsec_services
 - purchase
 - quality_management
+- rate_limiting
 - redis
 - release_evidence
 - release_orchestration
@@ -116,6 +116,7 @@
 - runner_fleet
 - runner_saas
 - saas_provisioning
+- sbom
 - scalability
 - secret_detection
 - secrets_management
@@ -124,7 +125,6 @@
 - service_desk
 - service_ping
 - sm_provisioning
-- snippets
 - source_code_management
 - static_application_security_testing
 - subgroups

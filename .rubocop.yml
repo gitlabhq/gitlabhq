@@ -450,22 +450,6 @@ Cop/ActiveModelErrorsDirectManipulation:
 Gitlab/AvoidFeatureGet:
   Enabled: true
 
-RSpec/TimecopFreeze:
-  Enabled: true
-  AutoCorrect: true
-  Include:
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
-    - 'qa/spec/**/*.rb'
-
-RSpec/TimecopTravel:
-  Enabled: true
-  AutoCorrect: true
-  Include:
-    - 'spec/**/*.rb'
-    - 'ee/spec/**/*.rb'
-    - 'qa/spec/**/*.rb'
-
 RSpec/WebMockEnable:
   Enabled: true
   Include:

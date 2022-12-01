@@ -1,9 +1,0 @@
----
-# Cop supports --autocorrect.
-Rails/HttpStatus:
-  Exclude:
-    - 'app/controllers/concerns/invisible_captcha_on_signup.rb'
-    - 'app/controllers/projects/runner_projects_controller.rb'
-    - 'app/controllers/projects/service_ping_controller.rb'
-    - 'app/controllers/repositories/lfs_storage_controller.rb'
-    - 'ee/app/controllers/trials_controller.rb'

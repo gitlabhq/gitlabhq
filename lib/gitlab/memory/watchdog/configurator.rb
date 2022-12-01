@@ -17,7 +17,6 @@ module Gitlab
         class << self
           def configure_for_puma
             ->(config) do
-              config.logger = Gitlab::AppLogger
               config.handler = Gitlab::Memory::Watchdog::PumaHandler.new
               config.write_heap_dumps = write_heap_dumps?
               config.sleep_time_seconds = ENV.fetch('GITLAB_MEMWD_SLEEP_TIME_SEC', DEFAULT_SLEEP_INTERVAL_S).to_i
@@ -27,11 +26,11 @@ module Gitlab
 
           def configure_for_sidekiq
             ->(config) do
-              config.logger = Sidekiq.logger
               config.handler = Gitlab::Memory::Watchdog::TermProcessHandler.new
               config.write_heap_dumps = write_heap_dumps?
               config.sleep_time_seconds = sidekiq_sleep_time
               config.monitors(&configure_monitors_for_sidekiq)
+              config.event_reporter = EventReporter.new(logger: ::Sidekiq.logger)
             end
           end
 

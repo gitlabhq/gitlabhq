@@ -5,7 +5,7 @@ module API
   class Snippets < ::API::Base
     include PaginationParams
 
-    feature_category :snippets
+    feature_category :source_code_management
     urgency :low
 
     resource :snippets do

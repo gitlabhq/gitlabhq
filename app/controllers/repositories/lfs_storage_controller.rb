@@ -49,7 +49,7 @@ module Repositories
       validate_uploaded_file!
 
       if store_file!(oid, size)
-        head 200, content_type: LfsRequest::CONTENT_TYPE
+        head :ok, content_type: LfsRequest::CONTENT_TYPE
       else
         render plain: 'Unprocessable entity', status: :unprocessable_entity
       end

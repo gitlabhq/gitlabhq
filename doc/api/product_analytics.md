@@ -31,7 +31,7 @@ POST /projects/:id/product_analytics/request/dry-run
 
 ### Request body
 
-The body of the load request should be a valid Cube query.
+The body of the load request must be a valid Cube query.
 
 ```json
 {
@@ -68,9 +68,9 @@ The body of the load request should be a valid Cube query.
 }
 ```
 
-## Send meta request to Cube
+## Send metadata request to Cube
 
-Returns Cube Meta data for the Analytics data. For example:
+Return Cube Metadata for the Analytics data. For example:
 
 ```plaintext
 GET /projects/:id/product_analytics/request/meta

@@ -163,7 +163,7 @@ export default {
       @click.stop="hideTooltips"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
+      <job-name-component :name="job.name" :status="job.status" />
     </gl-link>
 
     <div
@@ -175,7 +175,7 @@ export default {
       data-testid="job-without-link"
       @mouseout="hideTooltips"
     >
-      <job-name-component :name="job.name" :status="job.status" :icon-size="24" />
+      <job-name-component :name="job.name" :status="job.status" />
     </div>
 
     <action-component

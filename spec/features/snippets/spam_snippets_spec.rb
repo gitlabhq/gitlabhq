@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'snippet editor with spam', skip: "Will be handled in https://gitlab.com/gitlab-org/gitlab/-/issues/217722",
-                                           feature_category: :snippets do
+                                           feature_category: :source_code_management do
   include_context 'includes Spam constants'
 
   let_it_be(:user) { create(:user) }

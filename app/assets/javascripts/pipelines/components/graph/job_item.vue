@@ -252,7 +252,7 @@ export default {
       @click="jobItemClick"
       @mouseout="hideTooltips"
     >
-      <div class="ci-job-name-component gl-display-flex gl-align-items-center">
+      <div class="gl-display-flex gl-align-items-center gl-flex-grow-1">
         <ci-icon :size="24" :status="job.status" class="gl-line-height-0" />
         <div class="gl-pl-3 gl-pr-3 gl-display-flex gl-flex-direction-column gl-pipeline-job-width">
           <div class="gl-text-truncate gl-pr-9 gl-line-height-normal">{{ job.name }}</div>

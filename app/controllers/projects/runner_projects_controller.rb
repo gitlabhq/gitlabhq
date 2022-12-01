@@ -11,7 +11,7 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
   def create
     @runner = Ci::Runner.find(params[:runner_project][:runner_id])
 
-    return head(403) unless can?(current_user, :assign_runner, @runner)
+    return head(:forbidden) unless can?(current_user, :assign_runner, @runner)
 
     path = project_runners_path(project)
 

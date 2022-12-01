@@ -7,7 +7,7 @@ module API
         [
           { type: 'issue', resource: :projects, find_by: :iid, feature_category: :team_planning },
           { type: 'merge_request', resource: :projects, find_by: :iid, feature_category: :code_review },
-          { type: 'snippet', resource: :projects, find_by: :id, feature_category: :snippets }
+          { type: 'snippet', resource: :projects, find_by: :id, feature_category: :source_code_management }
         ]
       end
 

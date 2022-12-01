@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Explore Snippets', feature_category: :snippets do
+RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
   let!(:public_snippet) { create(:personal_snippet, :public) }
   let!(:internal_snippet) { create(:personal_snippet, :internal) }
   let!(:private_snippet) { create(:personal_snippet, :private) }

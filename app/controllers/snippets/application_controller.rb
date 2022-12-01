@@ -4,7 +4,7 @@ class Snippets::ApplicationController < ApplicationController
   include FindSnippet
   include SnippetAuthorizations
 
-  feature_category :snippets
+  feature_category :source_code_management
 
   private
 

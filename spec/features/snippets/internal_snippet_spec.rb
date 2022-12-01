@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Internal Snippets', :js, feature_category: :snippets do
+RSpec.describe 'Internal Snippets', :js, feature_category: :source_code_management do
   let(:internal_snippet) { create(:personal_snippet, :internal, :repository) }
   let(:content) { internal_snippet.blobs.first.data.strip! }
 

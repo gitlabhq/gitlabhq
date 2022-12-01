@@ -114,9 +114,14 @@ describe('Settings Panel', () => {
   const findPackageSettings = () => wrapper.findComponent({ ref: 'package-settings' });
   const findPackageAccessLevel = () =>
     wrapper.find('[data-testid="package-registry-access-level"]');
-  const findPackageAccessLevels = () =>
-    wrapper.find('[name="project[project_feature_attributes][package_registry_access_level]"]');
   const findPackagesEnabledInput = () => wrapper.find('[name="project[packages_enabled]"]');
+  const findPackageRegistryEnabledInput = () => wrapper.find('[name="package_registry_enabled"]');
+  const findPackageRegistryAccessLevelHiddenInput = () =>
+    wrapper.find(
+      'input[name="project[project_feature_attributes][package_registry_access_level]"]',
+    );
+  const findPackageRegistryApiForEveryoneEnabledInput = () =>
+    wrapper.find('[name="package_registry_api_for_everyone_enabled"]');
   const findPagesSettings = () => wrapper.findComponent({ ref: 'pages-settings' });
   const findPagesAccessLevels = () =>
     wrapper.find('[name="project[project_feature_attributes][pages_access_level]"]');
@@ -587,28 +592,63 @@ describe('Settings Panel', () => {
         expect(findPackageAccessLevel().exists()).toBe(true);
       });
 
+      it('has hidden input field for package registry access level', () => {
+        wrapper = mountComponent({
+          glFeatures: { packageRegistryAccessLevel: true },
+          packagesAvailable: true,
+        });
+
+        expect(findPackageRegistryAccessLevelHiddenInput().exists()).toBe(true);
+      });
+
       it.each`
-        visibilityLevel                      | output
-        ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${[[featureAccessLevel.PROJECT_MEMBERS, 'Only Project Members'], [30, 'Everyone']]}
-        ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${[[featureAccessLevel.EVERYONE, 'Everyone With Access'], [30, 'Everyone']]}
-        ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${[[30, 'Everyone']]}
+        projectVisibilityLevel               | packageRegistryEnabled | packageRegistryApiForEveryoneEnabled | expectedAccessLevel
+        ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${false}               | ${'disabled'}                        | ${featureAccessLevel.NOT_ENABLED}
+        ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${false}                             | ${featureAccessLevel.PROJECT_MEMBERS}
+        ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${true}                | ${true}                              | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${false}               | ${'disabled'}                        | ${featureAccessLevel.NOT_ENABLED}
+        ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${false}                             | ${featureAccessLevel.EVERYONE}
+        ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${true}                | ${true}                              | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
+        ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${false}               | ${'hidden'}                          | ${featureAccessLevel.NOT_ENABLED}
+        ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${true}                | ${'hidden'}                          | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
       `(
-        'renders correct options when visibilityLevel is $visibilityLevel',
-        async ({ visibilityLevel, output }) => {
+        'sets correct access level',
+        async ({
+          projectVisibilityLevel,
+          packageRegistryEnabled,
+          packageRegistryApiForEveryoneEnabled,
+          expectedAccessLevel,
+        }) => {
           wrapper = mountComponent({
             glFeatures: { packageRegistryAccessLevel: true },
             packagesAvailable: true,
             currentSettings: {
-              visibilityLevel,
+              visibilityLevel: projectVisibilityLevel,
             },
           });
 
-          expect(findPackageAccessLevels().props('options')).toStrictEqual(output);
+          await findPackageRegistryEnabledInput().vm.$emit('change', packageRegistryEnabled);
+
+          const packageRegistryApiForEveryoneEnabledInput = findPackageRegistryApiForEveryoneEnabledInput();
+
+          if (packageRegistryApiForEveryoneEnabled === 'hidden') {
+            expect(packageRegistryApiForEveryoneEnabledInput.exists()).toBe(false);
+          } else if (packageRegistryApiForEveryoneEnabled === 'disabled') {
+            expect(packageRegistryApiForEveryoneEnabledInput.props('disabled')).toBe(true);
+          } else {
+            expect(packageRegistryApiForEveryoneEnabledInput.props('disabled')).toBe(false);
+            await packageRegistryApiForEveryoneEnabledInput.vm.$emit(
+              'change',
+              packageRegistryApiForEveryoneEnabled,
+            );
+          }
+
+          expect(wrapper.vm.packageRegistryAccessLevel).toBe(expectedAccessLevel);
         },
       );
 
       it.each`
-        initialProjectVisibilityLevel        | newProjectVisibilityLevel            | initialPackageRegistryOption          | expectedPackageRegistryOption
+        initialProjectVisibilityLevel        | newProjectVisibilityLevel            | initialAccessLevel                    | expectedAccessLevel
         ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
         ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${featureAccessLevel.PROJECT_MEMBERS} | ${featureAccessLevel.EVERYONE}
         ${VISIBILITY_LEVEL_PRIVATE_INTEGER}  | ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}
@@ -626,27 +666,25 @@ describe('Settings Panel', () => {
         ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${featureAccessLevel.NOT_ENABLED}     | ${featureAccessLevel.NOT_ENABLED}
         ${VISIBILITY_LEVEL_PUBLIC_INTEGER}   | ${VISIBILITY_LEVEL_INTERNAL_INTEGER} | ${FEATURE_ACCESS_LEVEL_ANONYMOUS}     | ${featureAccessLevel.EVERYONE}
       `(
-        'changes option from $initialPackageRegistryOption to $expectedPackageRegistryOption when visibilityLevel changed from $initialProjectVisibilityLevel to $newProjectVisibilityLevel',
+        'changes access level when project visibility level changed',
         async ({
           initialProjectVisibilityLevel,
           newProjectVisibilityLevel,
-          initialPackageRegistryOption,
-          expectedPackageRegistryOption,
+          initialAccessLevel,
+          expectedAccessLevel,
         }) => {
           wrapper = mountComponent({
             glFeatures: { packageRegistryAccessLevel: true },
             packagesAvailable: true,
             currentSettings: {
               visibilityLevel: initialProjectVisibilityLevel,
-              packageRegistryAccessLevel: initialPackageRegistryOption,
+              packageRegistryAccessLevel: initialAccessLevel,
             },
           });
 
           await findProjectVisibilityLevelInput().setValue(newProjectVisibilityLevel);
 
-          expect(findPackageAccessLevels().props('value')).toStrictEqual(
-            expectedPackageRegistryOption,
-          );
+          expect(wrapper.vm.packageRegistryAccessLevel).toBe(expectedAccessLevel);
         },
       );
     });

@@ -19,6 +19,13 @@ module ChatNames
 
     # rubocop: disable CodeReuse/ActiveRecord
     def find_chat_name
+      if @integration.nil?
+        return ChatName.find_by(
+          team_id: @params[:team_id],
+          chat_id: @params[:user_id]
+        )
+      end
+
       ChatName.find_by(
         integration: @integration,
         team_id: @params[:team_id],

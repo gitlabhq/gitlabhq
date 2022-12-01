@@ -9,7 +9,7 @@ module API
         {
           Issue => :team_planning,
           MergeRequest => :code_review,
-          Snippet => :snippets
+          Snippet => :source_code_management
         }
       end
 

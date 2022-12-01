@@ -20,10 +20,10 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
     end
   end
 
-  describe '#logger' do
-    context 'when logger is not set, defaults to stdout logger' do
-      it 'defaults to Logger' do
-        expect(configuration.logger).to be_an_instance_of(::Gitlab::Logger)
+  describe '#event_reporter' do
+    context 'when event reporter is not set' do
+      it 'defaults to EventReporter' do
+        expect(configuration.event_reporter).to be_an_instance_of(::Gitlab::Memory::Watchdog::EventReporter)
       end
     end
   end

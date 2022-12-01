@@ -200,11 +200,9 @@ export default {
               class="no-expand gl-mr-3 gl-text-gray-900!"
               :itemprop="microdata.nameItemprop"
             >
-              {{
-                // ending bracket must be by closing tag to prevent
-                // link hover text-decoration from over-extending
-                group.name
-              }}
+              <!-- ending bracket must be by closing tag to prevent -->
+              <!-- link hover text-decoration from over-extending -->
+              {{ group.name }}
             </a>
             <gl-icon
               v-gl-tooltip.hover.bottom

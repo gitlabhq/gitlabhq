@@ -20,12 +20,12 @@ export default {
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
-    groupInitialData: {
+    groupInitialJson: {
       type: Object,
       required: false,
       default: () => ({}),
     },
-    projectInitialData: {
+    projectInitialJson: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -72,11 +72,11 @@ export default {
       </div>
       <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
         <label class="gl-display-block">{{ __('Group') }}</label>
-        <group-filter :initial-data="groupInitialData" />
+        <group-filter :initial-data="groupInitialJson" />
       </div>
       <div v-if="showFilters" class="gl-mb-4 gl-lg-mb-0 gl-lg-mx-2">
         <label class="gl-display-block">{{ __('Project') }}</label>
-        <project-filter :initial-data="projectInitialData" />
+        <project-filter :initial-data="projectInitialJson" />
       </div>
     </div>
     <hr v-if="hasVerticalNav" class="gl-mt-5 gl-mb-0 gl-border-gray-100" />

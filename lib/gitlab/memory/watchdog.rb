@@ -50,8 +50,6 @@ module Gitlab
       def initialize
         @configuration = Configuration.new
         @alive = true
-
-        init_prometheus_metrics
       end
 
       ##
@@ -62,7 +60,7 @@ module Gitlab
       end
 
       def call
-        logger.info(log_labels.merge(message: 'started'))
+        event_reporter.started(log_labels)
 
         while @alive
           sleep(sleep_time_seconds)
@@ -70,7 +68,7 @@ module Gitlab
           monitor if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
         end
 
-        logger.info(log_labels.merge(message: 'stopped'))
+        event_reporter.stopped(log_labels)
       end
 
       def stop
@@ -85,18 +83,16 @@ module Gitlab
 
           next unless result.threshold_violated?
 
-          @counter_violations.increment(reason: result.monitor_name)
+          event_reporter.threshold_violated(result.monitor_name)
 
           next unless result.strikes_exceeded?
 
-          @alive = !memory_limit_exceeded_callback(result.monitor_name, result.payload)
+          @alive = !strike_exceeded_callback(result.monitor_name, result.payload)
         end
       end
 
-      def memory_limit_exceeded_callback(monitor_name, monitor_payload)
-        all_labels = log_labels.merge(monitor_payload)
-        logger.warn(all_labels)
-        @counter_violations_handled.increment(reason: monitor_name)
+      def strike_exceeded_callback(monitor_name, monitor_payload)
+        event_reporter.strikes_exceeded(monitor_name, log_labels(monitor_payload))
 
         Gitlab::Memory::Reports::HeapDump.enqueue! if @configuration.write_heap_dumps?
 
@@ -111,43 +107,18 @@ module Gitlab
         @configuration.handler
       end
 
-      def logger
-        @configuration.logger
+      def event_reporter
+        @configuration.event_reporter
       end
 
       def sleep_time_seconds
         @configuration.sleep_time_seconds
       end
 
-      def log_labels
-        {
-          pid: $$,
-          worker_id: worker_id,
+      def log_labels(extra = {})
+        extra.merge(
           memwd_handler_class: handler.class.name,
-          memwd_sleep_time_s: sleep_time_seconds,
-          memwd_rss_bytes: process_rss_bytes
-        }
-      end
-
-      def process_rss_bytes
-        Gitlab::Metrics::System.memory_usage_rss[:total]
-      end
-
-      def worker_id
-        ::Prometheus::PidProvider.worker_id
-      end
-
-      def init_prometheus_metrics
-        default_labels = { pid: worker_id }
-        @counter_violations = Gitlab::Metrics.counter(
-          :gitlab_memwd_violations_total,
-          'Total number of times a Ruby process violated a memory threshold',
-          default_labels
-        )
-        @counter_violations_handled = Gitlab::Metrics.counter(
-          :gitlab_memwd_violations_handled_total,
-          'Total number of times Ruby process memory violations were handled',
-          default_labels
+          memwd_sleep_time_s: sleep_time_seconds
         )
       end
     end

@@ -58,16 +58,16 @@ class User < ApplicationRecord
   add_authentication_token_field :feed_token
   add_authentication_token_field :static_object_token, encrypted: :optional
 
-  default_value_for :admin, false
-  default_value_for(:external) { Gitlab::CurrentSettings.user_default_external }
-  default_value_for(:can_create_group) { Gitlab::CurrentSettings.can_create_group }
-  default_value_for :can_create_team, false
-  default_value_for :hide_no_ssh_key, false
-  default_value_for :hide_no_password, false
-  default_value_for :project_view, :files
-  default_value_for :notified_of_own_activity, false
-  default_value_for :preferred_language, I18n.default_locale
-  default_value_for :theme_id, gitlab_config.default_theme
+  attribute :admin, default: false
+  attribute :external, default: -> { Gitlab::CurrentSettings.user_default_external }
+  attribute :can_create_group, default: -> { Gitlab::CurrentSettings.can_create_group }
+  attribute :can_create_team, default: false
+  attribute :hide_no_ssh_key, default: false
+  attribute :hide_no_password, default: false
+  attribute :project_view, default: :files
+  attribute :notified_of_own_activity, default: false
+  attribute :preferred_language, default: -> { I18n.default_locale }
+  attribute :theme_id, default: -> { gitlab_config.default_theme }
 
   attr_encrypted :otp_secret,
     key: Gitlab::Application.secrets.otp_key_base,
@@ -376,6 +376,14 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :credit_card_validation, update_only: true, allow_destroy: true
 
   state_machine :state, initial: :active do
+    # state_machine uses this method at class loading time to fetch the default
+    # value for the `state` column but in doing so it also evaluates all other
+    # columns default values which could trigger the recursive generation of
+    # ApplicationSetting records. We're setting it to `nil` here because we
+    # don't have a database default for the `state` column.
+    #
+    def owner_class_attribute_default; end
+
     event :block do
       transition active: :blocked
       transition deactivated: :blocked

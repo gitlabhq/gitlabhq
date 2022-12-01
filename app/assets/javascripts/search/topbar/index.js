@@ -11,10 +11,18 @@ export const initTopbar = (store) => {
     return false;
   }
 
-  let { groupInitialData, projectInitialData } = el.dataset;
+  const {
+    groupInitialJson,
+    projectInitialJson,
+    elasticsearchEnabled,
+    defaultBranchName,
+  } = el.dataset;
 
-  groupInitialData = JSON.parse(groupInitialData);
-  projectInitialData = JSON.parse(projectInitialData);
+  const groupInitialJsonParsed = JSON.parse(groupInitialJson);
+  const projectInitialJsonParsed = JSON.parse(projectInitialJson);
+  const elasticsearchEnabledParsed = elasticsearchEnabled
+    ? JSON.parse(elasticsearchEnabled)
+    : false;
 
   return new Vue({
     el,
@@ -22,8 +30,10 @@ export const initTopbar = (store) => {
     render(createElement) {
       return createElement(GlobalSearchTopbar, {
         props: {
-          groupInitialData,
-          projectInitialData,
+          groupInitialJson: groupInitialJsonParsed,
+          projectInitialJson: projectInitialJsonParsed,
+          elasticsearchEnabled: elasticsearchEnabledParsed,
+          defaultBranchName,
         },
       });
     },

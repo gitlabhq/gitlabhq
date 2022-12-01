@@ -149,7 +149,7 @@ export default {
       class="js-builds-dropdown-list scrollable-menu"
       data-testid="mini-pipeline-graph-dropdown-menu-list"
     >
-      <div class="gl--flex-center gl-border-b gl-font-weight-bold gl-pb-3">
+      <div class="gl--flex-center gl-border-b gl-font-weight-bold gl-mb-3 gl-pb-3">
         <span class="gl-mr-1">{{ $options.i18n.stage }}</span>
         <span data-testid="pipeline-stage-dropdown-menu-title">{{ stageName }}</span>
       </div>

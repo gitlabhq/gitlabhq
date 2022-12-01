@@ -2,7 +2,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import { captureException } from '@sentry/browser';
 import PipelineWizard from '~/pipeline_wizard/pipeline_wizard.vue';
-import PagesWizardTemplate from '~/pipeline_wizard/templates/pages.yml';
+import PagesWizardTemplate from '~/pipeline_wizard/templates/pages.yml?raw';
 import { logError } from '~/lib/logger';
 import { s__ } from '~/locale';
 import { redirectTo } from '~/lib/utils/url_utility';

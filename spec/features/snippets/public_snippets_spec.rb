@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Public Snippets', :js, feature_category: :snippets do
+RSpec.describe 'Public Snippets', :js, feature_category: :source_code_management do
   let(:public_snippet) { create(:personal_snippet, :public, :repository) }
   let(:content) { public_snippet.blobs.first.data.strip! }
 

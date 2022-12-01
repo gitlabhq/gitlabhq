@@ -146,6 +146,21 @@ RSpec.describe User do
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout') }
     it { is_expected.to have_many(:created_projects).dependent(:nullify).class_name('Project') }
 
+    describe 'default values' do
+      let(:user) { described_class.new }
+
+      it { expect(user.admin).to be_falsey }
+      it { expect(user.external).to eq(Gitlab::CurrentSettings.user_default_external) }
+      it { expect(user.can_create_group).to eq(Gitlab::CurrentSettings.can_create_group) }
+      it { expect(user.can_create_team).to be_falsey }
+      it { expect(user.hide_no_ssh_key).to be_falsey }
+      it { expect(user.hide_no_password).to be_falsey }
+      it { expect(user.project_view).to eq('files') }
+      it { expect(user.notified_of_own_activity).to be_falsey }
+      it { expect(user.preferred_language).to eq(I18n.default_locale.to_s) }
+      it { expect(user.theme_id).to eq(described_class.gitlab_config.default_theme) }
+    end
+
     describe '#user_detail' do
       it 'does not persist `user_detail` by default' do
         expect(create(:user).user_detail).not_to be_persisted
@@ -398,7 +413,7 @@ RSpec.describe User do
         end
 
         it 'falls back to english when I18n.default_locale is not an available language' do
-          I18n.default_locale = :kl
+          allow(I18n).to receive(:default_locale) { :kl }
           default_preferred_language = user.send(:default_preferred_language)
 
           expect(user.preferred_language).to eq default_preferred_language
@@ -7305,6 +7320,53 @@ RSpec.describe User do
 
     it 'returns age in days' do
       expect(user.account_age_in_days).to be(1)
+    end
+  end
+
+  describe 'state machine and default attributes' do
+    let(:model) do
+      Class.new(ApplicationRecord) do
+        self.table_name = User.table_name
+
+        attribute :external, default: -> { 1 / 0 }
+
+        state_machine :state, initial: :active do
+        end
+      end
+    end
+
+    it 'raises errors by default' do
+      expect { model }.to raise_error(ZeroDivisionError)
+    end
+
+    context 'with state machine default attributes override' do
+      let(:model) do
+        Class.new(ApplicationRecord) do
+          self.table_name = User.table_name
+
+          attribute :external, default: -> { 1 / 0 }
+
+          state_machine :state, initial: :active do
+            def owner_class_attribute_default; end
+          end
+        end
+      end
+
+      it 'does not raise errors' do
+        expect { model }.not_to raise_error
+      end
+
+      it 'raises errors when default attributes are used' do
+        expect { model.new.attributes }.to raise_error(ZeroDivisionError)
+      end
+
+      it 'does not evaluate default attributes when values are provided' do
+        expect { model.new(external: false).attributes }.not_to raise_error
+      end
+
+      it 'sets the state machine default value' do
+        expect(model.new(external: true).state).to eq('active')
+      end
     end
   end
 end

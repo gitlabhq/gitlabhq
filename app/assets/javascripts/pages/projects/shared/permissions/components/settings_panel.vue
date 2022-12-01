@@ -23,6 +23,12 @@ import ProjectSettingRow from './project_setting_row.vue';
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = [30, s__('ProjectSettings|Everyone')];
 
+const PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY = {
+  [VISIBILITY_LEVEL_PRIVATE_INTEGER]: featureAccessLevel.PROJECT_MEMBERS,
+  [VISIBILITY_LEVEL_INTERNAL_INTEGER]: featureAccessLevel.EVERYONE,
+  [VISIBILITY_LEVEL_PUBLIC_INTEGER]: FEATURE_ACCESS_LEVEL_ANONYMOUS[0],
+};
+
 export default {
   i18n: {
     ...CVE_ID_REQUEST_BUTTON_I18N,
@@ -47,11 +53,15 @@ export default {
     packagesHelpText: s__(
       'ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public.',
     ),
-    packageRegistryHelpText: s__(
-      'ProjectSettings|Every project can have its own space to store its packages.',
+    packageRegistryHelpText: s__('ProjectSettings|Publish, store, and view packages in a project.'),
+    packageRegistryForEveryoneHelpText: s__(
+      'ProjectSettings|Anyone can pull packages with a package manager API.',
     ),
     packagesLabel: s__('ProjectSettings|Packages'),
     packageRegistryLabel: s__('ProjectSettings|Package registry'),
+    packageRegistryForEveryoneLabel: s__(
+      'ProjectSettings|Allow anyone to pull from Package Registry',
+    ),
     pagesLabel: s__('ProjectSettings|Pages'),
     ciCdLabel: __('CI/CD'),
     repositoryLabel: s__('ProjectSettings|Repository'),
@@ -287,18 +297,6 @@ export default {
       );
     },
 
-    packageRegistryFeatureAccessLevelOptions() {
-      const options = [FEATURE_ACCESS_LEVEL_ANONYMOUS];
-
-      if (this.visibilityLevel === VISIBILITY_LEVEL_PRIVATE_INTEGER) {
-        options.unshift(featureAccessLevelMembers);
-      } else if (this.visibilityLevel === VISIBILITY_LEVEL_INTERNAL_INTEGER) {
-        options.unshift(featureAccessLevelEveryone);
-      }
-
-      return options;
-    },
-
     pagesFeatureAccessLevelOptions() {
       const options = [featureAccessLevelMembers];
 
@@ -365,6 +363,15 @@ export default {
     },
     packageRegistryAccessLevelEnabled() {
       return this.glFeatures.packageRegistryAccessLevel;
+    },
+    packageRegistryEnabled() {
+      return this.packageRegistryAccessLevel > featureAccessLevel.NOT_ENABLED;
+    },
+    packageRegistryApiForEveryoneEnabled() {
+      return this.packageRegistryAccessLevel === FEATURE_ACCESS_LEVEL_ANONYMOUS[0];
+    },
+    packageRegistryApiForEveryoneEnabledShown() {
+      return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
     },
     splitOperationsEnabled() {
       return this.glFeatures.splitOperationsVisibilityPermissions;
@@ -474,9 +481,8 @@ export default {
           this.packageRegistryAccessLevelEnabled &&
           this.packageRegistryAccessLevel === featureAccessLevel.PROJECT_MEMBERS
         ) {
-          this.packageRegistryAccessLevel = Math.min(
-            ...this.packageRegistryFeatureAccessLevelOptions.map((option) => option[0]),
-          );
+          this.packageRegistryAccessLevel =
+            PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY[value];
         }
         if (this.buildsAccessLevel > featureAccessLevel.NOT_ENABLED)
           this.buildsAccessLevel = featureAccessLevel.EVERYONE;
@@ -560,6 +566,22 @@ export default {
 
     visibilityAllowed(option) {
       return this.allowedVisibilityOptions.includes(option);
+    },
+    onPackageRegistryEnabledToggle(value) {
+      this.packageRegistryAccessLevel = value
+        ? this.packageRegistryAccessLevelDefault()
+        : featureAccessLevel.NOT_ENABLED;
+    },
+    onPackageRegistryApiForEveryoneEnabledToggle(value) {
+      this.packageRegistryAccessLevel = value
+        ? FEATURE_ACCESS_LEVEL_ANONYMOUS[0]
+        : this.packageRegistryAccessLevelDefault();
+    },
+    packageRegistryAccessLevelDefault() {
+      return (
+        PACKAGE_REGISTRY_ACCESS_LEVEL_DEFAULT_BY_PROJECT_VISIBILITY[this.visibilityLevel] ??
+        featureAccessLevel.NOT_ENABLED
+      );
     },
   },
 };
@@ -897,10 +919,36 @@ export default {
         :help-text="$options.i18n.packageRegistryHelpText"
         data-testid="package-registry-access-level"
       >
-        <project-feature-setting
-          v-model="packageRegistryAccessLevel"
+        <gl-toggle
+          class="gl-my-2"
+          :value="packageRegistryEnabled"
           :label="$options.i18n.packageRegistryLabel"
-          :options="packageRegistryFeatureAccessLevelOptions"
+          label-position="hidden"
+          name="package_registry_enabled"
+          @change="onPackageRegistryEnabledToggle"
+        />
+        <div
+          v-if="packageRegistryApiForEveryoneEnabledShown"
+          class="project-feature-setting-group gl-pl-7 gl-sm-pl-5 gl-my-3"
+        >
+          <project-setting-row
+            :label="$options.i18n.packageRegistryForEveryoneLabel"
+            :help-text="$options.i18n.packageRegistryForEveryoneHelpText"
+          >
+            <gl-toggle
+              class="gl-my-2"
+              :value="packageRegistryApiForEveryoneEnabled"
+              :disabled="!packageRegistryEnabled"
+              :label="$options.i18n.packageRegistryForEveryoneLabel"
+              label-position="hidden"
+              name="package_registry_api_for_everyone_enabled"
+              @change="onPackageRegistryApiForEveryoneEnabledToggle"
+            />
+          </project-setting-row>
+        </div>
+        <input
+          :value="packageRegistryAccessLevel"
+          type="hidden"
           name="project[project_feature_attributes][package_registry_access_level]"
         />
       </project-setting-row>
@@ -927,7 +975,7 @@ export default {
         ref="monitor-settings"
         :label="$options.i18n.monitorLabel"
         :help-text="
-          s__('ProjectSettings|Configure your project resources and monitor their health.')
+          s__('ProjectSettings|Monitor the health of your project and respond to incidents.')
         "
       >
         <project-feature-setting
