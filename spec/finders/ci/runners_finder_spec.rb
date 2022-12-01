@@ -7,219 +7,221 @@ RSpec.describe Ci::RunnersFinder do
     let_it_be(:admin) { create(:user, :admin) }
 
     describe '#execute' do
-      context 'with 2 runners' do
-        let_it_be(:runner1) { create(:ci_runner, active: true) }
-        let_it_be(:runner2) { create(:ci_runner, active: false) }
+      shared_examples 'executes as admin' do
+        context 'with 2 runners' do
+          let_it_be(:runner1) { create(:ci_runner, active: true) }
+          let_it_be(:runner2) { create(:ci_runner, active: false) }
 
-        context 'with empty params' do
-          it 'returns all runners' do
-            expect(Ci::Runner).to receive(:with_tags).and_call_original
-            expect(described_class.new(current_user: admin, params: {}).execute).to match_array [runner1, runner2]
+          context 'with empty params' do
+            it 'returns all runners' do
+              expect(Ci::Runner).to receive(:with_tags).and_call_original
+              expect(described_class.new(current_user: admin, params: {}).execute).to match_array [runner1, runner2]
+            end
+          end
+
+          context 'with nil group' do
+            it 'returns all runners' do
+              expect(Ci::Runner).to receive(:with_tags).and_call_original
+              expect(described_class.new(current_user: admin, params: { group: nil }).execute).to match_array [runner1, runner2]
+            end
+          end
+
+          context 'with preload param set to :tag_name true' do
+            it 'requests tags' do
+              expect(Ci::Runner).to receive(:with_tags).and_call_original
+              expect(described_class.new(current_user: admin, params: { preload: { tag_name: true } }).execute).to match_array [runner1, runner2]
+            end
+          end
+
+          context 'with preload param set to :tag_name false' do
+            it 'does not request tags' do
+              expect(Ci::Runner).not_to receive(:with_tags)
+              expect(described_class.new(current_user: admin, params: { preload: { tag_name: false } }).execute).to match_array [runner1, runner2]
+            end
           end
         end
 
-        context 'with nil group' do
-          it 'returns all runners' do
-            expect(Ci::Runner).to receive(:with_tags).and_call_original
-            expect(described_class.new(current_user: admin, params: { group: nil }).execute).to match_array [runner1, runner2]
-          end
-        end
+        context 'filtering' do
+          context 'by search term' do
+            it 'calls Ci::Runner.search' do
+              expect(Ci::Runner).to receive(:search).with('term').and_call_original
 
-        context 'with preload param set to :tag_name true' do
-          it 'requests tags' do
-            expect(Ci::Runner).to receive(:with_tags).and_call_original
-            expect(described_class.new(current_user: admin, params: { preload: { tag_name: true } }).execute).to match_array [runner1, runner2]
-          end
-        end
-
-        context 'with preload param set to :tag_name false' do
-          it 'does not request tags' do
-            expect(Ci::Runner).not_to receive(:with_tags)
-            expect(described_class.new(current_user: admin, params: { preload: { tag_name: false } }).execute).to match_array [runner1, runner2]
-          end
-        end
-      end
-
-      context 'filtering' do
-        context 'by search term' do
-          it 'calls Ci::Runner.search' do
-            expect(Ci::Runner).to receive(:search).with('term').and_call_original
-
-            described_class.new(current_user: admin, params: { search: 'term' }).execute
-          end
-        end
-
-        context 'by upgrade status' do
-          let(:upgrade_status) {}
-
-          let_it_be(:runner1) { create(:ci_runner, version: 'a') }
-          let_it_be(:runner2) { create(:ci_runner, version: 'b') }
-          let_it_be(:runner3) { create(:ci_runner, version: 'c') }
-          let_it_be(:runner_version_recommended) do
-            create(:ci_runner_version, version: 'a', status: :recommended)
+              described_class.new(current_user: admin, params: { search: 'term' }).execute
+            end
           end
 
-          let_it_be(:runner_version_not_available) do
-            create(:ci_runner_version, version: 'b', status: :not_available)
-          end
+          context 'by upgrade status' do
+            let(:upgrade_status) {}
 
-          let_it_be(:runner_version_available) do
-            create(:ci_runner_version, version: 'c', status: :available)
-          end
+            let_it_be(:runner1) { create(:ci_runner, version: 'a') }
+            let_it_be(:runner2) { create(:ci_runner, version: 'b') }
+            let_it_be(:runner3) { create(:ci_runner, version: 'c') }
+            let_it_be(:runner_version_recommended) do
+              create(:ci_runner_version, version: 'a', status: :recommended)
+            end
 
-          def execute
-            described_class.new(current_user: admin, params: { upgrade_status: upgrade_status }).execute
-          end
+            let_it_be(:runner_version_not_available) do
+              create(:ci_runner_version, version: 'b', status: :not_available)
+            end
 
-          Ci::RunnerVersion.statuses.keys.map(&:to_sym).each do |status|
-            context "set to :#{status}" do
-              let(:upgrade_status) { status }
+            let_it_be(:runner_version_available) do
+              create(:ci_runner_version, version: 'c', status: :available)
+            end
 
-              it "calls with_upgrade_status scope with corresponding :#{status} status" do
-                if [:available, :not_available, :recommended].include?(status)
-                  expected_result = Ci::Runner.with_upgrade_status(status)
+            def execute
+              described_class.new(current_user: admin, params: { upgrade_status: upgrade_status }).execute
+            end
+
+            Ci::RunnerVersion.statuses.keys.map(&:to_sym).each do |status|
+              context "set to :#{status}" do
+                let(:upgrade_status) { status }
+
+                it "calls with_upgrade_status scope with corresponding :#{status} status" do
+                  if [:available, :not_available, :recommended].include?(status)
+                    expected_result = Ci::Runner.with_upgrade_status(status)
+                  end
+
+                  expect(Ci::Runner).to receive(:with_upgrade_status).with(status).and_call_original
+
+                  result = execute
+
+                  expect(result).to match_array(expected_result) if expected_result
                 end
+              end
+            end
 
-                expect(Ci::Runner).to receive(:with_upgrade_status).with(status).and_call_original
+            context 'set to an invalid value' do
+              let(:upgrade_status) { :some_invalid_status }
 
-                result = execute
+              it 'raises ArgumentError' do
+                expect { execute }.to raise_error(ArgumentError)
+              end
+            end
 
-                expect(result).to match_array(expected_result) if expected_result
+            context 'set to nil' do
+              let(:upgrade_status) { nil }
+
+              it 'does not call with_upgrade_status' do
+                expect(Ci::Runner).not_to receive(:with_upgrade_status)
+
+                expect(execute).to match_array(Ci::Runner.all)
               end
             end
           end
 
-          context 'set to an invalid value' do
-            let(:upgrade_status) { :some_invalid_status }
+          context 'by status' do
+            Ci::Runner::AVAILABLE_STATUSES.each do |status|
+              it "calls the corresponding :#{status} scope on Ci::Runner" do
+                expect(Ci::Runner).to receive(status.to_sym).and_call_original
 
-            it 'raises ArgumentError' do
-              expect { execute }.to raise_error(ArgumentError)
+                described_class.new(current_user: admin, params: { status_status: status }).execute
+              end
             end
           end
 
-          context 'set to nil' do
-            let(:upgrade_status) { nil }
+          context 'by active status' do
+            it 'with active set as false calls the corresponding scope on Ci::Runner with false' do
+              expect(Ci::Runner).to receive(:active).with(false).and_call_original
 
-            it 'does not call with_upgrade_status' do
-              expect(Ci::Runner).not_to receive(:with_upgrade_status)
+              described_class.new(current_user: admin, params: { active: false }).execute
+            end
 
-              expect(execute).to match_array(Ci::Runner.all)
+            it 'with active set as true calls the corresponding scope on Ci::Runner with true' do
+              expect(Ci::Runner).to receive(:active).with(true).and_call_original
+
+              described_class.new(current_user: admin, params: { active: true }).execute
+            end
+          end
+
+          context 'by runner type' do
+            it 'calls the corresponding scope on Ci::Runner' do
+              expect(Ci::Runner).to receive(:project_type).and_call_original
+
+              described_class.new(current_user: admin, params: { type_type: 'project_type' }).execute
+            end
+          end
+
+          context 'by tag_name' do
+            it 'calls the corresponding scope on Ci::Runner' do
+              expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2]).and_call_original
+
+              described_class.new(current_user: admin, params: { tag_name: %w[tag1 tag2] }).execute
             end
           end
         end
 
-        context 'by status' do
-          Ci::Runner::AVAILABLE_STATUSES.each do |status|
-            it "calls the corresponding :#{status} scope on Ci::Runner" do
-              expect(Ci::Runner).to receive(status.to_sym).and_call_original
+        context 'sorting' do
+          let_it_be(:runner1) { create :ci_runner, created_at: '2018-07-12 07:00', contacted_at: 1.minute.ago, token_expires_at: '2022-02-15 07:00' }
+          let_it_be(:runner2) { create :ci_runner, created_at: '2018-07-12 08:00', contacted_at: 3.minutes.ago, token_expires_at: '2022-02-15 06:00' }
+          let_it_be(:runner3) { create :ci_runner, created_at: '2018-07-12 09:00', contacted_at: 2.minutes.ago }
 
-              described_class.new(current_user: admin, params: { status_status: status }).execute
+          subject do
+            described_class.new(current_user: admin, params: params).execute
+          end
+
+          shared_examples 'sorts by created_at descending' do
+            it 'sorts by created_at descending' do
+              is_expected.to eq [runner3, runner2, runner1]
             end
           end
-        end
 
-        context 'by active status' do
-          it 'with active set as false calls the corresponding scope on Ci::Runner with false' do
-            expect(Ci::Runner).to receive(:active).with(false).and_call_original
-
-            described_class.new(current_user: admin, params: { active: false }).execute
-          end
-
-          it 'with active set as true calls the corresponding scope on Ci::Runner with true' do
-            expect(Ci::Runner).to receive(:active).with(true).and_call_original
-
-            described_class.new(current_user: admin, params: { active: true }).execute
-          end
-        end
-
-        context 'by runner type' do
-          it 'calls the corresponding scope on Ci::Runner' do
-            expect(Ci::Runner).to receive(:project_type).and_call_original
-
-            described_class.new(current_user: admin, params: { type_type: 'project_type' }).execute
-          end
-        end
-
-        context 'by tag_name' do
-          it 'calls the corresponding scope on Ci::Runner' do
-            expect(Ci::Runner).to receive(:tagged_with).with(%w[tag1 tag2]).and_call_original
-
-            described_class.new(current_user: admin, params: { tag_name: %w[tag1 tag2] }).execute
-          end
-        end
-      end
-
-      context 'sorting' do
-        let_it_be(:runner1) { create :ci_runner, created_at: '2018-07-12 07:00', contacted_at: 1.minute.ago, token_expires_at: '2022-02-15 07:00' }
-        let_it_be(:runner2) { create :ci_runner, created_at: '2018-07-12 08:00', contacted_at: 3.minutes.ago, token_expires_at: '2022-02-15 06:00' }
-        let_it_be(:runner3) { create :ci_runner, created_at: '2018-07-12 09:00', contacted_at: 2.minutes.ago }
-
-        subject do
-          described_class.new(current_user: admin, params: params).execute
-        end
-
-        shared_examples 'sorts by created_at descending' do
-          it 'sorts by created_at descending' do
-            is_expected.to eq [runner3, runner2, runner1]
-          end
-        end
-
-        context 'without sort param' do
-          let(:params) { {} }
-
-          it_behaves_like 'sorts by created_at descending'
-        end
-
-        %w(created_date created_at_desc).each do |sort|
-          context "with sort param equal to #{sort}" do
-            let(:params) { { sort: sort } }
+          context 'without sort param' do
+            let(:params) { {} }
 
             it_behaves_like 'sorts by created_at descending'
           end
-        end
 
-        context 'with sort param equal to created_at_asc' do
-          let(:params) { { sort: 'created_at_asc' } }
+          %w(created_date created_at_desc).each do |sort|
+            context "with sort param equal to #{sort}" do
+              let(:params) { { sort: sort } }
 
-          it 'sorts by created_at ascending' do
-            is_expected.to eq [runner1, runner2, runner3]
+              it_behaves_like 'sorts by created_at descending'
+            end
           end
-        end
 
-        context 'with sort param equal to contacted_asc' do
-          let(:params) { { sort: 'contacted_asc' } }
+          context 'with sort param equal to created_at_asc' do
+            let(:params) { { sort: 'created_at_asc' } }
 
-          it 'sorts by contacted_at ascending' do
-            is_expected.to eq [runner2, runner3, runner1]
+            it 'sorts by created_at ascending' do
+              is_expected.to eq [runner1, runner2, runner3]
+            end
           end
-        end
 
-        context 'with sort param equal to contacted_desc' do
-          let(:params) { { sort: 'contacted_desc' } }
+          context 'with sort param equal to contacted_asc' do
+            let(:params) { { sort: 'contacted_asc' } }
 
-          it 'sorts by contacted_at descending' do
-            is_expected.to eq [runner1, runner3, runner2]
+            it 'sorts by contacted_at ascending' do
+              is_expected.to eq [runner2, runner3, runner1]
+            end
           end
-        end
 
-        context 'with sort param equal to token_expires_at_asc' do
-          let(:params) { { sort: 'token_expires_at_asc' } }
+          context 'with sort param equal to contacted_desc' do
+            let(:params) { { sort: 'contacted_desc' } }
 
-          it 'sorts by contacted_at ascending' do
-            is_expected.to eq [runner2, runner1, runner3]
+            it 'sorts by contacted_at descending' do
+              is_expected.to eq [runner1, runner3, runner2]
+            end
           end
-        end
 
-        context 'with sort param equal to token_expires_at_desc' do
-          let(:params) { { sort: 'token_expires_at_desc' } }
+          context 'with sort param equal to token_expires_at_asc' do
+            let(:params) { { sort: 'token_expires_at_asc' } }
 
-          it 'sorts by contacted_at descending' do
-            is_expected.to eq [runner3, runner1, runner2]
+            it 'sorts by contacted_at ascending' do
+              is_expected.to eq [runner2, runner1, runner3]
+            end
+          end
+
+          context 'with sort param equal to token_expires_at_desc' do
+            let(:params) { { sort: 'token_expires_at_desc' } }
+
+            it 'sorts by contacted_at descending' do
+              is_expected.to eq [runner3, runner1, runner2]
+            end
           end
         end
       end
 
-      context 'by non admin user' do
+      shared_examples 'executes as normal user' do
         it 'returns no runners' do
           user = create :user
           create :ci_runner, active: true
@@ -227,6 +229,24 @@ RSpec.describe Ci::RunnersFinder do
 
           expect(described_class.new(current_user: user, params: {}).execute).to be_empty
         end
+      end
+
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it_behaves_like 'executes as admin'
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it_behaves_like 'executes as admin'
+        end
+
+        context 'when not in admin mode' do
+          it_behaves_like 'executes as normal user'
+        end
+      end
+
+      context 'by non admin user' do
+        it_behaves_like 'executes as normal user'
       end
 
       context 'when user is nil' do

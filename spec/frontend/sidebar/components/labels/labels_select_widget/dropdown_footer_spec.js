@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import DropdownFooter from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_footer.vue';
+import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
 
 describe('DropdownFooter', () => {
   let wrapper;

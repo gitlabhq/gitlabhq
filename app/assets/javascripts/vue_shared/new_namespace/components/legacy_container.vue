@@ -1,4 +1,6 @@
 <script>
+import projectNew from '~/projects/project_new';
+
 export default {
   inheritAttrs: false,
   props: {
@@ -16,6 +18,7 @@ export default {
       this.source = legacyEntry.parentNode;
       this.$el.appendChild(legacyEntry);
       legacyEntry.classList.add('active');
+      projectNew.bindEvents();
     }
   },
 

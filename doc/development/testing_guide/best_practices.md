@@ -428,32 +428,7 @@ results are available, and not just the first failure.
 
 ### Feature category metadata
 
-You must set feature category metadata for each RSpec example. This information is used for flaky test
-issues to identify the group that owns the feature.
-
-The `feature_category` should be a value from [`categories.json`](https://about.gitlab.com/categories.json).
-
-The `feature_category` metadata can be set:
-
-- [In the top-level `RSpec.describe` blocks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104274/diffs#6bd01173381e873f3e1b6c55d33cdaa3d897156b_5_5).
-- [In `describe` blocks](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104274/diffs#a520db2677a30e7f1f5593584f69c49031b894b9_12_12).
-
-Consider splitting the file in the case there are multiple feature categories identified in the same file.
-If no `feature_category` is identified, then use `not_owned`.
-
-Example:
-
- ```ruby
- RSpec.describe Admin::Geo::SettingsController, :geo, feature_category: :geo_replication do
- ```
-
-For examples that don't have a `feature_category` set we add a warning when running them in local environment.
-
-In order to disable the warning use `RSPEC_WARN_MISSING_FEATURE_CATEGORY=false` when running RSpec tests:
-
-```shell
-RSPEC_WARN_MISSING_FEATURE_CATEGORY=false bin/rspec spec/<test_file>
-```
+You must [set feature category metadata for each RSpec example](../feature_categorization/index.md#rspec-examples).
 
 ### Coverage
 

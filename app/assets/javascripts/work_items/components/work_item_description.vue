@@ -247,6 +247,7 @@ export default {
         form-field-name="work-item-description"
         enable-autocomplete
         init-on-autofocus
+        use-bottom-toolbar
         @input="setDescriptionText"
         @keydown.meta.enter="updateWorkItem"
         @keydown.ctrl.enter="updateWorkItem"
@@ -258,7 +259,7 @@ export default {
         :is-submitting="isSubmitting"
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="$options.markdownDocsPath"
-        class="gl-p-3 bordered-box gl-mt-5"
+        class="gl-px-3 bordered-box gl-mt-5"
       >
         <template #textarea>
           <textarea

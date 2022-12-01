@@ -381,6 +381,26 @@ RSpec.describe IssuesHelper do
     end
   end
 
+  describe '#dashboard_issues_list_data' do
+    let(:current_user) { double.as_null_object }
+
+    it 'returns expected result' do
+      allow(helper).to receive(:current_user).and_return(current_user)
+      allow(helper).to receive(:image_path).and_return('#')
+      allow(helper).to receive(:url_for).and_return('#')
+
+      expected = {
+        calendar_path: '#',
+        empty_state_svg_path: '#',
+        is_public_visibility_restricted: Gitlab::CurrentSettings.restricted_visibility_levels ? 'false' : '',
+        is_signed_in: current_user.present?.to_s,
+        rss_path: '#'
+      }
+
+      expect(helper.dashboard_issues_list_data(current_user)).to include(expected)
+    end
+  end
+
   describe '#issues_form_data' do
     it 'returns expected result' do
       expected = {

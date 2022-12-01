@@ -23,6 +23,9 @@ module Types
                                               deprecated: { reason: 'Use paused', milestone: '14.8' }
       field :admin_url, GraphQL::Types::String, null: true,
                                                 description: 'Admin URL of the runner. Only available for administrators.'
+      field :architecture_name, GraphQL::Types::String, null: true,
+                                                        description: 'Architecture provided by the the runner.',
+                                                        method: :architecture
       field :contacted_at, Types::TimeType, null: true,
                                             description: 'Timestamp of last contact from this runner.',
                                             method: :contacted_at
@@ -35,14 +38,6 @@ module Types
       field :executor_name, GraphQL::Types::String, null: true,
                                                     description: 'Executor last advertised by the runner.',
                                                     method: :executor_name
-      field :platform_name, GraphQL::Types::String, null: true,
-                                                    description: 'Platform provided by the runner.',
-                                                    method: :platform
-      field :architecture_name, GraphQL::Types::String, null: true,
-                                                        description: 'Architecture provided by the the runner.',
-                                                        method: :architecture
-      field :maintenance_note, GraphQL::Types::String, null: true,
-                                                       description: 'Runner\'s maintenance notes.'
       field :groups, ::Types::GroupType.connection_type, null: true,
                                                          description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
@@ -51,16 +46,29 @@ module Types
                                                  description: 'IP address of the runner.'
       field :job_count, GraphQL::Types::Int, null: true,
                                              description: "Number of jobs processed by the runner (limited to #{JOB_COUNT_LIMIT}, plus one to indicate that more items exist)."
+      field :job_execution_status,
+            Types::Ci::RunnerJobExecutionStatusEnum,
+            null: true,
+            description: 'Job execution status of the runner.',
+            deprecated: { milestone: '15.7', reason: :alpha }
       field :jobs, ::Types::Ci::JobType.connection_type, null: true,
                                                          description: 'Jobs assigned to the runner. This field can only be resolved for one runner in any single request.',
                                                          authorize: :read_builds,
                                                          resolver: ::Resolvers::Ci::RunnerJobsResolver
       field :locked, GraphQL::Types::Boolean, null: true,
                                               description: 'Indicates the runner is locked.'
+      field :maintenance_note, GraphQL::Types::String, null: true,
+                                                       description: 'Runner\'s maintenance notes.'
       field :maximum_timeout, GraphQL::Types::Int, null: true,
                                                    description: 'Maximum timeout (in seconds) for jobs processed by the runner.'
+      field :owner_project, ::Types::ProjectType, null: true,
+                                                  description: 'Project that owns the runner. For project runners only.',
+                                                  resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
       field :paused, GraphQL::Types::Boolean, null: false,
                                               description: 'Indicates the runner is paused and not available to run jobs.'
+      field :platform_name, GraphQL::Types::String, null: true,
+                                                    description: 'Platform provided by the runner.',
+                                                    method: :platform
       field :project_count, GraphQL::Types::Int, null: true,
                                                  description: 'Number of projects that the runner is associated with.'
       field :projects,
@@ -88,14 +96,6 @@ module Types
                                                 method: :token_expires_at
       field :version, GraphQL::Types::String, null: true,
                                               description: 'Version of the runner.'
-      field :owner_project, ::Types::ProjectType, null: true,
-                                                  description: 'Project that owns the runner. For project runners only.',
-                                                  resolver: ::Resolvers::Ci::RunnerOwnerProjectResolver
-      field :job_execution_status,
-            Types::Ci::RunnerJobExecutionStatusEnum,
-            null: true,
-            description: 'Job execution status of the runner.',
-            deprecated: { milestone: '15.7', reason: :alpha }
 
       markdown_field :maintenance_note_html, null: true
 

@@ -55,6 +55,12 @@ describe('Source Editor Toolbar button', () => {
   });
 
   describe('click handler', () => {
+    let clickEvent;
+
+    beforeEach(() => {
+      clickEvent = new Event('click');
+    });
+
     it('fires the click handler on the button when available', async () => {
       const spy = jest.fn();
       createComponent({
@@ -63,20 +69,20 @@ describe('Source Editor Toolbar button', () => {
         },
       });
       expect(spy).not.toHaveBeenCalled();
-      findButton().vm.$emit('click');
+      findButton().vm.$emit('click', clickEvent);
 
       await nextTick();
-      expect(spy).toHaveBeenCalled();
+      expect(spy).toHaveBeenCalledWith(clickEvent);
     });
-    it('emits the "click" event', async () => {
+    it('emits the "click" event, passing the event itself', async () => {
       createComponent();
       jest.spyOn(wrapper.vm, '$emit');
       expect(wrapper.vm.$emit).not.toHaveBeenCalled();
 
-      findButton().vm.$emit('click');
+      findButton().vm.$emit('click', clickEvent);
       await nextTick();
 
-      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click');
+      expect(wrapper.vm.$emit).toHaveBeenCalledWith('click', clickEvent);
     });
   });
 });

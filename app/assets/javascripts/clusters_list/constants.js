@@ -4,6 +4,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 export const MAX_LIST_COUNT = 25;
 export const INSTALL_AGENT_MODAL_ID = 'install-agent';
 export const ACTIVE_CONNECTION_TIME = 480000;
+export const NAME_MAX_LENGTH = 50;
 
 export const CLUSTER_ERRORS = {
   default: {

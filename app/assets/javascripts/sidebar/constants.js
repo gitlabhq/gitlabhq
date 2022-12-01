@@ -5,12 +5,12 @@ import userSearchQuery from '~/graphql_shared/queries/users_search.query.graphql
 import userSearchWithMRPermissionsQuery from '~/graphql_shared/queries/users_search_with_mr_permissions.graphql';
 import { IssuableType, WorkspaceType } from '~/issues/constants';
 import updateAlertAssigneesMutation from '~/vue_shared/alert_details/graphql/mutations/alert_set_assignees.mutation.graphql';
-import epicLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_labels.query.graphql';
-import updateEpicLabelsMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
-import groupLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/group_labels.query.graphql';
-import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
-import mergeRequestLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/merge_request_labels.query.graphql';
-import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
+import epicLabelsQuery from './components/labels/labels_select_widget/graphql/epic_labels.query.graphql';
+import updateEpicLabelsMutation from './components/labels/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
+import groupLabelsQuery from './components/labels/labels_select_widget/graphql/group_labels.query.graphql';
+import issueLabelsQuery from './components/labels/labels_select_widget/graphql/issue_labels.query.graphql';
+import mergeRequestLabelsQuery from './components/labels/labels_select_widget/graphql/merge_request_labels.query.graphql';
+import projectLabelsQuery from './components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import epicConfidentialQuery from './queries/epic_confidential.query.graphql';
 import epicDueDateQuery from './queries/epic_due_date.query.graphql';
 import epicParticipantsQuery from './queries/epic_participants.query.graphql';

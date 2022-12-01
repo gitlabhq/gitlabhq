@@ -1,7 +1,7 @@
 import { GlSearchBoxByType } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
-import DropdownHeader from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_header.vue';
+import DropdownHeader from '~/sidebar/components/labels/labels_select_widget/dropdown_header.vue';
 
 describe('DropdownHeader', () => {
   let wrapper;

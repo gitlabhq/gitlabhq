@@ -6,14 +6,14 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
-import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
-import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
-import issueLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/issue_labels.query.graphql';
+import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
+import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
+import issueLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/issue_labels.query.graphql';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
 import issuableLabelsSubscription from 'ee_else_ce/sidebar/queries/issuable_labels.subscription.graphql';
-import updateEpicLabelsMutation from '~/vue_shared/components/sidebar/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
-import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
+import updateEpicLabelsMutation from '~/sidebar/components/labels/labels_select_widget/graphql/epic_update_labels.mutation.graphql';
+import LabelsSelectRoot from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import {
   mockConfig,
   issuableLabelsQueryResponse,

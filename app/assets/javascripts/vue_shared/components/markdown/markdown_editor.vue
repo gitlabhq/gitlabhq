@@ -82,6 +82,11 @@ export default {
       required: false,
       default: false,
     },
+    useBottomToolbar: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -197,6 +202,7 @@ export default {
         :uploads-path="uploadsPath"
         :markdown="value"
         :autofocus="contentEditorAutofocused"
+        :use-bottom-toolbar="useBottomToolbar"
         @initialized="setEditorAsAutofocused"
         @change="updateMarkdownFromContentEditor"
         @loading="disableSwitchEditingControl"

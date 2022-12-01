@@ -1019,7 +1019,7 @@ Payload example:
 ```
 
 NOTE:
-The fields `assignee_id`, `state`, `merge_status` are deprecated.
+The fields `assignee_id`, `state`, `merge_status` are [deprecated](../../../api/merge_requests.md).
 
 ## Wiki page events
 

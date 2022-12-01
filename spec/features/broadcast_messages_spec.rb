@@ -36,6 +36,9 @@ RSpec.describe 'Broadcast Messages' do
       visit root_path
 
       find('.js-dismiss-current-broadcast-notification').click
+
+      wait_for_cookie_set("hide_broadcast_message_#{broadcast_message.id}")
+
       visit root_path
 
       expect(page).not_to have_content 'SampleMessage'

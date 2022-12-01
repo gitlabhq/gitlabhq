@@ -9,10 +9,9 @@
           %li
             %span.light= _('Title:')
             %strong= @key.title
-          - if Feature.enabled?(:ssh_key_usage_types, current_user)
-            %li
-              %span.light= s_('Profiles|Usage type:')
-              %strong= ssh_key_usage_types.invert[@key.usage_type]
+          %li
+            %span.light= s_('Profiles|Usage type:')
+            %strong= ssh_key_usage_types.invert[@key.usage_type]
           %li
             %span.light= _('Created on:')
             %strong= @key.created_at.to_s(:medium)

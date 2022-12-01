@@ -17,7 +17,7 @@ Vue.use(Vuex);
 
 // @deprecated This component should only be used when there is no GraphQL API.
 // In most cases you should use
-// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue` instead.
+// `app/assets/javascripts/sidebar/components/labels/labels_select_widget/labels_select_root.vue` instead.
 export default {
   store: new Vuex.Store(labelsSelectModule()),
   components: {

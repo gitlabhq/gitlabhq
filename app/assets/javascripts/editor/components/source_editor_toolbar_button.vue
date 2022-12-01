@@ -32,11 +32,11 @@ export default {
     },
   },
   methods: {
-    clickHandler() {
+    clickHandler(event) {
       if (this.button.onClick) {
-        this.button.onClick();
+        this.button.onClick(event);
       }
-      this.$emit('click');
+      this.$emit('click', event);
     },
   },
 };
@@ -53,6 +53,6 @@ export default {
     :title="label"
     :aria-label="label"
     data-qa-selector="editor_toolbar_button"
-    @click="clickHandler"
+    @click="clickHandler($event)"
   />
 </template>

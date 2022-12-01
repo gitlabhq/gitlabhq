@@ -1,7 +1,7 @@
 import { GlLabel } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import DropdownValue from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_value.vue';
+import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
 
 import { mockRegularLabel, mockScopedLabel } from './mock_data';
 

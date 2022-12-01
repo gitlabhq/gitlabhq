@@ -52,17 +52,4 @@ RSpec.describe 'profiles/keys/_form.html.haml' do
       expect(rendered).to have_button('Add key')
     end
   end
-
-  context 'when ssh_key_usage_types is disabled' do
-    before do
-      stub_feature_flags(ssh_key_usage_types: false)
-    end
-
-    it 'has the usage type field', :aggregate_failures do
-      render
-
-      expect(rendered).not_to have_field('Usage type', type: 'text')
-      expect(rendered).not_to have_text('Authentication & Signing')
-    end
-  end
 end

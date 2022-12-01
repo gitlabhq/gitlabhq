@@ -30,7 +30,7 @@ module Ci
     end
 
     def all_jobs
-      raise Gitlab::Access::AccessDeniedError unless current_user&.admin?
+      raise Gitlab::Access::AccessDeniedError unless current_user&.can_admin_all_resources?
 
       type.all
     end

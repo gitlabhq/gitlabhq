@@ -43,4 +43,4 @@
       %h4= s_("AdminSettings|Inactive project deletion")
       .js-inactive-project-deletion-form{ data: inactive_projects_deletion_data(@application_setting) }
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm"
+  = f.submit _('Save changes'), pajamas_button: true

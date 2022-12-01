@@ -19,15 +19,5 @@ RSpec.describe API::Entities::SSHKey, feature_category: :authentication_and_auth
         usage_type: 'auth_and_signing'
       )
     end
-
-    context 'when ssh_key_usage_types is disabled' do
-      before do
-        stub_feature_flags(ssh_key_usage_types: false)
-      end
-
-      it 'does not include usage type field' do
-        expect(subject.keys).not_to include(:usage_type)
-      end
-    end
   end
 end

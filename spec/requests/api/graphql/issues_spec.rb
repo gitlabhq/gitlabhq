@@ -81,14 +81,13 @@ RSpec.describe 'getting an issue list at root level' do
     )
   end
 
-  let(:issues) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
-  let(:issue_filter_params) { {} }
+  let_it_be(:issues, reload: true) { [issue_a, issue_b, issue_c, issue_d, issue_e] }
 
+  let(:issue_filter_params) { {} }
+  let(:current_user) { developer }
   let(:fields) do
     <<~QUERY
-      nodes {
-        #{all_graphql_fields_for('issues'.classify)}
-      }
+      nodes { id }
     QUERY
   end
 
@@ -108,15 +107,16 @@ RSpec.describe 'getting an issue list at root level' do
     end
   end
 
+  # All new specs should be added to the shared example if the change also
+  # affects the `issues` query at the root level of the API.
+  # Shared example also used in spec/requests/api/graphql/project/issues_spec.rb
   it_behaves_like 'graphql issue list request spec' do
     let_it_be(:external_user) { create(:user) }
 
     let(:public_projects) { [project_a, project_c] }
 
-    let(:current_user) { developer }
     let(:another_user) { reporter }
-    let(:issues_data) { graphql_data['issues']['nodes'] }
-    let(:issue_ids) { graphql_dig_at(issues_data, :id) }
+    let(:issue_nodes_path) { %w[issues nodes] }
 
     # filters
     let(:expected_negated_assignee_issues) { [issue_b, issue_c, issue_d, issue_e] }
@@ -133,7 +133,6 @@ RSpec.describe 'getting an issue list at root level' do
 
     # sorting
     let(:data_path) { [:issues] }
-    let(:expected_severity_sorted_asc) { [issue_c, issue_a, issue_b, issue_e, issue_d] }
     let(:expected_priority_sorted_asc) { [issue_c, issue_e, issue_d, issue_a, issue_b] }
     let(:expected_priority_sorted_desc) { [issue_a, issue_d, issue_e, issue_c, issue_b] }
     let(:expected_due_date_sorted_desc) { [issue_c, issue_b, issue_a, issue_e, issue_d] }
@@ -144,18 +143,16 @@ RSpec.describe 'getting an issue list at root level' do
     let(:expected_milestone_sorted_asc) { [issue_c, issue_e, issue_d, issue_a, issue_b] }
     let(:expected_milestone_sorted_desc) { [issue_a, issue_d, issue_e, issue_c, issue_b] }
 
+    # N+1 queries
+    let(:same_project_issue1) { issue_d }
+    let(:same_project_issue2) { issue_e }
+
     before_all do
       issue_a.assignee_ids = developer.id
       issue_c.assignee_ids = reporter.id
 
       create(:award_emoji, :upvote, user: developer, awardable: issue_a)
       create(:award_emoji, :upvote, user: developer, awardable: issue_c)
-
-      # severity sorting
-      create(:issuable_severity, issue: issue_a, severity: :unknown)
-      create(:issuable_severity, issue: issue_b, severity: :low)
-      create(:issuable_severity, issue: issue_d, severity: :critical)
-      create(:issuable_severity, issue: issue_e, severity: :high)
     end
 
     def pagination_query(params)
@@ -165,10 +162,14 @@ RSpec.describe 'getting an issue list at root level' do
         "#{page_info} nodes { id }"
       )
     end
+  end
 
-    def post_query(request_user = current_user)
-      post_graphql(query, current_user: request_user)
-    end
+  def execute_query
+    post_query
+  end
+
+  def post_query(request_user = current_user)
+    post_graphql(query, current_user: request_user)
   end
 
   def query(params = issue_filter_params)

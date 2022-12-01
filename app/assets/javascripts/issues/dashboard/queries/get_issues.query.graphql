@@ -1,0 +1,28 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/issues/list/queries/issue.fragment.graphql"
+
+query getDashboardIssues(
+  $hideUsers: Boolean = false
+  $isSignedIn: Boolean = false
+  $state: IssuableState
+  $afterCursor: String
+  $beforeCursor: String
+  $firstPageSize: Int
+  $lastPageSize: Int
+) {
+  issues(
+    state: $state
+    after: $afterCursor
+    before: $beforeCursor
+    first: $firstPageSize
+    last: $lastPageSize
+  ) {
+    nodes {
+      ...IssueFragment
+      reference(full: true)
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

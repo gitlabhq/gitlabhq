@@ -1,9 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Layout/SpaceInLambdaLiteral:
-  # Offense count: 1061
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/controllers/concerns/issuable_actions.rb'
     - 'app/controllers/projects/ci/daily_build_group_report_results_controller.rb'
@@ -210,7 +208,6 @@ Layout/SpaceInLambdaLiteral:
     - 'ee/app/models/concerns/issue_widgets/acts_like_requirement.rb'
     - 'ee/app/models/dast/profile.rb'
     - 'ee/app/models/dast/profile_schedule.rb'
-    - 'ee/app/models/dast/site_profile_secret_variable.rb'
     - 'ee/app/models/dast_scanner_profile.rb'
     - 'ee/app/models/dast_site_profile.rb'
     - 'ee/app/models/dast_site_validation.rb'
@@ -351,6 +348,7 @@ Layout/SpaceInLambdaLiteral:
     - 'lib/api/entities/namespace.rb'
     - 'lib/api/entities/project.rb'
     - 'lib/api/entities/release.rb'
+    - 'lib/api/entities/ssh_key.rb'
     - 'lib/api/entities/todo.rb'
     - 'lib/api/events.rb'
     - 'lib/api/feature_flags_user_lists.rb'

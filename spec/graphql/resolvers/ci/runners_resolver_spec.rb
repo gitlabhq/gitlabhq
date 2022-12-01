@@ -28,8 +28,24 @@ RSpec.describe Resolvers::Ci::RunnersResolver do
     context 'when user can see runners' do
       let(:obj) { nil }
 
-      it 'returns all the runners' do
-        expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+      context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
+        it 'returns all the runners' do
+          expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+        end
+      end
+
+      context 'when admin mode setting is enabled' do
+        context 'when in admin mode', :enable_admin_mode do
+          it 'returns all the runners' do
+            expect(subject.items.to_a).to contain_exactly(inactive_project_runner, offline_project_runner, group_runner, subgroup_runner, instance_runner)
+          end
+        end
+
+        context 'when not in admin mode' do
+          it 'returns no runners' do
+            expect(subject.items.to_a).to eq([])
+          end
+        end
       end
     end
 

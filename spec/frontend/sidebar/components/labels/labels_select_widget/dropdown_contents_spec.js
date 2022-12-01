@@ -1,10 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
-import DropdownContents from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents.vue';
-import DropdownContentsCreateView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_create_view.vue';
-import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
-import DropdownFooter from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_footer.vue';
+import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
+import DropdownContentsCreateView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_create_view.vue';
+import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
+import DropdownFooter from '~/sidebar/components/labels/labels_select_widget/dropdown_footer.vue';
 
 import { mockLabels } from './mock_data';
 

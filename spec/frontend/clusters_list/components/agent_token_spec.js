@@ -1,7 +1,11 @@
 import { GlAlert, GlFormInputGroup } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AgentToken from '~/clusters_list/components/agent_token.vue';
-import { I18N_AGENT_TOKEN, INSTALL_AGENT_MODAL_ID } from '~/clusters_list/constants';
+import {
+  I18N_AGENT_TOKEN,
+  INSTALL_AGENT_MODAL_ID,
+  NAME_MAX_LENGTH,
+} from '~/clusters_list/constants';
 import { generateAgentRegistrationCommand } from '~/clusters_list/clusters_util';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
 import ModalCopyButton from '~/vue_shared/components/modal_copy_button.vue';
@@ -20,14 +24,14 @@ describe('InstallAgentModal', () => {
   const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
   const findInput = () => wrapper.findComponent(GlFormInputGroup);
 
-  const createWrapper = () => {
+  const createWrapper = (newAgentName = agentName) => {
     const provide = {
       kasAddress,
       kasVersion,
     };
 
     const propsData = {
-      agentName,
+      agentName: newAgentName,
       agentToken,
       modalId,
     };
@@ -79,9 +83,19 @@ describe('InstallAgentModal', () => {
 
     it('shows code block with agent installation command', () => {
       expect(findCodeBlock().props('code')).toContain(`helm upgrade --install ${agentName}`);
+      expect(findCodeBlock().props('code')).toContain(`--namespace gitlab-agent-${agentName}`);
       expect(findCodeBlock().props('code')).toContain(`--set config.token=${agentToken}`);
       expect(findCodeBlock().props('code')).toContain(`--set config.kasAddress=${kasAddress}`);
       expect(findCodeBlock().props('code')).toContain(`--set image.tag=v${kasVersion}`);
+    });
+
+    it('truncates the namespace name if it exceeds the maximum length', () => {
+      const newAgentName = 'agent-name-that-is-too-long-and-needs-to-be-truncated-to-use';
+      createWrapper(newAgentName);
+
+      expect(findCodeBlock().props('code')).toContain(
+        `--namespace gitlab-agent-${newAgentName.substring(0, NAME_MAX_LENGTH)}`,
+      );
     });
   });
 });

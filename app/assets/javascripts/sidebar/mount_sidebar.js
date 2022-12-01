@@ -17,8 +17,6 @@ import {
 import { __ } from '~/locale';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
-import LabelsSelectWidget from '~/vue_shared/components/sidebar/labels_select_widget/labels_select_root.vue';
-import { LabelType } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
 import Translate from '~/vue_shared/translate';
 import CollapsedAssigneeList from './components/assignees/collapsed_assignee_list.vue';
 import SidebarAssignees from './components/assignees/sidebar_assignees.vue';
@@ -27,6 +25,8 @@ import SidebarConfidentialityWidget from './components/confidential/sidebar_conf
 import CopyEmailToClipboard from './components/copy/copy_email_to_clipboard.vue';
 import SidebarDueDateWidget from './components/date/sidebar_date_widget.vue';
 import SidebarEscalationStatus from './components/incidents/sidebar_escalation_status.vue';
+import { LabelType } from './components/labels/labels_select_widget/constants';
+import LabelsSelectWidget from './components/labels/labels_select_widget/labels_select_root.vue';
 import IssuableLockForm from './components/lock/issuable_lock_form.vue';
 import MilestoneDropdown from './components/milestone/milestone_dropdown.vue';
 import MoveIssuesButton from './components/move/move_issues_button.vue';

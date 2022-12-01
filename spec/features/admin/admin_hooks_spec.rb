@@ -145,7 +145,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :integrations do
 
         visit admin_hooks_path
         find('.hook-test-button.dropdown').click
-        click_link 'Merge requests events'
+        click_link 'Merge request events'
 
         expect(page).to have_content 'Hook executed successfully'
       end

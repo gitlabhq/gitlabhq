@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 
 // @deprecated This component should only be used when there is no GraphQL API.
 // In most cases you should use
-// `app/assets/javascripts/vue_shared/components/sidebar/labels_select_widget/label_item.vue` instead.
+// `app/assets/javascripts/sidebar/components/labels/labels_select_widget/label_item.vue` instead.
 export default {
   functional: true,
   props: {

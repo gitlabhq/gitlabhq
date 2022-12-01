@@ -11,10 +11,10 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_widget/constants';
-import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_widget/dropdown_contents_labels_view.vue';
-import projectLabelsQuery from '~/vue_shared/components/sidebar/labels_select_widget/graphql/project_labels.query.graphql';
-import LabelItem from '~/vue_shared/components/sidebar/labels_select_widget/label_item.vue';
+import { DropdownVariant } from '~/sidebar/components/labels/labels_select_widget/constants';
+import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_widget/dropdown_contents_labels_view.vue';
+import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
+import LabelItem from '~/sidebar/components/labels/labels_select_widget/label_item.vue';
 import { mockConfig, workspaceLabelsQueryResponse } from './mock_data';
 
 jest.mock('~/flash');

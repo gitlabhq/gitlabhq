@@ -1,6 +1,6 @@
 import { mockTracking } from 'helpers/tracking_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import TopToolbar from '~/content_editor/components/top_toolbar.vue';
+import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
 import {
   TOOLBAR_CONTROL_TRACKING_ACTION,
   CONTENT_EDITOR_TRACKING_LABEL,
@@ -11,7 +11,7 @@ describe('content_editor/components/top_toolbar', () => {
   let trackingSpy;
 
   const buildWrapper = () => {
-    wrapper = shallowMountExtended(TopToolbar);
+    wrapper = shallowMountExtended(FormattingToolbar);
   };
 
   beforeEach(() => {

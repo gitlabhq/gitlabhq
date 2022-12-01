@@ -5,9 +5,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import BranchRules, { i18n } from '~/projects/settings/repository/branch_rules/app.vue';
 import BranchRule from '~/projects/settings/repository/branch_rules/components/branch_rule.vue';
-import branchRulesQuery from '~/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
+import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import { createAlert } from '~/flash';
-import { branchRulesMockResponse, appProvideMock } from './mock_data';
+import {
+  branchRulesMockResponse,
+  appProvideMock,
+} from 'ee_else_ce_jest/projects/settings/repository/branch_rules/mock_data';
 
 jest.mock('~/flash');
 

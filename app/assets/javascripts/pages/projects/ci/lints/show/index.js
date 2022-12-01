@@ -1,3 +1,3 @@
-import initCiLint from '~/ci_lint';
+import initCiLint from '~/ci/ci_lint';
 
 initCiLint();

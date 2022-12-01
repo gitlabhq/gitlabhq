@@ -1423,7 +1423,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /**/javascripts/pipelines/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/pipeline_new/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/ci_lint/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci_variable_list/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/pipeline_editor/ @gitlab-org/ci-cd/verify/frontend

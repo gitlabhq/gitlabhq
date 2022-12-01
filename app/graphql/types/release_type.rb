@@ -13,9 +13,6 @@ module Types
 
     present_using ReleasePresenter
 
-    field :id, ::Types::GlobalIDType[Release],
-          null: false,
-          description: 'Global ID of the release.'
     field :assets, Types::ReleaseAssetsType, null: true, method: :itself,
                                              description: 'Assets of the release.'
     field :created_at, Types::TimeType, null: true,
@@ -26,6 +23,11 @@ module Types
           description: 'Description (also known as "release notes") of the release.'
     field :evidences, Types::EvidenceType.connection_type, null: true,
                                                            description: 'Evidence for the release.'
+    field :historical_release, GraphQL::Types::Boolean, null: true, method: :historical_release?,
+                                                        description: 'Indicates the release is an historical release.'
+    field :id, ::Types::GlobalIDType[Release],
+          null: false,
+          description: 'Global ID of the release.'
     field :links, Types::ReleaseLinksType, null: true, method: :itself,
                                            description: 'Links of the release.'
     field :milestones, Types::MilestoneType.connection_type, null: true,
@@ -42,8 +44,6 @@ module Types
                                              authorize: :read_code
     field :upcoming_release, GraphQL::Types::Boolean, null: true, method: :upcoming_release?,
                                                       description: 'Indicates the release is an upcoming release.'
-    field :historical_release, GraphQL::Types::Boolean, null: true, method: :historical_release?,
-                                                        description: 'Indicates the release is an historical release.'
 
     field :author, Types::UserType, null: true,
                                     description: 'User that created the release.'

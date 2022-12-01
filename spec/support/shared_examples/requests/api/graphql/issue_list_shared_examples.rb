@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'graphql issue list request spec' do
+  let(:issue_ids) { graphql_dig_at(issues_data, :id) }
+  let(:fields) do
+    <<~QUERY
+    nodes {
+      #{all_graphql_fields_for('issues'.classify)}
+    }
+    QUERY
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       post_query
@@ -151,6 +160,15 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
   describe 'sorting and pagination' do
     context 'when sorting by severity' do
+      let(:expected_severity_sorted_asc) { [issue_c, issue_a, issue_b, issue_e, issue_d] }
+
+      before_all do
+        create(:issuable_severity, issue: issue_a, severity: :unknown)
+        create(:issuable_severity, issue: issue_b, severity: :low)
+        create(:issuable_severity, issue: issue_d, severity: :critical)
+        create(:issuable_severity, issue: issue_e, severity: :high)
+      end
+
       context 'when ascending' do
         it_behaves_like 'sorted paginated query' do
           let(:sort_param)  { :SEVERITY_ASC }
@@ -251,6 +269,120 @@ RSpec.shared_examples 'graphql issue list request spec' do
     end
   end
 
+  describe 'N+1 query checks' do
+    let(:extra_iid_for_second_query) { issue_b.iid.to_s }
+    let(:search_params) { { iids: [issue_a.iid.to_s] } }
+    let(:issue_filter_params) { search_params }
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+          #{requested_fields}
+        }
+      QUERY
+    end
+
+    def execute_query
+      post_query
+    end
+
+    context 'when requesting `user_notes_count` and `user_discussions_count`' do
+      let(:requested_fields) { 'userNotesCount userDiscussionsCount' }
+
+      before do
+        create_list(:note_on_issue, 2, noteable: issue_a, project: issue_a.project)
+        create(:note_on_issue, noteable: issue_b, project: issue_b.project)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting `merge_requests_count`' do
+      let(:requested_fields) { 'mergeRequestsCount' }
+
+      before do
+        create_list(:merge_requests_closing_issues, 2, issue: issue_a)
+        create_list(:merge_requests_closing_issues, 3, issue: issue_b)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting `timelogs`' do
+      let(:requested_fields) { 'timelogs { nodes { timeSpent } }' }
+
+      before do
+        create_list(:issue_timelog, 2, issue: issue_a)
+        create(:issue_timelog, issue: issue_b)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting `closed_as_duplicate_of`' do
+      let(:requested_fields) { 'closedAsDuplicateOf { id }' }
+      let(:issue_a_dup) { create(:issue, project: issue_a.project) }
+      let(:issue_b_dup) { create(:issue, project: issue_b.project) }
+
+      before do
+        issue_a.update!(duplicated_to_id: issue_a_dup)
+        issue_b.update!(duplicated_to_id: issue_a_dup)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when award emoji votes' do
+      let(:requested_fields) { 'upvotes downvotes' }
+
+      before do
+        create_list(:award_emoji, 2, name: 'thumbsup', awardable: issue_a)
+        create_list(:award_emoji, 2, name: 'thumbsdown', awardable: issue_b)
+      end
+
+      include_examples 'N+1 query check'
+    end
+
+    context 'when requesting participants' do
+      let(:search_params) { { iids: [issue_a.iid.to_s, issue_c.iid.to_s] } }
+      let(:requested_fields) { 'participants { nodes { name } }' }
+
+      before do
+        create(:award_emoji, :upvote, awardable: issue_a)
+        create(:award_emoji, :upvote, awardable: issue_b)
+        create(:award_emoji, :upvote, awardable: issue_c)
+
+        note_with_emoji_a = create(:note_on_issue, noteable: issue_a, project: issue_a.project)
+        note_with_emoji_b = create(:note_on_issue, noteable: issue_b, project: issue_b.project)
+        note_with_emoji_c = create(:note_on_issue, noteable: issue_c, project: issue_c.project)
+
+        create(:award_emoji, :upvote, awardable: note_with_emoji_a)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_b)
+        create(:award_emoji, :upvote, awardable: note_with_emoji_c)
+      end
+
+      # Executes 3 extra queries to fetch participant_attrs
+      include_examples 'N+1 query check', threshold: 3
+    end
+
+    context 'when requesting labels', :use_sql_query_cache do
+      let(:requested_fields) { 'labels { nodes { id } }' }
+      let(:extra_iid_for_second_query) { same_project_issue2.iid.to_s }
+      let(:search_params) { { iids: [same_project_issue1.iid.to_s] } }
+
+      before do
+        current_project = same_project_issue1.project
+        project_labels = create_list(:label, 2, project: current_project)
+        group_labels = create_list(:group_label, 2, group: current_project.group)
+
+        same_project_issue1.update!(labels: [project_labels.first, group_labels.first].flatten)
+        same_project_issue2.update!(labels: [project_labels, group_labels].flatten)
+      end
+
+      include_examples 'N+1 query check', skip_cached: false
+    end
+  end
+
   context 'when confidential issues exist' do
     context 'when user can see confidential issues' do
       it 'includes confidential issues' do
@@ -259,7 +391,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
         all_issues = confidential_issues + non_confidential_issues
 
         expect(issue_ids).to match_array(to_gid_list(all_issues))
-        expect(issues_data.map { |i| i['confidential'] }).to match_array(all_issues.map(&:confidential))
+        expect(issues_data.pluck('confidential')).to match_array(all_issues.map(&:confidential))
       end
     end
 
@@ -340,7 +472,7 @@ RSpec.shared_examples 'graphql issue list request spec' do
     it 'returns the escalation status values' do
       post_query
 
-      statuses = issues_data.map { |issue| issue['escalationStatus'] }
+      statuses = issues_data.pluck('escalationStatus')
 
       expect(statuses).to contain_exactly(escalation_status.status_name.upcase.to_s, nil, nil, nil, nil)
     end
@@ -352,6 +484,177 @@ RSpec.shared_examples 'graphql issue list request spec' do
       create(:incident_management_issuable_escalation_status, issue: new_incident)
 
       expect { run_with_clean_state(query, context: { current_user: current_user }) }.not_to exceed_query_limit(control)
+    end
+  end
+
+  context 'when fetching alert management alert' do
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          iid
+          alertManagementAlert {
+            title
+          }
+          alertManagementAlerts {
+            nodes {
+              title
+            }
+          }
+        }
+      QUERY
+    end
+
+    it 'avoids N+1 queries' do
+      control = ActiveRecord::QueryRecorder.new { post_query }
+
+      create(:alert_management_alert, :with_incident, project: public_projects.first)
+
+      expect { post_query }.not_to exceed_query_limit(control)
+    end
+
+    it 'returns the alert data' do
+      post_query
+
+      alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlert', 'title') }
+      expected_titles = issues.map { |issue| issue.alert_management_alerts.first&.title }
+
+      expect(alert_titles).to contain_exactly(*expected_titles)
+    end
+
+    it 'returns the alerts data' do
+      post_query
+
+      alert_titles = issues_data.map { |issue| issue.dig('alertManagementAlerts', 'nodes') }
+      expected_titles = issues.map do |issue|
+        issue.alert_management_alerts.map { |alert| { 'title' => alert.title } }
+      end
+
+      expect(alert_titles).to contain_exactly(*expected_titles)
+    end
+  end
+
+  context 'when fetching customer_relations_contacts' do
+    let(:fields) do
+      <<~QUERY
+      nodes {
+        id
+        customerRelationsContacts {
+          nodes {
+            firstName
+          }
+        }
+      }
+      QUERY
+    end
+
+    def clean_state_query
+      run_with_clean_state(query, context: { current_user: current_user })
+    end
+
+    it 'avoids N+1 queries' do
+      create(:issue_customer_relations_contact, :for_issue, issue: issue_a)
+
+      control = ActiveRecord::QueryRecorder.new(skip_cached: false) { clean_state_query }
+
+      create(:issue_customer_relations_contact, :for_issue, issue: issue_a)
+
+      expect { clean_state_query }.not_to exceed_all_query_limit(control)
+    end
+  end
+
+  context 'when fetching labels' do
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+          labels {
+            nodes {
+              id
+            }
+          }
+        }
+      QUERY
+    end
+
+    before do
+      issues.each do |issue|
+        # create a label for each issue we have to properly test N+1
+        label = create(:label, project: issue.project)
+        issue.update!(labels: [label])
+      end
+    end
+
+    def response_label_ids(response_data)
+      response_data.map do |node|
+        node['labels']['nodes'].pluck('id')
+      end.flatten
+    end
+
+    def labels_as_global_ids(issues)
+      issues.map(&:labels).flatten.map(&:to_global_id).map(&:to_s)
+    end
+
+    it 'avoids N+1 queries', :aggregate_failures do
+      control = ActiveRecord::QueryRecorder.new { post_query }
+      expect(issues_data.count).to eq(5)
+      expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(issues))
+
+      public_project = public_projects.first
+      new_issues = issues + [
+        create(:issue, project: public_project, labels: [create(:label, project: public_project)])
+      ]
+
+      expect { post_query }.not_to exceed_query_limit(control)
+
+      expect(issues_data.count).to eq(6)
+      expect(response_label_ids(issues_data)).to match_array(labels_as_global_ids(new_issues))
+    end
+  end
+
+  context 'when fetching assignees' do
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+          assignees {
+            nodes {
+              id
+            }
+          }
+        }
+      QUERY
+    end
+
+    before do
+      issues.each do |issue|
+        # create an assignee for each issue we have to properly test N+1
+        assignee = create(:user)
+        issue.update!(assignees: [assignee])
+      end
+    end
+
+    def response_assignee_ids(response_data)
+      response_data.map do |node|
+        node['assignees']['nodes'].pluck('id')
+      end.flatten
+    end
+
+    def assignees_as_global_ids(issues)
+      issues.map(&:assignees).flatten.map(&:to_global_id).map(&:to_s)
+    end
+
+    it 'avoids N+1 queries', :aggregate_failures do
+      control = ActiveRecord::QueryRecorder.new { post_query }
+      expect(issues_data.count).to eq(5)
+      expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(issues))
+
+      public_project = public_projects.first
+      new_issues = issues + [create(:issue, project: public_project, assignees: [create(:user)])]
+
+      expect { post_query }.not_to exceed_query_limit(control)
+
+      expect(issues_data.count).to eq(6)
+      expect(response_assignee_ids(issues_data)).to match_array(assignees_as_global_ids(new_issues))
     end
   end
 
@@ -372,5 +675,9 @@ RSpec.shared_examples 'graphql issue list request spec' do
 
   def to_gid_list(instance_list)
     instance_list.map { |instance| instance.to_gid.to_s }
+  end
+
+  def issues_data
+    graphql_data.dig(*issue_nodes_path)
   end
 end

@@ -27,18 +27,6 @@ RSpec.describe 'profiles/keys/_key_details.html.haml' do
 
         expect(rendered).to have_text(usage_type_text)
       end
-
-      context 'when ssh_key_usage_types is disabled' do
-        before do
-          stub_feature_flags(ssh_key_usage_types: false)
-        end
-
-        it 'does not render usage type text' do
-          render
-
-          expect(rendered).not_to have_text(usage_type_text)
-        end
-      end
     end
   end
 end

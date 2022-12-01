@@ -10,7 +10,7 @@ import FormattingBubbleMenu from '~/content_editor/components/bubble_menus/forma
 import CodeBlockBubbleMenu from '~/content_editor/components/bubble_menus/code_block_bubble_menu.vue';
 import LinkBubbleMenu from '~/content_editor/components/bubble_menus/link_bubble_menu.vue';
 import MediaBubbleMenu from '~/content_editor/components/bubble_menus/media_bubble_menu.vue';
-import TopToolbar from '~/content_editor/components/top_toolbar.vue';
+import FormattingToolbar from '~/content_editor/components/formatting_toolbar.vue';
 import LoadingIndicator from '~/content_editor/components/loading_indicator.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { KEYDOWN_EVENT } from '~/content_editor/constants';
@@ -27,13 +27,14 @@ describe('ContentEditor', () => {
   const findEditorStateObserver = () => wrapper.findComponent(EditorStateObserver);
   const findLoadingIndicator = () => wrapper.findComponent(LoadingIndicator);
   const findContentEditorAlert = () => wrapper.findComponent(ContentEditorAlert);
-  const createWrapper = ({ markdown, autofocus } = {}) => {
+  const createWrapper = ({ markdown, autofocus, useBottomToolbar } = {}) => {
     wrapper = shallowMountExtended(ContentEditor, {
       propsData: {
         renderMarkdown,
         uploadsPath,
         markdown,
         autofocus,
+        useBottomToolbar,
       },
       stubs: {
         EditorStateObserver,
@@ -89,7 +90,19 @@ describe('ContentEditor', () => {
   it('renders top toolbar component', () => {
     createWrapper();
 
-    expect(wrapper.findComponent(TopToolbar).exists()).toBe(true);
+    expect(wrapper.findComponent(FormattingToolbar).exists()).toBe(true);
+    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-t')).toBe(false);
+    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-b')).toBe(true);
+  });
+
+  it('renders bottom toolbar component', () => {
+    createWrapper({
+      useBottomToolbar: true,
+    });
+
+    expect(wrapper.findComponent(FormattingToolbar).exists()).toBe(true);
+    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-t')).toBe(true);
+    expect(wrapper.findComponent(FormattingToolbar).classes('gl-border-b')).toBe(false);
   });
 
   describe('when setting initial content', () => {

@@ -17,7 +17,7 @@ import {
   mockCiYml,
   mockSimulatePipelineHelpPagePath,
 } from '../../mock_data';
-import { mockLintDataError, mockLintDataValid } from '../../../ci_lint/mock_data';
+import { mockLintDataError, mockLintDataValid } from '../../../ci/ci_lint/mock_data';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);

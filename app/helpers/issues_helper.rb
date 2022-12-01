@@ -256,6 +256,17 @@ module IssuesHelper
     )
   end
 
+  def dashboard_issues_list_data(current_user)
+    {
+      calendar_path: url_for(safe_params.merge(calendar_url_options)),
+      empty_state_svg_path: image_path('illustrations/issue-dashboard_results-without-filter.svg'),
+      is_public_visibility_restricted:
+        Gitlab::CurrentSettings.restricted_visibility_levels&.include?(Gitlab::VisibilityLevel::PUBLIC).to_s,
+      is_signed_in: current_user.present?.to_s,
+      rss_path: url_for(safe_params.merge(rss_url_options))
+    }
+  end
+
   def issues_form_data(project)
     {
       new_issue_path: new_project_issue_path(project)
