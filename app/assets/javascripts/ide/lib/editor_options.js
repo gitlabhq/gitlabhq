@@ -27,7 +27,6 @@ export const defaultDiffEditorOptions = {
 };
 
 export const defaultModelOptions = {
-  endOfLine: 0,
   insertFinalNewline: true,
   trimTrailingWhitespace: false,
 };

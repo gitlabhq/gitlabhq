@@ -12,21 +12,13 @@ import (
 	"strings"
 
 	"github.com/sebest/xff"
-	"gitlab.com/gitlab-org/labkit/log"
-	"gitlab.com/gitlab-org/labkit/mask"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
-
-func logErrorWithFields(r *http.Request, err error, fields log.Fields) {
-	if err != nil {
-		CaptureRavenError(r, err, fields)
-	}
-
-	printError(r, err, fields)
-}
 
 func CaptureAndFail(w http.ResponseWriter, r *http.Request, err error, msg string, code int) {
 	http.Error(w, msg, code)
-	logErrorWithFields(r, err, nil)
+	printError(r, err, nil)
 }
 
 func Fail500(w http.ResponseWriter, r *http.Request, err error) {
@@ -35,7 +27,7 @@ func Fail500(w http.ResponseWriter, r *http.Request, err error) {
 
 func Fail500WithFields(w http.ResponseWriter, r *http.Request, err error, fields log.Fields) {
 	http.Error(w, "Internal server error", http.StatusInternalServerError)
-	logErrorWithFields(r, err, fields)
+	printError(r, err, fields)
 }
 
 func RequestEntityTooLarge(w http.ResponseWriter, r *http.Request, err error) {
@@ -43,15 +35,7 @@ func RequestEntityTooLarge(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 func printError(r *http.Request, err error, fields log.Fields) {
-	if r != nil {
-		entry := log.WithContextFields(r.Context(), log.Fields{
-			"method": r.Method,
-			"uri":    mask.URL(r.RequestURI),
-		})
-		entry.WithFields(fields).WithError(err).Error()
-	} else {
-		log.WithFields(fields).WithError(err).Error("unknown error")
-	}
+	log.WithRequest(r).WithFields(fields).WithError(err).Error()
 }
 
 func SetNoCacheHeaders(header http.Header) {
@@ -93,7 +77,7 @@ func OpenFile(path string) (file *os.File, fi os.FileInfo, err error) {
 func URLMustParse(s string) *url.URL {
 	u, err := url.Parse(s)
 	if err != nil {
-		log.WithError(err).WithField("url", s).Fatal("urlMustParse")
+		log.WithError(err).WithFields(log.Fields{"url": s}).Fatal("urlMustParse")
 	}
 	return u
 }

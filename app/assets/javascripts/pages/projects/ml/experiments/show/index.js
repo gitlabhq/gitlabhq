@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import ShowExperiment from '~/ml/experiment_tracking/components/experiment.vue';
+import MlExperiment from '~/ml/experiment_tracking/components/ml_experiment.vue';
 
 const initShowExperiment = () => {
   const element = document.querySelector('#js-show-ml-experiment');
@@ -23,7 +23,7 @@ const initShowExperiment = () => {
       paramNames,
     },
     render(h) {
-      return h(ShowExperiment);
+      return h(MlExperiment);
     },
   });
 };

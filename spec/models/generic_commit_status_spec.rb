@@ -20,7 +20,7 @@ RSpec.describe GenericCommitStatus do
   end
 
   describe '#name_uniqueness_across_types' do
-    let(:attributes) { {} }
+    let(:attributes) { { context: 'default' } }
     let(:commit_status) { described_class.new(attributes) }
     let(:status_name) { 'test-job' }
 
@@ -39,7 +39,7 @@ RSpec.describe GenericCommitStatus do
     end
 
     context 'with only a pipeline' do
-      let(:attributes) { { pipeline: pipeline } }
+      let(:attributes) { { pipeline: pipeline, context: 'default' } }
 
       context 'without name' do
         it_behaves_like 'it does not have uniqueness errors'
@@ -126,32 +126,6 @@ RSpec.describe GenericCommitStatus do
       it 'does not have details' do
         expect(status).not_to have_details
       end
-    end
-  end
-
-  describe 'set_default_values' do
-    before do
-      generic_commit_status.context = nil
-      generic_commit_status.stage = nil
-      generic_commit_status.save!
-    end
-
-    describe '#context' do
-      subject { generic_commit_status.context }
-
-      it { is_expected.not_to be_nil }
-    end
-
-    describe '#stage' do
-      subject { generic_commit_status.stage }
-
-      it { is_expected.not_to be_nil }
-    end
-
-    describe '#stage_idx' do
-      subject { generic_commit_status.stage_idx }
-
-      it { is_expected.not_to be_nil }
     end
   end
 

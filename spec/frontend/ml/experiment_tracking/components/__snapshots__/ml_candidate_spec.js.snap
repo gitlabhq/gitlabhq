@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ShowExperiment with candidates renders correctly 1`] = `
+exports[`MlCandidate renders correctly 1`] = `
 <div>
   <div
     class="gl-alert gl-alert-warning"
@@ -39,7 +39,7 @@ exports[`ShowExperiment with candidates renders correctly 1`] = `
           rel="noopener noreferrer"
           target="_blank"
         >
-          Learn More
+          Learn more
         </a>
       </div>
        
@@ -48,7 +48,7 @@ exports[`ShowExperiment with candidates renders correctly 1`] = `
       >
         <a
           class="btn gl-alert-action btn-confirm btn-md gl-button"
-          href="https://gitlab.com/groups/gitlab-org/-/epics/8560"
+          href="https://gitlab.com/gitlab-org/gitlab/-/issues/381660"
         >
           <!---->
            
@@ -58,7 +58,7 @@ exports[`ShowExperiment with candidates renders correctly 1`] = `
             class="gl-button-text"
           >
             
-          Feedback and Updates
+          Feedback
         
           </span>
         </a>
@@ -89,135 +89,145 @@ exports[`ShowExperiment with candidates renders correctly 1`] = `
    
   <h3>
     
-    Experiment Candidates
+    Model candidate details
   
   </h3>
    
   <table
-    aria-busy="false"
-    aria-colcount="4"
-    class="table b-table gl-table gl-mt-0!"
-    role="table"
+    class="candidate-details"
   >
-    <!---->
-    <!---->
-    <thead
-      class=""
-      role="rowgroup"
-    >
-      <!---->
+    <tbody>
       <tr
-        class=""
-        role="row"
-      >
-        <th
-          aria-colindex="1"
-          class=""
-          role="columnheader"
-          scope="col"
+        class="divider"
+      />
+       
+      <tr>
+        <td
+          class="gl-text-secondary gl-font-weight-bold"
         >
-          <div>
-            L1 Ratio
-          </div>
-        </th>
-        <th
-          aria-colindex="2"
-          class=""
-          role="columnheader"
-          scope="col"
+          Info
+        </td>
+         
+        <td
+          class="gl-font-weight-bold"
         >
-          <div>
-            Rmse
-          </div>
-        </th>
-        <th
-          aria-colindex="3"
-          class=""
-          role="columnheader"
-          scope="col"
-        >
-          <div>
-            Auc
-          </div>
-        </th>
-        <th
-          aria-colindex="4"
-          class=""
-          role="columnheader"
-          scope="col"
-        >
-          <div>
-            Mae
-          </div>
-        </th>
+          ID
+        </td>
+         
+        <td>
+          candidate_iid
+        </td>
       </tr>
-    </thead>
-    <tbody
-      role="rowgroup"
-    >
+       
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          Status
+        </td>
+         
+        <td>
+          SUCCESS
+        </td>
+      </tr>
+       
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          Experiment
+        </td>
+         
+        <td>
+          <a
+            class="gl-link"
+            href="#"
+          >
+            The Experiment
+          </a>
+        </td>
+      </tr>
+       
       <!---->
+       
       <tr
-        class=""
-        role="row"
-      >
+        class="divider"
+      />
+       
+      <tr>
         <td
-          aria-colindex="1"
-          class=""
-          role="cell"
+          class="gl-text-secondary gl-font-weight-bold"
         >
-          0.4
+          
+          Parameters
+        
         </td>
+         
         <td
-          aria-colindex="2"
-          class=""
-          role="cell"
+          class="gl-font-weight-bold"
         >
-          1
+          Algorithm
         </td>
-        <td
-          aria-colindex="3"
-          class=""
-          role="cell"
-        />
-        <td
-          aria-colindex="4"
-          class=""
-          role="cell"
-        />
+         
+        <td>
+          Decision Tree
+        </td>
       </tr>
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          MaxDepth
+        </td>
+         
+        <td>
+          3
+        </td>
+      </tr>
+       
       <tr
-        class=""
-        role="row"
-      >
+        class="divider"
+      />
+       
+      <tr>
         <td
-          aria-colindex="1"
-          class=""
-          role="cell"
+          class="gl-text-secondary gl-font-weight-bold"
         >
-          0.5
+          
+          Metrics
+        
         </td>
+         
         <td
-          aria-colindex="2"
-          class=""
-          role="cell"
-        />
-        <td
-          aria-colindex="3"
-          class=""
-          role="cell"
+          class="gl-font-weight-bold"
         >
-          0.3
+          AUC
         </td>
-        <td
-          aria-colindex="4"
-          class=""
-          role="cell"
-        />
+         
+        <td>
+          .55
+        </td>
       </tr>
-      <!---->
-      <!---->
+      <tr>
+        <td />
+         
+        <td
+          class="gl-font-weight-bold"
+        >
+          Accuracy
+        </td>
+         
+        <td>
+          .99
+        </td>
+      </tr>
     </tbody>
-    <!---->
   </table>
 </div>
 `;

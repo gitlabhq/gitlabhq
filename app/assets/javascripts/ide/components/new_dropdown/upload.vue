@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <li>
     <item-button
       :class="buttonCssClasses"
       :show-label="showLabel"
@@ -84,5 +84,5 @@ export default {
       data-qa-selector="file_upload_field"
       @change="openFile"
     />
-  </div>
+  </li>
 </template>

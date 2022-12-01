@@ -16320,7 +16320,10 @@ msgstr ""
 msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
-msgid "Experiment Candidates"
+msgid "Experiment"
+msgstr ""
+
+msgid "Experiment candidates"
 msgstr ""
 
 msgid "Experiments"
@@ -17050,6 +17053,9 @@ msgid "Feb"
 msgstr ""
 
 msgid "February"
+msgstr ""
+
+msgid "Feedback"
 msgstr ""
 
 msgid "Feedback and Updates"
@@ -21797,6 +21803,9 @@ msgid "Index deletion is canceled"
 msgstr ""
 
 msgid "Indicates whether this runner can pick jobs without tags"
+msgstr ""
+
+msgid "Info"
 msgstr ""
 
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
@@ -26633,6 +26642,9 @@ msgstr ""
 msgid "Modal|Close"
 msgstr ""
 
+msgid "Model candidate details"
+msgstr ""
+
 msgid "Modified"
 msgstr ""
 
@@ -29504,6 +29516,9 @@ msgid "Parameter"
 msgstr ""
 
 msgid "Parameter \"job_id\" cannot exceed length of %{job_id_max_size}"
+msgstr ""
+
+msgid "Parameters"
 msgstr ""
 
 msgid "Parent"
@@ -41764,9 +41779,6 @@ msgstr ""
 msgid "This Cron pattern is invalid"
 msgstr ""
 
-msgid "This Experiment has no logged Candidates"
-msgstr ""
-
 msgid "This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area."
 msgstr ""
 
@@ -41954,6 +41966,9 @@ msgid "This epic does not exist or you don't have sufficient permission."
 msgstr ""
 
 msgid "This epic would exceed maximum number of related epics."
+msgstr ""
+
+msgid "This experiment has no logged candidates"
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"

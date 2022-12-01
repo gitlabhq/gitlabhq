@@ -69,6 +69,12 @@ For example, `Create an issue when you want to track bugs or future work`.
 To start the task steps, use a succinct action followed by a colon.
 For example, `To create an issue:`
 
+## Task prerequisites
+
+As a best practice, if the task requires the user to have a role other than Guest,
+put the minimum role in the prerequisites. See [the Word list](../styleguide/word_list.md) for
+how to write the phrase for each role.
+
 ## Related topics
 
 - [View the format for writing task steps](../styleguide/index.md#navigation).

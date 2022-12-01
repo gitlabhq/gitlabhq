@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Ml::ExperimentsController do
+RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
   let_it_be(:project_with_feature) { create(:project, :repository) }
   let_it_be(:user) { project_with_feature.first_owner }
   let_it_be(:project_without_feature) do
@@ -77,7 +77,8 @@ RSpec.describe Projects::Ml::ExperimentsController do
       expect(response).to render_template('projects/ml/experiments/show')
     end
 
-    it 'does not perform N+1 sql queries' do
+    # MR removing this xit https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104166
+    xit 'does not perform N+1 sql queries' do
       control_count = ActiveRecord::QueryRecorder.new { show_experiment }
 
       create_list(:ml_candidates, 2, :with_metrics_and_params, experiment: experiment)

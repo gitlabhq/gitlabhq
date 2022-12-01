@@ -1,4 +1,4 @@
-package helper
+package exception
 
 import (
 	"net/http"
@@ -17,7 +17,7 @@ var ravenHeaderBlacklist = []string{
 	"Private-Token",
 }
 
-func CaptureRavenError(r *http.Request, err error, fields log.Fields) {
+func Track(r *http.Request, err error, fields log.Fields) {
 	client := raven.DefaultClient
 	extra := raven.Extra{}
 
@@ -27,7 +27,7 @@ func CaptureRavenError(r *http.Request, err error, fields log.Fields) {
 
 	interfaces := []raven.Interface{}
 	if r != nil {
-		CleanHeadersForRaven(r)
+		CleanHeaders(r)
 		interfaces = append(interfaces, raven.NewHttp(r))
 
 		//lint:ignore SA1019 this was recently deprecated. Update workhorse to use labkit errortracking package.
@@ -45,7 +45,7 @@ func CaptureRavenError(r *http.Request, err error, fields log.Fields) {
 	client.Capture(packet, nil)
 }
 
-func CleanHeadersForRaven(r *http.Request) {
+func CleanHeaders(r *http.Request) {
 	if r == nil {
 		return
 	}

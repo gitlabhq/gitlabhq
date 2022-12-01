@@ -1255,7 +1255,7 @@ To do the switch on **all** PgBouncer nodes:
    ```
 
 1. Run `gitlab-ctl reconfigure`.
-1. You must also run `rm /var/opt/gitlab/consul/watcher_postgresql.json`.
+1. You must also run `rm /var/opt/gitlab/consul/config.d/watcher_postgresql.json`.
    This is a [known issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7293).
 
 #### Clean up

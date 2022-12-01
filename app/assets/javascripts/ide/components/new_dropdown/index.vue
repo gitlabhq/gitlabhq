@@ -80,7 +80,7 @@ export default {
               @click="createNewItem('blob')"
             />
           </li>
-          <li><upload :path="path" @create="createTempEntry" /></li>
+          <upload :path="path" @create="createTempEntry" />
           <li>
             <item-button
               :label="__('New directory')"

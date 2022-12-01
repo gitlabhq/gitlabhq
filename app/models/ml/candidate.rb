@@ -19,7 +19,21 @@ module Ml
     scope :including_metrics_and_params, -> { includes(:latest_metrics, :params) }
 
     def artifact_root
-      "/ml_candidate_#{iid}/-/"
+      "/#{package_name}/#{package_version}/"
+    end
+
+    def artifact
+      ::Packages::Generic::PackageFinder.new(experiment.project).execute!(package_name, package_version)
+    rescue ActiveRecord::RecordNotFound
+      nil
+    end
+
+    def package_name
+      "ml_candidate_#{iid}"
+    end
+
+    def package_version
+      '-'
     end
 
     class << self

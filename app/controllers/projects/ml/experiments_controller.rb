@@ -3,7 +3,6 @@
 module Projects
   module Ml
     class ExperimentsController < ::Projects::ApplicationController
-      include Projects::Ml::ExperimentsHelper
       before_action :check_feature_flag
 
       feature_category :mlops

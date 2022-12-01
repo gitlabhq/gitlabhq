@@ -18263,6 +18263,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectpermissionsreadcommitstatus"></a>`readCommitStatus` | [`Boolean!`](#boolean) | Indicates the user can perform `read_commit_status` on this resource. |
 | <a id="projectpermissionsreadcycleanalytics"></a>`readCycleAnalytics` | [`Boolean!`](#boolean) | Indicates the user can perform `read_cycle_analytics` on this resource. |
 | <a id="projectpermissionsreaddesign"></a>`readDesign` | [`Boolean!`](#boolean) | Indicates the user can perform `read_design` on this resource. |
+| <a id="projectpermissionsreadenvironment"></a>`readEnvironment` | [`Boolean!`](#boolean) | Indicates the user can perform `read_environment` on this resource. |
 | <a id="projectpermissionsreadmergerequest"></a>`readMergeRequest` | [`Boolean!`](#boolean) | Indicates the user can perform `read_merge_request` on this resource. |
 | <a id="projectpermissionsreadpagescontent"></a>`readPagesContent` | [`Boolean!`](#boolean) | Indicates the user can perform `read_pages_content` on this resource. |
 | <a id="projectpermissionsreadproject"></a>`readProject` | [`Boolean!`](#boolean) | Indicates the user can perform `read_project` on this resource. |

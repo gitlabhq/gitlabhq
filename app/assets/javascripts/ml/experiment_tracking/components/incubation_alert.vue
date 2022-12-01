@@ -8,8 +8,8 @@ export default {
     contentLabel: __(
       'GitLab incubates features to explore new use cases. These features are updated regularly, and support is limited',
     ),
-    learnMoreLabel: __('Learn More'),
-    feedbackLabel: __('Feedback and Updates'),
+    learnMoreLabel: __('Learn more'),
+    feedbackLabel: __('Feedback'),
   },
   name: 'MlopsIncubationAlert',
   components: { GlAlert, GlLink },
@@ -37,7 +37,7 @@ export default {
     :title="$options.i18n.titleLabel"
     variant="warning"
     :primary-button-text="$options.i18n.feedbackLabel"
-    primary-button-link="https://gitlab.com/groups/gitlab-org/-/epics/8560"
+    primary-button-link="https://gitlab.com/gitlab-org/gitlab/-/issues/381660"
     @dismiss="dismissAlert"
   >
     {{ $options.i18n.contentLabel }}

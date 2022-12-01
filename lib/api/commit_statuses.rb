@@ -125,7 +125,8 @@ module API
           user: current_user,
           protected: user_project.protected_for?(ref),
           ci_stage: stage,
-          stage_idx: stage.position
+          stage_idx: stage.position,
+          stage: 'external'
         )
 
         updatable_optional_attributes = %w[target_url description coverage]
