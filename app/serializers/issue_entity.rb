@@ -85,6 +85,11 @@ class IssueEntity < IssuableEntity
   end
 
   expose :issue_email_participants do |issue|
+    # TODO - This is a Temporary solution to avoid leaking participants' emails
+    # on public/internal projects when issue is not confidential.
+    # Should be removed when https://gitlab.com/gitlab-org/gitlab/-/issues/383448 is implemented.
+    next [] unless issue.confidential?
+
     issue.issue_email_participants.map { |x| { email: x.email } }
   end
 

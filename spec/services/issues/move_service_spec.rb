@@ -508,4 +508,25 @@ RSpec.describe Issues::MoveService do
       end
     end
   end
+
+  context 'copying email participants' do
+    let!(:participant1) { create(:issue_email_participant, email: 'user1@example.com', issue: old_issue) }
+    let!(:participant2) { create(:issue_email_participant, email: 'user2@example.com', issue: old_issue) }
+    let!(:participant3) { create(:issue_email_participant, email: 'other_project_customer@example.com') }
+
+    include_context 'user can move issue'
+
+    subject(:new_issue) do
+      move_service.execute(old_issue, new_project)
+    end
+
+    it 'copies moved issue email participants' do
+      new_issue
+
+      expect(participant1.reload.issue).to eq(old_issue)
+      expect(participant2.reload.issue).to eq(old_issue)
+      expect(new_issue.issue_email_participants.pluck(:email))
+       .to match_array([participant1.email, participant2.email])
+    end
+  end
 end

@@ -360,12 +360,17 @@ does not count toward the license limit count.
 
 ### Moving a Service Desk issue
 
+> [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/372246) in GitLab 15.7: customers continue receiving notifications when a Service Desk issue is moved.
+
 Service Desk issues can be moved like any other issue in GitLab.
 
 You can move a Service Desk issue the same way you
 [move a regular issue](issues/managing_issues.md#move-an-issue) in GitLab.
 
-If a Service Desk issue is moved to a different project the customer who created the issue stops receiving emails.
+If a Service Desk issue is moved to a different project with Service Desk enabled,
+the customer who created the issue continues to receive email notifications.
+Because a moved issue is first closed, then copied, the customer is considered to be a participant
+in both issues. They continue to receive any notifications in the old issue and the new one.
 
 ## Troubleshooting Service Desk
 

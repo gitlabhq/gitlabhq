@@ -184,19 +184,19 @@ is not available.
 
 ## Edit a release
 
-Only users with at least the Developer role can edit releases.
-Read more about [Release permissions](#release-permissions).
+To edit the details of a release after it's created, you can use the
+[Update a release API](../../../api/releases/index.md#update-a-release) or the UI.
 
-To edit the details of a release:
+Prerequisites:
+
+- You must have at least the Developer role.
+
+In the UI:
 
 1. On the left sidebar, select **Deployments > Releases**.
 1. In the top-right corner of the release you want to modify, select **Edit this release** (the pencil icon).
 1. On the **Edit Release** page, change the release's details.
 1. Select **Save changes**.
-
-You can edit the release title, notes, associated milestones, and asset links.
-To change the release date use the
-[Releases API](../../../api/releases/index.md#update-a-release).
 
 ## Delete a release
 

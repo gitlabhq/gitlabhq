@@ -1046,6 +1046,8 @@ can be added, removed, and modified by creating a custom configuration.
 |[`DAST_API_EXCLUDE_URLS`](#exclude-urls)               | Exclude API URL from testing. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/357195) in GitLab 14.10. |
 |[`DAST_API_EXCLUDE_PARAMETER_ENV`](#exclude-parameters)       | JSON string containing excluded parameters. |
 |[`DAST_API_EXCLUDE_PARAMETER_FILE`](#exclude-parameters)      | Path to a JSON file containing excluded parameters. |
+|[`DAST_API_REQUEST_HEADERS`](#request-headers)      | A comma-separated (`,`) list of headers to include on each scan request. Consider using `DAST_API_REQUEST_HEADERS_BASE64`  when storing secret header values in a [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions. |
+|[`DAST_API_REQUEST_HEADERS_BASE64`](#request-headers)      | A comma-separated (`,`) list of headers to include on each scan request, Base64-encoded. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378440) in GitLab 15.6. |
 |[`DAST_API_OPENAPI`](#openapi-specification)           | OpenAPI specification file or URL. |
 |[`DAST_API_OPENAPI_RELAXED_VALIDATION`](#openapi-specification) | Relax document validation. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345950) in GitLab 14.7. |
 |[`DAST_API_OPENAPI_ALL_MEDIA_TYPES`](#openapi-specification)  | Use all supported media types instead of one when generating requests. Causes test duration to be longer. Default is disabled. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333304) in GitLab 14.10. |
@@ -1487,6 +1489,61 @@ variables:
 ```
 
 In the previous sample, you could use the script `user-pre-scan-set-up.sh` to also install new runtimes or applications that later on you could use in our overrides command.
+
+## Request Headers
+
+The request headers feature lets you specify fixed values for the headers during the scan session. For example, you can use the configuration variable `DAST_API_REQUEST_HEADERS` to set a fixed value in the `Cache-Control` header. If the headers you need to set include sensitive values like the `Authorization` header, use the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) feature along with the [variable `DAST_API_REQUEST_HEADERS_BASE64`](#base64).
+
+Note that if the `Authorization` header or any other header needs to get updated while the scan is in progress, consider using the [overrides](#overrides) feature.
+
+The variable `DAST_API_REQUEST_HEADERS` lets you specify a comma-separated (`,`) list of headers. These headers are included on each request that the scanner performs. Each header entry in the list consists of a name followed by a colon (`:`) and then by its value. Whitespace before the key or value is ignored. For example, to declare a header name `Cache-Control` with the value `max-age=604800`, the header entry is `Cache-Control: max-age=604800`. To use two headers, `Cache-Control: max-age=604800` and `Age: 100`, set `DAST_API_REQUEST_HEADERS` variable to `Cache-Control: max-age=604800, Age: 100`.
+
+The order in which the different headers are provided into the variable `DAST_API_REQUEST_HEADERS` does not affect the result. Setting `DAST_API_REQUEST_HEADERS` to `Cache-Control: max-age=604800, Age: 100` produces the same result as setting it to `Age: 100, Cache-Control: max-age=604800`. 
+
+### Base64
+
+The `DAST_API_REQUEST_HEADERS_BASE64` variable accepts the same list of headers as `DAST_API_REQUEST_HEADERS`, with the only difference that the entire value of the variable must be Base64-encoded. For example, to set `DAST_API_REQUEST_HEADERS_BASE64` variable to `Authorization: QmVhcmVyIFRPS0VO, Cache-control: bm8tY2FjaGU=`, ensure you convert the list to its Base64 equivalent: `QXV0aG9yaXphdGlvbjogUW1WaGNtVnlJRlJQUzBWTywgQ2FjaGUtY29udHJvbDogYm04dFkyRmphR1U9`, and the Base64-encoded value must be used. This is useful when storing secret header values in a [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions. 
+
+WARNING:
+Base64 is used to support the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) feature. Base64 encoding is not by itself a security measure, because sensitive values can be easily decoded.
+
+### Example: Adding a list of headers on each request using plain text
+
+In the following example of a `.gitlab-ci.yml`, `DAST_API_REQUEST_HEADERS` configuration variable is set to provide two header values as explained in [request headers](#request-headers).
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_REQUEST_HEADERS: 'Cache-control: no-cache, Save-Data: on'
+```
+
+### Example: Using a masked CI/CD variable
+
+The following `.gitlab-ci.yml` sample assumes the [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable) `SECRET_REQUEST_HEADERS_BASE64` is defined as a [group or instance level CI/CD variable defined in the UI](../../../ci/variables/index.md#add-a-cicd-variable-to-an-instance). The value of `SECRET_REQUEST_HEADERS_BASE64` is set to `WC1BQ01FLVNlY3JldDogc31jcnt0ISwgWC1BQ01FLVRva2VuOiA3MDVkMTZmNWUzZmI=`, which is the Base64-encoded text version of `X-ACME-Secret: s3cr3t!, X-ACME-Token: 705d16f5e3fb`. Then, it can be used as follows:
+
+```yaml
+stages:
+  - dast
+
+include:
+  - template: DAST-API.gitlab-ci.yml
+
+variables:
+  DAST_API_PROFILE: Quick
+  DAST_API_OPENAPI: test-api-specification.json
+  DAST_API_TARGET_URL: http://test-deployment/
+  DAST_API_REQUEST_HEADERS_BASE64: $SECRET_REQUEST_HEADERS_BASE64
+```
+
+Consider using `DAST_API_REQUEST_HEADERS_BASE64`  when storing secret header values in a [masked variable](../../../ci/variables/index.md#mask-a-cicd-variable), which has character set restrictions.
 
 ## Exclude Paths
 
