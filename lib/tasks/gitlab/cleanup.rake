@@ -15,13 +15,11 @@ namespace :gitlab do
 
         if Gitlab::Auth::Ldap::Access.allowed?(user)
           puts " [OK]".color(:green)
+        elsif block_flag
+          user.block! unless user.blocked?
+          puts " [BLOCKED]".color(:red)
         else
-          if block_flag
-            user.block! unless user.blocked?
-            puts " [BLOCKED]".color(:red)
-          else
-            puts " [NOT IN LDAP]".color(:yellow)
-          end
+          puts " [NOT IN LDAP]".color(:yellow)
         end
       end
 

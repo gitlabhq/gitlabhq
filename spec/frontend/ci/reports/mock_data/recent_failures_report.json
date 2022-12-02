@@ -1,0 +1,70 @@
+{
+  "summary": {
+    "total": 11,
+    "resolved": 0,
+    "errored": 0,
+    "failed": 3,
+    "recentlyFailed": 2
+  },
+  "suites": [
+    {
+      "name": "rspec:pg",
+      "summary": {
+        "total": 8,
+        "resolved": 0,
+        "errored": 0,
+        "failed": 2,
+        "recentlyFailed": 1
+      },
+      "new_failures": [
+        {
+          "result": "failure",
+          "name": "Test#sum when a is 1 and b is 2 returns summary",
+          "execution_time": 0.009411,
+          "system_output": "Failure/Error: is_expected.to eq(3)\n\n  expected: 3\n       got: -1\n\n  (compared using ==)\n./spec/test_spec.rb:12:in `block (4 levels) in <top (required)>'",
+          "recent_failures": {
+            "count": 8,
+            "base_branch": "main"
+          }
+        },
+        {
+          "result": "failure",
+          "name": "Test#sum when a is 100 and b is 200 returns summary",
+          "execution_time": 0.000162,
+          "system_output": "Failure/Error: is_expected.to eq(300)\n\n  expected: 300\n       got: -100\n\n  (compared using ==)\n./spec/test_spec.rb:21:in `block (4 levels) in <top (required)>'"
+        }
+      ],
+      "resolved_failures": [],
+      "existing_failures": [],
+      "new_errors": [],
+      "resolved_errors": [],
+      "existing_errors": []
+    },
+    {
+      "name": "java ant",
+      "summary": {
+        "total": 3,
+        "resolved": 0,
+        "errored": 0,
+        "failed": 1,
+        "recentlyFailed": 1
+      },
+      "new_failures": [
+        {
+          "result": "failure",
+          "name": "Test#sum when a is 100 and b is 200 returns summary",
+          "execution_time": 0.000562,
+          "recent_failures": {
+            "count": 3,
+            "base_branch": "main"
+          }
+        }
+      ],
+      "resolved_failures": [],
+      "existing_failures": [],
+      "new_errors": [],
+      "resolved_errors": [],
+      "existing_errors": []
+    }
+  ]
+}

@@ -91,13 +91,11 @@ module ReviewApps
             release = Tooling::Helm3Client::Release.new(environment.slug, 1, deployed_at.to_s, nil, nil, environment.slug)
             releases_to_delete << release
           end
+        elsif deployed_at >= stop_threshold
+          print_release_state(subject: 'Review App', release_name: environment.slug, release_date: last_deploy, action: 'leaving')
         else
-          if deployed_at >= stop_threshold
-            print_release_state(subject: 'Review App', release_name: environment.slug, release_date: last_deploy, action: 'leaving')
-          else
-            environment_state = fetch_environment(environment)&.state
-            stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
-          end
+          environment_state = fetch_environment(environment)&.state
+          stop_environment(environment, deployment) if environment_state && environment_state != 'stopped'
         end
 
         checked_environments << environment.slug

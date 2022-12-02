@@ -81,12 +81,10 @@ module SystemNotes
 
       commit_ids = if count == 1
                      existing_commits.first.short_id
+                   elsif oldrev && !Gitlab::Git.blank_ref?(oldrev)
+                     "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
                    else
-                     if oldrev && !Gitlab::Git.blank_ref?(oldrev)
-                       "#{Commit.truncate_sha(oldrev)}...#{existing_commits.last.short_id}"
-                     else
-                       "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
-                     end
+                     "#{existing_commits.first.short_id}..#{existing_commits.last.short_id}"
                    end
 
       commits_text = "#{count} commit".pluralize(count)

@@ -348,12 +348,10 @@ module IssuablesHelper
       else
         [_("Closed"), "merge-request-close"]
       end
+    elsif issuable.open?
+      [_("Open"), "issues"]
     else
-      if issuable.open?
-        [_("Open"), "issues"]
-      else
-        [_("Closed"), "issue-closed"]
-      end
+      [_("Closed"), "issue-closed"]
     end
   end
 

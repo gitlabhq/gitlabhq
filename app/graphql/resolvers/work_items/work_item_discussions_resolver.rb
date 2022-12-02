@@ -9,6 +9,9 @@ module Resolvers
       authorize :read_work_item
       authorizes_object!
 
+      # this resolver may be calling gitaly as part of parsing notes that contain commit references
+      calls_gitaly!
+
       alias_method :notes_widget, :object
 
       argument :filter, Types::WorkItems::NotesFilterTypeEnum,

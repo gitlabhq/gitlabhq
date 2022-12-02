@@ -565,12 +565,10 @@ module SearchHelper
       else
         :success
       end
+    elsif issuable.closed?
+      :info
     else
-      if issuable.closed?
-        :info
-      else
-        :success
-      end
+      :success
     end
   end
 

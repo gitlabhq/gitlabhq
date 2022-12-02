@@ -76,13 +76,11 @@ module DiffHelper
   def diff_line_content(line)
     if line.blank?
       "&nbsp;".html_safe
-    else
+    elsif line.start_with?('+', '-', ' ')
       # `sub` and substring-ing would destroy HTML-safeness of `line`
-      if line.start_with?('+', '-', ' ')
-        line[1, line.length]
-      else
-        line
-      end
+      line[1, line.length]
+    else
+      line
     end
   end
 

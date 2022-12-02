@@ -44,8 +44,8 @@ class TaskListToggleService
     # any `[ ]` or `[x]` in the middle of the text
     if currently_checked
       markdown_task.sub!(Taskable::COMPLETE_PATTERN, '[ ]') unless toggle_as_checked
-    else
-      markdown_task.sub!(Taskable::INCOMPLETE_PATTERN, '[x]') if toggle_as_checked
+    elsif toggle_as_checked
+      markdown_task.sub!(Taskable::INCOMPLETE_PATTERN, '[x]')
     end
 
     source_lines[source_line_index] = markdown_task

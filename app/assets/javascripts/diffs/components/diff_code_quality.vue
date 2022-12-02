@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
-import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/reports/codequality_report/constants';
+import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
 
 export default {
   components: { GlButton, GlIcon },

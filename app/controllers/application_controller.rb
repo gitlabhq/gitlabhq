@@ -426,8 +426,8 @@ class ApplicationController < ActionController::Base
       # accepting the terms.
       redirect_path = if request.get?
                         request.fullpath
-                      else
-                        URI(request.referer).path if request.referer
+                      elsif request.referer
+                        URI(request.referer).path
                       end
 
       flash[:notice] = message

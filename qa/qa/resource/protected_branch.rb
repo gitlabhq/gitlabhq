@@ -51,8 +51,8 @@ module QA
               page.select_allowed_to_merge(allowed_to_merge)
               page.select_allowed_to_push(allowed_to_push)
               page.protect_branch
-            else
-              page.require_code_owner_approval(branch_name) if require_code_owner_approval
+            elsif require_code_owner_approval
+              page.require_code_owner_approval(branch_name)
             end
           end
         end

@@ -204,6 +204,12 @@ RSpec.describe Gitlab::Audit::Type::Definition do
     end
   end
 
+  describe 'validate that all the YAML definitions matches the audit event type schema' do
+    it 'successfully loads all the YAML definitions' do
+      expect { described_class.definitions }.not_to raise_error
+    end
+  end
+
   describe '.definitions' do
     let(:store1) { Dir.mktmpdir('path1') }
 

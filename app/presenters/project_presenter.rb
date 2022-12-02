@@ -290,16 +290,14 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
                      'btn-default',
                      nil,
                      'license')
-    else
-      if can_current_user_push_to_default_branch?
-        AnchorData.new(false,
+    elsif can_current_user_push_to_default_branch?
+      AnchorData.new(false,
                        content_tag(:span, statistic_icon + _('Add LICENSE'), class: 'add-license-link d-flex'),
                        empty_repo? ? add_license_ide_path : add_license_path)
-      else
-        AnchorData.new(false,
-                       icon + content_tag(:span, _('No license. All rights reserved'), class: 'project-stat-value'),
-                       nil)
-      end
+    else
+      AnchorData.new(false,
+                     icon + content_tag(:span, _('No license. All rights reserved'), class: 'project-stat-value'),
+                     nil)
     end
   end
 

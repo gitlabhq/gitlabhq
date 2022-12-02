@@ -1,5 +1,5 @@
 import { s__, sprintf } from '~/locale';
-import { LOADING, ERROR, SUCCESS } from '~/reports/constants';
+import { LOADING, ERROR, SUCCESS } from '~/ci/reports/constants';
 import { TRANSLATION_IS_LOADING } from './messages';
 import { countVulnerabilities, groupedTextBuilder } from './utils';
 

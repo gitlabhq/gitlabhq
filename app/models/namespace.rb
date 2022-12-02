@@ -552,12 +552,10 @@ class Namespace < ApplicationRecord
   def shared_runners_setting
     if shared_runners_enabled
       SR_ENABLED
+    elsif allow_descendants_override_disabled_shared_runners
+      SR_DISABLED_WITH_OVERRIDE
     else
-      if allow_descendants_override_disabled_shared_runners
-        SR_DISABLED_WITH_OVERRIDE
-      else
-        SR_DISABLED_AND_UNOVERRIDABLE
-      end
+      SR_DISABLED_AND_UNOVERRIDABLE
     end
   end
 

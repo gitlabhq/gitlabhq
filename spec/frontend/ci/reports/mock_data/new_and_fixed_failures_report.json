@@ -1,0 +1,70 @@
+{
+  "status": "failed",
+  "summary": {
+    "total": 11,
+    "resolved": 2,
+    "errored": 0,
+    "failed": 2
+  },
+  "suites": [
+    {
+      "name": "rspec:pg",
+      "status": "failed",
+      "summary": {
+        "total": 8,
+        "resolved": 2,
+        "errored": 0,
+        "failed": 1
+      },
+      "new_failures": [
+        {
+          "status": "failed",
+          "name": "Test#subtract when a is 2 and b is 1 returns correct result",
+          "execution_time": 0.00908,
+          "system_output": "Failure/Error: is_expected.to eq(1)\n\n  expected: 1\n       got: 3\n\n  (compared using ==)\n./spec/test_spec.rb:43:in `block (4 levels) in <top (required)>'"
+        }
+      ],
+      "resolved_failures": [
+        {
+          "status": "success",
+          "name": "Test#sum when a is 1 and b is 2 returns summary",
+          "execution_time": 0.000318,
+          "system_output": null
+        },
+        {
+          "status": "success",
+          "name": "Test#sum when a is 100 and b is 200 returns summary",
+          "execution_time": 0.000074,
+          "system_output": null
+        }
+      ],
+      "existing_failures": [],
+      "new_errors": [],
+      "resolved_errors": [],
+      "existing_errors": []
+    },
+    {
+      "name": "java ant",
+      "status": "failed",
+      "summary": {
+        "total": 3,
+        "resolved": 0,
+        "errored": 0,
+        "failed": 1
+      },
+      "new_failures": [],
+      "resolved_failures": [],
+      "existing_failures": [
+        {
+          "status": "failed",
+          "name": "sumTest",
+          "execution_time": 0.004,
+          "system_output": "junit.framework.AssertionFailedError: expected:<3> but was:<-1>\n\tat CalculatorTest.sumTest(Unknown Source)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)\n\tat java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)\n\tat java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)\n"
+        }
+      ],
+      "new_errors": [],
+      "resolved_errors": [],
+      "existing_errors": []
+    }
+  ]
+}

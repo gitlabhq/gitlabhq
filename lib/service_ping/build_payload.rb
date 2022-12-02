@@ -20,8 +20,8 @@ module ServicePing
 
         if has_metric_definition?(key_path)
           include_metric?(key_path)
-        else
-          filtered_usage_data(node, parents.dup << label) if node.is_a?(Hash)
+        elsif node.is_a?(Hash)
+          filtered_usage_data(node, parents.dup << label)
         end
       end
     end

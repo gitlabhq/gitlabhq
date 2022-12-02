@@ -117,8 +117,8 @@ module ExportFileHelper
       # Check whether this is a hash attribute inside a model
       if model.is_a?(Symbol)
         return true if (safe_hashes[model] - parent.keys).empty?
-      else
-        return true if safe_model?(model, excluded_attributes, parent)
+      elsif safe_model?(model, excluded_attributes, parent)
+        return true
       end
     end
 

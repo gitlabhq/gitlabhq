@@ -40,6 +40,14 @@ module QA
             element :project_creation_level_dropdown
           end
 
+          view 'app/views/groups/settings/_transfer.html.haml' do
+            element :transfer_group_content
+          end
+
+          view 'app/assets/javascripts/groups/components/transfer_group_form.vue' do
+            element :transfer_group_button
+          end
+
           def set_group_name(name)
             find_element(:group_name_field).send_keys([:command, 'a'], :backspace)
             find_element(:group_name_field).set name
@@ -101,6 +109,38 @@ module QA
             end
 
             click_element(:save_permissions_changes_button)
+          end
+
+          def transfer_group(source_group, target_group)
+            QA::Runtime::Logger.info "Transferring group: #{source_group.path} to target group: #{target_group.path}"
+
+            expand_content(:advanced_settings_content)
+
+            scroll_to_transfer_group_content
+
+            select_namespace(target_group.path)
+
+            wait_for_enabled_transfer_group_button
+            click_element(:transfer_group_button)
+
+            fill_confirmation_text(source_group.path)
+            confirm_transfer
+          end
+
+          private
+
+          def scroll_to_transfer_group_content
+            retry_until(sleep_interval: 1, message: 'Waiting for transfer group content to display') do
+              has_element?(:transfer_group_content, wait: 3)
+            end
+
+            scroll_to_element :transfer_group_content
+          end
+
+          def wait_for_enabled_transfer_group_button
+            retry_until(sleep_interval: 1, message: 'Waiting for transfer group button to be enabled') do
+              has_element?(:transfer_group_button, disabled: false, wait: 3)
+            end
           end
         end
       end

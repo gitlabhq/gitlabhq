@@ -83,7 +83,7 @@ module Types
       def id
         return super unless object.is_a?(SyntheticNote)
 
-        ::Gitlab::GlobalId.build(object, model_name: object.class.to_s, id: "not-persisted")
+        ::Gitlab::GlobalId.build(object, model_name: object.class.to_s, id: object.discussion_id)
       end
     end
   end

@@ -27,7 +27,7 @@ module QA
             element :downstream_title_content
           end
 
-          view 'app/assets/javascripts/reports/components/report_section.vue' do
+          view 'app/assets/javascripts/ci/reports/components/report_section.vue' do
             element :expand_report_button
           end
 

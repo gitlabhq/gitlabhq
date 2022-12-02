@@ -33,7 +33,7 @@ class PersonalAccessTokensFinder
   attr_reader :current_user
 
   def by_current_user(tokens)
-    return tokens if current_user.nil? || current_user.admin?
+    return tokens if current_user.nil? || current_user.can_admin_all_resources?
     return PersonalAccessToken.none unless Ability.allowed?(current_user, :read_user_personal_access_tokens, params[:user])
 
     tokens

@@ -559,8 +559,8 @@ module API
 
         if result
           present_project user_project.reset, with: Entities::Project, current_user: current_user
-        else
-          render_api_error!("Project already forked", 409) if user_project.forked?
+        elsif user_project.forked?
+          render_api_error!("Project already forked", 409)
         end
       end
 

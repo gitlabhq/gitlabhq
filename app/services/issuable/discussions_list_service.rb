@@ -39,12 +39,9 @@ module Issuable
 
       notes = prepare_notes_for_rendering(notes)
 
-      # TODO: optimize this permission check.
-      # Given this loads notes on a single issuable and current permission system, we should not have to check
-      # permission on every single note. We should be able to check permission on the given issuable or its container,
-      # which should result in just one permission check. Perhaps that should also either be passed to NotesFinder or
-      # should be done in NotesFinder, which would decide right away if it would need to return no notes
-      # or if it should just filter out internal notes.
+      # we need to check the permission on every note, because some system notes for instance can have references to
+      # resources that some user do not have read access, so those notes are filtered out from the list of notes.
+      # see Note#all_referenced_mentionables_allowed?
       notes = notes.select { |n| n.readable_by?(current_user) }
 
       Discussion.build_collection(notes, issuable)

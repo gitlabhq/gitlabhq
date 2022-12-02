@@ -306,7 +306,7 @@ DEPENDENCIES
   capybara-screenshot (~> 1.0.26)
   chemlab (~> 0.10)
   chemlab-library-www-gitlab-com (~> 0.1, >= 0.1.1)
-  confiner (~> 0.3)
+  confiner (~> 0.4)
   deprecation_toolkit (~> 2.0.1)
   faker (~> 3.0)
   faraday-retry (~> 2.0)

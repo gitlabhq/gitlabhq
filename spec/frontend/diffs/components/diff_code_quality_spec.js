@@ -1,7 +1,7 @@
 import { GlIcon } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DiffCodeQuality from '~/diffs/components/diff_code_quality.vue';
-import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/reports/codequality_report/constants';
+import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
 import { multipleFindingsArr } from '../mock_data/diff_code_quality';
 
 let wrapper;

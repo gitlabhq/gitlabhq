@@ -53,13 +53,11 @@ namespace :gitlab do
         path_to_repo = project.repository.path_to_repo
         if File.exist?(path_to_repo)
           print '-'
-        else
-          if Gitlab::Shell.new.create_repository(project.repository_storage,
+        elsif Gitlab::Shell.new.create_repository(project.repository_storage,
                                               project.disk_path)
-            print '.'
-          else
-            print 'F'
-          end
+          print '.'
+        else
+          print 'F'
         end
       end
     end

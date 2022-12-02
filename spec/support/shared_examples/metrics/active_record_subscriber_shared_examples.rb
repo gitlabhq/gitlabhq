@@ -129,8 +129,8 @@ RSpec.shared_examples 'record ActiveRecord metrics in a metrics transaction' do 
         expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1, { db_config_name: db_config_name })
         expect(transaction).to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_cached_count_total".to_sym, 1, { db_config_name: db_config_name }) if record_cached_query
       end
-    else
-      expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1, { db_config_name: db_config_name }) if db_role
+    elsif db_role
+      expect(transaction).not_to receive(:increment).with("gitlab_transaction_db_#{db_role}_wal_count_total".to_sym, 1, { db_config_name: db_config_name })
     end
 
     subscriber.sql(event)
