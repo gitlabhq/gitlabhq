@@ -21,7 +21,7 @@ module Gitlab
 
         schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
         tables_to_truncate = Gitlab::Database::GitlabSchema.tables_to_schema.reject do |_, schema_name|
-          (GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection)).include?(schema_name)
+          GITLAB_SCHEMAS_TO_IGNORE.union(schemas_for_connection).include?(schema_name)
         end.keys
 
         tables_sorted = Gitlab::Database::TablesSortedByForeignKeys.new(connection, tables_to_truncate).execute

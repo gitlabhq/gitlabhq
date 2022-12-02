@@ -10,10 +10,11 @@ RSpec.describe Gitlab::Config::Entry::Attributable do
   end
 
   let(:instance) { node.new }
+  let(:prefix) { nil }
 
   before do
-    node.class_eval do
-      attributes :name, :test
+    node.class_exec(prefix) do |pre|
+      attributes :name, :test, prefix: pre
     end
   end
 
@@ -22,6 +23,17 @@ RSpec.describe Gitlab::Config::Entry::Attributable do
       allow(instance)
         .to receive(:config)
         .and_return({ name: 'some name', test: 'some test' })
+    end
+
+    context 'and is provided a prefix' do
+      let(:prefix) { :pre }
+
+      it 'returns the value of config' do
+        expect(instance).to have_pre_name
+        expect(instance.pre_name).to eq 'some name'
+        expect(instance).to have_pre_test
+        expect(instance.pre_test).to eq 'some test'
+      end
     end
 
     it 'returns the value of config' do

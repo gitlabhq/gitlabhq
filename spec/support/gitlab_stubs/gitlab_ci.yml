@@ -12,7 +12,8 @@ variables:
     description: 'value of KEY_VALUE_VAR'
   DB_NAME: postgres
   ENVIRONMENT_VAR:
-    value: ['env var value', 'env var value2']
+    value: 'env var value'
+    options: ['env var value', 'env var value2']
     description: 'env var description'
 
 stages:

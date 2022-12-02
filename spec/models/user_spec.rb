@@ -6160,33 +6160,44 @@ RSpec.describe User do
 
   describe '#notification_email_for' do
     let(:user) { create(:user) }
-    let(:group) { create(:group) }
 
-    subject { user.notification_email_for(group) }
+    subject { user.notification_email_for(namespace) }
 
-    context 'when group is nil' do
-      let(:group) { nil }
+    context 'when namespace is nil' do
+      let(:namespace) { nil }
 
       it 'returns global notification email' do
         is_expected.to eq(user.notification_email_or_default)
       end
     end
 
-    context 'when group has no notification email set' do
-      it 'returns global notification email' do
-        create(:notification_setting, user: user, source: group, notification_email: '')
+    context 'for group namespace' do
+      let(:namespace) { create(:group) }
 
-        is_expected.to eq(user.notification_email_or_default)
+      context 'when group has no notification email set' do
+        it 'returns global notification email' do
+          create(:notification_setting, user: user, source: namespace, notification_email: '')
+
+          is_expected.to eq(user.notification_email_or_default)
+        end
+      end
+
+      context 'when group has notification email set' do
+        it 'returns group notification email' do
+          group_notification_email = 'user+group@example.com'
+          create(:email, :confirmed, user: user, email: group_notification_email)
+          create(:notification_setting, user: user, source: namespace, notification_email: group_notification_email)
+
+          is_expected.to eq(group_notification_email)
+        end
       end
     end
 
-    context 'when group has notification email set' do
-      it 'returns group notification email' do
-        group_notification_email = 'user+group@example.com'
-        create(:email, :confirmed, user: user, email: group_notification_email)
-        create(:notification_setting, user: user, source: group, notification_email: group_notification_email)
+    context 'for user namespace' do
+      let(:namespace) { create(:user_namespace) }
 
-        is_expected.to eq(group_notification_email)
+      it 'returns global notification email' do
+        is_expected.to eq(user.notification_email_or_default)
       end
     end
   end

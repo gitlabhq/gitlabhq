@@ -85,11 +85,15 @@ module Gitlab
           return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
 
           Gitlab::Tracking.event(
-            'merge_requests',
-            MR_APPROVE_ACTION,
+            name,
+            :approve,
             project: project,
             namespace: project.namespace,
-            user: user
+            user: user,
+            property: MR_APPROVE_ACTION,
+            label: 'redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly',
+            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                               event: MR_APPROVE_ACTION).to_context]
           )
         end
 

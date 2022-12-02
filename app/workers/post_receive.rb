@@ -142,12 +142,16 @@ class PostReceive
   def emit_snowplow_event(project, user)
     return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
 
+    metric_path = 'counts.source_code_pushes'
     Gitlab::Tracking.event(
       'PostReceive',
-      'source_code_pushes',
+      :push,
       project: project,
       namespace: project.namespace,
-      user: user
+      user: user,
+      property: 'source_code_pushes',
+      label: metric_path,
+      context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis, key_path: metric_path).to_context]
     )
   end
 end

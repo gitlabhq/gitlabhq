@@ -141,7 +141,8 @@ RSpec.describe Gitlab::ApplicationContext do
     describe 'setting the client' do
       let_it_be(:remote_ip) { '127.0.0.1' }
       let_it_be(:runner) { create(:ci_runner) }
-      let_it_be(:options) { { remote_ip: remote_ip, runner: runner, user: user } }
+      let_it_be(:job) { create(:ci_build, :pending, :queued, user: user, project: project) }
+      let_it_be(:options) { { remote_ip: remote_ip, runner: runner, user: user, job: job } }
 
       using RSpec::Parameterized::TableSyntax
 
@@ -150,6 +151,7 @@ RSpec.describe Gitlab::ApplicationContext do
         [:remote_ip, :runner]        | :runner
         [:remote_ip, :runner, :user] | :runner
         [:remote_ip, :user]          | :user
+        [:job]                       | :user
       end
 
       with_them do

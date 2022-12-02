@@ -94,30 +94,15 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
       let(:action) { described_class::MR_APPROVE_ACTION }
     end
 
-    it 'records correct payload with Snowplow event', :snowplow do
-      stub_feature_flags(route_hll_to_snowplow_phase2: true)
-
-      subject
-
-      expect_snowplow_event(
-        category: 'merge_requests',
-        action: 'i_code_review_user_approve_mr',
-        namespace: target_project.namespace,
-        user: user,
-        project: target_project
-      )
-    end
-
-    context 'when FF is disabled' do
-      before do
-        stub_feature_flags(route_hll_to_snowplow_phase2: false)
-      end
-
-      it 'doesnt emit snowplow events', :snowplow do
-        subject
-
-        expect_no_snowplow_event
-      end
+    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+      let(:action) { :approve }
+      let(:category) { described_class.name }
+      let(:project) { target_project }
+      let(:namespace) { project.namespace.reload }
+      let(:user) { project.creator }
+      let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+      let(:label) { 'redis_hll_counters.code_review.i_code_review_user_approve_mr_monthly' }
+      let(:property) { described_class::MR_APPROVE_ACTION }
     end
   end
 

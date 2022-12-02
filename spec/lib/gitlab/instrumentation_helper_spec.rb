@@ -126,10 +126,10 @@ RSpec.describe Gitlab::InstrumentationHelper do
       include MemoryInstrumentationHelper
 
       before do
-        skip_memory_instrumentation!
+        verify_memory_instrumentation_available!
       end
 
-      it 'logs memory usage metrics', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384081' do
+      it 'logs memory usage metrics' do
         subject
 
         expect(payload).to include(

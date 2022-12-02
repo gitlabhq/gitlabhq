@@ -2,15 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Instrumentation do
+RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :application_performance do
   include MemoryInstrumentationHelper
 
   before do
-    skip_memory_instrumentation!
+    verify_memory_instrumentation_available!
   end
 
   describe '.available?' do
-    it 'returns true', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384081' do
+    it 'returns true' do
       expect(described_class).to be_available
     end
   end
@@ -18,7 +18,7 @@ RSpec.describe Gitlab::Memory::Instrumentation do
   describe '.start_thread_memory_allocations' do
     subject { described_class.start_thread_memory_allocations }
 
-    it 'a hash is returned', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384081' do
+    it 'a hash is returned' do
       is_expected.to be_a(Hash)
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Gitlab::Memory::Instrumentation do
       expect(described_class).to receive(:measure_thread_memory_allocations).and_call_original
     end
 
-    it 'a hash is returned', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384081' do
+    it 'a hash is returned' do
       result = subject
       expect(result).to include(
         mem_objects: be > 1000,

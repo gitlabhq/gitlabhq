@@ -12722,6 +12722,7 @@ Relationship between an epic and an issue.
 | <a id="epicissuenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="epicissueparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants in the issue. (see [Connections](#connections)) |
 | <a id="epicissueprojectid"></a>`projectId` | [`Int!`](#int) | ID of the issue project. |
+| <a id="epicissuerelatedvulnerabilities"></a>`relatedVulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Related vulnerabilities of the issue. (see [Connections](#connections)) |
 | <a id="epicissuerelationpath"></a>`relationPath` | [`String`](#string) | URI path of the epic-issue relation. |
 | <a id="epicissuerelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
 | <a id="epicissueseverity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity level of the incident. |
@@ -14408,6 +14409,7 @@ Describes an issuable resource link for incident issues.
 | <a id="issuenotes"></a>`notes` | [`NoteConnection!`](#noteconnection) | All notes on this noteable. (see [Connections](#connections)) |
 | <a id="issueparticipants"></a>`participants` | [`UserCoreConnection`](#usercoreconnection) | List of participants in the issue. (see [Connections](#connections)) |
 | <a id="issueprojectid"></a>`projectId` | [`Int!`](#int) | ID of the issue project. |
+| <a id="issuerelatedvulnerabilities"></a>`relatedVulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Related vulnerabilities of the issue. (see [Connections](#connections)) |
 | <a id="issuerelativeposition"></a>`relativePosition` | [`Int`](#int) | Relative position of the issue (used for positioning in epic tree and issue boards). |
 | <a id="issueseverity"></a>`severity` | [`IssuableSeverity`](#issuableseverity) | Severity level of the incident. |
 | <a id="issuesladueat"></a>`slaDueAt` | [`Time`](#time) | Timestamp of when the issue SLA expires. |

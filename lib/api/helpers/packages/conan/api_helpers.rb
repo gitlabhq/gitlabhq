@@ -128,7 +128,7 @@ module API
             strong_memoize(:project) do
               case package_scope
               when :project
-                find_project!(params[:id])
+                user_project(action: :read_package)
               when :instance
                 full_path = ::Packages::Conan::Metadatum.full_path_from(package_username: params[:package_username])
                 find_project!(full_path)

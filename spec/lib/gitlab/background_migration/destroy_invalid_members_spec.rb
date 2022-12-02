@@ -103,7 +103,7 @@ RSpec.describe Gitlab::BackgroundMigration::DestroyInvalidMembers, :migration, s
       members = create_members
 
       member_data = members.map do |m|
-        { id: m.id, source_id: m.source_id, source_type: m.source_type }
+        { id: m.id, source_id: m.source_id, source_type: m.source_type, access_level: m.access_level }
       end
 
       expect(Gitlab::AppLogger).to receive(:info).with({ message: 'Removing invalid member records',

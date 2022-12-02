@@ -164,7 +164,11 @@ module Gitlab
     end
 
     def include_client?
-      set_values.include?(:user) || set_values.include?(:runner) || set_values.include?(:remote_ip)
+      # Don't overwrite an existing more specific client id with an `ip/` one.
+      original_client_id = self.class.current_context_attribute(:client_id).to_s
+      return false if original_client_id.starts_with?('user/') || original_client_id.starts_with?('runner/')
+
+      include_user? || set_values.include?(:runner) || set_values.include?(:remote_ip)
     end
 
     def include_user?
@@ -178,8 +182,8 @@ module Gitlab
     def client
       if runner
         "runner/#{runner.id}"
-      elsif user
-        "user/#{user.id}"
+      elsif user_id
+        "user/#{user_id}"
       else
         "ip/#{remote_ip}"
       end

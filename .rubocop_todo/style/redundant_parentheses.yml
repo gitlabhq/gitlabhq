@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-Style/RedundantParentheses:
-  Exclude:
-    - 'lib/gitlab/database/tables_truncate.rb'

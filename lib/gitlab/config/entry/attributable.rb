@@ -7,19 +7,21 @@ module Gitlab
         extend ActiveSupport::Concern
 
         class_methods do
-          def attributes(*attributes)
+          def attributes(*attributes, prefix: nil)
             attributes.flatten.each do |attribute|
-              if method_defined?(attribute)
-                raise ArgumentError, "Method '#{attribute}' already defined in '#{name}'"
+              attribute_method = prefix ? "#{prefix}_#{attribute}" : attribute
+
+              if method_defined?(attribute_method)
+                raise ArgumentError, "Method '#{attribute_method}' already defined in '#{name}'"
               end
 
-              define_method(attribute) do
+              define_method(attribute_method) do
                 return unless config.is_a?(Hash)
 
                 config[attribute]
               end
 
-              define_method("has_#{attribute}?") do
+              define_method("has_#{attribute_method}?") do
                 config.is_a?(Hash) && config.key?(attribute)
               end
             end

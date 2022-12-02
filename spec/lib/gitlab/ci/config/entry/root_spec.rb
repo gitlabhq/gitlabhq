@@ -38,7 +38,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
           variables: {
             VAR: 'root',
             VAR2: { value: 'val 2', description: 'this is var 2' },
-            VAR3: { value: %w[val3 val3b], description: 'this is var 3' }
+            VAR3: { value: 'val3', options: %w[val3 val4 val5], description: 'this is var 3 and some options' }
           },
           after_script: ['make clean'],
           stages: %w(build pages release),
@@ -322,6 +322,42 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
       describe '#variables_value' do
         it 'undefined entry returns a root value' do
           expect(root.variables_value).to eq({})
+        end
+      end
+    end
+
+    context 'when variables have `options` data' do
+      before do
+        root.compose!
+      end
+
+      context 'and the value is in the `options` array' do
+        let(:hash) do
+          {
+            variables: { 'VAR' => { value: 'val1', options: %w[val1 val2] } },
+            rspec: { script: 'bin/rspec' }
+          }
+        end
+
+        it 'returns correct value' do
+          expect(root.variables_entry.value_with_data).to eq(
+            'VAR' => { value: 'val1' }
+          )
+
+          expect(root.variables_value).to eq('VAR' => 'val1')
+        end
+      end
+
+      context 'and the value is not in the `options` array' do
+        let(:hash) do
+          {
+            variables: { 'VAR' => { value: 'val', options: %w[val1 val2] } },
+            rspec: { script: 'bin/rspec' }
+          }
+        end
+
+        it 'returns an error' do
+          expect(root.errors).to contain_exactly('variables:var config value must be present in options')
         end
       end
     end

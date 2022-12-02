@@ -1790,7 +1790,11 @@ class User < ApplicationRecord
 
   def notification_email_for(notification_group)
     # Return group-specific email address if present, otherwise return global notification email address
-    notification_group&.notification_email_for(self) || notification_email_or_default
+    group_email = if notification_group && notification_group.respond_to?(:notification_email_for)
+                    notification_group.notification_email_for(self)
+                  end
+
+    group_email || notification_email_or_default
   end
 
   def notification_settings_for(source, inherit: false)
