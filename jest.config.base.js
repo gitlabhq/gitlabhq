@@ -43,8 +43,8 @@ module.exports = (path, options = {}) => {
   const TEST_FIXTURES_PATTERN = 'test_fixtures(/.*)$';
 
   const moduleNameMapper = {
-    '^~(/.*)\\?raw$': '<rootDir>/app/assets/javascripts$1',
-    '^(.*)\\?raw$': '$1',
+    '^~(/.*)\\?(worker|raw)$': '<rootDir>/app/assets/javascripts$1',
+    '^(.*)\\?(worker|raw)$': '$1',
     '^~(/.*)$': '<rootDir>/app/assets/javascripts$1',
     '^ee_component(/.*)$':
       '<rootDir>/app/assets/javascripts/vue_shared/components/empty_component.js',

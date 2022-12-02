@@ -316,6 +316,15 @@ That's all of the required database changes.
         true
       end
 
+      override :housekeeping_enabled?
+      def self.housekeeping_enabled?
+        # Remove this method if the new Git repository type supports git
+        # repository housekeeping and the ::CoolWidget#git_garbage_collect_worker_klass
+        # is implemented. If the data type requires any action to be performed
+        # before running the housekeeping override the `before_housekeeping` method
+        # (see `RepositoryReplicatorStrategy#before_housekeeping`)
+        false
+      end
     end
   end
   ```

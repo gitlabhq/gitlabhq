@@ -68,12 +68,7 @@ module Spec
           end
 
           def choose_options(role, expires_at)
-            unless role == 'Guest'
-              click_button 'Guest'
-              wait_for_requests
-              click_button role
-            end
-
+            select role, from: 'Select a role'
             fill_in 'YYYY-MM-DD', with: expires_at.strftime('%Y-%m-%d') if expires_at
           end
 

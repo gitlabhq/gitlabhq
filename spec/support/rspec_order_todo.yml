@@ -5,9 +5,6 @@
 #
 ---
 - './ee/spec/components/billing/plan_component_spec.rb'
-- './ee/spec/components/namespaces/free_user_cap/alert_component_spec.rb'
-- './ee/spec/components/namespaces/free_user_cap/preview_alert_component_spec.rb'
-- './ee/spec/components/namespaces/free_user_cap/preview_usage_quota_alert_component_spec.rb'
 - './ee/spec/components/namespaces/free_user_cap/usage_quota_alert_component_spec.rb'
 - './ee/spec/components/namespaces/free_user_cap/usage_quota_trial_alert_component_spec.rb'
 - './ee/spec/components/namespaces/storage/limit_alert_component_spec.rb'

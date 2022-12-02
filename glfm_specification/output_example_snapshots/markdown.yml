@@ -2273,3 +2273,277 @@
   [project-wikis-test-file](project-wikis-test-file)
 08_03_00__gitlab_internal_extension_markdown__markdown_preview_api_request_overrides__006: |
   [group-wikis-test-file](group-wikis-test-file)
+08_04_01__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_group__001: |
+  ![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)
+08_04_02__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project__001: |
+  ![test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png)
+08_04_03__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project_wiki__001: |
+  ![test-file](test-file.png)
+08_04_04__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group__001: |
+  [test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)
+08_04_05__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project__001: |
+  [test-file](/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip)
+08_04_06__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project_wiki__001: |
+  [test-file](test-file.zip)
+08_04_07__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group_wiki__001: |
+  [test-file](test-file.zip)
+08_04_08__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio__001: |
+  ![Sample Audio](https://gitlab.com/gitlab.mp3)
+08_04_09__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio_and_video_in_lists__001: |
+  * ![Sample Audio](https://gitlab.com/1.mp3)
+  * ![Sample Video](https://gitlab.com/2.mp4)
+
+  1. ![Sample Video](https://gitlab.com/1.mp4)
+  2. ![Sample Audio](https://gitlab.com/2.mp3)
+
+  * [x] ![Sample Audio](https://gitlab.com/1.mp3)
+  * [x] ![Sample Audio](https://gitlab.com/2.mp3)
+  * [x] ![Sample Video](https://gitlab.com/3.mp4)
+08_04_10__gitlab_internal_extension_markdown__migrated_golden_master_examples__blockquote__001: |
+  > This is a blockquote
+  >
+  > This is another one
+08_04_11__gitlab_internal_extension_markdown__migrated_golden_master_examples__bold__001: |
+  **bold**
+08_04_12__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_1__001: |
+  * list item 1
+  * list item 2
+    * embedded list item 3
+08_04_13__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_2__001: |
+  - list item 1
+  - list item 2
+    * embedded list item 3
+08_04_14__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_3__001: |
+  + list item 1
+  + list item 2
+    - embedded list item 3
+08_04_15__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_javascript__001: |
+  ```javascript
+    console.log('hello world')
+  ```
+08_04_16__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_plaintext__001: |
+  ```
+    plaintext
+  ```
+08_04_17__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_unknown__001: |
+  ```foobar
+    custom_language = >> this <<
+  ```
+08_04_18__gitlab_internal_extension_markdown__migrated_golden_master_examples__color_chips__001: |
+  - `#F00`
+  - `#F00A`
+  - `#FF0000`
+  - `#FF0000AA`
+  - `RGB(0,255,0)`
+  - `RGB(0%,100%,0%)`
+  - `RGBA(0,255,0,0.3)`
+  - `HSL(540,70%,50%)`
+  - `HSLA(540,70%,50%,0.3)`
+08_04_19__gitlab_internal_extension_markdown__migrated_golden_master_examples__description_list__001: |
+  <dl>
+  <dt>Frog</dt>
+  <dd>Wet green thing</dd>
+  <dt>Rabbit</dt>
+  <dd>Warm fluffy thing</dd>
+  <dt>Punt</dt>
+  <dd>Kick a ball</dd>
+  <dd>Take a bet</dd>
+  <dt>Color</dt>
+  <dt>Colour</dt>
+  <dd>
+
+  Any hue except _white_ or **black**
+
+  </dd>
+  </dl>
+08_04_20__gitlab_internal_extension_markdown__migrated_golden_master_examples__details__001: |
+  <details>
+  <summary>This is the visible summary of the collapsible section</summary>
+
+  1. collapsed markdown
+  2. more collapsed markdown
+
+  </details>
+08_04_21__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_kroki_nomnoml__001: |
+  ```nomnoml
+    #stroke: #a86128
+    [<frame>Decorator pattern|
+      [<abstract>Component||+ operation()]
+      [Client] depends --> [Component]
+      [Decorator|- next: Component]
+      [Decorator] decorates -- [ConcreteComponent]
+      [Component] <:- [Decorator]
+      [Component] <:- [ConcreteComponent]
+    ]
+  ```
+08_04_22__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_plantuml__001: |
+  ```plantuml
+    Alice -> Bob: Authentication Request
+    Bob --> Alice: Authentication Response
+
+    Alice -> Bob: Another authentication Request
+    Alice <-- Bob: Another authentication Response
+  ```
+08_04_23__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_plantuml_unicode__001: |
+  ```plantuml
+  A -> B : Text with norwegian characters: æøå
+  ```
+08_04_24__gitlab_internal_extension_markdown__migrated_golden_master_examples__div__001: |
+  <div>plain text</div>
+  <div>
+
+  just a plain ol' div, not much to _expect_!
+
+  </div>
+08_04_25__gitlab_internal_extension_markdown__migrated_golden_master_examples__emoji__001: |
+  :sparkles: :heart: :100:
+08_04_26__gitlab_internal_extension_markdown__migrated_golden_master_examples__emphasis__001: |
+  _emphasized text_
+08_04_27__gitlab_internal_extension_markdown__migrated_golden_master_examples__figure__001: |
+  <figure>
+
+  ![Elephant at sunset](elephant-sunset.jpg)
+
+  <figcaption>An elephant at sunset</figcaption>
+  </figure>
+  <figure>
+
+  ![A crocodile wearing crocs](croc-crocs.jpg)
+
+  <figcaption>
+
+  A crocodile wearing _crocs_!
+
+  </figcaption>
+  </figure>
+08_04_28__gitlab_internal_extension_markdown__migrated_golden_master_examples__footnotes__001: |
+  A footnote reference tag looks like this: [^1]
+
+  This reference tag is a mix of letters and numbers. [^footnote]
+
+  [^1]: This is the text inside a footnote.
+
+  [^footnote]: This is another footnote.
+08_04_29__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_json__001: |
+  ;;;
+  {
+    "title": "Page title"
+  }
+  ;;;
+08_04_30__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_toml__001: |
+  +++
+  title = "Page title"
+  +++
+08_04_31__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_yaml__001: |
+  ---
+  title: Page title
+  ---
+08_04_32__gitlab_internal_extension_markdown__migrated_golden_master_examples__hard_break__001: |
+  This is a line after a\
+  hard break
+08_04_33__gitlab_internal_extension_markdown__migrated_golden_master_examples__headings__001: |
+  # Heading 1
+
+  ## Heading 2
+
+  ### Heading 3
+
+  #### Heading 4
+
+  ##### Heading 5
+
+  ###### Heading 6
+08_04_34__gitlab_internal_extension_markdown__migrated_golden_master_examples__horizontal_rule__001: |
+  ---
+08_04_35__gitlab_internal_extension_markdown__migrated_golden_master_examples__html_marks__001: "*
+  Content editor is ~~great~~<ins>amazing</ins>.\n* If the changes <abbr title=\"Looks
+  good to merge\">LGTM</abbr>, please <abbr title=\"Merge when pipeline succeeds\">MWPS</abbr>.\n*
+  The English song <q>Oh I do like to be beside the seaside</q> looks like this in
+  Hebrew: <span dir=\"rtl\">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's
+  memory, this is stored as <bdo dir=\"ltr\">אה, אני אוהב להיות ליד חוף הים</bdo>.\n*
+  <cite>The Scream</cite> by Edvard Munch. Painted in 1893.\n* <dfn>HTML</dfn> is
+  the standard markup language for creating web pages.\n* Do not forget to buy <mark>milk</mark>
+  today.\n* This is a paragraph and <small>smaller text goes here</small>.\n* The
+  concert starts at <time datetime=\"20:00\">20:00</time> and you'll be able to enjoy
+  the band for at least <time datetime=\"PT2H30M\">2h 30m</time>.\n* Press <kbd>Ctrl</kbd>
+  + <kbd>C</kbd> to copy text (Windows).\n* WWF's goal is to: <q>Build a future where
+  people live in harmony with nature.</q> We hope they succeed.\n* The error occurred
+  was: <samp>Keyboard not found. Press F1 to continue.</samp>\n* The area of a triangle
+  is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the base, and <var>h</var>
+  is the vertical height.\n* <ruby>漢<rt>ㄏㄢˋ</rt></ruby>\n* C<sub>7</sub>H<sub>16</sub>
+  + O<sub>2</sub> \t CO<sub>2</sub> + H<sub>2</sub>O\n* The **Pythagorean theorem**
+  is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var> = <var>c<sup>2</sup></var>\n"
+08_04_36__gitlab_internal_extension_markdown__migrated_golden_master_examples__image__001: |
+  ![alt text](https://gitlab.com/logo.png)
+08_04_37__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_code__001: |
+  `code`
+08_04_38__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_diff__001: |
+  * {-deleted-}
+  * {+added+}
+08_04_39__gitlab_internal_extension_markdown__migrated_golden_master_examples__label__001: |
+  ~bug
+08_04_40__gitlab_internal_extension_markdown__migrated_golden_master_examples__link__001: |
+  [GitLab](https://gitlab.com)
+08_04_41__gitlab_internal_extension_markdown__migrated_golden_master_examples__math__001: |
+  This math is inline $`a^2+b^2=c^2`$.
+
+  This is on a separate line:
+
+  ```math
+  a^2+b^2=c^2
+  ```
+08_04_42__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list__001: |
+  1. list item 1
+  2. list item 2
+  3. list item 3
+08_04_43__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list_with_start_order__001: |
+  134. list item 1
+  135. list item 2
+  136. list item 3
+08_04_44__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_task_list__001: |
+  1. [x] hello
+  2. [x] world
+  3. [ ] example
+     1. [ ] of nested
+        1. [x] task list
+        2. [ ] items
+08_04_45__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_task_list_with_order__001: |
+  4893. [x] hello
+  4894. [x] world
+  4895. [ ] example
+08_04_46__gitlab_internal_extension_markdown__migrated_golden_master_examples__reference_for_project_wiki__001: |
+  Hi @gfm_user - thank you for reporting this ~"UX bug" (#1) we hope to fix it in %1.1 as part of !1
+08_04_47__gitlab_internal_extension_markdown__migrated_golden_master_examples__strike__001: |
+  ~~del~~
+08_04_48__gitlab_internal_extension_markdown__migrated_golden_master_examples__table__001: |
+  | header | header |
+  |--------|--------|
+  | `code` | cell with **bold** |
+  | ~~strike~~ | cell with _italic_ |
+
+  # content after table
+08_04_49__gitlab_internal_extension_markdown__migrated_golden_master_examples__table_of_contents__001: |
+  [[_TOC_]]
+
+  # Lorem
+
+  Well, that's just like... your opinion.. man.
+
+  ## Ipsum
+
+  ### Dolar
+
+  # Sit amit
+
+  ### I don't know
+08_04_50__gitlab_internal_extension_markdown__migrated_golden_master_examples__task_list__001: |
+  * [x] hello
+  * [x] world
+  * [ ] example
+    * [ ] of nested
+      * [x] task list
+      * [ ] items
+08_04_51__gitlab_internal_extension_markdown__migrated_golden_master_examples__video__001: |
+  ![Sample Video](https://gitlab.com/gitlab.mp4)
+08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001: |
+  Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz

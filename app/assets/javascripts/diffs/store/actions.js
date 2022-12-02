@@ -52,7 +52,7 @@ import { isCollapsed } from '../utils/diff_file';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
 import { getDerivedMergeRequestInformation } from '../utils/merge_request';
 import { queueRedisHllEvents } from '../utils/queue_events';
-import TreeWorker from '../workers/tree_worker';
+import TreeWorker from '../workers/tree_worker?worker';
 import * as types from './mutation_types';
 import {
   getDiffPositionByLineCode,

@@ -19,7 +19,7 @@ import {
   MEMBERS_TO_PROJECT_CELEBRATE_INTRO_TEXT,
   LEARN_GITLAB,
   EXPANDED_ERRORS,
-  EMPTY_INVITES_ERROR_TEXT,
+  EMPTY_INVITES_ALERT_TEXT,
 } from '~/invite_members/constants';
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
@@ -96,6 +96,7 @@ describe('InviteMembersModal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const findBase = () => wrapper.findComponent(InviteModalBase);
   const findIntroText = () => wrapper.findByTestId('modal-base-intro-text').text();
+  const findEmptyInvitesAlert = () => wrapper.findByTestId('empty-invites-alert');
   const findMemberErrorAlert = () => wrapper.findByTestId('alert-member-error');
   const findMoreInviteErrorsButton = () => wrapper.findByTestId('accordion-button');
   const findUserLimitAlert = () => wrapper.findComponent(UserLimitNotification);
@@ -398,7 +399,8 @@ describe('InviteMembersModal', () => {
 
         await waitForPromises();
 
-        expect(membersFormGroupInvalidFeedback()).toBe(EMPTY_INVITES_ERROR_TEXT);
+        expect(findEmptyInvitesAlert().text()).toBe(EMPTY_INVITES_ALERT_TEXT);
+        expect(membersFormGroupInvalidFeedback()).toBe(MEMBERS_PLACEHOLDER);
         expect(findMembersSelect().props('exceptionState')).toBe(false);
 
         await triggerMembersTokenSelect([user1]);

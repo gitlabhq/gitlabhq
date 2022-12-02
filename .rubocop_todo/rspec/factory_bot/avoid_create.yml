@@ -1,9 +1,9 @@
 ---
 RSpec/FactoryBot/AvoidCreate:
   Exclude:
-    - 'ee/spec/components/namespaces/free_user_cap/alert_component_spec.rb'
+    - 'ee/spec/components/namespaces/free_user_cap/enforcement_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/free_user_cap/non_owner_alert_component_spec.rb'
-    - 'ee/spec/components/namespaces/free_user_cap/preview_alert_component_spec.rb'
+    - 'ee/spec/components/namespaces/free_user_cap/notification_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/free_user_cap/usage_quota_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/free_user_cap/usage_quota_trial_alert_component_spec.rb'
     - 'ee/spec/components/namespaces/storage/limit_alert_component_spec.rb'

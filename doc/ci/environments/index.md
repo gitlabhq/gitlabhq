@@ -614,6 +614,20 @@ Because `stop_review_app` is set to `auto_stop_in: 1 week`,
 if a merge request is inactive for more than a week,
 GitLab automatically triggers the `stop_review_app` job to stop the environment.
 
+#### Stop an environment through the UI
+
+NOTE:
+To trigger an `on_stop` action and manually stop an environment from the
+Environments view, the stop and deploy jobs must be in the same
+[`resource_group`](../yaml/index.md#resource_group).
+
+To stop an environment in the GitLab UI:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Deployments > Environments**.
+1. Next to the environment you want to stop, select **Stop**.
+1. On the confirmation dialog box, select **Stop environment**.
+
 #### Multiple stop actions for an environment
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22456) in GitLab 14.10 [with a flag](../../administration/feature_flags.md) named `environment_multiple_stop_actions`. Disabled by default.

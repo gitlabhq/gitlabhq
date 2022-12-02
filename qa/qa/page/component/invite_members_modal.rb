@@ -76,10 +76,7 @@ module QA
 
         def set_access_level(access_level)
           # Guest option is selected by default, skipping these steps if desired option is 'Guest'
-          unless access_level == 'Guest'
-            click_element :access_level_dropdown
-            click_button access_level
-          end
+          select_element(:access_level_dropdown, access_level) unless access_level == 'Guest'
         end
 
         def send_invite

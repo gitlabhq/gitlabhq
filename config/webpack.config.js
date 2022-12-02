@@ -384,6 +384,7 @@ module.exports = {
       },
       {
         test: /_worker\.js$/,
+        resourceQuery: /worker/,
         use: [
           {
             loader: 'worker-loader',

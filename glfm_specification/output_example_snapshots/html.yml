@@ -7948,3 +7948,680 @@
     <p><a href="group-wikis-test-file">group-wikis-test-file</a></p>
   static: |-
     <p data-sourcepos="1:1-1:46" dir="auto"><a href="/groups/glfm_group/-/wikis/group-wikis-test-file" data-canonical-src="group-wikis-test-file">group-wikis-test-file</a></p>
+08_04_01__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_group__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+  wysiwyg: |-
+    <p><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
+08_04_02__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:69" dir="auto"><a class="no-attachment-icon gfm" href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-link="true"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="test-file" decoding="async" class="lazy gfm" data-src="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png"></a></p>
+  wysiwyg: |-
+    <p><img src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.png" alt="test-file"></p>
+08_04_03__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_image_for_project_wiki__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:27" dir="auto"><a class="no-attachment-icon" href="/glfm_group/glfm_project/-/wikis/test-file.png" target="_blank" rel="noopener noreferrer" data-canonical-src="test-file.png"><img alt="test-file" decoding="async" class="lazy" data-src="/glfm_group/glfm_project/-/wikis/test-file.png" data-canonical-src="test-file.png"></a></p>
+  wysiwyg: |-
+    <p><img src="test-file.png" alt="test-file"></p>
+08_04_04__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:68" dir="auto"><a href="/groups/glfm_group/-/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+  wysiwyg: |-
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
+08_04_05__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:68" dir="auto"><a href="/glfm_group/glfm_project/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-canonical-src="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip" data-link="true" class="gfm">test-file</a></p>
+  wysiwyg: |-
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="/uploads/aa45a38ec2cfe97433281b10bbff042c/test-file.zip">test-file</a></p>
+08_04_06__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_project_wiki__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:26" dir="auto"><a href="/glfm_group/glfm_project/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a></p>
+08_04_07__gitlab_internal_extension_markdown__migrated_golden_master_examples__attachment_link_for_group_wiki__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:26" dir="auto"><a href="/groups/glfm_group/-/wikis/test-file.zip" data-canonical-src="test-file.zip">test-file</a></p>
+  wysiwyg: |-
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="test-file.zip">test-file</a></p>
+08_04_08__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:46" dir="auto"><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span></p>
+  wysiwyg: |-
+    <p><span class="media-container audio-container"><audio src="https://gitlab.com/gitlab.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/gitlab.mp3">Sample Audio</a></span></p>
+08_04_09__gitlab_internal_extension_markdown__migrated_golden_master_examples__audio_and_video_in_lists__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-3:0" dir="auto">
+    <li data-sourcepos="1:1-1:43"><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span></li>
+    <li data-sourcepos="2:1-3:0"><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video" width="400" preload="metadata"></video><a href="https://gitlab.com/2.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span></li>
+    </ul>
+    <ol data-sourcepos="4:1-6:0" dir="auto">
+    <li data-sourcepos="4:1-4:44"><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video" width="400" preload="metadata"></video><a href="https://gitlab.com/1.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span></li>
+    <li data-sourcepos="5:1-6:0"><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span></li>
+    </ol>
+    <ul data-sourcepos="7:1-9:47" class="task-list" dir="auto">
+    <li data-sourcepos="7:1-7:47" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span>
+    </li>
+    <li data-sourcepos="8:1-8:47" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Audio'">Sample Audio</a></span>
+    </li>
+    <li data-sourcepos="9:1-9:47" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> <span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video" width="400" preload="metadata"></video><a href="https://gitlab.com/3.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span>
+    </li>
+    </ul>
+  wysiwyg: |-
+    <ul bullet="*"><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3">Sample Audio</a></span></p></li><li><p><span class="media-container video-container"><video src="https://gitlab.com/2.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/2.mp4">Sample Video</a></span></p></li></ul>
+    <ol parens="false"><li><p><span class="media-container video-container"><video src="https://gitlab.com/1.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/1.mp4">Sample Video</a></span></p></li><li><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3">Sample Audio</a></span></p></li></ol>
+    <ul start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/1.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/1.mp3">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container audio-container"><audio src="https://gitlab.com/2.mp3" controls="true" data-setup="{}" data-title="Sample Audio"></audio><a href="https://gitlab.com/2.mp3">Sample Audio</a></span></p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p><span class="media-container video-container"><video src="https://gitlab.com/3.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/3.mp4">Sample Video</a></span></p></div></li></ul>
+08_04_10__gitlab_internal_extension_markdown__migrated_golden_master_examples__blockquote__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <blockquote data-sourcepos="1:1-3:21" dir="auto">
+    <p data-sourcepos="1:3-1:22">This is a blockquote</p>
+    <p data-sourcepos="3:3-3:21">This is another one</p>
+    </blockquote>
+  wysiwyg: |-
+    <blockquote multiline="false"><p>This is a blockquote</p><p>This is another one</p></blockquote>
+08_04_11__gitlab_internal_extension_markdown__migrated_golden_master_examples__bold__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:8" dir="auto"><strong>bold</strong></p>
+  wysiwyg: |-
+    <p><strong>bold</strong></p>
+08_04_12__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_1__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-3:24" dir="auto">
+    <li data-sourcepos="1:1-1:13">list item 1</li>
+    <li data-sourcepos="2:1-3:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+    <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+    </li>
+    </ul>
+  wysiwyg: |-
+    <ul bullet="*"><li><p>list item 1</p></li><li><p>list item 2</p><ul bullet="*"><li><p>embedded list item 3</p></li></ul></li></ul>
+08_04_13__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_2__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-3:24" dir="auto">
+    <li data-sourcepos="1:1-1:13">list item 1</li>
+    <li data-sourcepos="2:1-3:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+    <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+    </li>
+    </ul>
+  wysiwyg: |-
+    <ul bullet="*"><li><p>list item 1</p></li><li><p>list item 2</p><ul bullet="*"><li><p>embedded list item 3</p></li></ul></li></ul>
+08_04_14__gitlab_internal_extension_markdown__migrated_golden_master_examples__bullet_list_style_3__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-3:24" dir="auto">
+    <li data-sourcepos="1:1-1:13">list item 1</li>
+    <li data-sourcepos="2:1-3:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+    <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+    </li>
+    </ul>
+  wysiwyg: |-
+    <ul bullet="*"><li><p>list item 1</p></li><li><p>list item 2</p><ul bullet="*"><li><p>embedded list item 3</p></li></ul></li></ul>
+08_04_15__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_javascript__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-3:3" lang="javascript" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre language="javascript" class="content-editor-code-block undefined code highlight"><code>  console.log('hello world')</code></pre>
+08_04_16__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_plaintext__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  plaintext</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre class="content-editor-code-block undefined code highlight"><code>  plaintext</code></pre>
+08_04_17__gitlab_internal_extension_markdown__migrated_golden_master_examples__code_block_unknown__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-3:3" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="foobar" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">  custom_language = &gt;&gt; this &lt;&lt;</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre language="foobar" class="content-editor-code-block undefined code highlight"><code>  custom_language = &gt;&gt; this &lt;&lt;</code></pre>
+08_04_18__gitlab_internal_extension_markdown__migrated_golden_master_examples__color_chips__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-9:25" dir="auto">
+    <li data-sourcepos="1:1-1:8"><code>#F00<span class="gfm-color_chip"><span style="background-color: #F00;"></span></span></code></li>
+    <li data-sourcepos="2:1-2:9"><code>#F00A<span class="gfm-color_chip"><span style="background-color: #F00A;"></span></span></code></li>
+    <li data-sourcepos="3:1-3:11"><code>#FF0000<span class="gfm-color_chip"><span style="background-color: #FF0000;"></span></span></code></li>
+    <li data-sourcepos="4:1-4:13"><code>#FF0000AA<span class="gfm-color_chip"><span style="background-color: #FF0000AA;"></span></span></code></li>
+    <li data-sourcepos="5:1-5:16"><code>RGB(0,255,0)<span class="gfm-color_chip"><span style="background-color: RGB(0,255,0);"></span></span></code></li>
+    <li data-sourcepos="6:1-6:19"><code>RGB(0%,100%,0%)<span class="gfm-color_chip"><span style="background-color: RGB(0%,100%,0%);"></span></span></code></li>
+    <li data-sourcepos="7:1-7:21"><code>RGBA(0,255,0,0.3)<span class="gfm-color_chip"><span style="background-color: RGBA(0,255,0,0.3);"></span></span></code></li>
+    <li data-sourcepos="8:1-8:20"><code>HSL(540,70%,50%)<span class="gfm-color_chip"><span style="background-color: HSL(540,70%,50%);"></span></span></code></li>
+    <li data-sourcepos="9:1-9:25"><code>HSLA(540,70%,50%,0.3)<span class="gfm-color_chip"><span style="background-color: HSLA(540,70%,50%,0.3);"></span></span></code></li>
+    </ul>
+  wysiwyg: |-
+    <ul bullet="*"><li><p><code>#F00</code></p></li><li><p><code>#F00A</code></p></li><li><p><code>#FF0000</code></p></li><li><p><code>#FF0000AA</code></p></li><li><p><code>RGB(0,255,0)</code></p></li><li><p><code>RGB(0%,100%,0%)</code></p></li><li><p><code>RGBA(0,255,0,0.3)</code></p></li><li><p><code>HSL(540,70%,50%)</code></p></li><li><p><code>HSLA(540,70%,50%,0.3)</code></p></li></ul>
+08_04_19__gitlab_internal_extension_markdown__migrated_golden_master_examples__description_list__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <dl>
+    <dt>Frog</dt>
+    <dd>Wet green thing</dd>
+    <dt>Rabbit</dt>
+    <dd>Warm fluffy thing</dd>
+    <dt>Punt</dt>
+    <dd>Kick a ball</dd>
+    <dd>Take a bet</dd>
+    <dt>Color</dt>
+    <dt>Colour</dt>
+    <dd>
+    <p data-sourcepos="13:1-13:35">Any hue except <em>white</em> or <strong>black</strong></p>
+    </dd>
+    </dl>
+  wysiwyg: |-
+    <p></p>
+08_04_20__gitlab_internal_extension_markdown__migrated_golden_master_examples__details__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <details>
+    <summary>This is the visible summary of the collapsible section</summary>
+    <ol data-sourcepos="4:1-6:0">
+    <li data-sourcepos="4:1-4:21">collapsed markdown</li>
+    <li data-sourcepos="5:1-6:0">more collapsed markdown</li>
+    </ol>
+    </details>
+  wysiwyg: |-
+    <p></p>
+08_04_21__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_kroki_nomnoml__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-11:3" lang="nomnoml" class="code highlight js-syntax-highlight language-nomnoml" v-pre="true"><code><span id="LC1" class="line" lang="nomnoml">  #stroke: #a86128</span>
+    <span id="LC2" class="line" lang="nomnoml">  [&lt;frame&gt;Decorator pattern|</span>
+    <span id="LC3" class="line" lang="nomnoml">    [&lt;abstract&gt;Component||+ operation()]</span>
+    <span id="LC4" class="line" lang="nomnoml">    [Client] depends --&gt; [Component]</span>
+    <span id="LC5" class="line" lang="nomnoml">    [Decorator|- next: Component]</span>
+    <span id="LC6" class="line" lang="nomnoml">    [Decorator] decorates -- [ConcreteComponent]</span>
+    <span id="LC7" class="line" lang="nomnoml">    [Component] &lt;:- [Decorator]</span>
+    <span id="LC8" class="line" lang="nomnoml">    [Component] &lt;:- [ConcreteComponent]</span>
+    <span id="LC9" class="line" lang="nomnoml">  ]</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre language="nomnoml" class="content-editor-code-block undefined code highlight"><code>  #stroke: #a86128
+      [&lt;frame&gt;Decorator pattern|
+        [&lt;abstract&gt;Component||+ operation()]
+        [Client] depends --&gt; [Component]
+        [Decorator|- next: Component]
+        [Decorator] decorates -- [ConcreteComponent]
+        [Component] &lt;:- [Decorator]
+        [Component] &lt;:- [ConcreteComponent]
+      ]</code></pre>
+08_04_22__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_plantuml__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-7:3" lang="plantuml" class="code highlight js-syntax-highlight language-plantuml" v-pre="true"><code><span id="LC1" class="line" lang="plantuml">  Alice -&gt; Bob: Authentication Request</span>
+    <span id="LC2" class="line" lang="plantuml">  Bob --&gt; Alice: Authentication Response</span>
+    <span id="LC3" class="line" lang="plantuml"></span>
+    <span id="LC4" class="line" lang="plantuml">  Alice -&gt; Bob: Another authentication Request</span>
+    <span id="LC5" class="line" lang="plantuml">  Alice &lt;-- Bob: Another authentication Response</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <div><pre language="plantuml" class="content-editor-code-block code highlight" isdiagram="true" showpreview="true"><code>  Alice -&gt; Bob: Authentication Request
+      Bob --&gt; Alice: Authentication Response
+
+      Alice -&gt; Bob: Another authentication Request
+      Alice &lt;-- Bob: Another authentication Response</code></pre></div>
+08_04_23__gitlab_internal_extension_markdown__migrated_golden_master_examples__diagram_plantuml_unicode__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-3:3" lang="plantuml" class="code highlight js-syntax-highlight language-plantuml" v-pre="true"><code><span id="LC1" class="line" lang="plantuml">A -&gt; B : Text with norwegian characters: æøå</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <div><pre language="plantuml" class="content-editor-code-block code highlight" isdiagram="true" showpreview="true"><code>A -&gt; B : Text with norwegian characters: æøå</code></pre></div>
+08_04_24__gitlab_internal_extension_markdown__migrated_golden_master_examples__div__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div>plain text</div>
+    <div>
+    <p data-sourcepos="4:1-4:43">just a plain ol' div, not much to <em>expect</em>!</p>
+    </div>
+  wysiwyg: |-
+    <div><p>plain text</p></div>
+    <div><p>just a plain ol' div, not much to <em>expect</em>!</p></div>
+08_04_25__gitlab_internal_extension_markdown__migrated_golden_master_examples__emoji__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: "<p data-sourcepos=\"1:1-1:24\" dir=\"auto\"><gl-emoji title=\"sparkles\"
+    data-name=\"sparkles\" data-unicode-version=\"6.0\">✨</gl-emoji> <gl-emoji title=\"heavy
+    black heart\" data-name=\"heart\" data-unicode-version=\"1.1\">❤</gl-emoji> <gl-emoji
+    title=\"hundred points symbol\" data-name=\"100\" data-unicode-version=\"6.0\">\U0001F4AF</gl-emoji></p>"
+  wysiwyg: |-
+    <p>:sparkles: :heart: :100:</p>
+08_04_26__gitlab_internal_extension_markdown__migrated_golden_master_examples__emphasis__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:17" dir="auto"><em>emphasized text</em></p>
+  wysiwyg: |-
+    <p><em>emphasized text</em></p>
+08_04_27__gitlab_internal_extension_markdown__migrated_golden_master_examples__figure__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <figure>
+    <p data-sourcepos="3:1-3:42"><a class="no-attachment-icon" href="elephant-sunset.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="Elephant at sunset" decoding="async" class="lazy" data-src="elephant-sunset.jpg"></a></p>
+    <figcaption>An elephant at sunset</figcaption>
+    </figure>
+    <figure>
+    <p data-sourcepos="9:1-9:44"><a class="no-attachment-icon" href="croc-crocs.jpg" target="_blank" rel="noopener noreferrer"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="A crocodile wearing crocs" decoding="async" class="lazy" data-src="croc-crocs.jpg"></a></p>
+    <figcaption>
+    <p data-sourcepos="13:1-13:28">A crocodile wearing <em>crocs</em>!</p>
+    </figcaption>
+    </figure>
+  wysiwyg: |-
+    <p></p>
+08_04_28__gitlab_internal_extension_markdown__migrated_golden_master_examples__footnotes__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:46" dir="auto">A footnote reference tag looks like this: <sup class="footnote-ref"><a href="#fn-1-42" id="fnref-1-42" data-footnote-ref>1</a></sup></p>
+    <p data-sourcepos="3:1-3:63" dir="auto">This reference tag is a mix of letters and numbers. <sup class="footnote-ref"><a href="#fn-footnote-42" id="fnref-footnote-42" data-footnote-ref>2</a></sup></p>
+    <section data-footnotes class="footnotes">
+    <ol>
+    <li id="fn-1-42">
+    <p data-sourcepos="5:7-5:41">This is the text inside a footnote. <a href="#fnref-1-42" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    <li id="fn-footnote-42">
+    <p data-sourcepos="7:14-7:38">This is another footnote. <a href="#fnref-footnote-42" data-footnote-backref aria-label="Back to content" class="footnote-backref"><gl-emoji title="leftwards arrow with hook" data-name="leftwards_arrow_with_hook" data-unicode-version="1.1">↩</gl-emoji></a></p>
+    </li>
+    </ol>
+    </section>
+  wysiwyg: |-
+    <p>A footnote reference tag looks like this: <sup identifier="1">1</sup></p>
+    <p>This reference tag is a mix of letters and numbers. <sup identifier="footnote">footnote</sup></p>
+    <div node="footnoteDefinition(paragraph(&quot;This is the text inside a footnote.&quot;))" htmlattributes="[object Object]"><p>This is the text inside a footnote.</p></div>
+    <div node="footnoteDefinition(paragraph(&quot;This is another footnote.&quot;))" htmlattributes="[object Object]"><p>This is another footnote.</p></div>
+08_04_29__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_json__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-5:3" lang="json" class="code highlight js-syntax-highlight language-json" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="json"><span class="p">{</span></span>
+    <span id="LC2" class="line" lang="json"><span class="w">  </span><span class="nl">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Page title"</span></span>
+    <span id="LC3" class="line" lang="json"><span class="p">}</span></span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre language="json" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>{
+      "title": "Page title"
+    }</code></pre>
+08_04_30__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_toml__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-3:3" lang="toml" class="code highlight js-syntax-highlight language-toml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="toml"><span class="py">title</span> <span class="p">=</span> <span class="s">"Page title"</span></span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre language="toml" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>title = "Page title"</code></pre>
+08_04_31__gitlab_internal_extension_markdown__migrated_golden_master_examples__frontmatter_yaml__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="1:1-3:3" lang="yaml" class="code highlight js-syntax-highlight language-yaml" data-lang-params="frontmatter" v-pre="true"><code><span id="LC1" class="line" lang="yaml"><span class="na">title</span><span class="pi">:</span> <span class="s">Page title</span></span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <pre language="yaml" class="content-editor-code-block undefined code highlight" isfrontmatter="true"><code>title: Page title</code></pre>
+08_04_32__gitlab_internal_extension_markdown__migrated_golden_master_examples__hard_break__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-2:10" dir="auto">This is a line after a<br>
+    hard break</p>
+  wysiwyg: |-
+    <p>This is a line after a<br>
+    hard break</p>
+08_04_33__gitlab_internal_extension_markdown__migrated_golden_master_examples__headings__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <h1 data-sourcepos="1:1-1:11" dir="auto">
+    <a id="user-content-heading-1" class="anchor" href="#heading-1" aria-hidden="true"></a>Heading 1</h1>
+    <h2 data-sourcepos="3:1-3:12" dir="auto">
+    <a id="user-content-heading-2" class="anchor" href="#heading-2" aria-hidden="true"></a>Heading 2</h2>
+    <h3 data-sourcepos="5:1-5:13" dir="auto">
+    <a id="user-content-heading-3" class="anchor" href="#heading-3" aria-hidden="true"></a>Heading 3</h3>
+    <h4 data-sourcepos="7:1-7:14" dir="auto">
+    <a id="user-content-heading-4" class="anchor" href="#heading-4" aria-hidden="true"></a>Heading 4</h4>
+    <h5 data-sourcepos="9:1-9:15" dir="auto">
+    <a id="user-content-heading-5" class="anchor" href="#heading-5" aria-hidden="true"></a>Heading 5</h5>
+    <h6 data-sourcepos="11:1-11:16" dir="auto">
+    <a id="user-content-heading-6" class="anchor" href="#heading-6" aria-hidden="true"></a>Heading 6</h6>
+  wysiwyg: |-
+    <h1>Heading 1</h1>
+    <h2>Heading 2</h2>
+    <h3>Heading 3</h3>
+    <h4>Heading 4</h4>
+    <h5>Heading 5</h5>
+    <h6>Heading 6</h6>
+08_04_34__gitlab_internal_extension_markdown__migrated_golden_master_examples__horizontal_rule__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <hr data-sourcepos="1:1-1:3">
+  wysiwyg: |-
+    <hr>
+08_04_35__gitlab_internal_extension_markdown__migrated_golden_master_examples__html_marks__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: "<ul data-sourcepos=\"1:1-15:130\" dir=\"auto\">\n<li data-sourcepos=\"1:1-1:48\">Content
+    editor is <del>great</del><ins>amazing</ins>.</li>\n<li data-sourcepos=\"2:1-2:126\">If
+    the changes <abbr title=\"Looks good to merge\">LGTM</abbr>, please <abbr title=\"Merge
+    when pipeline succeeds\">MWPS</abbr>.</li>\n<li data-sourcepos=\"3:1-3:288\">The
+    English song <q>Oh I do like to be beside the seaside</q> looks like this in Hebrew:
+    <span dir=\"rtl\">אה, אני אוהב להיות ליד חוף הים</span>. In the computer's memory,
+    this is stored as <bdo dir=\"ltr\">אה, אני אוהב להיות ליד חוף הים</bdo>.</li>\n<li
+    data-sourcepos=\"4:1-4:59\">\n<cite>The Scream</cite> by Edvard Munch. Painted
+    in 1893.</li>\n<li data-sourcepos=\"5:1-5:73\">\n<dfn>HTML</dfn> is the standard
+    markup language for creating web pages.</li>\n<li data-sourcepos=\"6:1-6:47\">Do
+    not forget to buy <mark>milk</mark> today.</li>\n<li data-sourcepos=\"7:1-7:64\">This
+    is a paragraph and <small>smaller text goes here</small>.</li>\n<li data-sourcepos=\"8:1-8:149\">The
+    concert starts at <time datetime=\"20:00\">20:00</time> and you'll be able to
+    enjoy the band for at least <time datetime=\"PT2H30M\">2h 30m</time>.</li>\n<li
+    data-sourcepos=\"9:1-9:62\">Press <kbd>Ctrl</kbd> + <kbd>C</kbd> to copy text
+    (Windows).</li>\n<li data-sourcepos=\"10:1-10:105\">WWF's goal is to: <q>Build
+    a future where people live in harmony with nature.</q> We hope they succeed.</li>\n<li
+    data-sourcepos=\"11:1-11:80\">The error occurred was: <samp>Keyboard not found.
+    Press F1 to continue.</samp>\n</li>\n<li data-sourcepos=\"12:1-12:136\">The area
+    of a triangle is: 1/2 x <var>b</var> x <var>h</var>, where <var>b</var> is the
+    base, and <var>h</var> is the vertical height.</li>\n<li data-sourcepos=\"13:1-13:35\"><ruby>漢<rt>ㄏㄢˋ</rt></ruby></li>\n<li
+    data-sourcepos=\"14:1-14:79\">C<sub>7</sub>H<sub>16</sub> + O<sub>2</sub> \t CO<sub>2</sub>
+    + H<sub>2</sub>O</li>\n<li data-sourcepos=\"15:1-15:130\">The <strong>Pythagorean
+    theorem</strong> is often expressed as <var>a<sup>2</sup></var> + <var>b<sup>2</sup></var>
+    = <var>c<sup>2</sup></var>\n</li>\n</ul>"
+  wysiwyg: "<ul bullet=\"*\"><li><p>Content editor is<s>great</s></p><p>.</p></li><li><p>If
+    the changes</p><p>, please</p><p>.</p></li><li><p>The English song</p><p> looks
+    like this in Hebrew:</p><p>. In the computer's memory, this is stored as</p><p>.</p></li><li><p>
+    by Edvard Munch. Painted in 1893.</p></li><li><p> is the standard markup language
+    for creating web pages.</p></li><li><p>Do not forget to buy</p><p> today.</p></li><li><p>This
+    is a paragraph and</p><p>.</p></li><li><p>The concert starts at</p><p> and you'll
+    be able to enjoy the band for at least</p><p>.</p></li><li><p>Press</p><p> +</p><p>
+    to copy text (Windows).</p></li><li><p>WWF's goal is to:</p><p> We hope they succeed.</p></li><li><p>The
+    error occurred was:</p></li><li><p>The area of a triangle is: 1/2 x</p><p> x</p><p>,
+    where</p><p> is the base, and</p><p> is the vertical height.</p></li><li><p></p></li><li><p>C</p><p>H</p><p>
+    + O</p><p> \t CO</p><p> + H</p><p>O</p></li><li><p>The<strong>Pythagorean theorem</strong>
+    is often expressed as</p><p> +</p><p> =</p></li></ul>"
+08_04_36__gitlab_internal_extension_markdown__migrated_golden_master_examples__image__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:40" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="alt text" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+  wysiwyg: |-
+    <p><img src="https://gitlab.com/logo.png" alt="alt text"></p>
+08_04_37__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_code__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:6" dir="auto"><code>code</code></p>
+  wysiwyg: |-
+    <p><code>code</code></p>
+08_04_38__gitlab_internal_extension_markdown__migrated_golden_master_examples__inline_diff__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-2:11" dir="auto">
+    <li data-sourcepos="1:1-1:13"><span class="idiff left right deletion">deleted</span></li>
+    <li data-sourcepos="2:1-2:11"><span class="idiff left right addition">added</span></li>
+    </ul>
+  wysiwyg: |-
+    <ul bullet="*"><li><p>{-deleted-}</p></li><li><p>{+added+}</p></li></ul>
+08_04_39__gitlab_internal_extension_markdown__migrated_golden_master_examples__label__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:4" dir="auto">~bug</p>
+  wysiwyg: |-
+    <p>~bug</p>
+08_04_40__gitlab_internal_extension_markdown__migrated_golden_master_examples__link__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:28" dir="auto"><a href="https://gitlab.com" rel="nofollow noreferrer noopener" target="_blank">GitLab</a></p>
+  wysiwyg: |-
+    <p><a target="_blank" rel="noopener noreferrer nofollow" href="https://gitlab.com">GitLab</a></p>
+08_04_41__gitlab_internal_extension_markdown__migrated_golden_master_examples__math__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:36" dir="auto">This math is inline <code class="code math js-render-math" data-math-style="inline">a^2+b^2=c^2</code>.</p>
+    <p data-sourcepos="3:1-3:27" dir="auto">This is on a separate line:</p>
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="5:1-7:3" lang="math" data-math-style="display" class="js-render-math code highlight js-syntax-highlight language-math" v-pre="true"><code><span id="LC1" class="line" lang="math">a^2+b^2=c^2</span></code></pre>
+    <copy-code></copy-code>
+    </div>
+  wysiwyg: |-
+    <p>This math is inline $<code>a^2+b^2=c^2</code>$.</p>
+    <p>This is on a separate line:</p>
+    <pre language="math" class="content-editor-code-block undefined code highlight"><code>a^2+b^2=c^2</code></pre>
+08_04_42__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ol data-sourcepos="1:1-3:14" dir="auto">
+    <li data-sourcepos="1:1-1:14">list item 1</li>
+    <li data-sourcepos="2:1-2:14">list item 2</li>
+    <li data-sourcepos="3:1-3:14">list item 3</li>
+    </ol>
+  wysiwyg: |-
+    <ol parens="false"><li><p>list item 1</p></li><li><p>list item 2</p></li><li><p>list item 3</p></li></ol>
+08_04_43__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_list_with_start_order__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ol start="134" data-sourcepos="1:1-3:16" dir="auto">
+    <li data-sourcepos="1:1-1:16">list item 1</li>
+    <li data-sourcepos="2:1-2:16">list item 2</li>
+    <li data-sourcepos="3:1-3:16">list item 3</li>
+    </ol>
+  wysiwyg: |-
+    <ol parens="false"><li><p>list item 1</p></li><li><p>list item 2</p></li><li><p>list item 3</p></li></ol>
+08_04_44__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_task_list__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ol data-sourcepos="1:1-6:18" class="task-list" dir="auto">
+    <li data-sourcepos="1:1-1:12" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
+    <li data-sourcepos="2:1-2:12" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
+    <li data-sourcepos="3:1-6:18" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example
+    <ol data-sourcepos="4:4-6:18" class="task-list">
+    <li data-sourcepos="4:4-6:18" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> of nested
+    <ol data-sourcepos="5:7-6:18" class="task-list">
+    <li data-sourcepos="5:7-5:22" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> task list</li>
+    <li data-sourcepos="6:7-6:18" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> items</li>
+    </ol>
+    </li>
+    </ol>
+    </li>
+    </ol>
+08_04_45__gitlab_internal_extension_markdown__migrated_golden_master_examples__ordered_task_list_with_order__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ol start="4893" data-sourcepos="1:1-3:17" class="task-list" dir="auto">
+    <li data-sourcepos="1:1-1:15" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
+    <li data-sourcepos="2:1-2:15" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
+    <li data-sourcepos="3:1-3:17" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example</li>
+    </ol>
+  wysiwyg: |-
+    <ol start="1" parens="false" data-type="taskList"><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>hello</p></div></li><li data-checked="true" data-type="taskItem"><label><input type="checkbox" checked="checked"><span></span></label><div><p>world</p></div></li><li data-checked="false" data-type="taskItem"><label><input type="checkbox"><span></span></label><div><p>example</p></div></li></ol>
+08_04_46__gitlab_internal_extension_markdown__migrated_golden_master_examples__reference_for_project_wiki__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:98" dir="auto">Hi @gfm_user - thank you for reporting this ~"UX bug" (#1) we hope to fix it in %1.1 as part of !1</p>
+  wysiwyg: |-
+    <p>Hi @gfm_user - thank you for reporting this ~"UX bug" (#1) we hope to fix it in %1.1 as part of !1</p>
+08_04_47__gitlab_internal_extension_markdown__migrated_golden_master_examples__strike__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:7" dir="auto"><del>del</del></p>
+  wysiwyg: |-
+    <p><s>del</s></p>
+08_04_48__gitlab_internal_extension_markdown__migrated_golden_master_examples__table__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <table data-sourcepos="1:1-4:35" dir="auto">
+    <thead>
+    <tr data-sourcepos="1:1-1:19">
+    <th data-sourcepos="1:2-1:9">header</th>
+    <th data-sourcepos="1:11-1:18">header</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-sourcepos="3:1-3:31">
+    <td data-sourcepos="3:2-3:9"><code>code</code></td>
+    <td data-sourcepos="3:11-3:30">cell with <strong>bold</strong>
+    </td>
+    </tr>
+    <tr data-sourcepos="4:1-4:35">
+    <td data-sourcepos="4:2-4:13"><del>strike</del></td>
+    <td data-sourcepos="4:15-4:34">cell with <em>italic</em>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+    <h1 data-sourcepos="6:1-6:21" dir="auto">
+    <a id="user-content-content-after-table" class="anchor" href="#content-after-table" aria-hidden="true"></a>content after table</h1>
+  wysiwyg: |-
+    <table><tbody><tr><th colspan="1" rowspan="1"><p>header</p></th><th colspan="1" rowspan="1"><p>header</p></th></tr><tr><td colspan="1" rowspan="1"><p><code>code</code></p></td><td colspan="1" rowspan="1"><p>cell with <strong>bold</strong></p></td></tr><tr><td colspan="1" rowspan="1"><p><s>strike</s></p></td><td colspan="1" rowspan="1"><p>cell with <em>italic</em></p></td></tr></tbody></table>
+    <h1>content after table</h1>
+08_04_49__gitlab_internal_extension_markdown__migrated_golden_master_examples__table_of_contents__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul class="section-nav">
+    <li>
+    <a href="#lorem">Lorem</a><ul><li>
+    <a href="#ipsum">Ipsum</a><ul><li><a href="#dolar">Dolar</a></li></ul>
+    </li></ul>
+    </li>
+    <li>
+    <a href="#sit-amit">Sit amit</a><ul><li><a href="#i-dont-know">I don't know</a></li></ul>
+    </li>
+    </ul>
+    <h1 data-sourcepos="3:1-3:7" dir="auto">
+    <a id="user-content-lorem" class="anchor" href="#lorem" aria-hidden="true"></a>Lorem</h1>
+    <p data-sourcepos="5:1-5:45" dir="auto">Well, that's just like... your opinion.. man.</p>
+    <h2 data-sourcepos="7:1-7:8" dir="auto">
+    <a id="user-content-ipsum" class="anchor" href="#ipsum" aria-hidden="true"></a>Ipsum</h2>
+    <h3 data-sourcepos="9:1-9:9" dir="auto">
+    <a id="user-content-dolar" class="anchor" href="#dolar" aria-hidden="true"></a>Dolar</h3>
+    <h1 data-sourcepos="11:1-11:10" dir="auto">
+    <a id="user-content-sit-amit" class="anchor" href="#sit-amit" aria-hidden="true"></a>Sit amit</h1>
+    <h3 data-sourcepos="13:1-13:16" dir="auto">
+    <a id="user-content-i-dont-know" class="anchor" href="#i-dont-know" aria-hidden="true"></a>I don't know</h3>
+  wysiwyg: |-
+    <div class="table-of-contents gl-border-1 gl-border-solid gl-text-center gl-border-gray-100 gl-mb-5">Table of contents</div>
+    <h1>Lorem</h1>
+    <p>Well, that's just like... your opinion.. man.</p>
+    <h2>Ipsum</h2>
+    <h3>Dolar</h3>
+    <h1>Sit amit</h1>
+    <h3>I don't know</h3>
+08_04_50__gitlab_internal_extension_markdown__migrated_golden_master_examples__task_list__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <ul data-sourcepos="1:1-6:15" class="task-list" dir="auto">
+    <li data-sourcepos="1:1-1:11" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> hello</li>
+    <li data-sourcepos="2:1-2:11" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> world</li>
+    <li data-sourcepos="3:1-6:15" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> example
+    <ul data-sourcepos="4:3-6:15" class="task-list">
+    <li data-sourcepos="4:3-6:15" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> of nested
+    <ul data-sourcepos="5:5-6:15" class="task-list">
+    <li data-sourcepos="5:5-5:19" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" checked disabled> task list</li>
+    <li data-sourcepos="6:5-6:15" class="task-list-item">
+    <task-button></task-button><input type="checkbox" class="task-list-item-checkbox" disabled> items</li>
+    </ul>
+    </li>
+    </ul>
+    </li>
+    </ul>
+08_04_51__gitlab_internal_extension_markdown__migrated_golden_master_examples__video__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:46" dir="auto"><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video" width="400" preload="metadata"></video><a href="https://gitlab.com/gitlab.mp4" target="_blank" rel="nofollow noreferrer noopener" title="Download 'Sample Video'">Sample Video</a></span></p>
+  wysiwyg: |-
+    <p><span class="media-container video-container"><video src="https://gitlab.com/gitlab.mp4" controls="true" data-setup="{}" data-title="Sample Video"></video><a href="https://gitlab.com/gitlab.mp4">Sample Video</a></span></p>
+08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001:
+  canonical: |
+    TODO: Write canonical HTML for this example
+  static: |-
+    <p data-sourcepos="1:1-1:60" dir="auto">Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz</wbr></wbr></wbr></wbr></p>
+  wysiwyg: |-
+    <p>Fernstraßenbauprivatfinanzierungsgesetz</p>

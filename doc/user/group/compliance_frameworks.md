@@ -21,13 +21,27 @@ Group owners can create, edit, and delete compliance frameworks:
 1. Expand the **Compliance frameworks** section.
 1. Create, edit, or delete compliance frameworks.
 
-## Set a default compliance framework
+## Default compliance frameworks
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375036) in GitLab 15.6.
 
 Group owners can set a default compliance framework. The default framework is applied to all the new projects
 that are created within that group. It does not affect the framework applied to the existing projects. The default
 framework cannot be deleted.
+
+A compliance framework that is set to default has a **default** label.
+
+### Set and remove as default
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375038) in GitLab 15.7.
+
+Group owners can set a compliance framework as default (or remove the setting):
+
+1. On the top bar, select **Main menu > Groups > View all groups** and find your group.
+1. On the left sidebar, select **Settings > General**.
+1. Expand the **Compliance frameworks** section and locate the compliance framework to set (or remove) as default.
+1. Select the vertical ellipsis (**{ellipsis_v}**) for the compliance frame and then select **Set default** (or
+   **Remove default**).
 
 ### Example GraphQL mutations for setting a default compliance framework
 

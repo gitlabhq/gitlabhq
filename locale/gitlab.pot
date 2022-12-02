@@ -10083,6 +10083,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Configuration not found"
 msgstr ""
 
+msgid "ComplianceFrameworks|Default compliance framework successfully updated"
+msgstr ""
+
 msgid "ComplianceFrameworks|Delete compliance framework %{framework}"
 msgstr ""
 
@@ -10107,6 +10110,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Error setting the default compliance frameworks"
+msgstr ""
+
 msgid "ComplianceFrameworks|Frameworks that have been added will appear here."
 msgstr ""
 
@@ -10122,13 +10128,22 @@ msgstr ""
 msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
 msgstr ""
 
+msgid "ComplianceFrameworks|Remove default"
+msgstr ""
+
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}What is a compliance pipeline configuration?%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworks|Set default"
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr ""
 
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
+msgstr ""
+
+msgid "ComplianceFrameworks|default"
 msgstr ""
 
 msgid "ComplianceFramework|Add a framework to %{linkStart}%{groupName}%{linkEnd} and it will appear here."
@@ -22521,7 +22536,7 @@ msgstr ""
 msgid "InviteMembersModal|Members were successfully added"
 msgstr ""
 
-msgid "InviteMembersModal|Please select members or type email addresses to invite"
+msgid "InviteMembersModal|Please add members to invite"
 msgstr ""
 
 msgid "InviteMembersModal|Review the invite errors and try again:"
