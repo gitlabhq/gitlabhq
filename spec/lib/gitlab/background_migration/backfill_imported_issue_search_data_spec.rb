@@ -23,6 +23,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData,
   let!(:issue) do
     table(:issues).create!(
       project_id: project.id,
+      namespace_id: project.project_namespace_id,
       title: 'Patterson',
       description: FFaker::HipsterIpsum.paragraph
     )
@@ -71,6 +72,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillImportedIssueSearchData,
     let!(:issue2) do
       table(:issues).create!(
         project_id: project.id,
+        namespace_id: project.project_namespace_id,
         title: 'Chatterton',
         description: FFaker::HipsterIpsum.paragraph
       )

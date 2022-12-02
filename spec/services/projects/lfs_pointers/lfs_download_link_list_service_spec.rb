@@ -39,7 +39,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
     ]
   end
 
-  subject { described_class.new(project, remote_uri: remote_uri) }
+  subject(:service) { described_class.new(project, remote_uri: remote_uri) }
 
   before do
     allow(project).to receive(:lfs_enabled?).and_return(true)
@@ -48,19 +48,24 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
     allow(Gitlab::HTTP).to receive(:post).and_return(response)
   end
 
-  describe '#execute' do
-    let(:download_objects) { subject.execute(new_oids) }
-
+  describe '#each_link' do
     it 'retrieves each download link of every non existent lfs object' do
-      download_objects.each do |lfs_download_object|
-        expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
-      end
+      links = []
+      service.each_link(new_oids) { |lfs_download_object| links << lfs_download_object.link }
+
+      expect(links).to contain_exactly(
+        "#{import_url}/gitlab-lfs/objects/oid1",
+        "#{import_url}/gitlab-lfs/objects/oid2"
+      )
     end
 
     it 'stores headers' do
-      download_objects.each do |lfs_download_object|
-        expect(lfs_download_object.headers).to eq(headers)
+      expected_headers = []
+      service.each_link(new_oids) do |lfs_download_object|
+        expected_headers << lfs_download_object.headers
       end
+
+      expect(expected_headers).to contain_exactly(headers, headers)
     end
 
     context 'when lfs objects size is larger than the batch size' do
@@ -97,10 +102,13 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
           stub_successful_request([data[4]])
         end
 
-        it 'retreives them in batches' do
-          subject.execute(new_oids).each do |lfs_download_object|
+        it 'retrieves them in batches' do
+          checksum = 0
+          service.each_link(new_oids) do |lfs_download_object|
             expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
+            checksum += 1
           end
+          expect(checksum).to eq new_oids.size
         end
       end
 
@@ -127,9 +135,12 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
               an_instance_of(error_class), project_id: project.id, batch_size: 5, oids_count: 5
             )
 
-            subject.execute(new_oids).each do |lfs_download_object|
+            checksum = 0
+            service.each_link(new_oids) do |lfs_download_object|
               expect(lfs_download_object.link).to eq "#{import_url}/gitlab-lfs/objects/#{lfs_download_object.oid}"
+              checksum += 1
             end
+            expect(checksum).to eq new_oids.size
           end
         end
 
@@ -153,7 +164,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
             expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
               an_instance_of(error_class), project_id: project.id, batch_size: 2, oids_count: 5
             )
-            expect { subject.execute(new_oids) }.to raise_error(described_class::DownloadLinksError)
+            expect { service.each_link(new_oids) }.to raise_error(described_class::DownloadLinksError)
           end
         end
       end
@@ -165,21 +176,23 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
           let(:import_url) { 'http://user:password@www.gitlab.com/demo/repo.git' }
 
           it 'adds credentials to the download_link' do
-            result = subject.execute(new_oids)
-
-            result.each do |lfs_download_object|
+            checksum = 0
+            service.each_link(new_oids) do |lfs_download_object|
               expect(lfs_download_object.link.starts_with?('http://user:password@')).to be_truthy
+              checksum += 1
             end
+            expect(checksum).to eq new_oids.size
           end
         end
 
         context 'when lfs_endpoint does not have any credentials' do
           it 'does not add any credentials' do
-            result = subject.execute(new_oids)
-
-            result.each do |lfs_download_object|
+            checksum = 0
+            service.each_link(new_oids) do |lfs_download_object|
               expect(lfs_download_object.link.starts_with?('http://user:password@')).to be_falsey
+              checksum += 1
             end
+            expect(checksum).to eq new_oids.size
           end
         end
       end
@@ -189,17 +202,18 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
         let(:lfs_endpoint) { "#{import_url_with_credentials}/info/lfs/objects/batch" }
 
         it 'downloads without any credentials' do
-          result = subject.execute(new_oids)
-
-          result.each do |lfs_download_object|
+          checksum = 0
+          service.each_link(new_oids) do |lfs_download_object|
             expect(lfs_download_object.link.starts_with?('http://user:password@')).to be_falsey
+            checksum += 1
           end
+          expect(checksum).to eq new_oids.size
         end
       end
     end
   end
 
-  describe '#get_download_links' do
+  describe '#download_links_for' do
     context 'if request fails' do
       before do
         request_timeout_net_response = Net::HTTPRequestTimeout.new('', '', '')
@@ -208,7 +222,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
       end
 
       it 'raises an error' do
-        expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)
+        expect { subject.send(:download_links_for, new_oids) }.to raise_error(described_class::DownloadLinksError)
       end
     end
 
@@ -218,7 +232,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService do
         allow(response).to receive(:body).and_return(body)
         allow(Gitlab::HTTP).to receive(:post).and_return(response)
 
-        expect { subject.send(:get_download_links, new_oids) }.to raise_error(described_class::DownloadLinksError)
+        expect { subject.send(:download_links_for, new_oids) }.to raise_error(described_class::DownloadLinksError)
       end
     end
 

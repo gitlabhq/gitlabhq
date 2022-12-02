@@ -27,9 +27,9 @@ module Gitlab
         end
 
         def each_object_to_import
-          lfs_objects = Projects::LfsPointers::LfsObjectDownloadListService.new(project).execute
+          download_service = Projects::LfsPointers::LfsObjectDownloadListService.new(project)
 
-          lfs_objects.each do |object|
+          download_service.each_list_item do |object|
             Gitlab::GithubImport::ObjectCounter.increment(project, object_type, :fetched)
 
             yield object

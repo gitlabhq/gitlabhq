@@ -431,7 +431,7 @@ module QA
       end
 
       def gitlab_agentk_version
-        ENV.fetch('GITLAB_AGENTK_VERSION', 'v14.5.0')
+        ENV.fetch('GITLAB_AGENTK_VERSION', 'fe716ea')
       end
 
       def transient_trials

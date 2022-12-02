@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-# todo: this will need to specify schema version once we introduce the not null constraint on issues#namespace_id
-# https://gitlab.com/gitlab-org/gitlab/-/issues/367835
-RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceOnIssues do
+
+RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceOnIssues,
+  :migration, schema: 20221118103352, feature_category: :team_planning do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }

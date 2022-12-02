@@ -22,7 +22,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker do
   describe '#perform', :clean_gitlab_redis_cache do
     let(:assignee_ids) { [user.id] }
     let(:issue_attrs) do
-      build(:issue, project_id: project.id, title: 'jira issue')
+      build(:issue, project_id: project.id, namespace_id: project.project_namespace_id, title: 'jira issue')
         .as_json.merge(
           'label_ids' => [jira_issue_label_1.id, jira_issue_label_2.id], 'assignee_ids' => assignee_ids
         ).except('issue_type')
@@ -71,6 +71,7 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker do
 
           expect(issue.title).to eq('jira issue')
           expect(issue.project).to eq(project)
+          expect(issue.namespace).to eq(project.project_namespace)
           expect(issue.labels).to match_array([label, jira_issue_label_1, jira_issue_label_2])
           expect(issue.assignees).to eq([user])
         end

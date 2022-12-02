@@ -55,9 +55,6 @@ dast:
 
     # Add the job to merge request pipelines if there's an open merge request.
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
-          ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
-          $GITLAB_FEATURES =~ /\bdast\b/
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" &&
           $GITLAB_FEATURES =~ /\bdast\b/
 
     # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
@@ -65,9 +62,6 @@ dast:
       when: never
 
     # Add the job to branch pipelines.
-    - if: $CI_COMMIT_BRANCH &&
-          ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
-          $GITLAB_FEATURES =~ /\bdast\b/
     - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/
   after_script:

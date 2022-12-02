@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe PgFullTextSearchable do
-  let(:project) { build(:project) }
+  let(:project) { build(:project, project_namespace: build(:project_namespace)) }
 
   let(:model_class) do
     Class.new(ActiveRecord::Base) do
@@ -12,6 +12,7 @@ RSpec.describe PgFullTextSearchable do
       self.table_name = 'issues'
 
       belongs_to :project
+      belongs_to :namespace
       has_one :search_data, class_name: 'Issues::SearchData'
 
       before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }
@@ -41,7 +42,7 @@ RSpec.describe PgFullTextSearchable do
   end
 
   describe 'after commit hook' do
-    let(:model) { model_class.create!(project: project) }
+    let(:model) { model_class.create!(project: project, namespace: project.project_namespace) }
 
     before do
       model_class.pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }]
@@ -76,9 +77,9 @@ RSpec.describe PgFullTextSearchable do
   end
 
   describe '.pg_full_text_search' do
-    let(:english) { model_class.create!(project: project, title: 'title', description: 'something description english') }
-    let(:with_accent) { model_class.create!(project: project, title: 'Jürgen', description: 'Ærøskøbing') }
-    let(:japanese) { model_class.create!(project: project, title: '日本語 title', description: 'another english description') }
+    let(:english) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'something description english') }
+    let(:with_accent) { model_class.create!(project: project, namespace: project.project_namespace, title: 'Jürgen', description: 'Ærøskøbing') }
+    let(:japanese) { model_class.create!(project: project, namespace: project.project_namespace, title: '日本語 title', description: 'another english description') }
 
     before do
       model_class.pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }, { name: 'description', weight: 'B' }]
@@ -91,7 +92,7 @@ RSpec.describe PgFullTextSearchable do
     end
 
     it 'searches specified columns only' do
-      matching_object = model_class.create!(project: project, title: 'english', description: 'some description')
+      matching_object = model_class.create!(project: project, namespace: project.project_namespace, title: 'english', description: 'some description')
       matching_object.update_search_data!
 
       expect(model_class.pg_full_text_search('english', matched_columns: %w(title))).to contain_exactly(matching_object)
@@ -115,7 +116,7 @@ RSpec.describe PgFullTextSearchable do
     end
 
     context 'when search term has a URL' do
-      let(:with_url) { model_class.create!(project: project, title: 'issue with url', description: 'sample url,https://gitlab.com/gitlab-org/gitlab') }
+      let(:with_url) { model_class.create!(project: project, namespace: project.project_namespace, title: 'issue with url', description: 'sample url,https://gitlab.com/gitlab-org/gitlab') }
 
       it 'allows searching by full URL, ignoring the scheme' do
         with_url.update_search_data!
@@ -127,7 +128,7 @@ RSpec.describe PgFullTextSearchable do
 
     context 'when search term is a path with underscores' do
       let(:path) { 'browser_ui/5_package/package_registry/maven/maven_group_level_spec.rb' }
-      let(:with_underscore) { model_class.create!(project: project, title: 'issue with path', description: "some #{path} other text") }
+      let(:with_underscore) { model_class.create!(project: project, namespace: project.project_namespace, title: 'issue with path', description: "some #{path} other text") }
 
       it 'allows searching by the path' do
         with_underscore.update_search_data!
@@ -137,7 +138,7 @@ RSpec.describe PgFullTextSearchable do
     end
 
     context 'when text has numbers preceded by a dash' do
-      let(:with_dash) { model_class.create!(project: project, title: 'issue with dash', description: 'ABC-123') }
+      let(:with_dash) { model_class.create!(project: project, namespace: project.project_namespace, title: 'issue with dash', description: 'ABC-123') }
 
       it 'allows searching by numbers only' do
         with_dash.update_search_data!
@@ -148,7 +149,7 @@ RSpec.describe PgFullTextSearchable do
   end
 
   describe '#update_search_data!' do
-    let(:model) { model_class.create!(project: project, title: 'title', description: 'description') }
+    let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: 'description') }
 
     before do
       model_class.pg_full_text_searchable columns: [{ name: 'title', weight: 'A' }, { name: 'description', weight: 'B' }]
@@ -162,7 +163,7 @@ RSpec.describe PgFullTextSearchable do
     end
 
     context 'with accented and non-Latin characters' do
-      let(:model) { model_class.create!(project: project, title: '日本語', description: 'Jürgen') }
+      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: '日本語', description: 'Jürgen') }
 
       it 'transliterates accented characters and removes non-Latin ones' do
         model.update_search_data!
@@ -173,7 +174,7 @@ RSpec.describe PgFullTextSearchable do
     end
 
     context 'with long words' do
-      let(:model) { model_class.create!(project: project, title: 'title ' + 'long/sequence+1' * 4, description: 'description ' + '@user1' * 20) }
+      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title ' + 'long/sequence+1' * 4, description: 'description ' + '@user1' * 20) }
 
       it 'strips words that are 50 characters or longer' do
         model.update_search_data!
@@ -197,7 +198,7 @@ RSpec.describe PgFullTextSearchable do
 
     context 'with strings that go over tsvector limit', :delete do
       let(:long_string) { Array.new(30_000) { SecureRandom.hex }.join(' ') }
-      let(:model) { model_class.create!(project: project, title: 'title', description: long_string) }
+      let(:model) { model_class.create!(project: project, namespace: project.project_namespace, title: 'title', description: long_string) }
 
       it 'does not raise an exception' do
         expect(Gitlab::AppJsonLogger).to receive(:error).with(
@@ -218,6 +219,7 @@ RSpec.describe PgFullTextSearchable do
           self.table_name = 'issues'
 
           belongs_to :project
+          belongs_to :namespace
           has_one :search_data, class_name: 'Issues::SearchData'
 
           before_validation -> { self.work_item_type_id = ::WorkItems::Type.default_issue_type.id }

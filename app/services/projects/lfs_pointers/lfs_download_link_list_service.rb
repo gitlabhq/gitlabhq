@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This service lists the download link from a remote source based on the
+# This service yields operation on each download link from a remote source based on the
 # oids provided
 module Projects
   module LfsPointers
@@ -23,29 +23,22 @@ module Projects
         @remote_uri = remote_uri
       end
 
-      # This method accepts two parameters:
       # - oids: hash of oids to query. The structure is { lfs_file_oid => lfs_file_size }
-      #
-      # Returns an array of LfsDownloadObject
-      def execute(oids)
-        return [] unless project&.lfs_enabled? && remote_uri && oids.present?
+      # Yields operation for each link batch-by-batch
+      def each_link(oids, &block)
+        return unless project&.lfs_enabled? && remote_uri && oids.present?
 
-        get_download_links_in_batches(oids)
+        download_links_in_batches(oids, &block)
       end
 
       private
 
-      def get_download_links_in_batches(oids, batch_size = REQUEST_BATCH_SIZE)
-        download_links = []
-
+      def download_links_in_batches(oids, batch_size = REQUEST_BATCH_SIZE, &block)
         oids.each_slice(batch_size) do |batch|
-          download_links += get_download_links(batch)
+          download_links_for(batch).each(&block)
         end
-
-        download_links
-
       rescue DownloadLinksRequestEntityTooLargeError => e
-        # Log this exceptions to see how open it happens
+        # Log this exceptions to see how often it happens
         Gitlab::ErrorTracking
           .track_exception(e, project_id: project&.id, batch_size: batch_size, oids_count: oids.count)
 
@@ -57,7 +50,7 @@ module Projects
         raise DownloadLinksError, 'Unable to download due to RequestEntityTooLarge errors'
       end
 
-      def get_download_links(oids)
+      def download_links_for(oids)
         response = Gitlab::HTTP.post(remote_uri,
                                      body: request_body(oids),
                                      headers: headers)

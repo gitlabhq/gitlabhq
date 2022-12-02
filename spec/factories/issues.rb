@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :issue, traits: [:has_internal_id] do
     title { generate(:title) }
     project
+    namespace { project.project_namespace }
     author { project.creator }
     updated_by { author }
     relative_position { RelativePositioning::START_POSITION }

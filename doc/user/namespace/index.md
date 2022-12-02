@@ -9,6 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 In GitLab, a *namespace* provides one place to organize your related projects. Projects in one namespace are separate from projects in other namespaces,
 which means you can use the same name for projects in different namespaces.
 
+## Types of namespaces
+
 GitLab has two types of namespaces:
 
 - A *Personal* namespace, which is based on your username and provided to you when you create your account.
@@ -16,13 +18,15 @@ GitLab has two types of namespaces:
     read about [repository redirects](../project/repository/index.md#what-happens-when-a-repository-path-changes).
   - You cannot create subgroups in a personal namespace.
   - Groups in your namespace do not inherit your namespace permissions and group features.
-  - All the *Personal Projects* created will fall under the scope of this namespace.
+  - All the *Personal Projects* created fall under the scope of this namespace.
 
 - A *group* or *subgroup* namespace:
   - You can create multiple subgroups to manage multiple projects.
   - You can change the URL of group and subgroup namespaces.
   - You can configure settings specifically for each subgroup and project in the namespace.
   - When you create a subgroup, it inherits some of the parent group settings. You can view these in the subgroup **Settings**.
+
+## Determine which type of namespace you're viewing
 
 To determine whether you're viewing a group or personal namespace, you can view the URL. For example:
 

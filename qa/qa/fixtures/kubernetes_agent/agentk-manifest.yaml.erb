@@ -25,9 +25,26 @@ spec:
             - --token-file=/config/token
             - --kas-address
             - "<%= kas_wss_address %>"
+            <% if QA::Runtime::Env.qa_cookies.to_s.include?("gitlab_canary=true") %>
+            - --kas-header
+            - "Cookie: gitlab_canary=true"
+            <% end %>
           volumeMounts:
             - name: token-volume
               mountPath: /config
+          env:
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: SERVICE_ACCOUNT_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.serviceAccountName
       volumes:
         - name: token-volume
           secret:

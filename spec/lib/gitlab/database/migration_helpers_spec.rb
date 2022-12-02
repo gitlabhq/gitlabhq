@@ -2614,18 +2614,18 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
 
       model.backfill_iids('issues')
 
-      issue = issue_class.create!(project_id: project.id)
+      issue = issue_class.create!(project_id: project.id, namespace_id: project.project_namespace_id)
 
       expect(issue.iid).to eq(1)
     end
 
     it 'generates iids properly for models created after the migration when iids are backfilled' do
       project = setup
-      issue_a = issues.create!(project_id: project.id, work_item_type_id: issue_type.id)
+      issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id)
 
       model.backfill_iids('issues')
 
-      issue_b = issue_class.create!(project_id: project.id)
+      issue_b = issue_class.create!(project_id: project.id, namespace_id: project.project_namespace_id)
 
       expect(issue_a.reload.iid).to eq(1)
       expect(issue_b.iid).to eq(2)
@@ -2634,14 +2634,14 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     it 'generates iids properly for models created after the migration across multiple projects' do
       project_a = setup
       project_b = setup
-      issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
-      issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
-      issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
+      issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
 
       model.backfill_iids('issues')
 
-      issue_a = issue_class.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
-      issue_b = issue_class.create!(project_id: project_b.id, work_item_type_id: issue_type.id)
+      issue_a = issue_class.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
+      issue_b = issue_class.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id)
 
       expect(issue_a.iid).to eq(2)
       expect(issue_b.iid).to eq(3)
@@ -2651,11 +2651,11 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'generates an iid' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id)
+        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id)
 
         model.backfill_iids('issues')
 
-        issue_b = issue_class.create!(project_id: project_b.id)
+        issue_b = issue_class.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id)
 
         expect(issue_a.reload.iid).to eq(1)
         expect(issue_b.reload.iid).to eq(1)
@@ -2665,8 +2665,8 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
     context 'when a row already has an iid set in the database' do
       it 'backfills iids' do
         project = setup
-        issue_a = issues.create!(project_id: project.id, work_item_type_id: issue_type.id, iid: 1)
-        issue_b = issues.create!(project_id: project.id, work_item_type_id: issue_type.id, iid: 2)
+        issue_a = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
+        issue_b = issues.create!(project_id: project.id, namespace_id: project.project_namespace_id, work_item_type_id: issue_type.id, iid: 2)
 
         model.backfill_iids('issues')
 
@@ -2677,9 +2677,9 @@ RSpec.describe Gitlab::Database::MigrationHelpers do
       it 'backfills for multiple projects' do
         project_a = setup
         project_b = setup
-        issue_a = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id, iid: 1)
-        issue_b = issues.create!(project_id: project_b.id, work_item_type_id: issue_type.id, iid: 1)
-        issue_c = issues.create!(project_id: project_a.id, work_item_type_id: issue_type.id, iid: 2)
+        issue_a = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
+        issue_b = issues.create!(project_id: project_b.id, namespace_id: project_b.project_namespace_id, work_item_type_id: issue_type.id, iid: 1)
+        issue_c = issues.create!(project_id: project_a.id, namespace_id: project_a.project_namespace_id, work_item_type_id: issue_type.id, iid: 2)
 
         model.backfill_iids('issues')
 

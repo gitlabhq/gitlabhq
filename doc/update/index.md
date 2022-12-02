@@ -477,6 +477,10 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   To upgrade to this version, no records with a `NULL` `work_item_type_id` should exist on the `issues` table.
   There are multiple `BackfillWorkItemTypeIdForIssues` background migrations that will be finalized with
   the `EnsureWorkItemTypeBackfillMigrationFinished` post-deploy migration.
+- GitLab 15.7.0 introduced a [batched background migration](#batched-background-migrations) to
+  [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
+  migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
+  has completed successfully before upgrading to 15.7.0.
 
 ### 15.6.0
 

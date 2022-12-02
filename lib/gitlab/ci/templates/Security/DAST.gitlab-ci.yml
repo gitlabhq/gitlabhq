@@ -51,7 +51,4 @@ dast:
           $REVIEW_DISABLED
       when: never
     - if: $CI_COMMIT_BRANCH &&
-          ($CI_KUBERNETES_ACTIVE || $KUBECONFIG) &&
-          $GITLAB_FEATURES =~ /\bdast\b/
-    - if: $CI_COMMIT_BRANCH &&
           $GITLAB_FEATURES =~ /\bdast\b/

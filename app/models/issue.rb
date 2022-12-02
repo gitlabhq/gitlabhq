@@ -105,7 +105,7 @@ class Issue < ApplicationRecord
 
   validates :project, presence: true
   validates :issue_type, presence: true
-  validates :namespace, presence: true, if: -> { project.present? }
+  validates :namespace, presence: true
   validates :work_item_type, presence: true
 
   validate :due_date_after_start_date
