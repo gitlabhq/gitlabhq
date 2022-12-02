@@ -150,6 +150,13 @@ describe('BoardContent', () => {
 
       expect(style).toBe('height: 900px;');
     });
+
+    it('sets delay and delayOnTouchOnly attributes on board list', () => {
+      const listEl = wrapper.findComponent({ ref: 'list' });
+
+      expect(listEl.attributes('delay')).toBe('100');
+      expect(listEl.attributes('delayontouchonly')).toBe('true');
+    });
   });
 
   describe('when issuableType is not issue', () => {

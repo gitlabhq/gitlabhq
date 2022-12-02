@@ -6,8 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Set up alerts for Prometheus metrics **(FREE)**
 
-> [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/42640) to GitLab Free in 12.10.
-
 After [configuring metrics for your CI/CD environment](index.md), you can set up
 alerting for Prometheus metrics, and
 [trigger actions from alerts](#trigger-actions-from-alerts) to notify
@@ -15,7 +13,7 @@ your team when environment performance falls outside of the boundaries you set.
 
 ## Prometheus cluster integrations
 
-Alerts are not currently supported for [Prometheus cluster integrations](../../user/clusters/integrations.md).
+Alerts are not supported for [Prometheus cluster integrations](../../user/clusters/integrations.md).
 
 ## Trigger actions from alerts **(ULTIMATE)**
 

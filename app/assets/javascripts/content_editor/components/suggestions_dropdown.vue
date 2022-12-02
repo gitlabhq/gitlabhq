@@ -210,10 +210,10 @@ export default {
 <template>
   <ul
     :class="{ show: items.length > 0 }"
-    class="gl-new-dropdown dropdown-menu gl-relative"
+    class="gl-dropdown dropdown-menu gl-relative"
     data-testid="content-editor-suggestions-dropdown"
   >
-    <div class="gl-new-dropdown-inner gl-overflow-y-auto">
+    <div class="gl-dropdown-inner gl-overflow-y-auto">
       <gl-dropdown-item
         v-for="(item, index) in items"
         ref="dropdownItems"

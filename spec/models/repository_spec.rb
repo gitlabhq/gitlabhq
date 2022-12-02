@@ -164,11 +164,11 @@ RSpec.describe Repository do
           repository.add_tag(user, annotated_tag_name, 'a48e4fc218069f68ef2e769dd8dfea3991362175', 'test tag message\n')
         end
 
-        it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
-
         after do
           repository.rm_tag(user, annotated_tag_name)
         end
+
+        it { is_expected.to eq(['v1.0.0', 'v1.1.0', annotated_tag_name]) }
       end
     end
 

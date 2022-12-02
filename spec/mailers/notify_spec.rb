@@ -419,15 +419,15 @@ RSpec.describe Notify do
           end
 
           it 'includes the reason in the footer' do
-            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(reason: NotificationReason::ASSIGNED, format: :html)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, reason: NotificationReason::ASSIGNED, format: :html)
             is_expected.to have_body_text(text)
 
             new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, NotificationReason::MENTIONED)
-            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(reason: NotificationReason::MENTIONED, format: :html)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, reason: NotificationReason::MENTIONED, format: :html)
             expect(new_subject).to have_body_text(text)
 
             new_subject = described_class.reassigned_merge_request_email(recipient.id, merge_request.id, [previous_assignee.id], current_user.id, nil)
-            text = EmailsHelper.instance_method(:notification_reason_text).bind(self).call(format: :html)
+            text = EmailsHelper.instance_method(:notification_reason_text).bind_call(self, format: :html)
             expect(new_subject).to have_body_text(text)
           end
         end

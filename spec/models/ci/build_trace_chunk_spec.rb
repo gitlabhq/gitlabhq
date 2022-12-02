@@ -15,12 +15,12 @@ RSpec.describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state, :clean_git
     described_class.new(build: build, chunk_index: chunk_index, data_store: data_store, raw_data: raw_data)
   end
 
-  it_behaves_like 'having unique enum values'
-
   before do
     stub_feature_flags(ci_enable_live_trace: true)
     stub_artifacts_object_storage
   end
+
+  it_behaves_like 'having unique enum values'
 
   def redis_instance
     {

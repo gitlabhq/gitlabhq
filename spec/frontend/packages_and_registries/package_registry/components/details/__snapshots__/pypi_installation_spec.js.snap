@@ -13,7 +13,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
      
     <div>
       <div
-        class="dropdown b-dropdown gl-new-dropdown btn-group"
+        class="dropdown b-dropdown gl-dropdown btn-group"
         id="__BVID__27"
         lazy=""
       >
@@ -30,7 +30,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
           <!---->
            
           <span
-            class="gl-new-dropdown-button-text"
+            class="gl-dropdown-button-text"
           >
             Show PyPi commands
           </span>

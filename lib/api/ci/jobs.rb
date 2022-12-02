@@ -55,7 +55,9 @@ module API
           builds = filter_builds(builds, params[:scope])
 
           builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, :tags, pipeline: :project)
-          present paginate(builds), with: Entities::Ci::Job
+          without_count = Feature.enabled?(:disable_pagination_counts_on_jobs_api, user_project)
+
+          present paginate(builds, without_count: without_count), with: Entities::Ci::Job
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

@@ -14,15 +14,15 @@ exports[`content_editor/components/toolbar_link_button renders dropdown componen
       </div>
     </form>
   </li>
-  <li role=\\"presentation\\" class=\\"gl-new-dropdown-divider\\">
+  <li role=\\"presentation\\" class=\\"gl-dropdown-divider\\">
     <hr role=\\"separator\\" aria-orientation=\\"horizontal\\" class=\\"dropdown-divider\\">
   </li>
-  <li role=\\"presentation\\" class=\\"gl-new-dropdown-item\\"><button role=\\"menuitem\\" type=\\"button\\" class=\\"dropdown-item\\">
+  <li role=\\"presentation\\" class=\\"gl-dropdown-item\\"><button role=\\"menuitem\\" type=\\"button\\" class=\\"dropdown-item\\">
       <!---->
       <!---->
       <!---->
-      <div class=\\"gl-new-dropdown-item-text-wrapper\\">
-        <p class=\\"gl-new-dropdown-item-text-primary\\">
+      <div class=\\"gl-dropdown-item-text-wrapper\\">
+        <p class=\\"gl-dropdown-item-text-primary\\">
           Upload file
         </p>
         <!---->

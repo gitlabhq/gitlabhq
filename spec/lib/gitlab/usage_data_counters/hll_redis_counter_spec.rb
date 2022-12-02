@@ -138,13 +138,13 @@ RSpec.describe Gitlab::UsageDataCounters::HLLRedisCounter, :clean_gitlab_redis_s
       File.open(ce_temp_file.path, "w+b") { |f| f.write [ce_event].to_yaml }
     end
 
-    it 'returns ce events' do
-      expect(described_class.known_events).to include(ce_event)
-    end
-
     after do
       ce_temp_file.unlink
       FileUtils.remove_entry(ce_temp_dir) if Dir.exist?(ce_temp_dir)
+    end
+
+    it 'returns ce events' do
+      expect(described_class.known_events).to include(ce_event)
     end
   end
 

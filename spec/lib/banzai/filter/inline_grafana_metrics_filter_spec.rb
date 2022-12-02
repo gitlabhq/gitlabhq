@@ -29,11 +29,11 @@ RSpec.describe Banzai::Filter::InlineGrafanaMetricsFilter do
     )
   end
 
-  it_behaves_like 'a metrics embed filter'
-
   around do |example|
     travel_to(Time.utc(2019, 3, 17, 13, 10)) { example.run }
   end
+
+  it_behaves_like 'a metrics embed filter'
 
   context 'when grafana is not configured' do
     before do

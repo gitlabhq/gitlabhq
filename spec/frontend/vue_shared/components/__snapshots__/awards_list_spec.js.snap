@@ -225,7 +225,7 @@ exports[`vue_shared/components/awards_list default matches snapshot 1`] = `
     >
       <div
         boundary="scrollParent"
-        class="dropdown b-dropdown gl-new-dropdown btn-group"
+        class="dropdown b-dropdown gl-dropdown btn-group"
         id="__BVID__13"
         lazy=""
         menu-class="dropdown-extended-height"

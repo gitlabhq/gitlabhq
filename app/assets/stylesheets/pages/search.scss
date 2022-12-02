@@ -283,7 +283,7 @@ input[type='checkbox']:hover {
   .btn-search,
   .btn-success,
   .dropdown-menu-toggle,
-  .gl-new-dropdown {
+  .gl-dropdown {
     width: 100%;
     margin-top: 5px;
 
@@ -302,7 +302,7 @@ input[type='checkbox']:hover {
   }
 
   .dropdown-menu-toggle,
-  .gl-new-dropdown {
+  .gl-dropdown {
     @include media-breakpoint-up(sm) {
       width: 180px;
       margin-top: 0;
@@ -317,7 +317,7 @@ input[type='checkbox']:hover {
   }
 
   .dropdown-menu-toggle,
-  .gl-new-dropdown {
+  .gl-dropdown {
     @include media-breakpoint-up(lg) {
       width: 240px;
     }

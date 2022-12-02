@@ -17,7 +17,7 @@ RSpec.shared_examples 'labels sidebar widget' do
     end
 
     it 'shows labels list in the dropdown' do
-      expect(labels_widget.find('.gl-new-dropdown-contents')).to have_selector('li.gl-new-dropdown-item', count: 4)
+      expect(labels_widget.find('.gl-dropdown-contents')).to have_selector('li.gl-dropdown-item', count: 4)
     end
 
     it 'adds a label' do
@@ -57,8 +57,8 @@ RSpec.shared_examples 'labels sidebar widget' do
         expect(page).to have_css('.labels-fetch-loading')
         wait_for_all_requests
 
-        expect(page).to have_css('[data-testid="dropdown-content"] .gl-new-dropdown-item')
-        expect(page.all(:css, '[data-testid="dropdown-content"] .gl-new-dropdown-item').length).to eq(1)
+        expect(page).to have_css('[data-testid="dropdown-content"] .gl-dropdown-item')
+        expect(page.all(:css, '[data-testid="dropdown-content"] .gl-dropdown-item').length).to eq(1)
 
         find_field('Search').native.send_keys(:enter)
         click_button 'Close'

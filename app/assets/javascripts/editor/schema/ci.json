@@ -41,6 +41,9 @@
         "before_script": {
           "$ref": "#/definitions/before_script"
         },
+        "hooks": {
+          "$ref": "#/definitions/hooks"
+        },
         "cache": {
           "$ref": "#/definitions/cache"
         },
@@ -1217,6 +1220,9 @@
         "after_script": {
           "$ref": "#/definitions/after_script"
         },
+        "hooks": {
+          "$ref": "#/definitions/hooks"
+        },
         "rules": {
           "$ref": "#/definitions/rules"
         },
@@ -1881,6 +1887,39 @@
           }
         ]
       }
+    },
+    "hooks": {
+      "type": "object",
+      "markdownDescription": "Specifies lists of commands to execute on the runner at certain stages of job execution. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hooks).",
+      "properties": {
+        "pre_get_sources_script": {
+          "markdownDescription": "Specifies a list of commands to execute on the runner before updating the Git repository and any submodules. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#hookspre_get_sources_script).",
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                ]
+              },
+              "minItems": 1
+            }
+          ]
+        }
+      },
+      "additionalProperties": false
     }
   }
 }

@@ -242,7 +242,7 @@ export default {
         @keydown.esc.native="hideDropdown"
         @hide="hideDropdown"
       >
-        <p class="gl-new-dropdown-header-top">
+        <p class="gl-dropdown-header-top">
           {{ __('Assign To') }}
         </p>
         <gl-search-box-by-type v-model.trim="search" :placeholder="__('Search users')" />

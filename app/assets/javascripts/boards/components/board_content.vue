@@ -116,6 +116,8 @@ export default {
         group: 'boards-list',
         tag: 'div',
         value: this.boardListsToUse,
+        delay: 100,
+        delayOnTouchOnly: true,
       };
 
       return this.canDragColumns ? options : {};

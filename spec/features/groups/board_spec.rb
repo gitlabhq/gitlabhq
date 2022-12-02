@@ -35,7 +35,7 @@ RSpec.describe 'Group Boards', feature_category: :team_planning do
         page.within("[data-testid='project-select-dropdown']") do
           find('button.gl-dropdown-toggle').click
 
-          find('.gl-new-dropdown-item button').click
+          find('.gl-dropdown-item button').click
         end
 
         click_button 'Create issue'

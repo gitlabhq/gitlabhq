@@ -23,7 +23,7 @@ RSpec.describe 'Projects > Show > User manages notifications', :js do
     click_notifications_button
 
     page.within first('[data-testid="notification-dropdown"]') do
-      expect(page.find('.gl-new-dropdown-item.is-active')).to have_content('On mention')
+      expect(page.find('.gl-dropdown-item.is-active')).to have_content('On mention')
       expect(page).to have_css('[data-testid="notifications-icon"]')
     end
   end

@@ -11,14 +11,14 @@ RSpec.describe PipelineDetailsEntity do
     described_class.represent(pipeline, request: request)
   end
 
-  it 'inherits from PipelineEntity' do
-    expect(described_class).to be < Ci::PipelineEntity
-  end
-
   before do
     stub_not_protect_default_branch
 
     allow(request).to receive(:current_user).and_return(user)
+  end
+
+  it 'inherits from PipelineEntity' do
+    expect(described_class).to be < Ci::PipelineEntity
   end
 
   describe '#as_json' do

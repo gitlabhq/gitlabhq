@@ -111,9 +111,9 @@ export default {
 </script>
 
 <template>
-  <li v-if="isMergeRequest" class="gl-new-dropdown-item">
+  <li v-if="isMergeRequest" class="gl-dropdown-item">
     <button type="button" class="dropdown-item" @click="toggleLocked">
-      <span class="gl-new-dropdown-item-text-wrapper">
+      <span class="gl-dropdown-item-text-wrapper">
         <template v-if="isLocked">
           {{ __('Unlock merge request') }}
         </template>

@@ -46,6 +46,10 @@ RSpec.describe Gitlab::Auth::Saml::User do
       end
 
       context 'external groups' do
+        before do
+          stub_saml_group_config(%w(Interns))
+        end
+
         context 'are defined' do
           it 'marks the user as external' do
             stub_saml_group_config(%w(Freelancers))
@@ -53,10 +57,6 @@ RSpec.describe Gitlab::Auth::Saml::User do
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_truthy
           end
-        end
-
-        before do
-          stub_saml_group_config(%w(Interns))
         end
 
         context 'are defined but the user does not belong there' do

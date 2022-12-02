@@ -22,6 +22,7 @@ module Banzai
           Filter::MermaidFilter,
           Filter::VideoLinkFilter,
           Filter::AudioLinkFilter,
+          Filter::AttributesFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           *metrics_filters,

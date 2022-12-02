@@ -149,7 +149,7 @@ To change an alert's status:
   1. On the right sidebar, select **Edit**.
   1. Select a status.
 
-To stop email notifications for alert reoccurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
+To stop email notifications for alert recurrences in projects with [email notifications enabled](paging.md#email-notifications-for-alerts),
 change the alert's status away from **Triggered**.
 
 #### Resolve an alert by closing the linked incident

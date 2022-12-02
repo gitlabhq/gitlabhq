@@ -42,11 +42,11 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter do
   context 'mentioning @all' do
     let(:reference) { User.reference_prefix + 'all' }
 
-    it_behaves_like 'a reference containing an element node'
-
     before do
       project.add_developer(project.creator)
     end
+
+    it_behaves_like 'a reference containing an element node'
 
     it 'supports a special @all mention' do
       project.add_developer(user)

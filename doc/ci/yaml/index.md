@@ -86,6 +86,7 @@ of the listed keywords use the value defined in the `default` section.
 - [`artifacts`](#artifacts)
 - [`before_script`](#before_script)
 - [`cache`](#cache)
+- [`hooks`](#hooks)
 - [`image`](#image)
 - [`interruptible`](#interruptible)
 - [`retry`](#retry)
@@ -1861,6 +1862,47 @@ rspec:
 
 - [Reuse configuration sections by using `extends`](yaml_optimization.md#use-extends-to-reuse-configuration-sections).
 - Use `extends` to reuse configuration from [included configuration files](yaml_optimization.md#use-extends-and-include-together).
+
+### `hooks`
+
+> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`.
+The feature is not ready for production use.
+
+Use `hooks` to specify lists of commands to execute on the runner
+at certain stages of job execution, like before retrieving the Git repository.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- A hash of hooks and their commands. Available hooks: `pre_get_sources_script`.
+
+#### `hooks:pre_get_sources_script`
+
+> Introduced in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+
+Use `hooks:pre_get_sources_script` to specify a list of commands to execute on the runner
+before retrieving the Git repository and any submodules. You can use it
+to adjust the Git client configuration first, for example.
+
+**Related topics**:
+
+- [GitLab Runner configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+
+**Example of `hooks:pre_get_sources_script`**:
+
+```yaml
+job1:
+  hooks:
+    pre_get_sources_script:
+      - echo 'hello job1 pre_get_sources_script'
+  script: echo 'hello job1 script'
+```
 
 ### `image`
 

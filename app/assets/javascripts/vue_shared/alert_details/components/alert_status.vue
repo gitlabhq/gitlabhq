@@ -106,7 +106,7 @@ export default {
       @keydown.esc.native="$emit('hide-dropdown')"
       @hide="$emit('hide-dropdown')"
     >
-      <p v-if="isSidebar" class="gl-new-dropdown-header-top" data-testid="dropdown-header">
+      <p v-if="isSidebar" class="gl-dropdown-header-top" data-testid="dropdown-header">
         {{ s__('AlertManagement|Assign status') }}
       </p>
       <div class="dropdown-content dropdown-body">

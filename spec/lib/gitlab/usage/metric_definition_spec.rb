@@ -233,6 +233,11 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
 
     subject { described_class.send(:load_all!) }
 
+    after do
+      FileUtils.rm_rf(metric1)
+      FileUtils.rm_rf(metric2)
+    end
+
     it 'has empty list when there are no definition files' do
       is_expected.to be_empty
     end
@@ -250,11 +255,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition do
       expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(instance_of(Gitlab::Usage::MetricDefinition::InvalidError))
 
       subject
-    end
-
-    after do
-      FileUtils.rm_rf(metric1)
-      FileUtils.rm_rf(metric2)
     end
   end
 

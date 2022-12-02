@@ -111,6 +111,11 @@ RSpec.describe Feature::Definition do
 
     subject { described_class.send(:load_all!) }
 
+    after do
+      FileUtils.rm_rf(store1)
+      FileUtils.rm_rf(store2)
+    end
+
     it "when there's no feature flags a list of definitions is empty" do
       is_expected.to be_empty
     end
@@ -134,11 +139,6 @@ RSpec.describe Feature::Definition do
 
       expect { subject }
         .to raise_error(/Feature flag is missing name/)
-    end
-
-    after do
-      FileUtils.rm_rf(store1)
-      FileUtils.rm_rf(store2)
     end
 
     def write_feature_flag(store, path, content)

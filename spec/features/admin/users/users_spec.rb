@@ -604,8 +604,8 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
 
   def sort_by(option)
     page.within('.filtered-search-block') do
-      find('.gl-new-dropdown').click
-      find('.gl-new-dropdown-item', text: option).click
+      find('.gl-dropdown').click
+      find('.gl-dropdown-item', text: option).click
     end
   end
 end

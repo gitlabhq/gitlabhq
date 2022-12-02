@@ -70,7 +70,7 @@ export default {
     @click="handleClick(selectedAction, $event)"
   >
     <template #button-content>
-      <span class="gl-new-dropdown-button-text" v-bind="selectedAction.attrs">
+      <span class="gl-dropdown-button-text" v-bind="selectedAction.attrs">
         {{ selectedAction.text }}
       </span>
     </template>

@@ -101,6 +101,28 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
           end
         end
 
+        context 'when without_count is true' do
+          it_behaves_like 'paginated response'
+
+          it 'does not return the X-Total and X-Total-Pages headers' do
+            expect_no_header('X-Total')
+            expect_no_header('X-Total-Pages')
+            expect_header('X-Per-Page', '2')
+            expect_header('X-Page', '1')
+            expect_header('X-Next-Page', '2')
+            expect_header('X-Prev-Page', '')
+
+            expect_header('Link', anything) do |_key, val|
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 1).to_query}>; rel="first"))
+              expect(val).to include(%Q(<#{incoming_api_projects_url}?#{query.merge(page: 2).to_query}>; rel="next"))
+              expect(val).not_to include('rel="last"')
+              expect(val).not_to include('rel="prev"')
+            end
+
+            expect { subject.paginate(resource, without_count: true) }.to make_queries_matching(/SELECT COUNT/, 0)
+          end
+        end
+
         it 'does not return the total headers when excluding them' do
           expect_no_header('X-Total')
           expect_no_header('X-Total-Pages')

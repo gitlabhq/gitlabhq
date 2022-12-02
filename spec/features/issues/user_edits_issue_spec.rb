@@ -416,7 +416,7 @@ RSpec.describe "Issues > User edits issue", :js, feature_category: :team_plannin
               find('.gl-form-input', visible: true).send_keys "\"#{milestones[0].title}\""
               wait_for_requests
 
-              page.within '.gl-new-dropdown-contents' do
+              page.within '.gl-dropdown-contents' do
                 expect(page).to have_content milestones[0].title
               end
             end

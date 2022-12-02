@@ -596,8 +596,8 @@ RSpec.describe 'Pipelines', :js do
         it 'changes the Pipeline ID column for Pipeline IID' do
           page.find('[data-testid="pipeline-key-dropdown"]').click
 
-          within '.gl-new-dropdown-contents' do
-            dropdown_options = page.find_all '.gl-new-dropdown-item'
+          within '.gl-dropdown-contents' do
+            dropdown_options = page.find_all '.gl-dropdown-item'
 
             dropdown_options[1].click
           end
@@ -825,7 +825,7 @@ RSpec.describe 'Pipelines', :js do
           page.within '[data-testid="ref-select"]' do
             find('[data-testid="search-refs"]').native.send_keys('fix')
 
-            page.within '.gl-new-dropdown-contents' do
+            page.within '.gl-dropdown-contents' do
               expect(page).to have_content('fix')
             end
           end

@@ -20,7 +20,7 @@
         - namespace = Namespace.find(params[:namespace_id])
         - current_namespace = "#{namespace.kind}: #{namespace.full_path}"
       %button.dropdown-menu-toggle.btn.btn-default.btn-md.gl-button.js-namespace-select{ data: { show_any: 'true', field_name: 'namespace_id', placeholder: current_namespace, update_location: 'true' }, type: 'button' }
-        %span.gl-new-dropdown-button-text
+        %span.gl-dropdown-button-text
           = current_namespace
 
       = render 'shared/projects/dropdown'

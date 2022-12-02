@@ -46,14 +46,14 @@ RSpec.describe 'Pages edits pages settings', :js do
       Feature.disable(:use_pipeline_wizard_for_pages)
     end
 
+    after do
+      Feature.enable(:use_pipeline_wizard_for_pages)
+    end
+
     it 'shows configure pages instructions' do
       visit project_pages_path(project)
 
       expect(page).to have_content('Configure pages')
-    end
-
-    after do
-      Feature.enable(:use_pipeline_wizard_for_pages)
     end
   end
 end

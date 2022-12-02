@@ -113,7 +113,7 @@ RSpec.describe 'Project issue boards sidebar assignee', :js, quarantine: 'https:
       page.within(assignees_widget) do
         click_button('Edit')
 
-        expect(find('.dropdown-menu')).to have_selector('.gl-new-dropdown-item-check-icon')
+        expect(find('.dropdown-menu')).to have_selector('.gl-dropdown-item-check-icon')
       end
     end
   end

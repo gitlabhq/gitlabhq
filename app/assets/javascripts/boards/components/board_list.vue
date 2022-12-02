@@ -133,6 +133,8 @@ export default {
         'ghost-class': 'board-card-drag-active',
         'data-list-id': this.list.id,
         value: this.boardItems,
+        delay: 100,
+        delayOnTouchOnly: true,
       };
 
       return this.canMoveIssue ? options : {};

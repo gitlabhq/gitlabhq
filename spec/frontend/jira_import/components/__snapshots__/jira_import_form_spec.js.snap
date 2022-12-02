@@ -87,7 +87,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       >
         <div
           aria-label="The GitLab user to which the Jira user Jane Doe will be mapped"
-          class="dropdown b-dropdown gl-new-dropdown w-100 btn-group"
+          class="dropdown b-dropdown gl-dropdown w-100 btn-group"
         >
           <!---->
           <button
@@ -101,7 +101,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             <!---->
              
             <span
-              class="gl-new-dropdown-button-text"
+              class="gl-dropdown-button-text"
             >
               janedoe
             </span>
@@ -123,14 +123,14 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             tabindex="-1"
           >
             <div
-              class="gl-new-dropdown-inner"
+              class="gl-dropdown-inner"
             >
               <!---->
                
               <!---->
                
               <div
-                class="gl-new-dropdown-contents"
+                class="gl-dropdown-contents"
               >
                 <!---->
                  
@@ -165,7 +165,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                 </div>
                   
                 <li
-                  class="gl-new-dropdown-text text-secondary"
+                  class="gl-dropdown-text text-secondary"
                   role="presentation"
                 >
                   <p
@@ -218,7 +218,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
       >
         <div
           aria-label="The GitLab user to which the Jira user Fred Chopin will be mapped"
-          class="dropdown b-dropdown gl-new-dropdown w-100 btn-group"
+          class="dropdown b-dropdown gl-dropdown w-100 btn-group"
         >
           <!---->
           <button
@@ -232,7 +232,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             <!---->
              
             <span
-              class="gl-new-dropdown-button-text"
+              class="gl-dropdown-button-text"
             >
               mrgitlab
             </span>
@@ -254,14 +254,14 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
             tabindex="-1"
           >
             <div
-              class="gl-new-dropdown-inner"
+              class="gl-dropdown-inner"
             >
               <!---->
                
               <!---->
                
               <div
-                class="gl-new-dropdown-contents"
+                class="gl-dropdown-contents"
               >
                 <!---->
                  
@@ -296,7 +296,7 @@ exports[`JiraImportForm table body shows correct information in each cell 1`] = 
                 </div>
                   
                 <li
-                  class="gl-new-dropdown-text text-secondary"
+                  class="gl-dropdown-text text-secondary"
                   role="presentation"
                 >
                   <p

@@ -12278,6 +12278,9 @@ msgstr ""
 msgid "DastConfig|Not enabled"
 msgstr ""
 
+msgid "DastProfiles|/graphql"
+msgstr ""
+
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr ""
 
@@ -12423,6 +12426,9 @@ msgid "DastProfiles|Minimum = 1 second, Maximum = 3600 seconds"
 msgstr ""
 
 msgid "DastProfiles|Monitors all HTTP requests sent to the target to find potential vulnerabilities."
+msgstr ""
+
+msgid "DastProfiles|Must allow introspection queries to request the API schema. %{linkStart}How do I enable introspection%{linkEnd}?"
 msgstr ""
 
 msgid "DastProfiles|New scanner profile"
@@ -19035,6 +19041,12 @@ msgid "Grant write permissions to this key"
 msgstr ""
 
 msgid "Graph"
+msgstr ""
+
+msgid "GraphQL"
+msgstr ""
+
+msgid "GraphQL endpoint path"
 msgstr ""
 
 msgid "GraphViewType|Job dependencies"
@@ -28785,9 +28797,6 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Opens new window"
-msgstr ""
-
-msgid "Operation failed. Check pod logs for %{pod_name} for more details."
 msgstr ""
 
 msgid "Operation not allowed"

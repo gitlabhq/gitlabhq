@@ -83,6 +83,11 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
 
     subject { described_class.definitions }
 
+    after do
+      FileUtils.rm_rf(metric1)
+      FileUtils.rm_rf(metric2)
+    end
+
     it 'has empty list when there are no definition files' do
       is_expected.to be_empty
     end
@@ -91,11 +96,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition do
       write_metric(metric1, path, yaml_content)
 
       is_expected.to be_one
-    end
-
-    after do
-      FileUtils.rm_rf(metric1)
-      FileUtils.rm_rf(metric2)
     end
   end
 end

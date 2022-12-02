@@ -62,12 +62,12 @@ RSpec.shared_examples 'deployment metrics examples' do
   describe '#deployment_frequency' do
     subject { stage_summary.fourth[:value] }
 
-    it 'includes the unit: `/day`' do
-      expect(stage_summary.fourth[:unit]).to eq _('/day')
-    end
-
     before do
       travel_to(5.days.ago) { create_deployment(project: project) }
+    end
+
+    it 'includes the unit: `/day`' do
+      expect(stage_summary.fourth[:unit]).to eq _('/day')
     end
 
     it 'returns 0.0 when there were deploys but the frequency was too low' do

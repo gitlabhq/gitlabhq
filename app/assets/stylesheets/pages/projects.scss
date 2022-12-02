@@ -562,7 +562,7 @@
   // Remove once gitlab/ui solution is implemented
   // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1158
   // https://gitlab.com/gitlab-org/gitlab/-/issues/300405
-  .gl-new-dropdown-button-text {
+  .gl-dropdown-button-text {
     @include str-truncated;
   }
 }

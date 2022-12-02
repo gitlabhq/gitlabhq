@@ -24,6 +24,10 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService do
     context 'with tags to delete' do
       let(:timeout) { 10 }
 
+      before do
+        stub_application_setting(container_registry_delete_tags_service_timeout: timeout)
+      end
+
       it_behaves_like 'deleting tags'
 
       it 'succeeds when tag delete returns 404' do
@@ -46,10 +50,6 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService do
 
           it { is_expected.to eq(status: :error, message: 'could not delete tags') }
         end
-      end
-
-      before do
-        stub_application_setting(container_registry_delete_tags_service_timeout: timeout)
       end
 
       context 'with timeout' do

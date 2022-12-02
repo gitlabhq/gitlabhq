@@ -146,7 +146,7 @@ module API
             end
 
             optional :unique_counters, type: Hash do
-              optional :agent_users_using_ci_tunnel, type: Set[Integer], desc: 'A set of user ids that have interacted a CI Tunnel to'
+              optional :agent_users_using_ci_tunnel, type: Array[Integer], desc: 'An array of user ids that have interacted with CI Tunnel'
             end
           end
           post '/', feature_category: :kubernetes_management do

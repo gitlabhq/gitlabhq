@@ -15,6 +15,11 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
     SentNotification.record_note(note, user.id, mail_key)
   end
 
+  before do
+    stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
+    stub_config_setting(host: 'localhost')
+  end
+
   it_behaves_like 'reply processing shared examples'
 
   it_behaves_like 'note handler shared examples' do
@@ -24,11 +29,6 @@ RSpec.describe Gitlab::Email::Handler::CreateNoteHandler do
     let(:no_content)           { fixture_file('emails/no_content_reply.eml') }
     let(:commands_in_reply)    { fixture_file('emails/commands_in_reply.eml') }
     let(:with_quick_actions)   { fixture_file('emails/valid_reply_with_quick_actions.eml') }
-  end
-
-  before do
-    stub_incoming_email_setting(enabled: true, address: "reply+%{key}@appmail.adventuretime.ooo")
-    stub_config_setting(host: 'localhost')
   end
 
   context 'when the recipient address does not include a mail key' do

@@ -9,20 +9,20 @@ module QA
         def select_item(item_text)
           return super if use_select2?
 
-          find('li.gl-new-dropdown-item', text: item_text, match: :prefer_exact).click
+          find('li.gl-dropdown-item', text: item_text, match: :prefer_exact).click
         end
 
         def has_item?(item_text)
           return super if use_select2?
 
-          has_css?('li.gl-new-dropdown-item', text: item_text, match: :prefer_exact)
+          has_css?('li.gl-dropdown-item', text: item_text, match: :prefer_exact)
         end
 
         def current_selection
           return super if use_select2?
 
           expand_select_list unless dropdown_open?
-          find('span.gl-new-dropdown-button-text').text
+          find('span.gl-dropdown-button-text').text
         end
 
         def clear_current_selection_if_present
@@ -69,7 +69,7 @@ module QA
             raise QA::Page::Base::ElementNotFound, %(Couldn't find option named "#{item_text}")
           end
 
-          find('li.gl-new-dropdown-item span:nth-child(2)', text: item_text, exact_text: true).click
+          find('li.gl-dropdown-item span:nth-child(2)', text: item_text, exact_text: true).click
         end
 
         def expand_select_list
@@ -90,7 +90,7 @@ module QA
         def dropdown_open?
           return super if use_select2?
 
-          has_css?('ul.gl-new-dropdown-contents', wait: 1)
+          has_css?('ul.gl-dropdown-contents', wait: 1)
         end
 
         private

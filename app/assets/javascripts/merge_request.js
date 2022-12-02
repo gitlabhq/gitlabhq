@@ -173,7 +173,7 @@ MergeRequest.toggleDraftStatus = function (title, isReady) {
       );
 
       draftToggle.setAttribute('href', url);
-      draftToggle.querySelector('.gl-new-dropdown-item-text-wrapper').textContent = isReady
+      draftToggle.querySelector('.gl-dropdown-item-text-wrapper').textContent = isReady
         ? __('Mark as draft')
         : __('Mark as ready');
     });

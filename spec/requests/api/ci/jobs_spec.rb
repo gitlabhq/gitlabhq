@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Jobs do
+RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
 
@@ -325,7 +325,7 @@ RSpec.describe API::Ci::Jobs do
     context 'authorized user' do
       it 'returns project jobs' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to include_pagination_headers
+        expect(response).to include_limited_pagination_headers
         expect(json_response).to be_an Array
       end
 

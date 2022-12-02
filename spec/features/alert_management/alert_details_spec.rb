@@ -61,7 +61,7 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
         expect(alert_status).to have_content('Triggered')
 
         find('.gl-button').click
-        find('.gl-new-dropdown-item', text: 'Acknowledged').click
+        find('.gl-dropdown-item', text: 'Acknowledged').click
 
         wait_for_requests
 

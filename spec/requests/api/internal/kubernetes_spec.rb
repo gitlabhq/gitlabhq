@@ -103,15 +103,19 @@ RSpec.describe API::Internal::Kubernetes do
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'tracks events' do
+      it 'tracks events and unique events', :aggregate_failures do
+        request_count = 2
         counters = { gitops_sync: 10, k8s_api_proxy_request: 5 }
-        unique_counters = { agent_users_using_ci_tunnel: [10] }
+        unique_counters = { agent_users_using_ci_tunnel: [10, 999, 777, 10] }
         expected_counters = {
-          kubernetes_agent_gitops_sync: counters[:gitops_sync],
-          kubernetes_agent_k8s_api_proxy_request: counters[:k8s_api_proxy_request]
+          kubernetes_agent_gitops_sync: request_count * counters[:gitops_sync],
+          kubernetes_agent_k8s_api_proxy_request: request_count * counters[:k8s_api_proxy_request]
         }
+        expected_hll_count = unique_counters[:agent_users_using_ci_tunnel].uniq.count
 
-        send_request(params: { counters: counters, unique_counters: unique_counters })
+        request_count.times do
+          send_request(params: { counters: counters, unique_counters: unique_counters })
+        end
 
         expect(Gitlab::UsageDataCounters::KubernetesAgentCounter.totals).to eq(expected_counters)
 
@@ -121,7 +125,7 @@ RSpec.describe API::Internal::Kubernetes do
               event_names: 'agent_users_using_ci_tunnel',
               start_date: Date.current, end_date: Date.current + 10
             )
-        ).to eq(1)
+        ).to eq(expected_hll_count)
       end
     end
   end

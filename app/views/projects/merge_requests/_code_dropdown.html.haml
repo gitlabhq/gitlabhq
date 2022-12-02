@@ -1,39 +1,39 @@
-.gl-md-ml-3.dropdown.gl-new-dropdown{ class: "gl-display-none! gl-md-display-flex!" }
+.gl-md-ml-3.dropdown.gl-dropdown{ class: "gl-display-none! gl-md-display-flex!" }
   #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
   = button_tag type: 'button', class: "btn dropdown-toggle btn-confirm gl-button gl-dropdown-toggle", data: { toggle: 'dropdown', qa_selector: 'mr_code_dropdown' } do
-    %span.gl-new-dropdown-button-text= _('Code')
+    %span.gl-dropdown-button-text= _('Code')
     = sprite_icon "chevron-down", size: 16, css_class: "dropdown-icon gl-icon gl-ml-2 gl-mr-0!"
   .dropdown-menu.dropdown-menu-right
-    .gl-new-dropdown-inner
-      .gl-new-dropdown-contents
+    .gl-dropdown-inner
+      .gl-dropdown-contents
         %ul
-          %li.gl-new-dropdown-section-header
+          %li.gl-dropdown-section-header
             %header.dropdown-header
               = _('Review changes')
-          %li.gl-new-dropdown-item
+          %li.gl-dropdown-item
             %button.dropdown-item.js-check-out-modal-trigger{ type: 'button' }
-              .gl-new-dropdown-item-text-wrapper
+              .gl-dropdown-item-text-wrapper
                 = _('Check out branch')
           - if current_user
-            %li.gl-new-dropdown-item
+            %li.gl-dropdown-item
               = link_to ide_merge_request_path(@merge_request), class: 'dropdown-item', target: '_blank', data: { qa_selector: 'open_in_web_ide_button' } do
-                .gl-new-dropdown-item-text-wrapper
+                .gl-dropdown-item-text-wrapper
                   = _('Open in Web IDE')
           - if Gitlab::CurrentSettings.gitpod_enabled && current_user&.gitpod_enabled
-            %li.gl-new-dropdown-item
+            %li.gl-dropdown-item
               = link_to "#{Gitlab::CurrentSettings.gitpod_url}##{merge_request_url(@merge_request)}", target: '_blank', class: 'dropdown-item' do
-                .gl-new-dropdown-item-text-wrapper
+                .gl-dropdown-item-text-wrapper
                   = _('Open in Gitpod')
-          %li.gl-new-dropdown-divider
+          %li.gl-dropdown-divider
             %hr.dropdown-divider
-          %li.gl-new-dropdown-section-header
+          %li.gl-dropdown-section-header
             %header.dropdown-header
               = _('Download')
-          %li.gl-new-dropdown-item
+          %li.gl-dropdown-item
             = link_to merge_request_path(@merge_request, format: :patch), class: 'dropdown-item', download: '', data: { qa_selector: 'download_email_patches_menu_item' } do
-              .gl-new-dropdown-item-text-wrapper
+              .gl-dropdown-item-text-wrapper
                 = _('Email patches')
-          %li.gl-new-dropdown-item
+          %li.gl-dropdown-item
             = link_to merge_request_path(@merge_request, format: :diff), class: 'dropdown-item', download: '', data: { qa_selector: 'download_plain_diff_menu_item' } do
-              .gl-new-dropdown-item-text-wrapper
+              .gl-dropdown-item-text-wrapper
                 = _('Plain diff')

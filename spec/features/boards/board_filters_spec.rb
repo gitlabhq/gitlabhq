@@ -191,7 +191,7 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
   end
 
   def expect_filtered_search_dropdown_results(filter_dropdown, count)
-    expect(filter_dropdown).to have_selector('.gl-new-dropdown-item', count: count)
+    expect(filter_dropdown).to have_selector('.gl-dropdown-item', count: count)
   end
 
   def visit_project_board

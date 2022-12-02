@@ -162,7 +162,7 @@ export default {
         />
       </li>
       <template v-if="isMergeTrain">
-        <li class="gl-new-dropdown-divider" role="presentation">
+        <li class="gl-dropdown-divider" role="presentation">
           <hr role="separator" aria-orientation="horizontal" class="dropdown-divider" />
         </li>
         <li>

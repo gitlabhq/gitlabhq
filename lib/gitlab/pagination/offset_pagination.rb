@@ -11,15 +11,15 @@ module Gitlab
         @request_context = request_context
       end
 
-      def paginate(relation, exclude_total_headers: false, skip_default_order: false)
-        paginate_with_limit_optimization(add_default_order(relation, skip_default_order: skip_default_order)).tap do |data|
+      def paginate(relation, exclude_total_headers: false, skip_default_order: false, without_count: false)
+        paginate_with_limit_optimization(add_default_order(relation, skip_default_order: skip_default_order), without_count: without_count).tap do |data|
           add_pagination_headers(data, exclude_total_headers)
         end
       end
 
       private
 
-      def paginate_with_limit_optimization(relation)
+      def paginate_with_limit_optimization(relation, without_count:)
         pagination_data = if needs_pagination?(relation)
                             relation.page(params[:page]).per(params[:per_page])
                           else
@@ -28,8 +28,7 @@ module Gitlab
 
         return pagination_data unless pagination_data.is_a?(ActiveRecord::Relation)
 
-        limited_total_count = pagination_data.total_count_with_limit
-        if limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
+        if without_count || exceeeds_count?(pagination_data)
           # The call to `total_count_with_limit` memoizes `@arel` because of a call to `references_eager_loaded_tables?`
           # We need to call `reset` because `without_count` relies on `@arel` being unmemoized
           pagination_data.reset.without_count
@@ -77,6 +76,12 @@ module Gitlab
 
         # Ensure there is in total at least 1 page
         [paginated_data.total_pages, 1].max
+      end
+
+      def exceeeds_count?(paginated_data)
+        limited_total_count = paginated_data.total_count_with_limit
+
+        limited_total_count > Kaminari::ActiveRecordRelationMethods::MAX_COUNT_LIMIT
       end
     end
   end

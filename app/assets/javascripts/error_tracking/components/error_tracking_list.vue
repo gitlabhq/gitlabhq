@@ -357,7 +357,7 @@ export default {
           >
             <span class="d-flex">
               <gl-icon
-                class="gl-new-dropdown-item-check-icon"
+                class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentStatusFilter(status) }"
                 name="mobile-issue-close"
               />
@@ -374,7 +374,7 @@ export default {
           >
             <span class="d-flex">
               <gl-icon
-                class="gl-new-dropdown-item-check-icon"
+                class="gl-dropdown-item-check-icon"
                 :class="{ invisible: !isCurrentSortField(field) }"
                 name="mobile-issue-close"
               />

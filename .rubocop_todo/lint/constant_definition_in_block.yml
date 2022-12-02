@@ -1,8 +1,6 @@
 ---
 Lint/ConstantDefinitionInBlock:
-  # Offense count: 111
-  # Temporarily disabled due to too many offenses
-  Enabled: false
+  Details: grace period
   Exclude:
     - 'app/models/concerns/ignorable_columns.rb'
     - 'app/models/concerns/partitioned_table.rb'

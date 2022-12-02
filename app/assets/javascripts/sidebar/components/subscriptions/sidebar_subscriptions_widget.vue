@@ -182,7 +182,7 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown-form v-if="isMergeRequest" class="gl-new-dropdown-item">
+  <gl-dropdown-form v-if="isMergeRequest" class="gl-dropdown-item">
     <div class="gl-px-5 gl-pb-2 gl-pt-1">
       <gl-toggle
         :value="subscribed"

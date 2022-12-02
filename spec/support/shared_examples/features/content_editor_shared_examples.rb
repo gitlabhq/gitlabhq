@@ -327,7 +327,7 @@ RSpec.shared_examples 'edits content using the content editor' do
     end
 
     def dropdown_scroll_top
-      evaluate_script("document.querySelector('#{suggestions_dropdown} .gl-new-dropdown-inner').scrollTop")
+      evaluate_script("document.querySelector('#{suggestions_dropdown} .gl-dropdown-inner').scrollTop")
     end
   end
 end

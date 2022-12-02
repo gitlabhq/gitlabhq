@@ -17,8 +17,12 @@ RSpec.describe PipelineScheduleWorker do
   before do
     stub_application_setting(auto_devops_enabled: false)
     stub_ci_pipeline_to_return_yaml_file
+  end
 
-    pipeline_schedule.update_column(:next_run_at, 1.day.ago)
+  around do |example|
+    travel_to(pipeline_schedule.next_run_at + 1.hour) do
+      example.run
+    end
   end
 
   context 'when the schedule is runnable by the user' do
@@ -26,16 +30,22 @@ RSpec.describe PipelineScheduleWorker do
       project.add_maintainer(user)
     end
 
-    context 'when there is a scheduled pipeline within next_run_at' do
+    context 'when there is a scheduled pipeline within next_run_at', :sidekiq_inline do
       shared_examples 'successful scheduling' do
-        it 'creates a new pipeline', :sidekiq_might_not_need_inline do
+        it 'creates a new pipeline' do
           expect { subject }.to change { project.ci_pipelines.count }.by(1)
-          expect(Ci::Pipeline.last).to be_schedule
+          last_pipeline = project.ci_pipelines.last
 
-          pipeline_schedule.reload
-          expect(pipeline_schedule.next_run_at).to be > Time.current
-          expect(pipeline_schedule).to eq(project.ci_pipelines.last.pipeline_schedule)
-          expect(pipeline_schedule).to be_active
+          expect(last_pipeline).to be_schedule
+          expect(last_pipeline.pipeline_schedule).to eq(pipeline_schedule)
+        end
+
+        it 'updates next_run_at' do
+          expect { subject }.to change { pipeline_schedule.reload.next_run_at }.by(1.day)
+        end
+
+        it 'does not change active status' do
+          expect { subject }.not_to change { pipeline_schedule.reload.active? }.from(true)
         end
       end
 

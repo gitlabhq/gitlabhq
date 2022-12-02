@@ -999,7 +999,7 @@ $tabs-holder-z-index: 250;
     max-width: 650px;
     max-height: calc(100vh - 50px);
 
-    .gl-new-dropdown-inner {
+    .gl-dropdown-inner {
       max-height: none !important;
     }
 
@@ -1034,7 +1034,7 @@ $tabs-holder-z-index: 250;
     }
   }
 
-  .gl-new-dropdown-contents {
+  .gl-dropdown-contents {
     padding: $gl-spacing-scale-4 !important;
   }
 
