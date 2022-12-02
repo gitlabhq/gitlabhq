@@ -269,6 +269,10 @@ describe('Board list component', () => {
       it('Draggable is not used', () => {
         expect(findDraggable().exists()).toBe(false);
       });
+
+      it('Board card move to position is not visible', () => {
+        expect(findMoveToPositionComponent().exists()).toBe(false);
+      });
     });
   });
 });

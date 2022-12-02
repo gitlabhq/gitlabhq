@@ -317,7 +317,7 @@ export default {
       >
         <!-- TODO: remove the condition when https://gitlab.com/gitlab-org/gitlab/-/issues/377862 is resolved -->
         <board-card-move-to-position
-          v-if="!isEpicBoard"
+          v-if="!isEpicBoard && !disabled"
           :item="item"
           :index="index"
           :list="list"

@@ -33,6 +33,8 @@ metadata:
     description: Operations related to container registry events
   - name: dashboard_annotations
     description: Operations related to dashboard annotations
+  - name: debian_distribution
+    description: Operations related to Debian Linux distributions
   - name: dependency_proxy
     description: Operations to manage dependency proxy for a groups
   - name: deploy_keys

@@ -6,7 +6,7 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, FLASH_TYPES } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
@@ -18,9 +18,11 @@ import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, joinPaths } from '~/lib/utils/url_utility';
 import {
-  OPTIONS_NONE_ANY,
   FILTERED_SEARCH_TERM,
   OPERATORS_IS,
+  OPERATORS_IS_NOT,
+  OPERATORS_IS_NOT_OR,
+  OPTIONS_NONE_ANY,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -31,8 +33,6 @@ import {
   TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
   TOKEN_TITLE_TYPE,
-  OPERATORS_IS_NOT_OR,
-  OPERATORS_IS_NOT,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_CONFIDENTIAL,
@@ -62,11 +62,9 @@ import {
   PARAM_SORT,
   PARAM_STATE,
   RELATIVE_POSITION_ASC,
-  TYPE_TOKEN_TASK_OPTION,
   UPDATED_DESC,
   urlSortParams,
 } from '../constants';
-
 import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
@@ -253,7 +251,7 @@ export default {
       return [...defaultWorkItemTypes, ...this.eeWorkItemTypes];
     },
     typeTokenOptions() {
-      return [...defaultTypeTokenOptions, TYPE_TOKEN_TASK_OPTION, ...this.eeTypeTokenOptions];
+      return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
     },
     hasOrFeature() {
       return this.glFeatures.orIssuableQueries;
@@ -435,7 +433,6 @@ export default {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
     showPageSizeControls() {
-      /** only show page size controls when the tab count is greater than the default/minimum page size control i.e 20 in this case */
       return this.currentTabCount > PAGE_SIZE;
     },
     sortOptions() {
@@ -468,7 +465,7 @@ export default {
         page_before: this.pageParams.beforeCursor ?? undefined,
       };
     },
-    shouldDisableSomeFilters() {
+    shouldDisableTextSearch() {
       return this.isAnonymousSearchDisabled && !this.isSignedIn;
     },
   },
@@ -575,9 +572,11 @@ export default {
       eventHub.$emit('issuables:enableBulkEdit');
     },
     handleClickTab(state) {
-      if (this.state !== state) {
-        this.pageParams = getInitialPageParams(this.pageSize);
+      if (this.state === state) {
+        return;
       }
+
+      this.pageParams = getInitialPageParams(this.pageSize);
       this.state = state;
 
       this.$router.push({ query: this.urlParams });
@@ -585,8 +584,8 @@ export default {
     handleDismissAlert() {
       this.issuesError = null;
     },
-    handleFilter(filter) {
-      this.setFilterTokens(filter);
+    handleFilter(tokens) {
+      this.setFilterTokens(tokens);
 
       this.pageParams = getInitialPageParams(this.pageSize);
 
@@ -647,14 +646,16 @@ export default {
         });
     },
     handleSort(sortKey) {
+      if (this.sortKey === sortKey) {
+        return;
+      }
+
       if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
         this.showIssueRepositioningMessage();
         return;
       }
 
-      if (this.sortKey !== sortKey) {
-        this.pageParams = getInitialPageParams(this.pageSize);
-      }
+      this.pageParams = getInitialPageParams(this.pageSize);
       this.sortKey = sortKey;
 
       if (this.isSignedIn) {
@@ -678,36 +679,26 @@ export default {
           Sentry.captureException(error);
         });
     },
-    setFilterTokens(filtersArg) {
-      const filters = this.removeDisabledSearchTerms(filtersArg);
+    setFilterTokens(tokens) {
+      this.filterTokens = this.removeDisabledSearchTerms(tokens);
 
-      this.filterTokens = filters;
-
-      // If we filtered something out, let's show a warning message
-      if (filters.length < filtersArg.length) {
+      if (this.filterTokens.length < tokens.length) {
         this.showAnonymousSearchingMessage();
       }
     },
     removeDisabledSearchTerms(filters) {
-      // If we shouldn't disable anything, let's return the same thing
-      if (!this.shouldDisableSomeFilters) {
-        return filters;
-      }
-
-      const filtersWithoutSearchTerms = filters.filter(
-        (token) => !(token.type === FILTERED_SEARCH_TERM && token.value?.data),
-      );
-
-      return filtersWithoutSearchTerms;
+      return this.shouldDisableTextSearch
+        ? filters.filter((token) => !(token.type === FILTERED_SEARCH_TERM && token.value?.data))
+        : filters;
     },
     showAnonymousSearchingMessage() {
-      createFlash({
+      createAlert({
         message: this.$options.i18n.anonymousSearchingMessage,
         type: FLASH_TYPES.NOTICE,
       });
     },
     showIssueRepositioningMessage() {
-      createFlash({
+      createAlert({
         message: this.$options.i18n.issueRepositioningMessage,
         type: FLASH_TYPES.NOTICE,
       });
@@ -716,11 +707,8 @@ export default {
       this.showBulkEditSidebar = showBulkEditSidebar;
     },
     handlePageSizeChange(newPageSize) {
-      /** make sure the page number is preserved so that the current context is not lost* */
-      const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
-      const pageNumberSize = lastPageSize ? 'lastPageSize' : 'firstPageSize';
-      /** depending upon what page or page size we are dynamically set pageParams * */
-      this.pageParams[pageNumberSize] = newPageSize;
+      const pageParam = getParameterByName(PARAM_LAST_PAGE_SIZE) ? 'lastPageSize' : 'firstPageSize';
+      this.pageParams[pageParam] = newPageSize;
       this.pageSize = newPageSize;
       scrollUp();
 
@@ -729,16 +717,14 @@ export default {
     updateData(sortValue) {
       const firstPageSize = getParameterByName(PARAM_FIRST_PAGE_SIZE);
       const lastPageSize = getParameterByName(PARAM_LAST_PAGE_SIZE);
-      const pageAfter = getParameterByName(PARAM_PAGE_AFTER);
-      const pageBefore = getParameterByName(PARAM_PAGE_BEFORE);
       const state = getParameterByName(PARAM_STATE);
 
       const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
       const dashboardSortKey = getSortKey(sortValue);
       const graphQLSortKey = isSortKey(sortValue?.toUpperCase()) && sortValue.toUpperCase();
 
-      // The initial sort is an old enum value when it is saved on the dashboard issues page.
-      // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
+      // The initial sort is an old enum value when it is saved on the Haml dashboard issues page.
+      // The initial sort is a GraphQL enum value when it is saved on the Vue group/project issues page.
       let sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
 
       if (this.isIssueRepositioningDisabled && sortKey === RELATIVE_POSITION_ASC) {
@@ -746,15 +732,15 @@ export default {
         sortKey = defaultSortKey;
       }
 
-      this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.setFilterTokens(getFilterTokens(window.location.search));
 
+      this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       this.pageParams = getInitialPageParams(
         this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
         isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
-        pageAfter,
-        pageBefore,
+        getParameterByName(PARAM_PAGE_AFTER),
+        getParameterByName(PARAM_PAGE_BEFORE),
       );
       this.sortKey = sortKey;
       this.state = state || IssuableStates.Opened;

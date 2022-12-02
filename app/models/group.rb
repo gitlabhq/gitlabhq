@@ -119,7 +119,7 @@ class Group < Namespace
 
   has_many :group_callouts, class_name: 'Users::GroupCallout', foreign_key: :group_id
 
-  has_many :protected_branches, inverse_of: :group
+  has_many :protected_branches, inverse_of: :group, foreign_key: :namespace_id
 
   has_one :group_feature, inverse_of: :group, class_name: 'Groups::FeatureSetting'
 

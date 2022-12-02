@@ -122,3 +122,20 @@ cache-untracked-false:
   script: test
   cache:
     untracked: false
+
+# valid cache:policy
+cache-policy-push:
+  script: echo "This job uses a cache."
+  cache:
+    policy: push
+
+cache-policy-pull:
+  script: echo "This job uses a cache."
+  cache:
+    policy: pull
+
+cache-no-policy:
+  script: echo "This job uses a cache."
+  cache:
+    paths:
+      - binaries/

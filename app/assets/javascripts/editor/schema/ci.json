@@ -202,25 +202,11 @@
         "when": {
           "markdownDescription": "Configure when artifacts are uploaded depended on job status. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#artifactswhen).",
           "default": "on_success",
-          "oneOf": [
-            {
-              "enum": [
-                "on_success"
-              ],
-              "description": "Upload artifacts only when the job succeeds (this is the default)."
-            },
-            {
-              "enum": [
-                "on_failure"
-              ],
-              "description": "Upload artifacts only when the job fails."
-            },
-            {
-              "enum": [
-                "always"
-              ],
-              "description": "Upload artifacts regardless of job status."
-            }
+          "type": "string",
+          "enum": [
+            "on_success",
+            "on_failure",
+            "always"
           ]
         },
         "expire_in": {
@@ -989,6 +975,7 @@
           "default": false
         },
         "when": {
+          "type": "string",
           "markdownDescription": "Defines when to save the cache, based on the status of the job. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cachewhen).",
           "default": "on_success",
           "enum": [

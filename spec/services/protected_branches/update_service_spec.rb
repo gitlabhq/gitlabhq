@@ -3,54 +3,64 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranches::UpdateService do
-  let_it_be_with_reload(:project) { create(:project) }
+  shared_examples 'execute with entity' do
+    let(:params) { { name: new_name } }
 
-  let!(:protected_branch) { create(:protected_branch, project: project) }
-  let(:user) { project.first_owner }
-  let(:params) { { name: new_name } }
+    subject(:service) { described_class.new(entity, user, params) }
 
-  subject(:service) { described_class.new(project, user, params) }
-
-  describe '#execute' do
-    let(:new_name) { 'new protected branch name' }
-    let(:result) { service.execute(protected_branch) }
-
-    it 'updates a protected branch' do
-      expect(result.reload.name).to eq(params[:name])
-    end
-
-    it 'refreshes the cache' do
-      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
-        expect(cache_service).to receive(:refresh)
-      end
-
-      result
-    end
-
-    context 'when updating name of a protected branch to one that contains HTML tags' do
-      let(:new_name) { 'foo<b>bar<\b>' }
+    describe '#execute' do
+      let(:new_name) { 'new protected branch name' }
       let(:result) { service.execute(protected_branch) }
 
       it 'updates a protected branch' do
-        expect(result.reload.name).to eq(new_name)
+        expect(result.reload.name).to eq(params[:name])
+      end
+
+      it 'refreshes the cache' do
+        expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+          expect(cache_service).to receive(:refresh)
+        end
+
+        result
+      end
+
+      context 'when updating name of a protected branch to one that contains HTML tags' do
+        let(:new_name) { 'foo<b>bar<\b>' }
+        let(:result) { service.execute(protected_branch) }
+
+        it 'updates a protected branch' do
+          expect(result.reload.name).to eq(new_name)
+        end
+      end
+
+      context 'when a policy restricts rule update' do
+        it "prevents update of the protected branch rule" do
+          disallow(:update_protected_branch, protected_branch)
+
+          expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
+        end
       end
     end
+  end
 
-    context 'without admin_project permissions' do
-      let(:user) { create(:user) }
+  context 'with entity project' do
+    let_it_be_with_reload(:entity) { create(:project) }
+    let!(:protected_branch) { create(:protected_branch, project: entity) }
+    let(:user) { entity.first_owner }
 
-      it "raises error" do
-        expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
-      end
+    it_behaves_like 'execute with entity'
+  end
+
+  context 'with entity group' do
+    let_it_be_with_reload(:entity) { create(:group) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let!(:protected_branch) { create(:protected_branch, group: entity, project: nil) }
+
+    before do
+      allow(Ability).to receive(:allowed?).with(user, :update_protected_branch, protected_branch).and_return(true)
     end
 
-    context 'when a policy restricts rule update' do
-      it "prevents update of the protected branch rule" do
-        disallow(:update_protected_branch, protected_branch)
-
-        expect { service.execute(protected_branch) }.to raise_error(Gitlab::Access::AccessDeniedError)
-      end
-    end
+    it_behaves_like 'execute with entity'
   end
 
   def disallow(ability, protected_branch)

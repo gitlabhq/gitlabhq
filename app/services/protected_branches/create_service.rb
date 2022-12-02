@@ -23,9 +23,9 @@ module ProtectedBranches
     end
 
     def protected_branch
-      @protected_branch ||= project.protected_branches.new(params)
+      @protected_branch ||= project_or_group.protected_branches.new(params)
     end
   end
 end
 
-ProtectedBranches::CreateService.prepend_mod_with('ProtectedBranches::CreateService')
+ProtectedBranches::CreateService.prepend_mod

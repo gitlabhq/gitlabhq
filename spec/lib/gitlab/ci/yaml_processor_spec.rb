@@ -2946,7 +2946,7 @@ module Gitlab
         context 'returns errors if job artifacts:when is not an a predefined value' do
           let(:config) { YAML.dump({ stages: %w(build test), rspec: { script: "test", artifacts: { when: 1 } } }) }
 
-          it_behaves_like 'returns errors', 'jobs:rspec:artifacts when should be on_success, on_failure or always'
+          it_behaves_like 'returns errors', 'jobs:rspec:artifacts when should be one of: on_success, on_failure, always'
         end
 
         context 'returns errors if job artifacts:expire_in is not an a string' do

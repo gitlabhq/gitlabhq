@@ -16,3 +16,16 @@ cyclonedx not an array or string:
         paths:
           - foo
           - bar
+
+# invalid artifacts:when
+artifacts-when-unknown:
+  artifacts:
+    when: unknown
+
+artifacts-when-array:
+  artifacts:
+    when: [always]
+
+artifacts-when-boolean:
+  artifacts:
+    when: true

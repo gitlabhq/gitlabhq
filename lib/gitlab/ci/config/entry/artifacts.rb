@@ -12,6 +12,7 @@ module Gitlab
           include ::Gitlab::Config::Entry::Validatable
           include ::Gitlab::Config::Entry::Attributable
 
+          ALLOWED_WHEN = %w[on_success on_failure always].freeze
           ALLOWED_KEYS = %i[name untracked paths reports when expire_in expose_as exclude public].freeze
           EXPOSE_AS_REGEX = /\A\w[-\w ]*\z/.freeze
           EXPOSE_AS_ERROR_MESSAGE = "can contain only letters, digits, '-', '_' and spaces"
@@ -38,10 +39,10 @@ module Gitlab
               validates :expose_as, format: { with: EXPOSE_AS_REGEX, message: EXPOSE_AS_ERROR_MESSAGE }, if: :expose_as_present?
               validates :exclude, array_of_strings: true
               validates :reports, type: Hash
-              validates :when,
-                inclusion: { in: %w[on_success on_failure always],
-                             message: 'should be on_success, on_failure ' \
-                                      'or always' }
+              validates :when, type: String, inclusion: {
+                in: ALLOWED_WHEN,
+                message: "should be one of: #{ALLOWED_WHEN.join(', ')}"
+              }
               validates :expire_in, duration: { parser: ::Gitlab::Ci::Build::DurationParser }
             end
           end

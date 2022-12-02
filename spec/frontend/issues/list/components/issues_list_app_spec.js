@@ -21,7 +21,7 @@ import {
   setSortPreferenceMutationResponseWithErrors,
   urlParams,
 } from 'jest/issues/list/mock_data';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, FLASH_TYPES } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -35,6 +35,7 @@ import {
   CREATED_DESC,
   RELATIVE_POSITION,
   RELATIVE_POSITION_ASC,
+  UPDATED_DESC,
   urlSortParams,
 } from '~/issues/list/constants';
 import eventHub from '~/issues/list/eventhub';
@@ -399,7 +400,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.issueRepositioningMessage,
             type: FLASH_TYPES.NOTICE,
           });
@@ -439,7 +440,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.anonymousSearchingMessage,
             type: FLASH_TYPES.NOTICE,
           });
@@ -796,7 +797,11 @@ describe('CE IssuesListApp component', () => {
       it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',
         async (sortKey) => {
-          wrapper = mountComponent();
+          // Ensure initial sort key is different so we can trigger an update when emitting a sort key
+          wrapper =
+            sortKey === CREATED_DESC
+              ? mountComponent({ provide: { initialSort: UPDATED_DESC } })
+              : mountComponent();
           router.push = jest.fn();
 
           findIssuableList().vm.$emit('sort', sortKey);
@@ -826,7 +831,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user that manual reordering is disabled', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.issueRepositioningMessage,
             type: FLASH_TYPES.NOTICE,
           });
@@ -838,9 +843,9 @@ describe('CE IssuesListApp component', () => {
           const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
           wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
 
-          findIssuableList().vm.$emit('sort', CREATED_DESC);
+          findIssuableList().vm.$emit('sort', UPDATED_DESC);
 
-          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: CREATED_DESC } });
+          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
         });
 
         it('captures error when mutation response has errors', async () => {
@@ -849,7 +854,7 @@ describe('CE IssuesListApp component', () => {
             .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
           wrapper = mountComponent({ sortPreferenceMutationResponse: mutationMock });
 
-          findIssuableList().vm.$emit('sort', CREATED_DESC);
+          findIssuableList().vm.$emit('sort', UPDATED_DESC);
           await waitForPromises();
 
           expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
@@ -913,7 +918,7 @@ describe('CE IssuesListApp component', () => {
         });
 
         it('shows an alert to tell the user they must be signed in to search', () => {
-          expect(createFlash).toHaveBeenCalledWith({
+          expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.anonymousSearchingMessage,
             type: FLASH_TYPES.NOTICE,
           });

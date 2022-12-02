@@ -23,3 +23,13 @@ cylonedx mixed list of string paths and globs:
       cyclonedx:
         - ./foo
         - "bar/*.baz"
+
+# valid artifacts:when
+artifacts-when-on-failure:
+  artifacts:
+    when: on_failure
+
+artifacts-no-when:
+  artifacts:
+    paths:
+      - binaries/

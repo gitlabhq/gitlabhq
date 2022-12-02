@@ -51,12 +51,39 @@ cache-untracked-string:
   cache:
     untracked: 'true'
 
-when_integer:
+# invalid cache:when
+cache-when-integer:
   script: echo "This job uses a cache."
   cache:
     when: 0
 
-when_not_reserved_keyword:
+cache-when-array:
+  script: echo "This job uses a cache."
+  cache:
+    when: [always]
+
+cache-when-boolean:
+  script: echo "This job uses a cache."
+  cache:
+    when: true
+
+cache-when-never:
   script: echo "This job uses a cache."
   cache:
     when: 'never'
+
+# invalid cache:policy
+cache-policy-array:
+  script: echo "This job uses a cache."
+  cache:
+    policy: [push]
+
+cache-policy-boolean:
+  script: echo "This job uses a cache."
+  cache:
+    policy: true
+
+cache-when-unknown:
+  script: echo "This job uses a cache."
+  cache:
+    policy: unknown

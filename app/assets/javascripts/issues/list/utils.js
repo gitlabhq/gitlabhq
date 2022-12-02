@@ -19,8 +19,8 @@ import {
   API_PARAM,
   BLOCKING_ISSUES_ASC,
   BLOCKING_ISSUES_DESC,
-  CLOSED_ASC,
-  CLOSED_DESC,
+  CLOSED_AT_ASC,
+  CLOSED_AT_DESC,
   CREATED_ASC,
   CREATED_DESC,
   DUE_DATE_ASC,
@@ -104,8 +104,8 @@ export const getSortOptions = ({
       id: 4,
       title: __('Closed date'),
       sortDirection: {
-        ascending: CLOSED_ASC,
-        descending: CLOSED_DESC,
+        ascending: CLOSED_AT_ASC,
+        descending: CLOSED_AT_DESC,
       },
     },
     {
@@ -289,7 +289,7 @@ export const convertToApiParams = (filterTokens) => {
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .forEach((token) => {
       const filterType = getFilterType(token);
-      const field = filters[token.type][API_PARAM][filterType];
+      const apiField = filters[token.type][API_PARAM][filterType];
       let obj;
       if (token.value.operator === OPERATOR_NOT) {
         obj = not;
@@ -300,7 +300,7 @@ export const convertToApiParams = (filterTokens) => {
       }
       const data = formatData(token);
       Object.assign(obj, {
-        [field]: obj[field] ? [obj[field], data].flat() : data,
+        [apiField]: obj[apiField] ? [obj[apiField], data].flat() : data,
       });
     });
 
@@ -320,9 +320,9 @@ export const convertToUrlParams = (filterTokens) =>
     .filter((token) => token.type !== FILTERED_SEARCH_TERM)
     .reduce((acc, token) => {
       const filterType = getFilterType(token);
-      const param = filters[token.type][URL_PARAM][token.value.operator]?.[filterType];
+      const urlParam = filters[token.type][URL_PARAM][token.value.operator]?.[filterType];
       return Object.assign(acc, {
-        [param]: acc[param] ? [acc[param], token.value.data].flat() : token.value.data,
+        [urlParam]: acc[urlParam] ? [acc[urlParam], token.value.data].flat() : token.value.data,
       });
     }, {});
 

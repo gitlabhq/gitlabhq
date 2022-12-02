@@ -30,6 +30,50 @@ import {
   WORK_ITEM_TYPE_ENUM_TASK,
 } from '~/work_items/constants';
 
+export const ISSUE_REFERENCE = /^#\d+$/;
+export const MAX_LIST_SIZE = 10;
+export const PAGE_SIZE = 20;
+export const PARAM_ASSIGNEE_ID = 'assignee_id';
+export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
+export const PARAM_LAST_PAGE_SIZE = 'last_page_size';
+export const PARAM_PAGE_AFTER = 'page_after';
+export const PARAM_PAGE_BEFORE = 'page_before';
+export const PARAM_SORT = 'sort';
+export const PARAM_STATE = 'state';
+export const RELATIVE_POSITION = 'relative_position';
+
+export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
+export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
+export const CLOSED_AT_ASC = 'CLOSED_AT_ASC';
+export const CLOSED_AT_DESC = 'CLOSED_AT_DESC';
+export const CREATED_ASC = 'CREATED_ASC';
+export const CREATED_DESC = 'CREATED_DESC';
+export const DUE_DATE_ASC = 'DUE_DATE_ASC';
+export const DUE_DATE_DESC = 'DUE_DATE_DESC';
+export const HEALTH_STATUS_ASC = 'HEALTH_STATUS_ASC';
+export const HEALTH_STATUS_DESC = 'HEALTH_STATUS_DESC';
+export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
+export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
+export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
+export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
+export const POPULARITY_ASC = 'POPULARITY_ASC';
+export const POPULARITY_DESC = 'POPULARITY_DESC';
+export const PRIORITY_ASC = 'PRIORITY_ASC';
+export const PRIORITY_DESC = 'PRIORITY_DESC';
+export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
+export const TITLE_ASC = 'TITLE_ASC';
+export const TITLE_DESC = 'TITLE_DESC';
+export const UPDATED_ASC = 'UPDATED_ASC';
+export const UPDATED_DESC = 'UPDATED_DESC';
+export const WEIGHT_ASC = 'WEIGHT_ASC';
+export const WEIGHT_DESC = 'WEIGHT_DESC';
+
+export const API_PARAM = 'apiParam';
+export const URL_PARAM = 'urlParam';
+export const NORMAL_FILTER = 'normalFilter';
+export const SPECIAL_FILTER = 'specialFilter';
+export const ALTERNATIVE_FILTER = 'alternativeFilter';
+
 export const i18n = {
   anonymousSearchingMessage: __('You must sign in to search for specific terms.'),
   calendarLabel: __('Subscribe to calendar'),
@@ -69,44 +113,6 @@ export const i18n = {
   upvotes: __('Upvotes'),
 };
 
-export const ISSUE_REFERENCE = /^#\d+$/;
-export const MAX_LIST_SIZE = 10;
-export const PAGE_SIZE = 20;
-export const PARAM_ASSIGNEE_ID = 'assignee_id';
-export const PARAM_FIRST_PAGE_SIZE = 'first_page_size';
-export const PARAM_LAST_PAGE_SIZE = 'last_page_size';
-export const PARAM_PAGE_AFTER = 'page_after';
-export const PARAM_PAGE_BEFORE = 'page_before';
-export const PARAM_SORT = 'sort';
-export const PARAM_STATE = 'state';
-export const RELATIVE_POSITION = 'relative_position';
-
-export const BLOCKING_ISSUES_ASC = 'BLOCKING_ISSUES_ASC';
-export const BLOCKING_ISSUES_DESC = 'BLOCKING_ISSUES_DESC';
-export const CREATED_ASC = 'CREATED_ASC';
-export const CREATED_DESC = 'CREATED_DESC';
-export const DUE_DATE_ASC = 'DUE_DATE_ASC';
-export const DUE_DATE_DESC = 'DUE_DATE_DESC';
-export const HEALTH_STATUS_ASC = 'HEALTH_STATUS_ASC';
-export const HEALTH_STATUS_DESC = 'HEALTH_STATUS_DESC';
-export const LABEL_PRIORITY_ASC = 'LABEL_PRIORITY_ASC';
-export const LABEL_PRIORITY_DESC = 'LABEL_PRIORITY_DESC';
-export const MILESTONE_DUE_ASC = 'MILESTONE_DUE_ASC';
-export const MILESTONE_DUE_DESC = 'MILESTONE_DUE_DESC';
-export const POPULARITY_ASC = 'POPULARITY_ASC';
-export const POPULARITY_DESC = 'POPULARITY_DESC';
-export const PRIORITY_ASC = 'PRIORITY_ASC';
-export const PRIORITY_DESC = 'PRIORITY_DESC';
-export const RELATIVE_POSITION_ASC = 'RELATIVE_POSITION_ASC';
-export const TITLE_ASC = 'TITLE_ASC';
-export const TITLE_DESC = 'TITLE_DESC';
-export const UPDATED_ASC = 'UPDATED_ASC';
-export const UPDATED_DESC = 'UPDATED_DESC';
-export const WEIGHT_ASC = 'WEIGHT_ASC';
-export const WEIGHT_DESC = 'WEIGHT_DESC';
-export const CLOSED_ASC = 'CLOSED_AT_ASC';
-export const CLOSED_DESC = 'CLOSED_AT_DESC';
-
 export const urlSortParams = {
   [PRIORITY_ASC]: 'priority',
   [PRIORITY_DESC]: 'priority_desc',
@@ -114,8 +120,8 @@ export const urlSortParams = {
   [CREATED_DESC]: 'created_date',
   [UPDATED_ASC]: 'updated_asc',
   [UPDATED_DESC]: 'updated_desc',
-  [CLOSED_ASC]: 'closed_asc',
-  [CLOSED_DESC]: 'closed_desc',
+  [CLOSED_AT_ASC]: 'closed_asc',
+  [CLOSED_AT_DESC]: 'closed_desc',
   [MILESTONE_DUE_ASC]: 'milestone',
   [MILESTONE_DUE_DESC]: 'milestone_due_desc',
   [DUE_DATE_ASC]: 'due_date',
@@ -135,12 +141,6 @@ export const urlSortParams = {
   [BLOCKING_ISSUES_DESC]: 'blocking_issues_desc',
 };
 
-export const API_PARAM = 'apiParam';
-export const URL_PARAM = 'urlParam';
-export const NORMAL_FILTER = 'normalFilter';
-export const SPECIAL_FILTER = 'specialFilter';
-export const ALTERNATIVE_FILTER = 'alternativeFilter';
-
 export const specialFilterValues = [
   FILTER_NONE,
   FILTER_ANY,
@@ -149,7 +149,6 @@ export const specialFilterValues = [
   FILTER_STARTED,
 ];
 
-export const TYPE_TOKEN_TASK_OPTION = { icon: 'issue-type-task', title: 'task', value: 'task' };
 export const TYPE_TOKEN_OBJECTIVE_OPTION = {
   icon: 'issue-type-objective',
   title: 'objective',
@@ -169,6 +168,7 @@ export const defaultTypeTokenOptions = [
   { icon: 'issue-type-issue', title: 'issue', value: 'issue' },
   { icon: 'issue-type-incident', title: 'incident', value: 'incident' },
   { icon: 'issue-type-test-case', title: 'test_case', value: 'test_case' },
+  { icon: 'issue-type-task', title: 'task', value: 'task' },
 ];
 
 export const filters = {

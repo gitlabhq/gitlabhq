@@ -19,4 +19,4 @@ module ProtectedBranches
   end
 end
 
-ProtectedBranches::UpdateService.prepend_mod_with('ProtectedBranches::UpdateService')
+ProtectedBranches::UpdateService.prepend_mod

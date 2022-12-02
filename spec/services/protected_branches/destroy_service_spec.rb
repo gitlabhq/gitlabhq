@@ -3,37 +3,54 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranches::DestroyService do
-  let_it_be_with_reload(:project) { create(:project) }
+  shared_examples 'execute with entity' do
+    subject(:service) { described_class.new(entity, user) }
 
-  let!(:protected_branch) { create(:protected_branch, project: project) }
-  let(:user) { project.first_owner }
+    describe '#execute' do
+      it 'destroys a protected branch' do
+        service.execute(protected_branch)
 
-  subject(:service) { described_class.new(project, user) }
-
-  describe '#execute' do
-    it 'destroys a protected branch' do
-      service.execute(protected_branch)
-
-      expect(protected_branch).to be_destroyed
-    end
-
-    it 'refreshes the cache' do
-      expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
-        expect(cache_service).to receive(:refresh)
+        expect(protected_branch).to be_destroyed
       end
 
-      service.execute(protected_branch)
-    end
+      it 'refreshes the cache' do
+        expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
+          expect(cache_service).to receive(:refresh)
+        end
 
-    context 'when a policy restricts rule deletion' do
-      it "prevents deletion of the protected branch rule" do
-        disallow(:destroy_protected_branch, protected_branch)
+        service.execute(protected_branch)
+      end
 
-        expect do
-          service.execute(protected_branch)
-        end.to raise_error(Gitlab::Access::AccessDeniedError)
+      context 'when a policy restricts rule deletion' do
+        it "prevents deletion of the protected branch rule" do
+          disallow(:destroy_protected_branch, protected_branch)
+
+          expect do
+            service.execute(protected_branch)
+          end.to raise_error(Gitlab::Access::AccessDeniedError)
+        end
       end
     end
+  end
+
+  context 'with entity project' do
+    let_it_be_with_reload(:entity) { create(:project) }
+    let!(:protected_branch) { create(:protected_branch, project: entity) }
+    let(:user) { entity.first_owner }
+
+    it_behaves_like 'execute with entity'
+  end
+
+  context 'with entity group' do
+    let_it_be_with_reload(:entity) { create(:group) }
+    let_it_be_with_reload(:user) { create(:user) }
+    let!(:protected_branch) { create(:protected_branch, group: entity, project: nil) }
+
+    before do
+      allow(Ability).to receive(:allowed?).with(user, :destroy_protected_branch, protected_branch).and_return(true)
+    end
+
+    it_behaves_like 'execute with entity'
   end
 
   def disallow(ability, protected_branch)

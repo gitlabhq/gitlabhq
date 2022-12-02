@@ -209,6 +209,16 @@ RSpec.describe Gitlab::Workhorse do
 
   describe '.git_http_ok' do
     let(:user) { create(:user) }
+    let(:gitaly_params) do
+      {
+        GitalyServer: {
+          call_metadata: call_metadata,
+          address: Gitlab::GitalyClient.address('default'),
+          token: Gitlab::GitalyClient.token('default')
+        }
+      }
+    end
+
     let(:repo_path) { 'ignored but not allowed to be empty in gitlab-workhorse' }
     let(:action) { 'info_refs' }
     let(:params) do
@@ -246,100 +256,79 @@ RSpec.describe Gitlab::Workhorse do
       it { expect(subject).to include(params) }
     end
 
-    context 'when Gitaly is enabled' do
-      let(:gitaly_params) do
-        {
-          GitalyServer: {
-            call_metadata: call_metadata,
-            address: Gitlab::GitalyClient.address('default'),
-            token: Gitlab::GitalyClient.token('default')
-          }
-        }
+    it 'includes a Repository param' do
+      repo_param = {
+        storage_name: 'default',
+        relative_path: project.disk_path + '.git',
+        gl_repository: "project-#{project.id}"
+      }
+
+      expect(subject[:Repository]).to include(repo_param)
+    end
+
+    context "when git_upload_pack action is passed" do
+      let(:action) { 'git_upload_pack' }
+
+      it { expect(subject).to include(gitaly_params) }
+
+      context 'show_all_refs enabled' do
+        subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
+
+        it { is_expected.to include(ShowAllRefs: true) }
       end
 
-      before do
-        allow(Gitlab.config.gitaly).to receive(:enabled).and_return(true)
-      end
-
-      it 'includes a Repository param' do
-        repo_param = {
-          storage_name: 'default',
-          relative_path: project.disk_path + '.git',
-          gl_repository: "project-#{project.id}"
-        }
-
-        expect(subject[:Repository]).to include(repo_param)
-      end
-
-      context "when git_upload_pack action is passed" do
-        let(:action) { 'git_upload_pack' }
-        let(:feature_flag) { :post_upload_pack }
-
-        it 'includes Gitaly params in the returned value' do
-          allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(feature_flag).and_return(true)
-
-          expect(subject).to include(gitaly_params)
+      context 'when a feature flag is set for a single project' do
+        before do
+          stub_feature_flags(gitaly_mep_mep: project)
         end
 
-        context 'show_all_refs enabled' do
-          subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
+        it 'sets the flag to true for that project' do
+          response = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
 
-          it { is_expected.to include(ShowAllRefs: true) }
+          expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
+                                                                         'gitaly-feature-mep-mep' => 'true')
         end
 
-        context 'when a feature flag is set for a single project' do
-          before do
-            stub_feature_flags(gitaly_mep_mep: project)
-          end
+        it 'sets the flag to false for other projects' do
+          other_project = create(:project, :public, :repository)
+          response = described_class.git_http_ok(other_project.repository, Gitlab::GlRepository::PROJECT, user, action)
 
-          it 'sets the flag to true for that project' do
-            response = described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action)
+          expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
+                                                                         'gitaly-feature-mep-mep' => 'false')
+        end
 
-            expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                           'gitaly-feature-mep-mep' => 'true')
-          end
+        it 'sets the flag to false when there is no project' do
+          snippet = create(:personal_snippet, :repository)
+          response = described_class.git_http_ok(snippet.repository, Gitlab::GlRepository::SNIPPET, user, action)
 
-          it 'sets the flag to false for other projects' do
-            other_project = create(:project, :public, :repository)
-            response = described_class.git_http_ok(other_project.repository, Gitlab::GlRepository::PROJECT, user, action)
-
-            expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                           'gitaly-feature-mep-mep' => 'false')
-          end
-
-          it 'sets the flag to false when there is no project' do
-            snippet = create(:personal_snippet, :repository)
-            response = described_class.git_http_ok(snippet.repository, Gitlab::GlRepository::SNIPPET, user, action)
-
-            expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
-                                                                           'gitaly-feature-mep-mep' => 'false')
-          end
+          expect(response.dig(:GitalyServer, :call_metadata)).to include('gitaly-feature-enforce-requests-limits' => 'true',
+                                                                         'gitaly-feature-mep-mep' => 'false')
         end
       end
+    end
 
-      context "when git_receive_pack action is passed" do
-        let(:action) { 'git_receive_pack' }
+    context "when git_receive_pack action is passed" do
+      let(:action) { 'git_receive_pack' }
 
-        it { expect(subject).to include(gitaly_params) }
+      it { expect(subject).to include(gitaly_params) }
+    end
+
+    context "when info_refs action is passed" do
+      let(:action) { 'info_refs' }
+
+      it { expect(subject).to include(gitaly_params) }
+
+      context 'show_all_refs enabled' do
+        subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
+
+        it { is_expected.to include(ShowAllRefs: true) }
       end
+    end
 
-      context "when info_refs action is passed" do
-        let(:action) { 'info_refs' }
+    context 'when action passed is not supported by Gitaly' do
+      let(:action) { 'download' }
 
-        it { expect(subject).to include(gitaly_params) }
-
-        context 'show_all_refs enabled' do
-          subject { described_class.git_http_ok(repository, Gitlab::GlRepository::PROJECT, user, action, show_all_refs: true) }
-
-          it { is_expected.to include(ShowAllRefs: true) }
-        end
-      end
-
-      context 'when action passed is not supported by Gitaly' do
-        let(:action) { 'download' }
-
-        it { expect { subject }.to raise_exception('Unsupported action: download') }
-      end
+      it { expect { subject }.to raise_exception('Unsupported action: download') }
     end
 
     context 'when receive_max_input_size has been updated' do

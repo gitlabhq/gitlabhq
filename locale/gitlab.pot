@@ -45033,6 +45033,9 @@ msgstr ""
 msgid "ValueStreamAnalytics|Dashboard"
 msgstr ""
 
+msgid "ValueStreamAnalytics|Edit Value Stream: %{name}"
+msgstr ""
+
 msgid "ValueStreamAnalytics|Go to docs"
 msgstr ""
 
@@ -45049,6 +45052,9 @@ msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
+msgstr ""
+
+msgid "ValueStreamAnalytics|New Value Stream"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"

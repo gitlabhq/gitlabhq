@@ -2,16 +2,15 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
-import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import JiraIssuesImportStatusRoot from './components/jira_issues_import_status_app.vue';
+import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 import { gqlClient } from './graphql';
 
 export function mountJiraIssuesListApp() {
-  const el = document.querySelector('.js-jira-issues-import-status');
+  const el = document.querySelector('.js-jira-issues-import-status-root');
 
   if (!el) {
-    return false;
+    return null;
   }
 
   const { issuesPath, projectPath } = el.dataset;
@@ -19,21 +18,19 @@ export function mountJiraIssuesListApp() {
   const isJiraConfigured = parseBoolean(el.dataset.isJiraConfigured);
 
   if (!isJiraConfigured || !canEdit) {
-    return false;
+    return null;
   }
 
   Vue.use(VueApollo);
-  const defaultClient = createDefaultClient();
-  const apolloProvider = new VueApollo({
-    defaultClient,
-  });
 
   return new Vue({
     el,
     name: 'JiraIssuesImportStatusRoot',
-    apolloProvider,
+    apolloProvider: new VueApollo({
+      defaultClient: gqlClient,
+    }),
     render(createComponent) {
-      return createComponent(JiraIssuesImportStatusRoot, {
+      return createComponent(JiraIssuesImportStatusApp, {
         props: {
           canEdit,
           isJiraConfigured,
@@ -46,10 +43,10 @@ export function mountJiraIssuesListApp() {
 }
 
 export function mountIssuesListApp() {
-  const el = document.querySelector('.js-issues-list');
+  const el = document.querySelector('.js-issues-list-root');
 
   if (!el) {
-    return false;
+    return null;
   }
 
   Vue.use(VueApollo);
