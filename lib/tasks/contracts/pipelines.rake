@@ -11,30 +11,38 @@ namespace :contracts do
 
   namespace :pipelines do
     Pact::VerificationTask.new(:create_a_new_pipeline) do |pact|
+      pact_helper_location = "pact_helpers/project/pipelines/new/post_create_a_new_pipeline_helper.rb"
+
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:CREATE_A_NEW_PIPELINE, :rake),
-        pact_helper: "#{provider}/pact_helpers/project/pipeline/index/create_a_new_pipeline_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 
     Pact::VerificationTask.new(:get_list_project_pipelines) do |pact|
+      pact_helper_location = "pact_helpers/project/pipelines/index/get_list_project_pipelines_helper.rb"
+
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:GET_LIST_PROJECT_PIPELINE, :rake),
-        pact_helper: "#{provider}/pact_helpers/project/pipeline/index/get_list_project_pipelines_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 
     Pact::VerificationTask.new(:get_pipeline_header_data) do |pact|
+      pact_helper_location = "pact_helpers/project/pipelines/show/get_pipeline_header_data_helper.rb"
+
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:GET_PIPELINE_HEADER_DATA, :rake),
-        pact_helper: "#{provider}/pact_helpers/project/pipeline/show/get_pipeline_header_data_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 
     Pact::VerificationTask.new(:delete_pipeline) do |pact|
+      pact_helper_location = "pact_helpers/project/pipelines/show/delete_pipeline_helper.rb"
+
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:DELETE_PIPELINE, :rake),
-        pact_helper: "#{provider}/pact_helpers/project/pipeline/show/delete_pipeline_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 

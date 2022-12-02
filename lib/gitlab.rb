@@ -29,19 +29,19 @@ module Gitlab
   end
 
   def self.revision
-    @_revision ||= begin
-      if File.exist?(root.join("REVISION"))
-        File.read(root.join("REVISION")).strip.freeze
-      else
-        result = Gitlab::Popen.popen_with_detail(%W[#{config.git.bin_path} log --pretty=format:%h --abbrev=11 -n 1])
+    @_revision ||= if File.exist?(root.join("REVISION"))
+                     File.read(root.join("REVISION")).strip.freeze
+                   else
+                     result = Gitlab::Popen.popen_with_detail(
+                       %W[#{config.git.bin_path} log --pretty=format:%h --abbrev=11 -n 1]
+                     )
 
-        if result.status.success?
-          result.stdout.chomp.freeze
-        else
-          "Unknown"
-        end
-      end
-    end
+                     if result.status.success?
+                       result.stdout.chomp.freeze
+                     else
+                       "Unknown"
+                     end
+                   end
   end
 
   APP_DIRS_PATTERN = %r{^/?(app|config|ee|lib|spec|\(\w*\))}.freeze

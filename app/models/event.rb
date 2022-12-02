@@ -380,13 +380,11 @@ class Event < ApplicationRecord
   protected
 
   def capability
-    @capability ||= begin
-      capabilities.flat_map do |ability, syms|
-        if syms.any? { |sym| send(sym) } # rubocop: disable GitlabSecurity/PublicSend
-          [ability]
-        else
-          []
-        end
+    @capability ||= capabilities.flat_map do |ability, syms|
+      if syms.any? { |sym| send(sym) } # rubocop: disable GitlabSecurity/PublicSend
+        [ability]
+      else
+        []
       end
     end
   end

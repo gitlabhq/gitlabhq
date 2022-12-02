@@ -13,7 +13,7 @@ module Banzai
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           Filter::WikiLinkFilter,
-          Filter::SyntaxHighlightFilter,
+          Filter::SyntaxHighlightFilter, # this filter should remain next to last
           Filter::AsciiDocPostProcessingFilter
         ]
       end

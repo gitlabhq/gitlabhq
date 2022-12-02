@@ -11,9 +11,11 @@ namespace :contracts do
 
   namespace :pipeline_schedules do
     Pact::VerificationTask.new(:update_pipeline_schedule) do |pact|
+      pact_helper_location = "pact_helpers/project/pipeline_schedules/edit/put_edit_a_pipeline_schedule_helper.rb"
+
       pact.uri(
-        Provider::ContractSourceHelper.contract_location(:UPDATE_PIPELINE_SCHEDULE, :rake),
-        pact_helper: "#{provider}/pact_helpers/project/pipeline_schedule/edit/update_pipeline_schedule_helper.rb"
+        Provider::ContractSourceHelper.contract_location(:rake, pact_helper_location),
+        pact_helper: "#{provider}/#{pact_helper_location}"
       )
     end
 

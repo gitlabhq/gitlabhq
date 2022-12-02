@@ -60,7 +60,9 @@ module QA
           end
 
           delete_resources(filtered_resources)
-          delete_groups_permanently(filtered_resources['QA::Resource::Group'])
+
+          filtered_groups = filtered_resources['QA::Resource::Group']
+          delete_groups_permanently(filtered_groups) unless filtered_groups.nil?
         end
 
         return puts "\nDone" if failures.empty?

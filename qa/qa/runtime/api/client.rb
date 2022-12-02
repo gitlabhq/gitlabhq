@@ -35,9 +35,12 @@ module QA
         end
 
         def self.as_admin
-          @admin_client ||= begin
+          @admin_client ||=
             if Runtime::Env.admin_personal_access_token
-              Runtime::API::Client.new(:gitlab, personal_access_token: Runtime::Env.admin_personal_access_token)
+              Runtime::API::Client.new(
+                :gitlab,
+                personal_access_token: Runtime::Env.admin_personal_access_token
+              )
             else
               # To return an API client that has admin access, we need a user with admin access to confirm that
               # the API client user has admin access.
@@ -62,7 +65,6 @@ module QA
 
               client
             end
-          end
         end
 
         private

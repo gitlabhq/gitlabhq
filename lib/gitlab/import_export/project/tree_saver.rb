@@ -81,15 +81,13 @@ module Gitlab
         end
 
         def json_writer
-          @json_writer ||= begin
-            if ::Feature.enabled?(:project_export_as_ndjson, @project.namespace)
-              full_path = File.join(@shared.export_path, 'tree')
-              Gitlab::ImportExport::Json::NdjsonWriter.new(full_path)
-            else
-              full_path = File.join(@shared.export_path, ImportExport.project_filename)
-              Gitlab::ImportExport::Json::LegacyWriter.new(full_path, allowed_path: 'project')
-            end
-          end
+          @json_writer ||= if ::Feature.enabled?(:project_export_as_ndjson, @project.namespace)
+                             full_path = File.join(@shared.export_path, 'tree')
+                             Gitlab::ImportExport::Json::NdjsonWriter.new(full_path)
+                           else
+                             full_path = File.join(@shared.export_path, ImportExport.project_filename)
+                             Gitlab::ImportExport::Json::LegacyWriter.new(full_path, allowed_path: 'project')
+                           end
         end
       end
     end

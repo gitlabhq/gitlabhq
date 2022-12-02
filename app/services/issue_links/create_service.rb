@@ -5,9 +5,7 @@ module IssueLinks
     include IncidentManagement::UsageData
 
     def linkable_issuables(issues)
-      @linkable_issuables ||= begin
-        issues.select { |issue| can?(current_user, :admin_issue_link, issue) }
-      end
+      @linkable_issuables ||= issues.select { |issue| can?(current_user, :admin_issue_link, issue) }
     end
 
     def previous_related_issuables

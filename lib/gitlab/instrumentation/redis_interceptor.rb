@@ -65,13 +65,11 @@ module Gitlab
         # This count is an approximation that omits the Redis protocol overhead
         # of type prefixes, length prefixes and line endings.
         command.each do |x|
-          size += begin
-            if x.is_a? Array
-              x.inject(0) { |sum, y| sum + y.to_s.bytesize }
-            else
-              x.to_s.bytesize
-            end
-          end
+          size += if x.is_a? Array
+                    x.inject(0) { |sum, y| sum + y.to_s.bytesize }
+                  else
+                    x.to_s.bytesize
+                  end
         end
 
         instrumentation_class.increment_write_bytes(size)

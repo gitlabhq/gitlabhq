@@ -10,7 +10,7 @@ module Banzai
     # like a `ReferenceRedactorFilter`
     #
     class TimeoutHtmlPipelineFilter < HTML::Pipeline::Filter
-      RENDER_TIMEOUT = 2.seconds
+      RENDER_TIMEOUT = 10.seconds
 
       def call
         if Feature.enabled?(:markup_rendering_timeout, context[:project])

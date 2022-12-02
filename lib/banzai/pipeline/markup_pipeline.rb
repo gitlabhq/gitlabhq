@@ -10,7 +10,7 @@ module Banzai
           Filter::ExternalLinkFilter,
           Filter::PlantumlFilter,
           Filter::KrokiFilter,
-          Filter::SyntaxHighlightFilter
+          Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]
       end
 

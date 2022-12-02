@@ -1778,12 +1778,10 @@ class User < ApplicationRecord
   end
 
   def ci_owned_runners
-    @ci_owned_runners ||= begin
-      Ci::Runner
+    @ci_owned_runners ||= Ci::Runner
         .from_union([ci_owned_project_runners_from_project_members,
                      ci_owned_project_runners_from_group_members,
                      ci_owned_group_runners])
-    end
   end
 
   def owns_runner?(runner)

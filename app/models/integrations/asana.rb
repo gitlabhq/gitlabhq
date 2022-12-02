@@ -42,10 +42,8 @@ module Integrations
     end
 
     def client
-      @_client ||= begin
-        ::Asana::Client.new do |c|
-          c.authentication :access_token, api_key
-        end
+      @_client ||= ::Asana::Client.new do |c|
+        c.authentication :access_token, api_key
       end
     end
 

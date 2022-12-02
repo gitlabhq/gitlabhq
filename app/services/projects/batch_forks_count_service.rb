@@ -7,11 +7,9 @@ module Projects
   class BatchForksCountService < Projects::BatchCountService
     # rubocop: disable CodeReuse/ActiveRecord
     def global_count
-      @global_count ||= begin
-        count_service.query(project_ids)
+      @global_count ||= count_service.query(project_ids)
                      .group(:forked_from_project_id)
                      .count
-      end
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

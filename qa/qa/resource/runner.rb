@@ -3,10 +3,22 @@
 module QA
   module Resource
     class Runner < Base
-      attr_writer :name, :tags, :image, :executor, :executor_image
-      attr_accessor :config, :token, :run_untagged
+      attributes :id,
+                 :active,
+                 :paused,
+                 :runner_type,
+                 :online,
+                 :status,
+                 :ip_address,
+                 :token,
+                 :tags,
+                 :config,
+                 :run_untagged,
+                 :name, # This attribute == runner[:description]
+                 :image,
+                 :executor,
+                 :executor_image
 
-      attribute :id
       attribute :project do
         Project.fabricate_via_api! do |resource|
           resource.name = 'project-with-ci-cd'
@@ -14,23 +26,68 @@ module QA
         end
       end
 
-      def name
-        @name || "qa-runner-#{SecureRandom.hex(4)}"
+      def initialize
+        @tags = nil
+        @config = nil
+        @run_untagged = nil
+        @name = "qa-runner-#{SecureRandom.hex(4)}"
+        @image = 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine'
+        @executor = :shell
+        @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
       end
 
-      def image
-        @image || 'registry.gitlab.com/gitlab-org/gitlab-runner:alpine'
-      end
-
-      def executor
-        @executor || :shell
-      end
-
-      def executor_image
-        @executor_image || 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
-      end
-
+      # Start container and register runner
+      # Fetch via API and populate attributes
+      #
       def fabricate_via_api!
+        start_container_and_register
+        populate_runner_attributes
+      end
+
+      def remove_via_api!
+        super
+      ensure
+        @docker_container.remove!
+      end
+
+      def reload!
+        populate_runner_attributes
+      end
+
+      def api_delete_path
+        "/runners/#{id}"
+      end
+
+      def api_get_path
+        "/runners"
+      end
+
+      def api_post_path
+        "/runners"
+      end
+
+      def api_post_body; end
+
+      def not_found_by_tags?
+        url = "#{api_get_path}?tag_list=#{@tags.compact.join(',')}"
+        auto_paginated_response(request_url(url)).empty?
+      end
+
+      def runners_list
+        runners_list = nil
+        url = tags ? "#{api_get_path}?tag_list=#{tags.compact.join(',')}" : api_get_path
+        QA::Runtime::Logger.info('Looking for list of runners via API...')
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1) do
+          runners_list = auto_paginated_response(request_url(url))
+          runners_list.present?
+        end
+
+        runners_list
+      end
+
+      private
+
+      def start_container_and_register
         @docker_container = Service::DockerRun::GitlabRunner.new(name).tap do |runner|
           QA::Support::Retrier.retry_on_exception(sleep_interval: 5) do
             runner.pull
@@ -38,7 +95,7 @@ module QA
 
           runner.token = @token ||= project.runners_token
           runner.address = Runtime::Scenario.gitlab_address
-          runner.tags = @tags if @tags
+          runner.tags = tags if tags
           runner.image = image
           runner.config = config if config
           runner.executor = executor
@@ -48,62 +105,19 @@ module QA
         end
       end
 
-      def remove_via_api!
-        runners = list_of_runners(tag_list: @tags)
-
-        # If we have no runners, print the logs from the runner docker container in case they show why it isn't running.
-        if runners.blank?
-          dump_logs
-
-          return
-        end
-
-        this_runner = runners.find { |runner| runner[:description] == name }
-
-        # As above, but now we should have a specific runner. If not, print the logs from the runner docker container
-        # to see if we can find out why the runner isn't running.
-        unless this_runner
-          dump_logs
-
-          raise "Project #{project.path_with_namespace} does not have a runner with a description matching #{name} #{"or tags #{@tags}" if @tags&.any?}. Runners available: #{runners}"
-        end
-
-        @id = this_runner[:id]
-
-        super
-      ensure
-        Service::DockerRun::GitlabRunner.new(name).remove!
+      def this_runner
+        runners_list.find { |runner| runner[:description] == name }
       end
 
-      def list_of_runners(tag_list: nil)
-        url = tag_list ? "#{api_post_path}?tag_list=#{tag_list.compact.join(',')}" : api_post_path
-        auto_paginated_response(request_url(url))
-      end
-
-      def reload!
-        super if method(:running?).super_method.call
-      end
-
-      def api_delete_path
-        "/runners/#{id}"
-      end
-
-      def api_get_path; end
-
-      def api_post_path
-        "/runners"
-      end
-
-      def api_post_body; end
-
-      private
-
-      def dump_logs
-        if @docker_container.running?
-          @docker_container.logs
-        else
-          QA::Runtime::Logger.debug("No runner container found named #{name}")
-        end
+      def populate_runner_attributes
+        runner = this_runner
+        @id = runner[:id]
+        @active = runner[:active]
+        @paused = runner[:paused]
+        @runner_type = runner[:typed]
+        @online = runner[:online]
+        @status = runner[:status]
+        @ip_address = runner[:ip_address]
       end
     end
   end

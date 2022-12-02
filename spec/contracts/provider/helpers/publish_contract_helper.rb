@@ -6,11 +6,11 @@ module Provider
     PROVIDER_BRANCH = ENV["GIT_BRANCH"] || `git name-rev --name-only HEAD`.strip
     PUBLISH_FLAG = true
 
-    def publish_contract_setup
-      -> {
-        app_version PROVIDER_VERSION
-        app_version_branch PROVIDER_BRANCH
-        publish_verification_results PUBLISH_FLAG
+    def self.publish_contract_setup
+      ->(app_version, app_version_branch, publish_verification_results) {
+        app_version.call(PROVIDER_VERSION)
+        app_version_branch.call(PROVIDER_BRANCH)
+        publish_verification_results.call(PUBLISH_FLAG)
       }
     end
   end

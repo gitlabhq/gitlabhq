@@ -523,9 +523,7 @@ module Backup
     end
 
     def object_storage_config
-      @object_storage_config ||= begin
-        ObjectStorage::Config.new(Gitlab.config.backup.upload)
-      end
+      @object_storage_config ||= ObjectStorage::Config.new(Gitlab.config.backup.upload)
     end
 
     def connect_to_remote_directory

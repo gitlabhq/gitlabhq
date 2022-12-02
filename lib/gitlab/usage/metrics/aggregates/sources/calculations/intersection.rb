@@ -18,10 +18,8 @@ module Gitlab
                 subset_powers_data = subsets_intersection_powers(metric_names, start_date, end_date, recorded_at, subset_powers_cache)
 
                 # calculate last component of the equation  |A & B & C & D| = .... - |A + B + C + D|
-                power_of_union_of_all_metrics = begin
-                  subset_powers_cache[metric_names.size][metric_names.join('_+_')] ||= \
-                    calculate_metrics_union(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at)
-                end
+                power_of_union_of_all_metrics = subset_powers_cache[metric_names.size][metric_names.join('_+_')] ||= \
+                  calculate_metrics_union(metric_names: metric_names, start_date: start_date, end_date: end_date, recorded_at: recorded_at)
 
                 # in order to determine if part of equation (|A & B & C|, |A & B & C & D|), that represents the intersection that we need to calculate,
                 # is positive or negative in particular equation we need to determine if number of subsets is even or odd. Please take a look at two examples below

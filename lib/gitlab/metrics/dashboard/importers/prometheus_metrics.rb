@@ -63,13 +63,11 @@ module Gitlab
           end
 
           def prometheus_metrics_attributes
-            @prometheus_metrics_attributes ||= begin
-              Dashboard::Transformers::Yml::V1::PrometheusMetrics.new(
-                dashboard_hash,
+            @prometheus_metrics_attributes ||= Dashboard::Transformers::Yml::V1::PrometheusMetrics.new(
+              dashboard_hash,
                 project: project,
                 dashboard_path: dashboard_path
-              ).execute
-            end
+            ).execute
           end
         end
       end

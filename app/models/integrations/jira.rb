@@ -132,11 +132,9 @@ module Integrations
     end
 
     def client
-      @client ||= begin
-        JIRA::Client.new(options).tap do |client|
-          # Replaces JIRA default http client with our implementation
-          client.request_client = Gitlab::Jira::HttpClient.new(client.options)
-        end
+      @client ||= JIRA::Client.new(options).tap do |client|
+        # Replaces JIRA default http client with our implementation
+        client.request_client = Gitlab::Jira::HttpClient.new(client.options)
       end
     end
 

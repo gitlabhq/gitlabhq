@@ -105,6 +105,15 @@
   --svg-status-bg: #{$white};
 }
 
+body.gl-dark {
+  // redefine some colors and values to prevent sourcegraph conflicts
+  color-scheme: dark;
+  --gray-10: #{$gray-10};
+  --border-color: #{$border-color};
+  --white: #{$white};
+  --black: #{$black};
+}
+
 .gl-dark {
   .gl-button.gl-button,
   .gl-button.gl-button.btn-block {

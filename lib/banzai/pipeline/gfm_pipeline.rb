@@ -37,7 +37,7 @@ module Banzai
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
           Filter::SetDirectionFilter,
-          Filter::SyntaxHighlightFilter
+          Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]
       end
 

@@ -69,17 +69,15 @@ module DesignManagement
     # The LFS pointer file data contains an "OID" that lets us retrieve `LfsObject`
     # records, which have an Uploader (`LfsObjectUploader`) for the original design file.
     def raw_files_by_path
-      @raw_files_by_path ||= begin
-        LfsObject.for_oids(blobs_by_oid.keys).each_with_object({}) do |lfs_object, h|
-          blob = blobs_by_oid[lfs_object.oid]
-          file = lfs_object.file.file
-          # The `CarrierWave::SanitizedFile` is loaded without knowing the `content_type`
-          # of the file, due to the file not having an extension.
-          #
-          # Set the content_type from the `Blob`.
-          file.content_type = blob.content_type
-          h[blob.path] = file
-        end
+      @raw_files_by_path ||= LfsObject.for_oids(blobs_by_oid.keys).each_with_object({}) do |lfs_object, h|
+        blob = blobs_by_oid[lfs_object.oid]
+        file = lfs_object.file.file
+        # The `CarrierWave::SanitizedFile` is loaded without knowing the `content_type`
+        # of the file, due to the file not having an extension.
+        #
+        # Set the content_type from the `Blob`.
+        file.content_type = blob.content_type
+        h[blob.path] = file
       end
     end
 

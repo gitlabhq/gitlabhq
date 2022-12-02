@@ -93,7 +93,7 @@ in the template you fetched to customize your configuration.
 
 ### Terraform template recipes
 
-For GitLab-curated template recipes, see [Terraform template recipes](tf_template_recipes.md).
+For GitLab-curated template recipes, see [Terraform template recipes](terraform_template_recipes.md).
 
 ## Related topics
 

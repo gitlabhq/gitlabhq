@@ -40,17 +40,15 @@ module MembershipActions
     respond_to do |format|
       format.html do
         message =
-          begin
-            case membershipable
-            when Namespace
-              if skip_subresources
-                _("User was successfully removed from group.")
-              else
-                _("User was successfully removed from group and any subgroups and projects.")
-              end
+          case membershipable
+          when Namespace
+            if skip_subresources
+              _("User was successfully removed from group.")
             else
-              _("User was successfully removed from project.")
+              _("User was successfully removed from group and any subgroups and projects.")
             end
+          else
+            _("User was successfully removed from project.")
           end
 
         redirect_to members_page_url, notice: message

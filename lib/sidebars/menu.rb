@@ -43,7 +43,7 @@ module Sidebars
     # Value from menus is something like: [{ path: 'foo', path: 'bar', controller: :foo }]
     # This method filters the information and returns: { path: ['foo', 'bar'], controller: :foo }
     def all_active_routes
-      @all_active_routes ||= begin
+      @all_active_routes ||=
         ([active_routes] + renderable_items.map(&:active_routes)).flatten.each_with_object({}) do |pairs, hash|
           pairs.each do |k, v|
             hash[k] ||= []
@@ -53,7 +53,6 @@ module Sidebars
 
           hash
         end
-      end
     end
 
     # Returns whether the menu has any menu item, no

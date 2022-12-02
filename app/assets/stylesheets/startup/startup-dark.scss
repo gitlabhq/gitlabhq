@@ -1699,6 +1699,13 @@ svg.s16 {
   --white: #333238;
   --black: #fff;
 }
+body.gl-dark {
+  color-scheme: dark;
+  --gray-10: #1f1e24;
+  --border-color: #434248;
+  --white: #333238;
+  --black: #fff;
+}
 .nav-sidebar,
 .toggle-sidebar-button,
 .close-nav-button {

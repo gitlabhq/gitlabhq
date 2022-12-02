@@ -19,19 +19,18 @@ module ErrorTracking
     end
 
     def project_error_tracking_setting
-      @project_error_tracking_setting ||= begin
-        (super || project.build_error_tracking_setting).tap do |setting|
-          setting.api_url = ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
-            api_host: params[:api_host],
-            organization_slug: 'org',
-            project_slug: 'proj'
-          )
+      (super || project.build_error_tracking_setting).tap do |setting|
+        setting.api_url = ErrorTracking::ProjectErrorTrackingSetting.build_api_url_from(
+          api_host: params[:api_host],
+          organization_slug: 'org',
+          project_slug: 'proj'
+        )
 
-          setting.token = token(setting)
-          setting.enabled = true
-        end
+        setting.token = token(setting)
+        setting.enabled = true
       end
     end
+    strong_memoize_attr :project_error_tracking_setting
 
     def token(setting)
       # Use param token if not masked, otherwise use database token

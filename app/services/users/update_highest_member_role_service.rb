@@ -17,9 +17,7 @@ module Users
     private
 
     def user_highest_role
-      @user_highest_role ||= begin
-        @user.user_highest_role || @user.build_user_highest_role
-      end
+      @user_highest_role ||= @user.user_highest_role || @user.build_user_highest_role
     end
 
     def highest_access_level

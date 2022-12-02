@@ -23,14 +23,12 @@ module API
         end
 
         def load_issuable
-          @issuable ||= begin
-            case issuable_name
-            when 'issue'
-              find_project_issue(params.delete(issuable_key))
-            when 'merge_request'
-              find_project_merge_request(params.delete(issuable_key))
-            end
-          end
+          @issuable ||= case issuable_name
+                        when 'issue'
+                          find_project_issue(params.delete(issuable_key))
+                        when 'merge_request'
+                          find_project_merge_request(params.delete(issuable_key))
+                        end
         end
 
         def update_issuable(attrs)
