@@ -34,10 +34,10 @@ module Gitlab
 
           def upgrade_command
             command = ['helm', 'upgrade', name, chart] +
-                      reuse_values_flag +
-                      version_flag +
-                      namespace_flag +
-                      value_flag
+              reuse_values_flag +
+              version_flag +
+              namespace_flag +
+              value_flag
 
             command.shelljoin
           end

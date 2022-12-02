@@ -21,9 +21,9 @@ module Kramdown
         res = super
 
         if [:ul, :dl, :ol, :codeblock].include?(el.type) && opts[:next] &&
-          ([el.type, :codeblock].include?(opts[:next].type) ||
-            (opts[:next].type == :blank && opts[:nnext] &&
-              [el.type, :codeblock].include?(opts[:nnext].type)))
+            ([el.type, :codeblock].include?(opts[:next].type) ||
+              (opts[:next].type == :blank && opts[:nnext] &&
+                [el.type, :codeblock].include?(opts[:nnext].type)))
           # replace the end of block character
           res.sub!(/\^\n\n\z/m, "#{END_OF_BLOCK}\n\n")
         end
@@ -43,7 +43,7 @@ module Kramdown
 
         if el.children.first && el.children.first.type == :p && !el.children.first.options[:transparent]
           if el.children.size == 1 && @stack.last.children.last == el &&
-            (@stack.last.children.any? { |c| c.children.first.type != :p } || @stack.last.children.size == 1)
+              (@stack.last.children.any? { |c| c.children.first.type != :p } || @stack.last.children.size == 1)
             # replace the end of block character
             res.sub!(/\^\n\z/m, "#{END_OF_BLOCK}\n")
           end

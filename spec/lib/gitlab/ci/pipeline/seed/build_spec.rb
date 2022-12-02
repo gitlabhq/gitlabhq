@@ -635,12 +635,12 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
 
       context 'non-matches' do
         where(:keyword, :source) do
-          %w[web trigger schedule api external].map  { |source| ['pushes', source] } +
-          %w[push trigger schedule api external].map { |source| ['web', source] } +
-          %w[push web schedule api external].map { |source| ['triggers', source] } +
-          %w[push web trigger api external].map { |source| ['schedules', source] } +
-          %w[push web trigger schedule external].map { |source| ['api', source] } +
-          %w[push web trigger schedule api].map { |source| ['external', source] }
+          %w[web trigger schedule api external].map { |source| ['pushes', source] } +
+            %w[push trigger schedule api external].map { |source| ['web', source] } +
+            %w[push web schedule api external].map { |source| ['triggers', source] } +
+            %w[push web trigger api external].map { |source| ['schedules', source] } +
+            %w[push web trigger schedule external].map { |source| ['api', source] } +
+            %w[push web trigger schedule api].map { |source| ['external', source] }
         end
 
         with_them do

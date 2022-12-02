@@ -66,10 +66,10 @@ module Gitlab
 
       def valid?(repository_path)
         repository_path.end_with?(path_suffix) &&
-        (
-          !snippet? ||
-          repository_path.match?(Gitlab::PathRegex.full_snippets_repository_path_regex)
-        )
+          (
+            !snippet? ||
+            repository_path.match?(Gitlab::PathRegex.full_snippets_repository_path_regex)
+          )
       end
 
       private

@@ -157,10 +157,10 @@ module Gitlab
     # for deploy tokens and builds
     def can_download?
       deploy_key_can_download_code? ||
-      deploy_token_can_download? ||
-      build_can_download? ||
-      user_can_download? ||
-      guest_can_download?
+        deploy_token_can_download? ||
+        build_can_download? ||
+        user_can_download? ||
+        guest_can_download?
     end
 
     def check_container!
@@ -339,7 +339,7 @@ module Gitlab
     def check_change_access!
       if changes == ANY
         can_push = deploy_key? ||
-                   user_can_push? ||
+          user_can_push? ||
           project&.any_branch_allows_collaboration?(user_access.user)
 
         unless can_push

@@ -79,11 +79,11 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
 
         let(:accepted_n_plus_ones) do
           1 + # SELECT "ci_instance_variables"
-          1 + # INSERT INTO "ci_stages"
-          1 + # SELECT "ci_builds".* FROM "ci_builds"
-          1 + # INSERT INTO "ci_builds"
-          1 + # INSERT INTO "ci_builds_metadata"
-          1   # SELECT "taggings".* FROM "taggings"
+            1 + # INSERT INTO "ci_stages"
+            1 + # SELECT "ci_builds".* FROM "ci_builds"
+            1 + # INSERT INTO "ci_builds"
+            1 + # INSERT INTO "ci_builds_metadata"
+            1   # SELECT "taggings".* FROM "taggings"
         end
       end
     end

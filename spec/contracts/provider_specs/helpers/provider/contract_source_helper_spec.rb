@@ -71,15 +71,18 @@ RSpec.describe Provider::ContractSourceHelper, feature_category: :not_owned do
 
   describe '#local_contract_location' do
     it 'returns the contract file path with the prefix path for a rake task' do
-      rake_task_relative_path = '/gitlab/spec/contracts/contracts/project'
+      rake_task_relative_path = '/spec/contracts/contracts/project'
 
-      expect(subject.local_contract_location(:rake, split_pact_helper_path)).to include(rake_task_relative_path)
+      rake_task_path = subject.local_contract_location(:rake, split_pact_helper_path)
+
+      expect(rake_task_path).to include(rake_task_relative_path)
+      expect(rake_task_path).not_to include('../')
     end
 
     it 'returns the contract file path with the prefix path for a spec' do
-      rake_task_relative_path = '../contracts/project'
+      spec_relative_path = '../contracts/project'
 
-      expect(subject.local_contract_location(:spec, split_pact_helper_path)).to include(rake_task_relative_path)
+      expect(subject.local_contract_location(:spec, split_pact_helper_path)).to include(spec_relative_path)
     end
   end
 

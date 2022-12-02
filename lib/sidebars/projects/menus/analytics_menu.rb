@@ -45,9 +45,9 @@ module Sidebars
 
         def ci_cd_analytics_menu_item
           if !context.project.feature_available?(:builds, context.current_user) ||
-            !can?(context.current_user, :read_build, context.project) ||
-            !can?(context.current_user, :read_ci_cd_analytics, context.project) ||
-            context.project.empty_repo?
+              !can?(context.current_user, :read_build, context.project) ||
+              !can?(context.current_user, :read_ci_cd_analytics, context.project) ||
+              context.project.empty_repo?
             return ::Sidebars::NilMenuItem.new(item_id: :ci_cd_analytics)
           end
 

@@ -42,7 +42,7 @@ module Gitlab
 
     def ==(other)
       self.id == other.id &&
-      self.payload == other.payload
+        self.payload == other.payload
     end
 
     def issued_at=(value)

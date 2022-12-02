@@ -8,7 +8,7 @@ module API
           value = params[attr_name]
 
           return if value.is_a?(Array) ||
-              [IssuableFinder::Params::FILTER_NONE, IssuableFinder::Params::FILTER_ANY].include?(value.to_s.downcase)
+            [IssuableFinder::Params::FILTER_NONE, IssuableFinder::Params::FILTER_ANY].include?(value.to_s.downcase)
 
           raise Grape::Exceptions::Validation.new(
             params: [@scope.full_name(attr_name)],

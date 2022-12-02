@@ -16,7 +16,7 @@ module QA
             QA::Runtime::Logger.debug("Move data: #{move}")
 
             move[:state] == status &&
-            move[:destination_storage_name] == destination_storage
+              move[:destination_storage_name] == destination_storage
           end
         end
 

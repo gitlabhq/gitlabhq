@@ -30,7 +30,7 @@ module Sidebars
 
         def graph_menu_item
           if !can?(context.current_user, :read_code, context.project) ||
-            context.project.empty_repo?
+              context.project.empty_repo?
             return ::Sidebars::NilMenuItem.new(item_id: :graph)
           end
 
@@ -73,7 +73,7 @@ module Sidebars
 
         def commits_menu_item
           if !can?(context.current_user, :read_code, context.project) ||
-            context.project.empty_repo?
+              context.project.empty_repo?
             return ::Sidebars::NilMenuItem.new(item_id: :commits)
           end
 

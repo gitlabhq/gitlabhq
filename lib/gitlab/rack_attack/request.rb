@@ -79,96 +79,96 @@ module Gitlab
 
       def throttle_unauthenticated_api?
         api_request? &&
-        !should_be_skipped? &&
-        !frontend_request? &&
-        !throttle_unauthenticated_packages_api? &&
-        !throttle_unauthenticated_files_api? &&
-        !throttle_unauthenticated_deprecated_api? &&
-        Gitlab::Throttle.settings.throttle_unauthenticated_api_enabled &&
-        unauthenticated?
+          !should_be_skipped? &&
+          !frontend_request? &&
+          !throttle_unauthenticated_packages_api? &&
+          !throttle_unauthenticated_files_api? &&
+          !throttle_unauthenticated_deprecated_api? &&
+          Gitlab::Throttle.settings.throttle_unauthenticated_api_enabled &&
+          unauthenticated?
       end
 
       def throttle_unauthenticated_web?
         (web_request? || frontend_request?) &&
-        !should_be_skipped? &&
-        # TODO: Column will be renamed in https://gitlab.com/gitlab-org/gitlab/-/issues/340031
-        Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
-        unauthenticated?
+          !should_be_skipped? &&
+          # TODO: Column will be renamed in https://gitlab.com/gitlab-org/gitlab/-/issues/340031
+          Gitlab::Throttle.settings.throttle_unauthenticated_enabled &&
+          unauthenticated?
       end
 
       def throttle_authenticated_api?
         api_request? &&
-        !frontend_request? &&
-        !throttle_authenticated_packages_api? &&
-        !throttle_authenticated_files_api? &&
-        !throttle_authenticated_deprecated_api? &&
-        Gitlab::Throttle.settings.throttle_authenticated_api_enabled
+          !frontend_request? &&
+          !throttle_authenticated_packages_api? &&
+          !throttle_authenticated_files_api? &&
+          !throttle_authenticated_deprecated_api? &&
+          Gitlab::Throttle.settings.throttle_authenticated_api_enabled
       end
 
       def throttle_authenticated_web?
         (web_request? || frontend_request?) &&
-        !throttle_authenticated_git_lfs? &&
-        Gitlab::Throttle.settings.throttle_authenticated_web_enabled
+          !throttle_authenticated_git_lfs? &&
+          Gitlab::Throttle.settings.throttle_authenticated_web_enabled
       end
 
       def throttle_unauthenticated_protected_paths?
         post? &&
-        !should_be_skipped? &&
-        protected_path? &&
-        Gitlab::Throttle.protected_paths_enabled? &&
-        unauthenticated?
+          !should_be_skipped? &&
+          protected_path? &&
+          Gitlab::Throttle.protected_paths_enabled? &&
+          unauthenticated?
       end
 
       def throttle_authenticated_protected_paths_api?
         post? &&
-        api_request? &&
-        protected_path? &&
-        Gitlab::Throttle.protected_paths_enabled?
+          api_request? &&
+          protected_path? &&
+          Gitlab::Throttle.protected_paths_enabled?
       end
 
       def throttle_authenticated_protected_paths_web?
         post? &&
-        web_request? &&
-        protected_path? &&
-        Gitlab::Throttle.protected_paths_enabled?
+          web_request? &&
+          protected_path? &&
+          Gitlab::Throttle.protected_paths_enabled?
       end
 
       def throttle_unauthenticated_packages_api?
         packages_api_path? &&
-        Gitlab::Throttle.settings.throttle_unauthenticated_packages_api_enabled &&
-        unauthenticated?
+          Gitlab::Throttle.settings.throttle_unauthenticated_packages_api_enabled &&
+          unauthenticated?
       end
 
       def throttle_authenticated_packages_api?
         packages_api_path? &&
-        Gitlab::Throttle.settings.throttle_authenticated_packages_api_enabled
+          Gitlab::Throttle.settings.throttle_authenticated_packages_api_enabled
       end
 
       def throttle_authenticated_git_lfs?
         git_lfs_path? &&
-        Gitlab::Throttle.settings.throttle_authenticated_git_lfs_enabled
+          Gitlab::Throttle.settings.throttle_authenticated_git_lfs_enabled
       end
 
       def throttle_unauthenticated_files_api?
         files_api_path? &&
-        Gitlab::Throttle.settings.throttle_unauthenticated_files_api_enabled &&
-        unauthenticated?
+          Gitlab::Throttle.settings.throttle_unauthenticated_files_api_enabled &&
+          unauthenticated?
       end
 
       def throttle_authenticated_files_api?
         files_api_path? &&
-        Gitlab::Throttle.settings.throttle_authenticated_files_api_enabled
+          Gitlab::Throttle.settings.throttle_authenticated_files_api_enabled
       end
 
       def throttle_unauthenticated_deprecated_api?
         deprecated_api_request? &&
-        Gitlab::Throttle.settings.throttle_unauthenticated_deprecated_api_enabled &&
-        unauthenticated?
+          Gitlab::Throttle.settings.throttle_unauthenticated_deprecated_api_enabled &&
+          unauthenticated?
       end
 
       def throttle_authenticated_deprecated_api?
         deprecated_api_request? &&
-        Gitlab::Throttle.settings.throttle_authenticated_deprecated_api_enabled
+          Gitlab::Throttle.settings.throttle_authenticated_deprecated_api_enabled
       end
 
       private

@@ -22398,9 +22398,11 @@ CREATE TABLE user_details (
     location text DEFAULT ''::text NOT NULL,
     organization text DEFAULT ''::text NOT NULL,
     password_last_changed_at timestamp with time zone DEFAULT now() NOT NULL,
+    onboarding_step_url text,
     CONSTRAINT check_245664af82 CHECK ((char_length(webauthn_xid) <= 100)),
     CONSTRAINT check_444573ee52 CHECK ((char_length(skype) <= 500)),
     CONSTRAINT check_466a25be35 CHECK ((char_length(twitter) <= 500)),
+    CONSTRAINT check_4f51129940 CHECK ((char_length(onboarding_step_url) <= 2000)),
     CONSTRAINT check_7b246dad73 CHECK ((char_length(organization) <= 500)),
     CONSTRAINT check_7d6489f8f3 CHECK ((char_length(linkedin) <= 500)),
     CONSTRAINT check_7fe2044093 CHECK ((char_length(website_url) <= 500)),
@@ -22691,6 +22693,7 @@ CREATE TABLE users (
     user_type smallint,
     static_object_token_encrypted text,
     otp_secret_expires_at timestamp with time zone,
+    onboarding_in_progress boolean DEFAULT false NOT NULL,
     CONSTRAINT check_7bde697e8e CHECK ((char_length(static_object_token_encrypted) <= 255))
 );
 

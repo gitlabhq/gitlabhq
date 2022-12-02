@@ -253,7 +253,7 @@ module Gitlab
 
         def with_redis
           if Feature.enabled?(:use_primary_and_secondary_stores_for_duplicate_jobs) ||
-             Feature.enabled?(:use_primary_store_as_default_for_duplicate_jobs)
+              Feature.enabled?(:use_primary_store_as_default_for_duplicate_jobs)
             # TODO: Swap for Gitlab::Redis::SharedState after store transition
             # https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/923
             Gitlab::Redis::DuplicateJobs.with { |redis| yield redis }

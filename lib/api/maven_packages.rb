@@ -107,7 +107,7 @@ module API
 
       def fetch_package(file_name:, project: nil, group: nil)
         order_by_package_file = file_name.include?(::Packages::Maven::Metadata.filename) &&
-                                  !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
+          !params[:path].include?(::Packages::Maven::FindOrCreatePackageService::SNAPSHOT_TERM)
 
         ::Packages::Maven::PackageFinder.new(
           current_user,

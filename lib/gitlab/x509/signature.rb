@@ -38,9 +38,9 @@ module Gitlab
       def verification_status
         return :unverified if
           x509_certificate.nil? ||
-          x509_certificate.revoked? ||
-          !verified_signature ||
-          signed_by_user.nil?
+            x509_certificate.revoked? ||
+            !verified_signature ||
+            signed_by_user.nil?
 
         if signed_by_user.verified_emails.include?(@email.downcase) && certificate_email.casecmp?(@email)
           :verified

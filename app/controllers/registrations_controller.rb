@@ -35,8 +35,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    set_user_state
-    set_custom_confirmation_token
+    set_resource_fields
 
     super do |new_user|
       accept_pending_invitations if new_user.persisted?
@@ -211,7 +210,7 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Recaptcha.load_configurations!
   end
 
-  def set_user_state
+  def set_resource_fields
     return unless set_blocked_pending_approval?
 
     resource.state = User::BLOCKED_PENDING_APPROVAL_STATE
@@ -248,10 +247,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def custom_confirmation_enabled?
-    # overridden by EE module
-  end
-
-  def set_custom_confirmation_token
     # overridden by EE module
   end
 

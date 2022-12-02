@@ -14,18 +14,7 @@ module Resolvers
                description: 'Status of the token.'
 
       def resolve(**args)
-        return ::Clusters::AgentToken.none unless can_read_agent_tokens?
-
-        tokens = agent.agent_tokens
-        tokens = tokens.with_status(args[:status]) if args[:status].present?
-
-        tokens
-      end
-
-      private
-
-      def can_read_agent_tokens?
-        current_user.can?(:read_cluster, project)
+        ::Clusters::AgentTokensFinder.new(agent, current_user, args).execute
       end
     end
   end

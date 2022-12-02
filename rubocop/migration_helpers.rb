@@ -66,7 +66,7 @@ module RuboCop
     def array_column?(node)
       node.each_descendant(:pair).any? do |pair_node|
         pair_node.child_nodes[0].value == :array && # Searching for a (pair (sym :array) (true)) node
-        pair_node.child_nodes[1].type == :true # RuboCop::AST::Node uses symbols for types, even when that is a :true
+          pair_node.child_nodes[1].type == :true # RuboCop::AST::Node uses symbols for types, even when that is a :true
       end
     end
     # rubocop:enable Lint/BooleanSymbol

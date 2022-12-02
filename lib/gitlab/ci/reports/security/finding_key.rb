@@ -15,7 +15,7 @@ module Gitlab
 
             has_fingerprints? && other.has_fingerprints? &&
               location_fingerprint == other.location_fingerprint &&
-                identifier_fingerprint == other.identifier_fingerprint
+              identifier_fingerprint == other.identifier_fingerprint
           end
 
           def hash

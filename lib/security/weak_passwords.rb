@@ -8,6 +8,9 @@ module Security
     # Substrings shorter than this may appear legitimately in a truly
     # random password.
     MINIMUM_SUBSTRING_SIZE = 4
+    # Passwords of this length or more are more likely to randomly
+    # include a forbidden substring.
+    PASSWORD_SUBSTRING_CHECK_MAX_LENGTH = 64
 
     class << self
       # Returns true when the password is on a list of weak passwords,
@@ -72,7 +75,11 @@ module Security
       # Case-insensitively checks whether a password includes a dynamic
       # list of substrings. Substrings which are too short are not
       # predictable and may occur randomly, and therefore not checked.
+      # Similarly passwords which are long enough to inadvertently and
+      # randomly include a substring are not checked.
       def contains_predicatable_substring?(password, substrings)
+        return unless password.length < PASSWORD_SUBSTRING_CHECK_MAX_LENGTH
+
         substrings = substrings.filter_map do |substring|
           substring.downcase if substring.length >= MINIMUM_SUBSTRING_SIZE
         end

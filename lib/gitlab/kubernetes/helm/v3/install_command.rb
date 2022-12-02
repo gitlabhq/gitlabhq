@@ -33,13 +33,13 @@ module Gitlab
           # installation and uprade of applications
           def install_command
             command = ['helm', 'upgrade', name, chart] +
-                      install_flag +
-                      rollback_support_flag +
-                      reset_values_flag +
-                      optional_version_flag +
-                      rbac_create_flag +
-                      namespace_flag +
-                      value_flag
+              install_flag +
+              rollback_support_flag +
+              reset_values_flag +
+              optional_version_flag +
+              rbac_create_flag +
+              namespace_flag +
+              value_flag
 
             command.shelljoin
           end
