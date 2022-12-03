@@ -5,22 +5,22 @@ require_migration!
 
 RSpec.describe ScheduleRemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindings,
                :suppress_gitlab_schemas_validate_connection, :migration do
-  let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
-  let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
-  let_it_be(:users) { table(:users) }
-  let_it_be(:user) { create_user! }
-  let_it_be(:project) { table(:projects).create!(id: 14219619, namespace_id: namespace.id) }
-  let_it_be(:pipelines) { table(:ci_pipelines) }
-  let_it_be(:scanners) { table(:vulnerability_scanners) }
-  let_it_be(:scanner1) { scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
-  let_it_be(:scanner2) { scanners.create!(project_id: project.id, external_id: 'test 2', name: 'test scanner 2') }
-  let_it_be(:scanner3) { scanners.create!(project_id: project.id, external_id: 'test 3', name: 'test scanner 3') }
-  let_it_be(:unrelated_scanner) { scanners.create!(project_id: project.id, external_id: 'unreleated_scanner', name: 'unrelated scanner') }
-  let_it_be(:vulnerabilities) { table(:vulnerabilities) }
-  let_it_be(:vulnerability_findings) { table(:vulnerability_occurrences) }
-  let_it_be(:vulnerability_finding_pipelines) { table(:vulnerability_occurrence_pipelines) }
-  let_it_be(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
-  let_it_be(:vulnerability_identifier) do
+  let!(:background_migration_jobs) { table(:background_migration_jobs) }
+  let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
+  let!(:users) { table(:users) }
+  let!(:user) { create_user! }
+  let!(:project) { table(:projects).create!(id: 14219619, namespace_id: namespace.id) }
+  let!(:pipelines) { table(:ci_pipelines) }
+  let!(:scanners) { table(:vulnerability_scanners) }
+  let!(:scanner1) { scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
+  let!(:scanner2) { scanners.create!(project_id: project.id, external_id: 'test 2', name: 'test scanner 2') }
+  let!(:scanner3) { scanners.create!(project_id: project.id, external_id: 'test 3', name: 'test scanner 3') }
+  let!(:unrelated_scanner) { scanners.create!(project_id: project.id, external_id: 'unreleated_scanner', name: 'unrelated scanner') }
+  let!(:vulnerabilities) { table(:vulnerabilities) }
+  let!(:vulnerability_findings) { table(:vulnerability_occurrences) }
+  let!(:vulnerability_finding_pipelines) { table(:vulnerability_occurrence_pipelines) }
+  let!(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
+  let!(:vulnerability_identifier) do
     vulnerability_identifiers.create!(
       id: 1244459,
       project_id: project.id,
@@ -30,14 +30,14 @@ RSpec.describe ScheduleRemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindi
       name: 'vulnerability identifier')
   end
 
-  let_it_be(:vulnerability_for_first_duplicate) do
+  let!(:vulnerability_for_first_duplicate) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id
     )
   end
 
-  let_it_be(:first_finding_duplicate) do
+  let!(:first_finding_duplicate) do
     create_finding!(
       id: 5606961,
       uuid: "bd95c085-71aa-51d7-9bb6-08ae669c262e",
@@ -50,14 +50,14 @@ RSpec.describe ScheduleRemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindi
     )
   end
 
-  let_it_be(:vulnerability_for_second_duplicate) do
+  let!(:vulnerability_for_second_duplicate) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id
     )
   end
 
-  let_it_be(:second_finding_duplicate) do
+  let!(:second_finding_duplicate) do
     create_finding!(
       id: 8765432,
       uuid: "5b714f58-1176-5b26-8fd5-e11dfcb031b5",
@@ -70,14 +70,14 @@ RSpec.describe ScheduleRemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindi
     )
   end
 
-  let_it_be(:vulnerability_for_third_duplicate) do
+  let!(:vulnerability_for_third_duplicate) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id
     )
   end
 
-  let_it_be(:third_finding_duplicate) do
+  let!(:third_finding_duplicate) do
     create_finding!(
       id: 8832995,
       uuid: "cfe435fa-b25b-5199-a56d-7b007cc9e2d4",
@@ -90,7 +90,7 @@ RSpec.describe ScheduleRemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindi
     )
   end
 
-  let_it_be(:unrelated_finding) do
+  let!(:unrelated_finding) do
     create_finding!(
       id: 9999999,
       uuid: "unreleated_finding",

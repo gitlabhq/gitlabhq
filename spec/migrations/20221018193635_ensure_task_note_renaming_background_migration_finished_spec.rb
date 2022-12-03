@@ -8,7 +8,7 @@ RSpec.describe EnsureTaskNoteRenamingBackgroundMigrationFinished, :migration do
   let(:batch_failed_status) { 2 }
   let(:batch_finalized_status) { 3 }
 
-  let_it_be(:migration) { described_class::MIGRATION }
+  let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do
     shared_examples 'finalizes the migration' do

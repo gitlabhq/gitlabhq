@@ -3,20 +3,20 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, schema: 20211108211434 do
-  let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
+RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, :suppress_gitlab_schemas_validate_connection, schema: 20211108211434 do
+  let!(:background_migration_jobs) { table(:background_migration_jobs) }
 
-  let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user', type: Namespaces::UserNamespace.sti_name) }
-  let_it_be(:project) { table(:projects).create!(namespace_id: namespace.id) }
+  let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user', type: Namespaces::UserNamespace.sti_name) }
+  let!(:project) { table(:projects).create!(namespace_id: namespace.id) }
 
-  let_it_be(:pipelines) { table(:ci_pipelines) }
-  let_it_be(:pipeline) { pipelines.create!(project_id: project.id) }
+  let!(:pipelines) { table(:ci_pipelines) }
+  let!(:pipeline) { pipelines.create!(project_id: project.id) }
 
-  let_it_be(:ci_builds) { table(:ci_builds) }
-  let_it_be(:ci_build) { ci_builds.create! }
+  let!(:ci_builds) { table(:ci_builds) }
+  let!(:ci_build) { ci_builds.create! }
 
-  let_it_be(:security_scans) { table(:security_scans) }
-  let_it_be(:security_scan) do
+  let!(:security_scans) { table(:security_scans) }
+  let!(:security_scan) do
     security_scans.create!(
       scan_type: 1,
       status: 1,
@@ -26,11 +26,11 @@ RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, schema: 20211108
     )
   end
 
-  let_it_be(:vulnerability_scanners) { table(:vulnerability_scanners) }
-  let_it_be(:vulnerability_scanner) { vulnerability_scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
+  let!(:vulnerability_scanners) { table(:vulnerability_scanners) }
+  let!(:vulnerability_scanner) { vulnerability_scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
 
-  let_it_be(:security_findings) { table(:security_findings) }
-  let_it_be(:security_finding_without_uuid) do
+  let!(:security_findings) { table(:security_findings) }
+  let!(:security_finding_without_uuid) do
     security_findings.create!(
       severity: 1,
       confidence: 1,
@@ -40,7 +40,7 @@ RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, schema: 20211108
     )
   end
 
-  let_it_be(:security_finding_with_uuid) do
+  let!(:security_finding_with_uuid) do
     security_findings.create!(
       severity: 1,
       confidence: 1,

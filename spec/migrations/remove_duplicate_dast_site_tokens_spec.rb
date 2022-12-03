@@ -15,7 +15,7 @@ RSpec.describe RemoveDuplicateDastSiteTokens do
 
   context 'when duplicate dast site tokens exists' do
     # create duplicate dast site token
-    let_it_be(:duplicate_url) { 'https://about.gitlab.com' }
+    let!(:duplicate_url) { 'https://about.gitlab.com' }
 
     let!(:project2) { projects.create!(id: 2, namespace_id: namespace.id, path: 'project2') }
     let!(:dast_site_token2) { dast_site_tokens.create!(project_id: project2.id, url: duplicate_url, token: SecureRandom.uuid) }

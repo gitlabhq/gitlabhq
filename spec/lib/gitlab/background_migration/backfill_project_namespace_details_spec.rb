@@ -3,9 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillProjectNamespaceDetails, :migration do
-  let_it_be(:namespace_details) { table(:namespace_details) }
-  let_it_be(:namespaces) { table(:namespaces) }
-  let_it_be(:projects) { table(:projects) }
+  let!(:namespace_details) { table(:namespace_details) }
+  let!(:namespaces) { table(:namespaces) }
+  let!(:projects) { table(:projects) }
 
   subject(:perform_migration) do
     described_class.new(start_id: projects.minimum(:id),

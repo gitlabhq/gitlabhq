@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe BackfillAllProjectNamespaces, :migration do
-  let_it_be(:migration) { described_class::MIGRATION }
+  let!(:migration) { described_class::MIGRATION }
 
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

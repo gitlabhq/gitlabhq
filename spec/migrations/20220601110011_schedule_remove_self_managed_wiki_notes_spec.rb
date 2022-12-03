@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleRemoveSelfManagedWikiNotes do
-  let_it_be(:batched_migration) { described_class::MIGRATION }
+  let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules new batched migration' do
     reversible_migration do |migration|

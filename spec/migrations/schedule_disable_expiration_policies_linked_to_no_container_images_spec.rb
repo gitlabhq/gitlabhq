@@ -5,21 +5,21 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleDisableExpirationPoliciesLinkedToNoContainerImages do
-  let_it_be(:projects) { table(:projects) }
-  let_it_be(:container_expiration_policies) { table(:container_expiration_policies) }
-  let_it_be(:container_repositories) { table(:container_repositories) }
-  let_it_be(:namespaces) { table(:namespaces) }
-  let_it_be(:namespace) { namespaces.create!(name: 'test', path: 'test') }
+  let!(:projects) { table(:projects) }
+  let!(:container_expiration_policies) { table(:container_expiration_policies) }
+  let!(:container_repositories) { table(:container_repositories) }
+  let!(:namespaces) { table(:namespaces) }
+  let!(:namespace) { namespaces.create!(name: 'test', path: 'test') }
 
-  let_it_be(:policy1) { create_expiration_policy(id: 1, enabled: true) }
-  let_it_be(:policy2) { create_expiration_policy(id: 2, enabled: false) }
-  let_it_be(:policy3) { create_expiration_policy(id: 3, enabled: false) }
-  let_it_be(:policy4) { create_expiration_policy(id: 4, enabled: true) }
-  let_it_be(:policy5) { create_expiration_policy(id: 5, enabled: false) }
-  let_it_be(:policy6) { create_expiration_policy(id: 6, enabled: false) }
-  let_it_be(:policy7) { create_expiration_policy(id: 7, enabled: true) }
-  let_it_be(:policy8) { create_expiration_policy(id: 8, enabled: true) }
-  let_it_be(:policy9) { create_expiration_policy(id: 9, enabled: true) }
+  let!(:policy1) { create_expiration_policy(id: 1, enabled: true) }
+  let!(:policy2) { create_expiration_policy(id: 2, enabled: false) }
+  let!(:policy3) { create_expiration_policy(id: 3, enabled: false) }
+  let!(:policy4) { create_expiration_policy(id: 4, enabled: true) }
+  let!(:policy5) { create_expiration_policy(id: 5, enabled: false) }
+  let!(:policy6) { create_expiration_policy(id: 6, enabled: false) }
+  let!(:policy7) { create_expiration_policy(id: 7, enabled: true) }
+  let!(:policy8) { create_expiration_policy(id: 8, enabled: true) }
+  let!(:policy9) { create_expiration_policy(id: 9, enabled: true) }
 
   it 'schedules background migrations', :aggregate_failures do
     stub_const("#{described_class}::BATCH_SIZE", 2)

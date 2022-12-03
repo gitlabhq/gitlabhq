@@ -2252,6 +2252,9 @@ This example creates four paths of execution:
   in a job's `needs` section.
 - In GitLab 13.9 and older, if `needs` refers to a job that might not be added to
   a pipeline because of `only`, `except`, or `rules`, the pipeline might fail to create. In GitLab 13.10 and later, use the [`needs:optional`](#needsoptional) keyword to resolve a failed pipeline creation.
+- If a pipeline has jobs with `needs: []` and jobs in the [`.pre`](#stage-pre) stage, they will
+  all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
+  and jobs in the `.pre` stage also start immediately.
 
 #### `needs:artifacts`
 
@@ -3923,6 +3926,12 @@ job2:
   script:
     - echo "This job runs in the test stage."
 ```
+
+**Additional details:**
+
+- If a pipeline has jobs with [`needs: []`](#needs) and jobs in the `.pre` stage, they will
+  all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
+  ignoring any stage configuration.
 
 ### `tags`
 

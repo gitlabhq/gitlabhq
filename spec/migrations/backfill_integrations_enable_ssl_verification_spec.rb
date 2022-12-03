@@ -4,8 +4,8 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe BackfillIntegrationsEnableSslVerification do
-  let_it_be(:migration) { described_class::MIGRATION }
-  let_it_be(:integrations) { described_class::Integration }
+  let!(:migration) { described_class::MIGRATION }
+  let!(:integrations) { described_class::Integration }
 
   before do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)

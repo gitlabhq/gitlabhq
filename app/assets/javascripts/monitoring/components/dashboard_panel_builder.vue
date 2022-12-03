@@ -100,7 +100,7 @@ export default {
               <gl-form-textarea
                 id="panel-yml-input"
                 v-model="yml"
-                class="gl-h-200! gl-font-monospace! gl-font-size-monospace!"
+                class="gl-h-200! gl-font-monospace!"
               />
             </gl-form-group>
             <div class="gl-text-right">

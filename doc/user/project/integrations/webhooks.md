@@ -64,10 +64,9 @@ You can configure a webhook for a group or a project.
 
 ## Mask sensitive portions of webhook URLs
 
-> Introduced in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, ask an administrator to [enable the feature flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. On GitLab.com, this feature is not available.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.6.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.7. Feature flag `webhook_form_mask_url` removed.
 
 You can define and mask sensitive portions of webhook URLs and replace them
 with configured values any number of times when webhooks are executed.

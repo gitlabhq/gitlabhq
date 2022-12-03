@@ -4,8 +4,8 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe InsertCiDailyPipelineScheduleTriggersPlanLimits do
-  let_it_be(:plans) { table(:plans) }
-  let_it_be(:plan_limits) { table(:plan_limits) }
+  let!(:plans) { table(:plans) }
+  let!(:plan_limits) { table(:plan_limits) }
 
   context 'when on Gitlab.com' do
     let(:free_plan) { plans.create!(name: 'free') }

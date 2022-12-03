@@ -1,13 +1,6 @@
 = form_errors(hook)
 
-- if Feature.enabled?(:webhook_form_mask_url)
-  .js-vue-webhook-form{ data: webhook_form_data(hook) }
-- else
-  .form-group
-    = form.label :url, s_('Webhooks|URL'), class: 'label-bold'
-    = form.text_field :url, class: 'form-control gl-form-input', placeholder: 'http://example.com/trigger-ci.json'
-    %p.form-text.text-muted
-      = s_('Webhooks|URL must be percent-encoded if it contains one or more special characters.')
+.js-vue-webhook-form{ data: webhook_form_data(hook) }
 .form-group
   = form.label :token, s_('Webhooks|Secret token'), class: 'label-bold'
   = form.password_field :token, value: hook.masked_token, autocomplete: 'new-password', class: 'form-control gl-form-input'

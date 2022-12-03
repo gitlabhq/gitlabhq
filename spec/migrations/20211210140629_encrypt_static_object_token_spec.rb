@@ -4,8 +4,8 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe EncryptStaticObjectToken, :migration do
-  let_it_be(:background_migration_jobs) { table(:background_migration_jobs) }
-  let_it_be(:users) { table(:users) }
+  let!(:background_migration_jobs) { table(:background_migration_jobs) }
+  let!(:users) { table(:users) }
 
   let!(:user_without_tokens) { create_user!(name: 'notoken') }
   let!(:user_with_plaintext_token_1) { create_user!(name: 'plaintext_1', token: 'token') }

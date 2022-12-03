@@ -301,6 +301,8 @@ RSpec.describe 'User edit profile', feature_category: :users do
         find('.header-user-dropdown-toggle').click
 
         page.within ".header-user" do
+          find('.js-set-status-modal-trigger.ready')
+
           click_button button_text
         end
       end
@@ -365,7 +367,7 @@ RSpec.describe 'User edit profile', feature_category: :users do
         end
       end
 
-      it 'sets the users status to busy', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/382965' do
+      it 'sets the users status to busy' do
         open_user_status_modal
         busy_status = find('[data-testid="user-availability-checkbox"]')
 

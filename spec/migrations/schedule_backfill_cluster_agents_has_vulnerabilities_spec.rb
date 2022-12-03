@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleBackfillClusterAgentsHasVulnerabilities do
-  let_it_be(:batched_migration) { described_class::MIGRATION }
+  let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules background jobs for each batch of cluster agents' do
     reversible_migration do |migration|

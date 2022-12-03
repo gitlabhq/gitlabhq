@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::PopulateNamespaceStatistics do
-  let_it_be(:namespaces) { table(:namespaces) }
-  let_it_be(:namespace_statistics) { table(:namespace_statistics) }
-  let_it_be(:dependency_proxy_manifests) { table(:dependency_proxy_manifests) }
-  let_it_be(:dependency_proxy_blobs) { table(:dependency_proxy_blobs) }
+  let!(:namespaces) { table(:namespaces) }
+  let!(:namespace_statistics) { table(:namespace_statistics) }
+  let!(:dependency_proxy_manifests) { table(:dependency_proxy_manifests) }
+  let!(:dependency_proxy_blobs) { table(:dependency_proxy_blobs) }
 
   let!(:group1) { namespaces.create!(id: 10, type: 'Group', name: 'group1', path: 'group1') }
   let!(:group2) { namespaces.create!(id: 20, type: 'Group', name: 'group2', path: 'group2') }

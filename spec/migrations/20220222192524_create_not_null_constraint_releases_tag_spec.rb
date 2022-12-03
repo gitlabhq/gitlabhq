@@ -3,8 +3,8 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe CreateNotNullConstraintReleasesTag do
-  let_it_be(:releases) { table(:releases) }
-  let_it_be(:migration) { described_class.new }
+  let!(:releases) { table(:releases) }
+  let!(:migration) { described_class.new }
 
   before do
     allow(migration).to receive(:transaction_open?).and_return(false)

@@ -5,9 +5,9 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabilities, :migration do
   include MigrationHelpers::VulnerabilitiesHelper
 
-  let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
-  let_it_be(:users) { table(:users) }
-  let_it_be(:user) do
+  let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
+  let!(:users) { table(:users) }
+  let!(:user) do
     users.create!(
       name: "Example User",
       email: "user@example.com",
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     )
   end
 
-  let_it_be(:project) do
+  let!(:project) do
     table(:projects).create!(
       id: 123,
       namespace_id: namespace.id,
@@ -25,9 +25,9 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     )
   end
 
-  let_it_be(:scanners) { table(:vulnerability_scanners) }
-  let_it_be(:scanner) { scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
-  let_it_be(:different_scanner) do
+  let!(:scanners) { table(:vulnerability_scanners) }
+  let!(:scanner) { scanners.create!(project_id: project.id, external_id: 'test 1', name: 'test scanner 1') }
+  let!(:different_scanner) do
     scanners.create!(
       project_id: project.id,
       external_id: 'test 2',
@@ -35,22 +35,22 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     )
   end
 
-  let_it_be(:vulnerabilities) { table(:vulnerabilities) }
-  let_it_be(:vulnerability_with_finding) do
+  let!(:vulnerabilities) { table(:vulnerabilities) }
+  let!(:vulnerability_with_finding) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id
     )
   end
 
-  let_it_be(:vulnerability_without_finding) do
+  let!(:vulnerability_without_finding) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id
     )
   end
 
-  let_it_be(:cis_vulnerability_without_finding) do
+  let!(:cis_vulnerability_without_finding) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id,
@@ -58,7 +58,7 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     )
   end
 
-  let_it_be(:custom_vulnerability_without_finding) do
+  let!(:custom_vulnerability_without_finding) do
     create_vulnerability!(
       project_id: project.id,
       author_id: user.id,
@@ -66,8 +66,8 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
     )
   end
 
-  let_it_be(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
-  let_it_be(:primary_identifier) do
+  let!(:vulnerability_identifiers) { table(:vulnerability_identifiers) }
+  let!(:primary_identifier) do
     vulnerability_identifiers.create!(
       project_id: project.id,
       external_type: 'uuid-v5',
@@ -76,8 +76,8 @@ RSpec.describe Gitlab::BackgroundMigration::DeleteOrphanedOperationalVulnerabili
       name: 'Identifier for UUIDv5')
   end
 
-  let_it_be(:vulnerabilities_findings) { table(:vulnerability_occurrences) }
-  let_it_be(:finding) do
+  let!(:vulnerabilities_findings) { table(:vulnerability_occurrences) }
+  let!(:finding) do
     create_finding!(
       vulnerability_id: vulnerability_with_finding.id,
       project_id: project.id,

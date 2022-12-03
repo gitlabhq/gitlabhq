@@ -4,8 +4,8 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleDisableLegacyOpenSourceLicenseForProjectsLessThanOneMb do
-  let_it_be(:migration) { described_class.new }
-  let_it_be(:post_migration) { described_class::MIGRATION }
+  let!(:migration) { described_class.new }
+  let!(:post_migration) { described_class::MIGRATION }
 
   context 'when on gitlab.com' do
     before do

@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe RescheduleBackfillImportedIssueSearchData do
-  let_it_be(:reschedule_migration) { described_class::MIGRATION }
+  let!(:reschedule_migration) { described_class::MIGRATION }
 
   def create_batched_migration(max_value:)
     Gitlab::Database::BackgroundMigration::BatchedMigration
@@ -55,8 +55,8 @@ RSpec.describe RescheduleBackfillImportedIssueSearchData do
   end
 
   context 'when an issue is available' do
-    let_it_be(:namespaces_table) { table(:namespaces) }
-    let_it_be(:projects_table) { table(:projects) }
+    let!(:namespaces_table) { table(:namespaces) }
+    let!(:projects_table) { table(:projects) }
 
     let(:namespace) { namespaces_table.create!(name: 'gitlab-org', path: 'gitlab-org') }
 

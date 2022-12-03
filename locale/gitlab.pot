@@ -46179,9 +46179,6 @@ msgstr ""
 msgid "Webhooks|Trigger"
 msgstr ""
 
-msgid "Webhooks|URL"
-msgstr ""
-
 msgid "Webhooks|URL must be percent-encoded if it contains one or more special characters."
 msgstr ""
 

@@ -6,6 +6,8 @@ class DisableFastupdateOnMergeRequestsDescriptionGinIndex < Gitlab::Database::Mi
   INDEX_NAME = 'index_merge_requests_on_description_trigram'
 
   def up
+    return unless index_exists_by_name?(:merge_requests, INDEX_NAME)
+
     with_lock_retries do
       execute <<~SQL
         ALTER INDEX #{INDEX_NAME} SET ( fastupdate = false ) ;
@@ -14,6 +16,8 @@ class DisableFastupdateOnMergeRequestsDescriptionGinIndex < Gitlab::Database::Mi
   end
 
   def down
+    return unless index_exists_by_name?(:merge_requests, INDEX_NAME)
+
     with_lock_retries do
       execute <<~SQL
         ALTER INDEX #{INDEX_NAME} RESET ( fastupdate ) ;

@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe CreateRoutingTableForBuildsMetadataV2, :migration do
-  let_it_be(:migration) { described_class.new }
+  let!(:migration) { described_class.new }
 
   describe '#up' do
     context 'when the table is already partitioned' do

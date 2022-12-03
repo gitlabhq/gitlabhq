@@ -4,10 +4,10 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe RescheduleIssueWorkItemTypeIdBackfill, :migration do
-  let_it_be(:migration) { described_class::MIGRATION }
-  let_it_be(:interval) { 2.minutes }
-  let_it_be(:issue_type_enum) { { issue: 0, incident: 1, test_case: 2, requirement: 3, task: 4 } }
-  let_it_be(:base_work_item_type_ids) do
+  let!(:migration) { described_class::MIGRATION }
+  let!(:interval) { 2.minutes }
+  let!(:issue_type_enum) { { issue: 0, incident: 1, test_case: 2, requirement: 3, task: 4 } }
+  let!(:base_work_item_type_ids) do
     table(:work_item_types).where(namespace_id: nil).order(:base_type).each_with_object({}) do |type, hash|
       hash[type.base_type] = type.id
     end

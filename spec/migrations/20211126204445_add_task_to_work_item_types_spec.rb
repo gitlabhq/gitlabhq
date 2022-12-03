@@ -6,7 +6,7 @@ require_migration!
 RSpec.describe AddTaskToWorkItemTypes, :migration do
   include MigrationHelpers::WorkItemTypesHelper
 
-  let_it_be(:work_item_types) { table(:work_item_types) }
+  let!(:work_item_types) { table(:work_item_types) }
 
   let(:base_types) do
     {

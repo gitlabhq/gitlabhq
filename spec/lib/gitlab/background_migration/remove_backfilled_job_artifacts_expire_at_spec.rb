@@ -20,8 +20,8 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveBackfilledJobArtifactsExpireAt
       )
     end
 
-    let_it_be(:namespace) { table(:namespaces).create!(id: 1, name: 'user', path: 'user') }
-    let_it_be(:project) do
+    let!(:namespace) { table(:namespaces).create!(id: 1, name: 'user', path: 'user') }
+    let!(:project) do
       table(:projects).create!(
         id: 1,
         name: 'gitlab1',

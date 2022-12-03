@@ -250,8 +250,8 @@
     :when: 2019-09-11 13:08:28.431132000 Z
 - - :permit
   - "(MIT OR CC0-1.0)"
-  - :who: 
-    :why: 
+  - :who:
+    :why:
     :versions: []
     :when: 2019-11-08 10:03:31.787226000 Z
 - - :permit
@@ -369,3 +369,9 @@
     :why: https://github.com/gridstack/gridstack.js/blob/v7.0.0/LICENSE
     :versions: []
     :when: 2022-10-18 16:24:56.611523399 Z
+- - :approve
+  - "@gitlab/fonts"
+  - :who: Lukas Eipert
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/1265
+    :versions: []
+    :when: 2022-12-02 08:24:56.611523399 Z

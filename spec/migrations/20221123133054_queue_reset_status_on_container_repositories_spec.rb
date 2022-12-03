@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe QueueResetStatusOnContainerRepositories, feature_category: :container_registry do
-  let_it_be(:batched_migration) { described_class::MIGRATION }
+  let!(:batched_migration) { described_class::MIGRATION }
 
   before do
     stub_container_registry_config(

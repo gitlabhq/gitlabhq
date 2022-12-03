@@ -5,9 +5,9 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe AddPasswordLastChangedAtToUserDetails do
-  let_it_be(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
-  let_it_be(:users) { table(:users) }
-  let_it_be(:user) { create_user! }
+  let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
+  let!(:users) { table(:users) }
+  let!(:user) { create_user! }
   let(:user_detail) { table(:user_details).create!(user_id: user.id, provisioned_by_group_id: namespace.id) }
 
   describe "#up" do

@@ -6,8 +6,8 @@ require_migration!
 RSpec.describe AddOkrHierarchyRestrictions, :migration, feature_category: :portfolio_management do
   include MigrationHelpers::WorkItemTypesHelper
 
-  let_it_be(:restrictions) { table(:work_item_hierarchy_restrictions) }
-  let_it_be(:work_item_types) { table(:work_item_types) }
+  let!(:restrictions) { table(:work_item_hierarchy_restrictions) }
+  let!(:work_item_types) { table(:work_item_types) }
 
   it 'creates default restrictions' do
     restrictions.delete_all

@@ -5,7 +5,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe OperationsFeatureFlagsCorrectFlexibleRolloutValues, :migration do
-  let_it_be(:strategies) { table(:operations_strategies) }
+  let!(:strategies) { table(:operations_strategies) }
 
   let(:namespace) { table(:namespaces).create!(name: 'feature_flag', path: 'feature_flag') }
   let(:project) { table(:projects).create!(namespace_id: namespace.id) }

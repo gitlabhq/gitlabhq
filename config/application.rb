@@ -333,6 +333,7 @@ module Gitlab
     config.assets.precompile << "disable_animations.css"
     config.assets.precompile << "test_environment.css"
     config.assets.precompile << "snippets.css"
+    config.assets.precompile << "fonts.css"
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
@@ -343,6 +344,11 @@ module Gitlab
     config.assets.precompile << "highlight/themes/*.css"
     config.assets.precompile << "highlight/diff_custom_colors_addition.css"
     config.assets.precompile << "highlight/diff_custom_colors_deletion.css"
+
+    # Import woff2 for fonts
+    config.assets.paths << "#{config.root}/node_modules/@gitlab/fonts/"
+    config.assets.precompile << "gitlab-sans/*.woff2"
+    config.assets.precompile << "jetbrains-mono/*.woff2"
 
     # Import gitlab-svgs directly from vendored directory
     config.assets.paths << "#{config.root}/node_modules/@gitlab/svgs/dist"

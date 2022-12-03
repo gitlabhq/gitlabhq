@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ApplicationHelper do
+  include Devise::Test::ControllerHelpers
+
   describe 'current_controller?' do
     before do
       stub_controller_name('foo')
@@ -683,6 +685,30 @@ RSpec.describe ApplicationHelper do
       allow(helper.controller).to receive(:params).and_return({ no_startup_css: '' })
 
       expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" media="screen" href="/stylesheets/test.css" />')
+    end
+  end
+
+  describe '#use_new_fonts?' do
+    subject { helper.use_new_fonts? }
+
+    it { is_expected.to eq true }
+
+    context 'when the feature flag is disabled' do
+      before do
+        stub_feature_flags(new_fonts: false)
+      end
+
+      it { is_expected.to eq false }
+
+      context 'with special request param' do
+        let(:request) { instance_double(ActionController::TestRequest, params: { new_fonts: true }) }
+
+        before do
+          allow(helper).to receive(:request).and_return(request)
+        end
+
+        it { is_expected.to eq true }
+      end
     end
   end
 end

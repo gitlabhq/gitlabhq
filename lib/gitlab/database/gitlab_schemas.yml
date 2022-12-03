@@ -208,8 +208,6 @@ error_tracking_error_events: :gitlab_main
 error_tracking_errors: :gitlab_main
 events: :gitlab_main
 evidences: :gitlab_main
-experiments: :gitlab_main
-experiment_subjects: :gitlab_main
 external_approval_rules: :gitlab_main
 external_approval_rules_protected_branches: :gitlab_main
 external_pull_requests: :gitlab_ci

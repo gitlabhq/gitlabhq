@@ -6,7 +6,7 @@ require_migration!
 RSpec.describe RetryBackfillTraversalIds, :migration do
   include ReloadHelpers
 
-  let_it_be(:namespaces_table) { table(:namespaces) }
+  let!(:namespaces_table) { table(:namespaces) }
 
   context 'when BackfillNamespaceTraversalIdsRoots jobs are pending' do
     before do

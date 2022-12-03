@@ -84,6 +84,8 @@ function initStatusTriggers() {
         })
         .catch(() => {});
     });
+
+    setStatusModalTriggerEl.classList.add('ready');
   }
 }
 

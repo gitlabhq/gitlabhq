@@ -290,6 +290,10 @@ module ApplicationHelper
     !params.has_key?(:no_startup_css)
   end
 
+  def use_new_fonts?
+    Feature.enabled?(:new_fonts, current_user) || request.params.has_key?(:new_fonts)
+  end
+
   def outdated_browser?
     browser.ie?
   end

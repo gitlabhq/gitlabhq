@@ -658,7 +658,7 @@ pre {
   display: block;
   padding: $gl-padding-8 $input-horizontal-padding;
   margin: 0 0 $gl-padding-8;
-  font-size: $gl-font-size-monospace;
+  @include gl-font-base;
   word-break: break-all;
   word-wrap: break-word;
   color: $gl-text-color;
@@ -680,7 +680,7 @@ code {
 }
 
 .monospace {
-  font-family: $monospace-font;
+  @include gl-font-monospace;
 }
 
 .weight-normal {
@@ -706,7 +706,7 @@ code {
  */
 textarea.js-gfm-input {
   font-family: $monospace-font;
-  font-size: $gl-font-size-monospace;
+  @include gl-font-base;
 }
 
 h1,

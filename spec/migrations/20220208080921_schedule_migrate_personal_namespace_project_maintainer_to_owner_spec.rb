@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleMigratePersonalNamespaceProjectMaintainerToOwner do
-  let_it_be(:migration) { described_class::MIGRATION }
+  let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do
     it 'schedules background jobs for each batch of members' do

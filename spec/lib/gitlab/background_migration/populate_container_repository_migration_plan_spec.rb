@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::PopulateContainerRepositoryMigrationPlan, schema: 20220316202640 do
-  let_it_be(:container_repositories) { table(:container_repositories) }
-  let_it_be(:projects) { table(:projects) }
-  let_it_be(:namespaces) { table(:namespaces) }
-  let_it_be(:gitlab_subscriptions) { table(:gitlab_subscriptions) }
-  let_it_be(:plans) { table(:plans) }
-  let_it_be(:namespace_statistics) { table(:namespace_statistics) }
+  let!(:container_repositories) { table(:container_repositories) }
+  let!(:projects) { table(:projects) }
+  let!(:namespaces) { table(:namespaces) }
+  let!(:gitlab_subscriptions) { table(:gitlab_subscriptions) }
+  let!(:plans) { table(:plans) }
+  let!(:namespace_statistics) { table(:namespace_statistics) }
 
   let!(:namepace1) { namespaces.create!(id: 1, type: 'Group', name: 'group1', path: 'group1', traversal_ids: [1]) }
   let!(:namepace2) { namespaces.create!(id: 2, type: 'Group', name: 'group2', path: 'group2', traversal_ids: [2]) }

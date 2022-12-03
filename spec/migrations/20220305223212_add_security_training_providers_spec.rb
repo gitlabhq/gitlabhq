@@ -6,7 +6,7 @@ require_migration!
 RSpec.describe AddSecurityTrainingProviders, :migration do
   include MigrationHelpers::WorkItemTypesHelper
 
-  let_it_be(:security_training_providers) { table(:security_training_providers) }
+  let!(:security_training_providers) { table(:security_training_providers) }
 
   it 'creates default data' do
     # Need to delete all as security training providers are seeded before entire test suite

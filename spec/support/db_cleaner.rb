@@ -2,7 +2,7 @@
 
 module DbCleaner
   def all_connection_classes
-    ::BeforeAllAdapter.all_connection_classes
+    ::TestProfBeforeAllAdapter::MultipleDatabaseAdapter.all_connection_classes
   end
 
   def delete_from_all_tables!(except: [])
