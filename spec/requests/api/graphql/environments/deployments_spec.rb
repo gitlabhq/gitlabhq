@@ -437,6 +437,43 @@ RSpec.describe 'Environments Deployments query' do
       end
     end
 
+    context 'when requesting user permissions' do
+      let(:query) do
+        %(
+          query {
+            project(fullPath: "#{project.full_path}") {
+              environment(name: "#{environment.name}") {
+                deployments {
+                  nodes {
+                    iid
+                    userPermissions {
+                      updateDeployment
+                      destroyDeployment
+                    }
+                  }
+                }
+              }
+            }
+          }
+        )
+      end
+
+      it_behaves_like 'avoids N+1 database queries'
+
+      it 'returns user permissions of the deployments', :aggregate_failures do
+        deployments = subject.dig('data', 'project', 'environment', 'deployments', 'nodes')
+
+        deployments.each do |deployment|
+          deployment_in_record = project.deployments.find_by_iid(deployment['iid'])
+
+          expect(deployment['userPermissions']['updateDeployment'])
+            .to eq(Ability.allowed?(user, :update_deployment, deployment_in_record))
+          expect(deployment['userPermissions']['destroyDeployment'])
+            .to eq(Ability.allowed?(user, :destroy_deployment, deployment_in_record))
+        end
+      end
+    end
+
     describe 'sorting and pagination' do
       let(:data_path) { [:project, :environment, :deployments] }
       let(:current_user) { user }

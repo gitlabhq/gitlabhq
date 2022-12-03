@@ -15,6 +15,8 @@ module Types
 
     authorize :read_deployment
 
+    expose_permissions Types::PermissionTypes::Deployment
+
     field :id,
       GraphQL::Types::ID,
       description: 'Global ID of the deployment.'

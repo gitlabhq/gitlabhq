@@ -400,11 +400,13 @@ export default {
             :class="$options.formElementClasses"
             class="gl-flex-grow-1 gl-mr-0!"
             data-testid="pipeline-form-ci-variable-value-dropdown"
+            data-qa-selector="ci_variable_value_dropdown"
           >
             <gl-dropdown-item
               v-for="value in predefinedValueOptions[variable.key]"
               :key="value"
               data-testid="pipeline-form-ci-variable-value-dropdown-items"
+              data-qa-selector="ci_variable_value_dropdown_item"
               @click="setVariableAttribute(variable.key, 'value', value)"
             >
               {{ value }}

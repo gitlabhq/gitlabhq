@@ -11878,6 +11878,7 @@ The deployment of an environment.
 | <a id="deploymenttag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
 | <a id="deploymenttriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
+| <a id="deploymentuserpermissions"></a>`userPermissions` | [`DeploymentPermissions!`](#deploymentpermissions) | Permissions for the current user on the resource. |
 
 ### `DeploymentApproval`
 
@@ -11928,6 +11929,16 @@ The details of the deployment.
 | <a id="deploymentdetailstags"></a>`tags` | [`[DeploymentTag!]`](#deploymenttag) | Git tags that contain this deployment. |
 | <a id="deploymentdetailstriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentdetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
+| <a id="deploymentdetailsuserpermissions"></a>`userPermissions` | [`DeploymentPermissions!`](#deploymentpermissions) | Permissions for the current user on the resource. |
+
+### `DeploymentPermissions`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="deploymentpermissionsdestroydeployment"></a>`destroyDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_deployment` on this resource. |
+| <a id="deploymentpermissionsupdatedeployment"></a>`updateDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_deployment` on this resource. |
 
 ### `DeploymentTag`
 
