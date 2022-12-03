@@ -186,7 +186,7 @@ module Gitlab
         end
 
         def can_handle_legacy_format?
-          project_path && project_path.include?('/') && mail_key.exclude?('+')
+          project_path && project_path.include?('/') && !mail_key.include?('+')
         end
 
         def author

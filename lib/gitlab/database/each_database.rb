@@ -52,7 +52,7 @@ module Gitlab
               next unless shared_model.limit_connection_names.include?(connection_name.to_sym)
             end
 
-            next if selected_databases.present? && selected_databases.exclude?(connection_name.to_sym)
+            next if selected_databases.present? && !selected_databases.include?(connection_name.to_sym)
 
             with_shared_connection(connection_model.connection, connection_name) do
               yield shared_model, connection_name
@@ -63,7 +63,7 @@ module Gitlab
         def with_model_connection(model, selected_databases, &blk)
           connection_name = model.connection_db_config.name
 
-          return if selected_databases.present? && selected_databases.exclude?(connection_name.to_sym)
+          return if selected_databases.present? && !selected_databases.include?(connection_name.to_sym)
 
           with_shared_connection(model.connection, connection_name) do
             yield model, connection_name

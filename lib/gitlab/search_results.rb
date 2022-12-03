@@ -144,7 +144,7 @@ module Gitlab
       sort_by = ::Gitlab::Search::SortOptions.sort_and_direction(order_by, sort)
 
       # Reset sort to default if the chosen one is not supported by scope
-      sort_by = nil if SCOPE_ONLY_SORT[sort_by] && SCOPE_ONLY_SORT[sort_by].exclude?(scope)
+      sort_by = nil if SCOPE_ONLY_SORT[sort_by] && !SCOPE_ONLY_SORT[sort_by].include?(scope)
 
       case sort_by
       when :created_at_asc

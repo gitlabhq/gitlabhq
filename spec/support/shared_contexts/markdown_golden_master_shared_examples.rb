@@ -44,7 +44,7 @@ RSpec.shared_context 'API::Markdown Golden Master shared context' do |markdown_y
 
   if focused_markdown_examples_string = ENV['FOCUSED_MARKDOWN_EXAMPLES']
     focused_markdown_examples = focused_markdown_examples_string.split(',').map(&:strip) || []
-    markdown_examples.reject! { |markdown_example| focused_markdown_examples.exclude?(markdown_example.fetch(:name)) }
+    markdown_examples.reject! { |markdown_example| !focused_markdown_examples.include?(markdown_example.fetch(:name)) }
   end
 
   markdown_examples.each do |markdown_example|

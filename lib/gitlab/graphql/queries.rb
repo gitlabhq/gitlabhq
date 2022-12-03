@@ -78,7 +78,7 @@ module Gitlab
 
           # remove variable definitions only used in skipped (client) fields
           vars = op.variables.reject do |v|
-            @skipped_arguments.include?(v.name) && @printed_arguments.exclude?(v.name)
+            @skipped_arguments.include?(v.name) && !@printed_arguments.include?(v.name)
           end
 
           if vars.any?
@@ -109,7 +109,7 @@ module Gitlab
         end
 
         def print_fragment_definition(fragment_def, indent: "")
-          if skips? && @skipped_fragments.include?(fragment_def.name) && @used_fragments.exclude?(fragment_def.name)
+          if skips? && @skipped_fragments.include?(fragment_def.name) && !@used_fragments.include?(fragment_def.name)
             return ''
           end
 

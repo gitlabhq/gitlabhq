@@ -219,7 +219,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
     # Emulate Marginalia pre-pending comments
     def sql(query, comments: true)
-      if comments && %w[BEGIN COMMIT].exclude?(query)
+      if comments && !%w[BEGIN COMMIT].include?(query)
         "/*application:web,controller:badges,action:pipeline,correlation_id:01EYN39K9VMJC56Z7808N7RSRH*/ #{query}"
       else
         query
@@ -284,7 +284,7 @@ RSpec.describe Gitlab::Metrics::Subscribers::ActiveRecord do
 
     # Emulate Marginalia pre-pending comments
     def sql(query, comments: true)
-      if comments && %w[BEGIN COMMIT].exclude?(query)
+      if comments && !%w[BEGIN COMMIT].include?(query)
         "/*application:web,controller:badges,action:pipeline,correlation_id:01EYN39K9VMJC56Z7808N7RSRH*/ #{query}"
       else
         query

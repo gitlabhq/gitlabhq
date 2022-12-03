@@ -22,7 +22,7 @@ module QA
         raise ArgumentError, "Please provide GITLAB_QA_ADMIN_ACCESS_TOKEN" unless ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN']
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'], personal_access_token: ENV['GITLAB_QA_ADMIN_ACCESS_TOKEN'])
-        @dry_run = FALSY_VALUES.exclude?(dry_run.to_s.downcase)
+        @dry_run = !FALSY_VALUES.include?(dry_run.to_s.downcase)
         @delete_before = Date.parse(delete_before)
         @page_no = '1'
         @exclude_users = Array(exclude_users.to_s.split(',')) + EXCLUDE_USERS
@@ -61,7 +61,7 @@ module QA
         JSON.parse(response.body).select do |user|
           user['username'].start_with?('qa-user-', 'test-user-') \
             && (user['name'] == 'QA Tests' || user['name'].start_with?('QA User')) \
-            && @exclude_users.exclude?(user['username']) \
+            && !@exclude_users.include?(user['username']) \
             && Date.parse(user.fetch('created_at', Date.today.to_s)) < @delete_before
         end
       end

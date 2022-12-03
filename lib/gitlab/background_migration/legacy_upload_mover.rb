@@ -109,7 +109,7 @@ module Gitlab
         old_path = upload.absolute_path
         old_path_sub = '-/system/note/attachment'
 
-        if !File.exist?(old_path) || old_path.exclude?(old_path_sub)
+        if !File.exist?(old_path) || !old_path.include?(old_path_sub)
           log_legacy_diff_note_problem(old_path)
           return false
         end

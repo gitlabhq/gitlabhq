@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Metrics::Dashboard::Stages::MetricEndpointInserter do
       transform!
 
       expect(all_metrics).to satisfy_all do |metric|
-        metric[:prometheus_endpoint_path].present? && metric[:prometheus_endpoint_path].exclude?("\n")
+        metric[:prometheus_endpoint_path].present? && !metric[:prometheus_endpoint_path].include?("\n")
       end
     end
 

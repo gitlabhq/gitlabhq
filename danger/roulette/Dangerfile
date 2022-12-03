@@ -96,7 +96,7 @@ categories = Set.new(changes.keys - [:unknown])
 categories << :database if helper.mr_labels.include?('database')
 
 # Ensure to spin for UX reviewer when ~UX is applied (e.g. to review changes to the UI) except when it's from wider community contribution where we want to assign from the corresponding group
-categories << :ux if helper.mr_labels.include?('UX') && helper.mr_labels.exclude?('Community contribution')
+categories << :ux if helper.mr_labels.include?('UX') && !helper.mr_labels.include?('Community contribution')
 
 # Ensure to spin for Product Intelligence reviewer when ~"product intelligence::review pending" is applied
 categories << :product_intelligence if helper.mr_labels.include?("product intelligence::review pending")

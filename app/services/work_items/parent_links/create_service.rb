@@ -30,7 +30,7 @@ module WorkItems
 
       def linkable?(work_item)
         can?(current_user, :admin_parent_link, work_item) &&
-          previous_related_issuables.exclude?(work_item)
+          !previous_related_issuables.include?(work_item)
       end
 
       def previous_related_issuables

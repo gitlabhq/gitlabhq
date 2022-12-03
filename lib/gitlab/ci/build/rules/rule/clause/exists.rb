@@ -66,12 +66,12 @@ module Gitlab
 
         # matches glob patterns that only match files in the top level directory
         def top_level_glob?(glob)
-          glob.exclude?('/') && glob.exclude?('**')
+          !glob.include?('/') && !glob.include?('**')
         end
 
         # matches glob patterns that have no metacharacters for File#fnmatch?
         def exact_glob?(glob)
-          glob.exclude?('*') && glob.exclude?('?') && glob.exclude?('[') && glob.exclude?('{')
+          !glob.include?('*') && !glob.include?('?') && !glob.include?('[') && !glob.include?('{')
         end
       end
     end

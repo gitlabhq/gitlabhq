@@ -28,7 +28,7 @@ module Integrations
       invalid_attributes = attributes.keys - ATTRIBUTES
       if invalid_attributes.present?
         raise ArgumentError, "Invalid attributes #{invalid_attributes.inspect}"
-      elsif TYPES.exclude?(self[:type])
+      elsif !TYPES.include?(self[:type])
         raise ArgumentError, "Invalid type #{self[:type].inspect}"
       end
     end

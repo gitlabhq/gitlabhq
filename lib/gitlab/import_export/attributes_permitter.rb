@@ -67,7 +67,7 @@ module Gitlab
       end
 
       def permitted_attributes_defined?(relation_sym)
-        DISABLED_RELATION_NAMES.exclude?(relation_sym) && @attributes_finder.included_attributes.key?(relation_sym)
+        !DISABLED_RELATION_NAMES.include?(relation_sym) && @attributes_finder.included_attributes.key?(relation_sym)
       end
 
       private

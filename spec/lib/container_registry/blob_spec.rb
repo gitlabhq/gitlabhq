@@ -100,7 +100,7 @@ RSpec.describe ContainerRegistry::Blob do
       context 'for a valid address' do
         before do
           stub_request(:get, location)
-            .with { |request| request.headers.exclude?('Authorization') }
+            .with { |request| !request.headers.include?('Authorization') }
             .to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
@@ -115,7 +115,7 @@ RSpec.describe ContainerRegistry::Blob do
       context 'for a relative address' do
         before do
           stub_request(:get, 'http://registry.gitlab/relative')
-            .with { |request| request.headers.exclude?('Authorization') }
+            .with { |request| !request.headers.include?('Authorization') }
             .to_return(
               status: 200,
               headers: { 'Content-Type' => 'application/json' },
