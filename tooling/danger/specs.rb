@@ -132,7 +132,7 @@ module Tooling
 
       def find_line_number(file_lines, searched_line, exclude_indexes: [])
         _, index = file_lines.each_with_index.find do |file_line, index|
-          file_line == searched_line && !exclude_indexes.include?(index)
+          file_line == searched_line && exclude_indexes.exclude?(index)
         end
 
         index

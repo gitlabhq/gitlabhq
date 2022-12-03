@@ -696,7 +696,7 @@ module ProjectsHelper
 
   def project_allowed_visibility_levels(project)
     Gitlab::VisibilityLevel.values.select do |level|
-      project.visibility_level_allowed?(level) && !restricted_levels.include?(level)
+      project.visibility_level_allowed?(level) && restricted_levels.exclude?(level)
     end
   end
 

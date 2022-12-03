@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     # Deletes orphans records whenever report_type equals to scan_finding (i.e., 4)
     class DeleteOrphansApprovalMergeRequestRules < BatchedMigrationJob
-      scope_to -> (relation) { relation.where(report_type: 4) }
+      scope_to ->(relation) { relation.where(report_type: 4) }
 
       operation_name :delete_all
 

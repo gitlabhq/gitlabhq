@@ -733,7 +733,7 @@ class MergeRequest < ApplicationRecord
   def merge_participants
     participants = [author]
 
-    if auto_merge_enabled? && !participants.include?(merge_user)
+    if auto_merge_enabled? && participants.exclude?(merge_user)
       participants << merge_user
     end
 

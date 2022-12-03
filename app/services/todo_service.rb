@@ -235,7 +235,7 @@ class TodoService
       ).distinct_user_ids
     end
 
-    if users_multiple_todos.present? && !Todo::ACTIONS_MULTIPLE_ALLOWED.include?(attributes.fetch(:action))
+    if users_multiple_todos.present? && Todo::ACTIONS_MULTIPLE_ALLOWED.exclude?(attributes.fetch(:action))
       excluded_user_ids += pending_todos(
         users_multiple_todos,
         attributes.slice(:project_id, :target_id, :target_type, :commit_id, :discussion, :action)

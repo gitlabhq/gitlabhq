@@ -63,7 +63,7 @@ module Gitlab
           end
 
           def parse_source(node)
-            return unless project_path && paths && !node.include?(GO_SOURCE_PATTERN)
+            return unless project_path && paths && node.exclude?(GO_SOURCE_PATTERN)
 
             source = build_source_path(node)
             self.sources << source if source.present?

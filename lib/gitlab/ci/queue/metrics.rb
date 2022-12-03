@@ -76,7 +76,7 @@ module Gitlab
         def observe_queue_depth(queue, size)
           return unless Feature.enabled?(:gitlab_ci_builds_queuing_metrics)
 
-          if !Rails.env.production? && !QUEUE_DEPTH_HISTOGRAMS.include?(queue)
+          if !Rails.env.production? && QUEUE_DEPTH_HISTOGRAMS.exclude?(queue)
             raise ArgumentError, "unknown queue depth label: #{queue}"
           end
 
@@ -113,7 +113,7 @@ module Gitlab
         end
 
         def self.increment_queue_operation(operation)
-          if !Rails.env.production? && !OPERATION_COUNTERS.include?(operation)
+          if !Rails.env.production? && OPERATION_COUNTERS.exclude?(operation)
             raise ArgumentError, "unknown queue operation: #{operation}"
           end
 

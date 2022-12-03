@@ -263,7 +263,7 @@ class Milestone < ApplicationRecord
       raise ArgumentError, _('Cannot refer to a group milestone by an internal id!')
     end
 
-    if format == :name && !name.include?('"')
+    if format == :name && name.exclude?('"')
       %("#{name}")
     else
       iid

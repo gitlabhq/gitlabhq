@@ -134,7 +134,7 @@ class StaticAnalysis
 
   def warning_count(static_analysis)
     static_analysis.warned_results
-      .count { |result| !ALLOWED_WARNINGS.include?(result.stderr.strip) }
+      .count { |result| !ALLOWED_WARNINGS.include?(result.stderr.strip) } # rubocop:disable Rails/NegateInclude
   end
 
   def tasks_to_run(node_total)

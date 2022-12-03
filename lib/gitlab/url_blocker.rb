@@ -204,7 +204,7 @@ module Gitlab
       end
 
       def validate_scheme(scheme, schemes)
-        if scheme.blank? || (schemes.any? && !schemes.include?(scheme))
+        if scheme.blank? || (schemes.any? && schemes.exclude?(scheme))
           raise BlockedUrlError, "Only allowed schemes are #{schemes.join(', ')}"
         end
       end

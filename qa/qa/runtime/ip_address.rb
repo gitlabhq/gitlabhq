@@ -13,7 +13,7 @@ module QA
       def fetch_current_ip_address
         # When running on CI against a live environment such as staging.gitlab.com,
         # we use the public facing IP address
-        non_test_host = !URI.parse(Scenario.gitlab_address).host.include?('.test')
+        non_test_host = !URI.parse(Scenario.gitlab_address).host.include?('.test') # rubocop:disable Rails/NegateInclude
         has_no_public_ip = Env.running_in_ci? || Env.use_public_ip_api?
 
         ip_address = if has_no_public_ip && non_test_host
