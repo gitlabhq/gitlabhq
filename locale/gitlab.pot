@@ -16828,9 +16828,6 @@ msgstr ""
 msgid "Failed to update the Canary Ingress."
 msgstr ""
 
-msgid "Failed to upgrade."
-msgstr ""
-
 msgid "Failed to upload object map file"
 msgstr ""
 
