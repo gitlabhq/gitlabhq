@@ -46,6 +46,7 @@ const findDeleteButton = () => wrapper.findByTestId('delete-branch-confirmation-
 const findCancelButton = () => wrapper.findByTestId('delete-branch-cancel-button');
 const findFormInput = () => wrapper.findComponent(GlFormInput);
 const findForm = () => wrapper.find('form');
+const submitFormSpy = () => jest.spyOn(wrapper.vm.$refs.form, 'submit');
 
 describe('Delete branch modal', () => {
   const expectedUnmergedWarning =
@@ -73,12 +74,10 @@ describe('Delete branch modal', () => {
     });
 
     it('submits the form when the delete button is clicked', () => {
-      const submitFormSpy = jest.spyOn(wrapper.vm.$refs.form, 'submit');
-
       findDeleteButton().trigger('click');
 
       expect(findForm().attributes('action')).toBe(deletePath);
-      expect(submitFormSpy).toHaveBeenCalled();
+      expect(submitFormSpy()).toHaveBeenCalled();
     });
 
     it('calls show on the modal when a `openModal` event is received through the event hub', async () => {
@@ -136,7 +135,18 @@ describe('Delete branch modal', () => {
       });
     });
 
-    it('opens with the delete button disabled and enables it when branch name is confirmed', async () => {
+    it('opens with the delete button disabled and doesn`t fire submit when clicked or pressed enter', async () => {
+      expect(findDeleteButton().props('disabled')).toBe(true);
+
+      findFormInput().vm.$emit('input', 'hello');
+
+      await waitForPromises();
+
+      findDeleteButton().trigger('click');
+      expect(submitFormSpy()).not.toHaveBeenCalled();
+    });
+
+    it('opens with the delete button disabled and enables it when branch name is confirmed and fires submit', async () => {
       expect(findDeleteButton().props('disabled')).toBe(true);
 
       findFormInput().vm.$emit('input', branchName);
@@ -144,6 +154,9 @@ describe('Delete branch modal', () => {
       await waitForPromises();
 
       expect(findDeleteButton().props('disabled')).not.toBe(true);
+
+      findDeleteButton().trigger('click');
+      expect(submitFormSpy()).toHaveBeenCalled();
     });
   });
 

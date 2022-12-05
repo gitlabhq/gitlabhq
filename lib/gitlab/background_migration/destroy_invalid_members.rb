@@ -9,7 +9,7 @@ module Gitlab
       def perform
         each_sub_batch do |sub_batch|
           deleted_members_data = sub_batch.map do |m|
-            { id: m.id, source_id: m.source_id, source_type: m.source_type }
+            { id: m.id, source_id: m.source_id, source_type: m.source_type, access_level: m.access_level }
           end
 
           deleted_count = sub_batch.delete_all

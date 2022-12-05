@@ -45,6 +45,8 @@ RSpec.configure do |config|
       example.run
     end
 
+    delete_from_all_tables!(except: deletion_except_tables)
+
     self.class.use_transactional_tests = true
   end
 

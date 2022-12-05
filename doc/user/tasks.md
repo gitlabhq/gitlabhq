@@ -41,6 +41,10 @@ View tasks in issues, in the **Tasks** section.
 You can also [filter the list of issues](project/issues/managing_issues.md#filter-the-list-of-issues)
 for `Type = task`.
 
+If you select a task from an issue, it opens in a modal window.
+If you select a task to open in a new browser tab, or select it from the issue list,
+the task opens in a full-page view.
+
 ## Create a task
 
 Prerequisites:
@@ -84,6 +88,31 @@ To edit a task:
 1. Optional. To edit the description, select the edit icon (**{pencil}**), make your changes, and
    select **Save**.
 1. Select the close icon (**{close}**).
+
+### Using the rich text editor
+
+> - Rich text editing in the modal view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363007) in GitLab 15.6 [with a flag](../administration/feature_flags.md) named `work_items_mvc`. Disabled by default.
+> - Rich text editing in the full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104533) in GitLab 15.7.
+
+FLAG:
+On self-managed GitLab, by default the rich text feature is not available. To make it available per group, ask an
+administrator
+to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`. On GitLab.com, this feature
+is not available. The feature is not ready for production use.
+
+Use a rich text editor to edit a task's description.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project.
+
+To edit the description of a task:
+
+1. In the **Tasks** section, select the title of the task you want to edit.
+   The task window opens.
+1. Next to **Description**, select the edit icon (**{pencil}**). The description text box appears.
+1. Above the text box, select **Rich text**.
+1. Make your changes, and select **Save**.
 
 ## Remove a task from an issue
 

@@ -47,7 +47,7 @@ module Gitlab
                 memory_limit = ENV.fetch('PUMA_WORKER_MAX_MEMORY', 1200).to_i
 
                 stack.push Gitlab::Memory::Watchdog::Monitor::RssMemoryLimit,
-                           memory_limit: memory_limit,
+                           memory_limit: memory_limit.megabytes,
                            max_strikes: max_strikes
               end
             end

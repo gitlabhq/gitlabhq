@@ -315,7 +315,8 @@ module ApplicationHelper
     class_names << 'epic-boards-page gl-overflow-auto' if current_controller?(:epic_boards)
     class_names << 'with-performance-bar' if performance_bar_enabled?
     class_names << system_message_class
-    class_names << 'logged-out-marketing-header' unless current_user
+    class_names << 'logged-out-marketing-header' if !current_user && ::Gitlab.com?
+
     class_names
   end
 

@@ -449,8 +449,11 @@ RSpec.describe 'Merge request > User resolves diff notes and threads', :js do
         page.within '.diff-content' do
           find('button[data-testid="resolve-discussion-button"]').click
 
+          wait_for_requests
+
           find_field('Reply…').click
 
+          find('.js-unresolve-checkbox')
           find('.js-note-text').set 'testing'
 
           click_button 'Add comment now'

@@ -19,7 +19,11 @@
           .gl-display-none.gl-sm-display-block
             = render "layouts/nav/top_nav"
         - else
-          = render 'layouts/header/marketing_links'
+          - if Gitlab.com?
+            = render 'layouts/header/marketing_links'
+          - else
+            .gl-display-none.gl-sm-display-block
+              = render "layouts/nav/top_nav"
 
       - if top_nav_show_search
         .navbar-collapse.gl-transition-medium.collapse.gl-mr-auto.global-search-container.hide-when-top-nav-responsive-open
@@ -102,7 +106,7 @@
               = sprite_icon('chevron-down', css_class: 'caret-down')
             .dropdown-menu.dropdown-menu-right
               = render 'layouts/header/help_dropdown'
-          - unless current_user
+          - if !current_user && Gitlab.com?
             %li.nav-item.gl-display-none.gl-sm-display-block
               = render "layouts/nav/top_nav"
           - if header_link?(:user_dropdown)
@@ -118,11 +122,14 @@
               = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } do
                 = sprite_icon('incognito', size: 18)
           - if header_link?(:sign_in)
-            %li.nav-item.gl-display-none.gl-sm-display-block
-              = link_to _('Sign up now'), new_user_registration_path, class: 'gl-button btn btn-default btn-sign-in'
-            %li.nav-item.gl-display-none.gl-sm-display-block
-              = link_to _('Login'), new_session_path(:user, redirect_to_referer: 'yes')
-            = render 'layouts/header/sign_in_register_button', class: 'gl-sm-display-none'
+            - if Gitlab.com?
+              %li.nav-item.gl-display-none.gl-sm-display-block
+                = link_to _('Sign up now'), new_user_registration_path, class: 'gl-button btn btn-default btn-sign-in'
+              %li.nav-item.gl-display-none.gl-sm-display-block
+                = link_to _('Login'), new_session_path(:user, redirect_to_referer: 'yes')
+              = render 'layouts/header/sign_in_register_button', class: 'gl-sm-display-none'
+            - else
+              = render 'layouts/header/sign_in_register_button'
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button', class: 'gl-border-none!', data: { testid: 'top-nav-responsive-toggle', qa_selector: 'mobile_navbar_button' } }
         %span.sr-only= _('Toggle navigation')

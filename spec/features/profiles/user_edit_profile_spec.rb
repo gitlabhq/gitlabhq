@@ -301,6 +301,8 @@ RSpec.describe 'User edit profile' do
         find('.header-user-dropdown-toggle').click
 
         page.within ".header-user" do
+          find('.js-set-status-modal-trigger.ready')
+
           click_button button_text
         end
       end

@@ -22,14 +22,4 @@ RSpec.configure do |config|
 
     self.class.use_transactional_tests = true
   end
-
-  config.around(:each, :migration) do |example|
-    self.class.use_transactional_tests = false
-
-    example.run
-
-    delete_from_all_tables!(except: deletion_except_tables)
-
-    self.class.use_transactional_tests = true
-  end
 end
