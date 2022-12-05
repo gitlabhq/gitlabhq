@@ -166,7 +166,7 @@ RSpec.describe Backup::Manager do
   describe '#create' do
     let(:incremental_env) { 'false' }
     let(:expected_backup_contents) { %w{backup_information.yml task1.tar.gz task2.tar.gz} }
-    let(:backup_time) { Time.utc(2019, 1, 1) }
+    let(:backup_time) { Time.zone.parse('2019-1-1') }
     let(:backup_id) { "1546300800_2019_01_01_#{Gitlab::VERSION}" }
     let(:full_backup_id) { backup_id }
     let(:pack_tar_file) { "#{backup_id}_gitlab_backup.tar" }
@@ -284,7 +284,7 @@ RSpec.describe Backup::Manager do
           allow(Dir).to receive(:chdir).and_yield
           allow(Dir).to receive(:glob).and_return(files)
           allow(FileUtils).to receive(:rm)
-          allow(Time).to receive(:now).and_return(Time.utc(2016))
+          allow(Time).to receive(:now).and_return(Time.zone.parse('2016-1-1'))
         end
 
         context 'when keep_time is zero' do

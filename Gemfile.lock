@@ -661,8 +661,8 @@ GEM
       multi_json (~> 1.11)
       os (>= 0.9, < 2.0)
       signet (>= 0.16, < 2.a)
-    gpgme (2.0.20)
-      mini_portile2 (~> 2.3)
+    gpgme (2.0.22)
+      mini_portile2 (~> 2.7)
     grape (1.5.2)
       activesupport
       builder
@@ -1680,7 +1680,7 @@ DEPENDENCIES
   gon (~> 6.4.0)
   google-api-client (~> 0.33)
   google-protobuf (~> 3.21, >= 3.21.9)
-  gpgme (~> 2.0.19)
+  gpgme (~> 2.0.22)
   grape (~> 1.5.2)
   grape-entity (~> 0.10.0)
   grape-path-helpers (~> 1.7.1)

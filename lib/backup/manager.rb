@@ -277,7 +277,7 @@ module Backup
     def build_backup_information
       @backup_information ||= {
         db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.now,
+        backup_created_at: Time.current,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
@@ -291,7 +291,7 @@ module Backup
       @backup_information.merge!(
         full_backup_id: full_backup_id,
         db_version: ActiveRecord::Migrator.current_version.to_s,
-        backup_created_at: Time.zone.now,
+        backup_created_at: Time.current,
         gitlab_version: Gitlab::VERSION,
         tar_version: tar_version,
         installation_type: Gitlab::INSTALLATION_TYPE,
@@ -396,7 +396,7 @@ module Backup
 
           timestamp = matched[1].to_i
 
-          next unless Time.at(timestamp) < (Time.now - keep_time)
+          next unless Time.zone.at(timestamp) < (Time.current - keep_time)
 
           begin
             FileUtils.rm(file)
@@ -611,7 +611,7 @@ module Backup
     end
 
     def puts_time(msg)
-      progress.puts "#{Time.now} -- #{msg}"
+      progress.puts "#{Time.current} -- #{msg}"
       Gitlab::BackupLogger.info(message: "#{Rainbow.uncolor(msg)}")
     end
   end

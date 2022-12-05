@@ -14638,6 +14638,27 @@ CREATE TABLE dependency_proxy_blob_states (
 
 COMMENT ON TABLE dependency_proxy_blob_states IS '{"owner":"group::geo","description":"Geo-specific table to store the verification state of DependencyProxy::Blob objects"}';
 
+CREATE TABLE dependency_list_exports (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    project_id bigint NOT NULL,
+    user_id bigint,
+    file_store integer,
+    status smallint DEFAULT 0 NOT NULL,
+    file text,
+    CONSTRAINT check_fff6fc9b2f CHECK ((char_length(file) <= 255))
+);
+
+CREATE SEQUENCE dependency_list_exports_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dependency_list_exports_id_seq OWNED BY dependency_list_exports.id;
+
 CREATE TABLE dependency_proxy_blobs (
     id integer NOT NULL,
     group_id integer NOT NULL,
@@ -23851,6 +23872,8 @@ ALTER TABLE ONLY dast_site_validations ALTER COLUMN id SET DEFAULT nextval('dast
 
 ALTER TABLE ONLY dast_sites ALTER COLUMN id SET DEFAULT nextval('dast_sites_id_seq'::regclass);
 
+ALTER TABLE ONLY dependency_list_exports ALTER COLUMN id SET DEFAULT nextval('dependency_list_exports_id_seq'::regclass);
+
 ALTER TABLE ONLY dependency_proxy_blobs ALTER COLUMN id SET DEFAULT nextval('dependency_proxy_blobs_id_seq'::regclass);
 
 ALTER TABLE ONLY dependency_proxy_group_settings ALTER COLUMN id SET DEFAULT nextval('dependency_proxy_group_settings_id_seq'::regclass);
@@ -25712,6 +25735,9 @@ ALTER TABLE ONLY dast_site_validations
 
 ALTER TABLE ONLY dast_sites
     ADD CONSTRAINT dast_sites_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dependency_list_exports
+    ADD CONSTRAINT dependency_list_exports_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dependency_proxy_blob_states
     ADD CONSTRAINT dependency_proxy_blob_states_pkey PRIMARY KEY (dependency_proxy_blob_id);
@@ -28970,6 +28996,10 @@ CREATE INDEX index_dast_sites_on_dast_site_validation_id ON dast_sites USING btr
 CREATE UNIQUE INDEX index_dast_sites_on_project_id_and_url ON dast_sites USING btree (project_id, url);
 
 CREATE UNIQUE INDEX index_dep_prox_manifests_on_group_id_file_name_and_status ON dependency_proxy_manifests USING btree (group_id, file_name, status);
+
+CREATE INDEX index_dependency_list_exports_on_project_id ON dependency_list_exports USING btree (project_id);
+
+CREATE INDEX index_dependency_list_exports_on_user_id ON dependency_list_exports USING btree (user_id);
 
 CREATE INDEX index_dependency_proxy_blob_states_failed_verification ON dependency_proxy_blob_states USING btree (verification_retry_at NULLS FIRST) WHERE (verification_state = 3);
 
@@ -33169,6 +33199,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 ALTER TABLE ONLY deploy_keys_projects
     ADD CONSTRAINT fk_58a901ca7e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY dependency_list_exports
+    ADD CONSTRAINT fk_5b3d11e1ef FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY dast_scanner_profiles_builds
     ADD CONSTRAINT fk_5d46286ad3 FOREIGN KEY (dast_scanner_profile_id) REFERENCES dast_scanner_profiles(id) ON DELETE CASCADE;
 
@@ -33651,6 +33684,9 @@ ALTER TABLE ONLY system_note_metadata
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_d857c6edc1 FOREIGN KEY (component_id) REFERENCES sbom_components(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dependency_list_exports
+    ADD CONSTRAINT fk_d871d74675 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_d94154aa95 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

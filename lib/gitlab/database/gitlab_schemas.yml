@@ -170,6 +170,7 @@ dast_sites: :gitlab_main
 dast_site_tokens: :gitlab_main
 dast_site_validations: :gitlab_main
 dependency_proxy_blob_states: :gitlab_main
+dependency_list_exports: :gitlab_main
 dependency_proxy_blobs: :gitlab_main
 dependency_proxy_group_settings: :gitlab_main
 dependency_proxy_image_ttl_group_policies: :gitlab_main

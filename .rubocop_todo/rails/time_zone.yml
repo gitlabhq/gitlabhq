@@ -32,7 +32,6 @@ Rails/TimeZone:
     - 'ee/spec/lib/gitlab/prometheus/queries/cluster_query_spec.rb'
     - 'lib/api/helpers.rb'
     - 'lib/api/sidekiq_metrics.rb'
-    - 'lib/backup/manager.rb'
     - 'lib/bitbucket_server/representation/base.rb'
     - 'lib/gitlab/auth/current_user_mode.rb'
     - 'lib/gitlab/auth/ldap/access.rb'

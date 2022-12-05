@@ -91,10 +91,9 @@ module RuboCop
           return unless message
 
           add_offense(node, message: message) do |corrector|
-            description = locate_description(node)
             next unless description
 
-            corrector.insert_after(before_end_quote(description), '.')
+            corrector.insert_after(before_end_quote(description), '.') if no_period?(description)
           end
         end
 

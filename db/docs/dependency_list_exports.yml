@@ -1,0 +1,8 @@
+---
+table_name: dependency_list_exports
+feature_categories:
+- dependency_scanning
+description: Dependency list exported data
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104361
+milestone: '15.7'
+gitlab_schema: gitlab_main

@@ -16,6 +16,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description does not end in a period' do
@@ -44,6 +46,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description begins with "The"' do
@@ -58,6 +62,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description contains the demonstrative "this"' do
@@ -72,6 +78,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'does not add an offense when a word contains the substring "this"' do
@@ -123,6 +131,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description does not end in a period' do
@@ -151,6 +161,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description begins with "The"' do
@@ -165,6 +177,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description contains the demonstrative "this"' do
@@ -179,6 +193,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'does not add an offense when a word contains the substring "this"' do
@@ -218,6 +234,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description does not end in a period' do
@@ -240,6 +258,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description begins with "A"' do
@@ -251,6 +271,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'adds an offense when description contains the demonstrative "this"' do
@@ -262,6 +284,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
           end
         end
       TYPE
+
+      expect_no_corrections
     end
 
     it 'does not add an offense when a word contains the substring "this"' do
@@ -295,8 +319,8 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
     end
   end
 
-  describe 'autocorrecting descriptions without periods' do
-    it 'can autocorrect' do
+  describe 'autocorrecting periods in descriptions' do
+    it 'autocorrects missing periods' do
       expect_offense(<<~TYPE)
         module Types
           class FakeType < BaseObject
@@ -321,7 +345,20 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
       TYPE
     end
 
-    it 'can autocorrect a heredoc' do
+    it 'does not autocorrect if periods exist' do
+      expect_no_offenses(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::Types::String,
+              null: false,
+              description: 'Behold! A description.'
+          end
+        end
+      TYPE
+    end
+
+    it 'autocorrects a heredoc' do
       expect_offense(<<~TYPE)
         module Types
           class FakeType < BaseObject
@@ -337,6 +374,21 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
       TYPE
 
       expect_correction(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::Types::String,
+              null: false,
+              description: <<~DESC
+                Behold! A description.
+              DESC
+          end
+        end
+      TYPE
+    end
+
+    it 'does not autocorrect a heredoc if periods exist' do
+      expect_no_offenses(<<~TYPE)
         module Types
           class FakeType < BaseObject
             field :a_thing,
