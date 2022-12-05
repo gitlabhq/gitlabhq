@@ -25,7 +25,7 @@ module Import
         # we add an expiration a bit longer to ensure it won't expire during the import.
         URL_EXPIRATION = 28.hours.seconds
 
-        def initialize(current_user: nil, params:)
+        def initialize(params:, current_user: nil)
           @params = params
         end
 

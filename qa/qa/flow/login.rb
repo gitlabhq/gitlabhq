@@ -14,10 +14,8 @@ module QA
         result
       end
 
-      def while_signed_in_as_admin(address: :gitlab)
-        while_signed_in(address: address, admin: true) do
-          yield
-        end
+      def while_signed_in_as_admin(address: :gitlab, &block)
+        while_signed_in(address: address, admin: true, &block)
       end
 
       def sign_in(as: nil, address: :gitlab, skip_page_validation: false, admin: false)

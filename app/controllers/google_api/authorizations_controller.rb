@@ -48,14 +48,13 @@ module GoogleApi
     end
 
     def redirect_uri_from_session
-      strong_memoize(:redirect_uri_from_session) do
-        if params[:state].present?
-          session[session_key_for_redirect_uri(params[:state])]
-        else
-          nil
-        end
+      if params[:state].present?
+        session[session_key_for_redirect_uri(params[:state])]
+      else
+        nil
       end
     end
+    strong_memoize_attr :redirect_uri_from_session
 
     def session_key_for_redirect_uri(state)
       GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(state)

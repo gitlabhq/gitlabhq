@@ -1425,7 +1425,6 @@ lib/gitlab/checks/** @proglottis @toon @zj-gitlab
 /app/assets/javascripts/pipeline_new/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci_variable_list/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/ci/pipeline_schedules/ @gitlab-org/ci-cd/verify/frontend
-/app/assets/javascripts/pipeline_editor/ @gitlab-org/ci-cd/verify/frontend
 /ee/app/assets/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
 /app/assets/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend

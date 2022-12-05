@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Thread Comments Snippet', :js do
+RSpec.describe 'Thread Comments Snippet', :js, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   before do

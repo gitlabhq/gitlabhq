@@ -270,6 +270,16 @@ module Types
           description: 'A single environment of the project.',
           resolver: Resolvers::EnvironmentsResolver.single
 
+    field :nested_environments,
+          Types::NestedEnvironmentType.connection_type,
+          null: true,
+          calls_gitaly: true,
+          description: 'Environments for this project with nested folders, ' \
+                       'can only be resolved for one project in any single request',
+          resolver: Resolvers::Environments::NestedEnvironmentsResolver do
+            extension ::Gitlab::Graphql::Limit::FieldCallCount, limit: 1
+          end
+
     field :deployment,
           Types::DeploymentDetailsType,
           null: true,

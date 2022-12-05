@@ -18,7 +18,7 @@ module Resolvers
 
     # This returns a promise for a connection of promises for pipelines:
     # Lazy[Connection[Lazy[Pipeline]]] structure
-    def resolve(first: nil, last: nil, after: nil, before: nil, lookahead:)
+    def resolve(lookahead:, first: nil, last: nil, after: nil, before: nil)
       default_value = default_value_for(first: first, last: last, after: after, before: before)
       BatchLoader::GraphQL.for(package.id)
                           .batch(default_value: default_value) do |package_ids, loader|

@@ -1,7 +1,7 @@
 import { GlAlert } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { setHTMLFixture } from 'helpers/fixtures';
-import { CI_CONFIG_STATUS_VALID } from '~/pipeline_editor/constants';
+import { CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
 import LinksInner from '~/pipelines/components/graph_shared/links_inner.vue';
 import LinksLayer from '~/pipelines/components/graph_shared/links_layer.vue';
 import JobPill from '~/pipelines/components/pipeline_graph/job_pill.vue';

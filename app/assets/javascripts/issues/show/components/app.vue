@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlBadge, GlIntersectionObserver, GlTooltipDirective } from '@gitlab/ui';
 import Visibility from 'visibilityjs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import {
   IssuableStatus,
   IssuableStatusText,
@@ -327,7 +327,7 @@ export default {
           this.store.updateState(data);
         })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: this.defaultErrorMessage,
           });
         });
@@ -362,7 +362,7 @@ export default {
           this.updateAndShowForm(res.data);
         })
         .catch(() => {
-          createFlash({
+          createAlert({
             message: this.defaultErrorMessage,
           });
           this.updateAndShowForm();
@@ -429,7 +429,7 @@ export default {
             errMsg += `. ${message}`;
           }
 
-          this.flashContainer = createFlash({
+          this.flashContainer = createAlert({
             message: errMsg,
           });
         })

@@ -1,4 +1,4 @@
-import { mockJobs } from 'jest/pipeline_editor/mock_data';
+import { mockJobs } from 'jest/ci/pipeline_editor/mock_data';
 
 export const mockLintDataError = {
   data: {

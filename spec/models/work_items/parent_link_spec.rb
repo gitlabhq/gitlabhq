@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::ParentLink do
+RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
+  let_it_be(:project) { create(:project) }
+
   describe 'associations' do
     it { is_expected.to belong_to(:work_item) }
     it { is_expected.to belong_to(:work_item_parent).class_name('WorkItem') }
@@ -16,7 +18,6 @@ RSpec.describe WorkItems::ParentLink do
     it { is_expected.to validate_uniqueness_of(:work_item) }
 
     describe 'hierarchy' do
-      let_it_be(:project) { create(:project) }
       let_it_be(:issue) { build(:work_item, project: project) }
       let_it_be(:incident) { build(:work_item, :incident, project: project) }
       let_it_be(:task1) { build(:work_item, :task, project: project) }
@@ -30,18 +31,62 @@ RSpec.describe WorkItems::ParentLink do
         expect(build(:parent_link, work_item: task1, work_item_parent: incident)).to be_valid
       end
 
-      it 'is not valid if child is not task' do
-        link = build(:parent_link, work_item: issue)
+      shared_examples_for 'checks valid types' do
+        it 'validates if child can be added to the parent' do
+          parent_type = WorkItems::Type.default_by_type(parent_type_sym)
+          child_type = WorkItems::Type.default_by_type(child_type_sym)
+          parent = build(:work_item, issue_type: parent_type_sym, work_item_type: parent_type, project: project)
+          child = build(:work_item, issue_type: child_type_sym, work_item_type: child_type, project: project)
+          link = build(:parent_link, work_item: child, work_item_parent: parent)
 
-        expect(link).not_to be_valid
-        expect(link.errors[:work_item]).to include('only Task can be assigned as a child in hierarchy.')
+          expect(link.valid?).to eq(is_valid)
+        end
       end
 
-      it 'is not valid if parent is task' do
-        link = build(:parent_link, work_item_parent: task1)
+      context 'when assigning to various parent types' do
+        using RSpec::Parameterized::TableSyntax
 
-        expect(link).not_to be_valid
-        expect(link.errors[:work_item_parent]).to include('only Issue and Incident can be parent of Task.')
+        where(:parent_type_sym, :child_type_sym, :is_valid) do
+          :issue      | :task       | true
+          :incident   | :task       | true
+          :task       | :issue      | false
+          :issue      | :issue      | false
+          :objective  | :objective  | true
+          :objective  | :key_result | true
+          :key_result | :objective  | false
+          :key_result | :key_result | false
+          :objective  | :issue      | false
+          :task       | :objective  | false
+        end
+
+        with_them do
+          it_behaves_like 'checks valid types'
+        end
+      end
+
+      context 'when hierarchy_db_restrictions is disabled' do
+        before do
+          stub_feature_flags(hierarchy_db_restrictions: false)
+        end
+
+        using RSpec::Parameterized::TableSyntax
+
+        where(:parent_type_sym, :child_type_sym, :is_valid) do
+          :issue      | :task       | true
+          :incident   | :task       | true
+          :task       | :issue      | false
+          :issue      | :issue      | false
+          :objective  | :objective  | false
+          :objective  | :key_result | false
+          :key_result | :objective  | false
+          :key_result | :key_result | false
+          :objective  | :issue      | false
+          :task       | :objective  | false
+        end
+
+        with_them do
+          it_behaves_like 'checks valid types'
+        end
       end
 
       it 'is not valid if parent is in other project' do
@@ -97,7 +142,6 @@ RSpec.describe WorkItems::ParentLink do
   end
 
   context 'with confidential work items' do
-    let_it_be(:project) { create(:project) }
     let_it_be(:confidential_child) { create(:work_item, :task, confidential: true, project: project) }
     let_it_be(:putlic_child) { create(:work_item, :task, project: project) }
     let_it_be(:confidential_parent) { create(:work_item, confidential: true, project: project) }

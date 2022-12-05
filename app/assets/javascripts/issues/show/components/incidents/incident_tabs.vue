@@ -1,6 +1,6 @@
 <script>
 import { GlTab, GlTabs } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { trackIncidentDetailsViewsOptions } from '~/incidents/constants';
 import { s__ } from '~/locale';
 import Tracking from '~/tracking';
@@ -50,7 +50,7 @@ export default {
         return data?.project?.issue?.alertManagementAlert;
       },
       error() {
-        createFlash({
+        createAlert({
           message: s__('Incident|There was an issue loading alert data. Please try again.'),
         });
       },

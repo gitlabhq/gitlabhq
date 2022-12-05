@@ -7,7 +7,13 @@ RSpec.shared_examples 'work item hierarchy restrictions importer' do
     end
   end
 
-  it_behaves_like 'adds restrictions'
+  context 'when restrictions are missing' do
+    before do
+      WorkItems::HierarchyRestriction.delete_all
+    end
+
+    it_behaves_like 'adds restrictions'
+  end
 
   context 'when base types are missing' do
     before do

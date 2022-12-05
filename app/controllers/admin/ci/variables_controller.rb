@@ -45,6 +45,6 @@ class Admin::Ci::VariablesController < Admin::ApplicationController
   end
 
   def variable_params_attributes
-    %i[id variable_type key secret_value protected masked _destroy]
+    %i[id variable_type key secret_value protected masked raw _destroy]
   end
 end

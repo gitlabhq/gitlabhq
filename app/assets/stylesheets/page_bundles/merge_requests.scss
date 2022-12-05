@@ -339,11 +339,13 @@ $tabs-holder-z-index: 250;
 }
 
 .ci-widget-container {
+  align-items: center;
   justify-content: space-between;
   flex: 1;
   flex-direction: row;
 
   @include media-breakpoint-down(sm) {
+    align-items: initial;
     flex-direction: column;
 
     .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {

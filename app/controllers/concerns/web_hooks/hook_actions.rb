@@ -18,7 +18,9 @@ module WebHooks
       self.hook = relation.new(hook_params)
       hook.save
 
-      unless hook.valid?
+      if hook.valid?
+        flash[:notice] = _('Webhook was created')
+      else
         self.hooks = relation.select(&:persisted?)
         flash[:alert] = hook.errors.full_messages.to_sentence.html_safe
       end
@@ -28,8 +30,8 @@ module WebHooks
 
     def update
       if hook.update(hook_params)
-        flash[:notice] = _('Hook was successfully updated.')
-        redirect_to action: :index
+        flash[:notice] = _('Webhook was updated')
+        redirect_to action: :edit
       else
         render 'edit'
       end
@@ -73,12 +75,7 @@ module WebHooks
       result = WebHooks::DestroyService.new(current_user).execute(hook)
 
       if result[:status] == :success
-        flash[:notice] =
-          if result[:async]
-            format(_("%{hook_type} was scheduled for deletion"), hook_type: hook.model_name.human)
-          else
-            format(_("%{hook_type} was deleted"), hook_type: hook.model_name.human)
-          end
+        flash[:notice] = result[:async] ? _('Webhook was scheduled for deletion') : _('Webhook was deleted')
       else
         flash[:alert] = result[:message]
       end

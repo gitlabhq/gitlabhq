@@ -28,6 +28,13 @@ module API
         namespace ':package_name/*package_version/:file_name', requirements: GENERIC_PACKAGES_REQUIREMENTS do
           desc 'Workhorse authorize generic package file' do
             detail 'This feature was introduced in GitLab 13.5'
+            success code: 200
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[generic_packages]
           end
 
           route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
@@ -47,6 +54,17 @@ module API
 
           desc 'Upload package file' do
             detail 'This feature was introduced in GitLab 13.5'
+            success [
+              { code: 200 },
+              { code: 201 }
+            ]
+            failure [
+              { code: 400, message: 'Bad Request' },
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[generic_packages]
           end
 
           params do
@@ -88,6 +106,13 @@ module API
 
           desc 'Download package file' do
             detail 'This feature was introduced in GitLab 13.5'
+            success code: 200
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[generic_packages]
           end
 
           params do

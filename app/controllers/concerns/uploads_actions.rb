@@ -102,14 +102,13 @@ module UploadsActions
   end
 
   def uploader
-    strong_memoize(:uploader) do
-      if uploader_mounted?
-        model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
-      else
-        build_uploader_from_upload || build_uploader_from_params
-      end
+    if uploader_mounted?
+      model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
+    else
+      build_uploader_from_upload || build_uploader_from_params
     end
   end
+  strong_memoize_attr :uploader
 
   # rubocop: disable CodeReuse/ActiveRecord
   def build_uploader_from_upload
@@ -163,8 +162,9 @@ module UploadsActions
   end
 
   def model
-    strong_memoize(:model) { find_model }
+    find_model
   end
+  strong_memoize_attr :model
 
   def workhorse_authorize_request?
     action_name == 'authorize'

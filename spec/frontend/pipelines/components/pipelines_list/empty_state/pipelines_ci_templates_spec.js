@@ -13,7 +13,7 @@ import {
   RUNNERS_DOCUMENTATION_LINK_CLICKED_EVENT,
   RUNNERS_SETTINGS_BUTTON_CLICKED_EVENT,
   I18N,
-} from '~/pipeline_editor/constants';
+} from '~/ci/pipeline_editor/constants';
 
 const pipelineEditorPath = '/-/ci/editor';
 const ciRunnerSettingsPath = '/-/settings/ci_cd';

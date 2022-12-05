@@ -6,7 +6,7 @@ import Vue from 'vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { IssuableType } from '~/issues/constants';
 import { isMetaKey } from '~/lib/utils/common_utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
@@ -284,7 +284,7 @@ export default {
     },
 
     taskListUpdateError() {
-      createFlash({
+      createAlert({
         message: sprintf(
           __(
             'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
@@ -468,7 +468,7 @@ export default {
         this.workItemId = newWorkItem.id;
         this.openWorkItemDetailModal(el);
       } catch (error) {
-        createFlash({
+        createAlert({
           message: sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemTypes.TASK),
           error,
           captureError: true,

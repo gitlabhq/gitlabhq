@@ -2,7 +2,7 @@
 
 module WorkItems
   class CreateFromTaskService
-    def initialize(work_item:, current_user: nil, work_item_params: {}, spam_params:)
+    def initialize(work_item:, spam_params:, current_user: nil, work_item_params: {})
       @work_item = work_item
       @current_user = current_user
       @work_item_params = work_item_params

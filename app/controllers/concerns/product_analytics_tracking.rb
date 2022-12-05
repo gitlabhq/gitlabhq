@@ -16,7 +16,7 @@ module ProductAnalyticsTracking
       end
     end
 
-    def track_custom_event(*controller_actions, name:, conditions: nil, action:, label:, destinations: [:redis_hll], &block)
+    def track_custom_event(*controller_actions, name:, action:, label:, conditions: nil, destinations: [:redis_hll], &block)
       custom_conditions = [:trackable_html_request?, *conditions]
 
       after_action only: controller_actions, if: custom_conditions do

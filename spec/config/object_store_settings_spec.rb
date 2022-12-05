@@ -3,7 +3,7 @@
 require 'spec_helper'
 require Rails.root.join('config', 'object_store_settings.rb')
 
-RSpec.describe ObjectStoreSettings do
+RSpec.describe ObjectStoreSettings, feature_category: :not_owned do
   describe '#parse!' do
     let(:settings) { Settingslogic.new(config) }
 

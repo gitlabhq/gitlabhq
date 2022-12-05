@@ -10,7 +10,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { mapActions, mapGetters, mapState } from 'vuex';
-import createFlash, { FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import { IssuableStatus, IssueType } from '~/issues/constants';
 import { ISSUE_STATE_EVENT_CLOSE, ISSUE_STATE_EVENT_REOPEN } from '~/issues/show/constants';
@@ -191,7 +191,7 @@ export default {
           // Dispatch event which updates open/close state, shared among the issue show page
           document.dispatchEvent(new CustomEvent(EVENT_ISSUABLE_VUE_APP_CHANGE, payload));
         })
-        .catch(() => createFlash({ message: __('Error occurred while updating the issue status') }))
+        .catch(() => createAlert({ message: __('Error occurred while updating the issue status') }))
         .finally(() => {
           this.toggleStateButtonLoading(false);
         });
@@ -214,14 +214,14 @@ export default {
             throw new Error();
           }
 
-          createFlash({
+          createAlert({
             message: this.$options.i18n.promoteSuccessMessage,
-            type: FLASH_TYPES.SUCCESS,
+            variant: VARIANT_SUCCESS,
           });
 
           visitUrl(data.promoteToEpic.epic.webPath);
         })
-        .catch(() => createFlash({ message: this.$options.i18n.promoteErrorMessage }))
+        .catch(() => createAlert({ message: this.$options.i18n.promoteErrorMessage }))
         .finally(() => {
           this.toggleStateButtonLoading(false);
         });

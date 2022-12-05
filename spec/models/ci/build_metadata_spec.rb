@@ -198,6 +198,29 @@ RSpec.describe Ci::BuildMetadata do
     end
   end
 
+  describe '#enable_debug_trace!' do
+    subject { metadata.enable_debug_trace! }
+
+    context 'when debug_trace_enabled is false' do
+      it 'sets debug_trace_enabled to true' do
+        subject
+
+        expect(metadata.debug_trace_enabled).to eq(true)
+      end
+    end
+
+    context 'when debug_trace_enabled is true' do
+      before do
+        metadata.update!(debug_trace_enabled: true)
+      end
+
+      it 'does not set debug_trace_enabled to true', :aggregate_failures do
+        expect(described_class).not_to receive(:save!)
+        expect(metadata.debug_trace_enabled).to eq(true)
+      end
+    end
+  end
+
   describe 'partitioning' do
     context 'with job' do
       let(:status) { build(:commit_status, partition_id: 123) }

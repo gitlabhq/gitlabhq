@@ -22,7 +22,7 @@
 class GroupDescendantsFinder
   attr_reader :current_user, :parent_group, :params
 
-  def initialize(current_user: nil, parent_group:, params: {})
+  def initialize(parent_group:, current_user: nil, params: {})
     @current_user = current_user
     @parent_group = parent_group
     @params = params.reverse_merge(non_archived: params[:archived].blank?, not_aimed_for_deletion: true)

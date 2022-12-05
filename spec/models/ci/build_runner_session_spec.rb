@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildRunnerSession, model: true do
+RSpec.describe Ci::BuildRunnerSession, model: true, feature_category: :continuous_integration do
   let!(:build) { create(:ci_build, :with_runner_session) }
   let(:url) { 'https://new.example.com' }
 
@@ -172,6 +172,22 @@ RSpec.describe Ci::BuildRunnerSession, model: true do
       it 'returns the new subprotocol' do
         expect(specification[:subprotocols]).to eq [subprotocols]
       end
+    end
+  end
+
+  describe 'partitioning' do
+    include Ci::PartitioningHelpers
+
+    let(:new_pipeline) { create(:ci_pipeline) }
+    let(:new_build) { create(:ci_build, pipeline: new_pipeline) }
+    let(:build_runner_session) { create(:ci_build_runner_session, build: new_build) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'assigns the same partition id as the one that build has' do
+      expect(build_runner_session.partition_id).to eq(ci_testing_partition_id)
     end
   end
 end

@@ -159,7 +159,7 @@ RSpec.describe WorkItems::CreateService do
             {
               title: 'Awesome work_item',
               description: 'please fix',
-              work_item_type: create(:work_item_type, :task)
+              work_item_type: WorkItems::Type.default_by_type(:task)
             }
           end
 
@@ -176,7 +176,7 @@ RSpec.describe WorkItems::CreateService do
           let_it_be(:parent) { create(:work_item, :task, project: project) }
 
           it_behaves_like 'fails creating work item and returns errors' do
-            let(:error_message) { 'only Issue and Incident can be parent of Task.' }
+            let(:error_message) { 'is not allowed to add this type of parent' }
           end
         end
       end

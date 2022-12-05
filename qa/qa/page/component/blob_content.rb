@@ -72,11 +72,11 @@ module QA
 
         private
 
-        def within_file_by_number(element, file_number)
+        def within_file_by_number(element, file_number, &block)
           if file_number
-            within_element_by_index(element, file_number - 1) { yield }
+            within_element_by_index(element, file_number - 1, &block)
           else
-            within_element(element) { yield }
+            within_element(element, &block)
           end
         end
       end

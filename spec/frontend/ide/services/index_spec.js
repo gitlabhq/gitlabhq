@@ -6,7 +6,7 @@ import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.
 import services from '~/ide/services';
 import { query, mutate } from '~/ide/services/gql';
 import { escapeFileUrl } from '~/lib/utils/url_utility';
-import ciConfig from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
+import ciConfig from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import { projectData } from '../mock_data';
 
 jest.mock('~/api');

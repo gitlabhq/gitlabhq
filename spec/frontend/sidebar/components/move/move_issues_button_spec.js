@@ -6,7 +6,7 @@ import { GlAlert } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
 import IssuableMoveDropdown from '~/sidebar/components/move/issuable_move_dropdown.vue';
 import issuableEventHub from '~/issues/list/eventhub';
@@ -389,7 +389,7 @@ describe('MoveIssuesButton', () => {
         await waitForPromises();
 
         expect(logError).not.toHaveBeenCalled();
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
 
       it('does not create flashes or logs errors when only tasks are selected', async () => {
@@ -399,7 +399,7 @@ describe('MoveIssuesButton', () => {
         await waitForPromises();
 
         expect(logError).not.toHaveBeenCalled();
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
 
       it('does not create flashes or logs errors when only test cases are selected', async () => {
@@ -409,7 +409,7 @@ describe('MoveIssuesButton', () => {
         await waitForPromises();
 
         expect(logError).not.toHaveBeenCalled();
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
 
       it('does not create flashes or logs errors when only tasks and test cases are selected', async () => {
@@ -419,7 +419,7 @@ describe('MoveIssuesButton', () => {
         await waitForPromises();
 
         expect(logError).not.toHaveBeenCalled();
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
 
       it('does not create flashes or logs errors when issues are moved without errors', async () => {
@@ -432,7 +432,7 @@ describe('MoveIssuesButton', () => {
         await waitForPromises();
 
         expect(logError).not.toHaveBeenCalled();
-        expect(createFlash).not.toHaveBeenCalled();
+        expect(createAlert).not.toHaveBeenCalled();
       });
 
       it('creates a flash and logs errors when a mutation returns errors', async () => {
@@ -456,8 +456,8 @@ describe('MoveIssuesButton', () => {
         );
 
         // Only one flash is created even if multiple errors are reported
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'There was an error while moving the issues.',
         });
       });
@@ -469,8 +469,8 @@ describe('MoveIssuesButton', () => {
         await waitForPromises();
 
         expect(logError).not.toHaveBeenCalled();
-        expect(createFlash).toHaveBeenCalledTimes(1);
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
           message: 'There was an error while moving the issues.',
         });
       });

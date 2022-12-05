@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { difference, intersection, union } from 'lodash';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 
@@ -32,7 +32,7 @@ export default {
 
   onFormSubmitFailure() {
     this.form.find('[type="submit"]').enable();
-    return createFlash({
+    return createAlert({
       message: __('Issue update failed'),
     });
   },

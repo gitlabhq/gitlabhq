@@ -8389,6 +8389,29 @@ The edge type for [`Namespace`](#namespace).
 | <a id="namespaceedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="namespaceedgenode"></a>`node` | [`Namespace`](#namespace) | The item at the end of the edge. |
 
+#### `NestedEnvironmentConnection`
+
+The connection type for [`NestedEnvironment`](#nestedenvironment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="nestedenvironmentconnectionedges"></a>`edges` | [`[NestedEnvironmentEdge]`](#nestedenvironmentedge) | A list of edges. |
+| <a id="nestedenvironmentconnectionnodes"></a>`nodes` | [`[NestedEnvironment]`](#nestedenvironment) | A list of nodes. |
+| <a id="nestedenvironmentconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `NestedEnvironmentEdge`
+
+The edge type for [`NestedEnvironment`](#nestedenvironment).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="nestedenvironmentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="nestedenvironmentedgenode"></a>`node` | [`NestedEnvironment`](#nestedenvironment) | The item at the end of the edge. |
+
 #### `NetworkPolicyConnection`
 
 The connection type for [`NetworkPolicy`](#networkpolicy).
@@ -16165,6 +16188,18 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="namespacecicdsettingallowstalerunnerpruning"></a>`allowStaleRunnerPruning` | [`Boolean`](#boolean) | Indicates if stale runners directly belonging to this namespace should be periodically pruned. |
 | <a id="namespacecicdsettingnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace the CI/CD settings belong to. |
 
+### `NestedEnvironment`
+
+Describes where code is deployed for a project organized by folder.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="nestedenvironmentenvironment"></a>`environment` | [`Environment`](#environment) | Latest environment in the folder. |
+| <a id="nestedenvironmentname"></a>`name` | [`String!`](#string) | Human-readable name of the environment. |
+| <a id="nestedenvironmentsize"></a>`size` | [`Int!`](#int) | Number of environments nested in the folder. |
+
 ### `NetworkPolicy`
 
 Represents the network policy.
@@ -17713,6 +17748,25 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectmilestonesstate"></a>`state` | [`MilestoneStateEnum`](#milestonestateenum) | Filter milestones by state. |
 | <a id="projectmilestonestimeframe"></a>`timeframe` | [`Timeframe`](#timeframe) | List items overlapping the given timeframe. |
 | <a id="projectmilestonestitle"></a>`title` | [`String`](#string) | Title of the milestone. |
+
+##### `Project.nestedEnvironments`
+
+Environments for this project with nested folders, can only be resolved for one project in any single request.
+
+Returns [`NestedEnvironmentConnection`](#nestedenvironmentconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#connection-pagination-arguments):
+`before: String`, `after: String`, `first: Int`, `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectnestedenvironmentsname"></a>`name` | [`String`](#string) | Name of the environment. |
+| <a id="projectnestedenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
+| <a id="projectnestedenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
+| <a id="projectnestedenvironmentstype"></a>`type` | [`String`](#string) | Search query for environment type. |
 
 ##### `Project.networkPolicies`
 

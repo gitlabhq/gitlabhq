@@ -88,6 +88,20 @@ This port is used for much more than just metrics, which warranted this change t
 
 <div class="deprecation removal-160 breaking-change">
 
+### Single merge request changes API endpoint
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The endpoint to get [changes from a single merge request](https://docs.gitlab.com/ee/api/merge_requests.html#get-single-merge-request-changes) has been deprecated in favor the [list merge request diffs](https://docs.gitlab.com/ee/api/merge_requests.html#list-merge-request-diffs) endpoint. API users are encouraged to switch to the new diffs endpoint instead. The `changes from a single merge request` endpoint will be removed in v5 of the GitLab REST API.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Support for REST API endpoints that reset runner registration tokens
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />

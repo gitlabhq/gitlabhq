@@ -74,8 +74,8 @@ RSpec.describe 'Projects > Settings > Webhook Settings', feature_category: :proj
         check 'Enable SSL verification'
         click_button 'Save changes'
 
-        expect(page).to have_content 'SSL Verification: enabled'
-        expect(page).to have_content(url)
+        expect(page).to have_content('Enable SSL verification')
+        expect(page).to have_current_path(edit_project_hook_path(project, hook), ignore_query: true)
       end
 
       it 'test existing webhook', :js do

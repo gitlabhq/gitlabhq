@@ -711,12 +711,6 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
-msgid "%{hook_type} was deleted"
-msgstr ""
-
-msgid "%{hook_type} was scheduled for deletion"
-msgstr ""
-
 msgid "%{host} sign-in from new location"
 msgstr ""
 
@@ -20279,9 +20273,6 @@ msgid "Homepage"
 msgstr ""
 
 msgid "Hook execution failed. Ensure the group has a project with commits."
-msgstr ""
-
-msgid "Hook was successfully updated."
 msgstr ""
 
 msgid "Horizontal rule"
@@ -46026,6 +46017,18 @@ msgstr ""
 msgid "Webhook events will be displayed here."
 msgstr ""
 
+msgid "Webhook was created"
+msgstr ""
+
+msgid "Webhook was deleted"
+msgstr ""
+
+msgid "Webhook was scheduled for deletion"
+msgstr ""
+
+msgid "Webhook was updated"
+msgstr ""
+
 msgid "Webhook:"
 msgstr ""
 
@@ -49022,6 +49025,9 @@ msgid "is not allowed for this project."
 msgstr ""
 
 msgid "is not allowed since the group is not top-level group."
+msgstr ""
+
+msgid "is not allowed to add this type of parent"
 msgstr ""
 
 msgid "is not allowed. Please use your regular email address."

@@ -1,5 +1,5 @@
 import Sortable from 'sortablejs';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
 import { getSortableDefaultOptions, sortableStart } from '~/sortable/utils';
@@ -11,7 +11,7 @@ const updateIssue = (url, { move_before_id, move_after_id }) =>
       move_after_id,
     })
     .catch(() => {
-      createFlash({
+      createAlert({
         message: s__("ManualOrdering|Couldn't save the order of the issues"),
       });
     });

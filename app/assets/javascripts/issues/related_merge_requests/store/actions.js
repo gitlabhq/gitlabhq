@@ -1,4 +1,4 @@
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { normalizeHeaders } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -29,7 +29,7 @@ export const fetchMergeRequests = ({ state, dispatch }) => {
     })
     .catch(() => {
       dispatch('receiveDataError');
-      createFlash({
+      createAlert({
         message: __('Something went wrong while fetching related merge requests.'),
       });
     });

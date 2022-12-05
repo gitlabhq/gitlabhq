@@ -123,7 +123,7 @@ RSpec.describe 'Create a work item' do
             post_graphql_mutation(mutation, current_user: current_user)
 
             expect(mutation_response['errors'])
-              .to contain_exactly(/cannot be added: only Issue and Incident can be parent of Task./)
+              .to contain_exactly(/cannot be added: is not allowed to add this type of parent/)
             expect(mutation_response['workItem']).to be_nil
           end
         end

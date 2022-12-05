@@ -207,6 +207,13 @@ class Environment < ApplicationRecord
     update_all(auto_delete_at: at_time)
   end
 
+  def self.nested
+    group('COALESCE(environment_type, id::text)', 'COALESCE(environment_type, name)')
+      .select('COALESCE(environment_type, id::text), COALESCE(environment_type, name) AS name',
+              'COUNT(*) AS size', 'MAX(id) AS last_id')
+      .order('name ASC')
+  end
+
   class << self
     def count_by_state
       environments_count_by_state = group(:state).count

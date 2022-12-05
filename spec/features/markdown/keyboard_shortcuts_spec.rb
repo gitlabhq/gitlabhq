@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Markdown keyboard shortcuts', :js do
+RSpec.describe 'Markdown keyboard shortcuts', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

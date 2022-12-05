@@ -9,5 +9,6 @@ module Ci
 
     expose :protected?, as: :protected
     expose :masked?, as: :masked
+    expose :raw?, as: :raw
   end
 end

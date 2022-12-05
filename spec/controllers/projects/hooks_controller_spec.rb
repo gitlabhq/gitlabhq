@@ -59,7 +59,7 @@ RSpec.describe Projects::HooksController do
       put :update, params: params
 
       expect(response).to have_gitlab_http_status(:found)
-      expect(flash[:notice]).to include('successfully updated')
+      expect(flash[:notice]).to include('was updated')
 
       expect(hook.reload.url_variables).to eq(
         'a' => 'updated',

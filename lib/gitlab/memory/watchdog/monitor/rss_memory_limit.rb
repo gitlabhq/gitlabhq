@@ -9,6 +9,7 @@ module Gitlab
 
           def initialize(memory_limit_bytes:)
             @memory_limit_bytes = memory_limit_bytes
+            init_memory_limit_metrics
           end
 
           def call
@@ -27,6 +28,14 @@ module Gitlab
               memwd_rss_bytes: worker_rss_bytes,
               memwd_max_rss_bytes: memory_limit_bytes
             }
+          end
+
+          def init_memory_limit_metrics
+            rss_memory_limit = Gitlab::Metrics.gauge(
+              :gitlab_memwd_max_memory_limit,
+              'The configured fixed limit for rss memory'
+            )
+            rss_memory_limit.set({}, memory_limit_bytes)
           end
         end
       end

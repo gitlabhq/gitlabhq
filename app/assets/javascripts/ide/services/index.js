@@ -4,7 +4,7 @@ import dismissUserCallout from '~/graphql_shared/mutations/dismiss_user_callout.
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths, escapeFileUrl } from '~/lib/utils/url_utility';
-import ciConfig from '~/pipeline_editor/graphql/queries/ci_config.query.graphql';
+import ciConfig from '~/ci/pipeline_editor/graphql/queries/ci_config.query.graphql';
 import { query, mutate } from './gql';
 
 export default {

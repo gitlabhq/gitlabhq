@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
+RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_category: :portfolio_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
@@ -81,7 +81,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) do
-              "#{child_issue.to_reference} cannot be added: only Task can be assigned as a child in hierarchy."
+              "#{child_issue.to_reference} cannot be added: is not allowed to add this type of parent"
             end
           end
         end
@@ -136,7 +136,7 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService do
 
           it_behaves_like 'raises a WidgetError' do
             let(:message) do
-              "#{work_item.to_reference} cannot be added: only Issue and Incident can be parent of Task."
+              "#{work_item.to_reference} cannot be added: is not allowed to add this type of parent"
             end
           end
         end

@@ -6,7 +6,7 @@ import {
   GlLoadingIcon,
   GlSearchBoxByType,
 } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { DASH_SCOPE, joinPaths } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -45,7 +45,7 @@ export default {
       },
       update: ({ group }) => group.projects.nodes ?? [],
       error(error) {
-        createFlash({
+        createAlert({
           message: __('An error occurred while loading projects.'),
           captureError: true,
           error,

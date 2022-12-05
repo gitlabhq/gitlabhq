@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import { resolvers } from '~/pipeline_editor/graphql/resolvers';
+import { resolvers } from '~/ci/pipeline_editor/graphql/resolvers';
 
 import CiLint from './components/ci_lint.vue';
 

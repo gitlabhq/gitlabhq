@@ -25,14 +25,13 @@ module Snippets::BlobsActions
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def blob
-    strong_memoize(:blob) do
-      assign_ref_vars
+    assign_ref_vars
 
-      next unless @commit
+    return unless @commit
 
-      @repo.blob_at(@commit.id, @path)
-    end
+    @repo.blob_at(@commit.id, @path)
   end
+  strong_memoize_attr :blob
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def ensure_blob

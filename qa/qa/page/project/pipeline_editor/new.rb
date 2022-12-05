@@ -5,7 +5,7 @@ module QA
     module Project
       module PipelineEditor
         class New < QA::Page::Base
-          view 'app/assets/javascripts/pipeline_editor/components/ui/pipeline_editor_empty_state.vue' do
+          view 'app/assets/javascripts/ci/pipeline_editor/components/ui/pipeline_editor_empty_state.vue' do
             element :create_new_ci_button, required: true
           end
 

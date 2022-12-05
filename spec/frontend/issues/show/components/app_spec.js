@@ -6,6 +6,7 @@ import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import '~/behaviors/markdown/render_gfm';
+import { createAlert } from '~/flash';
 import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
 import DescriptionComponent from '~/issues/show/components/description.vue';
@@ -26,8 +27,9 @@ import {
   zoomMeetingUrl,
 } from '../mock_data/mock_data';
 
-jest.mock('~/lib/utils/url_utility');
+jest.mock('~/flash');
 jest.mock('~/issues/show/event_hub');
+jest.mock('~/lib/utils/url_utility');
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
@@ -270,9 +272,7 @@ describe('Issuable output', () => {
 
         await wrapper.vm.updateIssuable();
         expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-          `Error updating issue`,
-        );
+        expect(createAlert).toHaveBeenCalledWith({ message: `Error updating issue` });
       });
 
       it('returns the correct error message for issuableType', async () => {
@@ -282,9 +282,7 @@ describe('Issuable output', () => {
         await nextTick();
         await wrapper.vm.updateIssuable();
         expect(eventHub.$emit).not.toHaveBeenCalledWith('close.form');
-        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-          `Error updating merge request`,
-        );
+        expect(createAlert).toHaveBeenCalledWith({ message: `Error updating merge request` });
       });
 
       it('shows error message from backend if exists', async () => {
@@ -294,9 +292,9 @@ describe('Issuable output', () => {
           .mockRejectedValue({ response: { data: { errors: [msg] } } });
 
         await wrapper.vm.updateIssuable();
-        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-          `${wrapper.vm.defaultErrorMessage}. ${msg}`,
-        );
+        expect(createAlert).toHaveBeenCalledWith({
+          message: `${wrapper.vm.defaultErrorMessage}. ${msg}`,
+        });
       });
     });
   });
@@ -354,9 +352,7 @@ describe('Issuable output', () => {
         .reply(() => Promise.reject(new Error('something went wrong')));
 
       return wrapper.vm.requestTemplatesAndShowForm().then(() => {
-        expect(document.querySelector('.flash-container .flash-text').textContent).toContain(
-          'Error updating issue',
-        );
+        expect(createAlert).toHaveBeenCalledWith({ message: 'Error updating issue' });
 
         expect(formSpy).toHaveBeenCalledWith();
       });
@@ -402,9 +398,9 @@ describe('Issuable output', () => {
       wrapper.setProps({ issuableType: 'merge request' });
 
       return wrapper.vm.updateStoreState().then(() => {
-        expect(document.querySelector('.flash-container .flash-text').innerText.trim()).toBe(
-          `Error updating ${wrapper.vm.issuableType}`,
-        );
+        expect(createAlert).toHaveBeenCalledWith({
+          message: `Error updating ${wrapper.vm.issuableType}`,
+        });
       });
     });
   });

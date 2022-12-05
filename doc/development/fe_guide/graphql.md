@@ -1138,7 +1138,7 @@ query getPipelineEtag {
 ```javascript
 /* pipeline_editor/components/header/pipeline_status.vue */
 
-import getPipelineEtag from '~/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
+import getPipelineEtag from '~/ci/pipeline_editor/graphql/queries/client/pipeline_etag.query.graphql';
 
 apollo: {
   pipelineEtag: {

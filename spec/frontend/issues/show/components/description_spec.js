@@ -12,7 +12,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import Description from '~/issues/show/components/description.vue';
 import { updateHistory } from '~/lib/utils/url_utility';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
@@ -370,7 +370,7 @@ describe('Description component', () => {
 
         await waitForPromises();
 
-        expect(createFlash).toHaveBeenCalledWith(
+        expect(createAlert).toHaveBeenCalledWith(
           expect.objectContaining({
             message: 'Something went wrong when creating task. Please try again.',
           }),

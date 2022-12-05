@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Copy as GFM', :js do
+RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
   include MarkupHelper
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper

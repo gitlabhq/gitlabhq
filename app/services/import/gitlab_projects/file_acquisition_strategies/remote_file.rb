@@ -21,7 +21,7 @@ module Import
         # whole condition of this validation:
         validates_with RemoteFileValidator, if: -> { validate_aws_s3? || !s3_request? }
 
-        def initialize(current_user: nil, params:)
+        def initialize(params:, current_user: nil)
           @params = params
         end
 

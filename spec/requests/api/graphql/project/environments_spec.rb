@@ -184,4 +184,81 @@ RSpec.describe 'Project Environments query' do
       expect(multi).not_to exceed_query_limit(baseline)
     end
   end
+
+  describe 'nested environments' do
+    let_it_be(:testing1) { create(:environment, name: 'testing/one', project: project) }
+    let_it_be(:testing2) { create(:environment, name: 'testing/two', project: project) }
+
+    context 'with query' do
+      let(:query) do
+        %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            nestedEnvironments {
+              nodes {
+                name
+                size
+                environment {
+                  name
+                  path
+                }
+              }
+            }
+          }
+        }
+      )
+      end
+
+      it 'can fetch nested environments' do
+        subject
+
+        nested_envs = graphql_data.dig('project', 'nestedEnvironments', 'nodes')
+        expect(nested_envs.count).to be(3)
+        expect(nested_envs.pluck('name')).to match_array(%w[production staging testing])
+        expect(nested_envs.pluck('size')).to match_array([1, 1, 2])
+        expect(nested_envs[0].dig('environment', 'name')).to eq(production.name)
+      end
+
+      context 'when user is guest' do
+        let(:user) { create(:user).tap { |u| project.add_guest(u) } }
+
+        it 'returns nothing' do
+          subject
+
+          nested_envs = graphql_data.dig('project', 'nestedEnvironments', 'nodes')
+
+          expect(nested_envs).to be_nil
+        end
+      end
+    end
+
+    context 'when using pagination' do
+      let(:query) do
+        %(
+        query {
+          project(fullPath: "#{project.full_path}") {
+            nestedEnvironments(first: 1) {
+              nodes {
+                name
+              }
+              pageInfo {
+                hasPreviousPage
+                startCursor
+                endCursor
+                hasNextPage
+              }
+            }
+          }
+        }
+      )
+      end
+
+      it 'supports pagination' do
+        subject
+        nested_envs = graphql_data.dig('project', 'nestedEnvironments')
+        expect(nested_envs['nodes'].count).to eq(1)
+        expect(nested_envs.dig('pageInfo', 'hasNextPage')).to be_truthy
+      end
+    end
+  end
 end

@@ -1,6 +1,6 @@
 import $ from 'jquery';
 import { joinPaths } from '~/lib/utils/url_utility';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { EVENT_ISSUABLE_VUE_APP_CHANGE } from '~/issuable/constants';
 import axios from '~/lib/utils/axios_utils';
 import { addDelimiter } from '~/lib/utils/text_utility';
@@ -68,7 +68,7 @@ export default class Issue {
         this.createMergeRequestDropdown.checkAbilityToCreateBranch();
       }
     } else {
-      createFlash({
+      createAlert({
         message: issueFailMessage,
       });
     }
@@ -105,7 +105,7 @@ export default class Issue {
         }
       })
       .catch(() =>
-        createFlash({
+        createAlert({
           message: __('Failed to load related branches'),
         }),
       );

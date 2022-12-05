@@ -14,6 +14,7 @@ module WorkItems
     validates :work_item, presence: true, uniqueness: true
     validate :validate_child_type
     validate :validate_parent_type
+    validate :validate_hierarchy_restrictions
     validate :validate_same_project
     validate :validate_max_children
     validate :validate_confidentiality
@@ -33,7 +34,12 @@ module WorkItems
 
     private
 
+    def db_restrictions_enabled?
+      Feature.enabled?(:hierarchy_db_restrictions, work_item&.project)
+    end
+
     def validate_child_type
+      return if db_restrictions_enabled?
       return unless work_item
 
       unless work_item.task?
@@ -42,6 +48,7 @@ module WorkItems
     end
 
     def validate_parent_type
+      return if db_restrictions_enabled?
       return unless work_item_parent
 
       base_type = work_item_parent.work_item_type.base_type.to_sym
@@ -77,6 +84,18 @@ module WorkItems
       if work_item_parent.confidential? && !work_item.confidential?
         errors.add :work_item, _("cannot assign a non-confidential work item to a confidential "\
                                  "parent. Make the work item confidential and try again.")
+      end
+    end
+
+    def validate_hierarchy_restrictions
+      return unless db_restrictions_enabled?
+      return unless work_item && work_item_parent
+
+      restriction = ::WorkItems::HierarchyRestriction
+        .find_by_parent_type_id_and_child_type_id(work_item_parent.work_item_type_id, work_item.work_item_type_id)
+
+      if restriction.nil?
+        errors.add :work_item, _('is not allowed to add this type of parent')
       end
     end
   end

@@ -4,6 +4,8 @@ module Ci
   # The purpose of this class is to store Build related runner session.
   # Data will be removed after transitioning from running to any state.
   class BuildRunnerSession < Ci::ApplicationRecord
+    include Ci::Partitionable
+
     TERMINAL_SUBPROTOCOL = 'terminal.gitlab.com'
     DEFAULT_SERVICE_NAME = 'build'
     DEFAULT_PORT_NAME = 'default_port'
@@ -11,6 +13,8 @@ module Ci
     self.table_name = 'ci_builds_runner_session'
 
     belongs_to :build, class_name: 'Ci::Build', inverse_of: :runner_session
+
+    partitionable scope: :build
 
     validates :build, presence: true
     validates :url, public_url: { schemes: %w(https) }

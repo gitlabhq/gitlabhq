@@ -21,7 +21,7 @@ import {
   setSortPreferenceMutationResponseWithErrors,
   urlParams,
 } from 'jest/issues/list/mock_data';
-import { createAlert, FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import IssuableByEmail from '~/issuable/components/issuable_by_email.vue';
@@ -402,7 +402,7 @@ describe('CE IssuesListApp component', () => {
         it('shows an alert to tell the user that manual reordering is disabled', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.issueRepositioningMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });
@@ -442,7 +442,7 @@ describe('CE IssuesListApp component', () => {
         it('shows an alert to tell the user they must be signed in to search', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.anonymousSearchingMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });
@@ -833,7 +833,7 @@ describe('CE IssuesListApp component', () => {
         it('shows an alert to tell the user that manual reordering is disabled', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.issueRepositioningMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });
@@ -920,7 +920,7 @@ describe('CE IssuesListApp component', () => {
         it('shows an alert to tell the user they must be signed in to search', () => {
           expect(createAlert).toHaveBeenCalledWith({
             message: IssuesListApp.i18n.anonymousSearchingMessage,
-            type: FLASH_TYPES.NOTICE,
+            variant: VARIANT_INFO,
           });
         });
       });

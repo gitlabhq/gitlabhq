@@ -1,5 +1,5 @@
 import AxiosMockAdapter from 'axios-mock-adapter';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { ERROR_MSG } from '~/incidents_settings/constants';
 import IncidentsSettingsService from '~/incidents_settings/incidents_settings_service';
 import axios from '~/lib/utils/axios_utils';
@@ -37,7 +37,7 @@ describe('IncidentsSettingsService', () => {
       mock.onPatch().reply(httpStatusCodes.BAD_REQUEST);
 
       return service.updateSettings({}).then(() => {
-        expect(createFlash).toHaveBeenCalledWith({
+        expect(createAlert).toHaveBeenCalledWith({
           message: expect.stringContaining(ERROR_MSG),
         });
       });

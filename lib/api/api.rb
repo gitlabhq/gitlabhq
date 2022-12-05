@@ -215,6 +215,7 @@ module API
         mount ::API::Features
         mount ::API::Files
         mount ::API::FreezePeriods
+        mount ::API::GenericPackages
         mount ::API::Geo
         mount ::API::GoProxy
         mount ::API::GroupAvatar
@@ -303,7 +304,6 @@ module API
       mount ::API::DebianProjectPackages
       mount ::API::Discussions
       mount ::API::ErrorTracking::Collector
-      mount ::API::GenericPackages
       mount ::API::GroupBoards
       mount ::API::GroupDebianDistributions
       mount ::API::GroupLabels

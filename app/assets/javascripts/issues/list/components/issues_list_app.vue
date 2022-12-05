@@ -6,7 +6,7 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
-import { createAlert, FLASH_TYPES } from '~/flash';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import { TYPE_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { ITEM_TYPE } from '~/groups/constants';
@@ -694,13 +694,13 @@ export default {
     showAnonymousSearchingMessage() {
       createAlert({
         message: this.$options.i18n.anonymousSearchingMessage,
-        type: FLASH_TYPES.NOTICE,
+        variant: VARIANT_INFO,
       });
     },
     showIssueRepositioningMessage() {
       createAlert({
         message: this.$options.i18n.issueRepositioningMessage,
-        type: FLASH_TYPES.NOTICE,
+        variant: VARIANT_INFO,
       });
     },
     toggleBulkEditSidebar(showBulkEditSidebar) {

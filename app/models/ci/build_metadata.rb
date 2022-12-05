@@ -58,6 +58,12 @@ module Ci
       runtime_runner_features[:cancel_gracefully] == true
     end
 
+    def enable_debug_trace!
+      self.debug_trace_enabled = true
+      save! if changes.any?
+      true
+    end
+
     private
 
     def set_build_project

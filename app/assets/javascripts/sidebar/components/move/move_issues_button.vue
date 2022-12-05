@@ -1,6 +1,6 @@
 <script>
 import { GlAlert } from '@gitlab/ui';
-import createFlash from '~/flash';
+import { createAlert } from '~/flash';
 import { logError } from '~/lib/logger';
 import { s__ } from '~/locale';
 import {
@@ -130,7 +130,7 @@ export default {
           this.moveInProgress = false;
           issuableEventHub.$emit('issuables:bulkMoveEnded');
 
-          createFlash({
+          createAlert({
             message: s__(`Issues|There was an error while moving the issues.`),
           });
         });

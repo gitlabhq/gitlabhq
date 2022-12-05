@@ -6,8 +6,7 @@
 
 %h1.page-title.gl-font-size-h-display
   = _('Project: %{name}') % { name: @project.full_name }
-  = link_to edit_project_path(@project), class: "btn btn-default gl-button float-right" do
-    = sprite_icon('pencil', css_class: 'gl-icon gl-mr-2')
+  = render Pajamas::ButtonComponent.new(href: edit_project_path(@project), icon: 'pencil', button_options: { class: 'float-right' }) do
     = _('Edit')
 %hr
 - if @project.last_repository_check_failed?

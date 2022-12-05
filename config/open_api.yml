@@ -61,6 +61,8 @@ metadata:
     description: Operations related to managing Flipper-based feature flags
   - name: freeze_periods
     description: Operations related to deploy freeze periods
+  - name: generic_packages
+    description: Operations related to Generic packages
   - name: geo
     description: Operations related to Geo
   - name: geo_nodes

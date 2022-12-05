@@ -79,6 +79,7 @@ module WorkItems
         Widgets::Assignees,
         Widgets::Labels,
         Widgets::Description,
+        Widgets::Hierarchy,
         Widgets::StartAndDueDate,
         Widgets::Notes
       ]

@@ -26,6 +26,7 @@ module Ci
         CommitStatus
         Ci::BuildMetadata
         Ci::BuildReportResult
+        Ci::BuildRunnerSession
         Ci::BuildTraceChunk
         Ci::BuildPendingState
         Ci::JobArtifact

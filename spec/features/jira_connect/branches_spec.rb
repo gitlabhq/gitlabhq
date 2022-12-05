@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Create GitLab branches from Jira', :js do
+RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integrations do
   let_it_be(:alice) { create(:user, name: 'Alice') }
   let_it_be(:bob) { create(:user, name: 'Bob') }
 
