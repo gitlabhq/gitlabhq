@@ -23894,9 +23894,6 @@ msgstr ""
 msgid "Kubernetes deployment not found"
 msgstr ""
 
-msgid "Kubernetes error: %{error_code}"
-msgstr ""
-
 msgid "LDAP"
 msgstr ""
 
@@ -34121,6 +34118,9 @@ msgstr ""
 msgid "ReleaseAssetLinkType|Runbooks"
 msgstr ""
 
+msgid "Released"
+msgstr ""
+
 msgid "Released date"
 msgstr ""
 
@@ -35481,6 +35481,9 @@ msgstr ""
 msgid "Runners|Executor"
 msgstr ""
 
+msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt CI/CD."
+msgstr ""
+
 msgid "Runners|Filter projects"
 msgstr ""
 
@@ -35536,6 +35539,9 @@ msgid "Runners|Never contacted:"
 msgstr ""
 
 msgid "Runners|Never expires"
+msgstr ""
+
+msgid "Runners|New group runners can be registered"
 msgstr ""
 
 msgid "Runners|New registration token generated!"
@@ -35631,6 +35637,9 @@ msgid "Runners|Runner #%{runner_id}"
 msgstr ""
 
 msgid "Runners|Runner %{name} was deleted"
+msgstr ""
+
+msgid "Runners|Runner Registration"
 msgstr ""
 
 msgid "Runners|Runner assigned to project."
@@ -46562,6 +46571,9 @@ msgid "Will be created"
 msgstr ""
 
 msgid "Will be mapped to"
+msgstr ""
+
+msgid "Will be released"
 msgstr ""
 
 msgid "Will deploy to"

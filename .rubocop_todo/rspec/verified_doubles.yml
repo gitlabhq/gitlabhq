@@ -633,7 +633,7 @@ RSpec/VerifiedDoubles:
     - 'spec/lib/gitlab/mail_room/mail_room_spec.rb'
     - 'spec/lib/gitlab/manifest_import/metadata_spec.rb'
     - 'spec/lib/gitlab/markdown_cache/field_data_spec.rb'
-    - 'spec/lib/gitlab/merge_requests/commit_message_generator_spec.rb'
+    - 'spec/lib/gitlab/merge_requests/message_generator_spec.rb'
     - 'spec/lib/gitlab/merge_requests/mergeability/redis_interface_spec.rb'
     - 'spec/lib/gitlab/metrics/boot_time_tracker_spec.rb'
     - 'spec/lib/gitlab/metrics/dashboard/importers/prometheus_metrics_spec.rb'

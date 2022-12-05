@@ -1,44 +1,77 @@
 {
   "type": "object",
-  "required": ["event", "incident"],
+  "required": [
+    "event"
+  ],
   "properties": {
-    "event": { "type": "string" },
-    "incident": {
+    "event": {
       "type": "object",
       "required": [
-        "html_url",
-        "incident_number",
-        "title",
-        "status",
-        "created_at",
-        "urgency",
-        "incident_key"
-      ],
-      "properties": {
-        "html_url": { "type": "string" },
-        "incindent_number": { "type": "integer" },
-        "title": { "type": "string" },
-        "status": { "type": "string" },
-        "created_at": { "type": "string" },
-        "urgency": { "type": "string", "enum": ["high", "low"] },
-        "incident_key": { "type": ["string", "null"] },
-        "assignments": {
-          "type": "array",
-          "items": {
-            "assignee": {
-              "type": "array",
-              "items": {
-                "summary": { "type": "string" },
-                "html_url": { "type": "string" }
+        "data"
+      ]
+    },
+    "properties": {
+      "data": {
+        "type": "object",
+        "required": [
+          "html_url",
+          "number",
+          "title",
+          "status",
+          "created_at",
+          "urgency",
+          "incident_key"
+        ],
+        "properties": {
+          "html_url": {
+            "type": "string"
+          },
+          "number": {
+            "type": "integer"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "urgency": {
+            "type": "string",
+            "enum": [
+              "high",
+              "low"
+            ]
+          },
+          "incident_key": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "assignee": {
+            "type": "array",
+            "items": {
+              "summary": {
+                "type": "string"
+              },
+              "html_url": {
+                "type": "string"
               }
             }
-          }
-        },
-        "impacted_services": {
-          "type": "array",
-          "items": {
-            "summary": { "type": "string" },
-            "html_url": { "type": "string" }
+          },
+          "service": {
+            "type": "object",
+            "items": {
+              "summary": {
+                "type": "string"
+              },
+              "html_url": {
+                "type": "string"
+              }
+            }
           }
         }
       }

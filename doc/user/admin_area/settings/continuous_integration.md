@@ -326,7 +326,7 @@ To set the maximum file size:
 1. Enter the maximum file size, in bytes.
 1. Select **Save size limits**.
 
-## Prevent users from registering runners
+## Restrict runner registration by all users in an instance
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/22225) in GitLab 14.1.
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368008) in GitLab 15.5.
@@ -335,7 +335,7 @@ GitLab administrators can adjust who is allowed to register runners, by showing 
 
 By default, all members of a project and group are able to register runners.
 
-To change this:
+To restrict all users in an instance from registering runners:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > CI/CD**.
@@ -346,6 +346,22 @@ To change this:
 
 WARNING:
 When the registration sections are hidden in the UI, members of the project or group that need to register runners must contact the administrators. If you plan to prevent registration, ensure users have access to the runners they need to run jobs.
+
+## Restrict runner registration by all members in a group
+
+Prerequisites:
+
+- Runner registration must be enabled for [all users in the instance](#restrict-runner-registration-by-all-users-in-an-instance).
+
+GitLab administrators can adjust group permissions to restrict runner registration by group members.
+
+To restrict runner registration by members in a specific group:
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Overview > Groups** and find your group.
+1. Select **Edit**.
+1. Clear the **New group runners can be registered** checkbox if you want to disable runner registration by all members in the group. If the setting is read-only, you must enable runner registration for the [instance](#restrict-runner-registration-by-all-users-in-an-instance).
+1. Select **Save changes**.
 
 ## Troubleshooting
 

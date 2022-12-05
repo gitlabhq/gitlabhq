@@ -12,6 +12,6 @@
         %h4.text-center= s_('Milestones|There are no closed milestones')
       - else
         %h4.text-center= s_('Milestones|There are no open milestones')
-        %p.state-description
+        %p.state-description.text-center
           = s_('Milestones|Create a milestone to better track your issues and merge requests. %{learn_more_link}').html_safe % { learn_more_link: learn_more_link }
         = yield

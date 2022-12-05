@@ -187,7 +187,7 @@ Only feature flags that have a YAML definition file can be used when running the
 ```shell
 $ bin/feature-flag my_feature_flag
 >> Specify the group introducing the feature flag, like `group::apm`:
-?> group::memory
+?> group::application performance
 
 >> URL of the MR introducing the feature flag (enter to skip):
 ?> https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
@@ -202,7 +202,7 @@ create config/feature_flags/development/my_feature_flag.yml
 name: my_feature_flag
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38602
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/232533
-group: group::memory
+group: group::application performance
 type: development
 default_enabled: false
 ```

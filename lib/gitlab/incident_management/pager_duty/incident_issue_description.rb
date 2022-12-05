@@ -19,7 +19,7 @@ module Gitlab
             "**Incident key:** #{incident_payload['incident_key']}",
             "**Created at:** #{markdown_incident_created_at}",
             "**Assignees:** #{markdown_assignees.join(', ')}",
-            "**Impacted services:** #{markdown_impacted_services.join(', ')}"
+            "**Impacted service:** #{markdown_impacted_service}"
           ].join(markdown_line_break)
         end
 
@@ -47,10 +47,9 @@ module Gitlab
           end
         end
 
-        def markdown_impacted_services
-          Array(incident_payload['impacted_services']).map do |is|
-            markdown_link(is['summary'], is['url'])
-          end
+        def markdown_impacted_service
+          service = incident_payload['impacted_service']
+          markdown_link(service['summary'], service['url']) unless service.nil?
         end
 
         def markdown_link(label, url)

@@ -51,6 +51,10 @@ class Admin::GroupsController < Admin::ApplicationController
     @group.build_admin_note unless @group.admin_note
 
     if @group.update(group_params)
+      unless Gitlab::Utils.to_boolean(group_params['runner_registration_enabled'])
+        Ci::Runners::ResetRegistrationTokenService.new(@group, current_user).execute
+      end
+
       redirect_to [:admin, @group], notice: _('Group was successfully updated.')
     else
       render "edit"
@@ -91,6 +95,7 @@ class Admin::GroupsController < Admin::ApplicationController
       :name,
       :path,
       :request_access_enabled,
+      :runner_registration_enabled,
       :visibility_level,
       :require_two_factor_authentication,
       :two_factor_grace_period,

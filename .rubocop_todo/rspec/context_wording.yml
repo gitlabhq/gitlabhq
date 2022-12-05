@@ -2023,7 +2023,7 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/markdown_cache/active_record/extension_spec.rb'
     - 'spec/lib/gitlab/memory/reports_daemon_spec.rb'
     - 'spec/lib/gitlab/memory/watchdog_spec.rb'
-    - 'spec/lib/gitlab/merge_requests/commit_message_generator_spec.rb'
+    - 'spec/lib/gitlab/merge_requests/message_generator_spec.rb'
     - 'spec/lib/gitlab/metrics/dashboard/cache_spec.rb'
     - 'spec/lib/gitlab/metrics/dashboard/importer_spec.rb'
     - 'spec/lib/gitlab/metrics/dashboard/importers/prometheus_metrics_spec.rb'

@@ -22,9 +22,9 @@ RSpec.describe IncidentManagement::PagerDuty::ProcessIncidentWorker do
           'assignees' => [{
             'summary' => 'Laura Haley', 'url' => 'https://webdemo.pagerduty.com/users/P553OPV'
           }],
-          'impacted_services' => [{
+          'impacted_service' => {
             'summary' => 'Production XDB Cluster', 'url' => 'https://webdemo.pagerduty.com/services/PN49J75'
-          }]
+          }
         }
       end
 

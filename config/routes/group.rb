@@ -61,6 +61,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       resource :packages_and_registries, only: [:show]
     end
 
+    resources :usage_quotas, only: [:index]
+
     resource :variables, only: [:show, :update]
 
     resources :children, only: [:index]

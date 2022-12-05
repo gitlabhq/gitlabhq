@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
+RSpec.describe Gitlab::MergeRequests::MessageGenerator do
   let(:merge_commit_template) { nil }
   let(:squash_commit_template) { nil }
   let(:project) do
@@ -59,7 +59,14 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
 
     context 'when project has commit template with only the title' do
       let(:merge_request) do
-        double(:merge_request, title: 'Fixes', target_project: project, to_reference: '!123', metrics: nil, merge_user: nil)
+        double(
+          :merge_request,
+          title: 'Fixes',
+          target_project: project,
+          to_reference: '!123',
+          metrics: nil,
+          merge_user: nil
+        )
       end
 
       let(message_template_name) { '%{title}' }
@@ -214,7 +221,7 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
 
     context 'when project has template with CRLF newlines' do
       let(message_template_name) do
-        "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{description}\r\n\r\nSee merge request %{reference}"
+        "Merge branch '%{source_branch}' into '%{target_branch}'\r\n\r\n%{title}\r\n\r\n%{description}\r\n\r\nSee merge request %{reference}" # rubocop: disable Layout/LineLength
       end
 
       it 'converts it to LF newlines' do
@@ -717,8 +724,8 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     end
   end
 
-  describe '#merge_message' do
-    let(:result_message) { subject.merge_message }
+  describe '#merge_commit_message' do
+    let(:result_message) { subject.merge_commit_message }
 
     it_behaves_like 'commit message with template', :merge_commit_template
 
@@ -749,8 +756,8 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
     end
   end
 
-  describe '#squash_message' do
-    let(:result_message) { subject.squash_message }
+  describe '#squash_commit_message' do
+    let(:result_message) { subject.squash_commit_message }
 
     it_behaves_like 'commit message with template', :squash_commit_template
 
@@ -775,6 +782,97 @@ RSpec.describe Gitlab::MergeRequests::CommitMessageGenerator do
             Bugfix
 
             Co-authored-by: Winnie Hellmann <winnie@gitlab.com>
+          MSG
+        end
+      end
+    end
+  end
+
+  describe '#new_mr_description' do
+    let(:merge_request) do
+      build(
+        :merge_request,
+        source_project: project,
+        target_project: project,
+        target_branch: 'master',
+        source_branch: source_branch,
+        author: author,
+        description: merge_request_description,
+        title: merge_request_title
+      )
+    end
+
+    let(:result_message) { subject.new_mr_description }
+
+    before do
+      compare = CompareService.new(
+        project,
+        merge_request.source_branch
+      ).execute(
+        project,
+        merge_request.target_branch
+      )
+
+      merge_request.compare_commits = compare.commits
+      merge_request.compare = compare
+    end
+
+    context 'when project has template with all variables' do
+      let(:merge_request_description) { <<~MSG.rstrip }
+        source_branch:%{source_branch}
+        target_branch:%{target_branch}
+        title:%{title}
+        issues:%{issues}
+        description:%{description}
+        first_commit:%{first_commit}
+        first_multiline_commit:%{first_multiline_commit}
+        url:%{url}
+        approved_by:%{approved_by}
+        merged_by:%{merged_by}
+        co_authored_by:%{co_authored_by}
+        all_commits:%{all_commits}
+      MSG
+
+      it 'renders only variables specific to a new non-persisted merge request' do
+        expect(result_message).to eq <<~MSG.rstrip
+          source_branch:feature
+          target_branch:master
+          title:
+          issues:
+          description:
+          first_commit:Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          first_multiline_commit:Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          url:
+          approved_by:
+          merged_by:
+          co_authored_by:Co-authored-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+          all_commits:* Feature added
+
+          Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
+        MSG
+      end
+
+      context 'when no first commit exists' do
+        let(:source_branch) { 'master' }
+
+        it 'does not populate any commit-related variables' do
+          expect(result_message).to eq <<~MSG.rstrip
+            source_branch:master
+            target_branch:master
+            title:
+            issues:
+            description:
+            first_commit:
+            first_multiline_commit:Bugfix
+            url:
+            approved_by:
+            merged_by:
+            co_authored_by:
+            all_commits:
           MSG
         end
       end

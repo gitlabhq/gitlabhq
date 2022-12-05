@@ -1191,12 +1191,28 @@ RSpec.describe GroupPolicy do
       context 'when admin mode is enabled', :enable_admin_mode do
         it { is_expected.to be_allowed(:register_group_runners) }
 
+        context 'with specific group runner registration disabled' do
+          before do
+            group.runner_registration_enabled = false
+          end
+
+          it { is_expected.to be_allowed(:register_group_runners) }
+        end
+
         context 'with group runner registration disabled' do
           before do
             stub_application_setting(valid_runner_registrars: ['project'])
           end
 
           it { is_expected.to be_allowed(:register_group_runners) }
+
+          context 'with specific group runner registration disabled' do
+            before do
+              group.runner_registration_enabled = false
+            end
+
+            it { is_expected.to be_allowed(:register_group_runners) }
+          end
         end
       end
 
@@ -1213,6 +1229,14 @@ RSpec.describe GroupPolicy do
       context 'with group runner registration disabled' do
         before do
           stub_application_setting(valid_runner_registrars: ['project'])
+        end
+
+        it { is_expected.to be_disallowed(:register_group_runners) }
+      end
+
+      context 'with specific group runner registration disabled' do
+        before do
+          group.runner_registration_enabled = false
         end
 
         it { is_expected.to be_disallowed(:register_group_runners) }

@@ -83,6 +83,10 @@ RSpec.shared_examples 'groups routing' do
   it 'routes to the observability controller manage method' do
     expect(get("groups/#{group_path}/-/observability/manage")).to route_to('groups/observability#manage', group_id: group_path)
   end
+
+  it 'routes to the usage quotas controller' do
+    expect(get("groups/#{group_path}/-/usage_quotas")).to route_to("groups/usage_quotas#index", group_id: group_path)
+  end
 end
 
 RSpec.describe "Groups", "routing" do

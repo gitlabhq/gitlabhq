@@ -131,6 +131,8 @@ class Namespace < ApplicationRecord
            to: :namespace_settings, allow_nil: true
   delegate :show_diff_preview_in_email, :show_diff_preview_in_email?, :show_diff_preview_in_email=,
            to: :namespace_settings
+  delegate :runner_registration_enabled, :runner_registration_enabled?, :runner_registration_enabled=,
+           to: :namespace_settings
   delegate :maven_package_requests_forwarding,
            :pypi_package_requests_forwarding,
            :npm_package_requests_forwarding,
@@ -604,6 +606,10 @@ class Namespace < ApplicationRecord
 
     # Otherwise we use the stored setting on the group
     namespace_settings&.enabled_git_access_protocol
+  end
+
+  def all_ancestors_have_runner_registration_enabled?
+    namespace_settings&.all_ancestors_have_runner_registration_enabled?
   end
 
   private

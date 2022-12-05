@@ -90,10 +90,10 @@ export default {
               :id="inputId"
               :value="percentage"
               :state="isValid"
-              class="rollout-percentage gl-text-right gl-w-9"
               type="number"
               min="0"
               max="100"
+              size="xs"
               @input="onPercentageChange"
             />
             <span class="ml-1">%</span>

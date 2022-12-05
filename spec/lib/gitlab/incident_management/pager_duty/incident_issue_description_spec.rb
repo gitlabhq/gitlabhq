@@ -10,8 +10,8 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
       [{ 'summary' => 'Laura Haley', 'url' => 'https://webdemo.pagerduty.com/users/P553OPV' }]
     end
 
-    let(:impacted_services) do
-      [{ 'summary' => 'Production XDB Cluster', 'url' => 'https://webdemo.pagerduty.com/services/PN49J75' }]
+    let(:impacted_service) do
+      { 'summary' => 'Production XDB Cluster', 'url' => 'https://webdemo.pagerduty.com/services/PN49J75' }
     end
 
     let(:incident_payload) do
@@ -24,7 +24,7 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
         'urgency' => 'high',
         'incident_key' => 'SOME-KEY',
         'assignees' => assignees,
-        'impacted_services' => impacted_services
+        'impacted_service' => impacted_service
       }
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
           **Incident key:** SOME-KEY#{markdown_line_break}
           **Created at:** 26 September 2017, 3:14PM (UTC)#{markdown_line_break}
           **Assignees:** [Laura Haley](https://webdemo.pagerduty.com/users/P553OPV)#{markdown_line_break}
-          **Impacted services:** [Production XDB Cluster](https://webdemo.pagerduty.com/services/PN49J75)
+          **Impacted service:** [Production XDB Cluster](https://webdemo.pagerduty.com/services/PN49J75)
         MARKDOWN
       )
     end
@@ -78,18 +78,15 @@ RSpec.describe Gitlab::IncidentManagement::PagerDuty::IncidentIssueDescription d
       end
     end
 
-    context 'when there are several impacted services' do
-      let(:impacted_services) do
-        [
-          { 'summary' => 'XDB Cluster', 'url' => 'https://xdb.pagerduty.com' },
-          { 'summary' => 'BRB Cluster', 'url' => 'https://brb.pagerduty.com' }
-        ]
+    context 'when there is an impacted service' do
+      let(:impacted_service) do
+        { 'summary' => 'XDB Cluster', 'url' => 'https://xdb.pagerduty.com' }
       end
 
-      it 'impacted services is a list of links' do
+      it 'impacted service is a single link' do
         expect(to_s).to include(
           <<~MARKDOWN.chomp
-            **Impacted services:** [XDB Cluster](https://xdb.pagerduty.com), [BRB Cluster](https://brb.pagerduty.com)
+            **Impacted service:** [XDB Cluster](https://xdb.pagerduty.com)
           MARKDOWN
         )
       end

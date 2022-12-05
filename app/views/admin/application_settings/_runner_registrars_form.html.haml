@@ -5,7 +5,7 @@
     .gl-form-group
       %span.form-text.gl-mb-3.gl-mt-0
         = _('If no options are selected, only administrators can register runners.')
-        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'prevent-users-from-registering-runners'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more.'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'restrict-runner-registration-by-all-users-in-an-instance'), target: '_blank', rel: 'noopener noreferrer'
       = hidden_field_tag "application_setting[valid_runner_registrars][]", nil
       - ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES.each do |type|
         = f.gitlab_ui_checkbox_component :valid_runner_registrars, s_("Runners|Members of the %{type} can register runners") % { type: type },

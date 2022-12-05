@@ -5,6 +5,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { slugify } from '~/lib/utils/text_utility';
 import { getLocationHash } from '~/lib/utils/url_utility';
+import { CREATED_ASC } from '~/releases/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import '~/behaviors/markdown/render_gfm';
 import EvidenceBlock from './evidence_block.vue';
@@ -31,6 +32,11 @@ export default {
       type: Object,
       required: true,
       default: () => ({}),
+    },
+    sort: {
+      type: String,
+      required: false,
+      default: CREATED_ASC,
     },
   },
   data() {
@@ -119,6 +125,8 @@ export default {
       :tag-path="release.tagPath"
       :author="release.author"
       :released-at="release.releasedAt"
+      :created-at="release.createdAt"
+      :sort="sort"
     />
   </div>
 </template>

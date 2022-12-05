@@ -4,6 +4,7 @@ import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
+import { RELEASED_AT_ASC, RELEASED_AT_DESC, CREATED_ASC, CREATED_DESC } from '~/releases/constants';
 import { trimText } from 'helpers/text_helper';
 import ReleaseBlockFooter from '~/releases/components/release_block_footer.vue';
 
@@ -43,88 +44,118 @@ describe('Release block footer', () => {
   const tagInfoSectionLink = () => tagInfoSection().findComponent(GlLink);
   const authorDateInfoSection = () => wrapper.find('.js-author-date-info');
 
-  describe('with all props provided', () => {
-    beforeEach(() => factory());
+  describe.each`
+    sortFlag            | expectedInfoString
+    ${null}             | ${'Created'}
+    ${CREATED_ASC}      | ${'Created'}
+    ${CREATED_DESC}     | ${'Created'}
+    ${RELEASED_AT_ASC}  | ${'Released'}
+    ${RELEASED_AT_DESC} | ${'Released'}
+  `('with sorting set to $sortFlag', ({ sortFlag, expectedInfoString }) => {
+    const dateAt =
+      expectedInfoString === 'Created' ? originalRelease.createdAt : originalRelease.releasedAt;
 
-    it('renders the commit icon', () => {
-      const commitIcon = commitInfoSection().findComponent(GlIcon);
+    describe.each`
+      dateType           | dateFlag          | expectedInfoStringPrefix | expectedDateString
+      ${'empty'}         | ${undefined}      | ${null}                  | ${null}
+      ${'in the past'}   | ${dateAt}         | ${null}                  | ${'1 year ago'}
+      ${'in the future'} | ${mockFutureDate} | ${'Will be'}             | ${'in 1 month'}
+    `(
+      'with date set to $dateType',
+      ({ dateFlag, expectedInfoStringPrefix, expectedDateString }) => {
+        describe.each`
+          authorType   | authorFlag                | expectedAuthorString
+          ${'empty'}   | ${undefined}              | ${null}
+          ${'present'} | ${originalRelease.author} | ${'by administrator'}
+        `('with author set to $authorType', ({ authorFlag, expectedAuthorString }) => {
+          const propsData = { sort: sortFlag, author: authorFlag };
+          if (dateFlag !== '') {
+            propsData.createdAt = dateFlag;
+            propsData.releasedAt = dateFlag;
+          }
 
-      expect(commitIcon.exists()).toBe(true);
-      expect(commitIcon.props('name')).toBe('commit');
-    });
+          beforeEach(() => {
+            factory({ ...propsData });
+          });
 
-    it('renders the commit SHA with a link', () => {
-      const commitLink = commitInfoSectionLink();
+          const expectedString = [
+            expectedInfoStringPrefix,
+            expectedInfoStringPrefix ? expectedInfoString.toLowerCase() : expectedInfoString,
+            expectedDateString,
+            expectedAuthorString,
+          ];
 
-      expect(commitLink.exists()).toBe(true);
-      expect(commitLink.text()).toBe(release.commit.shortId);
-      expect(commitLink.attributes('href')).toBe(release.commitPath);
-    });
+          if (authorFlag || dateFlag) {
+            it('renders the author and creation time info', () => {
+              expect(trimText(authorDateInfoSection().text())).toBe(
+                expectedString.filter((n) => n).join(' '),
+              );
+            });
+            if (authorFlag) {
+              it("renders the author's avatar image", () => {
+                const avatarImg = authorDateInfoSection().find('img');
 
-    it('renders the tag icon', () => {
-      const commitIcon = tagInfoSection().findComponent(GlIcon);
+                expect(avatarImg.exists()).toBe(true);
+                expect(avatarImg.attributes('src')).toBe(release.author.avatarUrl);
+              });
 
-      expect(commitIcon.exists()).toBe(true);
-      expect(commitIcon.props('name')).toBe('tag');
-    });
+              it("renders a link to the author's profile", () => {
+                const authorLink = authorDateInfoSection().findComponent(GlLink);
 
-    it('renders the tag name with a link', () => {
-      const commitLink = tagInfoSection().findComponent(GlLink);
+                expect(authorLink.exists()).toBe(true);
+                expect(authorLink.attributes('href')).toBe(release.author.webUrl);
+              });
+            } else {
+              it("does not render the author's avatar image", () => {
+                const avatarImg = authorDateInfoSection().find('img');
 
-      expect(commitLink.exists()).toBe(true);
-      expect(commitLink.text()).toBe(release.tagName);
-      expect(commitLink.attributes('href')).toBe(release.tagPath);
-    });
+                expect(avatarImg.exists()).toBe(false);
+              });
 
-    it('renders the author and creation time info', () => {
-      expect(trimText(authorDateInfoSection().text())).toBe(
-        `Created 1 year ago by ${release.author.username}`,
-      );
-    });
+              it("does not render a link to the author's profile", () => {
+                const authorLink = authorDateInfoSection().findComponent(GlLink);
 
-    describe('when the release date is in the past', () => {
-      it('prefixes the creation info with "Created"', () => {
-        expect(trimText(authorDateInfoSection().text())).toEqual(expect.stringMatching(/^Created/));
-      });
-    });
+                expect(authorLink.exists()).toBe(false);
+              });
+            }
+          } else {
+            it('does not render the author and creation time info', () => {
+              expect(authorDateInfoSection().exists()).toBe(false);
+            });
+          }
 
-    describe('renders the author and creation time info with future release date', () => {
-      beforeEach(() => {
-        factory({ releasedAt: mockFutureDate });
-      });
+          it('renders the commit icon', () => {
+            const commitIcon = commitInfoSection().findComponent(GlIcon);
 
-      it('renders the release date without the author name', () => {
-        expect(trimText(authorDateInfoSection().text())).toBe(
-          `Will be created in 1 month by ${release.author.username}`,
-        );
-      });
-    });
+            expect(commitIcon.exists()).toBe(true);
+            expect(commitIcon.props('name')).toBe('commit');
+          });
 
-    describe('when the release date is in the future', () => {
-      beforeEach(() => {
-        factory({ releasedAt: mockFutureDate });
-      });
+          it('renders the commit SHA with a link', () => {
+            const commitLink = commitInfoSectionLink();
 
-      it('prefixes the creation info with "Will be created"', () => {
-        expect(trimText(authorDateInfoSection().text())).toEqual(
-          expect.stringMatching(/^Will be created/),
-        );
-      });
-    });
+            expect(commitLink.exists()).toBe(true);
+            expect(commitLink.text()).toBe(release.commit.shortId);
+            expect(commitLink.attributes('href')).toBe(release.commitPath);
+          });
 
-    it("renders the author's avatar image", () => {
-      const avatarImg = authorDateInfoSection().find('img');
+          it('renders the tag icon', () => {
+            const commitIcon = tagInfoSection().findComponent(GlIcon);
 
-      expect(avatarImg.exists()).toBe(true);
-      expect(avatarImg.attributes('src')).toBe(release.author.avatarUrl);
-    });
+            expect(commitIcon.exists()).toBe(true);
+            expect(commitIcon.props('name')).toBe('tag');
+          });
 
-    it("renders a link to the author's profile", () => {
-      const authorLink = authorDateInfoSection().findComponent(GlLink);
+          it('renders the tag name with a link', () => {
+            const commitLink = tagInfoSection().findComponent(GlLink);
 
-      expect(authorLink.exists()).toBe(true);
-      expect(authorLink.attributes('href')).toBe(release.author.webUrl);
-    });
+            expect(commitLink.exists()).toBe(true);
+            expect(commitLink.text()).toBe(release.tagName);
+            expect(commitLink.attributes('href')).toBe(release.tagPath);
+          });
+        });
+      },
+    );
   });
 
   describe('without any commit info', () => {
@@ -158,42 +189,6 @@ describe('Release block footer', () => {
     it('renders the tag name as plain text (instead of a link)', () => {
       expect(tagInfoSectionLink().exists()).toBe(false);
       expect(tagInfoSection().text()).toBe(release.tagName);
-    });
-  });
-
-  describe('without any author info', () => {
-    beforeEach(() => factory({ author: undefined }));
-
-    it('renders the release date without the author name', () => {
-      expect(trimText(authorDateInfoSection().text())).toBe(`Created 1 year ago`);
-    });
-  });
-
-  describe('future release without any author info', () => {
-    beforeEach(() => {
-      factory({ author: undefined, releasedAt: mockFutureDate });
-    });
-
-    it('renders the release date without the author name', () => {
-      expect(trimText(authorDateInfoSection().text())).toBe(`Will be created in 1 month`);
-    });
-  });
-
-  describe('without a released at date', () => {
-    beforeEach(() => factory({ releasedAt: undefined }));
-
-    it('renders the author name without the release date', () => {
-      expect(trimText(authorDateInfoSection().text())).toBe(
-        `Created by ${release.author.username}`,
-      );
-    });
-  });
-
-  describe('without a release date or author info', () => {
-    beforeEach(() => factory({ author: undefined, releasedAt: undefined }));
-
-    it('does not render any author or release date info', () => {
-      expect(authorDateInfoSection().exists()).toBe(false);
     });
   });
 });

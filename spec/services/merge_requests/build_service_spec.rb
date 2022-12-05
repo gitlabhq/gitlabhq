@@ -25,7 +25,9 @@ RSpec.describe MergeRequests::BuildService do
       safe_message: 'Initial commit',
       gitaly_commit?: false,
       id: 'f00ba6',
-      parent_ids: ['f00ba5'])
+      parent_ids: ['f00ba5'],
+      author_email: 'tom@example.com',
+      author_name: 'Tom Example')
   end
 
   let(:commit_2) do
@@ -34,7 +36,9 @@ RSpec.describe MergeRequests::BuildService do
       safe_message: "Closes #1234 Second commit\n\nCreate the app",
       gitaly_commit?: false,
       id: 'f00ba7',
-      parent_ids: ['f00ba6'])
+      parent_ids: ['f00ba6'],
+      author_email: 'alice@example.com',
+      author_name: 'Alice Example')
   end
 
   let(:commit_3) do
@@ -43,7 +47,9 @@ RSpec.describe MergeRequests::BuildService do
       safe_message: 'This is a bad commit message!',
       gitaly_commit?: false,
       id: 'f00ba8',
-      parent_ids: ['f00ba7'])
+      parent_ids: ['f00ba7'],
+      author_email: 'jo@example.com',
+      author_name: 'Jo Example')
   end
 
   let(:commits) { nil }
@@ -738,6 +744,93 @@ RSpec.describe MergeRequests::BuildService do
           merge_request.description = nil
           subject
           expect(merge_request.description).to eq 'Default template contents'
+        end
+      end
+    end
+  end
+
+  describe '#replace_variables_in_description' do
+    context 'when the merge request description is blank' do
+      let(:description) { nil }
+
+      it 'does not update the description' do
+        expect(merge_request.description).to eq(nil)
+      end
+    end
+
+    context 'when the merge request description contains template variables' do
+      let(:description) { <<~MSG.rstrip }
+        source_branch:%{source_branch}
+        target_branch:%{target_branch}
+        title:%{title}
+        issues:%{issues}
+        description:%{description}
+        first_commit:%{first_commit}
+        first_multiline_commit:%{first_multiline_commit}
+        url:%{url}
+        approved_by:%{approved_by}
+        merged_by:%{merged_by}
+        co_authored_by:%{co_authored_by}
+        all_commits:%{all_commits}
+      MSG
+
+      context 'when there are multiple commits in the diff' do
+        let(:commits) { Commit.decorate([commit_1, commit_2, commit_3], project) }
+
+        before do
+          stub_compare
+        end
+
+        it 'replaces the variables in the description' do
+          expect(merge_request.description).to eq <<~MSG.rstrip
+            source_branch:feature-branch
+            target_branch:master
+            title:
+            issues:
+            description:
+            first_commit:Initial commit
+            first_multiline_commit:Closes #1234 Second commit
+
+            Create the app
+            url:
+            approved_by:
+            merged_by:
+            co_authored_by:Co-authored-by: Jo Example <jo@example.com>
+            Co-authored-by: Alice Example <alice@example.com>
+            Co-authored-by: Tom Example <tom@example.com>
+            all_commits:* This is a bad commit message!
+
+            * Closes #1234 Second commit
+
+            Create the app
+
+            * Initial commit
+          MSG
+        end
+      end
+
+      context 'when there are no commits in the diff' do
+        let(:commits) { [] }
+
+        before do
+          stub_compare
+        end
+
+        it 'replaces the variables in the description' do
+          expect(merge_request.description).to eq <<~MSG.rstrip
+            source_branch:feature-branch
+            target_branch:master
+            title:
+            issues:
+            description:
+            first_commit:
+            first_multiline_commit:
+            url:
+            approved_by:
+            merged_by:
+            co_authored_by:
+            all_commits:
+          MSG
         end
       end
     end

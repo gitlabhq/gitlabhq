@@ -83,8 +83,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
   with_scope :subject
   condition(:crm_enabled, score: 0, scope: :subject) { @subject.crm_enabled? }
 
-  condition(:group_runner_registration_allowed, scope: :global) do
-    Gitlab::CurrentSettings.valid_runner_registrars.include?('group')
+  condition(:group_runner_registration_allowed, scope: :subject) do
+    Gitlab::CurrentSettings.valid_runner_registrars.include?('group') && @subject.runner_registration_enabled?
   end
 
   rule { can?(:read_group) & design_management_enabled }.policy do

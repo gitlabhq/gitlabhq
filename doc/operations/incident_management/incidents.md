@@ -60,7 +60,8 @@ GitLab to create incident automatically whenever an alert is triggered:
 
 ### Create incidents via the PagerDuty webhook
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119018) in GitLab 13.3.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/119018) in GitLab 13.3.
+> - [PagerDuty V3 Webhook](https://support.pagerduty.com/docs/webhooks) support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/383029) in GitLab 15.7.
 
 You can set up a webhook with PagerDuty to automatically create a GitLab incident
 for each PagerDuty incident. This configuration requires you to make changes
@@ -69,7 +70,6 @@ in both PagerDuty and GitLab:
 Prerequisites:
 
 - You must have at least the Maintainer role for the project.
-- You must use a PagerDuty [Generic V2 Webhook](https://support.pagerduty.com/docs/webhooks).
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Settings > Monitor**

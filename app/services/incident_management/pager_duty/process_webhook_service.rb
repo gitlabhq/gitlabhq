@@ -9,8 +9,8 @@ module IncidentManagement
       # https://developer.pagerduty.com/docs/webhooks/webhook-behavior/#size-limit
       PAGER_DUTY_PAYLOAD_SIZE_LIMIT = 55.kilobytes
 
-      # https://developer.pagerduty.com/docs/webhooks/v2-overview/#webhook-types
-      PAGER_DUTY_PROCESSABLE_EVENT_TYPES = %w(incident.trigger).freeze
+      # https://developer.pagerduty.com/docs/db0fa8c8984fc-overview#event-types
+      PAGER_DUTY_PROCESSABLE_EVENT_TYPES = %w(incident.triggered).freeze
 
       def initialize(project, payload)
         super(project: project)
@@ -33,16 +33,18 @@ module IncidentManagement
       attr_reader :payload
 
       def process_incidents
-        pager_duty_processable_events.each do |event|
-          ::IncidentManagement::PagerDuty::ProcessIncidentWorker.perform_async(project.id, event['incident'])
-        end
+        event = pager_duty_processable_event
+        return unless event
+
+        ::IncidentManagement::PagerDuty::ProcessIncidentWorker
+          .perform_async(project.id, event['incident'])
       end
 
-      def pager_duty_processable_events
-        strong_memoize(:pager_duty_processable_events) do
-          ::PagerDuty::WebhookPayloadParser
-            .call(payload.to_h)
-            .filter { |msg| msg['event'].to_s.in?(PAGER_DUTY_PROCESSABLE_EVENT_TYPES) }
+      def pager_duty_processable_event
+        strong_memoize(:pager_duty_processable_event) do
+          event = ::PagerDuty::WebhookPayloadParser.call(payload.to_h)
+
+          event if event['event'].to_s.in?(PAGER_DUTY_PROCESSABLE_EVENT_TYPES)
         end
       end
 

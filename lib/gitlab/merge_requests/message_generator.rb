@@ -1,28 +1,41 @@
 # frozen_string_literal: true
 module Gitlab
   module MergeRequests
-    class CommitMessageGenerator
+    class MessageGenerator
       def initialize(merge_request:, current_user:)
         @merge_request = merge_request
         @current_user = @merge_request.metrics&.merged_by || @merge_request.merge_user || current_user
       end
 
-      def merge_message
+      def merge_commit_message
         return unless @merge_request.target_project.merge_commit_template.present?
 
-        replace_placeholders(@merge_request.target_project.merge_commit_template)
+        replace_placeholders(@merge_request.target_project.merge_commit_template, allowed_placeholders: PLACEHOLDERS)
       end
 
-      def squash_message
+      def squash_commit_message
         return unless @merge_request.target_project.squash_commit_template.present?
 
-        replace_placeholders(@merge_request.target_project.squash_commit_template, squash: true)
+        replace_placeholders(
+          @merge_request.target_project.squash_commit_template,
+          allowed_placeholders: PLACEHOLDERS,
+          squash: true
+        )
+      end
+
+      def new_mr_description
+        return unless @merge_request.description.present?
+
+        replace_placeholders(
+          @merge_request.description,
+          allowed_placeholders: ALLOWED_NEW_MR_PLACEHOLDERS,
+          keep_carriage_return: true
+        )
       end
 
       private
 
-      attr_reader :merge_request
-      attr_reader :current_user
+      attr_reader :merge_request, :current_user
 
       PLACEHOLDERS = {
         'source_branch' => ->(merge_request, _, _) { merge_request.source_branch.to_s },
@@ -38,11 +51,25 @@ module Gitlab
         end,
         'description' => ->(merge_request, _, _) { merge_request.description },
         'reference' => ->(merge_request, _, _) { merge_request.to_reference(full: true) },
-        'first_commit' => -> (merge_request, _, _) { merge_request.first_commit&.safe_message&.strip },
-        'first_multiline_commit' => -> (merge_request, _, _) { merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title },
+        'first_commit' => -> (merge_request, _, _) {
+          return unless merge_request.persisted? || merge_request.compare_commits.present?
+
+          merge_request.first_commit&.safe_message&.strip
+        },
+        'first_multiline_commit' => -> (merge_request, _, _) {
+          merge_request.first_multiline_commit&.safe_message&.strip.presence || merge_request.title
+        },
         'url' => ->(merge_request, _, _) { Gitlab::UrlBuilder.build(merge_request) },
-        'reviewed_by' => ->(merge_request, _, _) { merge_request.reviewed_by_users.map { |user| "Reviewed-by: #{user.name} <#{user.commit_email_or_default}>" }.join("\n") },
-        'approved_by' => ->(merge_request, _, _) { merge_request.approved_by_users.map { |user| "Approved-by: #{user.name} <#{user.commit_email_or_default}>" }.join("\n") },
+        'reviewed_by' => ->(merge_request, _, _) {
+          merge_request.reviewed_by_users
+                       .map { |user| "Reviewed-by: #{user.name} <#{user.commit_email_or_default}>" }
+                       .join("\n")
+        },
+        'approved_by' => ->(merge_request, _, _) {
+          merge_request.approved_by_users
+                       .map { |user| "Approved-by: #{user.name} <#{user.commit_email_or_default}>" }
+                       .join("\n")
+        },
         'merged_by' => ->(_, user, _) { "#{user&.name} <#{user&.commit_email_or_default}>" },
         'co_authored_by' => ->(merge_request, merged_by, squash) do
           commit_author = squash ? merge_request.author : merged_by
@@ -67,15 +94,34 @@ module Gitlab
         end
       }.freeze
 
+      # A new merge request that is in the process of being created and hasn't
+      # been persisted to the database.
+      #
+      # Limit the placeholders to a subset of the available ones where the
+      # placeholders wouldn't make sense in context. Disallowed placeholders
+      # will be replaced with an empty string.
+      ALLOWED_NEW_MR_PLACEHOLDERS = %w[
+        source_branch
+        target_branch
+        first_commit
+        first_multiline_commit
+        co_authored_by
+        all_commits
+      ].freeze
+
       PLACEHOLDERS_COMBINED_REGEX = /%{(#{Regexp.union(PLACEHOLDERS.keys)})}/.freeze
 
-      def replace_placeholders(message, squash: false)
+      def replace_placeholders(message, allowed_placeholders: [], squash: false, keep_carriage_return: false)
         # Convert CRLF to LF.
-        message = message.delete("\r")
+        message = message.delete("\r") unless keep_carriage_return
 
         used_variables = message.scan(PLACEHOLDERS_COMBINED_REGEX).map { |value| value[0] }.uniq
         values = used_variables.to_h do |variable_name|
-          ["%{#{variable_name}}", PLACEHOLDERS[variable_name].call(merge_request, current_user, squash)]
+          replacement = if allowed_placeholders.include?(variable_name)
+                          PLACEHOLDERS[variable_name].call(merge_request, current_user, squash)
+                        end
+
+          ["%{#{variable_name}}", replacement]
         end
         names_of_empty_variables = values.filter_map { |name, value| name if value.blank? }
 

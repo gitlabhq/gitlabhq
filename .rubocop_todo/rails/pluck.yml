@@ -126,7 +126,7 @@ Rails/Pluck:
     - 'lib/gitlab/git_access.rb'
     - 'lib/gitlab/github_import/representation/issue.rb'
     - 'lib/gitlab/jira_import/metadata_collector.rb'
-    - 'lib/gitlab/merge_requests/commit_message_generator.rb'
+    - 'lib/gitlab/merge_requests/message_generator.rb'
     - 'lib/gitlab/metrics/dashboard/importers/prometheus_metrics.rb'
     - 'lib/gitlab/metrics/dashboard/stages/custom_metrics_details_inserter.rb'
     - 'lib/gitlab/sidekiq_config/cli_methods.rb'

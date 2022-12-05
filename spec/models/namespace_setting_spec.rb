@@ -178,6 +178,63 @@ RSpec.describe NamespaceSetting, type: :model do
     end
   end
 
+  describe '#runner_registration_enabled?' do
+    context 'when not a subgroup' do
+      let_it_be(:settings) { create(:namespace_settings) }
+      let_it_be(:group) { create(:group, namespace_settings: settings) }
+
+      before do
+        group.update!(runner_registration_enabled: runner_registration_enabled)
+      end
+
+      context 'when :runner_registration_enabled is false' do
+        let(:runner_registration_enabled) { false }
+
+        it 'returns false' do
+          expect(group.runner_registration_enabled?).to be_falsey
+        end
+
+        it 'does not query the db' do
+          expect { group.runner_registration_enabled? }.not_to exceed_query_limit(0)
+        end
+      end
+
+      context 'when :runner_registration_enabled is true' do
+        let(:runner_registration_enabled) { true }
+
+        it 'returns true' do
+          expect(group.runner_registration_enabled?).to be_truthy
+        end
+      end
+    end
+
+    context 'when a group has parent groups' do
+      let_it_be(:grandparent) { create(:group) }
+      let_it_be(:parent)      { create(:group, parent: grandparent) }
+      let_it_be(:group)       { create(:group, parent: parent) }
+
+      before do
+        grandparent.update!(runner_registration_enabled: runner_registration_enabled)
+      end
+
+      context 'when a parent group has runner registration disabled' do
+        let(:runner_registration_enabled) { false }
+
+        it 'returns false' do
+          expect(group.runner_registration_enabled?).to be_falsey
+        end
+      end
+
+      context 'when all parent groups have runner registration enabled' do
+        let(:runner_registration_enabled) { true }
+
+        it 'returns true' do
+          expect(group.runner_registration_enabled?).to be_truthy
+        end
+      end
+    end
+  end
+
   describe '#delayed_project_removal' do
     it_behaves_like 'a cascading namespace setting boolean attribute', settings_attribute_name: :delayed_project_removal
   end

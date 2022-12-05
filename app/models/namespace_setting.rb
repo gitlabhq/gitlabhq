@@ -59,6 +59,16 @@ class NamespaceSetting < ApplicationRecord
     all_ancestors_allow_diff_preview_in_email?
   end
 
+  def runner_registration_enabled?
+    runner_registration_enabled && all_ancestors_have_runner_registration_enabled?
+  end
+
+  def all_ancestors_have_runner_registration_enabled?
+    return true unless namespace.has_parent?
+
+    !self.class.where(namespace_id: namespace.ancestors, runner_registration_enabled: false).exists?
+  end
+
   private
 
   def all_ancestors_allow_diff_preview_in_email?
