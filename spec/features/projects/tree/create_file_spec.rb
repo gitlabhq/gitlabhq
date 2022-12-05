@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Multi-file editor new file', :js do
+RSpec.describe 'Multi-file editor new file', :js, feature_category: :web_ide do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User searches project settings', :js do
+RSpec.describe 'User searches project settings', :js, feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, namespace: user.namespace, pages_https_only: false) }
 

@@ -19,7 +19,7 @@ RSpec.describe 'Query current user todos' do
   let(:fields) do
     <<~QUERY
     nodes {
-      #{all_graphql_fields_for('todos'.classify)}
+      #{all_graphql_fields_for('todos'.classify, max_depth: 2)}
     }
     QUERY
   end

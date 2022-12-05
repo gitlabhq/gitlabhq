@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Pages edits pages settings', :js do
+RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:project) { create(:project, pages_https_only: false) }

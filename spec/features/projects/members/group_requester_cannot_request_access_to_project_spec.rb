@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Group requester cannot request access to project', :js do
+RSpec.describe 'Projects > Members > Group requester cannot request access to project', :js,
+feature_category: :subgroups do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
   let(:group) { create(:group, :public) }

@@ -281,7 +281,7 @@ for a full list of supported assertions.
 
 ## SAML Groups
 
-You can require users to be members of a certain group, or assign users [external](../user/permissions.md#external-users), administrator or [auditor](../user/permissions.md#auditor-users) roles based on group membership.
+You can require users to be members of a certain group, or assign users [external](../user/admin_area/external_users.md), administrator or [auditor](../user/permissions.md#auditor-users) roles based on group membership.
 These groups are checked on each SAML login and user attributes updated as necessary.
 This feature **does not** allow you to
 automatically add users to GitLab [Groups](../user/group/index.md).
@@ -347,7 +347,7 @@ Example:
 ### External groups
 
 SAML login supports the automatic identification of a user as an
-[external user](../user/permissions.md#external-users). This is based on the user's group
+[external user](../user/admin_area/external_users.md). This is based on the user's group
 membership in the SAML identity provider.
 
 ```yaml

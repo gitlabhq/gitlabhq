@@ -16,7 +16,7 @@ Constants for snippet visibility levels are:
 | visibility | Description |
 | ---------- | ----------- |
 | `private`  | The snippet is visible only to project members |
-| `internal` | The snippet is visible for any logged in user except [external users](../user/permissions.md#external-users) |
+| `internal` | The snippet is visible for any logged in user except [external users](../user/admin_area/external_users.md) |
 | `public`   | The snippet can be accessed without any authentication |
 
 NOTE:

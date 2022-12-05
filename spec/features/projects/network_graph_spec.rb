@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project Network Graph', :js do
+RSpec.describe 'Project Network Graph', :js, feature_category: :projects do
   let(:user) { create :user }
   let(:project) { create :project, :repository, namespace: user.namespace }
 

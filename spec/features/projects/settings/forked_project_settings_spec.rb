@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > For a forked project', :js do
+RSpec.describe 'Projects > Settings > For a forked project', :js, feature_category: :projects do
   include ProjectForksHelper
   let(:user) { create(:user) }
   let(:original_project) { create(:project) }

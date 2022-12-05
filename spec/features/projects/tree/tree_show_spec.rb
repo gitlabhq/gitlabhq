@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects tree', :js do
+RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
   include RepoHelpers
 
   let(:user) { create(:user) }

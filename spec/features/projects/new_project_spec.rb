@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New project', :js do
+RSpec.describe 'New project', :js, feature_category: :projects do
   include Spec::Support::Helpers::Features::TopNavSpecHelpers
 
   context 'as a user' do

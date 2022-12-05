@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled do
+RSpec.describe "Pages with Let's Encrypt", :https_pages_enabled, feature_category: :pages do
   include LetsEncryptHelpers
   include Spec::Support::Helpers::ModalHelpers
 

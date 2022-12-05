@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Container Registry', :js do
+RSpec.describe 'Container Registry', :js, feature_category: :projects do
   include_context 'container registry tags'
 
   let(:user) { create(:user) }

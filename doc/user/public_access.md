@@ -41,13 +41,13 @@ is restricted, `/public` is visible only to signed-in users.
 ## Internal projects and groups **(FREE SELF)**
 
 Internal projects can be cloned by any signed-in user except
-[external users](permissions.md#external-users).
+[external users](admin_area/external_users.md).
 
 They are also listed in the public access directory (`/public`), but only for signed-in users.
 
 Internal groups can have internal or private subgroups.
 
-Any signed-in users except [external users](permissions.md#external-users) have the
+Any signed-in users except [external users](admin_area/external_users.md) have the
 Guest role on the repository.
 
 NOTE:

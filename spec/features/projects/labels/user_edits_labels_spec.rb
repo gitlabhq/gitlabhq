@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User edits labels" do
+RSpec.describe "User edits labels", feature_category: :team_planning do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }

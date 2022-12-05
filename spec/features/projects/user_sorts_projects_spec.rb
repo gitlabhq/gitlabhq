@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sorts projects and order persists' do
+RSpec.describe 'User sorts projects and order persists', feature_category: :projects do
   include CookieHelper
 
   let_it_be(:user) { create(:user) }

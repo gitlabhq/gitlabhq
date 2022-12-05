@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Terraform', :js do
+RSpec.describe 'Terraform', :js, feature_category: :projects do
   let_it_be(:project) { create(:project) }
   let_it_be(:terraform_state) { create(:terraform_state, :locked, :with_version, project: project) }
 

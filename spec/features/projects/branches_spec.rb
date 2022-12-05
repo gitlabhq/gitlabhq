@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Branches' do
+RSpec.describe 'Branches', feature_category: :projects do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public, :repository) }
   let(:repository) { project.repository }

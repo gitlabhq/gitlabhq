@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > User sees sidebar' do
+RSpec.describe 'Projects > User sees sidebar', feature_category: :projects do
   let(:user) { create(:user) }
   let(:project) { create(:project, :private, public_builds: false, namespace: user.namespace) }
 

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Jobs', :clean_gitlab_redis_shared_state, feature_category: :projects do
   include Gitlab::Routing
   include ProjectForksHelper
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views releases', :js do
+RSpec.describe 'User views releases', :js, feature_category: :continuous_delivery do
   let_it_be(:today) { Time.zone.now }
   let_it_be(:yesterday) { today - 1.day }
   let_it_be(:tomorrow) { today + 1.day }

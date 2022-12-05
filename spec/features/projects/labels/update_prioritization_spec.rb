@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Prioritize labels' do
+RSpec.describe 'Prioritize labels', feature_category: :team_planning do
   include DragTo
 
   let(:user)     { create(:user) }

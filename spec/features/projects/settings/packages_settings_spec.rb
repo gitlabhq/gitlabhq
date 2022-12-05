@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Settings > Packages', :js do
+RSpec.describe 'Projects > Settings > Packages', :js, feature_category: :projects do
   let_it_be(:project) { create(:project) }
 
   let(:user) { project.first_owner }

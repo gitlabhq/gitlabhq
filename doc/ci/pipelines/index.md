@@ -190,7 +190,8 @@ In this example:
 
 ##### Configure a list of selectable values for a prefilled variable
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
+> - The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
 
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available,
@@ -198,15 +199,17 @@ ask an administrator to [enable the feature flag](../../administration/feature_f
 The feature is not ready for production use.
 
 You can define an array of CI/CD variable values the user can select from when running a pipeline manually.
-These values are in a dropdown list in the **Run pipeline** page. The first value
-in the array is the value selected by default.
+These values are in a dropdown list in the **Run pipeline** page. Add the list of
+value options to `options` and set the default value with `value`. The string in `value`
+must also be included in the `options` list.
 
 For example:
 
 ```yaml
 variables:
   DEPLOY_ENVIRONMENT:
-    value:
+    value: "staging"
+    options:
       - "production"
       - "staging"
       - "canary"

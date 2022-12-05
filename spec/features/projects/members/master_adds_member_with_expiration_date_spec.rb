@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Maintainer adds member with expiration date', :js do
+RSpec.describe 'Projects > Members > Maintainer adds member with expiration date', :js, feature_category: :subgroups do
   include ActiveSupport::Testing::TimeHelpers
   include Spec::Support::Helpers::Features::MembersHelpers
   include Spec::Support::Helpers::Features::InviteMembersModalHelper

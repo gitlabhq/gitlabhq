@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'GFM autocomplete loading', :js do
+RSpec.describe 'GFM autocomplete loading', :js, feature_category: :projects do
   let(:project) { create(:project) }
 
   before do

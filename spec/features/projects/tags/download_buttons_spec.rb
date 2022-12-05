@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Download buttons in tags page' do
+RSpec.describe 'Download buttons in tags page', feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:status) { 'success' }

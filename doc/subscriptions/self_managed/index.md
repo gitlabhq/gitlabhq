@@ -110,7 +110,7 @@ The user must not be assigned any other role, anywhere in the instance.
 NOTE:
 If a user creates a project, they are assigned the Maintainer or Owner role.
 To prevent a user from creating projects, as an administrator, you can mark the user
-as [external](../../user/permissions.md#external-users).
+as [external](../../user/admin_area/external_users.md).
 
 ### Tips for managing users and subscription seats
 

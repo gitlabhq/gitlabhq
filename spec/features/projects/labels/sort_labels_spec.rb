@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sort labels', :js do
+RSpec.describe 'Sort labels', :js, feature_category: :team_planning do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let!(:label1) { create(:label, title: 'Foo', description: 'Lorem ipsum', project: project) }

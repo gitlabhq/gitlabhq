@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User removes labels" do
+RSpec.describe "User removes labels", feature_category: :team_planning do
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
 

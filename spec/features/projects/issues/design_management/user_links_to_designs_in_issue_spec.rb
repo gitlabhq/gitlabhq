@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'viewing issues with design references' do
+RSpec.describe 'viewing issues with design references', feature_category: :design_management do
   include DesignManagementTestHelpers
 
   let_it_be(:public_project) { create(:project_empty_repo, :public) }

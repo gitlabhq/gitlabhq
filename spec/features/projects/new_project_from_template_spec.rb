@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New project from template', :js do
+RSpec.describe 'New project from template', :js, feature_category: :projects do
   let(:user) { create(:user) }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Wiki > User views wiki in project page' do
+RSpec.describe 'Projects > Wiki > User views wiki in project page', feature_category: :wiki do
   before do
     sign_in(project.first_owner)
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Members > Tabs', :js do
+RSpec.describe 'Projects > Members > Tabs', :js, feature_category: :subgroups do
   include Spec::Support::Helpers::Features::MembersHelpers
   using RSpec::Parameterized::TableSyntax
 

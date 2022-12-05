@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "Compare", :js do
+RSpec.describe "Compare", :js, feature_category: :projects do
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
 

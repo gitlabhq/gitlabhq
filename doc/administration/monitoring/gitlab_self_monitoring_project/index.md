@@ -101,7 +101,7 @@ You can add custom metrics in the self-monitoring project by:
 
 A [bug](https://gitlab.com/gitlab-org/gitlab/-/issues/208676) causes project creation to fail with
 the following error in the log file when the first administrator user is an
-[external user](../../../user/permissions.md#external-users):
+[external user](../../../user/admin_area/external_users.md):
 
 ```plaintext
 Could not create instance administrators group. Errors: ["You don't have permission to create groups."]
@@ -116,6 +116,6 @@ User.admins.active.first.external?
 If this returns true, the first administrator user is an external user.
 
 If you face this issue, you can temporarily
-[make the administrator user a non-external user](../../../user/permissions.md#external-users)
+[make the administrator user a non-external user](../../../user/admin_area/external_users.md)
 and then try to create the project.
 After the project is created, the administrator user can be changed back to an external user.

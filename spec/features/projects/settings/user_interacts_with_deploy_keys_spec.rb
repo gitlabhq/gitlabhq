@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User interacts with deploy keys", :js do
+RSpec.describe "User interacts with deploy keys", :js, feature_category: :projects do
   let(:project) { create(:project, :repository) }
   let(:user) { project.first_owner }
 
