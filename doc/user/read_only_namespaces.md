@@ -7,12 +7,10 @@ noindex: true
 
 # Read-only namespaces **(FREE SAAS)**
 
-In GitLab SaaS, a top-level namespace is placed in a read-only state when it either: 
+In GitLab SaaS, a top-level namespace is placed in a read-only state when it either:
 
-- Exceeds the [free user limit](free_user_limit.md) when the namespace visibility is private. 
+- Exceeds the [free user limit](free_user_limit.md) when the namespace visibility is private.
 - Exceeds the [storage usage quota](usage_quotas.md), regardless of namespace visibility.
-placed in a read-only state when it exceeds the [free user limit](free_user_limit.md)
-or the [storage usage quota](usage_quotas.md).
 
 While a namespace is in a read-only state, a banner appears at the
 top of the page.

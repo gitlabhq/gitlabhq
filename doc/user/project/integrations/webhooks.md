@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 [Webhooks](https://en.wikipedia.org/wiki/Webhook) are custom HTTP callbacks
 that you define. They are usually triggered by an
-event, such as pushing code to a repository or posting a comment on a blog.
+event, such as pushing code to a repository or posting a comment on an issue.
 When the event occurs, the source app makes an HTTP request to the URI
 configured for the webhook. The action to take may be anything. For example,
 you can use webhooks to:

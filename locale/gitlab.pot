@@ -16669,9 +16669,6 @@ msgstr ""
 msgid "Failed to get ref."
 msgstr ""
 
-msgid "Failed to install."
-msgstr ""
-
 msgid "Failed to load"
 msgstr ""
 

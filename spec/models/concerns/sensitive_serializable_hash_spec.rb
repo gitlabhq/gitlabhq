@@ -35,12 +35,6 @@ RSpec.describe SensitiveSerializableHash do
       expect(model.serializable_hash).not_to include('super_secret')
     end
 
-    context 'unsafe_serialization_hash option' do
-      it 'includes the field in serializable_hash' do
-        expect(model.serializable_hash(unsafe_serialization_hash: true)).to include('super_secret')
-      end
-    end
-
     it 'does not change parent class attributes_exempt_from_serializable_hash' do
       expect(test_class.attributes_exempt_from_serializable_hash).to contain_exactly(:super_secret)
       expect(another_class.attributes_exempt_from_serializable_hash).to contain_exactly(:sub_secret)
@@ -63,21 +57,6 @@ RSpec.describe SensitiveSerializableHash do
             expect(model.serializable_hash).not_to include(attribute)
             expect(model.to_json).not_to include(attribute)
             expect(model.as_json).not_to include(attribute)
-          end
-        end
-
-        context 'unsafe_serialization_hash option' do
-          it 'includes the field in serializable_hash' do
-            attributes.each do |attribute|
-              expect(model.attributes).to include(attribute) # double-check the attribute does exist
-
-              # Do not expect binary columns to appear in JSON
-              next if klass.columns_hash[attribute]&.type == :binary
-
-              expect(model.serializable_hash(unsafe_serialization_hash: true)).to include(attribute)
-              expect(model.to_json(unsafe_serialization_hash: true)).to include(attribute)
-              expect(model.as_json(unsafe_serialization_hash: true)).to include(attribute)
-            end
           end
         end
       end
@@ -118,18 +97,6 @@ RSpec.describe SensitiveSerializableHash do
             expect(model.serializable_hash).not_to include(attribute)
             expect(model.to_json).not_to include(attribute)
             expect(model.as_json).not_to include(attribute)
-          end
-        end
-
-        context 'unsafe_serialization_hash option' do
-          it 'includes the field in serializable_hash' do
-            attributes.each do |attribute|
-              expect(model.attributes).to include(attribute) # double-check the attribute does exist
-
-              expect(model.serializable_hash(unsafe_serialization_hash: true)).to include(attribute)
-              expect(model.to_json(unsafe_serialization_hash: true)).to include(attribute)
-              expect(model.as_json(unsafe_serialization_hash: true)).to include(attribute)
-            end
           end
         end
       end

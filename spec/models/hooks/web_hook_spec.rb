@@ -678,16 +678,8 @@ RSpec.describe WebHook do
       expect { hook.to_json }.not_to raise_error
     end
 
-    it 'does not error, when serializing unsafe attributes' do
-      expect { hook.to_json(unsafe_serialization_hash: true) }.not_to raise_error
-    end
-
     it 'does not contain binary attributes' do
       expect(hook.to_json).not_to include('encrypted_url_variables')
-    end
-
-    it 'does not contain binary attributes, even when serializing unsafe attributes' do
-      expect(hook.to_json(unsafe_serialization_hash: true)).not_to include('encrypted_url_variables')
     end
   end
 

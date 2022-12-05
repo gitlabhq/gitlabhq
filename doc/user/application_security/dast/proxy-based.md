@@ -472,8 +472,6 @@ An on-demand DAST scan:
 - Is associated with your project's default branch.
 - Is saved on creation so it can be run later.
 
-### On-demand scan modes
-
 An on-demand scan can be run in active or passive mode:
 
 - _Passive mode_ is the default and runs a ZAP Baseline Scan.
@@ -482,35 +480,20 @@ An on-demand scan can be run in active or passive mode:
 
 ### View on-demand DAST scans
 
-To view running completed and scheduled on-demand DAST scans for a project, go to
-**Security & Compliance > On-demand Scans** in the left sidebar.
+To view on-demand scans, from your project's home page, go to **Security & Compliance > On-demand
+scans** in the left sidebar.
 
-- To view both running and completed scans, select **All**.
-- To view running scans only, select **Running**.
-- To view finished scans, select **Finished**. A finished scan is a scan that either succeeded,
-  failed, or was canceled.
-- To view scheduled scans, select **Scheduled**. It shows on-demand scans that have a schedule
-  set up. Those are _not_ included in the **All** tab.
-- To view saved on-demand scan profiles, select **Scan library**.
-  Those are _not_ included in the **All** tab.
+On-demand scans are grouped by their status. The scan library contains all available on-demand
+scans.
 
-#### Cancel an on-demand scan
+From the **On-demand scans** page you can:
 
-To cancel a pending or running on-demand scan, select **Cancel** (**{cancel}**) in the
-on-demand scans list.
-
-#### Retry an on-demand scan
-
-To retry a scan that failed or succeeded with warnings, select **Retry** (**{retry}**) in the
-on-demand scans list.
-
-#### View an on-demand scan's results
-
-To view a finished scan's results, select **View results** in the on-demand scans list.
-
-#### Edit an on-demand scan
-
-To edit an on-demand scan's settings, select **Edit** (**{pencil}**) in the **Scheduled** tab.
+- [Run](#run-an-on-demand-dast-scan) an on-demand scan.
+- View the results of an on-demand scan.
+- Cancel (**{cancel}**) a pending or running on-demand scan.
+- Retry (**{retry}**) a scan that failed, or succeeded with warnings.
+- [Edit](#edit-an-on-demand-scan) (**{pencil}**) an on-demand scan's settings.
+- [Delete](#delete-an-on-demand-scan) a on-demand scan.
 
 ### Run an on-demand DAST scan
 
@@ -592,13 +575,6 @@ To schedule a scan:
     - For a recurring scan, select any other option.
 1. To run the on-demand scan immediately, select **Save and run scan**. To [run](#run-a-saved-on-demand-scan) it according to the schedule you set, select
    **Save scan**.
-
-#### List saved on-demand scans
-
-To list saved on-demand scans:
-
-1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
-1. Select the **Scan library** tab.
 
 #### View details of an on-demand scan
 
