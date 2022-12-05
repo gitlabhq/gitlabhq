@@ -13,6 +13,7 @@ module ResourceAccessTokens
       return error("User does not have permission to create #{resource_type} access token") unless has_permission_to_create?
 
       access_level = params[:access_level] || Gitlab::Access::MAINTAINER
+      return error("Could not provision owner access to project access token") if do_not_allow_owner_access_level_for_project_bot?(access_level)
 
       user = create_user
 
@@ -107,7 +108,7 @@ module ResourceAccessTokens
     end
 
     def create_membership(resource, user, access_level)
-      resource.add_member(user, access_level, current_user: current_user, expires_at: params[:expires_at])
+      resource.add_member(user, access_level, expires_at: params[:expires_at])
     end
 
     def log_event(token)
@@ -120,6 +121,12 @@ module ResourceAccessTokens
 
     def success(access_token)
       ServiceResponse.success(payload: { access_token: access_token })
+    end
+
+    def do_not_allow_owner_access_level_for_project_bot?(access_level)
+      resource.is_a?(Project) &&
+        access_level == Gitlab::Access::OWNER &&
+        !current_user.can?(:manage_owners, resource)
     end
   end
 end
