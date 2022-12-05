@@ -16893,9 +16893,9 @@ Represents vulnerability finding of a security report on the pipeline.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="previewbillableuserchangehasoverage"></a>`hasOverage` | [`Boolean`](#boolean) | If the group has an overage after change. |
 | <a id="previewbillableuserchangenewbillableusercount"></a>`newBillableUserCount` | [`Int`](#int) | Total number of billable users after change. |
 | <a id="previewbillableuserchangeseatsinsubscription"></a>`seatsInSubscription` | [`Int`](#int) | Number of seats in subscription. |
+| <a id="previewbillableuserchangewillincreaseoverage"></a>`willIncreaseOverage` | [`Boolean`](#boolean) | If the group will have an increased overage after change. |
 
 ### `ProductAnalyticsDashboard`
 

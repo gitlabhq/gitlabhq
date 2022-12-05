@@ -9,8 +9,6 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (
@@ -84,7 +82,7 @@ func (s *errorPageResponseWriter) WriteHeader(status int) {
 	s.hijacked = true
 	staticErrorResponses.WithLabelValues(fmt.Sprintf("%d", s.status)).Inc()
 
-	helper.SetNoCacheHeaders(s.rw.Header())
+	setNoCacheHeaders(s.rw.Header())
 	s.rw.Header().Set("Content-Type", contentType)
 	s.rw.Header().Set("Content-Length", fmt.Sprintf("%d", len(data)))
 	s.rw.Header().Del("Transfer-Encoding")

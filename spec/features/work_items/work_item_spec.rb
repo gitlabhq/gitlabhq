@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Work item', :js do
+RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:user) { create(:user) }
   let_it_be(:other_user) { create(:user) }

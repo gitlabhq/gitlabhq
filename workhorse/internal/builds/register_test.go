@@ -106,3 +106,50 @@ func TestRegisterHandlerWatcherNoChange(t *testing.T) {
 	expectWatcherToBeExecuted(t, redis.WatchKeyStatusNoChange, nil,
 		http.StatusNoContent)
 }
+
+func TestReadRequestBody(t *testing.T) {
+	data := []byte("123456")
+	rw := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(data))
+
+	result, err := readRequestBody(rw, req, 1000)
+	require.NoError(t, err)
+	require.Equal(t, data, result)
+}
+
+func TestReadRequestBodyLimit(t *testing.T) {
+	data := []byte("123456")
+	rw := httptest.NewRecorder()
+	req, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(data))
+
+	_, err := readRequestBody(rw, req, 2)
+	require.Error(t, err)
+}
+
+func TestApplicationJson(t *testing.T) {
+	req, _ := http.NewRequest("POST", "/test", nil)
+	req.Header.Set("Content-Type", "application/json")
+
+	require.True(t, isApplicationJson(req), "expected to match 'application/json' as 'application/json'")
+
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	require.True(t, isApplicationJson(req), "expected to match 'application/json; charset=utf-8' as 'application/json'")
+
+	req.Header.Set("Content-Type", "text/plain")
+	require.False(t, isApplicationJson(req), "expected not to match 'text/plain' as 'application/json'")
+}
+
+func TestCloneRequestWithBody(t *testing.T) {
+	input := []byte("test")
+	newInput := []byte("new body")
+	req, _ := http.NewRequest("POST", "/test", bytes.NewBuffer(input))
+	newReq := cloneRequestWithNewBody(req, newInput)
+
+	require.NotEqual(t, req, newReq)
+	require.NotEqual(t, req.Body, newReq.Body)
+	require.NotEqual(t, len(newInput), newReq.ContentLength)
+
+	var buffer bytes.Buffer
+	io.Copy(&buffer, newReq.Body)
+	require.Equal(t, newInput, buffer.Bytes())
+}

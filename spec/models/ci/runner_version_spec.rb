@@ -3,15 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Ci::RunnerVersion, feature_category: :runner do
-  it_behaves_like 'having unique enum values'
+  let_it_be(:runner_version_recommended) do
+    create(:ci_runner_version, version: 'abc234', status: :recommended)
+  end
 
   let_it_be(:runner_version_not_available) do
     create(:ci_runner_version, version: 'abc123', status: :not_available)
   end
 
-  let_it_be(:runner_version_recommended) do
-    create(:ci_runner_version, version: 'abc234', status: :recommended)
-  end
+  it_behaves_like 'having unique enum values'
 
   describe '.not_available' do
     subject { described_class.not_available }

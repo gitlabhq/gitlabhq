@@ -1,8 +1,10 @@
 package builds
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"time"
 
@@ -63,11 +65,18 @@ func readRunnerBody(w http.ResponseWriter, r *http.Request) ([]byte, error) {
 	registerHandlerOpenAtReading.Inc()
 	defer registerHandlerOpenAtReading.Dec()
 
-	return helper.ReadRequestBody(w, r, maxRegisterBodySize)
+	return readRequestBody(w, r, maxRegisterBodySize)
+}
+
+func readRequestBody(w http.ResponseWriter, r *http.Request, maxBodySize int64) ([]byte, error) {
+	limitedBody := http.MaxBytesReader(w, r.Body, maxBodySize)
+	defer limitedBody.Close()
+
+	return io.ReadAll(limitedBody)
 }
 
 func readRunnerRequest(r *http.Request, body []byte) (*runnerRequest, error) {
-	if !helper.IsApplicationJson(r) {
+	if !isApplicationJson(r) {
 		return nil, errors.New("invalid content-type received")
 	}
 
@@ -78,6 +87,11 @@ func readRunnerRequest(r *http.Request, body []byte) (*runnerRequest, error) {
 	}
 
 	return &runnerRequest, nil
+}
+
+func isApplicationJson(r *http.Request) bool {
+	contentType := r.Header.Get("Content-Type")
+	return helper.IsContentType("application/json", contentType)
 }
 
 func proxyRegisterRequest(h http.Handler, w http.ResponseWriter, r *http.Request) {
@@ -109,7 +123,7 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 			return
 		}
 
-		newRequest := helper.CloneRequestWithNewBody(r, requestBody)
+		newRequest := cloneRequestWithNewBody(r, requestBody)
 
 		runnerRequest, err := readRunnerRequest(r, requestBody)
 		if err != nil {
@@ -160,4 +174,12 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 			w.WriteHeader(http.StatusNoContent)
 		}
 	})
+}
+
+func cloneRequestWithNewBody(r *http.Request, body []byte) *http.Request {
+	newReq := *r
+	newReq.Body = io.NopCloser(bytes.NewReader(body))
+	newReq.Header = helper.HeaderClone(r.Header)
+	newReq.ContentLength = int64(len(body))
+	return &newReq
 }

@@ -425,7 +425,7 @@ func configureRoutes(u *upstream) {
 func denyWebsocket(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if websocket.IsWebSocketUpgrade(r) {
-			helper.HTTPError(w, r, "websocket upgrade not allowed", http.StatusBadRequest)
+			httpError(w, r, "websocket upgrade not allowed", http.StatusBadRequest)
 			return
 		}
 

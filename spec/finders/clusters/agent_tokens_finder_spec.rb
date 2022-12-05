@@ -22,7 +22,11 @@ RSpec.describe Clusters::AgentTokensFinder do
       ]
     end
 
-    let_it_be(:token_for_different_agent) { create(:cluster_agent_token, agent: create(:cluster_agent)) }
+    before_all do
+      # set up a token under a different agent as a way to verify
+      # that only tokens of a given agent are included in the result
+      create(:cluster_agent_token, agent: create(:cluster_agent))
+    end
 
     subject(:execute) { described_class.new(agent, user).execute }
 

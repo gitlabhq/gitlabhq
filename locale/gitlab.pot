@@ -29602,6 +29602,15 @@ msgstr ""
 msgid "Passwords should be unique and not used for any other sites or services."
 msgstr ""
 
+msgid "Password|Not satisfied"
+msgstr ""
+
+msgid "Password|Satisfied"
+msgstr ""
+
+msgid "Password|To be satisfied"
+msgstr ""
+
 msgid "Password|requires at least one lowercase letter"
 msgstr ""
 

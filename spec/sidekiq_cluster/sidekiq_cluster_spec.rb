@@ -35,7 +35,7 @@ RSpec.describe Gitlab::SidekiqCluster do # rubocop:disable RSpec/FilePath
       expected_options = {
         env: :development,
         directory: an_instance_of(String),
-        max_concurrency: 50,
+        max_concurrency: 20,
         min_concurrency: 0,
         worker_id: an_instance_of(Integer),
         timeout: 25,

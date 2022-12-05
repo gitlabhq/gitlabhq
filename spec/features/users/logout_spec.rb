@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Logout/Sign out', :js do
+RSpec.describe 'Logout/Sign out', :js, feature_category: :system_access do
   let(:user) { create(:user) }
 
   before do

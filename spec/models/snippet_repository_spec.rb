@@ -38,6 +38,9 @@ RSpec.describe SnippetRepository do
     let(:update_file) { { previous_path: 'README', file_path: 'README', content: 'bar' } }
     let(:data) { [new_file, move_file, update_file] }
 
+    let_it_be(:unnamed_snippet) { { file_path: '', content: 'dummy', action: :create } }
+    let_it_be(:named_snippet) { { file_path: 'fee.txt', content: 'bar', action: :create } }
+
     it 'returns nil when files argument is empty' do
       expect(snippet.repository).not_to receive(:commit_files)
 
@@ -209,9 +212,6 @@ RSpec.describe SnippetRepository do
         expect(ls_files).to include(*filenames)
       end
     end
-
-    let_it_be(:named_snippet) { { file_path: 'fee.txt', content: 'bar', action: :create } }
-    let_it_be(:unnamed_snippet) { { file_path: '', content: 'dummy', action: :create } }
 
     context 'when existing file has a default name' do
       let(:default_name) { 'snippetfile1.txt' }

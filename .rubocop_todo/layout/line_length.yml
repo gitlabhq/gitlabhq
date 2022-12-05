@@ -1523,7 +1523,6 @@ Layout/LineLength:
     - 'ee/lib/api/dependencies.rb'
     - 'ee/lib/api/epic_issues.rb'
     - 'ee/lib/api/epic_links.rb'
-    - 'ee/lib/api/epics.rb'
     - 'ee/lib/api/geo_nodes.rb'
     - 'ee/lib/api/group_hooks.rb'
     - 'ee/lib/api/group_push_rule.rb'

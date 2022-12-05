@@ -204,6 +204,22 @@ label {
   }
 }
 
+.show-password-complexity-errors {
+  .form-control:not(textarea) {
+    height: 34px;
+  }
+
+  .password-complexity-error-outline {
+    border: 1px solid $red-500;
+
+    &:focus {
+      box-shadow: 0 0 0 1px $red-500 inset, 0 1px 1px $gl-field-focus-shadow inset,
+        0 0 4px 0 $gl-field-focus-shadow-error;
+      border: 0 none;
+    }
+  }
+}
+
 .input-icon-wrapper,
 .select-wrapper {
   position: relative;

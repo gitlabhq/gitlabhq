@@ -34,7 +34,7 @@ module Gitlab
     # directory - The directory of the Rails application.
     #
     # Returns an Array containing the PIDs of the started processes.
-    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
+    def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
       queues.map.with_index do |pair, index|
         start_sidekiq(pair, env: env,
                             directory: directory,

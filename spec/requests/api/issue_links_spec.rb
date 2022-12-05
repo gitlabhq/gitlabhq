@@ -189,6 +189,8 @@ RSpec.describe API::IssueLinks do
     end
 
     context 'when authenticated' do
+      let_it_be(:target_issue) { create(:issue, project: project) }
+
       context 'when issue link does not exist' do
         it 'returns 404' do
           perform_request(non_existing_record_id, user)
@@ -196,8 +198,6 @@ RSpec.describe API::IssueLinks do
           expect(response).to have_gitlab_http_status(:not_found)
         end
       end
-
-      let_it_be(:target_issue) { create(:issue, project: project) }
 
       context 'when issue link does not belong to the specified issue' do
         it 'returns 404' do

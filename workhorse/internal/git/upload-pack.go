@@ -9,7 +9,6 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
 var (
@@ -31,8 +30,8 @@ func handleUploadPack(w *HttpResponseWriter, r *http.Request, a *api.Response) e
 	readerCtx, cancel := context.WithTimeout(ctx, uploadPackTimeout)
 	defer cancel()
 
-	limited := helper.NewContextReader(readerCtx, r.Body)
-	cr, cw := helper.NewWriteAfterReader(limited, w)
+	limited := newContextReader(readerCtx, r.Body)
+	cr, cw := newWriteAfterReader(limited, w)
 	defer cw.Flush()
 
 	action := getService(r)

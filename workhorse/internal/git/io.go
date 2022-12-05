@@ -1,13 +1,48 @@
-package helper
+package git
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"os"
 	"sync"
 )
 
-type WriteFlusher interface {
+type contextReader struct {
+	ctx              context.Context
+	underlyingReader io.Reader
+}
+
+func newContextReader(ctx context.Context, underlyingReader io.Reader) *contextReader {
+	return &contextReader{
+		ctx:              ctx,
+		underlyingReader: underlyingReader,
+	}
+}
+
+func (r *contextReader) Read(b []byte) (int, error) {
+	if r.canceled() {
+		return 0, r.err()
+	}
+
+	n, err := r.underlyingReader.Read(b)
+
+	if r.canceled() {
+		err = r.err()
+	}
+
+	return n, err
+}
+
+func (r *contextReader) canceled() bool {
+	return r.err() != nil
+}
+
+func (r *contextReader) err() error {
+	return r.ctx.Err()
+}
+
+type writeFlusher interface {
 	io.Writer
 	Flush() error
 }
@@ -16,7 +51,7 @@ type WriteFlusher interface {
 // returned some error), all writes to w are sent to a tempfile first.
 // The caller must call Flush() on the returned WriteFlusher to ensure
 // all data is propagated to w.
-func NewWriteAfterReader(r io.Reader, w io.Writer) (io.Reader, WriteFlusher) {
+func newWriteAfterReader(r io.Reader, w io.Writer) (io.Reader, writeFlusher) {
 	br := &busyReader{Reader: r}
 	return br, &coupledWriter{Writer: w, busyReader: br}
 }

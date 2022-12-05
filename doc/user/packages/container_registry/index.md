@@ -457,21 +457,18 @@ build_image:
     - main
 
 delete_image:
-  image: docker:20.10.16
+  before_script:
+    - curl --fail --show-error --location "https://github.com/genuinetools/reg/releases/download/v$REG_VERSION/reg-linux-amd64" --output ./reg
+    - echo "$REG_SHA256  ./reg" | sha256sum -c -
+    - chmod a+x ./reg
+  image: curlimages/curl:7.86.0
+  script:
+    - ./reg rm -d --auth-url $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $IMAGE_TAG
   stage: clean
-  services:
-    - docker:20.10.16-dind
   variables:
     IMAGE_TAG: $CI_PROJECT_PATH:$CI_COMMIT_REF_SLUG
     REG_SHA256: ade837fc5224acd8c34732bf54a94f579b47851cc6a7fd5899a98386b782e228
     REG_VERSION: 0.16.1
-  before_script:
-    - apk add --no-cache curl
-    - curl --fail --show-error --location "https://github.com/genuinetools/reg/releases/download/v$REG_VERSION/reg-linux-amd64" --output /usr/local/bin/reg
-    - echo "$REG_SHA256  /usr/local/bin/reg" | sha256sum -c -
-    - chmod a+x /usr/local/bin/reg
-  script:
-    - /usr/local/bin/reg rm -d --auth-url $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $IMAGE_TAG
   only:
     - branches
   except:

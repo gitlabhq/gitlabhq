@@ -544,6 +544,7 @@ export default {
     <mr-widget-pipeline-container v-if="shouldRenderPipelines" :mr="mr" />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
+      <widget-container v-if="mr && shouldShowSecurityExtension" :mr="mr" />
       <extensions-container v-if="hasExtensions" :mr="mr" />
       <security-reports-app
         v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
@@ -579,8 +580,6 @@ export default {
           </template>
         </mr-widget-alert-message>
       </div>
-
-      <widget-container v-if="mr" :mr="mr" />
 
       <div class="mr-widget-section" data-qa-selector="mr_widget_content">
         <component :is="componentName" :mr="mr" :service="service" />

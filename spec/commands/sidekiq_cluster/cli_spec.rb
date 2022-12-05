@@ -13,7 +13,7 @@ RSpec.describe Gitlab::SidekiqCluster::CLI, stub_settings_source: true do # rubo
   let(:cli) { described_class.new('/dev/null') }
   let(:timeout) { Gitlab::SidekiqCluster::DEFAULT_SOFT_TIMEOUT_SECONDS }
   let(:default_options) do
-    { env: 'test', directory: Dir.pwd, max_concurrency: 50, min_concurrency: 0, dryrun: false, timeout: timeout }
+    { env: 'test', directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, dryrun: false, timeout: timeout }
   end
 
   let(:sidekiq_exporter_enabled) { false }

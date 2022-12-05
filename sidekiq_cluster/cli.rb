@@ -31,8 +31,9 @@ module Gitlab
       CommandError = Class.new(StandardError)
 
       def initialize(log_output = $stderr)
-        # As recommended by https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency
-        @max_concurrency = 50
+        # https://github.com/mperham/sidekiq/wiki/Advanced-Options#concurrency
+        # https://ruby.social/@getajobmike/109326475545816363
+        @max_concurrency = 20
         @min_concurrency = 0
         @environment = ENV['RAILS_ENV'] || 'development'
         @metrics_dir = ENV["prometheus_multiproc_dir"] || File.absolute_path("tmp/prometheus_multiproc_dir/sidekiq")

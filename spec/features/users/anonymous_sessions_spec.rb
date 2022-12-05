@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state do
+RSpec.describe 'Session TTLs', :clean_gitlab_redis_shared_state, feature_category: :system_access do
   include SessionHelpers
 
   it 'creates a session with a short TTL when login fails' do

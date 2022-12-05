@@ -481,6 +481,19 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
   migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
   has completed successfully before upgrading to 15.7.0.
+- The default Sidekiq `max_concurrency` has been changed to 20. This is now
+  consistent in our documentation and product defaults.
+
+  For example, previously:
+  - Omnibus GitLab default (`sidekiq['max_concurrency']`): 50
+  - From source installation default: 50
+  - Helm chart default (`gitlab.sidekiq.concurrency`): 25
+
+  Reference architectures still use a default of 10 as this is set specifically
+  for those configurations.
+
+  Sites that have configured `max_concurrency` will not be affected by this change.
+  [Read more about the Sidekiq concurrency setting](../administration/sidekiq/extra_sidekiq_processes.md#concurrency).
 
 ### 15.6.0
 

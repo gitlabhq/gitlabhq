@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Ci::JobToken::ProjectScopeLink do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:group) { create(:group) }
+
   it { is_expected.to belong_to(:source_project) }
   it { is_expected.to belong_to(:target_project) }
   it { is_expected.to belong_to(:added_by) }
-
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project) }
 
   it_behaves_like 'cleanup by a loose foreign key' do
     let!(:parent) { create(:user) }

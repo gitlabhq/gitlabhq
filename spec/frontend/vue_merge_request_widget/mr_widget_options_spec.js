@@ -22,6 +22,7 @@ import {
 import { SUCCESS } from '~/vue_merge_request_widget/components/deployment/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
+import WidgetContainer from '~/vue_merge_request_widget/components/widget/app.vue';
 import StatusIcon from '~/vue_merge_request_widget/components/extensions/status_icon.vue';
 import securityReportMergeRequestDownloadPathsQuery from '~/vue_shared/security_reports/graphql/queries/security_report_merge_request_download_paths.query.graphql';
 import getStateQuery from '~/vue_merge_request_widget/queries/get_state.query.graphql';
@@ -62,6 +63,7 @@ describe('MrWidgetOptions', () => {
   let mock;
 
   const COLLABORATION_MESSAGE = 'Members who can merge are allowed to add commits';
+  const findWidgetContainer = () => wrapper.findComponent(WidgetContainer);
   const findExtensionToggleButton = () =>
     wrapper.find('[data-testid="widget-extension"] [data-testid="toggle-button"]');
   const findExtensionLink = (linkHref) =>
@@ -1226,6 +1228,23 @@ describe('MrWidgetOptions', () => {
 
         expect(api.trackRedisHllUserEvent).not.toHaveBeenCalled();
         expect(api.trackRedisCounterEvent).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('widget container', () => {
+      afterEach(() => {
+        delete window.gon.features.refactorSecurityExtension;
+      });
+
+      it('should not be displayed when the refactor_security_extension feature flag is turned off', () => {
+        createComponent();
+        expect(findWidgetContainer().exists()).toBe(false);
+      });
+
+      it('should be displayed when the refactor_security_extension feature flag is turned on', () => {
+        window.gon.features.refactorSecurityExtension = true;
+        createComponent();
+        expect(findWidgetContainer().exists()).toBe(true);
       });
     });
   });

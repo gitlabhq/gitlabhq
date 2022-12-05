@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'AdditionalEmailToExistingAccount' do
+RSpec.describe 'AdditionalEmailToExistingAccount', feature_category: :users do
   describe 'add secondary email associated with account' do
     let_it_be(:user) { create(:user) }
     let_it_be(:email) { create(:email, user: user) }

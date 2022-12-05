@@ -2,7 +2,9 @@ package channel
 
 import (
 	"fmt"
+	"net"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -109,7 +111,7 @@ func pingLoop(conn Connection) {
 func connectToServer(settings *api.ChannelSettings, r *http.Request) (Connection, error) {
 	settings = settings.Clone()
 
-	helper.SetForwardedFor(&settings.Header, r)
+	setForwardedFor(&settings.Header, r)
 
 	conn, _, err := settings.Dial()
 	if err != nil {
@@ -129,4 +131,20 @@ func closeAfterMaxTime(proxy *Proxy, maxSessionTime int) {
 		"connection closed: session time greater than maximum time allowed - %v seconds",
 		maxSessionTime,
 	)
+}
+
+func setForwardedFor(newHeaders *http.Header, originalRequest *http.Request) {
+	if clientIP, _, err := net.SplitHostPort(originalRequest.RemoteAddr); err == nil {
+		var header string
+
+		// If we aren't the first proxy retain prior
+		// X-Forwarded-For information as a comma+space
+		// separated list and fold multiple headers into one.
+		if prior, ok := originalRequest.Header["X-Forwarded-For"]; ok {
+			header = strings.Join(prior, ", ") + ", " + clientIP
+		} else {
+			header = clientIP
+		}
+		newHeaders.Set("X-Forwarded-For", header)
+	}
 }

@@ -1,17 +1,94 @@
-package helper
+package git
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"testing"
 	"testing/iotest"
+	"time"
+
+	"github.com/stretchr/testify/require"
 )
+
+type fakeReader struct {
+	n   int
+	err error
+}
+
+func (f *fakeReader) Read(b []byte) (int, error) {
+	return f.n, f.err
+}
+
+type fakeContextWithTimeout struct {
+	n         int
+	threshold int
+}
+
+func (*fakeContextWithTimeout) Deadline() (deadline time.Time, ok bool) {
+	return
+}
+
+func (*fakeContextWithTimeout) Done() <-chan struct{} {
+	return nil
+}
+
+func (*fakeContextWithTimeout) Value(key interface{}) interface{} {
+	return nil
+}
+
+func (f *fakeContextWithTimeout) Err() error {
+	f.n++
+	if f.n > f.threshold {
+		return context.DeadlineExceeded
+	}
+
+	return nil
+}
+
+func TestContextReaderRead(t *testing.T) {
+	underlyingReader := &fakeReader{n: 1, err: io.EOF}
+
+	for _, tc := range []struct {
+		desc        string
+		ctx         *fakeContextWithTimeout
+		expectedN   int
+		expectedErr error
+	}{
+		{
+			desc:        "Before and after read deadline checks are fine",
+			ctx:         &fakeContextWithTimeout{n: 0, threshold: 2},
+			expectedN:   underlyingReader.n,
+			expectedErr: underlyingReader.err,
+		},
+		{
+			desc:        "Before read deadline check fails",
+			ctx:         &fakeContextWithTimeout{n: 0, threshold: 0},
+			expectedN:   0,
+			expectedErr: context.DeadlineExceeded,
+		},
+		{
+			desc:        "After read deadline check fails",
+			ctx:         &fakeContextWithTimeout{n: 0, threshold: 1},
+			expectedN:   underlyingReader.n,
+			expectedErr: context.DeadlineExceeded,
+		},
+	} {
+		t.Run(tc.desc, func(t *testing.T) {
+			cr := newContextReader(tc.ctx, underlyingReader)
+
+			n, err := cr.Read(nil)
+			require.Equal(t, tc.expectedN, n)
+			require.Equal(t, tc.expectedErr, err)
+		})
+	}
+}
 
 func TestBusyReader(t *testing.T) {
 	testData := "test data"
 	r := testReader(testData)
-	br, _ := NewWriteAfterReader(r, &bytes.Buffer{})
+	br, _ := newWriteAfterReader(r, &bytes.Buffer{})
 
 	result, err := io.ReadAll(br)
 	if err != nil {
@@ -25,7 +102,7 @@ func TestBusyReader(t *testing.T) {
 
 func TestFirstWriteAfterReadDone(t *testing.T) {
 	writeRecorder := &bytes.Buffer{}
-	br, cw := NewWriteAfterReader(&bytes.Buffer{}, writeRecorder)
+	br, cw := newWriteAfterReader(&bytes.Buffer{}, writeRecorder)
 	if _, err := io.Copy(io.Discard, br); err != nil {
 		t.Fatalf("copy from busyreader: %v", err)
 	}
@@ -44,7 +121,7 @@ func TestFirstWriteAfterReadDone(t *testing.T) {
 func TestWriteDelay(t *testing.T) {
 	writeRecorder := &bytes.Buffer{}
 	w := &complainingWriter{Writer: writeRecorder}
-	br, cw := NewWriteAfterReader(&bytes.Buffer{}, w)
+	br, cw := newWriteAfterReader(&bytes.Buffer{}, w)
 
 	testData1 := "1 test"
 	if _, err := io.Copy(cw, testReader(testData1)); err != nil {

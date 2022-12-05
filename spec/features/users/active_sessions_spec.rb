@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions do
+RSpec.describe 'Active user sessions', :clean_gitlab_redis_sessions, feature_category: :system_access do
   it 'successful login adds a new active user login' do
     user = create(:user)
 

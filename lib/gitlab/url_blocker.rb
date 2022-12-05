@@ -38,6 +38,16 @@ module Gitlab
         # Param url can be a string, URI or Addressable::URI
         uri = parse_url(url)
 
+        # TODO: This is a temporary log. It will be removed in
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104285
+        if schemes.blank?
+          Gitlab::AppJsonLogger.info(
+            message: 'Blank scheme used in Gitlab::UrlBlocker',
+            uri_scheme: uri.scheme,
+            caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
+          )
+        end
+
         validate_uri(
           uri: uri,
           schemes: schemes,

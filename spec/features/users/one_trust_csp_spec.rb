@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OneTrust content security policy' do
+RSpec.describe 'OneTrust content security policy', feature_category: :application_instrumentation do
   let(:user) { create(:user) }
 
   before do

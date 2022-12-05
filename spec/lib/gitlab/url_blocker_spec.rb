@@ -271,6 +271,20 @@ RSpec.describe Gitlab::UrlBlocker, :stub_invalid_dns_only do
         end
       end
     end
+
+    context 'when schemes is blank' do
+      subject { described_class.validate!('https://example.org', schemes: []) }
+
+      it 'logs a warning message' do
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(
+          message: 'Blank scheme used in Gitlab::UrlBlocker',
+          uri_scheme: 'https',
+          caller: anything
+        )
+
+        subject
+      end
+    end
   end
 
   describe '#blocked_url?' do

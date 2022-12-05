@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User RSS' do
+RSpec.describe 'User RSS', feature_category: :users do
   let(:user) { create(:user) }
   let(:path) { user_path(create(:user)) }
 

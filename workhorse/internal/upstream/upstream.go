@@ -16,6 +16,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/sebest/xff"
 	"github.com/sirupsen/logrus"
 
 	"gitlab.com/gitlab-org/labkit/correlation"
@@ -125,19 +126,19 @@ func (u *upstream) configureURLPrefix() {
 }
 
 func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	helper.FixRemoteAddr(r)
+	fixRemoteAddr(r)
 
 	nginx.DisableResponseBuffering(w)
 
 	// Drop RequestURI == "*" (FIXME: why?)
 	if r.RequestURI == "*" {
-		helper.HTTPError(w, r, "Connection upgrade not allowed", http.StatusBadRequest)
+		httpError(w, r, "Connection upgrade not allowed", http.StatusBadRequest)
 		return
 	}
 
 	// Disallow connect
 	if r.Method == "CONNECT" {
-		helper.HTTPError(w, r, "CONNECT not allowed", http.StatusBadRequest)
+		httpError(w, r, "CONNECT not allowed", http.StatusBadRequest)
 		return
 	}
 
@@ -145,7 +146,7 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	URIPath := urlprefix.CleanURIPath(r.URL.EscapedPath())
 	prefix := u.URLPrefix
 	if !prefix.Match(URIPath) {
-		helper.HTTPError(w, r, fmt.Sprintf("Not found %q", URIPath), http.StatusNotFound)
+		httpError(w, r, fmt.Sprintf("Not found %q", URIPath), http.StatusNotFound)
 		return
 	}
 
@@ -156,7 +157,7 @@ func (u *upstream) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if route == nil {
 		// The protocol spec in git/Documentation/technical/http-protocol.txt
 		// says we must return 403 if no matching service is found.
-		helper.HTTPError(w, r, "Forbidden", http.StatusForbidden)
+		httpError(w, r, "Forbidden", http.StatusForbidden)
 		return
 	}
 
@@ -275,4 +276,22 @@ func (u *upstream) updateGeoProxyFieldsFromData(geoProxyData *apipkg.GeoProxyDat
 	)
 	u.geoProxyCableRoute = u.wsRoute(`^/-/cable\z`, geoProxyUpstream)
 	u.geoProxyRoute = u.route("", "", geoProxyUpstream, withGeoProxy())
+}
+
+func httpError(w http.ResponseWriter, r *http.Request, error string, code int) {
+	if r.ProtoAtLeast(1, 1) {
+		// Force client to disconnect if we render request error
+		w.Header().Set("Connection", "close")
+	}
+
+	http.Error(w, error, code)
+}
+
+func fixRemoteAddr(r *http.Request) {
+	// Unix domain sockets have a remote addr of @. This will make the
+	// xff package lookup the X-Forwarded-For address if available.
+	if r.RemoteAddr == "@" {
+		r.RemoteAddr = "127.0.0.1:0"
+	}
+	r.RemoteAddr = xff.GetRemoteAddr(r)
 }

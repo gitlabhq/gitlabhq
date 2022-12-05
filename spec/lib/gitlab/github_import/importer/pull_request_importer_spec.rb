@@ -292,6 +292,16 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
         expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
       end
+
+      it 'ignores Git PreReceive errors when creating a branch' do
+        expect(project.repository).to receive(:add_branch).and_raise(Gitlab::Git::PreReceiveError)
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).and_call_original
+
+        mr = insert_git_data
+
+        expect(project.repository.branch_exists?(mr.source_branch)).to be_falsey
+        expect(project.repository.branch_exists?(mr.target_branch)).to be_truthy
+      end
     end
 
     it 'creates a merge request diff and sets it as the latest' do

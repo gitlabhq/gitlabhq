@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User confirmation' do
+RSpec.describe 'User confirmation', feature_category: :system_access do
   describe 'resend confirmation instructions' do
     context 'when recaptcha is enabled' do
       before do

@@ -3,12 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe GroupDeployKey do
+  let_it_be(:group) { create(:group) }
+  let_it_be(:group_deploy_key) { create(:group_deploy_key) }
+
   it { is_expected.to validate_presence_of(:user) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:groups) }
-
-  let_it_be(:group_deploy_key) { create(:group_deploy_key) }
-  let_it_be(:group) { create(:group) }
 
   it 'is of type DeployKey' do
     expect(build(:group_deploy_key).type).to eq('DeployKey')
