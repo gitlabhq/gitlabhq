@@ -53,7 +53,7 @@ bundle exec rake db:reset RAILS_ENV=test
 - `bundle exec rake db:migrate:up:main VERSION=20170926203418 RAILS_ENV=development`: Set up a migration
 - `bundle exec rake db:migrate:redo:main VERSION=20170926203418 RAILS_ENV=development`: Re-run a specific migration
 
-Replace `main` in the above commands to execute agains the `ci` database instead of `main`.
+Replace `main` in the above commands to execute against the `ci` database instead of `main`.
 
 ## Manually access the database
 

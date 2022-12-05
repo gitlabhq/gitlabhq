@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::ConanProjectPackages do
+RSpec.describe API::ConanProjectPackages, feature_category: :package_registry do
   include_context 'conan api setup'
 
   let(:project_id) { project.id }

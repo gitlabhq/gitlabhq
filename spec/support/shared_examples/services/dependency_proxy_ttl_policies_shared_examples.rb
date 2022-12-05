@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'updating the dependency proxy image ttl policy attributes' do |from: {}, to:|
+RSpec.shared_examples 'updating the dependency proxy image ttl policy attributes' do |to:, from: {}|
   it_behaves_like 'not creating the dependency proxy image ttl policy'
 
   it 'updates the dependency proxy image ttl policy' do

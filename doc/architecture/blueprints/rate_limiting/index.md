@@ -286,7 +286,7 @@ The GitLab Policy Service might be used in two different ways:
 1. The policy service feature will be used as a backend to store policies defined by users.
 
 These are two slightly different use-cases: first one is about using
-internally-defined policies to ensure the stability / availably of a GitLab
+internally-defined policies to ensure the stability / availability of a GitLab
 instance (GitLab.com or self-managed instance). The second use-case is about
 making GitLab Policy Service a feature that users will be able to build on top
 of.
@@ -303,7 +303,7 @@ the sections of this document above.
 It is possible that GitLab Policy Service and Decoupled Limits Service can
 actually be the same thing. It, however, depends on the implementation details
 that we can't predict yet, and the decision about merging these services
-together will need to be informed by subsequent interations' feedback.
+together will need to be informed by subsequent iterations' feedback.
 
 ## Hierarchical limits
 

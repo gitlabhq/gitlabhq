@@ -458,7 +458,7 @@ You can see the RSpec shared context containing these fixtures in
 
 In some cases, fixtures may not be usable, because they do not provide control over the varying
 values. In these cases, we can introduce support for a environment variable into the production
-code, which allows us to override the randommness in our test environment when we are
+code, which allows us to override the randomness in our test environment when we are
 generating the HTML for footnote examples. Even though it is in the production code path, it has
 no effect unless it is explicitly set, therefore it is innocuous. It allows us to avoid
 the more-complex regex-based normalization described below.
@@ -1056,7 +1056,7 @@ allows control over other aspects of the snapshot example generation process.
   the example will only be run by `ee/spec/requests/api/markdown_snapshot_spec.rb`, not by
   `spec/requests/api/markdown_snapshot_spec.rb`.
 - The `api_request_override_path` field overrides the API endpoint path which is used to
-  generate the `static` HTML for the specifed example. Different endpoints can generate different
+  generate the `static` HTML for the specified example. Different endpoints can generate different
   HTML in some cases, so we want to be able to exercise different API endpoints for the same
   Markdown. By default, the `/markdown` endpoint is used.
 

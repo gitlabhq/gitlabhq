@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'when regex matching everything is specified' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     { 'name_regex_delete' => '.*' }
   end
@@ -65,7 +65,7 @@ RSpec.shared_examples 'when delete regex matching specific tags is used with ove
 end
 
 RSpec.shared_examples 'with allow regex value' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     {
       'name_regex_delete' => '.*',
@@ -80,7 +80,7 @@ RSpec.shared_examples 'with allow regex value' do
 end
 
 RSpec.shared_examples 'when keeping only N tags' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     {
       'name_regex' => 'A|B.*|C',
@@ -99,7 +99,7 @@ RSpec.shared_examples 'when keeping only N tags' do
 end
 
 RSpec.shared_examples 'when not keeping N tags' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     { 'name_regex' => 'A|B.*|C' }
   end
@@ -115,7 +115,7 @@ RSpec.shared_examples 'when not keeping N tags' do
 end
 
 RSpec.shared_examples 'when removing keeping only 3' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     { 'name_regex_delete' => '.*',
       'keep_n' => 3 }
@@ -128,7 +128,7 @@ RSpec.shared_examples 'when removing keeping only 3' do
 end
 
 RSpec.shared_examples 'when removing older than 1 day' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     {
       'name_regex_delete' => '.*',
@@ -143,7 +143,7 @@ RSpec.shared_examples 'when removing older than 1 day' do
 end
 
 RSpec.shared_examples 'when combining all parameters' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:params) do
     {
       'name_regex_delete' => '.*',
@@ -159,7 +159,7 @@ RSpec.shared_examples 'when combining all parameters' do
 end
 
 RSpec.shared_examples 'when running a container_expiration_policy' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   let(:user) { nil }
 
   context 'with valid container_expiration_policy param' do
@@ -191,7 +191,7 @@ RSpec.shared_examples 'not removing anything' do |service_response_extra: {}, su
 end
 
 RSpec.shared_examples 'removing the expected tags' do
-  |service_response_extra: {}, supports_caching: false, delete_expectations:|
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
   it 'removes the expected tags' do
     delete_expectations.each { |expectation| expect_delete(expectation) }
     expect_no_caching unless supports_caching

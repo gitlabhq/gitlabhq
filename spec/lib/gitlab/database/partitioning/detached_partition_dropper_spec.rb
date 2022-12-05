@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Database::Partitioning::DetachedPartitionDropper do
     SQL
   end
 
-  def create_partition(name:, table: 'parent_table', from:, to:, attached:, drop_after:)
+  def create_partition(name:, from:, to:, attached:, drop_after:, table: 'parent_table')
     from = from.beginning_of_month
     to = to.beginning_of_month
     full_name = "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}.#{name}"

@@ -80,7 +80,7 @@ indicates we have plenty of headroom.
    - Generic data can be cached for everyone.
    - You must keep this in mind when building new features.
 1. Try to preserve cache data as much as possible:
-   - Use nested caches to maintain as much cached data as possible across expiries.
+   - Use nested caches to maintain as much cached data as possible across expires.
 1. Perform as few requests to the cache as possible:
    - This reduces variable latency caused by network issues.
    - Lower overhead for each read on the cache.

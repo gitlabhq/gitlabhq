@@ -308,7 +308,7 @@ sequenceDiagram
   - Sidekiq queries `job_artifact_registry` in the [PostgreSQL Geo Tracking Database](#tracking-database) for the number of rows marked "pending verification" or "failed verification and ready to retry"
   - Sidekiq enqueues one or more `Geo::VerificationBatchWorker` jobs, limited by the "maximum verification concurrency" setting
 - Sidekiq picks up `Geo::VerificationBatchWorker` job
-  - Sidekiq queries `job_artifact_registry` in the PostgreSQL Geo Tracking Databasef for rows marked "pending verification"
+  - Sidekiq queries `job_artifact_registry` in the PostgreSQL Geo Tracking Database for rows marked "pending verification"
   - If the previous step yielded less than 10 rows, then Sidekiq queries `job_artifact_registry` for rows marked "failed verification and ready to retry"
   - For each row
     - Sidekiq marks it "started verification"

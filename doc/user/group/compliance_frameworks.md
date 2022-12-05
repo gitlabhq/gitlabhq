@@ -205,7 +205,7 @@ When creating such an MR against a project with CF pipelines, the above snippet 
 This is because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing branch name.
 
 To get the correct context, use `$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH` instead of `$CI_PROJECT_PATH`.
-This variable is only availabe in
+This variable is only available in
 [merge request pipelines](../../ci/pipelines/merge_request_pipelines.md).
 
 For example, for a configuration that supports both merge request pipelines originating in project forks and branch pipelines,

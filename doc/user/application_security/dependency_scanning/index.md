@@ -109,7 +109,7 @@ maximum of two directory levels from the repository's root. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is `api/v1/client/Gemfile`.
 
-For Java and Python, when a supported depedency file is detected, Dependency Scanning attempts to build the project and execute some Java or Python commands to get the list of dependencies. For all other projects, the lock file is parsed to obtain the list of dependencies without needing to build the project first.
+For Java and Python, when a supported dependency file is detected, Dependency Scanning attempts to build the project and execute some Java or Python commands to get the list of dependencies. For all other projects, the lock file is parsed to obtain the list of dependencies without needing to build the project first.
 
 When a supported dependency file is detected, all dependencies, including transitive dependencies are analyzed. There is no limit to the depth of nested or transitive dependencies that are analyzed.
 

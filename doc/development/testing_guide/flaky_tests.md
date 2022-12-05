@@ -75,7 +75,7 @@ difficult to achieve locally.
   any table has more than 500 columns. It could pass in the merge request, but fail later in
   `master` if the order of tests changes.
 - [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91016/diffs): A test asserts
-  that trying to find a record with an unexisting ID retuns an error message. The test uses an
+  that trying to find a record with an nonexistent ID returns an error message. The test uses an
   hardcoded ID that's supposed to not exist (e.g. `42`). If the test is run early in the test
   suite, it might pass as not enough records were created before it, but as soon as it would run
   later in the suite, there could be a record that actually has the ID `42`, hence the test would
@@ -207,10 +207,10 @@ The `rspec/flaky/report-suite.json` report is:
 - [Sporadic RSpec failures due to `PG::UniqueViolation`](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/28307#note_24958837): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9846>
   - Follow-up: <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10688>
   - [Capybara.reset_session! should be called before requests are blocked](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/33779): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12224>
-- FFaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
+- ffaker generates funky data that tests are not ready to handle (and tests should be predictable so that's bad!):
   - [Make `spec/mailers/notify_spec.rb` more robust](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/20121): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10015>
   - [Transient failure in `spec/requests/api/commits_spec.rb`](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/27988#note_25342521): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/9944>
-  - [Replace FFaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10184>
+  - [Replace ffaker factory data with sequences](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/29643): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10184>
   - [Transient failure in spec/finders/issues_finder_spec.rb](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/30211#note_26707685): <https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10404>
 
 ### Order-dependent flaky tests

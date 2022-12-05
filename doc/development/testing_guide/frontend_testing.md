@@ -534,7 +534,7 @@ Example
   });
 ```
 
-With [enableAutoDestroy](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100389), it is no longer neccessary to manually call `wrapper.destroy()`.
+With [enableAutoDestroy](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100389), it is no longer necessary to manually call `wrapper.destroy()`.
 However, some mocks, spies, and fixtures do need to be torn down, and we can leverage the `afterEach` hook.
 
 Example

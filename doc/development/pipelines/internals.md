@@ -107,7 +107,7 @@ automatically updates the Gitaly version used in the main project),
 [the Dependency proxy isn't accessible](https://gitlab.com/gitlab-org/gitlab/-/issues/332411#note_1130388163)
 and the job fails at the `Preparing the "docker+machine" executor` step.
 To work around that, we have a special workflow rule, that overrides the
-`${GITLAB_DEPENDENCY_PROXY_ADDRESS}` variable so that Depdendency proxy isn't used in that case:
+`${GITLAB_DEPENDENCY_PROXY_ADDRESS}` variable so that Dependency proxy isn't used in that case:
 
 ```yaml
 - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'

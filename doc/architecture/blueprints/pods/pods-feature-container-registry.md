@@ -50,7 +50,7 @@ via `https://registry.gitlab.com`.
 
 The main identifiable problems are:
 
-- the authentication reqest (`https://gitlab.com/jwt/auth`) that is processed by GitLab.com
+- the authentication request (`https://gitlab.com/jwt/auth`) that is processed by GitLab.com
 - the `https://registry.gitlab.com` that is run by external service and uses it's own data store
 - the data deduplication, the Pods architecture with registry run in a Pod would reduce
   efficiency of data storage
@@ -100,7 +100,7 @@ curl \
 
 Due to it's architecture it extensive architecture and in general highly scalable
 horizontal architecture it should be evaluated if the GitLab Container Registry
-should be run not in Pod, but in a Cluster and be scaled indepdently.
+should be run not in Pod, but in a Cluster and be scaled independently.
 
 This might be easier, but would definitely not offer the same amount of data isolation.
 

@@ -630,7 +630,7 @@ Is [some cases](index.md#known-issues) the Praefect database can get out of sync
 a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../raketasks/praefect.md#replica-checksums)
 that checksums the repository on all Gitaly nodes.
 
-The [Praefect dataloss](recovery.md#check-for-data-loss) command only checks the state of the repository in the Praefect database, and cannot
+The [Praefect `dataloss`](recovery.md#check-for-data-loss) command only checks the state of the repository in the Praefect database, and cannot
 be relied to detect sync problems in this scenario.
 
 ### Relation does not exist errors

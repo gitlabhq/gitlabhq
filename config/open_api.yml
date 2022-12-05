@@ -27,6 +27,8 @@ metadata:
     description: Operations related to the GitLab agent for Kubernetes
   - name: clusters
     description: Operations related to clusters
+  - name: conan_packages
+    description: Operations related to Conan packages
   - name: container_registry
     description: Operations related to container registry
   - name: container_registry_event

@@ -1767,8 +1767,8 @@ deploy:
 
 **Additional details**:
 
-- Enviroments created from this job definition are assigned a [tier](../environments/index.md#deployment-tier-of-environments) based on this value.
-- Existing environments don't have their tier updated if this value is added later. Existing enviroments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
+- Environments created from this job definition are assigned a [tier](../environments/index.md#deployment-tier-of-environments) based on this value.
+- Existing environments don't have their tier updated if this value is added later. Existing environments must have their tier updated via the [Environments API](../../api/environments.md#update-an-existing-environment).
 
 **Related topics**:
 
@@ -3008,7 +3008,7 @@ job:
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363024) in GitLab 15.3. Supported by `release-cli` v0.12.0 or later.
 
-If the tag does not exist, the newly created tag is annotated with the message specifed by `tag_message`.
+If the tag does not exist, the newly created tag is annotated with the message specified by `tag_message`.
 If omitted, a lightweight tag is created.
 
 **Keyword type**: Job keyword. You can use it only as part of a job.

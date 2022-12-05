@@ -17,7 +17,7 @@ module SmimeHelper
   end
 
   # returns a hash { key:, cert: } containing a generated key, cert pair
-  def issue(email_address: 'test@example.com', cn: nil, signed_by:, expires_in:, certificate_authority:)
+  def issue(signed_by:, expires_in:, certificate_authority:, email_address: 'test@example.com', cn: nil)
     key = OpenSSL::PKey::RSA.new(4096)
     public_key = key.public_key
 

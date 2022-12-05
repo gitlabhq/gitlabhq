@@ -32,7 +32,7 @@ RSpec.describe GitlabSchema.types['PipelineCounts'] do
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
 
-  shared_examples 'pipeline counts query' do |args: "", expected_counts:|
+  shared_examples 'pipeline counts query' do |expected_counts:, args: ""|
     let_it_be(:query) do
       %(
         query {

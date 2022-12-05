@@ -340,7 +340,7 @@ RSpec.describe ServicePing::SubmitService do
     end
   end
 
-  def stub_response(url: service_ping_payload_url, body:, status: 201)
+  def stub_response(body:, url: service_ping_payload_url, status: 201)
     stub_full_request(url, method: :post)
       .to_return(
         headers: { 'Content-Type' => 'application/json' },

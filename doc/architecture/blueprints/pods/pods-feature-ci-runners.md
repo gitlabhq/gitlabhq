@@ -105,8 +105,8 @@ We can pick a design where all runners are always registered and local to a give
   database to rather prefer to use JWT tokens that would encode
 - The Admin Area showing registered Runners would have to be scoped to a Pod
 
-This model might be desired since it provides strong isolation guarnatees.
-This model does significantly increase maintanance overhead since each Pod is managed
+This model might be desired since it provides strong isolation guarantees.
+This model does significantly increase maintenance overhead since each Pod is managed
 separately.
 
 This model may require adjustments to runner tags feature so that projects have consistent runner experience across pods.
@@ -123,7 +123,7 @@ However, this requires significant overhaul of system and to change the followin
 - build queuing would have to be reworked to be two phase where each Pod would know of all pending
   and running builds, but the actual claim of a build would happen against a Pod containing data
 - likely `ci_pending_builds` and `ci_running_builds` would have to be made `cluster-wide` tables
-  increasing likelity of creating hotspots in a system related to CI queueing
+  increasing likelihood of creating hotspots in a system related to CI queueing
 
 This model makes it complex to implement from engineering side. Does make some data being shared
 between Pods. Creates hotspots / scalability issues in a system (ex. during abuse) that
@@ -132,14 +132,14 @@ might impact experience of organizations on other Pods.
 ### 3.5. GitLab CI Daemon
 
 Another potential solution to explore is to have a dedicated service responsible for builds queueing
-owning it's database and working in a model of either shareded or podded service. There were prior
+owning it's database and working in a model of either sharded or podded service. There were prior
 discussions about [CI/CD Daemon](https://gitlab.com/gitlab-org/gitlab/-/issues/19435).
 
 If the service would be sharded:
 
 - depending on a model if runners are cluster-wide or pod-local this service would have to fetch
   data from all Pods
-- if the sharded service would be used we could adapt a model of either sharing database containig
+- if the sharded service would be used we could adapt a model of either sharing database containing
   `ci_pending_builds/ci_running_builds` with the service
 - if the sharded service would be used we could consider a push model where each Pod pushes to CI/CD Daemon
   builds that should be picked by Runner

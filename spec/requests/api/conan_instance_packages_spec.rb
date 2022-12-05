@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ConanInstancePackages do
+RSpec.describe API::ConanInstancePackages, feature_category: :package_registry do
   let(:snowplow_gitlab_standard_context) { { user: user, project: project, namespace: project.namespace, property: 'i_package_conan_user' } }
 
   include_context 'conan api setup'

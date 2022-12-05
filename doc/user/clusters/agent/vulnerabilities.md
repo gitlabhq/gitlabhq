@@ -58,7 +58,7 @@ container_scanning:
 
 ## Enable via scan execution policies
 
-To enable scanning of all images within your Kubernetes cluster via scan execution poilicies, we can use the
+To enable scanning of all images within your Kubernetes cluster via scan execution policies, we can use the
 [scan execution policy editor](../../application_security/policies/scan-execution-policies.md#scan-execution-policy-editor)
 in order to create a new schedule rule.
 

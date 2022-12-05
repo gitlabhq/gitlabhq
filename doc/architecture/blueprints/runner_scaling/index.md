@@ -273,7 +273,7 @@ interfaces.
 
 Within the `docker+autoscaling` executor the [`machineExecutor`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/executors/docker/machine/machine.go#L19)
 type has a [`Machine`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/helpers/docker/machine.go#L7)
-interface which it uses to aquire a VM during the common [`Prepare`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/executors/docker/machine/machine.go#L71)
+interface which it uses to acquire a VM during the common [`Prepare`](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/267f40d871cd260dd063f7fbd36a921fedc62241/executors/docker/machine/machine.go#L71)
 phase. This abstraction primarily creates, accesses and deletes VMs.
 
 There is no current abstraction for the VM autoscaling logic. It is tightly
@@ -401,7 +401,7 @@ In order to make use of the new interface, the autoscaling logic is pulled
 out of the Docker Executor and placed into a new Taskscaler library.
 
 This places the concerns of VM lifecycle, VM shape and job routing within
-the plugin. It also places the conern of VM autoscaling into a separate
+the plugin. It also places the concern of VM autoscaling into a separate
 component so it can be used by multiple Runner Executors (not just `docker+autoscaling`).
 
 Rationale: [Description of the InstanceGroup / Fleeting proposal](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28848#note_823430883)

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'updating the container expiration policy attributes' do |mode:, from: {}, to:|
+RSpec.shared_examples 'updating the container expiration policy attributes' do |mode:, to:, from: {}|
   if mode == :create
     it 'creates a new container expiration policy' do
       expect { subject }

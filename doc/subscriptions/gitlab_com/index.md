@@ -465,7 +465,7 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
-### Unable to link subcription to namespace
+### Unable to link subscription to namespace
 
 If you cannot link a subscription to your namespace, ensure that you have the Owner role
 for that namespace.

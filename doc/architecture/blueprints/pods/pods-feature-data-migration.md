@@ -29,7 +29,7 @@ into smaller ones. This describes various approaches to provide this type of spl
 We also need to handle for cases where data is already violating the expected
 isolation constraints of Pods (ie. references cannot span multiple
 organizations). We know that existing features like linked issues allowed users
-to link issues across any projects regardless of their hierachy. There are many
+to link issues across any projects regardless of their hierarchy. There are many
 similar features. All of this data will need to be migrated in some way before
 it can be split across different pods. This may mean some data needs to be
 deleted, or the feature changed and modelled slightly differently before we can
@@ -66,7 +66,7 @@ physical replication, etc.
 1. The data of Pod 0 is live replicated to as many Pods it needs to be split.
 1. Once consensus is achieved between Pod 0 and N-Pods the organizations to be migrated away
    are marked as read-only cluster-wide.
-1. The `routes` is updated on for all organizations to be split to indicate an authorative
+1. The `routes` is updated on for all organizations to be split to indicate an authoritative
    Pod holding the most recent data, like `gitlab-org` on `pod-100`.
 1. The data for `gitlab-org` on Pod 0, and on other non-authoritative N-Pods are dormant
    and will be removed in the future.
