@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Display system header and footer bar' do
+RSpec.describe 'Display system header and footer bar', feature_category: :not_owned do
   let(:header_message) { "Foo" }
   let(:footer_message) { "Bar" }
 

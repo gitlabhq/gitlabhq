@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Broadcast Messages' do
+RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
   let_it_be(:user) { create(:user) }
 
   shared_examples 'a Broadcast Messages' do |type|

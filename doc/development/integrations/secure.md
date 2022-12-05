@@ -328,21 +328,6 @@ You can find the schemas for these scanners here:
 - [SAST](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/sast-report-format.json)
 - [Secret Detection](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/secret-detection-report-format.json)
 
-### Retention period for vulnerabilities
-
-GitLab has the following retention policies for vulnerabilities on non-default branches. Vulnerabilities are no longer available:
-
-- When the related CI job artifact expires.
-- 90 days after the pipeline is created, even if the related CI job artifacts are locked.
-
-To view vulnerabilities, either:
-
-- Run a new pipeline.
-- Download the related CI job artifacts if they are available.
-
-NOTE:
-This does not apply for the vulnerabilities existing on the default branch.
-
 ### Report validation
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351000) in GitLab 15.0.

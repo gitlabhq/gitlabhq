@@ -11,8 +11,6 @@ import Visibility from 'visibilityjs';
 import { mapActions } from 'vuex';
 import { n__, __, s__ } from '~/locale';
 
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-
 const makeInterval = (length = 0, unit = 's') => {
   const shortLabel = `${length}${unit}`;
   switch (unit) {
@@ -58,7 +56,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       refreshInterval: null,
@@ -66,12 +63,6 @@ export default {
     };
   },
   computed: {
-    disableMetricDashboardRefreshRate() {
-      // Can refresh rates impact performance?
-      // Add "negative" feature flag called `disable_metric_dashboard_refresh_rate`
-      // See more at: https://gitlab.com/gitlab-org/gitlab/-/issues/229831
-      return this.glFeatures.disableMetricDashboardRefreshRate;
-    },
     dropdownText() {
       return this.refreshInterval?.shortLabel ?? __('Off');
     },
@@ -156,12 +147,7 @@ export default {
       icon="retry"
       @click="refresh"
     />
-    <gl-dropdown
-      v-if="!disableMetricDashboardRefreshRate"
-      v-gl-tooltip
-      :title="s__('Metrics|Set refresh rate')"
-      :text="dropdownText"
-    >
+    <gl-dropdown v-gl-tooltip :title="s__('Metrics|Set refresh rate')" :text="dropdownText">
       <gl-dropdown-item
         is-check-item
         :is-checked="refreshInterval === null"

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "renders a `whats new` dropdown item" do
+RSpec.describe "renders a `whats new` dropdown item", feature_category: :not_owned do
   let_it_be(:user) { create(:user) }
 
   context 'when not logged in' do

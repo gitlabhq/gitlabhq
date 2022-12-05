@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Task Lists', :js do
+RSpec.describe 'Task Lists', :js, feature_category: :team_planning do
   include Warden::Test::Helpers
 
   let_it_be(:project) { create(:project, :public, :repository) }

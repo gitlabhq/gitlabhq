@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Milestone' do
+RSpec.describe 'Milestone', feature_category: :team_planning do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:user) { create(:user) }

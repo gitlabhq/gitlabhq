@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Sentry' do
+RSpec.describe 'Sentry', feature_category: :error_tracking do
   context 'when enable_new_sentry_clientside_integration is disabled' do
     before do
       stub_feature_flags(enable_new_sentry_clientside_integration: false)

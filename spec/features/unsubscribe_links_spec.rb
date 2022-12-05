@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Unsubscribe links', :sidekiq_inline do
+RSpec.describe 'Unsubscribe links', :sidekiq_inline, feature_category: :not_owned do
   include Warden::Test::Helpers
 
   let_it_be(:project) { create(:project, :public) }

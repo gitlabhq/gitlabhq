@@ -6,7 +6,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Using Helm charts to update a Kubernetes cluster (Alpha) **(FREE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371019) in GitLab 15.4.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371019) in GitLab 15.4.
+> - Specifying a branch, tag, or commit reference to fetch the Kubernetes manifest files [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4516) in GitLab 15.7.
 
 You can deploy Helm charts to your Kubernetes cluster and keep the resources in your cluster in sync
 with your charts and values. To do this, you use the pull-based GitOps features of the agent for
@@ -51,6 +52,8 @@ gitops:
     source:
       project:
         id: my-group/my-project-with-chart
+        ref:
+          branch: production
         path: dir-in-project/with/charts
     namespace: my-ns
     max_history: 1
@@ -68,6 +71,10 @@ gitops:
 | `max_history` | Optional. Maximum number of release [revisions to store in the cluster](https://helm.sh/docs/helm/helm_history/). |
 | `source` | Required. From where the chart should get installed. Only supports project sources. |
 | `source.project.id` | Required. ID of the project where Helm chart is committed. Authentication is not supported. |
+| `source.project.ref` | Optional. Git reference in the configured Git repository to fetch the Chart from. If not specified or empty, the default branch is used. If specified, it must contain either `branch`, `tag`, or `commit`. |
+| `source.project.ref.branch` | Branch name in the configured Git repository to fetch the Chart from. |
+| `source.project.ref.tag` | Tag name in the configured Git repository to fetch the Chart from. |
+| `source.project.ref.commit` | Commit SHA in the configured Git repository to fetch the Chart from. |
 | `source.project.path` | Optional. Path of the chart in the project repository. Root of the repository is used by default. Should be the directory with the `Chart.yaml` file. |
 
 ## Custom values

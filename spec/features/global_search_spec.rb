@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Global search', :js do
+RSpec.describe 'Global search', :js, feature_category: :global_search do
   include AfterNextHelpers
 
   let_it_be(:user) { create(:user) }

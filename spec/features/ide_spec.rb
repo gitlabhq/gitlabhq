@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'IDE', :js do
+RSpec.describe 'IDE', :js, feature_category: :web_ide do
   include WebIdeSpecHelpers
 
   let_it_be(:ide_iframe_selector) { '#ide iframe' }

@@ -17,7 +17,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
     el.id = ROOT_ELEMENT_ID;
     // why: We'll test that this class is removed later
-    el.classList.add('ide-loading');
+    el.classList.add('test-class');
     el.dataset.projectPath = TEST_PROJECT_PATH;
     el.dataset.cspNonce = TEST_NONCE;
     el.dataset.branchName = TEST_BRANCH_NAME;
@@ -41,6 +41,7 @@ describe('ide/init_gitlab_web_ide', () => {
   });
 
   it('calls start with element', () => {
+    expect(start).toHaveBeenCalledTimes(1);
     expect(start).toHaveBeenCalledWith(findRootElement(), {
       baseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
       projectPath: TEST_PROJECT_PATH,
@@ -53,8 +54,7 @@ describe('ide/init_gitlab_web_ide', () => {
   it('clears classes and data from root element', () => {
     const rootEl = findRootElement();
 
-    // why: Snapshot to test that `ide-loading` was removed and no other
-    //      artifacts are remaining.
+    // why: Snapshot to test that the element was cleaned including `test-class`
     expect(rootEl.outerHTML).toBe(
       '<div id="ide" class="gl--flex-center gl-relative gl-h-full"></div>',
     );

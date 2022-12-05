@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Abuse reports' do
+RSpec.describe 'Abuse reports', feature_category: :not_owned do
   let(:another_user) { create(:user) }
 
   before do

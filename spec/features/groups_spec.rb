@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group' do
+RSpec.describe 'Group', feature_category: :subgroups do
   let(:user) { create(:user) }
 
   before do

@@ -3,6 +3,7 @@
 module Gitlab
   module Cluster
     class RackTimeoutObserver
+      include ActionView::Helpers::SanitizeHelper
       TRANSITION_STATES = %i(ready active).freeze
 
       def initialize
@@ -28,9 +29,9 @@ module Gitlab
         params = controller_params(env) || grape_params(env) || {}
 
         {
-          controller: params['controller'],
-          action: params['action'],
-          route: params['route'],
+          controller: sanitize(params['controller']),
+          action: sanitize(params['action']),
+          route: sanitize(params['route']),
           state: info.state
         }
       end

@@ -759,6 +759,19 @@ describe('URL utility', () => {
     });
   });
 
+  describe('cleanEndingSeparator', () => {
+    it.each`
+      path            | expected
+      ${'foo/bar'}    | ${'foo/bar'}
+      ${'/foo/bar/'}  | ${'/foo/bar'}
+      ${'foo/bar//'}  | ${'foo/bar'}
+      ${'foo/bar/./'} | ${'foo/bar/.'}
+      ${''}           | ${''}
+    `('$path becomes $expected', ({ path, expected }) => {
+      expect(urlUtils.cleanEndingSeparator(path)).toBe(expected);
+    });
+  });
+
   describe('joinPaths', () => {
     it.each`
       paths                                       | expected

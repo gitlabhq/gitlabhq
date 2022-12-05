@@ -7,4 +7,5 @@
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
       = f.submit _('Save changes'), pajamas_button: true
-      = link_to _('Cancel'), admin_deploy_keys_path, class: 'btn gl-button btn-default btn-cancel'
+      = render Pajamas::ButtonComponent.new(href: admin_deploy_keys_path) do
+        = _('Cancel')

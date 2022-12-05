@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'read-only message' do
+RSpec.describe 'read-only message', feature_category: :database do
   let_it_be(:user) { create(:user) }
 
   before do

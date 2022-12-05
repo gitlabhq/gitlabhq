@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group or Project invitations', :aggregate_failures do
+RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_category: :experimentation_expansion do
   let_it_be(:owner) { create(:user, name: 'John Doe') }
   let_it_be(:group) { create(:group, name: 'Owned') }
   let_it_be(:project) { create(:project, :repository, namespace: group) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Contextual sidebar', :js do
+RSpec.describe 'Contextual sidebar', :js, feature_category: :remote_development do
   context 'when context is a project' do
     let_it_be(:project) { create(:project) }
 

@@ -37073,6 +37073,9 @@ msgstr ""
 msgid "SecurityReports|All activity"
 msgstr ""
 
+msgid "SecurityReports|All clusters"
+msgstr ""
+
 msgid "SecurityReports|All images"
 msgstr ""
 

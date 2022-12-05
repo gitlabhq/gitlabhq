@@ -73,5 +73,28 @@ RSpec.describe Gitlab::Cluster::RackTimeoutObserver do
         subject.callback.call(env)
       end
     end
+
+    context 'when request contains invalid string' do
+      let(:env) do
+        {
+          ::Rack::Timeout::ENV_INFO_KEY => double(state: :timed_out),
+          'action_dispatch.request.parameters' => {
+            'controller' => 'foo',
+            'action' => '\u003c',
+            'route' => '?8\u003c/x'
+          }
+        }
+      end
+
+      subject { described_class.new }
+
+      it 'sanitizes string' do
+        expect(counter)
+          .to receive(:increment)
+          .with({ controller: 'foo', action: '\\u003c', route: '?8\\u003c/x', state: :timed_out })
+
+        subject.callback.call(env)
+      end
+    end
   end
 end

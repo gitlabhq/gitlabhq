@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Runners' do
+RSpec.describe 'Runners', feature_category: :runner do
   let_it_be(:user) { create(:user) }
 
   before do

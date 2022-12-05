@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Triggers', :js do
+RSpec.describe 'Triggers', :js, feature_category: :continuous_integration do
   include Spec::Support::Helpers::ModalHelpers
 
   let(:trigger_title) { 'trigger desc' }

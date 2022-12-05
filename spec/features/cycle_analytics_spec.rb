@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Value Stream Analytics', :js do
+RSpec.describe 'Value Stream Analytics', :js, feature_category: :value_stream_management do
   include CycleAnalyticsHelpers
 
   let_it_be(:user) { create(:user) }

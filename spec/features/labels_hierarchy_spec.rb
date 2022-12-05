@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Labels Hierarchy', :js do
+RSpec.describe 'Labels Hierarchy', :js, feature_category: :team_planning do
   include FilteredSearchHelpers
 
   let!(:user) { create(:user) }
