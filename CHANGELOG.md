@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 15.6.2 (2022-12-05)
+
+### Added (1 change)
+
+- [Finalize group member namespace id migration](gitlab-org/gitlab@0b8ccad1c8c4066ffb594c8181bb1a68ddde7fdf) ([merge request](gitlab-org/gitlab!105804))
+
+### Fixed (4 changes)
+
+- [Conditionally disable fastupdate on GIN indexes (issues, merge_requests)](gitlab-org/gitlab@302bea06dedf5939dcb618be945bbbb85fb4dd45) ([merge request](gitlab-org/gitlab!105804))
+- [Hide marketing-related entries](gitlab-org/gitlab@628fb55b6d32d5f4739e07cbd3c60de69246107b) ([merge request](gitlab-org/gitlab!105804))
+- [Fix memory limit for RssMemoryLimit monitor](gitlab-org/gitlab@4c040620cb5c84043d30587f95b4c2fc6149a3ed) ([merge request](gitlab-org/gitlab!105804))
+- [Fix deleting protected branch](gitlab-org/gitlab@2c884c5162ca24dbc3fd3d1c156f426f81565800) ([merge request](gitlab-org/gitlab!105804))
+
 ## 15.6.1 (2022-11-30)
 
 ### Fixed (1 change)
