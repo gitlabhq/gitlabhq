@@ -190,15 +190,56 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
   describe 'GET /job/allowed_agents' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:group_agent) { create(:cluster_agent, project: create(:project, group: group)) }
-    let_it_be(:group_authorization) { create(:agent_group_authorization, agent: group_agent, group: group) }
-    let_it_be(:project_agent) { create(:cluster_agent, project: project) }
 
-    before(:all) do
-      project.update!(group: group_authorization.group)
+    # create a different project for the group agents to reference
+    # otherwise the AgentAuthorizationsFinder will pick up the project.cluster_agents' implicit authorizations
+    let_it_be(:other_project) { create(:project, group: group) }
+
+    let_it_be(:agent_authorizations_without_env) do
+      [
+        create(:agent_group_authorization, agent: create(:cluster_agent, project: other_project), group: group),
+        create(:agent_project_authorization, agent: create(:cluster_agent, project: project), project: project),
+        Clusters::Agents::ImplicitAuthorization.new(agent: create(:cluster_agent, project: project))
+      ]
     end
 
-    let(:implicit_authorization) { Clusters::Agents::ImplicitAuthorization.new(agent: project_agent) }
+    let_it_be(:agent_authorizations_with_review_and_production_env) do
+      [
+        create(
+          :agent_group_authorization,
+          agent: create(:cluster_agent, project: other_project),
+          group: group,
+          environments: ['production', 'review/*']
+        ),
+        create(
+          :agent_project_authorization,
+          agent: create(:cluster_agent, project: project),
+          project: project,
+          environments: ['production', 'review/*']
+        )
+      ]
+    end
+
+    let_it_be(:agent_authorizations_with_staging_env) do
+      [
+        create(
+          :agent_group_authorization,
+          agent: create(:cluster_agent, project: other_project),
+          group: group,
+          environments: ['staging']
+        ),
+        create(
+          :agent_project_authorization,
+          agent: create(:cluster_agent, project: project),
+          project: project,
+          environments: ['staging']
+        )
+      ]
+    end
+
+    before(:all) do
+      project.update!(group: group)
+    end
 
     let(:headers) { { API::Ci::Helpers::Runner::JOB_TOKEN_HEADER => job.token } }
     let(:job) { create(:ci_build, :artifacts, pipeline: pipeline, user: api_user, status: job_status) }
@@ -215,30 +256,46 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
 
     context 'when token is valid and user is authorized' do
       shared_examples_for 'valid allowed_agents request' do
-        it 'returns agent info', :aggregate_failures do
+        it 'returns the job info', :aggregate_failures do
           expect(response).to have_gitlab_http_status(:ok)
 
           expect(json_response.dig('job', 'id')).to eq(job.id)
           expect(json_response.dig('pipeline', 'id')).to eq(job.pipeline_id)
           expect(json_response.dig('project', 'id')).to eq(job.project_id)
-          expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group_authorization.group.id }])
+          expect(json_response.dig('project', 'groups')).to match_array([{ 'id' => group.id }])
           expect(json_response.dig('user', 'id')).to eq(api_user.id)
           expect(json_response.dig('user', 'username')).to eq(api_user.username)
           expect(json_response.dig('user', 'roles_in_project')).to match_array %w(guest reporter developer)
           expect(json_response).not_to include('environment')
-          expect(json_response['allowed_agents']).to match_array(
-            [
-              {
-                'id' => implicit_authorization.agent_id,
-                'config_project' => hash_including('id' => implicit_authorization.agent.project_id),
-                'configuration' => implicit_authorization.config
-              },
-              {
-                'id' => group_authorization.agent_id,
-                'config_project' => hash_including('id' => group_authorization.agent.project_id),
-                'configuration' => group_authorization.config
-              }
-            ])
+        end
+
+        it 'returns the agents allowed for the job' do
+          expected_allowed_agents = agent_authorizations_without_env.map do |agent_auth|
+            {
+              'id' => agent_auth.agent_id,
+              'config_project' => hash_including('id' => agent_auth.agent.project_id),
+              'configuration' => agent_auth.config
+            }
+          end
+
+          expect(json_response['allowed_agents']).to match_array expected_allowed_agents
+        end
+      end
+
+      shared_examples_for 'valid allowed_agents request for a job with environment' do
+        it 'return the agents configured for the given environment' do
+          expected_allowed_agents = (
+            agent_authorizations_without_env +
+            agent_authorizations_with_review_and_production_env
+          ).map do |agent_auth|
+            {
+              'id' => agent_auth.agent_id,
+              'config_project' => hash_including('id' => agent_auth.agent.project_id),
+              'configuration' => agent_auth.config
+            }
+          end
+
+          expect(json_response['allowed_agents']).to match_array(expected_allowed_agents)
         end
       end
 
@@ -254,21 +311,25 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
         it 'includes environment tier' do
           expect(json_response.dig('environment', 'tier')).to eq('production')
         end
+
+        it_behaves_like 'valid allowed_agents request for a job with environment'
       end
 
       context 'when non-deployment environment action' do
         let(:job) do
-          create(:environment, name: 'review', project_id: project.id)
-          create(:ci_build, :artifacts, :stop_review_app, environment: 'review', pipeline: pipeline, user: api_user, status: job_status)
+          create(:environment, name: 'review/123', project_id: project.id)
+          create(:ci_build, :artifacts, :stop_review_app, environment: 'review/123', pipeline: pipeline, user: api_user, status: job_status)
         end
 
         it 'includes environment slug' do
-          expect(json_response.dig('environment', 'slug')).to eq('review')
+          expect(json_response.dig('environment', 'slug')).to match('review-123-.*')
         end
 
         it 'includes environment tier' do
           expect(json_response.dig('environment', 'tier')).to eq('development')
         end
+
+        it_behaves_like 'valid allowed_agents request for a job with environment'
       end
 
       context 'when passing the token as params' do

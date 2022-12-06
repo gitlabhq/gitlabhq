@@ -30,15 +30,15 @@ module ProductAnalyticsTracking
   def route_events_to(destinations, name, &block)
     track_unique_redis_hll_event(name, &block) if destinations.include?(:redis_hll)
 
-    if destinations.include?(:snowplow) && event_enabled?(name)
-      Gitlab::Tracking.event(
-        self.class.to_s,
-        name,
-        namespace: tracking_namespace_source,
-        user: current_user,
-        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: name).to_context]
-      )
-    end
+    return unless destinations.include?(:snowplow) && event_enabled?(name)
+
+    Gitlab::Tracking.event(
+      self.class.to_s,
+      name,
+      namespace: tracking_namespace_source,
+      user: current_user,
+      context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: name).to_context]
+    )
   end
 
   def route_custom_events_to(destinations, name, action, label, &block)

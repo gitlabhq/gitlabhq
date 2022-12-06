@@ -1,4 +1,4 @@
-import { createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -8,8 +8,7 @@ import JobRetryButton from '~/jobs/components/job/sidebar/job_sidebar_retry_butt
 import getJobQuery from '~/jobs/components/job/graphql/queries/get_job.query.graphql';
 import { mockFullPath, mockId, mockJobResponse } from './mock_data';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 const defaultProvide = {
   projectPath: mockFullPath,
@@ -17,8 +16,6 @@ const defaultProvide = {
 
 describe('Sidebar Header', () => {
   let wrapper;
-  let mockApollo;
-  let getJobQueryResponse;
 
   const createComponent = ({ options = {}, props = {}, restJob = {} } = {}) => {
     wrapper = shallowMountExtended(SidebarHeader, {
@@ -35,13 +32,14 @@ describe('Sidebar Header', () => {
   };
 
   const createComponentWithApollo = async ({ props = {}, restJob = {} } = {}) => {
+    const getJobQueryResponse = jest.fn().mockResolvedValue(mockJobResponse);
+
     const requestHandlers = [[getJobQuery, getJobQueryResponse]];
 
-    mockApollo = createMockApollo(requestHandlers);
+    const apolloProvider = createMockApollo(requestHandlers);
 
     const options = {
-      localVue,
-      apolloProvider: mockApollo,
+      apolloProvider,
     };
 
     createComponent({
@@ -58,19 +56,7 @@ describe('Sidebar Header', () => {
   const findJobName = () => wrapper.findByTestId('job-name');
   const findRetryButton = () => wrapper.findComponent(JobRetryButton);
 
-  beforeEach(async () => {
-    getJobQueryResponse = jest.fn();
-  });
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
-
   describe('when rendering contents', () => {
-    beforeEach(async () => {
-      getJobQueryResponse.mockResolvedValue(mockJobResponse);
-    });
-
     it('renders the correct job name', async () => {
       await createComponentWithApollo();
       expect(findJobName().text()).toBe(mockJobResponse.data.project.job.name);

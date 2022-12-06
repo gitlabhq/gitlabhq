@@ -10,7 +10,7 @@ type: reference
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/47063) in GitLab 12.2.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/206902) in GitLab 12.10.
 
-A [directed acyclic graph](https://www.techopedia.com/definition/5739/directed-acyclic-graph-dag) can be
+A [directed acyclic graph](https://en.wikipedia.org/wiki/Directed_acyclic_graph) can be
 used in the context of a CI/CD pipeline to build relationships between jobs such that
 execution is performed in the quickest possible manner, regardless how stages may
 be set up.

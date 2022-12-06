@@ -82,13 +82,15 @@ To enable Secret Detection, either:
 
 - Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes [Auto Secret Detection](../../../topics/autodevops/stages.md#auto-secret-detection).
 
-- [Enable Secret Detection by including the template](#enable-secret-detection-by-including-the-template).
+- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlabciyml-file-manually). Use this method if
+  your `.gitlab-ci.yml` file is complex.
 
-- [Enable Secret Detection using a merge request](#enable-secret-detection-using-a-merge-request).
+- [Use an automatically configured merge request](#use-an-automatically-configured-merge-request).
 
-### Enable Secret Detection by including the template
+### Edit the `.gitlab.ci.yml` file manually
 
-Use this method if you have an existing GitLab CI/CD configuration file.
+This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
+your GitLab CI/CD configuration file is complex.
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **CI/CD > Editor**.
@@ -102,31 +104,35 @@ Use this method if you have an existing GitLab CI/CD configuration file.
 1. Select the **Validate** tab, then select **Validate pipeline**.
    The message **Simulation completed successfully** indicates the file is valid.
 1. Select the **Edit** tab.
-1. Optional. In **Commit message**, customize the commit message.
+1. Optional. In the **Commit message** text box, customize the commit message.
+1. In the **Branch** text box, enter the name of the default branch.
 1. Select **Commit changes**.
 
-Pipelines now include a Secret Detection job, and the results are included in the merge request
-widget.
+Pipelines now include a Secret Detection job.
 
-### Enable Secret Detection using a merge request
+### Use an automatically configured merge request
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4496) in GitLab 13.11, deployed behind a feature flag, enabled by default.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/329886) in GitLab 14.1.
 
+This method automatically prepares a merge request, with the Secret Detection template included in
+the `.gitlab-ci.yml` file. You then merge the merge request to enable Secret Detection.
+
 NOTE:
 This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
 file. If you have a complex GitLab configuration file it may not be parsed successfully, and an
-error may occur.
+error may occur. In that case, use the [manual](#edit-the-gitlabciyml-file-manually) method instead.
 
-To enable Secret Detection using a merge request:
+To enable Secret Detection automatically:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
 1. In the **Secret Detection** row, select **Configure with a merge request**.
+1. Optional. Complete the fields.
+1. Select **Create merge request**.
 1. Review and merge the merge request.
 
-Pipelines now include a Secret Detection job, and the results are included in the merge request
-widget.
+Pipelines now include a Secret Detection job.
 
 ## Responding to a leaked secret
 

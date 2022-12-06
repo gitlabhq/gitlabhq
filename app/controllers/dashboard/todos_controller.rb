@@ -64,19 +64,19 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   def authorize_read_project!
     project_id = params[:project_id]
 
-    if project_id.present?
-      project = Project.find(project_id)
-      render_404 unless can?(current_user, :read_project, project)
-    end
+    return unless project_id.present?
+
+    project = Project.find(project_id)
+    render_404 unless can?(current_user, :read_project, project)
   end
 
   def authorize_read_group!
     group_id = params[:group_id]
 
-    if group_id.present?
-      group = Group.find(group_id)
-      render_404 unless can?(current_user, :read_group, group)
-    end
+    return unless group_id.present?
+
+    group = Group.find(group_id)
+    render_404 unless can?(current_user, :read_group, group)
   end
 
   def find_todos

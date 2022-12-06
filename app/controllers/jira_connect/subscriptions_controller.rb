@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
+  ALLOWED_IFRAME_ANCESTORS = [:self, 'https://*.atlassian.net', 'https://*.jira.com'].freeze
   layout 'jira_connect'
 
   content_security_policy do |p|
@@ -13,7 +14,7 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
     # *.jira.com is needed for some legacy Jira Cloud instances, new ones will use *.atlassian.net
     # https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/
-    p.frame_ancestors :self, 'https://*.atlassian.net', 'https://*.jira.com'
+    p.frame_ancestors(*(ALLOWED_IFRAME_ANCESTORS + Gitlab.config.jira_connect.additional_iframe_ancestors))
     p.script_src(*script_src_values)
     p.style_src(*style_src_values)
   end

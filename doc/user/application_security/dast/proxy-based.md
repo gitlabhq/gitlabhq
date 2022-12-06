@@ -493,7 +493,7 @@ From the **On-demand scans** page you can:
 - Cancel (**{cancel}**) a pending or running on-demand scan.
 - Retry (**{retry}**) a scan that failed, or succeeded with warnings.
 - [Edit](#edit-an-on-demand-scan) (**{pencil}**) an on-demand scan's settings.
-- [Delete](#delete-an-on-demand-scan) a on-demand scan.
+- [Delete](#delete-an-on-demand-scan) an on-demand scan.
 
 ### Run an on-demand DAST scan
 
@@ -576,32 +576,32 @@ To schedule a scan:
 1. To run the on-demand scan immediately, select **Save and run scan**. To [run](#run-a-saved-on-demand-scan) it according to the schedule you set, select
    **Save scan**.
 
-#### View details of an on-demand scan
+### View details of an on-demand scan
 
 To view details of an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. From your project's home page, go to **Security & Compliance > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 
-#### Edit an on-demand scan
+### Edit an on-demand scan
 
 To edit an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. From your project's home page, go to **Security & Compliance > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Edit**.
 1. Edit the form.
 1. Select **Save scan**.
 
-#### Delete an on-demand scan
+### Delete an on-demand scan
 
 To delete an on-demand scan:
 
-1. From your project's home page, go to **Security & Compliance > On-demand Scans**.
+1. From your project's home page, go to **Security & Compliance > On-demand scans**.
 1. Select the **Scan library** tab.
 1. In the saved scan's row select **More actions** (**{ellipsis_v}**), then select **Delete**.
-1. Select **Delete** to confirm the deletion.
+1. On the confirmation dialog, select **Delete**.
 
 ## Site profile
 

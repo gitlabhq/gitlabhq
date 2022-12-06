@@ -73,11 +73,11 @@ module UploadsActions
   def set_request_format_from_path_extension
     path = request.headers['action_dispatch.original_path'] || request.headers['PATH_INFO']
 
-    if match = path&.match(/\.(\w+)\z/)
-      format = Mime[match.captures.first]
+    return unless match = path&.match(/\.(\w+)\z/)
 
-      request.format = format.symbol if format
-    end
+    format = Mime[match.captures.first]
+
+    request.format = format.symbol if format
   end
 
   def content_disposition

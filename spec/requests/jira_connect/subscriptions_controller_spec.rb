@@ -19,7 +19,7 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
     end
 
     subject(:content_security_policy) do
-      get path, params: params
+      get path, params: params, headers: cors_request_headers
 
       response.headers['Content-Security-Policy']
     end
@@ -27,6 +27,17 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
     it { is_expected.to include('http://self-managed-gitlab.com/-/jira_connect/') }
     it { is_expected.to include('http://self-managed-gitlab.com/api/') }
     it { is_expected.to include('http://self-managed-gitlab.com/oauth/') }
+    it { is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com') }
+
+    context 'with additional iframe ancestors' do
+      before do
+        allow(Gitlab.config.jira_connect).to receive(:additional_iframe_ancestors).and_return(['http://localhost:*', 'http://dev.gitlab.com'])
+      end
+
+      it {
+        is_expected.to include('frame-ancestors \'self\' https://*.atlassian.net https://*.jira.com http://localhost:* http://dev.gitlab.com')
+      }
+    end
 
     context 'with no self-managed instance configured' do
       let_it_be(:installation) { create(:jira_connect_installation, instance_url: '') }

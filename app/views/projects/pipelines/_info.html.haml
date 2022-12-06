@@ -1,6 +1,7 @@
 - if Feature.enabled?(:pipeline_name, @pipeline.project) && @pipeline.name
-  %h3
-    = @pipeline.name
+  .gl-border-t.gl-p-5.gl-px-0
+    %h3.gl-m-0.gl-text-body
+      = @pipeline.name
 - else
   .commit-box
     %h3.commit-title

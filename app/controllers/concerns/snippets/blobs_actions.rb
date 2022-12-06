@@ -39,11 +39,11 @@ module Snippets::BlobsActions
   end
 
   def ensure_repository
-    unless snippet.repo_exists?
-      Gitlab::AppLogger.error(message: "Snippet raw blob attempt with no repo", snippet: snippet.id)
+    return if snippet.repo_exists?
 
-      respond_422
-    end
+    Gitlab::AppLogger.error(message: "Snippet raw blob attempt with no repo", snippet: snippet.id)
+
+    respond_422
   end
 
   def snippet_id

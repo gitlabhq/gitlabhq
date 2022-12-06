@@ -41,6 +41,12 @@ RSpec.describe Ci::PipelineSchedule do
       expect(pipeline_schedule).not_to be_valid
     end
 
+    it 'does not allow empty variable key' do
+      pipeline_schedule = build(:ci_pipeline_schedule, variables_attributes: [{ secret_value: 'test_value' }] )
+
+      expect(pipeline_schedule).not_to be_valid
+    end
+
     context 'when active is false' do
       it 'does not allow nullified ref' do
         pipeline_schedule = build(:ci_pipeline_schedule, :inactive, ref: nil)

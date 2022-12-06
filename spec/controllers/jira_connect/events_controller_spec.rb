@@ -125,6 +125,36 @@ RSpec.describe JiraConnect::EventsController do
         end
       end
     end
+
+    shared_examples 'generates JWT validation claims' do
+      specify do
+        expect_next_instance_of(Atlassian::JiraConnect::Jwt::Asymmetric, anything, expected_claims) do |asymmetric_jwt|
+          allow(asymmetric_jwt).to receive(:valid?).and_return(true)
+        end
+
+        subject
+      end
+    end
+
+    context 'when enforce_jira_base_url_https' do
+      before do
+        allow(Gitlab.config.jira_connect).to receive(:enforce_jira_base_url_https).and_return(true)
+      end
+
+      let(:expected_claims) { { aud: "https://test.host/-/jira_connect", iss: anything, qsh: anything } }
+
+      it_behaves_like 'generates JWT validation claims'
+    end
+
+    context 'when not enforce_jira_base_url_https' do
+      before do
+        allow(Gitlab.config.jira_connect).to receive(:enforce_jira_base_url_https).and_return(false)
+      end
+
+      let(:expected_claims) { { aud: "http://test.host/-/jira_connect", iss: anything, qsh: anything } }
+
+      it_behaves_like 'generates JWT validation claims'
+    end
   end
 
   describe '#uninstalled' do

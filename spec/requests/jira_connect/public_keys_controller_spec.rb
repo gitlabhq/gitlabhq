@@ -4,12 +4,12 @@ require 'spec_helper'
 
 RSpec.describe JiraConnect::PublicKeysController, feature_category: :integrations do
   describe 'GET /-/jira_connect/public_keys/:uuid' do
-    before do
-      allow(Gitlab).to receive(:com?).and_return(dot_com)
-    end
-
     let(:uuid) { non_existing_record_id }
-    let(:dot_com) { true }
+    let(:public_key_storage_enabled) { true }
+
+    before do
+      allow(Gitlab.config.jira_connect).to receive(:enable_public_keys_storage).and_return(public_key_storage_enabled)
+    end
 
     it 'renders 404' do
       get jira_connect_public_key_path(id: uuid)
@@ -29,8 +29,8 @@ RSpec.describe JiraConnect::PublicKeysController, feature_category: :integration
         expect(response.body).to eq(public_key.key)
       end
 
-      context 'when not on GitLab.com' do
-        let(:dot_com) { false }
+      context 'when public key storage disabled' do
+        let(:public_key_storage_enabled) { false }
 
         it 'renders 404' do
           get jira_connect_public_key_path(id: uuid)

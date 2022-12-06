@@ -437,6 +437,8 @@ module API
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
+                              desc: 'Scope of usage for the SSH key'
       end
       # rubocop: disable CodeReuse/ActiveRecord
       post ":user_id/keys", feature_category: :authentication_and_authorization do
@@ -1050,6 +1052,8 @@ module API
         requires :key, type: String, desc: 'The new SSH key'
         requires :title, type: String, desc: 'The title of the new SSH key'
         optional :expires_at, type: DateTime, desc: 'The expiration date of the SSH key in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ)'
+        optional :usage_type, type: String, values: Key.usage_types.keys, default: 'auth_and_signing',
+                              desc: 'Scope of usage for the SSH key'
       end
       post "keys", feature_category: :authentication_and_authorization do
         key = ::Keys::CreateService.new(current_user, declared_params(include_missing: false)).execute

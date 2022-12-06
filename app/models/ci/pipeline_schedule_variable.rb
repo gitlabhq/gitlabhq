@@ -9,6 +9,6 @@ module Ci
 
     alias_attribute :secret_value, :value
 
-    validates :key, uniqueness: { scope: :pipeline_schedule_id }
+    validates :key, presence: true, uniqueness: { scope: :pipeline_schedule_id }
   end
 end

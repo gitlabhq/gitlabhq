@@ -673,22 +673,6 @@ To copy the issue's email address:
 1. Go to the issue.
 1. On the right sidebar, next to **Issue email**, select **Copy Reference** (**{copy-to-clipboard}**).
 
-## Real-time sidebar
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 13.3. Disabled by default.
-> - [Enabled on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/3413) in GitLab 13.9.
-> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.5.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/17589) in GitLab 14.9. Feature flags `real_time_issue_sidebar` and `broadcast_issue_updates` removed.
-
-Some sections of the right sidebar are updated in real time.
-When you're viewing an issue and somebody changes one of the values,
-you can see the change without having to refresh the page.
-
-The following sections are updated in real time:
-
-- [Assignee](#assignee)
-- [Labels](../labels.md#assign-and-unassign-labels)
-
 ## Assignee
 
 An issue can be assigned to one or [more users](multiple_assignees_for_issues.md).
@@ -706,6 +690,8 @@ To change the assignee on an issue:
 1. On the right sidebar, in the **Assignee** section, select **Edit**.
 1. From the dropdown list, select the user to add as an assignee.
 1. Select any area outside the dropdown list.
+
+The assignee is changed without having to refresh the page.
 
 ## Similar issues
 
