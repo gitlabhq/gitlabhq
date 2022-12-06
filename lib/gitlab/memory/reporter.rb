@@ -16,6 +16,8 @@ module Gitlab
       end
 
       def run_report(report)
+        return false unless report.active?
+
         @logger.info(
           log_labels(
             message: 'started',
@@ -65,13 +67,31 @@ module Gitlab
         report_file = file_name(report)
         tmp_file_path = File.join(tmp_dir, report_file)
 
-        File.open(tmp_file_path, 'wb') do |io|
-          report.run(io)
+        io_r, io_w = IO.pipe
+        pid = nil
+        File.open(tmp_file_path, 'wb') do |file|
+          extras = {
+            in: io_r,
+            out: file,
+            err: $stderr
+          }
+          pid = Process.spawn('gzip', '--fast', **extras)
+          io_r.close
+
+          report.run(io_w)
+          io_w.close
+
+          Process.waitpid(pid)
         end
 
         File.join(@reports_path, report_file).tap do |report_file_path|
           FileUtils.mv(tmp_file_path, report_file_path)
         end
+      ensure
+        [io_r, io_w].each(&:close)
+
+        # Make sure we don't leave any running processes behind.
+        Gitlab::ProcessManagement.signal(pid, :KILL) if pid
       end
 
       def log_labels(**extra_labels)
@@ -87,7 +107,7 @@ module Gitlab
 
         report_id = [@worker_id, @worker_uuid].join(".")
 
-        [report.name, timestamp, report_id].reject(&:blank?).join('.')
+        [report.name, timestamp, report_id, 'gz'].compact_blank.join('.')
       end
 
       def file_size(file_path)

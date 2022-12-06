@@ -26938,6 +26938,9 @@ msgstr ""
 msgid "NamespaceStorage|Buy more storage"
 msgstr ""
 
+msgid "NamespaceStorage|Uploads are not counted in namespace storage quotas."
+msgstr ""
+
 msgid "NamespaceStorage|We recommend that you buy additional storage to ensure your service is not interrupted."
 msgstr ""
 
@@ -29468,6 +29471,9 @@ msgid "PackageRegistry|npm"
 msgstr ""
 
 msgid "PackageRegistry|published by %{author}"
+msgstr ""
+
+msgid "Packages"
 msgstr ""
 
 msgid "Packages and registries"
@@ -40241,9 +40247,6 @@ msgstr ""
 msgid "Switch branch/tag"
 msgstr ""
 
-msgid "Switch editors"
-msgstr ""
-
 msgid "Switch to GitLab Next"
 msgstr ""
 
@@ -44092,6 +44095,9 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
+msgid "Uploads"
+msgstr ""
+
 msgid "Upstream"
 msgstr ""
 
@@ -45978,9 +45984,6 @@ msgstr ""
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr ""
 
-msgid "WebIDE|Are you sure you want to switch editors? You will lose any unsaved changes."
-msgstr ""
-
 msgid "WebIDE|Fork project"
 msgstr ""
 
@@ -45996,22 +45999,10 @@ msgstr ""
 msgid "WebIDE|Quickly and easily edit multiple files in your project. Press . to open"
 msgstr ""
 
-msgid "WebIDE|Ready for something new?"
-msgstr ""
-
-msgid "WebIDE|Something went wrong while updating the user preferences. Please see developer console for details."
-msgstr ""
-
-msgid "WebIDE|Switch to new Web IDE"
-msgstr ""
-
 msgid "WebIDE|This project does not accept unsigned commits."
 msgstr ""
 
 msgid "WebIDE|This project does not accept unsigned commits. You can’t commit changes through the Web IDE."
-msgstr ""
-
-msgid "WebIDE|You are invited to experience the new Web IDE."
 msgstr ""
 
 msgid "WebIDE|You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."

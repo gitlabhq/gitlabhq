@@ -99,7 +99,7 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
       expect { described_class.new }.to raise_error ArgumentError
     end
 
-    it 'works' do
+    it 'returns an instance of Gitlab::Auth::Ldap::Config' do
       expect(config).to be_a described_class
     end
 

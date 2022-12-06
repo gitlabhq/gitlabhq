@@ -156,7 +156,6 @@ module UsageDataHelpers
            'direct_upload' => true,
            'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => false,
            'proxy_download' => false } }
       )
 
@@ -171,7 +170,6 @@ module UsageDataHelpers
            'direct_upload' => true,
            'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => false,
            'proxy_download' => false } }
       )
     allow(Settings).to receive(:[]).with('uploads')
@@ -182,7 +180,6 @@ module UsageDataHelpers
             'direct_upload' => true,
             'connection' =>
           { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-            'background_upload' => false,
             'proxy_download' => false } }
       )
     allow(Settings).to receive(:[]).with('packages')
@@ -194,7 +191,6 @@ module UsageDataHelpers
            'direct_upload' => false,
            'connection' =>
          { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-           'background_upload' => true,
            'proxy_download' => false } }
       )
   end

@@ -15,6 +15,13 @@ RSpec.describe Gitlab::Memory::Reports::HeapDump do
     end
   end
 
+  describe '#active?' do
+    # This will be enabled once https://gitlab.com/gitlab-org/gitlab/-/issues/370077 is done.
+    it 'is false' do
+      expect(report).not_to be_active
+    end
+  end
+
   describe '#run' do
     subject(:run) { report.run(writer) }
 

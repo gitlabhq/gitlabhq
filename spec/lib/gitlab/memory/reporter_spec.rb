@@ -2,11 +2,15 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures do
+RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures, feature_category: :application_performance do
   let(:fake_report) do
     Class.new do
       def name
         'fake_report'
+      end
+
+      def active?
+        true
       end
 
       def run(writer)
@@ -25,7 +29,10 @@ RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures do
   describe '#run_report', time_travel_to: '2020-02-02 10:30:45 0000' do
     let(:report_duration_counter) { instance_double(::Prometheus::Client::Counter) }
     let(:file_size) { 1_000_000 }
-    let(:report_file) { "#{reports_path}/fake_report.2020-02-02.10:30:45:000.worker_1.abc123" }
+    let(:report_file) { "#{reports_path}/fake_report.2020-02-02.10:30:45:000.worker_1.abc123.gz" }
+
+    let(:input) { StringIO.new }
+    let(:output) { StringIO.new }
 
     before do
       allow(SecureRandom).to receive(:uuid).and_return('abc123')
@@ -37,13 +44,22 @@ RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures do
       allow(File).to receive(:size).with(report_file).and_return(file_size)
 
       allow(logger).to receive(:info)
+
+      stub_gzip
     end
 
     shared_examples 'runs and stores reports' do
       it 'runs the given report and returns true' do
         expect(reporter.run_report(report)).to be(true)
 
-        expect(File.read(report_file)).to eq('I ran')
+        expect(output.string).to eq('I ran')
+      end
+
+      it 'closes read and write streams' do
+        expect(input).to receive(:close).ordered.at_least(:once)
+        expect(output).to receive(:close).ordered.at_least(:once)
+
+        reporter.run_report(report)
       end
 
       it 'logs start and finish event' do
@@ -108,6 +124,38 @@ RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures do
 
           expect(reporter.run_report(report)).to be(false)
         end
+
+        it 'closes read and write streams' do
+          allow(logger).to receive(:info)
+          allow(logger).to receive(:error)
+
+          expect(input).to receive(:close).ordered.at_least(:once)
+          expect(output).to receive(:close).ordered.at_least(:once)
+
+          reporter.run_report(report)
+        end
+
+        context 'when compression process is still running' do
+          it 'terminates the process' do
+            allow(logger).to receive(:info)
+            allow(logger).to receive(:error)
+
+            expect(Gitlab::ProcessManagement).to receive(:signal).with(an_instance_of(Integer), :KILL)
+
+            reporter.run_report(report)
+          end
+        end
+      end
+
+      context 'when a report is disabled' do
+        it 'does nothing and returns false' do
+          expect(report).to receive(:active?).and_return(false)
+          expect(report).not_to receive(:run)
+          expect(logger).not_to receive(:info)
+          expect(report_duration_counter).not_to receive(:increment)
+
+          reporter.run_report(report)
+        end
       end
     end
 
@@ -142,5 +190,17 @@ RSpec.describe Gitlab::Memory::Reporter, :aggregate_failures do
 
       it_behaves_like 'runs and stores reports'
     end
+  end
+
+  # We need to stub out the call into gzip. We do this by intercepting the write
+  # end of the pipe and replacing it with a StringIO instead, which we can
+  # easily inspect for contents.
+  def stub_gzip
+    pid = 42
+    allow(IO).to receive(:pipe).and_return([input, output])
+    allow(Process).to receive(:spawn).with(
+      "gzip", "--fast", in: input, out: an_instance_of(File), err: an_instance_of(IO)
+    ).and_return(pid)
+    allow(Process).to receive(:waitpid).with(pid)
   end
 end

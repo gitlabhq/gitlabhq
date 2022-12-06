@@ -73,7 +73,6 @@ export const initLegacyWebIDE = (el, options = {}) => {
         codesandboxBundlerUrl: el.dataset.codesandboxBundlerUrl,
         environmentsGuidanceAlertDismissed: !parseBoolean(el.dataset.enableEnvironmentsGuidance),
         previewMarkdownPath: el.dataset.previewMarkdownPath,
-        canUseNewWebIde: parseBoolean(el.dataset.canUseNewWebIde),
         userPreferencesPath: el.dataset.userPreferencesPath,
       });
     },

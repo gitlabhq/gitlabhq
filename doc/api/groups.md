@@ -1361,25 +1361,25 @@ PUT /groups/:id/hooks/:hook_id
 
 | Attribute                    | Type           | Required | Description |
 | ---------------------------- | -------------- | -------- | ----------- |
-| `id`                         | integer/string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding) |
-| `hook_id`                    | integer        | yes      | The ID of the group hook |
-| `url`                        | string         | yes      | The hook URL |
-| `push_events`                | boolean        | no       | Trigger hook on push events |
+| `id`                         | integer or string | yes      | The ID or [URL-encoded path of the group](index.md#namespaced-path-encoding). |
+| `hook_id`                    | integer        | yes      | The ID of the group hook. |
+| `url`                        | string         | yes      | The hook URL. |
+| `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | No       | Trigger hook on push events for matching branches only. |
-| `issues_events`              | boolean        | no       | Trigger hook on issues events |
-| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
-| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
-| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events |
-| `note_events`                | boolean        | no       | Trigger hook on note events |
-| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events |
-| `job_events`                 | boolean        | no       | Trigger hook on job events |
-| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events |
-| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events |
-| `deployment_events`          | boolean        | no       | Trigger hook on deployment events |
-| `releases_events`            | boolean        | no       | Trigger hook on release events |
-| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events |
-| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook |
-| `token`                      | string         | no       | Secret token to validate received payloads; not returned in the response |
+| `issues_events`              | boolean        | no       | Trigger hook on issues events. |
+| `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
+| `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
+| `tag_push_events`            | boolean        | no       | Trigger hook on tag push events. |
+| `note_events`                | boolean        | no       | Trigger hook on note events. |
+| `confidential_note_events`   | boolean        | no       | Trigger hook on confidential note events. |
+| `job_events`                 | boolean        | no       | Trigger hook on job events. |
+| `pipeline_events`            | boolean        | no       | Trigger hook on pipeline events. |
+| `wiki_page_events`           | boolean        | no       | Trigger hook on wiki page events. |
+| `deployment_events`          | boolean        | no       | Trigger hook on deployment events. |
+| `releases_events`            | boolean        | no       | Trigger hook on release events. |
+| `subgroup_events`            | boolean        | no       | Trigger hook on subgroup events. |
+| `enable_ssl_verification`    | boolean        | no       | Do SSL verification when triggering the hook. |
+| `token`                      | string         | no       | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 
 ### Delete group hook
 

@@ -61,7 +61,6 @@ export const leftSidebarViews = {
 };
 
 export const rightSidebarViews = {
-  switchEditors: { name: 'switch-editors', keepAlive: true },
   pipelines: { name: 'pipelines-list', keepAlive: true },
   jobsDetail: { name: 'jobs-detail', keepAlive: false },
   mergeRequestInfo: { name: 'merge-request-info', keepAlive: true },

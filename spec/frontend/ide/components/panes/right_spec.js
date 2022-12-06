@@ -3,15 +3,11 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import CollapsibleSidebar from '~/ide/components/panes/collapsible_sidebar.vue';
 import RightPane from '~/ide/components/panes/right.vue';
-import SwitchEditorsView from '~/ide/components/switch_editors/switch_editors_view.vue';
 import { rightSidebarViews } from '~/ide/constants';
 import { createStore } from '~/ide/stores';
 import extendStore from '~/ide/stores/extend';
-import { __ } from '~/locale';
 
 Vue.use(Vuex);
-
-const SWITCH_EDITORS_VIEW_NAME = 'switch-editors';
 
 describe('ide/components/panes/right.vue', () => {
   let wrapper;
@@ -45,7 +41,6 @@ describe('ide/components/panes/right.vue', () => {
     it('renders collapsible-sidebar', () => {
       expect(wrapper.findComponent(CollapsibleSidebar).props()).toMatchObject({
         side: 'right',
-        initOpenView: SWITCH_EDITORS_VIEW_NAME,
       });
     });
   });
@@ -125,34 +120,6 @@ describe('ide/components/panes/right.vue', () => {
           expect.objectContaining({
             show: false,
             title: 'Terminal',
-          }),
-        ]),
-      );
-    });
-  });
-
-  describe('switch editors tab', () => {
-    beforeEach(() => {
-      createComponent();
-    });
-
-    it.each`
-      desc              | canUseNewWebIde | expectedShow
-      ${'is shown'}     | ${true}         | ${true}
-      ${'is not shown'} | ${false}        | ${false}
-    `('with canUseNewWebIde=$canUseNewWebIde, $desc', async ({ canUseNewWebIde, expectedShow }) => {
-      Object.assign(store.state, { canUseNewWebIde });
-
-      await nextTick();
-
-      expect(wrapper.findComponent(CollapsibleSidebar).props('extensionTabs')).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            show: expectedShow,
-            title: __('Switch editors'),
-            views: [
-              { component: SwitchEditorsView, name: SWITCH_EDITORS_VIEW_NAME, keepAlive: true },
-            ],
           }),
         ]),
       );

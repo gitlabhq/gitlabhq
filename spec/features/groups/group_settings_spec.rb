@@ -147,7 +147,7 @@ RSpec.describe 'Edit group settings', feature_category: :subgroups do
         selected_group.add_owner(user)
       end
 
-      it 'can successfully transfer the group' do
+      it 'can successfully transfer the group', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/384966' do
         visit edit_group_path(selected_group)
 
         page.within('[data-testid="transfer-locations-dropdown"]') do

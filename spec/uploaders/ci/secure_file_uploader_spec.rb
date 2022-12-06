@@ -46,12 +46,6 @@ RSpec.describe Ci::SecureFileUploader do
     end
   end
 
-  describe '.background_upload_enabled?' do
-    it 'returns false' do
-      expect(described_class.background_upload_enabled?).to eq(false)
-    end
-  end
-
   describe '.default_store' do
     context 'when object storage is enabled' do
       it 'returns REMOTE' do

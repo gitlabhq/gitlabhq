@@ -26,7 +26,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
     # by verifying (`html_to_gfm(gfm_to_html(gfm)) == gfm`) for a number of examples of GFM for every filter, using the `verify` helper.
 
     # These are all in a single `it` for performance reasons.
-    it 'works', :aggregate_failures do
+    it 'transforms HTML to GFM', :aggregate_failures do
       verify(
         'nesting',
         '> 1. [x] **[$`2 + 2`$ {-=-}{+=+} 2^2 ~~:thumbsup:~~](http://google.com)**'

@@ -34,10 +34,6 @@ module Ci
         false
       end
 
-      def background_upload_enabled?
-        false
-      end
-
       def default_store
         object_store_enabled? ? ObjectStorage::Store::REMOTE : ObjectStorage::Store::LOCAL
       end

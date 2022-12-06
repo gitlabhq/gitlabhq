@@ -18,6 +18,11 @@ module Gitlab
           'heap_dump'
         end
 
+        # This will be enabled once https://gitlab.com/gitlab-org/gitlab/-/issues/370077 is done.
+        def active?
+          false
+        end
+
         # This is a no-op currently and will be implemented at a later time in
         # https://gitlab.com/gitlab-org/gitlab/-/issues/370077
         def run(writer)

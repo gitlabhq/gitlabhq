@@ -111,10 +111,6 @@ module ObjectStorage
         object_store_options&.direct_upload
       end
 
-      def background_upload_enabled?
-        object_store_options.background_upload
-      end
-
       def proxy_download_enabled?
         object_store_options.proxy_download
       end
@@ -351,12 +347,6 @@ module ObjectStorage
     end
 
     private
-
-    def schedule_background_upload?
-      self.class.object_store_enabled? &&
-        self.class.background_upload_enabled? &&
-        self.file_storage?
-    end
 
     def cache_remote_file!(remote_object_id, original_filename)
       file_path = File.join(TMP_UPLOAD_PATH, remote_object_id)

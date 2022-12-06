@@ -2462,7 +2462,7 @@ PUT /projects/:id/hooks/:hook_id
 | `push_events`                | boolean        | **{dotted-circle}** No | Trigger hook on push events. |
 | `releases_events`            | boolean        | **{dotted-circle}** No | Trigger hook on release events. |
 | `tag_push_events`            | boolean        | **{dotted-circle}** No | Trigger hook on tag push events. |
-| `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads; this isn't returned in the response. |
+| `token`                      | string         | **{dotted-circle}** No | Secret token to validate received payloads. Not returned in the response. When you change the webhook URL, the secret token is reset and not retained. |
 | `wiki_page_events`           | boolean        | **{dotted-circle}** No | Trigger hook on wiki page events. |
 
 ### Delete project hook

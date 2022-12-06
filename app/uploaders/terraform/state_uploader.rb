@@ -48,10 +48,6 @@ module Terraform
         false
       end
 
-      def background_upload_enabled?
-        false
-      end
-
       def proxy_download_enabled?
         true
       end

@@ -1654,7 +1654,7 @@ RSpec.describe ContainerRepository, :aggregate_failures do
         stub_application_setting(container_registry_import_target_plan: valid_container_repository.migration_plan)
       end
 
-      it 'works' do
+      it 'returns valid container repositories' do
         expect(subject).to contain_exactly(valid_container_repository, valid_container_repository2)
       end
     end

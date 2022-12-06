@@ -835,7 +835,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
                   'direct_upload' => true,
                   'connection' =>
                 { 'provider' => 'AWS', 'aws_access_key_id' => 'minio', 'aws_secret_access_key' => 'gdk-minio', 'region' => 'gdk', 'endpoint' => 'http://127.0.0.1:9000', 'path_style' => true },
-                  'background_upload' => false,
                   'proxy_download' => false } })
 
           expect(subject).to eq(
