@@ -3,8 +3,8 @@
 
   - if current_user.can_create_group?
     .page-title-controls
-      = link_to _("New group"), new_group_path, class: "gl-button btn btn-confirm", data: { qa_selector: "new_group_button", testid: "new-group-button" }
-
+      = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { qa_selector: "new_group_button", testid: "new-group-button" } }) do
+        = _("New group")
 .top-area
   = gl_tabs_nav({ class: 'gl-flex-grow-1 gl-border-0' }) do
     = gl_tab_link_to _("Your groups"), dashboard_groups_path

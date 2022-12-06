@@ -742,6 +742,29 @@ class Project < ApplicationRecord
     end
   end
 
+  # Defines instance methods:
+  #
+  # - only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: false)
+  # - allow_merge_on_skipped_pipeline?(inherit_group_setting: false)
+  # - only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: false)
+  # - only_allow_merge_if_pipeline_succeeds_locked?
+  # - allow_merge_on_skipped_pipeline_locked?
+  # - only_allow_merge_if_all_discussions_are_resolved_locked?
+  def self.cascading_with_parent_namespace(attribute)
+    # method overriden in EE
+    define_method("#{attribute}?") do |inherit_group_setting: false|
+      self.public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
+    end
+
+    define_method("#{attribute}_locked?") do
+      false
+    end
+  end
+
+  cascading_with_parent_namespace :only_allow_merge_if_pipeline_succeeds
+  cascading_with_parent_namespace :allow_merge_on_skipped_pipeline
+  cascading_with_parent_namespace :only_allow_merge_if_all_discussions_are_resolved
+
   def self.with_feature_available_for_user(feature, user)
     with_project_feature.merge(ProjectFeature.with_feature_available_for_user(feature, user))
   end

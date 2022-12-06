@@ -1271,7 +1271,7 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_discussions_state?
-    return true unless project.only_allow_merge_if_all_discussions_are_resolved?
+    return true unless project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true)
 
     unresolved_notes.none?(&:to_be_resolved?)
   end
@@ -1452,9 +1452,9 @@ class MergeRequest < ApplicationRecord
   end
 
   def mergeable_ci_state?
-    return true unless project.only_allow_merge_if_pipeline_succeeds?
+    return true unless project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
     return false unless actual_head_pipeline
-    return true if project.allow_merge_on_skipped_pipeline? && actual_head_pipeline.skipped?
+    return true if project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) && actual_head_pipeline.skipped?
 
     actual_head_pipeline.success?
   end

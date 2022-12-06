@@ -31,7 +31,7 @@ class MergeRequestPollWidgetEntity < Grape::Entity
   end
 
   expose :only_allow_merge_if_pipeline_succeeds do |merge_request|
-    merge_request.project.only_allow_merge_if_pipeline_succeeds?
+    merge_request.project.only_allow_merge_if_pipeline_succeeds?(inherit_group_setting: true)
   end
 
   # CI related

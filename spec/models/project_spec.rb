@@ -8380,6 +8380,70 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to be(false) }
   end
 
+  describe '.cascading_with_parent_namespace' do
+    let_it_be_with_reload(:group) { create(:group, :with_root_storage_statistics) }
+    let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
+    let_it_be_with_reload(:project) { create(:project, group: subgroup) }
+    let_it_be_with_reload(:project_without_group) { create(:project) }
+
+    shared_examples 'cascading settings' do |attribute|
+      it 'return self value when no parent' do
+        expect(project_without_group.group).to be_nil
+
+        project_without_group.update!(attribute => true)
+        expect(project_without_group.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project_without_group.public_send("#{attribute}_locked?")).to be_falsey
+
+        project_without_group.update!(attribute => false)
+        expect(project_without_group.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project_without_group.public_send("#{attribute}_locked?")).to be_falsey
+      end
+
+      it 'return self value when unlocked' do
+        subgroup.namespace_settings.update!(attribute => false)
+        group.namespace_settings.update!(attribute => false)
+
+        project.update!(attribute => true)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+
+        project.update!(attribute => false)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+      end
+
+      it 'still return self value when locked subgroup' do
+        subgroup.namespace_settings.update!(attribute => true)
+        group.namespace_settings.update!(attribute => false)
+
+        project.update!(attribute => true)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+
+        project.update!(attribute => false)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+      end
+
+      it 'still return unlocked value when locked group' do
+        subgroup.namespace_settings.update!(attribute => false)
+        group.namespace_settings.update!(attribute => true)
+
+        project.update!(attribute => true)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_truthy
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+
+        project.update!(attribute => false)
+        expect(project.public_send("#{attribute}?", inherit_group_setting: true)).to be_falsey
+        expect(project.public_send("#{attribute}_locked?")).to be_falsey
+      end
+    end
+
+    it_behaves_like 'cascading settings', :only_allow_merge_if_pipeline_succeeds
+    it_behaves_like 'cascading settings', :allow_merge_on_skipped_pipeline
+    it_behaves_like 'cascading settings', :only_allow_merge_if_all_discussions_are_resolved
+  end
+
   private
 
   def finish_job(export_job)

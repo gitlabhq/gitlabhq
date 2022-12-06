@@ -159,10 +159,7 @@ export default {
         return;
       }
 
-      // 100 and 1234 emoji are a number. Callback for v-for click sends it as a string
-      const parsedName = /^[0-9]+$/.test(awardName) ? Number(awardName) : awardName;
-
-      this.$emit('award', parsedName);
+      this.$emit('award', awardName);
 
       if (document.activeElement) document.activeElement.blur();
     },

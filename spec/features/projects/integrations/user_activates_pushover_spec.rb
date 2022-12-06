@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Pushover' do
+RSpec.describe 'User activates Pushover', feature_category: :integrations do
   include_context 'project integration activation'
 
   before do

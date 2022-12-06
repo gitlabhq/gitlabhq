@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User views integrations', :js do
+RSpec.describe 'User views integrations', :js, feature_category: :integrations do
   include_context 'project integration activation'
 
   it 'shows the list of available integrations' do

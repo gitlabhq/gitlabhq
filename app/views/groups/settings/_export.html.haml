@@ -25,10 +25,10 @@
           %li= _('Runner tokens')
           %li= _('SAML discovery tokens')
   - if group.export_file_exists?
-    = link_to _('Download export'), download_export_group_path(group),
-        rel: 'nofollow', method: :get, class: 'btn gl-button btn-default', data: { qa_selector: 'download_export_link' }
-    = link_to _('Regenerate export'), export_group_path(group),
-        method: :post, class: 'btn gl-button btn-default', data: { qa_selector: 'regenerate_export_group_link' }
+    = render Pajamas::ButtonComponent.new(href: download_export_group_path(group), button_options: { rel: 'nofollow', data: { method: :get, qa_selector: 'download_export_link' } }) do
+      = _('Download export')
+    = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post, qa_selector: 'regenerate_export_group_link' } }) do
+      = _('Regenerate export')
   - else
-    = link_to _('Export group'), export_group_path(group),
-        method: :post, class: 'btn gl-button btn-default', data: { qa_selector: 'export_group_link' }
+    = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post, qa_selector: 'export_group_link' } }) do
+      = _('Export group')

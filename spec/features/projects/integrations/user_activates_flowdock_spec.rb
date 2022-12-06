@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User activates Flowdock' do
+RSpec.describe 'User activates Flowdock', feature_category: :integrations do
   include_context 'project integration activation' do
     let(:project) { create(:project, :repository) }
   end

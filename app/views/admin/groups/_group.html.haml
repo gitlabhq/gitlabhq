@@ -31,5 +31,7 @@
       = visibility_level_icon(group.visibility_level)
 
   .controls.gl-flex-shrink-0.gl-ml-5
-    = link_to _('Edit'), admin_group_edit_path(group), id: "edit_#{dom_id(group)}", class: 'btn gl-button btn-default'
-    = link_to _('Delete'), [:admin, group], aria: { label: _('Remove') }, data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name }, confirm_btn_variant: 'danger' }, method: :delete, class: 'gl-button btn btn-danger'
+    = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(group), button_options: { id: "edit_#{dom_id(group)}" }) do
+      = _('Edit')
+    = render Pajamas::ButtonComponent.new(href: [:admin, group], variant: :danger, button_options: { data: { confirm: _("Are you sure you want to remove %{group_name}?") % { group_name: group.name }, confirm_btn_variant: 'danger', method: :delete } }) do
+      = _('Delete')

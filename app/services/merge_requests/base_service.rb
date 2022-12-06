@@ -262,6 +262,10 @@ module MergeRequests
       GraphqlTriggers.merge_request_merge_status_updated(merge_request)
     end
 
+    def trigger_merge_request_approval_state_updated(merge_request)
+      GraphqlTriggers.merge_request_approval_state_updated(merge_request)
+    end
+
     def capture_suggested_reviewers_accepted(merge_request)
       # Implemented in EE
     end

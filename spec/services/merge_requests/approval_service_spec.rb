@@ -91,6 +91,10 @@ RSpec.describe MergeRequests::ApprovalService do
       it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
         let(:action) { service.execute(merge_request) }
       end
+
+      it_behaves_like 'triggers GraphQL subscription mergeRequestApprovalStateUpdated' do
+        let(:action) { service.execute(merge_request) }
+      end
     end
 
     context 'user cannot update the merge request' do
@@ -107,6 +111,10 @@ RSpec.describe MergeRequests::ApprovalService do
       end
 
       it_behaves_like 'does not trigger GraphQL subscription mergeRequestReviewersUpdated' do
+        let(:action) { service.execute(merge_request) }
+      end
+
+      it_behaves_like 'does not trigger GraphQL subscription mergeRequestApprovalStateUpdated' do
         let(:action) { service.execute(merge_request) }
       end
     end

@@ -20,7 +20,7 @@
         label_options: { class: 'gl-font-weight-bold!' }
 
     .form-group.js-toggle-colors-container
-      %button.btn.gl-button.btn-link.js-toggle-colors-link{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-toggle-colors-link' }) do
         = _('Customize colors')
     .form-group.js-toggle-colors-container.hide
       = form.label :message_background_color, _('Background Color'), class: 'col-form-label label-bold'

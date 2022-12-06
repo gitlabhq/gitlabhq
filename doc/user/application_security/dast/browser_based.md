@@ -12,24 +12,79 @@ type: reference, howto
 WARNING:
 This product is in an early-access stage and is considered a [beta](../../../policy/alpha-beta-support.md#beta-features) feature.
 
-GitLab DAST's browser-based analyzer was built by GitLab to test Single Page Applications (SPAs) and
-traditional web applications. It both crawls the web application and analyzes the resulting output
-for vulnerabilities. Analysis of modern applications, heavily reliant on JavaScript, is vital to
-ensuring DAST coverage.
+WARNING:
+Do not run DAST scans against a production server. Not only can it perform *any* function that
+a user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to modification or loss of production data. Only run DAST scans against a test server.
 
-The browser-based scanner works by loading the target application into a specially-instrumented
-Chromium browser. A snapshot of the page is taken before a search to find any actions that a user
-might perform, such as selecting on a link or filling in a form. For each action found, the
-browser-based scanner executes it, takes a new snapshot, and determines what in the page changed
-from the previous snapshot. Crawling continues by taking more snapshots and finding subsequent
-actions. The benefit of scanning by following user actions in a browser is that the crawler can
-interact with the target application much like a real user would, identifying complex flows that
-traditional web crawlers don't understand. This results in better coverage of the website.
+The DAST browser-based analyzer was built by GitLab to scan modern-day web applications for vulnerabilities.
+Scans run in a browser to optimize testing applications heavily dependent on JavaScript, such as single-page applications.
+See [how DAST scans an application](#how-dast-scans-an-application) for more information.
 
-The browser-based scanner should provide greater coverage for most web applications, compared
-with the current DAST AJAX crawler. While both crawlers are
-used together with the current DAST scanner, the combination of the browser-based crawler with the
-current DAST scanner is much more effective at finding and testing every page in an application.
+To add the analyzer to your CI/CD pipeline, see [enable browser-based analyzer](#enable-browser-based-analyzer).
+
+## How DAST scans an application
+
+A scan performs the following steps:
+
+1. [Authenticate](authentication.md), if configured.
+1. [Crawl](#crawling-an-application) the target application to discover the surface area of the application by performing user actions such as following links, clicking buttons, and filling out forms.
+1. [Passive scan](#passive-scans) to search for vulnerabilities in HTTP messages and pages discovered while crawling.
+1. [Active scan](#active-scans) to search for vulnerabilities by injecting payloads into HTTP requests recorded during the crawl phase.
+
+### Crawling an application
+
+A "navigation" is an action a user might take on a page, such as clicking buttons, clicking anchor links, opening menu items, or filling out forms.
+A "navigation path" is a sequence of navigation actions representing how a user might traverse an application.
+DAST discovers the surface area of an application by crawling pages and content and identifying navigation paths.
+
+Crawling is initialized with a navigation path containing one navigation that loads the target application URL in a specially-instrumented Chromium browser.
+DAST then crawls navigation paths until all have been crawled.
+
+To crawl a navigation path, DAST opens a browser window and instructs it to perform all the navigation actions in the navigation path.
+When the browser has finished loading the result of the final action, DAST inspects the page for actions a user might take,
+creates a new navigation for each found, and adds them to the navigation path to form new navigation paths. For example:
+
+- DAST processes navigation path `LoadURL[https://example.com]`.
+- DAST finds two user actions, `LeftClick[class=menu]` and `LeftClick[id=users]`.
+- DAST creates two new navigation paths, `LoadURL[https://example.com] -> LeftClick[class=menu]` and `LoadURL[https://example.com] -> LeftClick[id=users]`.
+- Crawling begins on the two new navigation paths.
+
+It's common for an HTML element to exist in multiple places in an application, such as a menu visible on every page.
+Duplicate elements can cause crawlers to crawl the same pages again or become stuck in a loop.
+DAST uses an element uniqueness calculation based on HTML attributes to discard new navigation actions it has previously crawled.
+
+### Passive scans
+
+Passive scans check for vulnerabilities in the pages discovered during the crawl phase of the scan.
+Passive scans are enabled by default.
+
+The checks search HTTP messages, cookies, storage events, console events, and DOM for vulnerabilities.
+Examples of passive checks include searching for exposed credit cards, exposed secret tokens, missing content security policies, and redirection to untrusted locations.
+
+See [checks](checks/index.md) for more information about individual checks.
+
+### Active scans
+
+Active scans check for vulnerabilities by injecting attack payloads into HTTP requests recorded during the crawl phase of the scan.
+Active scans are disabled by default due to the nature of their probing attacks.
+
+DAST analyzes each recorded HTTP request for injection locations, such as query values, header values, cookie values, form posts, and JSON string values.
+Attack payloads are injected into the injection location, forming a new request.
+DAST sends the request to the target application and uses the HTTP response to determine attack success.
+
+Active scans run two types of active check:
+
+- A match response attack analyzes the response content to determine attack success. For example, if an attack attempts to read the system password file, a finding is created when the response body contains evidence of the password file.
+- A timing attack uses the response time to determine attack success. For example, if an attack attempts to force the target application to sleep, a finding is created when the application takes longer to respond than the sleep time. Timing attacks are repeated multiple times with different attack payloads to minimize false positives.
+
+A simplified timing attack works as follows:
+
+1. The crawl phase records the HTTP request `https://example.com?search=people`.
+1. DAST analyzes the URL and finds a URL parameter injection location `https://example.com?search=[INJECT]`.
+1. The active check defines a payload, `sleep 10`, that attempts to get a Linux host to sleep.
+1. DAST send a new HTTP request to the target application with the injected payload `https://example.com?search=sleep%2010`.
+1. The target application is vulnerable if it executes the query parameter value as a system command without validation, for example, `system(params[:search])`
+1. DAST creates a finding if the response time takes longer than 10 seconds.
 
 ## Enable browser-based analyzer
 

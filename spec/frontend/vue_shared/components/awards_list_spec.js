@@ -38,7 +38,18 @@ const TEST_AWARDS = [
   createAward(EMOJI_CACTUS, USERS.root),
   createAward(EMOJI_A, USERS.marie),
   createAward(EMOJI_B, USERS.root),
+  createAward(EMOJI_100, USERS.ada),
 ];
+const TEST_AWARDS_LENGTH = [
+  EMOJI_SMILE,
+  EMOJI_OK,
+  EMOJI_THUMBSUP,
+  EMOJI_THUMBSDOWN,
+  EMOJI_A,
+  EMOJI_B,
+  EMOJI_CACTUS,
+  EMOJI_100,
+].length;
 const TEST_ADD_BUTTON_CLASS = 'js-test-add-button-class';
 
 const REACTION_CONTROL_CLASSES = [
@@ -88,10 +99,6 @@ describe('vue_shared/components/awards_list', () => {
       });
     });
 
-    it('matches snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it('shows awards in correct order', () => {
       expect(findAwardsData()).toEqual([
         {
@@ -105,6 +112,12 @@ describe('vue_shared/components/awards_list', () => {
           count: 3,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
           title: `You, Ada, and Marie reacted with :${EMOJI_THUMBSDOWN}:`,
+        },
+        {
+          classes: REACTION_CONTROL_CLASSES,
+          count: 1,
+          html: matchingEmojiTag(EMOJI_100),
+          title: `Ada reacted with :${EMOJI_100}:`,
         },
         {
           classes: REACTION_CONTROL_CLASSES,
@@ -142,33 +155,23 @@ describe('vue_shared/components/awards_list', () => {
     it('with award clicked, it emits award', () => {
       expect(wrapper.emitted().award).toBeUndefined();
 
-      findAwardButtons().at(2).vm.$emit('click');
+      findAwardButtons().at(3).vm.$emit('click');
 
       expect(wrapper.emitted().award).toEqual([[EMOJI_SMILE]]);
+    });
+
+    it('with numeric award clicked, it emits award as is', () => {
+      expect(wrapper.emitted().award).toBeUndefined();
+
+      findAwardButtons().at(2).vm.$emit('click');
+
+      expect(wrapper.emitted().award).toEqual([[EMOJI_100]]);
     });
 
     it('shows add award button', () => {
       const btn = findAddAwardButton();
 
       expect(btn.exists()).toBe(true);
-    });
-  });
-
-  describe('with numeric award', () => {
-    beforeEach(() => {
-      createComponent({
-        awards: [createAward(EMOJI_100, USERS.ada)],
-        canAwardEmoji: true,
-        currentUserId: USERS.root.id,
-      });
-    });
-
-    it('when clicked, it emits award as number', () => {
-      expect(wrapper.emitted().award).toBeUndefined();
-
-      findAwardButtons().at(0).vm.$emit('click');
-
-      expect(wrapper.emitted().award).toEqual([[Number(EMOJI_100)]]);
     });
   });
 
@@ -210,7 +213,7 @@ describe('vue_shared/components/awards_list', () => {
     it('disables award buttons', () => {
       const buttons = findAwardButtons();
 
-      expect(buttons.length).toBe(7);
+      expect(buttons.length).toBe(TEST_AWARDS_LENGTH);
       expect(buttons.wrappers.every((x) => x.classes('disabled'))).toBe(true);
     });
   });

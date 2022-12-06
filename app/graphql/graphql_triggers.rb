@@ -44,6 +44,14 @@ module GraphqlTriggers
       merge_request
     )
   end
+
+  def self.merge_request_approval_state_updated(merge_request)
+    GitlabSchema.subscriptions.trigger(
+      'mergeRequestApprovalStateUpdated',
+      { issuable_id: merge_request.to_gid },
+      merge_request
+    )
+  end
 end
 
 GraphqlTriggers.prepend_mod
