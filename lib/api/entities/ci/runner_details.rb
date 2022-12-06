@@ -14,7 +14,7 @@ module API
 
         # rubocop: disable CodeReuse/ActiveRecord
         expose :projects, with: Entities::BasicProjectDetails do |runner, options|
-          if options[:current_user].admin? # rubocop: disable Cop/UserAdmin
+          if options[:current_user].can_read_all_resources?
             runner.projects
           else
             options[:current_user].authorized_projects.where(id: runner.runner_projects.pluck(:project_id))
@@ -23,7 +23,7 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
         # rubocop: disable CodeReuse/ActiveRecord
         expose :groups, with: Entities::BasicGroupDetails do |runner, options|
-          if options[:current_user].admin? # rubocop: disable Cop/UserAdmin
+          if options[:current_user].can_read_all_resources?
             runner.groups
           else
             options[:current_user].authorized_groups.where(id: runner.runner_namespaces.pluck(:namespace_id))

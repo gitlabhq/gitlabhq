@@ -15,6 +15,13 @@ module PartitioningTesting
 
       raise "partition_id was expected to equal #{partition_scope_value} but it was #{partition_id}."
     end
+
+    class_methods do
+      # Allowing partition callback to be used with BulkInsertSafe
+      def _bulk_insert_callback_allowed?(name, args)
+        super || args.first == :after && args.second == :check_partition_cascade_value
+      end
+    end
   end
 end
 

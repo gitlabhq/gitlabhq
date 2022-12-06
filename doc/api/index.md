@@ -177,7 +177,7 @@ Read more about [GitLab as an OAuth2 provider](oauth2.md).
 NOTE:
 We recommend OAuth access tokens have an expiration. You can use the `refresh_token` parameter
 to refresh tokens. Integrations may need to be updated to use refresh tokens prior to
-expiration, which is based on the [expires_in](https://datatracker.ietf.org/doc/html/rfc6749#appendix-A.14)
+expiration, which is based on the [`expires_in`](https://datatracker.ietf.org/doc/html/rfc6749#appendix-A.14)
 property in the token endpoint response. See [OAuth2 token](oauth2.md) documentation
 for examples requesting a new access token using a refresh token.
 

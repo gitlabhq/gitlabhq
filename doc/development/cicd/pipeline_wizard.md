@@ -127,7 +127,7 @@ is planned to add the ability to create a MR from here.
 
 ### Props
 
-- `template` (required): The template content as an unparsed String. See
+- `template` (required): The template content as an un-parsed string. See
   [Template file location](#template-file-location) for more information.
 - `project-path` (required): The full path of the project the final file
   should be committed to

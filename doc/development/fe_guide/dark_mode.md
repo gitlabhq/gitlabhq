@@ -19,9 +19,9 @@ Note the following:
   - We define two types of variables in `_dark.scss`:
     - SCSS variables are used in framework, components, and utility classes.
     - CSS variables are used for any colors within the `app/assets/stylesheets/page_bundles` directory.
-- `app/views/layouts/_head.html.haml` then loads application or application_dark based on the user's theme preference.
+- `app/views/layouts/_head.html.haml` then loads `application` or `application_dark` based on the user's theme preference.
 
-As we do not want to generate separate `_dark.css` variants of every page_bundle file,
+As we do not want to generate separate `_dark.css` variants of every `page_bundle` file,
 we use CSS variables with SCSS variables as fallbacks. This is because when we generate the `page_bundles`
 CSS, we get the variable values from `_variables.scss`, so any SCSS variables have light mode values.
 

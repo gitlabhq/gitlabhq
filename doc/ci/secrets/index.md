@@ -143,7 +143,7 @@ different policies together. If authentication is successful, these policies are
 attached to the resulting Vault token.
 
 [Bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) are predefined
-values that are matched to the JWT's claims. With bounded claims, you can restrict access
+values that are matched to the JWT claims. With bounded claims, you can restrict access
 to specific GitLab users, specific projects, or even jobs running for specific Git
 references. You can have as many bounded claims you need, but they must *all* match
 for authentication to be successful.

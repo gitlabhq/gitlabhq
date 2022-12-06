@@ -275,9 +275,9 @@ control over how the Pages daemon runs and serves content in your environment.
 | `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length. [Introduced](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/659) in GitLab 14.5.
 | `metrics_address`                       | The address to listen on for metrics requests. |
 | `redirect_http`                         | Redirect pages from HTTP to HTTPS, true/false. |
-| `redirects_max_config_size`             | The maximum size of the _redirects file, in bytes (default: 65536). |
-| `redirects_max_path_segments`           | The maximum number of path segments allowed in _redirects rules URLs (default: 25). |
-| `redirects_max_rule_count`              | The maximum number of rules allowed in _redirects (default: 1000). |
+| `redirects_max_config_size`             | The maximum size of the `_redirects` file, in bytes (default: 65536). |
+| `redirects_max_path_segments`           | The maximum number of path segments allowed in `_redirects` rules URLs (default: 25). |
+| `redirects_max_rule_count`              | The maximum number of rules allowed in `_redirects` (default: 1000). |
 | `sentry_dsn`                            | The address for sending Sentry crash reporting to. |
 | `sentry_enabled`                        | Enable reporting and logging with Sentry, true/false. |
 | `sentry_environment`                    | The environment for Sentry crash reporting. |

@@ -47,7 +47,7 @@ We were using Overcommit prior to Lefthook, so you may want to uninstall it firs
    bundle exec lefthook run pre-push
    ```
 
-This should return the lefthook version and the list of executable commands with output.
+This should return the Lefthook version and the list of executable commands with output.
 
 ### Lefthook configuration
 

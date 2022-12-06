@@ -312,13 +312,6 @@ In GitLab 15.1 and earlier, the escalation policy for [incidents created from al
 reflects the alert's escalation policy and cannot be changed. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident escalation policy is independent and can be changed.
 
-## Manage incidents from Slack
-
-Slack slash commands allow you to control GitLab and view GitLab content without leaving Slack.
-
-Learn how to [set up Slack slash commands](../../user/project/integrations/slack_slash_commands.md)
-and how to [use the available slash commands](../../integration/slash_commands.md).
-
 ## Associate Zoom calls
 
 GitLab enables you to [associate a Zoom meeting with an issue](../../user/project/issues/associate_zoom_meeting.md)
@@ -363,3 +356,7 @@ With at least the Maintainer role, you can enable
 When GitLab receives a **Recovery Alert**, it closes the associated incident.
 This action is recorded as a system message on the incident indicating that it
 was closed automatically by the GitLab Alert bot.
+
+## Related topics
+
+- Create incidents and receive incident notifications [directly from Slack](slack.md).

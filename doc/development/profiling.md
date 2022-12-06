@@ -21,7 +21,7 @@ The first argument to the profiler is either a full URL
 leading slash.
 
 By default the report dump will be stored in a temporary file, which can be
-interacted with using the [stackprof API](#reading-a-gitlabprofiler-report).
+interacted with using the [Stackprof API](#reading-a-gitlabprofiler-report).
 
 When using the script, command-line documentation is available by passing no
 arguments.
@@ -62,7 +62,7 @@ Pass in a `profiler_options` hash to configure the output file (`out`) of the sa
 Gitlab::Profiler.profile('/gitlab-org/gitlab-test', user: User.first, profiler_options: { out: 'tmp/profile.dump' })
 ```
 
-## Reading a GitLab::Profiler report
+## Reading a `GitLab::Profiler` report
 
 You can get a summary of where time was spent by running Stackprof against the sampling data. For example:
 

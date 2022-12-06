@@ -332,7 +332,7 @@ a few extra steps:
 - add `partition_id` column for the FK references with default value of `100`
   since the majority of records should have that value.
 - change application logic to cascade the `partition_id` value
-- correct partition_id values for recent records with a post deploy/background
+- correct `partition_id` values for recent records with a post deploy/background
   migration, similar to this:
 
   ```sql

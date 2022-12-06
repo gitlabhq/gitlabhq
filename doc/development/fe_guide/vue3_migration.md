@@ -182,13 +182,13 @@ In the step-by-step guide, we will be migrating [VueApollo Demo](https://gitlab.
 
 #### Initial state
 
-Right after cloning, you could run [VueApollo Demo](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/tree/main/src/vue3compat) with Vue.js 2 using `yarn serve` or with Vue.js 3 (compat build) using `yarn serve:vue3`. However latter immediately crashes:
+Right after cloning, you could run [VueApollo Demo](https://gitlab.com/gitlab-org/frontend/vue3-migration-vue-apollo/-/tree/main/src/vue3compat) with Vue.js 2 using `yarn serve` or with Vue.js 3 (`compat` build) using `yarn serve:vue3`. However latter immediately crashes:
 
 ```javascript
 Uncaught TypeError: Cannot read properties of undefined (reading 'loading')
 ```
 
-VueApollo v3 (used for Vue.js 2) fails to initialize in Vue.js compat
+VueApollo v3 (used for Vue.js 2) fails to initialize in Vue.js `compat`
 
 NOTE:
 While stubbing `Vue.version` will solve VueApollo-related issues in the demo project, it will still lose reactivity on specific scenarios, so an upgrade is still needed

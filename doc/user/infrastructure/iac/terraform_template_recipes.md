@@ -10,7 +10,7 @@ You can customize your Terraform integration by adding the recipes on
 this page to your pipeline.
 
 If you'd like to share your own Terraform configuration, consider
-[contributing a recipe](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/infrastructure/iac/tf_template_recipes.md)
+[contributing a recipe](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/infrastructure/iac/terraform_template_recipes.md)
 to this page.
 
 ## Enable a `terraform destroy` job

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "User creates milestone", :js do
+RSpec.describe "User creates milestone", :js, feature_category: :team_planning do
   let_it_be(:developer) { create(:user) }
   let_it_be(:inherited_guest) { create(:user) }
   let_it_be(:inherited_developer) { create(:user) }

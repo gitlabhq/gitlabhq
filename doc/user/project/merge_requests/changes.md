@@ -136,15 +136,10 @@ Files marked as viewed are not shown to you again unless either:
 - New changes are made to its content.
 - You clear the **Viewed** checkbox.
 
-## Show merge request conflicts in diff **(FREE SELF)**
+## Show merge request conflicts in diff
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `display_merge_conflicts_in_diff`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../../../administration/feature_flags.md)
-named `display_merge_conflicts_in_diff`. On GitLab.com, this feature is not available.
-The feature is not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/232484) in GitLab 13.5 [with a flag](../../../administration/feature_flags.md) named `display_merge_conflicts_in_diff`. Disabled by default.
+> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.7.
 
 To avoid displaying the changes that are already on target branch in the diff,
 we compare the merge request's source branch with HEAD of the target branch.

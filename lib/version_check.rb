@@ -69,13 +69,17 @@ class VersionCheck
 
     case response&.code
     when 200
-      response.body
+      Gitlab::Json.parse(response.body)
+    else
+      { error: 'version check failed', status: response&.code }
     end
   end
 
   def response
     with_reactive_cache do |data|
-      Gitlab::Json.parse(data) if data
+      raise InvalidateReactiveCache if data[:error]
+
+      data
     end
   end
 end

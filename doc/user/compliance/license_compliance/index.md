@@ -177,7 +177,7 @@ directory of your project.
 Depending on your language, you may need to specify the path to the individual
 projects of a monorepo using the `LICENSE_FINDER_CLI_OPTS` variable. Passing in
 the project paths can significantly speed up builds over using the `--recursive`
-license_finder option.
+License Finder option.
 
 ```yaml
 include:

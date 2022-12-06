@@ -58,7 +58,7 @@ You must type at least two characters.
 After the results are displayed, you can modify the search, select a different type of data to
 search, or choose a specific group or project.
 
-![basic_search_results](img/basic_search_results_v15_1.png)
+![basic search results](img/basic_search_results_v15_1.png)
 
 ## Search in code
 

@@ -14,12 +14,11 @@ notifications using the methods described on this page.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/216326) in GitLab 13.1.
 
-Responders can be paged via Slack using the
-[Slack Notifications Service](../../user/project/integrations/slack.md), which you
-can configure for new alerts and new incidents. After configuring, responders
-receive a **single** page via Slack. To set up Slack notifications on your mobile
-device, make sure to enable notifications for the Slack app on your phone so
-you never miss a page.
+The GitLab for Slack app can be used to receive important incident notifications.
+
+When [the GitLab for Slack app is configured](slack.md), incident responders are notified in Slack
+every time a new incident is declared. To ensure you don't miss any important incident notifications
+on your mobile device, enable notifications for Slack on your phone.
 
 ## Email notifications for alerts
 

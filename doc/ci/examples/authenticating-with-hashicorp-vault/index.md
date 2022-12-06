@@ -90,7 +90,7 @@ The JWT is encoded by using RS256 and signed with a dedicated private key. The e
 
 You can use this JWT and your instance's JWKS endpoint (`https://gitlab.example.com/-/jwks`) to authenticate with a Vault server that is configured to allow the JWT Authentication method for authentication.
 
-When configuring roles in Vault, you can use [bound_claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) to match against the JWT's claims and restrict which secrets each CI job has access to.
+When configuring roles in Vault, you can use [bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims) to match against the JWT claims and restrict which secrets each CI/CD job has access to.
 
 To communicate with Vault, you can use either its CLI client or perform API requests (using `curl` or another client).
 
@@ -180,7 +180,7 @@ $ vault write auth/jwt/role/myproject-production - <<EOF
 EOF
 ```
 
-This example uses [bound_claims](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims) to specify that only a JWT with matching values for the specified claims is allowed to authenticate.
+This example uses [bound claims](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_claims) to specify that only a JWT with matching values for the specified claims is allowed to authenticate.
 
 Combined with [protected branches](../../../user/project/protected_branches.md), you can restrict who is able to authenticate and read the secrets.
 
@@ -225,7 +225,7 @@ $ vault write auth/jwt/config \
     bound_issuer="gitlab.example.com"
 ```
 
-[bound_issuer](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.
+[`bound_issuer`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#bound_issuer) specifies that only a JWT with the issuer (that is, the `iss` claim) set to `gitlab.example.com` can use this method to authenticate, and that the JWKS endpoint (`https://gitlab.example.com/-/jwks`) should be used to validate the token.
 
 For the full list of available configuration options, see Vault's [API documentation](https://developer.hashicorp.com/vault/api-docs/auth/jwt#configure).
 
@@ -256,7 +256,7 @@ NOTE:
 If you're using a Vault instance provided by HashiCorp Cloud Platform,
 you need to export the `VAULT_NAMESPACE` variable. Its default value is `admin`.
 
-![`read_secrets` staging](img/vault-read-secrets-staging.png)
+![read secrets staging example](img/vault-read-secrets-staging.png)
 
 The following job is able to authenticate using the `myproject-production` role and read secrets under `/secret/myproject/production/`:
 
@@ -279,7 +279,7 @@ read_secrets:
     - echo $PASSWORD
 ```
 
-![`read_secrets` production](img/vault-read-secrets-production.png)
+![read secrets production example](img/vault-read-secrets-production.png)
 
 ### Limit token access to Vault secrets
 

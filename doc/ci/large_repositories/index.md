@@ -260,4 +260,4 @@ For very active repositories with a large number of references and files, you ca
   seeding the repository data also helps avoid
   `429 Too many requests` errors from Cloudflare.
   This error can occur if you have many runners behind a single,
-  NAT'ed IP address that pulls from GitLab.com.
+  IP address using NAT, that pulls from GitLab.com.

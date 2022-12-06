@@ -2,9 +2,12 @@
 
 module Ci
   class BuildNeed < Ci::ApplicationRecord
+    include Ci::Partitionable
     include BulkInsertSafe
 
     belongs_to :build, class_name: "Ci::Processable", foreign_key: :build_id, inverse_of: :needs
+
+    partitionable scope: :build
 
     validates :build, presence: true
     validates :name, presence: true, length: { maximum: 128 }

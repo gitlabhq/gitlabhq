@@ -126,7 +126,7 @@ For very large groups the database queries can easily time out, causing HTTP 500
 
 ## Optimizing ordered `IN` queries
 
-In the talk ["How to teach an elephant to dance rock'n'roll"](https://www.youtube.com/watch?v=Ha38lcjVyhQ),
+In the talk ["How to teach an elephant to dance rock and roll"](https://www.youtube.com/watch?v=Ha38lcjVyhQ),
 Maxim Boguk demonstrated a technique to optimize a special class of ordered `IN` queries,
 such as our ordered group-level queries.
 

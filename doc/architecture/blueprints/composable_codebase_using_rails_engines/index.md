@@ -301,7 +301,7 @@ All work can be found in these merge requests:
 - [Draft: PoC - Move GraphQL to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
 - [Draft: PoC - Move Controllers and Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720)
 - [Draft: PoC - Move only Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53982)
-- [Measure performance impact for proposed web_engine](https://gitlab.com/gitlab-org/gitlab/-/issues/300548)
+- [Measure performance impact for proposed `web_engine`](https://gitlab.com/gitlab-org/gitlab/-/issues/300548)
 
 What was done?
 
@@ -328,8 +328,8 @@ What was done?
 
 1. Move gems to the `engines/web_engine/`
 
-    - We moved all GraphQL gems to the actual web_engine Gemfile
-    - We moved Grape API gem to the actual web_engine Gemfile
+    - We moved all GraphQL gems to the actual `web_engine` Gemfile
+    - We moved Grape API gem to the actual `web_engine` Gemfile
 
     ```ruby
     Gem::Specification.new do |spec|
@@ -344,9 +344,9 @@ What was done?
 
 1. Move routes to the `engines/web_engine/config/routes.rb` file
 
-    - We moved GraphQL routes to the web_engine routes.
-    - We moved API routes to the web_engine routes.
-    - We moved most of the controller routes to the web_engine routes.
+    - We moved GraphQL routes to the `web_engine` routes.
+    - We moved API routes to the `web_engine` routes.
+    - We moved most of the controller routes to the `web_engine` routes.
 
     ```ruby
     Rails.application.routes.draw do
@@ -367,7 +367,7 @@ What was done?
 
 1. Connect GitLab application with the WebEngine
 
-    In GitLab Gemfile.rb, add web_engine to the engines group
+    In GitLab Gemfile.rb, add `web_engine` to the engines group
 
     ```ruby
     # Gemfile
@@ -505,7 +505,7 @@ Cons:
 [Draft: PoC - Move GraphQL to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
 
 - The [99% of changes](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180/diffs?commit_id=49c9881c6696eb620dccac71532a3173f5702ea8) as visible in the above MRs is moving files as-is.
-- The [actual work](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180/diffs?commit_id=1d9a9edfa29ea6638e7d8a6712ddf09f5be77a44) on fixing cross-dependencies, specs, and configuring web_engine
+- The [actual work](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180/diffs?commit_id=1d9a9edfa29ea6638e7d8a6712ddf09f5be77a44) on fixing cross-dependencies, specs, and configuring `web_engine`
 - We [adapted](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180/diffs?commit_id=d7f862cc209ce242000b2aec88ff7f4485acdd92) CI to test `engines/web_engine/` as a self-sufficient component of stack
 
 Today, loading GraphQL requires a bunch of [dependencies](https://gitlab.com/gitlab-org/gitlab/-/issues/288044):
@@ -581,7 +581,7 @@ to be created to ensure that we do not have explosion of engines.
 - [Draft: PoC - Move GraphQL to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50180)
 - [Draft: PoC - Move Controllers and Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53720)
 - [Draft: PoC - Move only Grape API:API to the WebEngine](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/53982)
-- [Measure performance impact for proposed web_engine](https://gitlab.com/gitlab-org/gitlab/-/issues/300548)
+- [Measure performance impact for proposed `web_engine`](https://gitlab.com/gitlab-org/gitlab/-/issues/300548)
 - [Create new models / classes within a module / namespace](https://gitlab.com/gitlab-org/gitlab/-/issues/212156)
 - [Make teams to be maintainers of their code](https://gitlab.com/gitlab-org/gitlab/-/issues/25872)
 - [Use nested structure to organize CI classes](https://gitlab.com/gitlab-org/gitlab/-/issues/209745)

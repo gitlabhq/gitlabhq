@@ -81,11 +81,7 @@ When using the GitLab UI form builder, the following components are available fo
 NOTE:
 Currently only the listed components are available but more components are planned.
 
-<!-- vale gitlab.Spelling = NO -->
-
-#### gitlab_ui_checkbox_component
-
-<!-- vale gitlab.Spelling = YES -->
+#### `gitlab_ui_checkbox_component`
 
 [GitLab UI Docs](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-form-form-checkbox--default)
 
@@ -110,11 +106,7 @@ This component supports [ViewComponent slots](https://viewcomponent.org/guide/sl
 | `label` | Checkbox label content. This slot can be used instead of the `label` argument. |
 | `help_text` | Help text content displayed below the checkbox. This slot can be used instead of the `help_text` argument. |
 
-<!-- vale gitlab.Spelling = NO -->
-
-#### gitlab_ui_radio_component
-
-<!-- vale gitlab.Spelling = YES -->
+#### `gitlab_ui_radio_component`
 
 [GitLab UI Docs](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-form-form-radio--default)
 

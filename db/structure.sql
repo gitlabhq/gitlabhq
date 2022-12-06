@@ -20379,6 +20379,7 @@ CREATE TABLE project_settings (
     suggested_reviewers_enabled boolean DEFAULT false NOT NULL,
     only_allow_merge_if_all_status_checks_passed boolean DEFAULT false NOT NULL,
     mirror_branch_regex text,
+    allow_pipeline_trigger_approve_deployment boolean DEFAULT false NOT NULL,
     CONSTRAINT check_2981f15877 CHECK ((char_length(jitsu_key) <= 100)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),

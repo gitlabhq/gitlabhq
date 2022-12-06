@@ -31,6 +31,13 @@ export default {
       return Object.entries(this.button).length > 0;
     },
   },
+  mounted() {
+    if (this.button.data) {
+      Object.entries(this.button.data).forEach(([attr, value]) => {
+        this.$el.dataset[attr] = value;
+      });
+    }
+  },
   methods: {
     clickHandler(event) {
       if (this.button.onClick) {
@@ -52,7 +59,6 @@ export default {
     :icon="icon"
     :title="label"
     :aria-label="label"
-    data-qa-selector="editor_toolbar_button"
     @click="clickHandler($event)"
   />
 </template>

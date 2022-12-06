@@ -164,6 +164,7 @@ project_setting:
     - suggested_reviewers_enabled
     - jitsu_key
     - mirror_branch_regex
+    - allow_pipeline_trigger_approve_deployment
 
 build_service_desk_setting: # service_desk_setting
   unexposed_attributes:

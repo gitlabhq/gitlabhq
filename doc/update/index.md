@@ -477,10 +477,26 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   To upgrade to this version, no records with a `NULL` `work_item_type_id` should exist on the `issues` table.
   There are multiple `BackfillWorkItemTypeIdForIssues` background migrations that will be finalized with
   the `EnsureWorkItemTypeBackfillMigrationFinished` post-deploy migration.
-- GitLab 15.7.0 introduced a [batched background migration](#batched-background-migrations) to
+- GitLab 15.4.0 introduced a [batched background migration](#batched-background-migrations) to
   [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
   migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
   has completed successfully before upgrading to 15.7.0.
+- A database constraint is added, specifying that the `namespace_id` column on the issues
+  table has no `NULL` values.
+
+  - If the `namespace_id` batched background migration from 15.4 failed (see above) then the 15.7 upgrade
+    fails with a database migration error.
+
+  - On GitLab instances with large issues tables, validating this constraint causes the upgrade to take
+    longer than usual. All database changes need to complete within a one-hour limit:
+
+    ```plaintext
+    FATAL: Mixlib::ShellOut::CommandTimeout: rails_migration[gitlab-rails]
+    [..]
+    Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
+    ```
+
+    A workaround exists to [complete the data change and the upgrade manually](package/index.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s).
 - The default Sidekiq `max_concurrency` has been changed to 20. This is now
   consistent in our documentation and product defaults.
 
@@ -530,6 +546,10 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   In a highly available or GitLab Geo environment, secrets need to be the same on all nodes.
   If you're manually syncing the secrets file across nodes, or manually specifying secrets in
   `/etc/gitlab/gitlab.rb`, make sure `/etc/gitlab/gitlab-secrets.json` is the same on all nodes.
+- GitLab 15.4.0 introduced a [batched background migration](#batched-background-migrations) to
+  [backfill `namespace_id` values on issues table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91921). This
+  migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
+  has completed successfully before upgrading to 15.7.0 or later.
 
 ### 15.3.3
 

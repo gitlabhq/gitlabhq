@@ -144,7 +144,7 @@ GitLab 13.9 through GitLab 14.3 are affected by a bug in which enabling [GitLab 
 
 ## Upgrading to GitLab 13.9
 
-### Error during zero-downtime upgrade: "cannot drop column asset_proxy_whitelist"
+### Error during zero-downtime upgrade: `cannot drop column asset_proxy_whitelist`
 
 We've detected an issue [with a column rename](https://gitlab.com/gitlab-org/gitlab/-/issues/324160)
 that prevents upgrades to GitLab 13.9.0, 13.9.1, 13.9.2 and 13.9.3 when following the zero-downtime steps. It is necessary

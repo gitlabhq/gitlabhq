@@ -345,7 +345,7 @@ and displayed at a post-merge pipeline in [merge request pages](../../user/proje
 
 To activate this tracking, your environment must be configured in the following:
 
-- [Environment name](../yaml/index.md#environmentname) is not foldered with `/` (that is, top-level/long-lived environments), _OR_
+- [Environment name](../yaml/index.md#environmentname) is not using folders with `/` (that is, top-level/long-lived environments), _OR_
 - [Environment tier](#deployment-tier-of-environments) is either `production` or `staging`.
 
 Here are the example setups of [`environment` keyword](../yaml/index.md#environment) in `.gitlab-ci.yml`:

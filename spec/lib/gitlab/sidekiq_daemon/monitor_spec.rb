@@ -37,6 +37,17 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
     end
   end
 
+  describe '#with_running_jobs' do
+    it 'yields with correct jobs' do
+      jid = SecureRandom.hex
+      running_jobs = { jid => hash_including(worker_class: 'worker_class') }
+
+      monitor.within_job('worker_class', jid, 'queue') do
+        expect { |b| monitor.with_running_jobs(&b) }.to yield_with_args(running_jobs)
+      end
+    end
+  end
+
   describe '#run_thread when notification channel not enabled' do
     subject { monitor.send(:run_thread) }
 

@@ -100,7 +100,7 @@ module API
         options = {
           with: serializer,
           current_user: current_user,
-          statistics: params[:statistics] && current_user&.admin?
+          statistics: params[:statistics] && current_user&.can_read_all_resources?
         }
 
         groups = groups.with_statistics if options[:statistics]

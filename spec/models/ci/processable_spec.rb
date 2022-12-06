@@ -423,8 +423,8 @@ RSpec.describe Ci::Processable do
 
       it 'returns all needs attributes' do
         is_expected.to contain_exactly(
-          { 'artifacts' => true, 'name' => 'test1', 'optional' => false },
-          { 'artifacts' => true, 'name' => 'test2', 'optional' => false }
+          { 'artifacts' => true, 'name' => 'test1', 'optional' => false, 'partition_id' => build.partition_id },
+          { 'artifacts' => true, 'name' => 'test2', 'optional' => false, 'partition_id' => build.partition_id }
         )
       end
     end

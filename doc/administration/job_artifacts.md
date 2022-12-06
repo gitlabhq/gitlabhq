@@ -235,7 +235,7 @@ by the `gitlab:artifacts:migrate` Rake task.
 To migrate back to local storage:
 
 1. Run `gitlab-rake gitlab:artifacts:migrate_to_local`.
-1. Disable object_storage for artifacts in `gitlab.rb`:
+1. Disable object storage for artifacts in `gitlab.rb`:
    - Set `gitlab_rails['artifacts_object_store_enabled'] = false`.
    - Comment out all other `artifacts_object_store` settings, including the entire
      `artifacts_object_store_connection` section, including the closing `}`.

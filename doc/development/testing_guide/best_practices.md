@@ -1440,7 +1440,7 @@ or [cause the universe to implode](../contributing/verify/index.md#do-not-cause-
 
 ### Factories
 
-GitLab uses [factory_bot](https://github.com/thoughtbot/factory_bot) as a test fixture replacement.
+GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test fixture replacement.
 
 - Factory definitions live in `spec/factories/`, named using the pluralization
   of their corresponding model (`User` factories are defined in `users.rb`).

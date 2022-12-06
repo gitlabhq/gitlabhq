@@ -65,6 +65,12 @@ module Gitlab
         end
       end
 
+      def with_running_jobs
+        @jobs_mutex.synchronize do
+          yield @jobs.dup
+        end
+      end
+
       private
 
       def run_thread

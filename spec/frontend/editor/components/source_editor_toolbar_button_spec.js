@@ -54,6 +54,25 @@ describe('Source Editor Toolbar button', () => {
     });
   });
 
+  describe('data attributes', () => {
+    it.each`
+      description                                 | data                                        | expectedDataset
+      ${'does not set any attribute'}             | ${undefined}                                | ${{}}
+      ${'does not set any attribute'}             | ${[]}                                       | ${{}}
+      ${'does not set any attribute'}             | ${['foo']}                                  | ${{}}
+      ${'does not set any attribute'}             | ${'bar'}                                    | ${{}}
+      ${'does set single attribute correctly'}    | ${{ qaSelector: 'foo' }}                    | ${{ qaSelector: 'foo' }}
+      ${'does set multiple attributes correctly'} | ${{ qaSelector: 'foo', youCanSeeMe: true }} | ${{ qaSelector: 'foo', youCanSeeMe: 'true' }}
+    `('$description when data="$data"', ({ data, expectedDataset }) => {
+      createComponent({
+        button: {
+          data,
+        },
+      });
+      expect(findButton().element.dataset).toEqual(expect.objectContaining(expectedDataset));
+    });
+  });
+
   describe('click handler', () => {
     let clickEvent;
 

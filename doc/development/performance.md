@@ -312,7 +312,7 @@ To export the flame graph to an SVG file, use [Brendan Gregg's FlameGraph tool](
 stackprof --stackcollapse  /tmp/group_member_policy_spec.rb.dump | flamegraph.pl > flamegraph.svg
 ```
 
-It's also possible to view flame graphs through [speedscope](https://github.com/jlfwong/speedscope).
+It's also possible to view flame graphs through [Speedscope](https://github.com/jlfwong/speedscope).
 You can do this when using the [performance bar](profiling.md#speedscope-flamegraphs)
 and when [profiling code blocks](https://github.com/jlfwong/speedscope/wiki/Importing-from-stackprof-(ruby)).
 This option isn't supported by `bin/rspec-stackprof`.

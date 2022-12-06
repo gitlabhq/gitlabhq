@@ -181,7 +181,7 @@ The highest encountered error rate is 4.9%.
 When correctly used, the `estimate_batch_distinct_count` method enables efficient counting over
 columns that contain non-unique values, which cannot be assured by other counters.
 
-##### estimate_batch_distinct_count method
+##### `estimate_batch_distinct_count` method
 
 Method:
 
@@ -316,7 +316,7 @@ HyperLogLog (HLL) is a probabilistic algorithm and its **results always includes
 used HLL implementation is "approximated with a standard error of 0.81%".
 
 NOTE:
- A user's consent for usage_stats (`User.single_user&.requires_usage_stats_consent?`) is not checked during the data tracking stage due to performance reasons. Keys corresponding to those counters are present in Redis even if `usage_stats_consent` is still required. However, no metric is collected from Redis and reported back to GitLab as long as `usage_stats_consent` is required.
+ A user's consent for `usage_stats` (`User.single_user&.requires_usage_stats_consent?`) is not checked during the data tracking stage due to performance reasons. Keys corresponding to those counters are present in Redis even if `usage_stats_consent` is still required. However, no metric is collected from Redis and reported back to GitLab as long as `usage_stats_consent` is required.
 
 With `Gitlab::UsageDataCounters::HLLRedisCounter` we have available data structures used to count unique values.
 
@@ -509,7 +509,7 @@ We have the following recommendations for [adding new events](#add-new-events):
 
 Events are tracked behind optional [feature flags](../feature_flags/index.md) due to concerns for Redis performance and scalability.
 
-For a full list of events and corresponding feature flags see, [known_events](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
+For a full list of events and corresponding feature flags, see the [`known_events/`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/) files.
 
 To enable or disable tracking for specific event in <https://gitlab.com> or <https://about.staging.gitlab.com>, run commands such as the following to
 [enable or disable the corresponding feature](../feature_flags/index.md).
@@ -870,7 +870,7 @@ these steps:
 Only metrics calculated with [Estimated Batch Counters](#estimated-batch-counters)
 can be persisted for database sourced aggregated metrics. To persist a metric,
 inject a Ruby block into the
-[estimate_batch_distinct_count](#estimate_batch_distinct_count-method) method.
+[`estimate_batch_distinct_count`](#estimate_batch_distinct_count-method) method.
 This block should invoke the
 `Gitlab::Usage::Metrics::Aggregates::Sources::PostgresHll.save_aggregated_metrics`
 [method](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage/metrics/aggregates/sources/postgres_hll.rb#L21),

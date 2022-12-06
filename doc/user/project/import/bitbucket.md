@@ -104,7 +104,7 @@ current Bitbucket public name, and reconnect if there's a mismatch:
 
 1. [Use the API to get the currently authenticated user](../../../api/users.md#for-normal-users-1).
 
-1. In the API's response, the `identities` attribute contains the Bitbucket account that exists in
+1. In the API response, the `identities` attribute contains the Bitbucket account that exists in
    the GitLab database. If the `extern_uid` doesn't match the current Bitbucket public name, the
    user should reconnect their Bitbucket account in the [GitLab profile service sign-in](https://gitlab.com/-/profile/account).
 

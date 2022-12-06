@@ -156,7 +156,7 @@ end
 
 ## Setting the deduplication time-to-live (TTL)
 
-Deduplication depends on an idempotency key that is stored in Redis. This is normally
+Deduplication depends on an idempotent key that is stored in Redis. This is normally
 cleared by the configured deduplication strategy.
 
 However, the key can remain until its TTL in certain cases like:

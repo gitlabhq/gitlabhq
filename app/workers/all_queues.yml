@@ -1038,6 +1038,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: github_gists_importer:github_gists_import_import_gist
+  :worker_name: Gitlab::GithubGistsImport::ImportGistWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: github_importer:github_import_attachments_import_issue
   :worker_name: Gitlab::GithubImport::Attachments::ImportIssueWorker
   :feature_category: :importers

@@ -133,7 +133,7 @@ module API
       get feature_category: :users, urgency: :low do
         authenticated_as_admin! if params[:extern_uid].present? && params[:provider].present?
 
-        unless current_user&.admin?
+        unless current_user&.can_read_all_resources?
           params.except!(:created_after, :created_before, :order_by, :sort, :two_factor, :without_projects)
         end
 
@@ -151,7 +151,7 @@ module API
         users = UsersFinder.new(current_user, params).execute
         users = reorder_users(users)
 
-        entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        entity = current_user&.can_read_all_resources? ? Entities::UserWithAdmin : Entities::UserBasic
 
         if entity == Entities::UserWithAdmin
           users = users.preload(:identities, :u2f_registrations, :webauthn_registrations, :namespace, :followers, :followees, :user_preference)
@@ -177,7 +177,7 @@ module API
       get ":id", feature_category: :users, urgency: :low do
         forbidden!('Not authorized!') unless current_user
 
-        unless current_user.admin?
+        unless current_user.can_read_all_resources?
           check_rate_limit!(:users_get_by_id,
             scope: current_user,
             users_allowlist: Gitlab::CurrentSettings.current_application_settings.users_get_by_id_limit_allowlist
@@ -188,7 +188,7 @@ module API
 
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = { with: current_user.admin? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
+        opts = { with: current_user.can_read_all_resources? ? Entities::UserDetailsWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts
@@ -373,7 +373,8 @@ module API
         user = User.find_by_id(params[:id])
         not_found!('User') unless user
 
-        forbidden!('Two-factor authentication for admins cannot be disabled via the API. Use the Rails console') if user.admin?
+        # We're disabling Cop/UserAdmin because it checks if the given user (not the current user) is an admin.
+        forbidden!('Two-factor authentication for admins cannot be disabled via the API. Use the Rails console') if user.admin? # rubocop:disable Cop/UserAdmin
 
         result = TwoFactor::DestroyService.new(current_user, user: user).execute
 
@@ -1008,7 +1009,8 @@ module API
         end
         get feature_category: :users, urgency: :low do
           entity =
-            if current_user.admin?
+            # We're disabling Cop/UserAdmin because it checks if the given user is an admin.
+            if current_user.admin? # rubocop:disable Cop/UserAdmin
               Entities::UserWithAdmin
             else
               Entities::UserPublic

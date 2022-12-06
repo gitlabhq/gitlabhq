@@ -243,7 +243,7 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
 
     it_behaves_like 'as configurator',
                     Gitlab::Memory::Watchdog::TermProcessHandler,
-                    Gitlab::Memory::Watchdog::EventReporter,
+                    Gitlab::Memory::Watchdog::SidekiqEventReporter,
                     'SIDEKIQ_MEMORY_KILLER_CHECK_INTERVAL',
                     described_class::DEFAULT_SIDEKIQ_SLEEP_INTERVAL_S
 

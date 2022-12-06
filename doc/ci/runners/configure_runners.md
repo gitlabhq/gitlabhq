@@ -292,12 +292,12 @@ variables:
 
 A runner can have one of the following statuses.
 
-| Status | Description |
-|--------|-------------|
-| **online** | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
-| **offline** | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
-| **stale** | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
-| **never_contacted** | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
+| Status  | Description |
+|---------|-------------|
+| `online`  | The runner has contacted GitLab within the last 2 hours and is available to run jobs. |
+| `offline` | The runner has not contacted GitLab in more than 2 hours and is not available to run jobs. Check the runner to see if you can bring it online. |
+| `stale`   | The runner has not contacted GitLab in more than 3 months. If the runner was created more than 3 months ago, but it never contacted the instance, it is also considered **stale**. |
+| `never_contacted` | The runner has never contacted GitLab. To make the runner contact GitLab, run `gitlab-runner run`. |
 
 ## Configure runner behavior with variables
 

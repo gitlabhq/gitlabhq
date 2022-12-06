@@ -279,7 +279,7 @@ Feature.disable(:github_importer_lower_per_page_limit, group)
 
 ## Import from GitHub Enterprise on an internal network
 
-If your GitHub Enterprise instance is on a internal network that is unaccessible to the internet, you can use a reverse proxy
+If your GitHub Enterprise instance is on a internal network that is inaccessible to the internet, you can use a reverse proxy
 to allow GitLab.com to access the instance.
 
 The proxy needs to:

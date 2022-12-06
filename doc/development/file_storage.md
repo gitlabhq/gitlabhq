@@ -36,7 +36,7 @@ There are many places where file uploading is used, according to contexts:
 GitLab started saving everything on local disk. While directory location changed from previous versions,
 they are still not 100% standardized. You can see them below:
 
-| Description                           | In DB? | Relative path (from CarrierWave.root)                       | Uploader class         | model_type |
+| Description                           | In DB? | Relative path (from CarrierWave.root)                       | Uploader class         | Model type |
 | ------------------------------------- | ------ | ----------------------------------------------------------- | ---------------------- | ---------- |
 | Instance logo                         | yes    | `uploads/-/system/appearance/logo/:id/:filename`              | `AttachmentUploader`   | Appearance |
 | Header logo                           | yes    | `uploads/-/system/appearance/header_logo/:id/:filename`       | `AttachmentUploader`   | Appearance |

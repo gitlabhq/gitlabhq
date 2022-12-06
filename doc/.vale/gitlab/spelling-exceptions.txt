@@ -21,7 +21,7 @@ anonymized
 Ansible
 Anthos
 Anycast
-Apdex
+apdex
 API
 APIs
 Apparmor
@@ -123,6 +123,7 @@ callouts
 callstack
 callstacks
 camelCase
+camelCased
 Camo
 canonicalization
 canonicalized
@@ -264,6 +265,8 @@ deserialization
 deserialize
 deserializers
 deserializes
+desugar
+desugars
 desynchronized
 Dev
 DevOps
@@ -344,13 +347,14 @@ Fio
 firewalled
 firewalling
 fixup
-Flamegraph
+flamegraph
 flamegraphs
 Flawfinder
 Flickr
 Fluentd
 Flutterwave
 Flycheck
+focusable
 Forgerock
 formatters
 Fortinet
@@ -539,6 +543,7 @@ Mattermost
 mbox
 memoization
 memoize
+memoizes
 memoized
 memoizing
 Memorystore
@@ -629,9 +634,12 @@ Packwerk
 paginator
 parallelization
 parallelizations
+PascalCase
+PascalCased
 passthrough
 passthroughs
 passwordless
+parsable
 Patroni
 PDFs
 performant
@@ -709,6 +717,7 @@ Qualys
 queryable
 Quicktime
 Rackspace
+railties
 Raspbian
 rbenv
 rbspy
@@ -857,6 +866,8 @@ Slony
 SLOs
 smartcard
 smartcards
+snake_case
+snake_cased
 snapshotting
 Snowplow
 Snyk

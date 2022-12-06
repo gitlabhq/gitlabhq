@@ -301,7 +301,7 @@ module API
 
     def authenticated_as_admin!
       authenticate!
-      forbidden! unless current_user.admin?
+      forbidden! unless current_user.can_admin_all_resources?
     end
 
     def authorize!(action, subject = :global, reason = nil)
@@ -710,7 +710,7 @@ module API
 
       unauthorized! unless initial_current_user
 
-      unless initial_current_user.admin?
+      unless initial_current_user.can_admin_all_resources?
         forbidden!('Must be admin to use sudo')
       end
 

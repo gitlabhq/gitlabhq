@@ -78,13 +78,13 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         def authorized_merge_requests
-          MergeRequestsFinder.new(current_user, authorized_only: !current_user.admin?)
+          MergeRequestsFinder.new(current_user, authorized_only: !current_user.can_read_all_resources?)
             .execute.with_jira_integration_associations
         end
 
         def authorized_merge_requests_for_project(project)
           MergeRequestsFinder
-            .new(current_user, authorized_only: !current_user.admin?, project_id: project.id)
+            .new(current_user, authorized_only: !current_user.can_read_all_resources?, project_id: project.id)
             .execute.with_jira_integration_associations
         end
 

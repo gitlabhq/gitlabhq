@@ -30,7 +30,7 @@ module Gitlab
               config.write_heap_dumps = write_heap_dumps?
               config.sleep_time_seconds = sidekiq_sleep_time
               config.monitors(&configure_monitors_for_sidekiq)
-              config.event_reporter = EventReporter.new(logger: ::Sidekiq.logger)
+              config.event_reporter = SidekiqEventReporter.new
             end
           end
 

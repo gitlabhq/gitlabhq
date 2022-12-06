@@ -147,7 +147,7 @@ help benefit translation. For example, we:
   - [since and because](word_list.md#since)
   - [once and after](word_list.md#once)
   - [it](word_list.md#it)
-- Avoid [ing](word_list.md#-ing-words) words.
+- Avoid [-ing](word_list.md#-ing-words) words.
 
 [The GitLab voice](#the-gitlab-voice) dictates that we write clearly and directly,
 and with translation in mind. [The word list](word_list.md) and our Vale rules
@@ -717,7 +717,7 @@ Put the entire link on a single line so that [linters](../testing.md) can find i
 ### Links in separate repositories
 
 To link to a page in a different repository, use an absolute URL.
-For example, to link from a page in the GitLab repo to the Charts repo,
+For example, to link from a page in the GitLab repository to the Charts repository,
 use a URL like `https://docs.gitlab.com/charts/`.
 
 ### Anchor links

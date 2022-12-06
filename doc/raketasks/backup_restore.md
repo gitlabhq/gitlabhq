@@ -887,7 +887,7 @@ Truncate the filenames in the `uploads` table:
 
       - `current_filename`: a filename that is currently more than 246 characters long.
       - `new_filename`: a filename that has been truncated to 246 characters maximum.
-      - `new_path`: new path considering the new_filename (truncated).
+      - `new_path`: new path considering the `new_filename` (truncated).
 
    Once you validate the batch results, you must change the batch size (`row_id`) using the following sequence of numbers (10000 to 20000). Repeat this process until you reach the last record in the `uploads` table.
 

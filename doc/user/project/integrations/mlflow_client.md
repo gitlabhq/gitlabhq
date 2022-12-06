@@ -50,7 +50,7 @@ that can be explored by selecting an experiment.
 - The API GitLab supports is the one defined at MLFlow version 1.28.0.
 - API endpoints not listed above are not supported.
 - During creation of experiments and runs, tags are ExperimentTags and RunTags are stored, even though they are not displayed.
-- MLFLow Model Registry is not supported.
+- MLFlow Model Registry is not supported.
 
 ## Supported methods and caveats
 
@@ -59,7 +59,7 @@ tested. More information can be found in the [MLFlow Documentation](https://www.
 
 ### `set_experiment()`
 
-Accepts both experiment_name and experiment_id
+Accepts both `experiment_name` and `experiment_id`
 
 ### `start_run()`
 

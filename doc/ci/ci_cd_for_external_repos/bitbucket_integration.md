@@ -122,7 +122,7 @@ To use GitLab CI/CD with a Bitbucket Cloud repository:
 
 1. In Bitbucket, create a `.gitlab-ci.yml` file to use the script to push
    pipeline success and failures to Bitbucket. Similar to the script added above,
-   this file is copied to the GitLab repo as part of the mirroring process.
+   this file is copied to the GitLab repository as part of the mirroring process.
 
    ```yaml
    stages:

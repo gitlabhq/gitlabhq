@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe VersionCheck do
+RSpec.describe VersionCheck, :use_clean_rails_memory_store_caching do
+  include ReactiveCachingHelpers
+
   describe '.url' do
     it 'returns the correct URL' do
       expect(described_class.url).to match(%r{\A#{Regexp.escape(described_class.host)}/check\.json\?gitlab_info=\w+})
@@ -30,7 +32,7 @@ RSpec.describe VersionCheck do
       end
 
       it 'returns the response object' do
-        expect(described_class.new.calculate_reactive_cache).to eq("{ \"status\": \"success\" }")
+        expect(described_class.new.calculate_reactive_cache).to eq({ "status" => "success" })
       end
     end
 
@@ -39,38 +41,31 @@ RSpec.describe VersionCheck do
         stub_request(:get, described_class.url).to_return(status: 500, body: nil, headers: {})
       end
 
-      it 'returns nil' do
-        expect(described_class.new.calculate_reactive_cache).to be(nil)
+      it 'returns an error hash' do
+        expect(described_class.new.calculate_reactive_cache).to eq({ error: 'version check failed', status: 500 })
       end
     end
   end
 
   describe '#response' do
     context 'cache returns value' do
-      let(:response) { { "severity" => "success" }.to_json }
-
-      before do
-        allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:with_reactive_cache).and_return(response)
-        end
-      end
-
       it 'returns the response object' do
-        expect(described_class.new.response).to be(response)
+        version_check = described_class.new
+        data = { status: 'success' }
+        stub_reactive_cache(version_check, data)
+
+        expect(version_check.response).to eq(data)
       end
     end
 
-    context 'cache returns nil' do
-      let(:response) { nil }
+    context 'cache returns error' do
+      it 'returns nil and invalidates the reactive cache' do
+        version_check = described_class.new
+        stub_reactive_cache(version_check, error: 'version check failed')
 
-      before do
-        allow_next_instance_of(described_class) do |instance|
-          allow(instance).to receive(:with_reactive_cache).and_return(response)
-        end
-      end
-
-      it 'returns nil' do
-        expect(described_class.new.response).to be(nil)
+        expect(version_check).to receive(:refresh_reactive_cache!).and_call_original
+        expect(version_check.response).to be_nil
+        expect(read_reactive_cache(version_check)).to be_nil
       end
     end
   end

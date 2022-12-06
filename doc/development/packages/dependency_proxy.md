@@ -117,7 +117,7 @@ Manifests are more complicated, partially due to [rate limiting on DockerHub](ht
 A manifest is essentially a recipe for creating an image. It has a list of blobs to create a certain image. So
 `alpine:latest` has a manifest associated with it that specifies the blobs needed to create the `alpine:latest`
 image. The interesting part is that `alpine:latest` can change over time, so we can't just cache the manifest and
-assume it is OK to use forever. Instead, we must check the digest of the manifest, which is an Etag. This gets
+assume it is OK to use forever. Instead, we must check the digest of the manifest, which is an ETag. This gets
 interesting because the requests for manifests often don't include the digest. So how do we know if the manifest
 we have cached is still the most up-to-date `alpine:latest`? DockerHub allows free HEAD requests that don't count
 toward their rate limit. The HEAD request returns the manifest digest so we can tell whether or not the one we

@@ -80,7 +80,7 @@ module API
           delete "#{endpoint}/:award_id", feature_category: awardable_params[:feature_category] do
             award = awardable.award_emoji.find(params[:award_id])
 
-            unauthorized! unless award.user == current_user || current_user&.admin?
+            unauthorized! unless award.user == current_user || current_user&.can_admin_all_resources?
 
             destroy_conditionally!(award)
           end

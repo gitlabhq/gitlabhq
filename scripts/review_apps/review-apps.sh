@@ -375,12 +375,15 @@ function display_deployment_debug() {
   echoinfo "[debugging data] k8s resources:"
   kubectl get svc,pods,jobs -o wide --namespace "${namespace}"
 
-  echoinfo "[debugging data] k8s events in namespace:"
-  kubectl get events --sort-by='.metadata.creationTimestamp' --namespace "${namespace}"
+  echoinfo "[debugging data] PostgreSQL logs:"
+  kubectl logs -l app=postgresql --all-containers --namespace "${namespace}"
+
+  echoinfo "[debugging data] DB migrations logs:"
+  kubectl logs -l app=migrations --all-containers --namespace "${namespace}"
 
   echoinfo "[debugging data] Webservice logs:"
   kubectl logs -l app=webservice --all-containers --namespace "${namespace}"
 
-  echoinfo "[debugging data] PostgreSQL logs:"
-  kubectl logs -l app=postgresql --all-containers --namespace "${namespace}"
+  echoinfo "[debugging data] k8s events in namespace:"
+  kubectl get events --sort-by='.metadata.creationTimestamp' --namespace "${namespace}"
 }
