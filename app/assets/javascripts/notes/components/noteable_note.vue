@@ -443,7 +443,7 @@ export default {
       </gl-avatar-link>
     </div>
 
-    <div v-else-if="!isDraft" class="timeline-avatar gl-float-left">
+    <div v-else class="timeline-avatar gl-float-left">
       <gl-avatar-link :href="author.path">
         <gl-avatar
           :src="author.avatar_url"
@@ -516,6 +516,9 @@ export default {
           @handleFormUpdate="formUpdateHandler"
           @cancelForm="formCancelHandler"
         />
+        <div class="timeline-discussion-body-footer">
+          <slot name="after-note-body"></slot>
+        </div>
       </div>
     </div>
   </timeline-entry-item>

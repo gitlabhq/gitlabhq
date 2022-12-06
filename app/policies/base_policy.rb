@@ -68,6 +68,8 @@ class BasePolicy < DeclarativePolicy::Base
   rule { default }.enable :read_cross_project
 
   condition(:is_gitlab_com, score: 0, scope: :global) { ::Gitlab.com? }
+
+  condition(:is_bot?) { @user&.bot? }
 end
 
 BasePolicy.prepend_mod_with('BasePolicy')

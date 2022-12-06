@@ -23,6 +23,19 @@ RSpec.shared_examples 'when regex matching everything is specified' do
   end
 end
 
+RSpec.shared_examples 'when regex matching everything is specified and latest is not kept' do
+  |delete_expectations:, service_response_extra: {}, supports_caching: false|
+
+  let(:params) do
+    { 'name_regex_delete' => '.*', 'keep_latest' => false }
+  end
+
+  it_behaves_like 'removing the expected tags',
+                  service_response_extra: service_response_extra,
+                  supports_caching: supports_caching,
+                  delete_expectations: delete_expectations
+end
+
 RSpec.shared_examples 'when delete regex matching specific tags is used' do
   |service_response_extra: {}, supports_caching: false|
   let(:params) do

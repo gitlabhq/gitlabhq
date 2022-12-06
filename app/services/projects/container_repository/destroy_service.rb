@@ -5,7 +5,8 @@ module Projects
     class DestroyService < BaseService
       CLEANUP_TAGS_SERVICE_PARAMS = {
         'name_regex_delete' => '.*',
-        'container_expiration_policy' => true # to avoid permissions checks
+        'container_expiration_policy' => true, # to avoid permissions checks
+        'keep_latest' => false
       }.freeze
 
       def execute(container_repository, disable_timeout: true)

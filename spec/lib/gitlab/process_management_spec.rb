@@ -41,15 +41,6 @@ RSpec.describe Gitlab::ProcessManagement do
     end
   end
 
-  describe '.wait_async' do
-    it 'waits for a process in a separate thread' do
-      thread = described_class.wait_async(Process.spawn('true'))
-
-      # Upon success Process.wait just returns the PID.
-      expect(thread.value).to be_a_kind_of(Numeric)
-    end
-  end
-
   # In the X_alive? checks, we check negative PIDs sometimes as a simple way
   # to be sure the pids are definitely for non-existent processes.
   # Note that -1 is special, and sends the signal to every process we have permission

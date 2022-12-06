@@ -101,12 +101,17 @@ export const I18N_AGENT_TOKEN = {
   basicInstallBody: s__(
     'ClusterAgents|From a terminal, connect to your cluster and run this command. The token is included in the command.',
   ),
+  helmVersionText: s__(
+    'ClusterAgents|Use a Helm version compatible with your Kubernetes version (see %{linkStart}Helm version support policy%{linkEnd}).',
+  ),
 
   advancedInstallTitle: s__('ClusterAgents|Advanced installation methods'),
   advancedInstallBody: s__(
     'ClusterAgents|%{linkStart}View the documentation%{linkEnd} for advanced installation. Ensure you have your access token available.',
   ),
 };
+
+export const HELM_VERSION_POLICY_URL = 'https://helm.sh/docs/topics/version_skew/';
 
 export const I18N_AGENT_MODAL = {
   registerAgentButton: s__('ClusterAgents|Register'),

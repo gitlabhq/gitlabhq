@@ -20,8 +20,6 @@ export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
 export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
 export const WIDGET_TYPE_ITERATION = 'ITERATION';
 
-export const WORK_ITEM_VIEWED_STORAGE_KEY = 'gl-show-work-item-banner';
-
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
 export const WORK_ITEM_TYPE_ENUM_TASK = 'TASK';

@@ -1279,10 +1279,16 @@ msgstr ""
 msgid "(Group Managed Account)"
 msgstr ""
 
+msgid "(Limited to %{quota} pipeline minutes per month)"
+msgstr ""
+
 msgid "(No changes)"
 msgstr ""
 
 msgid "(UTC %{offset}) %{timezone}"
+msgstr ""
+
+msgid "(Unlimited pipeline minutes)"
 msgstr ""
 
 msgid "(check progress)"
@@ -9254,6 +9260,9 @@ msgid "ClusterAgents|Token revoked by %{userName}"
 msgstr ""
 
 msgid "ClusterAgents|Unknown user"
+msgstr ""
+
+msgid "ClusterAgents|Use a Helm version compatible with your Kubernetes version (see %{linkStart}Helm version support policy%{linkEnd})."
 msgstr ""
 
 msgid "ClusterAgents|Valid access token"
@@ -17293,15 +17302,6 @@ msgid "FloC|Federated Learning of Cohorts (FLoC)"
 msgstr ""
 
 msgid "FloC|Participate in FLoC"
-msgstr ""
-
-msgid "FlowdockService|Enter your Flowdock token."
-msgstr ""
-
-msgid "FlowdockService|Send event notifications from GitLab to Flowdock flows."
-msgstr ""
-
-msgid "FlowdockService|Send event notifications from GitLab to Flowdock flows. %{docs_link}"
 msgstr ""
 
 msgid "Focus filter bar"
@@ -27117,6 +27117,9 @@ msgstr ""
 msgid "New branch unavailable"
 msgstr ""
 
+msgid "New code quality findings"
+msgstr ""
+
 msgid "New confidential epic title "
 msgstr ""
 
@@ -31336,6 +31339,9 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
+msgid "Product Analytics|Onboarding view"
+msgstr ""
+
 msgid "Product analytics"
 msgstr ""
 
@@ -35502,6 +35508,9 @@ msgstr ""
 msgid "Runners|IP Address"
 msgstr ""
 
+msgid "Runners|Idle"
+msgstr ""
+
 msgid "Runners|Install a runner"
 msgstr ""
 
@@ -35706,6 +35715,9 @@ msgid "Runners|Runners are the agents that run your CI/CD jobs. Follow the %{lin
 msgstr ""
 
 msgid "Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator."
+msgstr ""
+
+msgid "Runners|Running"
 msgstr ""
 
 msgid "Runners|Runs untagged jobs"
@@ -38054,6 +38066,9 @@ msgid "Share the %{strong_open}GitLab single sign-on URL%{strong_close} with mem
 msgstr ""
 
 msgid "Shared Runners"
+msgstr ""
+
+msgid "Shared Runners:"
 msgstr ""
 
 msgid "Shared projects"
@@ -46704,9 +46719,6 @@ msgstr ""
 msgid "WorkItem|Incident"
 msgstr ""
 
-msgid "WorkItem|Introducing tasks"
-msgstr ""
-
 msgid "WorkItem|Issue"
 msgstr ""
 
@@ -46714,9 +46726,6 @@ msgid "WorkItem|Iteration"
 msgstr ""
 
 msgid "WorkItem|Key result"
-msgstr ""
-
-msgid "WorkItem|Learn about tasks."
 msgstr ""
 
 msgid "WorkItem|Milestone"
@@ -46834,9 +46843,6 @@ msgid "WorkItem|Turn on confidentiality"
 msgstr ""
 
 msgid "WorkItem|Undo"
-msgstr ""
-
-msgid "WorkItem|Use tasks to break down your work in an issue into smaller pieces. %{learnMoreLink}"
 msgstr ""
 
 msgid "WorkItem|View current version"

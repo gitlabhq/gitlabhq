@@ -391,7 +391,6 @@ Layout/LineLength:
     - 'app/models/integrations/emails_on_push.rb'
     - 'app/models/integrations/ewm.rb'
     - 'app/models/integrations/external_wiki.rb'
-    - 'app/models/integrations/flowdock.rb'
     - 'app/models/integrations/hangouts_chat.rb'
     - 'app/models/integrations/harbor.rb'
     - 'app/models/integrations/jenkins.rb'

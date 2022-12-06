@@ -49,3 +49,5 @@ export const CONFLICT_TEXT = {
 };
 
 export const HIDE_COMMENTS = __('Hide comments');
+
+export const NEW_CODE_QUALITY_FINDINGS = __('New code quality findings');

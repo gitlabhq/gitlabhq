@@ -25,7 +25,7 @@ class Projects::Ci::DailyBuildGroupReportResultsController < Projects::Applicati
       {
         date: 'date',
         group_name: 'group_name',
-        param_type => -> (record) { record.data[param_type] }
+        param_type => ->(record) { record.data[param_type] }
       }
     ).render
   end

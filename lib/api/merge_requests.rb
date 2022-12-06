@@ -733,25 +733,6 @@ module API
       rescue ::MergeRequest::RebaseLockTimeout => e
         render_api_error!(e.message, 409)
       end
-
-      desc 'Reset approvals of a merge request' do
-        detail 'Clear all approvals of merge request. This feature was added in GitLab 15.4'
-        failure [
-          { code: 401, message: 'Unauthorized' },
-          { code: 404, message: 'Not found' }
-        ]
-        tags %w[merge_requests]
-      end
-      put ':id/merge_requests/:merge_request_iid/reset_approvals', feature_category: :code_review, urgency: :low do
-        merge_request = find_project_merge_request(params[:merge_request_iid])
-
-        unauthorized! unless current_user.bot? && merge_request.eligible_for_approval_by?(current_user)
-
-        merge_request.approvals.delete_all
-
-        status :accepted
-      end
-
       desc 'List issues that close on merge' do
         detail 'Get all the issues that would be closed by merging the provided merge request.'
         success Entities::MRNote

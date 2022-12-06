@@ -142,6 +142,8 @@ module ProjectsHelper
   end
 
   def project_search_tabs?(tab)
+    return false unless @project.present?
+
     abilities = Array(search_tab_ability_map[tab])
 
     abilities.any? { |ability| can?(current_user, ability, @project) }

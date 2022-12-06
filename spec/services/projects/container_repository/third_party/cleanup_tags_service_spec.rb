@@ -51,6 +51,16 @@ RSpec.describe Projects::ContainerRepository::ThirdParty::CleanupTagsService, :c
                     },
                     supports_caching: true
 
+    it_behaves_like 'when regex matching everything is specified and latest is not kept',
+                    delete_expectations: [%w[A Ba Bb C D E latest]],
+                    service_response_extra: {
+                      before_truncate_size: 7,
+                      after_truncate_size: 7,
+                      before_delete_size: 7,
+                      cached_tags_count: 0
+                    },
+                    supports_caching: true
+
     it_behaves_like 'when delete regex matching specific tags is used',
                     service_response_extra: {
                       before_truncate_size: 2,

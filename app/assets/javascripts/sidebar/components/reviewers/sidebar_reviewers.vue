@@ -143,6 +143,13 @@ export default {
     eventHub.$off('sidebar.saveReviewers', this.saveReviewers);
   },
   methods: {
+    reviewBySelf() {
+      // Notify gl dropdown that we are now assigning to current user
+      this.$el.parentElement.dispatchEvent(new Event('assignYourself'));
+
+      this.mediator.addSelfReview();
+      this.saveReviewers();
+    },
     saveReviewers() {
       this.loading = true;
 
@@ -181,6 +188,7 @@ export default {
       :editable="canUpdate"
       :issuable-type="issuableType"
       @request-review="requestReview"
+      @assign-self="reviewBySelf"
     />
   </div>
 </template>

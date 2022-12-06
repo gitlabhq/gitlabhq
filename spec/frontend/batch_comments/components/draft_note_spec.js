@@ -1,6 +1,5 @@
 import { nextTick } from 'vue';
 import { GlButton, GlBadge } from '@gitlab/ui';
-import { getByRole } from '@testing-library/dom';
 import { shallowMount } from '@vue/test-utils';
 import { stubComponent } from 'helpers/stub_component';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
@@ -14,6 +13,7 @@ const NoteableNoteStub = stubComponent(NoteableNote, {
   template: `
     <div>
       <slot name="note-header-info">Test</slot>
+      <slot name="after-note-body">Test</slot>
     </div>
   `,
 });
@@ -29,7 +29,6 @@ describe('Batch comments draft note component', () => {
     },
   };
 
-  const getList = () => getByRole(wrapper.element, 'list');
   const findSubmitReviewButton = () => wrapper.findComponent(PublishButton);
   const findAddCommentButton = () => wrapper.findComponent(GlButton);
 
@@ -189,7 +188,7 @@ describe('Batch comments draft note component', () => {
       });
 
       it(`calls store ${expectedCalls.length} times on ${event}`, () => {
-        getList().dispatchEvent(new MouseEvent(event, { bubbles: true }));
+        wrapper.element.dispatchEvent(new MouseEvent(event, { bubbles: true }));
         expect(store.dispatch.mock.calls).toEqual(expectedCalls);
       });
     });

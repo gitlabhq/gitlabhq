@@ -348,7 +348,6 @@ Flamegraph
 flamegraphs
 Flawfinder
 Flickr
-Flowdock
 Fluentd
 Flutterwave
 Flycheck

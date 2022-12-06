@@ -24,3 +24,9 @@
 .cluster-button-container:focus-within {
   @include gl-focus;
 }
+
+.select-agent-dropdown {
+  .gl-button-text {
+    @include gl-flex-grow-1;
+  }
+}

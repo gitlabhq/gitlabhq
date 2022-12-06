@@ -49,7 +49,6 @@
 /lib/registry/
 /lib/policy/
 /lib/feature/
-/lib/flowdock/
 /lib/generators/
 /lib/gitaly/
 /lib/api/

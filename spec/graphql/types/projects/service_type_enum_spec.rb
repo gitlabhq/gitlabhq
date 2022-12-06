@@ -23,7 +23,6 @@ RSpec.describe GitlabSchema.types['ServiceType'] do
       EMAILS_ON_PUSH_SERVICE
       EWM_SERVICE
       EXTERNAL_WIKI_SERVICE
-      FLOWDOCK_SERVICE
       HANGOUTS_CHAT_SERVICE
       IRKER_SERVICE
       JENKINS_SERVICE

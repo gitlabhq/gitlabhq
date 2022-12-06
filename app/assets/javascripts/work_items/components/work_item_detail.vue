@@ -15,7 +15,6 @@ import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import {
   i18n,
@@ -25,7 +24,6 @@ import {
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEM_VIEWED_STORAGE_KEY,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
   WORK_ITEM_TYPE_VALUE_ISSUE,
@@ -49,7 +47,6 @@ import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
-import WorkItemInformation from './work_item_information.vue';
 
 export default {
   i18n,
@@ -72,8 +69,6 @@ export default {
     WorkItemTitle,
     WorkItemState,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
-    WorkItemInformation,
-    LocalStorageSync,
     WorkItemTypeIcon,
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemMilestone,
@@ -108,7 +103,6 @@ export default {
       error: undefined,
       updateError: undefined,
       workItem: {},
-      showInfoBanner: true,
       updateInProgress: false,
     };
   },
@@ -276,17 +270,9 @@ export default {
           };
     },
   },
-  beforeDestroy() {
-    /** make sure that if the user has not even dismissed the alert ,
-     * should no be able to see the information next time and update the local storage * */
-    this.dismissBanner();
-  },
   methods: {
     isWidgetPresent(type) {
       return this.workItem?.widgets?.find((widget) => widget.type === type);
-    },
-    dismissBanner() {
-      this.showInfoBanner = false;
     },
     toggleConfidentiality(confidentialStatus) {
       this.updateInProgress = true;
@@ -341,7 +327,6 @@ export default {
       document.title = s__('404|Not found');
     },
   },
-  WORK_ITEM_VIEWED_STORAGE_KEY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 };
 </script>
@@ -431,16 +416,6 @@ export default {
           @click="$emit('close')"
         />
       </div>
-      <local-storage-sync
-        v-model="showInfoBanner"
-        :storage-key="$options.WORK_ITEM_VIEWED_STORAGE_KEY"
-      >
-        <work-item-information
-          v-if="showInfoBanner && !error"
-          :show-info-banner="showInfoBanner"
-          @work-item-banner-dismissed="dismissBanner"
-        />
-      </local-storage-sync>
       <work-item-title
         v-if="workItem.title"
         :work-item-id="workItem.id"
@@ -485,7 +460,7 @@ export default {
         :work-item-type="workItemType"
         @error="updateError = $event"
       />
-      <template v-if="workItemsMvc2Enabled">
+      <template v-if="workItemsMvcEnabled">
         <work-item-milestone
           v-if="workItemMilestone"
           :work-item-id="workItem.id"

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/gitlab/process_management'
+require_relative '../lib/gitlab/process_supervisor'
 
 module Gitlab
   module SidekiqCluster
@@ -33,7 +34,8 @@ module Gitlab
     #
     # directory - The directory of the Rails application.
     #
-    # Returns an Array containing the PIDs of the started processes.
+    # Returns an Array containing the waiter threads (from Process.detach) of
+    # the started processes.
     def self.start(queues, env: :development, directory: Dir.pwd, max_concurrency: 20, min_concurrency: 0, timeout: DEFAULT_SOFT_TIMEOUT_SECONDS, dryrun: false)
       queues.map.with_index do |pair, index|
         start_sidekiq(pair, env: env,
@@ -82,9 +84,7 @@ module Gitlab
         )
       end
 
-      ProcessManagement.wait_async(pid)
-
-      pid
+      Process.detach(pid)
     end
 
     def self.count_by_queue(queues)

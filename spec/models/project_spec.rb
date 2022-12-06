@@ -58,7 +58,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_one(:pipelines_email_integration) }
     it { is_expected.to have_one(:irker_integration) }
     it { is_expected.to have_one(:pivotaltracker_integration) }
-    it { is_expected.to have_one(:flowdock_integration) }
     it { is_expected.to have_one(:assembla_integration) }
     it { is_expected.to have_one(:slack_slash_commands_integration) }
     it { is_expected.to have_one(:mattermost_slash_commands_integration) }

@@ -12,7 +12,6 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
@@ -22,7 +21,6 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
-import WorkItemInformation from '~/work_items/components/work_item_information.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -32,7 +30,6 @@ import workItemAssigneesSubscription from '~/work_items/graphql/work_item_assign
 import workItemMilestoneSubscription from '~/work_items/graphql/work_item_milestone.subscription.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemTaskMutation from '~/work_items/graphql/update_work_item_task.mutation.graphql';
-import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import {
   mockParent,
   workItemDatesSubscriptionResponse,
@@ -45,7 +42,6 @@ import {
 
 describe('WorkItemDetail component', () => {
   let wrapper;
-  useLocalStorageSpy();
 
   Vue.use(VueApollo);
 
@@ -82,8 +78,6 @@ describe('WorkItemDetail component', () => {
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
   const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
-  const findWorkItemInformationAlert = () => wrapper.findComponent(WorkItemInformation);
-  const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
 
   const createComponent = ({
     isModal = false,
@@ -93,6 +87,7 @@ describe('WorkItemDetail component', () => {
     subscriptionHandler = titleSubscriptionHandler,
     confidentialityMock = [updateWorkItemMutation, jest.fn()],
     error = undefined,
+    workItemsMvcEnabled = false,
     workItemsMvc2Enabled = false,
     fetchByIid = false,
   } = {}) => {
@@ -117,6 +112,7 @@ describe('WorkItemDetail component', () => {
       },
       provide: {
         glFeatures: {
+          workItemsMvc: workItemsMvcEnabled,
           workItemsMvc2: workItemsMvc2Enabled,
           useIidInWorkItemsPath: fetchByIid,
         },
@@ -579,7 +575,7 @@ describe('WorkItemDetail component', () => {
     `('$description', async ({ milestoneWidgetPresent, exists }) => {
       const response = workItemResponseFactory({ milestoneWidgetPresent });
       const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler, workItemsMvc2Enabled: true });
+      createComponent({ handler, workItemsMvcEnabled: true });
       await waitForPromises();
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
@@ -607,24 +603,6 @@ describe('WorkItemDetail component', () => {
           expect(milestoneSubscriptionHandler).not.toHaveBeenCalled();
         });
       });
-    });
-  });
-
-  describe('work item information', () => {
-    beforeEach(() => {
-      createComponent();
-      return waitForPromises();
-    });
-
-    it('is visible when viewed for the first time and sets localStorage value', async () => {
-      localStorage.clear();
-      expect(findWorkItemInformationAlert().exists()).toBe(true);
-      expect(findLocalStorageSync().props('value')).toBe(true);
-    });
-
-    it('is not visible after reading local storage input', async () => {
-      await findLocalStorageSync().vm.$emit('input', false);
-      expect(findWorkItemInformationAlert().exists()).toBe(false);
     });
   });
 

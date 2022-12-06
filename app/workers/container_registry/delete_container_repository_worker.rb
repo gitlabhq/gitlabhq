@@ -17,10 +17,12 @@ module ContainerRegistry
     MAX_CAPACITY = 2
     CLEANUP_TAGS_SERVICE_PARAMS = {
       'name_regex_delete' => '.*',
+      'keep_latest' => false,
       'container_expiration_policy' => true # to avoid permissions checks
     }.freeze
 
     def perform_work
+      return unless Feature.enabled?(:container_registry_delete_repository_with_cron_worker)
       return unless next_container_repository
 
       result = delete_tags
@@ -38,6 +40,8 @@ module ContainerRegistry
     end
 
     def remaining_work_count
+      return 0 unless Feature.enabled?(:container_registry_delete_repository_with_cron_worker)
+
       ::ContainerRepository.delete_scheduled.limit(max_running_jobs + 1).count
     end
 

@@ -4,7 +4,7 @@ classes:
 - Ci::PendingBuild
 feature_categories:
 - continuous_integration
-description: TODO
+description: Pending builds metadata
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61581
 milestone: '14.0'
 gitlab_schema: gitlab_ci

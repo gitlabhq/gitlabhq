@@ -464,7 +464,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :external_auth_client_key,
             presence: true,
-            if: -> (setting) { setting.external_auth_client_cert.present? }
+            if: ->(setting) { setting.external_auth_client_cert.present? }
 
   validates :lets_encrypt_notification_email,
             devise_email: true,
@@ -486,17 +486,17 @@ class ApplicationSetting < ApplicationRecord
 
   validates :eks_access_key_id,
             length: { in: 16..128 },
-            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
+            if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates :eks_secret_access_key,
             presence: true,
-            if: -> (setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
+            if: ->(setting) { setting.eks_integration_enabled? && setting.eks_access_key_id.present? }
 
   validates_with X509CertificateCredentialsValidator,
                  certificate: :external_auth_client_cert,
                  pkey: :external_auth_client_key,
                  pass: :external_auth_client_key_pass,
-                 if: -> (setting) { setting.external_auth_client_cert.present? }
+                 if: ->(setting) { setting.external_auth_client_cert.present? }
 
   validates :default_ci_config_path,
     format: { without: %r{(\.{2}|\A/)},

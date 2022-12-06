@@ -3,23 +3,6 @@
 Layout/SpaceInLambdaLiteral:
   Details: grace period
   Exclude:
-    - 'app/controllers/concerns/issuable_actions.rb'
-    - 'app/controllers/projects/ci/daily_build_group_report_results_controller.rb'
-    - 'app/controllers/projects/merge_requests_controller.rb'
-    - 'app/finders/releases/group_releases_finder.rb'
-    - 'app/graphql/mutations/ci/runner/update.rb'
-    - 'app/models/abuse_report.rb'
-    - 'app/models/alert_management/alert.rb'
-    - 'app/models/alert_management/http_integration.rb'
-    - 'app/models/analytics/cycle_analytics/aggregation.rb'
-    - 'app/models/analytics/usage_trends/measurement.rb'
-    - 'app/models/application_setting.rb'
-    - 'app/models/audit_event.rb'
-    - 'app/models/award_emoji.rb'
-    - 'app/models/board_group_recent_visit.rb'
-    - 'app/models/board_project_recent_visit.rb'
-    - 'app/models/bulk_import.rb'
-    - 'app/models/bulk_imports/entity.rb'
     - 'app/models/bulk_imports/tracker.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/daily_build_group_report_result.rb'

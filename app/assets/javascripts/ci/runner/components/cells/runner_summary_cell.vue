@@ -6,6 +6,7 @@ import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import RunnerName from '../runner_name.vue';
 import RunnerTags from '../runner_tags.vue';
 import RunnerTypeBadge from '../runner_type_badge.vue';
+import RunnerJobStatusBadge from '../runner_job_status_badge.vue';
 
 import { formatJobCount } from '../../utils';
 import {
@@ -25,6 +26,7 @@ export default {
     RunnerName,
     RunnerTags,
     RunnerTypeBadge,
+    RunnerJobStatusBadge,
     RunnerUpgradeStatusIcon: () =>
       import('ee_component/ci/runner/components/runner_upgrade_status_icon.vue'),
     TooltipOnTruncate,
@@ -81,6 +83,8 @@ export default {
     </div>
 
     <div>
+      <runner-job-status-badge :job-status="runner.jobExecutionStatus" />
+
       <runner-summary-field icon="clock">
         <gl-sprintf :message="$options.i18n.I18N_LAST_CONTACT_LABEL">
           <template #timeAgo>

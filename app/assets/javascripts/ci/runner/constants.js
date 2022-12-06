@@ -32,6 +32,10 @@ export const I18N_STATUS_NEVER_CONTACTED = s__('Runners|Never contacted');
 export const I18N_STATUS_OFFLINE = s__('Runners|Offline');
 export const I18N_STATUS_STALE = s__('Runners|Stale');
 
+// Executor Status
+export const I18N_JOB_STATUS_RUNNING = s__('Runners|Running');
+export const I18N_JOB_STATUS_IDLE = s__('Runners|Idle');
+
 // Status help popover
 export const I18N_STATUS_POPOVER_TITLE = s__('Runners|Runner statuses');
 
@@ -133,6 +137,11 @@ export const STATUS_ONLINE = 'ONLINE';
 export const STATUS_NEVER_CONTACTED = 'NEVER_CONTACTED';
 export const STATUS_OFFLINE = 'OFFLINE';
 export const STATUS_STALE = 'STALE';
+
+// CiRunnerJobExecutionStatus
+
+export const JOB_STATUS_RUNNING = 'RUNNING';
+export const JOB_STATUS_IDLE = 'IDLE';
 
 // CiRunnerAccessLevel
 

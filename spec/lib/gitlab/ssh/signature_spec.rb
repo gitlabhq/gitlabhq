@@ -151,16 +151,32 @@ RSpec.describe Gitlab::Ssh::Signature do
 
     context 'when user email is not verified' do
       before do
+        email = user.emails.find_by(email: committer_email)
+        email.update!(confirmed_at: nil)
         user.update!(confirmed_at: nil)
       end
 
-      it_behaves_like 'unverified signature'
+      it 'reports unverified status' do
+        expect(signature.verification_status).to eq(:unverified)
+      end
+    end
+
+    context 'when no user exist with the committer email' do
+      before do
+        user.delete
+      end
+
+      it 'reports other_user status' do
+        expect(signature.verification_status).to eq(:other_user)
+      end
     end
 
     context 'when no user exists with the committer email' do
       let(:committer_email) { 'different-email+ssh-commit-test@example.com' }
 
-      it_behaves_like 'unverified signature'
+      it 'reports other_user status' do
+        expect(signature.verification_status).to eq(:other_user)
+      end
     end
 
     context 'when signature is invalid' do

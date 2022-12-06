@@ -1,34 +1,32 @@
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType } from '@gitlab/ui';
+import { GlSearchBoxByType, GlCollapsibleListbox, GlButton } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { ENTER_KEY } from '~/lib/utils/keys';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
 import { I18N_AVAILABLE_AGENTS_DROPDOWN } from '~/clusters_list/constants';
 
 describe('AvailableAgentsDropdown', () => {
   let wrapper;
 
+  const configuredAgent = 'configured-agent';
+  const searchAgentName = 'search-agent';
+  const newAgentName = 'new-agent';
+
   const i18n = I18N_AVAILABLE_AGENTS_DROPDOWN;
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findFirstAgentItem = () => findDropdownItems().at(0);
-  const findSearchInput = () => wrapper.findComponent(GlSearchBoxByType);
-  const findCreateButton = () => wrapper.findByTestId('create-config-button');
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findSearchInput = () => findDropdown().findComponent(GlSearchBoxByType);
+  const findCreateButton = () => wrapper.findComponent(GlButton);
 
   const createWrapper = ({ propsData }) => {
     wrapper = shallowMountExtended(AvailableAgentsDropdown, {
       propsData,
-      stubs: { GlDropdown },
+      stubs: { GlCollapsibleListbox },
     });
-    wrapper.vm.$refs.dropdown.hide = jest.fn();
+    wrapper.vm.$refs.dropdown.closeAndFocus = jest.fn();
   };
-
-  afterEach(() => {
-    wrapper.destroy();
-  });
 
   describe('there are agents available', () => {
     const propsData = {
-      availableAgents: ['configured-agent', 'search-agent', 'test-agent'],
+      availableAgents: [configuredAgent, searchAgentName, 'test-agent'],
       isRegistering: false,
     };
 
@@ -37,91 +35,92 @@ describe('AvailableAgentsDropdown', () => {
     });
 
     it('prompts to select an agent', () => {
-      expect(findDropdown().props('text')).toBe(i18n.selectAgent);
+      expect(findDropdown().props('toggleText')).toBe(i18n.selectAgent);
     });
 
     describe('search agent', () => {
       it('renders search button', () => {
-        expect(findSearchInput().exists()).toBe(true);
+        expect(findDropdown().props('searchable')).toBe(true);
       });
 
       it('renders all agents when search term is empty', () => {
-        expect(findDropdownItems()).toHaveLength(3);
+        expect(findDropdown().props('items')).toHaveLength(3);
       });
 
       it('renders only the agent searched for when the search item exists', async () => {
-        await findSearchInput().vm.$emit('input', 'search-agent');
+        findSearchInput().vm.$emit('input', searchAgentName);
+        await nextTick();
 
-        expect(findDropdownItems()).toHaveLength(1);
-        expect(findFirstAgentItem().text()).toBe('search-agent');
+        expect(findDropdown().props('items')).toMatchObject([
+          { text: searchAgentName, value: searchAgentName },
+        ]);
       });
 
-      it('renders create button when search started', async () => {
-        await findSearchInput().vm.$emit('input', 'new-agent');
+      describe('create button', () => {
+        it.each`
+          condition            | search             | createButtonRendered
+          ${'is rendered'}     | ${newAgentName}    | ${true}
+          ${'is not rendered'} | ${''}              | ${false}
+          ${'is not rendered'} | ${searchAgentName} | ${false}
+        `('$condition when search is "$search"', async ({ search, createButtonRendered }) => {
+          findSearchInput().vm.$emit('input', search);
+          await nextTick();
 
-        expect(findCreateButton().exists()).toBe(true);
-      });
-
-      it("doesn't render create button when search item is found", async () => {
-        await findSearchInput().vm.$emit('input', 'search-agent');
-
-        expect(findCreateButton().exists()).toBe(false);
+          expect(findCreateButton().exists()).toBe(createButtonRendered);
+        });
       });
     });
 
     describe('select existing agent configuration', () => {
       beforeEach(() => {
-        findFirstAgentItem().vm.$emit('click');
+        findDropdown().vm.$emit('select', configuredAgent);
       });
 
-      it('emits agentSelected with the name of the clicked agent', () => {
-        expect(wrapper.emitted('agentSelected')).toEqual([['configured-agent']]);
+      it('emits `agentSelected` with the name of the clicked agent', () => {
+        expect(wrapper.emitted('agentSelected')).toEqual([[configuredAgent]]);
       });
 
       it('marks the clicked item as selected', () => {
-        expect(findDropdown().props('text')).toBe('configured-agent');
-        expect(findFirstAgentItem().props('isChecked')).toBe(true);
+        expect(findDropdown().props('toggleText')).toBe(configuredAgent);
       });
     });
 
     describe('create new agent configuration', () => {
       beforeEach(async () => {
-        await findSearchInput().vm.$emit('input', 'new-agent');
+        findSearchInput().vm.$emit('input', newAgentName);
+        await nextTick();
         findCreateButton().vm.$emit('click');
       });
 
       it('emits agentSelected with the name of the clicked agent', () => {
-        expect(wrapper.emitted('agentSelected')).toEqual([['new-agent']]);
+        expect(wrapper.emitted('agentSelected')).toEqual([[newAgentName]]);
       });
 
       it('marks the clicked item as selected', () => {
-        expect(findDropdown().props('text')).toBe('new-agent');
+        expect(findDropdown().props('toggleText')).toBe(newAgentName);
       });
     });
 
     describe('click enter to register new agent without configuration', () => {
       beforeEach(async () => {
-        await findSearchInput().vm.$emit('input', 'new-agent');
-        await findSearchInput().vm.$emit('keydown', new KeyboardEvent({ key: ENTER_KEY }));
+        findSearchInput().vm.$emit('input', newAgentName);
+        await nextTick();
+        await findDropdown().trigger('keydown.enter');
       });
 
       it('emits agentSelected with the name of the clicked agent', () => {
-        expect(wrapper.emitted('agentSelected')).toEqual([['new-agent']]);
+        expect(wrapper.emitted('agentSelected')).toEqual([[newAgentName]]);
       });
 
       it('marks the clicked item as selected', () => {
-        expect(findDropdown().props('text')).toBe('new-agent');
-      });
-
-      it('closes the dropdown', () => {
-        expect(wrapper.vm.$refs.dropdown.hide).toHaveBeenCalledTimes(1);
+        expect(findDropdown().props('toggleText')).toBe(newAgentName);
       });
     });
   });
 
   describe('registration in progress', () => {
     const propsData = {
-      availableAgents: ['configured-agent'],
+      availableAgents: [configuredAgent],
       isRegistering: true,
     };
 
@@ -130,7 +129,7 @@ describe('AvailableAgentsDropdown', () => {
     });
 
     it('updates the text in the dropdown', () => {
-      expect(findDropdown().props('text')).toBe(i18n.registeringAgent);
+      expect(findDropdown().props('toggleText')).toBe(i18n.registeringAgent);
     });
 
     it('displays a loading icon', () => {

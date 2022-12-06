@@ -30,8 +30,8 @@ RSpec.describe 'Cluster agent registration', :js, feature_category: :kubernetes_
     click_button('Connect a cluster')
     expect(page).to have_content('Register')
 
-    click_button('Select an agent')
-    click_button('example-agent-2')
+    click_button('Select an agent or enter a name to create new')
+    page.find('li', text: 'example-agent-2').click
     click_button('Register')
 
     expect(page).to have_content('You cannot see this token again after you close this window.')

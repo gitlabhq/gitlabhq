@@ -58,11 +58,21 @@ export default {
     <collapsed-reviewer-list :users="sortedReviewers" :issuable-type="issuableType" />
 
     <div class="value hide-collapsed">
-      <template v-if="hasNoUsers">
-        <span class="no-value">
-          {{ __('None') }}
-        </span>
-      </template>
+      <span v-if="hasNoUsers" class="no-value" data-testid="no-value">
+        {{ __('None') }}
+        <template v-if="editable">
+          -
+          <button
+            type="button"
+            class="gl-button btn-link gl-reset-color!"
+            data-testid="assign-yourself"
+            data-qa-selector="assign_yourself_button"
+            @click="assignSelf"
+          >
+            {{ __('assign yourself') }}
+          </button>
+        </template>
+      </span>
 
       <uncollapsed-reviewer-list
         v-else

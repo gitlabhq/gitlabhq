@@ -1,8 +1,12 @@
 <script>
 import { GlButton, GlIcon } from '@gitlab/ui';
 import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
+import { NEW_CODE_QUALITY_FINDINGS } from '../i18n';
 
 export default {
+  i18n: {
+    newFindings: NEW_CODE_QUALITY_FINDINGS,
+  },
   components: { GlButton, GlIcon },
   props: {
     codeQuality: {
@@ -22,22 +26,33 @@ export default {
 </script>
 
 <template>
-  <div data-testid="diff-codequality" class="gl-relative">
-    <ul
-      class="gl-list-style-none gl-mb-0 gl-p-0 codequality-findings-list gl-border-top-1 gl-border-bottom-1 gl-bg-gray-10"
+  <div
+    data-testid="diff-codequality"
+    class="gl-relative codequality-findings-list gl-border-top-1 gl-border-bottom-1 gl-bg-gray-10 gl-pl-5 gl-pt-4 gl-pb-4"
+  >
+    <h4
+      data-testid="diff-codequality-findings-heading"
+      class="gl-mt-0 gl-mb-0 gl-font-base gl-font-regular"
     >
+      {{ $options.i18n.newFindings }}
+    </h4>
+    <ul class="gl-list-style-none gl-mb-0 gl-p-0">
       <li
         v-for="finding in codeQuality"
         :key="finding.description"
-        class="gl-pt-1 gl-pb-1 gl-pl-3 gl-border-solid gl-border-bottom-0 gl-border-right-0 gl-border-1 gl-border-gray-100 gl-font-regular"
+        class="gl-pt-1 gl-pb-1 gl-font-regular gl-display-flex"
       >
-        <gl-icon
-          :size="12"
-          :name="severityIcon(finding.severity)"
-          :class="severityClass(finding.severity)"
-          class="codequality-severity-icon"
-        />
-        {{ finding.description }}
+        <span class="gl-mr-3">
+          <gl-icon
+            :size="12"
+            :name="severityIcon(finding.severity)"
+            :class="severityClass(finding.severity)"
+            class="codequality-severity-icon"
+          />
+        </span>
+        <span>
+          <span class="severity-copy">{{ finding.severity }}</span> - {{ finding.description }}
+        </span>
       </li>
     </ul>
     <gl-button

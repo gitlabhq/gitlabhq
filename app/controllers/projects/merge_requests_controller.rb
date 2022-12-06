@@ -147,7 +147,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
           render_cached(@merge_request,
                         with: serializer,
-                        cache_context: -> (_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
+                        cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
                         serializer: params[:serializer])
         else
           render json: serializer.represent(@merge_request, serializer: params[:serializer])

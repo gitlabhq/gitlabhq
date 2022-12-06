@@ -18,6 +18,10 @@ class MergeRequestPolicy < IssuablePolicy
     enable :approve_merge_request
   end
 
+  rule { can?(:approve_merge_request) & is_bot? }.policy do
+    enable :reset_merge_request_approvals
+  end
+
   rule { ~anonymous & can?(:read_merge_request) }.policy do
     enable :create_todo
     enable :update_subscription

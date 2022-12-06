@@ -21,7 +21,6 @@ classes:
 - Integrations::EmailsOnPush
 - Integrations::Ewm
 - Integrations::ExternalWiki
-- Integrations::Flowdock
 - Integrations::Github
 - Integrations::GitlabSlackApplication
 - Integrations::HangoutsChat

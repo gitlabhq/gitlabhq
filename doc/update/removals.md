@@ -57,6 +57,12 @@ If you want to preserve this functionality, you can follow one of these two path
 1. Fork the [GitLab Auto Deploy Helm chart](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app) into the `chart/` path within your project
 1. Set `AUTO_DEPLOY_IMAGE_VERSION` and `DAST_AUTO_DEPLOY_IMAGE_VERSION` to the most recent version of the image that included the CiliumNetworkPolicy
 
+## Removed in 15.7
+
+### Flowdock integration
+
+As of December 22, 2022, we are removing the Flowdock integration because the service was shut down on August 15, 2022.
+
 ## Removed in 15.6
 
 ### NFS as Git repository storage is no longer supported. Migrate to Gitaly Cluster as soon as possible

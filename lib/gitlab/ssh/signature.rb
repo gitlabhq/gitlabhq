@@ -18,11 +18,16 @@ module Gitlab
       def verification_status
         strong_memoize(:verification_status) do
           next :unverified unless all_attributes_present?
-          next :unverified unless valid_signature_blob? && committer
+          next :unverified unless valid_signature_blob?
           next :unknown_key unless signed_by_key
+          next :other_user unless committer
           next :other_user unless signed_by_key.user == committer
 
-          :verified
+          if signed_by_user_email_verified?
+            :verified
+          else
+            :unverified
+          end
         end
       end
 
@@ -55,7 +60,11 @@ module Gitlab
       def committer
         # Lookup by email because users can push verified commits that were made
         # by someone else. For example: Doing a rebase.
-        strong_memoize(:committer) { User.find_by_any_email(@committer_email, confirmed: true) }
+        strong_memoize(:committer) { User.find_by_any_email(@committer_email) }
+      end
+
+      def signed_by_user_email_verified?
+        signed_by_key.user.verified_emails.include?(@committer_email)
       end
 
       def signature

@@ -264,9 +264,6 @@ gem 'discordrb-webhooks', '~> 3.4', require: false
 gem 'jira-ruby', '~> 2.1.4'
 gem 'atlassian-jwt', '~> 0.2.0'
 
-# Flowdock integration
-gem 'flowdock', '~> 0.7'
-
 # Slack integration
 gem 'slack-messenger', '~> 2.3.4'
 

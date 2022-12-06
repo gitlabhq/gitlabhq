@@ -755,42 +755,6 @@ Get External wiki integration settings for a project.
 GET /projects/:id/integrations/external-wiki
 ```
 
-## Flowdock
-
-Flowdock is a ChatOps application for collaboration in software engineering
-companies. You can send notifications from GitLab events to Flowdock flows.
-For integration instructions, see the [Flowdock documentation](https://www.flowdock.com/help/gitlab).
-
-### Create/Edit Flowdock integration
-
-Set Flowdock integration for a project.
-
-```plaintext
-PUT /projects/:id/integrations/flowdock
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `token` | string | true | Flowdock Git source token |
-
-### Disable Flowdock integration
-
-Disable the Flowdock integration for a project. Integration settings are preserved.
-
-```plaintext
-DELETE /projects/:id/integrations/flowdock
-```
-
-### Get Flowdock integration settings
-
-Get Flowdock integration settings for a project.
-
-```plaintext
-GET /projects/:id/integrations/flowdock
-```
-
 ## GitHub **(PREMIUM)**
 
 Code collaboration software.

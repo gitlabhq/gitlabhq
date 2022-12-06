@@ -23,8 +23,8 @@ class AwardEmoji < ApplicationRecord
 
   scope :downvotes, -> { named(DOWNVOTE_NAME) }
   scope :upvotes, -> { named(UPVOTE_NAME) }
-  scope :named, -> (names) { where(name: names) }
-  scope :awarded_by, -> (users) { where(user: users) }
+  scope :named, ->(names) { where(name: names) }
+  scope :awarded_by, ->(users) { where(user: users) }
 
   after_save :expire_cache
   after_destroy :expire_cache

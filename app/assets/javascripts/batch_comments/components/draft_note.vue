@@ -85,32 +85,25 @@ export default {
 };
 </script>
 <template>
-  <article
-    class="draft-note-component note-wrapper"
-    @mouseenter="handleMouseEnter(draft)"
-    @mouseleave="handleMouseLeave(draft)"
+  <noteable-note
+    :note="draft"
+    :line="line"
+    :discussion-root="true"
+    :class="{ 'gl-mb-0!': glFeatures.mrReviewSubmitComment }"
+    class="draft-note-component draft-note"
+    @handleEdit="handleEditing"
+    @cancelForm="handleNotEditing"
+    @updateSuccess="handleNotEditing"
+    @handleDeleteNote="deleteDraft"
+    @handleUpdateNote="update"
+    @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
+    @mouseenter.native="handleMouseEnter(draft)"
+    @mouseleave.native="handleMouseLeave(draft)"
   >
-    <ul class="notes draft-notes">
-      <noteable-note
-        :note="draft"
-        :line="line"
-        :discussion-root="true"
-        :class="{ 'gl-mb-0!': glFeatures.mrReviewSubmitComment }"
-        class="draft-note"
-        @handleEdit="handleEditing"
-        @cancelForm="handleNotEditing"
-        @updateSuccess="handleNotEditing"
-        @handleDeleteNote="deleteDraft"
-        @handleUpdateNote="update"
-        @toggleResolveStatus="toggleResolveDiscussion(draft.id)"
-      >
-        <template #note-header-info>
-          <gl-badge variant="warning" class="gl-mr-2">{{ __('Pending') }}</gl-badge>
-        </template>
-      </noteable-note>
-    </ul>
-
-    <template v-if="!isEditingDraft">
+    <template #note-header-info>
+      <gl-badge variant="warning" class="gl-mr-2">{{ __('Pending') }}</gl-badge>
+    </template>
+    <template v-if="!isEditingDraft" #after-note-body>
       <div
         v-if="draftCommands"
         v-safe-html:[$options.safeHtmlConfig]="draftCommands"
@@ -134,5 +127,5 @@ export default {
         </gl-button>
       </p>
     </template>
-  </article>
+  </noteable-note>
 </template>

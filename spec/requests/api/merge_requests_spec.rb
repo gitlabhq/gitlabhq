@@ -3627,12 +3627,6 @@ RSpec.describe API::MergeRequests do
         expect(merge_request.approvals).to be_empty
       end
 
-      it 'for users with bot role' do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
-
-        expect(response).to have_gitlab_http_status(:accepted)
-      end
-
       context 'for users with non-bot roles' do
         let(:human_user) { create(:user) }
 
@@ -3642,7 +3636,9 @@ RSpec.describe API::MergeRequests do
 
             put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", human_user)
 
+            merge_request.reload
             expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(merge_request.approvals.pluck(:user_id)).to eql([user2.id])
           end
         end
       end
@@ -3658,7 +3654,9 @@ RSpec.describe API::MergeRequests do
           it 'returns 401' do
             put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
 
+            merge_request.reload
             expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(merge_request.approvals.pluck(:user_id)).to eql([user2.id])
           end
         end
 
@@ -3670,8 +3668,24 @@ RSpec.describe API::MergeRequests do
           it 'returns 401' do
             put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
 
+            merge_request.reload
             expect(response).to have_gitlab_http_status(:unauthorized)
+            expect(merge_request.approvals.pluck(:user_id)).to eql([user2.id])
           end
+        end
+      end
+
+      context 'for a bot user who approved the merge request' do
+        before do
+          merge_request.approvals.create!(user: bot)
+        end
+
+        it "returns 200" do
+          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
+
+          merge_request.reload
+          expect(response).to have_gitlab_http_status(:accepted)
+          expect(merge_request.approvals).to be_empty
         end
       end
     end

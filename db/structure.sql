@@ -15982,6 +15982,7 @@ CREATE TABLE gitlab_subscriptions (
     seats_owed integer DEFAULT 0 NOT NULL,
     trial_extension_type smallint,
     max_seats_used_changed_at timestamp with time zone,
+    last_seat_refresh_at timestamp with time zone,
     CONSTRAINT check_77fea3f0e7 CHECK ((namespace_id IS NOT NULL))
 );
 

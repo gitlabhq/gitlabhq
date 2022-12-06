@@ -43,6 +43,13 @@ describe('Sidebar mediator', () => {
     });
   });
 
+  it('assigns yourself as a reviewer', () => {
+    mediator.addSelfReview();
+
+    expect(mediator.store.currentUser).toEqual(mediatorMockData.currentUser);
+    expect(mediator.store.reviewers[0]).toEqual(mediatorMockData.currentUser);
+  });
+
   describe('saves reviewers', () => {
     const mockUpdateResponseData = {
       reviewers: [1, 2],

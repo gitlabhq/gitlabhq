@@ -565,7 +565,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/container_registry/client.rb'
     - 'lib/container_registry/gitlab_api_client.rb'
     - 'lib/container_registry/tag.rb'
-    - 'lib/flowdock/git/builder.rb'
     - 'lib/gitlab/alert_management/alert_status_counts.rb'
     - 'lib/gitlab/alert_management/payload/base.rb'
     - 'lib/gitlab/alert_management/payload/managed_prometheus.rb'

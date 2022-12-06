@@ -168,7 +168,7 @@ export default {
       return this.parentMilestone?.id;
     },
     associateMilestone() {
-      return this.parentMilestoneId && this.workItemsMvc2Enabled;
+      return this.parentMilestoneId && this.workItemsMvcEnabled;
     },
     isSubmitButtonDisabled() {
       return this.isCreateForm ? this.search.length === 0 : this.workItemsToAdd.length === 0;

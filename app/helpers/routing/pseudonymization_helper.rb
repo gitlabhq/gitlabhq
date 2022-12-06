@@ -12,6 +12,7 @@ module Routing
         tab
         glm_source
         glm_content
+        _gl
       ].freeze
 
       def initialize(request_object, group, project)

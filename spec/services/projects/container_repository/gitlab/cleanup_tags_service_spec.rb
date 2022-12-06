@@ -49,6 +49,9 @@ RSpec.describe Projects::ContainerRepository::Gitlab::CleanupTagsService do
       it_behaves_like 'when regex matching everything is specified',
                       delete_expectations: [%w[A], %w[Ba Bb], %w[C D], %w[E]]
 
+      it_behaves_like 'when regex matching everything is specified and latest is not kept',
+                      delete_expectations: [%w[latest A], %w[Ba Bb], %w[C D], %w[E]]
+
       it_behaves_like 'when delete regex matching specific tags is used'
 
       it_behaves_like 'when delete regex matching specific tags is used with overriding allow regex'

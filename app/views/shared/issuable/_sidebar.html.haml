@@ -20,7 +20,7 @@
         .js-sidebar-todo-widget-root{ data: { project_path: issuable_sidebar[:project_full_path], iid: issuable_sidebar[:iid], id: issuable_sidebar[:id] } }
 
     = form_for issuable_type, url: issuable_sidebar[:issuable_json_path], remote: true, html: { class: 'issuable-context-form inline-update js-issuable-update' } do |f|
-      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container' } }
+      .block.assignee{ class: "#{'gl-mt-3' if !signed_in && moved_sidebar_enabled}", data: { qa_selector: 'assignee_block_container', testid: 'assignee-block-container' } }
         = render "shared/issuable/sidebar_assignees", issuable_sidebar: issuable_sidebar, assignees: assignees, signed_in: signed_in
 
       - if issuable_sidebar[:supports_severity]

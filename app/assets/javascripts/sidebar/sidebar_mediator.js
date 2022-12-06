@@ -31,6 +31,9 @@ export default class SidebarMediator {
   assignYourself() {
     this.store.addAssignee(this.store.currentUser);
   }
+  addSelfReview() {
+    this.store.addReviewer(this.store.currentUser);
+  }
 
   async saveAssignees(field) {
     const selected = this.store.assignees.map((u) => u.id);

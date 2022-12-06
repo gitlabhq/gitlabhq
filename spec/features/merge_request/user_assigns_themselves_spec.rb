@@ -22,8 +22,12 @@ RSpec.describe 'Merge request > User assigns themselves', feature_category: :cod
     end
 
     it 'updates updated_by', :js do
+      wait_for_requests
+
       expect do
-        click_button 'assign yourself'
+        page.within('[data-testid="assignee-block-container"]') do
+          click_button 'assign yourself'
+        end
 
         expect(find('.assignee')).to have_content(user.name)
         wait_for_all_requests
@@ -36,7 +40,9 @@ RSpec.describe 'Merge request > User assigns themselves', feature_category: :cod
       end
 
       it 'does not display if related issues are already assigned' do
-        expect(page).not_to have_content 'Assign yourself'
+        page.within('[data-testid="assignee-block-container"]') do
+          expect(page).not_to have_content 'Assign yourself'
+        end
       end
     end
   end
@@ -48,7 +54,9 @@ RSpec.describe 'Merge request > User assigns themselves', feature_category: :cod
     end
 
     it 'does not show assignment link' do
-      expect(page).not_to have_content 'Assign yourself'
+      page.within('[data-testid="assignee-block-container"]') do
+        expect(page).not_to have_content 'Assign yourself'
+      end
     end
   end
 end

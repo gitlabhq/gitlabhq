@@ -1,10 +1,12 @@
-import { GlAlert, GlFormInputGroup } from '@gitlab/ui';
+import { GlAlert, GlFormInputGroup, GlSprintf, GlLink, GlIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { sprintf } from '~/locale';
 import AgentToken from '~/clusters_list/components/agent_token.vue';
 import {
   I18N_AGENT_TOKEN,
   INSTALL_AGENT_MODAL_ID,
   NAME_MAX_LENGTH,
+  HELM_VERSION_POLICY_URL,
 } from '~/clusters_list/constants';
 import { generateAgentRegistrationCommand } from '~/clusters_list/clusters_util';
 import CodeBlock from '~/vue_shared/components/code_block.vue';
@@ -23,6 +25,8 @@ describe('InstallAgentModal', () => {
   const findCodeBlock = () => wrapper.findComponent(CodeBlock);
   const findCopyButton = () => wrapper.findComponent(ModalCopyButton);
   const findInput = () => wrapper.findComponent(GlFormInputGroup);
+  const findHelmVersionPolicyLink = () => wrapper.findComponent(GlLink);
+  const findHelmExternalLinkIcon = () => wrapper.findComponent(GlIcon);
 
   const createWrapper = (newAgentName = agentName) => {
     const provide = {
@@ -39,6 +43,9 @@ describe('InstallAgentModal', () => {
     wrapper = shallowMountExtended(AgentToken, {
       provide,
       propsData,
+      stubs: {
+        GlSprintf,
+      },
     });
   };
 
@@ -54,6 +61,17 @@ describe('InstallAgentModal', () => {
     it('shows basic agent installation instructions', () => {
       expect(wrapper.text()).toContain(I18N_AGENT_TOKEN.basicInstallTitle);
       expect(wrapper.text()).toContain(I18N_AGENT_TOKEN.basicInstallBody);
+    });
+
+    it('shows Helm version policy text with an external link', () => {
+      expect(wrapper.text()).toContain(
+        sprintf(I18N_AGENT_TOKEN.helmVersionText, { linkStart: '', linkEnd: ' ' }),
+      );
+      expect(findHelmVersionPolicyLink().attributes()).toMatchObject({
+        href: HELM_VERSION_POLICY_URL,
+        target: '_blank',
+      });
+      expect(findHelmExternalLinkIcon().props()).toMatchObject({ name: 'external-link', size: 12 });
     });
 
     it('shows advanced agent installation instructions', () => {

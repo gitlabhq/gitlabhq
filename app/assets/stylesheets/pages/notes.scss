@@ -60,6 +60,10 @@ $system-note-svg-size: 1rem;
         padding: $gl-padding-4 $gl-padding-8;
       }
 
+      &.draft-note .timeline-content:not(.flash-container) {
+        border: 0;
+      }
+
       .note-header-info {
         min-height: 2rem;
         display: flex;
@@ -94,6 +98,7 @@ $system-note-svg-size: 1rem;
           }
 
           &.draft-note .timeline-content:not(.flash-container) {
+            margin-left: 0;
             border-top-left-radius: 0;
             border-top-right-radius: 0;
           }
@@ -104,8 +109,12 @@ $system-note-svg-size: 1rem;
             border-right: 1px solid $border-color;
             background-color: $white;
 
-            .timeline-content {
+            .timeline-content:not(.flash-container) {
               padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
+            }
+
+            .timeline-discussion-body-footer {
+              padding: 0 $gl-padding-8 0;
             }
 
             .timeline-avatar {
@@ -115,6 +124,12 @@ $system-note-svg-size: 1rem;
             .timeline-discussion-body {
               margin-left: 2rem;
             }
+          }
+
+          &:last-of-type .timeline-entry-inner {
+            border-bottom: 1px solid $border-color;
+            border-bottom-left-radius: $gl-border-radius-base;
+            border-bottom-right-radius: $gl-border-radius-base;
           }
         }
 
@@ -1055,7 +1070,7 @@ $system-note-svg-size: 1rem;
       padding-left: 0;
 
       ul.notes li.note-wrapper {
-        .timeline-content {
+        .timeline-content:not(.flash-container) {
           padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
         }
 
@@ -1071,7 +1086,7 @@ $system-note-svg-size: 1rem;
           border-right: 0;
         }
 
-        div.discussion-reply-holder {
+        .discussion-reply-holder {
           margin-left: 0;
         }
       }
@@ -1102,7 +1117,7 @@ $system-note-svg-size: 1rem;
     }
   }
 
-  .draft-note-component .draft-note.timeline-entry {
+  .draft-note-component.draft-note.timeline-entry {
     .timeline-content:not(.flash-container) {
       padding: $gl-padding-8 $gl-padding-8 $gl-padding-8 $gl-padding;
     }

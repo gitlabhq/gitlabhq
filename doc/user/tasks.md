@@ -207,10 +207,12 @@ To set a start date:
 
 ## Add a task to a milestone
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) in GitLab 15.5 [with a flag](../administration/feature_flags.md) named `work_items_mvc_2`. Disabled by default.
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) to feature flag named `work_items_mvc` in GitLab 15.7. Disabled by default.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc_2`. On GitLab.com, this feature is not available. The feature is not ready for production use.
+On self-managed GitLab, by default this feature is not available. To make it available per group, ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `work_items_mvc`.
+On GitLab.com, this feature is not available. The feature is not ready for production use.
 
 You can add a task to a [milestone](project/milestones/index.md).
 You can see the milestone title when you view a task.

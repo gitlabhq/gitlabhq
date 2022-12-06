@@ -2,11 +2,13 @@ import { GlIcon } from '@gitlab/ui';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DiffCodeQuality from '~/diffs/components/diff_code_quality.vue';
 import { SEVERITY_CLASSES, SEVERITY_ICONS } from '~/ci/reports/codequality_report/constants';
+import { NEW_CODE_QUALITY_FINDINGS } from '~/diffs/i18n';
 import { multipleFindingsArr } from '../mock_data/diff_code_quality';
 
 let wrapper;
 
 const findIcon = () => wrapper.findComponent(GlIcon);
+const findHeading = () => wrapper.findByTestId(`diff-codequality-findings-heading`);
 
 describe('DiffCodeQuality', () => {
   afterEach(() => {
@@ -30,14 +32,17 @@ describe('DiffCodeQuality', () => {
     expect(wrapper.emitted('hideCodeQualityFindings').length).toBe(1);
   });
 
-  it('renders correct amount of list items for codequality array and their description', async () => {
+  it('renders heading and correct amount of list items for codequality array and their description', async () => {
     wrapper = createWrapper(multipleFindingsArr);
-    const listItems = wrapper.findAll('li');
+    expect(findHeading().text()).toEqual(NEW_CODE_QUALITY_FINDINGS);
 
+    const listItems = wrapper.findAll('li');
     expect(wrapper.findAll('li').length).toBe(5);
 
     listItems.wrappers.map((e, i) => {
-      return expect(e.text()).toEqual(multipleFindingsArr[i].description);
+      return expect(e.text()).toContain(
+        `${multipleFindingsArr[i].severity} - ${multipleFindingsArr[i].description}`,
+      );
     });
   });
 

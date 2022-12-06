@@ -14,7 +14,7 @@ class AbuseReport < ApplicationRecord
   validates :message, presence: true
   validates :user_id, uniqueness: { message: 'has already been reported' }
 
-  scope :by_user, -> (user) { where(user_id: user) }
+  scope :by_user, ->(user) { where(user_id: user) }
   scope :with_users, -> { includes(:reporter, :user) }
 
   # For CacheMarkdownField

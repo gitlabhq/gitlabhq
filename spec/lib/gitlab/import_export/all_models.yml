@@ -424,7 +424,6 @@ project:
 - packagist_integration
 - pivotaltracker_integration
 - prometheus_integration
-- flowdock_integration
 - assembla_integration
 - asana_integration
 - slack_integration

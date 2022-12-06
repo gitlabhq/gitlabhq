@@ -301,7 +301,7 @@ RSpec.shared_examples 'thread comments for issue, epic and merge request' do |re
 
         if resource_name == 'merge request'
           let(:note_id) { find("#{comments_selector} .note:first-child", match: :first)['data-note-id'] }
-          let(:reply_id) { find("#{comments_selector} .note:last-of-type", match: :first)['data-note-id'] }
+          let(:reply_id) { all("#{comments_selector} [data-note-id]")[1]['data-note-id'] }
 
           it 'can be replied to after resolving' do
             find('button[data-testid="resolve-discussion-button"]').click
