@@ -75,7 +75,7 @@ incidents, over the last couple of months, for example:
 - S2: 2022-04-12 [Transactions detected that have been running for more than 10m](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6821)
 - S2: 2022-04-06 [Database contention plausibly caused by excessive `ci_builds` reads](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6773)
 - S2: 2022-03-18 [Unable to remove a foreign key on `ci_builds`](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6642)
-- S2: 2022-10-10 [The queuing_queries_duration SLI apdex violating SLO](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7852#note_1130123525)
+- S2: 2022-10-10 [The `queuing_queries_duration` SLI apdex violating SLO](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/7852#note_1130123525)
 
 We have approximately 50 `ci_*` prefixed database tables, and some of them
 would benefit from partitioning.

@@ -1605,7 +1605,7 @@ variables:
 
 While testing an API you may might want to exclude a parameter (query string, header, or body element) from testing. This may be needed because a parameter always causes a failure, slows down testing, or for other reasons. To exclude parameters, you can set one of the following variables: `DAST_API_EXCLUDE_PARAMETER_ENV` or `DAST_API_EXCLUDE_PARAMETER_FILE`.
 
-The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre script using `DAST_API_PRE_SCRIPT`.
+The `DAST_API_EXCLUDE_PARAMETER_ENV` allows providing a JSON string containing excluded parameters. This is a good option if the JSON is short and will not often change. Another option is the variable `DAST_API_EXCLUDE_PARAMETER_FILE`. This variable is set to a file path that can be checked into the repository, created by another job as an artifact, or generated at runtime with a pre-script using `DAST_API_PRE_SCRIPT`.
 
 #### Exclude parameters using a JSON document
 

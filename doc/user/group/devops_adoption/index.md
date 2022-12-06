@@ -12,7 +12,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - DAST and SAST metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328033) in GitLab 14.1.
 > - Fuzz Testing metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/330398) in GitLab 14.2.
 > - Dependency Scanning metrics [added](https://gitlab.com/gitlab-org/gitlab/-/issues/328034) in GitLab 14.2.
-> - Multiselect [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
+> - Multi-select [added](https://gitlab.com/gitlab-org/gitlab/-/issues/333586) in GitLab 14.2.
 > - Overview table [added](https://gitlab.com/gitlab-org/gitlab/-/issues/335638) in GitLab 14.3.
 > - Adoption over time chart [added](https://gitlab.com/gitlab-org/gitlab/-/issues/337561) in GitLab 14.4.
 

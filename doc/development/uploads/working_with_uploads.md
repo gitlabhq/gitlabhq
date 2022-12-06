@@ -26,7 +26,7 @@ stored. When you create a new Uploader class you are deciding where to store the
 feature.
 
 First of all, ask yourself if you need a new Uploader class. It is OK
-to use the same Uploader class for different mountpoints or different
+to use the same Uploader class for different mount points or different
 models.
 
 If you do want or need your own Uploader class then you should make it
@@ -160,8 +160,8 @@ we modified it.
 The central concept of CarrierWave is the **Uploader** class. The
 Uploader defines where files get stored, and optionally contains
 validation and processing logic. To use an Uploader you must associate
-it with a text column on an ActiveRecord model. This called "mounting"
-and the column is called the "mountpoint". For example:
+it with a text column on an ActiveRecord model. This is called "mounting"
+and the column is called `mountpoint`. For example:
 
 ```ruby
 class Project < ApplicationRecord
@@ -179,12 +179,12 @@ The directory
 `/var/opt/gitlab/gitlab-rails/uploads/-/system/project/avatar/123/`
 was chosen by the Uploader using among others configuration
 (`/var/opt/gitlab/gitlab-rails/uploads`), the model name (`project`),
-the model ID (`123`) and the mountpoint (`avatar`).
+the model ID (`123`) and the mount point (`avatar`).
 
 > The Uploader determines the individual storage directory of your
-> upload. The mountpoint column in your model contains the filename.
+> upload. The `mountpoint` column in your model contains the filename.
 
-You never access the mountpoint column directly because CarrierWave
+You never access the `mountpoint` column directly because CarrierWave
 defines a getter and setter on your model that operates on file handle
 objects.
 
@@ -213,7 +213,7 @@ CarrierWave has 2 storage engines:
 
 |CarrierWave class|GitLab name|Description|
 |---|---|---|
-|`CarrierWave::Storage::File`|`ObjectStorage::Store::LOCAL` |Local files, accessed through the Ruby stdlib|
+|`CarrierWave::Storage::File`|`ObjectStorage::Store::LOCAL` |Local files, accessed through the Ruby `stdlib` |
 | `CarrierWave::Storage::Fog`|`ObjectStorage::Store::REMOTE`|Cloud files, accessed through the [Fog gem](https://github.com/fog/fog)|
 
 GitLab uses both of these engines, depending on configuration.
@@ -227,8 +227,8 @@ storage engine file by file.
 
 An Uploader is associated with two storage areas: regular storage and
 cache storage. Each has its own storage engine. If you assign a file
-to a mountpoint setter (`project.avatar =
-File.open('/tmp/tanuki.png')`) you will copy/move the file to cache
+to a mount point setter (`project.avatar = File.open('/tmp/tanuki.png')`)
+you will copy/move the file to cache
 storage as a side effect via the `cache!` method. To persist the file
 you must somehow call the `store!` method. This either happens via
 [ActiveRecord callbacks](https://github.com/carrierwaveuploader/carrierwave/blob/v1.3.2/lib/carrierwave/orm/activerecord.rb#L55)

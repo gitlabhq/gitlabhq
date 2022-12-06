@@ -157,7 +157,7 @@ official specifications, but are part of the GitHub and GitLab internal Markdown
 implementations. These internal extensions are often dependent upon the GitHub or GitLab
 implementations or environments, and may depend upon metadata which is only available via
 interacting with those environments. For example,
-[GitHub supports GitHub-specific autolinked references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls),
+[GitHub supports GitHub-specific automatically linked references](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/autolinked-references-and-urls),
 and
 [GitLab also supports GitLab-specific references](../../../user/markdown.md#gitlab-specific-references).
 These may also be implemented by third-party Markdown rendering engines which integrate with
@@ -1149,7 +1149,7 @@ These files are Markdown specification files containing examples generated based
 similar to the `output_spec/spec.txt` and `output_spec/spec.html`, with the following differences:
 
 1. They contain a superset of _all_ examples from
-   the Commonmark, GitHub Flavored Markdown, and GitLab Flavored Markdown specifications, whereas
+   the CommonMark, GitHub Flavored Markdown, and GitLab Flavored Markdown specifications, whereas
    `spec.*` only contains the GLFM specification. This is to provide a single place to refer to
    all examples when working with [snapshot testing](#markdown-snapshot-testing).
 1. They contain _only_ header sections which contain examples. They do not contain any prose-only

@@ -338,7 +338,7 @@ is concurrently accessed and modified by other processes, acquiring the lock may
 a while. The lock request is waiting in a queue and it may also block other queries
 on the `users` table once it has been enqueued.
 
-More information about PostgresSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
+More information about PostgreSQL locks: [Explicit Locking](https://www.postgresql.org/docs/current/explicit-locking.html)
 
 For stability reasons, GitLab.com has a specific [`statement_timeout`](../user/gitlab_com/index.md#postgresql)
 set. When the migration is invoked, any database query has
@@ -813,7 +813,7 @@ in the `namespaces` table. Only when creating a new column with a default, all t
 
 NOTE:
 A faster [ALTER TABLE ADD COLUMN with a non-null default](https://www.depesz.com/2018/04/04/waiting-for-postgresql-11-fast-alter-table-add-column-with-a-non-null-default/)
-was introduced on PostgresSQL 11.0, removing the need of rewriting the table when a new column with a default value is added.
+was introduced on PostgreSQL 11.0, removing the need of rewriting the table when a new column with a default value is added.
 
 For the reasons mentioned above, it's safe to use `change_column_default` in a single-transaction migration
 without requiring `disable_ddl_transaction!`.

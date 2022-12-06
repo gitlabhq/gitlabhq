@@ -64,8 +64,8 @@ detail below.
 ## Enabling and disabling terminal support
 
 NOTE:
-AWS Classic Load Balancers (CLBs) do not support web sockets.
-If you want web terminals to work, use AWS Network Load Balancers (NLBs).
+AWS Classic Load Balancers do not support web sockets.
+If you want web terminals to work, use AWS Network Load Balancers.
 Read [AWS Elastic Load Balancing Product Comparison](https://aws.amazon.com/elasticloadbalancing/features/#compare)
 for more information.
 

@@ -608,7 +608,7 @@ Here is a list and description of each machine and the assigned IP:
 
 All passwords are set to `toomanysecrets`. Do not use this password or derived hashes and the `external_url` for GitLab is `http://gitlab.example.com`.
 
-After the initial configuration, if a failover occurs, the PostgresSQL leader node changes to one of the available secondaries until it is failed back.
+After the initial configuration, if a failover occurs, the PostgreSQL leader node changes to one of the available secondaries until it is failed back.
 
 #### Example recommended setup for Consul servers
 

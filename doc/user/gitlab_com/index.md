@@ -314,7 +314,7 @@ The list of GitLab.com specific settings (and their defaults) is as follows:
 | `max_wal_senders`                     | 32                                                                  | 0                                     |
 | `max_wal_size`                        | 5GB                                                                 | 1GB                                   |
 | `shared_buffers`                      | 112896MB                                                            | Based on how much memory is available |
-| `shared_preload_libraries`            | pg_stat_statements                                                  | empty                                 |
+| `shared_preload_libraries`            | `pg_stat_statements`                                                | empty                                 |
 | `shmall`                              | 30146560                                                            | Based on the server's capabilities    |
 | `shmmax`                              | 123480309760                                                        | Based on the server's capabilities    |
 | `wal_buffers`                         | 16MB                                                                | -1                                    |

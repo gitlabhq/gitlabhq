@@ -383,7 +383,7 @@ If you use [SAML Group Sync](../../user/group/saml_sso/group_sync.md), you must 
 
 ## Disable Rugged
 
-Calls into Rugged, Ruby bindings for `libgit2`, [lock the Sidekiq processes's GVL](https://silverhammermba.github.io/emberb/c/#c-in-ruby-threads),
+Calls into Rugged, Ruby bindings for `libgit2`, [lock the Sidekiq processes (GVL)](https://silverhammermba.github.io/emberb/c/#c-in-ruby-threads),
 blocking all jobs on that worker from proceeding. If Rugged calls performed by Sidekiq are slow, this can cause significant delays in
 background task processing.
 

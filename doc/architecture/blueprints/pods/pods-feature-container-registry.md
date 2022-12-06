@@ -121,7 +121,7 @@ but this might be desired approach.
 
 ## 4. Evaluation
 
-There do not seem any theorethical problems with running GitLab Container Registry in a Pod.
+There do not seem any theoretical problems with running GitLab Container Registry in a Pod.
 Service seems that can be easily made routable to work well.
 
 The practical complexities are around managing complex service from infrastructure side.

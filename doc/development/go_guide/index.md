@@ -391,7 +391,7 @@ functionality:
 This gives us a thin abstraction over underlying implementations that is
 consistent across Workhorse, Gitaly, and, in future, other Go servers. For
 example, in the case of `gitlab.com/gitlab-org/labkit/tracing` we can switch
-from using `Opentracing` directly to using `Zipkin` or Gokit's own tracing wrapper
+from using `Opentracing` directly to using `Zipkin` or the Go kit's own tracing wrapper
 without changes to the application code, while still keeping the same
 consistent configuration mechanism (that is, the `GITLAB_TRACING` environment
 variable).

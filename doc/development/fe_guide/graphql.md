@@ -109,7 +109,7 @@ Default client accepts two parameters: `resolvers` and `config`.
 
 If you are making multiple queries to the same Apollo client object you might encounter the following error: `Cache data may be lost when replacing the someProperty field of a Query object. To address this problem, either ensure all objects of SomeEntityhave an id or a custom merge function`. We are already checking `ID` presence for every GraphQL type that has an `ID`, so this shouldn't be the case. Most likely, the `SomeEntity` type doesn't have an `ID` property, and to fix this warning we need to define a custom merge function.
 
-We have some client-wide types with `merge: true` defined in the default client as [typePolicies](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Consider adding `SomeEntity` there or defining a custom merge function for it.
+We have some client-wide types with `merge: true` defined in the default client as [`typePolicies`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/lib/graphql.js) (this means that Apollo will merge existing and incoming responses in the case of subsequent queries). Consider adding `SomeEntity` there or defining a custom merge function for it.
 
 ## GraphQL Queries
 

@@ -40,8 +40,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | no | Type of panel to be rendered. Optional for area panel types |
-| query_range | string | required | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+| `type` | string | no | Type of panel to be rendered. Optional for area panel types |
+| `query_range` | string | required | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
 ![area panel chart](img/prometheus_dashboard_area_panel_type_v12_8.png)
 
@@ -82,8 +82,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | required | Must be `anomaly-chart` for anomaly panel types |
-| query_range | yes | required | For anomaly panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in every metric. |
+| `type` | string | required | Must be `anomaly-chart` for anomaly panel types |
+| `query_range` | yes | required | For anomaly panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) in every metric. |
 
 ![anomaly panel type](img/prometheus_dashboard_anomaly_panel_type.png)
 
@@ -138,8 +138,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For column panel types, set to `column` |
-| query_range | yes | yes | For column panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+| `type` | string | yes | Type of panel to be rendered. For column panel types, set to `column` |
+| `query_range` | yes | yes | For column panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
 ![anomaly panel type](img/prometheus_dashboard_column_panel_type.png)
 
@@ -306,8 +306,8 @@ Note the following properties:
 
 | Property | Type | Required | Description |
 | ------ | ------ | ------ | ------ |
-| type | string | yes | Type of panel to be rendered. For heatmap panel types, set to `heatmap` |
-| query_range | yes | yes | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
+| `type` | string | yes | Type of panel to be rendered. For heatmap panel types, set to `heatmap` |
+| `query_range` | yes | yes | For area panel types, you must use a [range query](https://prometheus.io/docs/prometheus/latest/querying/api/#range-queries) |
 
 ![heatmap panel type](img/heatmap_panel_type.png)
 

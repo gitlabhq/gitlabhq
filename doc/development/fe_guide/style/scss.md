@@ -43,7 +43,7 @@ result (such as `ml-1` becoming `gl-ml-2`).
 
 #### Where should you put new utility classes?
 
-If a class you need has not been added to GitLab UI, you get to add it! Follow the naming patterns documented in the [utility files](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) and refer to [GitLab UI's CSS documentation](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/adding_css.md#adding-utility-mixins) for more details, especially about adding responsive and stateful rules.
+If a class you need has not been added to GitLab UI, you get to add it! Follow the naming patterns documented in the [utility files](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) and refer to the [GitLab UI CSS documentation](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/main/doc/contributing/adding_css.md#adding-utility-mixins) for more details, especially about adding responsive and stateful rules.
 
 If it is not possible to wait for a GitLab UI update (generally one day), add the class to [`utilities.scss`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/stylesheets/utilities.scss) following the same naming conventions documented in GitLab UI. A follow-up issue to backport the class to GitLab UI and delete it from GitLab should be opened.
 

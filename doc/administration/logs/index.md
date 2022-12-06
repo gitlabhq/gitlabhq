@@ -85,24 +85,24 @@ except those captured by `runit`.
 
 | Log type                                        | Managed by logrotate    | Managed by svlogd/runit |
 |:------------------------------------------------|:------------------------|:------------------------|
-| [Alertmanager Logs](#alertmanager-logs)         | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Crond Logs](#crond-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Alertmanager logs](#alertmanager-logs)         | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [crond logs](#crond-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Gitaly](#gitaly-logs)                          | **{check-circle}** Yes  | **{check-circle}** Yes  |
 | [GitLab Exporter for Omnibus](#gitlab-exporter) | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [GitLab Pages Logs](#pages-logs)                | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [GitLab Pages logs](#pages-logs)                | **{check-circle}** Yes  | **{check-circle}** Yes  |
 | GitLab Rails                                    | **{check-circle}** Yes  | **{dotted-circle}** No  |
-| [GitLab Shell Logs](#gitlab-shelllog)           | **{check-circle}** Yes  | **{dotted-circle}** No  |
-| [Grafana Logs](#grafana-logs)                   | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [LogRotate Logs](#logrotate-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [GitLab Shell logs](#gitlab-shelllog)           | **{check-circle}** Yes  | **{dotted-circle}** No  |
+| [Grafana logs](#grafana-logs)                   | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [LogRotate logs](#logrotate-logs)               | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Mailroom](#mail_room_jsonlog-default)          | **{check-circle}** Yes  | **{check-circle}** Yes  |
 | [NGINX](#nginx-logs)                            | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [PostgreSQL Logs](#postgresql-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Praefect Logs](#praefect-logs)                 | **{dotted-circle}** Yes | **{check-circle}** Yes  |
-| [Prometheus Logs](#prometheus-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [PostgreSQL logs](#postgresql-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Praefect logs](#praefect-logs)                 | **{dotted-circle}** Yes | **{check-circle}** Yes  |
+| [Prometheus logs](#prometheus-logs)             | **{dotted-circle}** No  | **{check-circle}** Yes  |
 | [Puma](#puma-logs)                              | **{check-circle}** Yes  | **{check-circle}** Yes  |
-| [Redis Logs](#redis-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Registry Logs](#registry-logs)                 | **{dotted-circle}** No  | **{check-circle}** Yes  |
-| [Workhorse Logs](#workhorse-logs)               | **{check-circle}** Yes  | **{check-circle}** Yes  |
+| [Redis logs](#redis-logs)                       | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Registry logs](#registry-logs)                 | **{dotted-circle}** No  | **{check-circle}** Yes  |
+| [Workhorse logs](#workhorse-logs)               | **{check-circle}** Yes  | **{check-circle}** Yes  |
 
 ## `production_json.log`
 
@@ -491,7 +491,7 @@ are logged to this file. For example:
 }
 ```
 
-## Sidekiq Logs
+## Sidekiq logs
 
 NOTE:
 In Omnibus GitLab `12.10` or earlier, the Sidekiq log is at `/var/log/gitlab/gitlab-rails/sidekiq.log`.
@@ -671,7 +671,7 @@ I, [2015-02-13T06:17:00.679433 #9291]  INFO -- : Moving existing hooks directory
 User clone/fetch activity using SSH transport appears in this log as
 `executing git command <gitaly-upload-pack...`.
 
-## Gitaly Logs
+## Gitaly logs
 
 This file is in `/var/log/gitlab/gitaly/current` and is produced by [runit](http://smarden.org/runit/).
 `runit` is packaged with Omnibus GitLab and a brief explanation of its purpose
@@ -698,7 +698,7 @@ This file is at `/var/log/gitlab/gitaly/gitaly_hooks.log` and is
 produced by `gitaly-hooks` command. It also contains records about
 failures received during processing of the responses from GitLab API.
 
-## Puma Logs
+## Puma logs
 
 ### `puma_stdout.log`
 
@@ -981,11 +981,11 @@ can be used.
 }
 ```
 
-## Registry Logs
+## Registry logs
 
 For Omnibus GitLab installations, Container Registry logs are in `/var/log/gitlab/registry/current`.
 
-## NGINX Logs
+## NGINX logs
 
 For Omnibus GitLab installations, NGINX logs are in:
 
@@ -1004,7 +1004,7 @@ Below is the default GitLab NGINX access log format:
 $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent"
 ```
 
-## Pages Logs
+## Pages logs
 
 For Omnibus GitLab installations, Pages logs are in `/var/log/gitlab/gitlab-pages/current`.
 
@@ -1033,50 +1033,50 @@ For example:
 }
 ```
 
-## Mattermost Logs
+## Mattermost logs
 
 For Omnibus GitLab installations, Mattermost logs are in these locations:
 
 - `/var/log/gitlab/mattermost/mattermost.log`
 - `/var/log/gitlab/mattermost/current`
 
-## Workhorse Logs
+## Workhorse logs
 
 For Omnibus GitLab installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
 
-## PostgreSQL Logs
+## PostgreSQL logs
 
 For Omnibus GitLab installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/current`.
 
-## Prometheus Logs
+## Prometheus logs
 
 For Omnibus GitLab installations, Prometheus logs are in `/var/log/gitlab/prometheus/current`.
 
-## Redis Logs
+## Redis logs
 
 For Omnibus GitLab installations, Redis logs are in `/var/log/gitlab/redis/current`.
 
-## Alertmanager Logs
+## Alertmanager logs
 
 For Omnibus GitLab installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/current`.
 
 <!-- vale gitlab.Spelling = NO -->
 
-## Crond Logs
+## crond logs
 
 For Omnibus GitLab installations, crond logs are in `/var/log/gitlab/crond/`.
 
 <!-- vale gitlab.Spelling = YES -->
 
-## Grafana Logs
+## Grafana logs
 
 For Omnibus GitLab installations, Grafana logs are in `/var/log/gitlab/grafana/current`.
 
-## LogRotate Logs
+## LogRotate logs
 
 For Omnibus GitLab installations, `logrotate` logs are in `/var/log/gitlab/logrotate/current`.
 
-## GitLab Monitor Logs
+## GitLab Monitor logs
 
 For Omnibus GitLab installations, GitLab Monitor logs are in `/var/log/gitlab/gitlab-monitor/`.
 
@@ -1089,7 +1089,7 @@ For Omnibus GitLab installations, GitLab Exporter logs are in `/var/log/gitlab/g
 For Omnibus GitLab installations, GitLab agent server logs are
 in `/var/log/gitlab/gitlab-kas/current`.
 
-## Praefect Logs
+## Praefect logs
 
 For Omnibus GitLab installations, Praefect logs are in `/var/log/gitlab/praefect/`.
 

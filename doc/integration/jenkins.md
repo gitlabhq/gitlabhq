@@ -179,7 +179,7 @@ If you get this error message while configuring GitLab, the following are possib
 - The Jenkins instance is at a local address and is not included in the
   [GitLab installation's allowlist](../security/webhooks.md#create-an-allowlist-for-local-requests).
 - The credentials for the Jenkins instance do not have sufficient access or are invalid.
-- The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkin's plugin configuration](#configure-the-jenkins-server).
+- The **Enable authentication for `/project` end-point** checkbox is not selected in your [Jenkins plugin configuration](#configure-the-jenkins-server).
 
 ### Error in merge requests - "Could not connect to the CI server"
 

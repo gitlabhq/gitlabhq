@@ -483,7 +483,7 @@ for batched background migration:
 
 To monitor the health of the database, use these additional metrics:
 
-- [PostgreSQL Tuple Statistics](https://dashboards.gitlab.net/d/000000167/postgresql-tuple-statistics?orgId=1&refresh=1m): if you see high rate of updates for the tables being actively converted, or increasing percentage of dead tuples for this table, it might mean that autovacuum cannot keep up.
+- [PostgreSQL Tuple Statistics](https://dashboards.gitlab.net/d/000000167/postgresql-tuple-statistics?orgId=1&refresh=1m): if you see high rate of updates for the tables being actively converted, or increasing percentage of dead tuples for this table, it might mean that `autovacuum` cannot keep up.
 - [PostgreSQL Overview](https://dashboards.gitlab.net/d/000000144/postgresql-overview?orgId=1): if you see high system usage or transactions per second (TPS) on the primary database server, it might mean that the migration is causing problems.
 
 ### Prometheus metrics
@@ -504,8 +504,8 @@ If the migration has not completed, the subsequent steps fail anyway. By checkin
 aim to have more helpful error message.
 1. Create indexes using the `bigint` columns that match the existing indexes using the `integer`
 column ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L28-34)).
-1. Create foreign keys (FK) using the `bigint` columns that match the existing FKs using the
-`integer` column. Do this both for FK referencing other tables, and FKs that reference the table
+1. Create foreign keys (FK) using the `bigint` columns that match the existing FK using the
+`integer` column. Do this both for FK referencing other tables, and FK that reference the table
 that is being migrated ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L36-43)).
 1. Inside a transaction, swap the columns:
     1. Lock the tables involved. To reduce the chance of hitting a deadlock, we recommended to do this in parent to child order ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L47)).
@@ -514,7 +514,7 @@ that is being migrated ([see an example](https://gitlab.com/gitlab-org/gitlab/-/
     1. Swap the defaults ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L59-62)).
     1. Swap the PK constraint (if any) ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L64-68)).
     1. Remove old indexes and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L70-72)).
-    1. Remove old FKs (if still present) and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L74)).
+    1. Remove old foreign keys (if still present) and rename new ones ([see an example](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb#L74)).
 
 See example [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/66088), and [migration](https://gitlab.com/gitlab-org/gitlab/-/blob/41fbe34a4725a4e357a83fda66afb382828767b2/db/post_migrate/20210707210916_finalize_ci_stages_bigint_conversion.rb).
 

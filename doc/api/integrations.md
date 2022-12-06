@@ -1181,7 +1181,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `api_url` | string | true | Prometheus API Base URL. For example, `http://prometheus.example.com/`. |
 | `google_iap_audience_client_id` | string | false | Client ID of the IAP secured resource (looks like IAP_CLIENT_ID.apps.googleusercontent.com) |
-| `google_iap_service_account_json` | string | false | `credentials.json` file for your service account, like { "type": "service_account", "project_id": ... } |
+| `google_iap_service_account_json` | string | false | `credentials.json` file for your service account, like { `"type": "service_account", "project_id": ... }` |
 
 ### Disable Prometheus integration
 

@@ -76,7 +76,7 @@ based on the size of the repository:
 
 Gitaly does this to offset the fact that optimizing those data structures takes
 more time the bigger they get. It is especially important in large
-monorepositories (which receive a lot of traffic) to avoid optimizing them too
+monorepos (which receive a lot of traffic) to avoid optimizing them too
 frequently.
 
 ## Running housekeeping tasks

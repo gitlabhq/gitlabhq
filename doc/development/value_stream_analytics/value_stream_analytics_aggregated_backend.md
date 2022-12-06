@@ -54,7 +54,7 @@ database with a minimal development effort.
 
 ### Example configuration
 
-![vsa object hierarchy example](img/object_hierarchy_example_V14_10.png)
+![VSA object hierarchy example](img/object_hierarchy_example_V14_10.png)
 
 In this example, two independent value streams are set up for two teams that are using
 different development workflows within the `Test Group` (top-level namespace).

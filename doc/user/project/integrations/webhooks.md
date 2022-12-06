@@ -52,7 +52,7 @@ specific to a group, including:
 
 ## Configure a webhook in GitLab
 
-You can configure a webhook for a group or a project.
+To configure a webhook for a project or group:
 
 1. In your project or group, on the left sidebar, select **Settings > Webhooks**.
 1. In **URL**, enter the URL of the webhook endpoint.
@@ -219,10 +219,10 @@ You can filter push events by branch. Use one of the following options to filter
 
 - **All branches**: push events from all branches.
 - **Wildcard pattern**: push events from a branch that matches a wildcard pattern (for example, `*-stable` or `production/*`).
-- **Regular expression**: push events from a branch that matches a regular expression (for example, `(feature|hotfix)/*`).
+- **Regular expression**: push events from a branch that matches a regular expression (for example, `^(feature|hotfix)/`).
 
-You can configure branch filtering
-in the [webhook settings](#configure-a-webhook-in-gitlab) in your project.
+To configure branch filtering for a project or group, see
+[Configure a webhook in GitLab](#configure-a-webhook-in-gitlab).
 
 ## How image URLs are displayed in the webhook body
 

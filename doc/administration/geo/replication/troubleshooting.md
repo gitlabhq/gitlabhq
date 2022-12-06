@@ -1476,7 +1476,7 @@ Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nE
 
 The partial failover to a secondary Geo *site* may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
 
-1. SSH into every Sidekiq, PostgresSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
+1. SSH into every Sidekiq, PostgreSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary site to primary:
 
@@ -1495,7 +1495,7 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
 
 If the above steps are **not successful**, proceed through the next steps:
 
-1. SSH to every Sidekiq, PostgresSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
+1. SSH to every Sidekiq, PostgreSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
 
    - Create a `/etc/gitlab/gitlab-cluster.json` file with the following content:
 

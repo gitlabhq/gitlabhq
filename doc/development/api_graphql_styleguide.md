@@ -170,7 +170,7 @@ See also:
 
 - [Exposing Global IDs](#exposing-global-ids).
 - [Mutation arguments](#object-identifier-arguments).
-- [Deprecating Global IDs](#deprecate-global-ids).
+- [Deprecating Global IDs](#deprecate-global-ids). 
 
 We have a custom scalar type (`Types::GlobalIDType`) which should be used as the
 type of input and output arguments when the value is a `GlobalID`. The benefits
@@ -2263,7 +2263,7 @@ end
 
   1. 95% of the resolver specs use arguments that are Ruby objects, as opposed to when using the GraphQL API
      only strings and integers are used. This works fine in most cases.
-  1. If your resolver takes arguments that use a `prepare` proc, such as a resolver that accepts timeframe
+  1. If your resolver takes arguments that use a `prepare` proc, such as a resolver that accepts time frame
      arguments (`TimeFrameArguments`), you must pass the `arg_style: :internal_prepared` parameter into
      the `resolve` method. This tells the code to convert the arguments into strings and integers and pass
      them through regular argument handling, ensuring that the `prepare` proc is called correctly.

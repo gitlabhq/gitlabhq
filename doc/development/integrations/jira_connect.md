@@ -68,7 +68,7 @@ If the app install failed, you might need to delete `jira_connect_installations`
 
 #### Not authorized to access the file
 
-If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK's port public by following these steps:
+If you use Gitpod and you get an error about Jira not being able to access the descriptor file, you might need to make the GDK port public by following these steps:
 
 1. Open your GitLab workspace in Gitpod.
 1. When the GDK is running, select **Ports** in the bottom-right corner.

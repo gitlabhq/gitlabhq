@@ -126,8 +126,7 @@ For very large groups the database queries can easily time out, causing HTTP 500
 
 ## Optimizing ordered `IN` queries
 
-In the talk
-["How to teach an elephant to dance rock'n'roll"](https://www.youtube.com/watch?v=Ha38lcjVyhQ),
+In the talk ["How to teach an elephant to dance rock'n'roll"](https://www.youtube.com/watch?v=Ha38lcjVyhQ),
 Maxim Boguk demonstrated a technique to optimize a special class of ordered `IN` queries,
 such as our ordered group-level queries.
 
@@ -918,11 +917,11 @@ the `LIMIT` is reached or no more data can be found.
 Here's an outline of the steps we take in the recursive CTE query
 (expressing the steps in SQL is non-trivial but is explained next):
 
-1. Sort the initial resultset according to the `ORDER BY` clause.
+1. Sort the initial `resultset` according to the `ORDER BY` clause.
 1. Pick the top cursor to fetch the record, this is our first record. In the example,
 this cursor would be (`2020-01-05`, `3`) for `project_id=9`.
 1. We can use (`2020-01-05`, `3`) to fetch the next issue respecting the `ORDER BY` clause
-`project_id=9` filter. This produces an updated resultset.
+`project_id=9` filter. This produces an updated `resultset`.
 
   | `project_ids` | `created_at_values` | `id_values` |
   | ------------- | ------------------- | ----------- |
@@ -931,7 +930,7 @@ this cursor would be (`2020-01-05`, `3`) for `project_id=9`.
   | 10            | 2020-01-15          | 7           |
   | **9**         | **2020-01-06**      | **6**       |
 
-1. Repeat 1 to 3 with the updated resultset until we have fetched `N=20` records.
+1. Repeat 1 to 3 with the updated `resultset` until we have fetched `N=20` records.
 
 ### Initializing the recursive CTE query
 

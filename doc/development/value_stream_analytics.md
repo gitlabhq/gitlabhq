@@ -71,7 +71,7 @@ which are always available to the end-users regardless of the subscription.
 ### Value streams
 
 Value streams are container objects for the stages. There can be multiple value streams per group
-focusing on different aspects of the Dev Ops lifecycle.
+focusing on different aspects of the DevOps lifecycle.
 
 ### Events
 

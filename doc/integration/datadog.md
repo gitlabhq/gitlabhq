@@ -38,9 +38,11 @@ project, group, or instance level:
    Used only in advanced scenarios.
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
+<!-- vale gitlab.Spelling = NO -->
 1. Optional. If you use groups of GitLab instances (such as staging and production
    environments), provide an **Env** name. This value is attached to each span
    the integration generates.
+<!-- vale gitlab.Spelling = YES -->
 1. Optional. To define any custom tags for all spans at which the integration is being configured,
    enter one tag per line in **Tags**. Each line must be in the format `key:value`. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79665) in GitLab 14.8.)
 1. Optional. Select **Test settings** to test your integration.
@@ -51,4 +53,4 @@ section of your Datadog account.
 
 ## Related topics
 
-- [Datadog's CI Visibility](https://docs.datadoghq.com/continuous_integration/) documentation.
+- [Datadog CI Visibility](https://docs.datadoghq.com/continuous_integration/) documentation.

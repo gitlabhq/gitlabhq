@@ -14,7 +14,7 @@ information on administering GitLab, see [configuring Sidekiq](../../administrat
 There are pages with additional detail on the following topics:
 
 1. [Compatibility across updates](compatibility_across_updates.md)
-1. [Job idempotency and job deduplication](idempotent_jobs.md)
+1. [Job idempotence and job deduplication](idempotent_jobs.md)
 1. [Limited capacity worker: continuously performing work with a specified concurrency](limited_capacity_worker.md)
 1. [Logging](logging.md)
 1. [Worker attributes](worker_attributes.md)

@@ -437,7 +437,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-4"></a>
     <p>
-      Because of the implementation of <code>go build</code>, the Go build process requires network access, a pre-loaded modcache via <code>go mod download</code>, or vendored dependencies. For more information,
+      Because of the implementation of <code>go build</code>, the Go build process requires network access, a pre-loaded mod cache via <code>go mod download</code>, or vendored dependencies. For more information,
       refer to the Go documentation on <a href="https://pkg.go.dev/cmd/go#hdr-Compile_packages_and_dependencies">compiling packages and dependencies</a>.
     </p>
   </li>

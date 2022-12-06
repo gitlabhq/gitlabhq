@@ -45,7 +45,7 @@ Use your best judgment when to use it and contribute new points through merge re
 
 - [ ] Check off tasks on your created task list to keep everyone updated on the progress
 - [ ] [Share your work early with reviewers/maintainers](#share-your-work-early)
-- [ ] Share your work with UXer and Product Manager with Screenshots and/or [GIF's](https://about.gitlab.com/handbook/product/making-gifs/). They are easy to create for you and keep them up to date.
+- [ ] Share your work with UXer and Product Manager with Screenshots and/or [GIF images](https://about.gitlab.com/handbook/product/making-gifs/). They are easy to create for you and keep them up to date.
 - [ ] If you are blocked on something let everyone on the issue know through a comment.
 - [ ] Are you unable to work on this issue for a longer period of time, also let everyone know.
 - [ ] **Documentation** Update/add docs for the new feature, see `docs/`. Ping one of the documentation experts/reviewers
@@ -58,7 +58,7 @@ Use your best judgment when to use it and contribute new points through merge re
 - [ ] Did you check the mobile view?
 - [ ] Check the built webpack bundle (For the report run `WEBPACK_REPORT=true gdk start`, then open `webpack-report/index.html`) if we have unnecessary bloat due to wrong references, including libraries multiple times, etc.. If you need help contact the webpack [domain expert](https://about.gitlab.com/handbook/engineering/frontend/#frontend-domain-experts)
 - [ ] **Tests** Not only greenfield tests - Test also all bad cases that come to your mind.
-- [ ] If you have multiple MR's then also smoke test against the final merge.
+- [ ] If you have multiple MRs then also smoke test against the final merge.
 - [ ] Are there any big changes on how and especially how frequently we use the API then let production know about it
 - [ ] Smoke test of the RC on dev., staging., canary deployments and .com
 - [ ] Follow up on issues that came out of the review. Create issues for discovered edge cases that should be covered in future iterations.

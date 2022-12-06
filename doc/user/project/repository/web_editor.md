@@ -73,7 +73,7 @@ To close the preview panel, do one of the following:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/56159) in GitLab 13.11 for self-managed instances.
 
 Web Editor enables you to highlight a single line by adding specially formatted
-hash information to the URL's file path segment. For example, the file path segment
+hash information to the file path segment of the URL. For example, the file path segment
 `MY_FILE.js#L3` instructs the Web Editor to highlight line 3.
 
 The Web Editor also enables you to highlight multiple lines using a similar pattern. In

@@ -411,7 +411,7 @@ the following are true:
 If all the above are true and the users are still not getting access,
 [run a manual group sync](#sync-all-groups) in the rails console and
 [look through the output](#example-console-output-after-a-group-sync) to see what happens when
-GitLab syncs the `admin_group`.
+GitLab syncs the `admin_group`. 
 
 #### Sync now button stuck in the UI
 
@@ -659,7 +659,7 @@ end
 You can then [run a UserSync](#sync-all-users) **(PREMIUM SELF)** to sync the latest DN
 for each of these users.
 
-## Could not authenticate you from ldapmain because "Unknown provider"
+## `Could not authenticate you from Ldapmain because "Unknown provider"`
 
 You can receive the following error when authenticating with an LDAP server:
 

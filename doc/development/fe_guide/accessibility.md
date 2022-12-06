@@ -109,15 +109,15 @@ Text input examples:
 </gl-form-group>
 ```
 
-Textarea examples:
+`textarea` examples:
 
 ```html
-<!-- Textarea with label -->
+<!-- textarea with label -->
 <gl-form-group :label="__('Issue description')" label-for="issue-description">
   <gl-form-textarea id="issue-description" v-model="description" />
 </gl-form-group>
 
-<!-- Textarea with hidden label -->
+<!-- textarea with hidden label -->
 <gl-form-group :label="__('Issue description')" label-for="issue-description" label-sr-only>
   <gl-form-textarea id="issue-description" v-model="description" />
 </gl-form-group>
@@ -347,7 +347,7 @@ Keep in mind that:
 
 See the [Pajamas Keyboard-only page](https://design.gitlab.com/accessibility-audits/keyboard-only/) for more detail.
 
-## Tabindex
+## `tabindex`
 
 Prefer **no** `tabindex` to using `tabindex`, since:
 

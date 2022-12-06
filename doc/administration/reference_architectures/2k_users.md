@@ -125,7 +125,7 @@ CI pipelines alike.
 
 As such, large repositories come with notable cost and typically will require more resources to handle,
 significantly so in some cases. It's therefore **strongly** recommended then to review large repositories
-to ensure they maintain good repo health and reduce their size wherever possible.
+to ensure they maintain good health and reduce their size wherever possible.
 
 NOTE:
 If best practices aren't followed and large repositories are present on the environment,

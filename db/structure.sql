@@ -14624,20 +14624,6 @@ CREATE SEQUENCE dast_sites_id_seq
 
 ALTER SEQUENCE dast_sites_id_seq OWNED BY dast_sites.id;
 
-CREATE TABLE dependency_proxy_blob_states (
-    verification_started_at timestamp with time zone,
-    verification_retry_at timestamp with time zone,
-    verified_at timestamp with time zone,
-    dependency_proxy_blob_id bigint NOT NULL,
-    verification_state smallint DEFAULT 0 NOT NULL,
-    verification_retry_count smallint DEFAULT 0 NOT NULL,
-    verification_checksum bytea,
-    verification_failure text,
-    CONSTRAINT check_8e4f76fffe CHECK ((char_length(verification_failure) <= 255))
-);
-
-COMMENT ON TABLE dependency_proxy_blob_states IS '{"owner":"group::geo","description":"Geo-specific table to store the verification state of DependencyProxy::Blob objects"}';
-
 CREATE TABLE dependency_list_exports (
     id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -14658,6 +14644,20 @@ CREATE SEQUENCE dependency_list_exports_id_seq
     CACHE 1;
 
 ALTER SEQUENCE dependency_list_exports_id_seq OWNED BY dependency_list_exports.id;
+
+CREATE TABLE dependency_proxy_blob_states (
+    verification_started_at timestamp with time zone,
+    verification_retry_at timestamp with time zone,
+    verified_at timestamp with time zone,
+    dependency_proxy_blob_id bigint NOT NULL,
+    verification_state smallint DEFAULT 0 NOT NULL,
+    verification_retry_count smallint DEFAULT 0 NOT NULL,
+    verification_checksum bytea,
+    verification_failure text,
+    CONSTRAINT check_8e4f76fffe CHECK ((char_length(verification_failure) <= 255))
+);
+
+COMMENT ON TABLE dependency_proxy_blob_states IS '{"owner":"group::geo","description":"Geo-specific table to store the verification state of DependencyProxy::Blob objects"}';
 
 CREATE TABLE dependency_proxy_blobs (
     id integer NOT NULL,

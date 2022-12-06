@@ -132,7 +132,7 @@ have had the chance to add to `helper.labels_to_add`.
 #### Shared rules and plugins
 
 If the rule or plugin you implement can be useful for other projects, think about
-upstreaming them to the [`gitlab-dangerfiles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles) project.
+adding them upstream to the [`gitlab-dangerfiles`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles) project.
 
 #### Enable Danger on a project
 

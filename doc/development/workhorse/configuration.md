@@ -162,7 +162,7 @@ addr = "localhost:9229"
   max_version = "tls1.3"
 ```
 
-## Interaction of authBackend and authSocket
+## Interaction of `authBackend` and `authSocket`
 
 The interaction between `authBackend` and `authSocket` can be confusing.
 If `authSocket` is set, it overrides the host portion of `authBackend`, but not
@@ -170,7 +170,7 @@ the relative path.
 
 In table form:
 
-| authBackend                    | authSocket        | Workhorse connects to | Rails relative URL |
+| `authBackend`                  | `authSocket`      | Workhorse connects to | Rails relative URL |
 |--------------------------------|-------------------|-----------------------|--------------------|
 | unset                          | unset             | `localhost:8080`      | `/`                |
 | `http://localhost:3000`        | unset             | `localhost:3000`      | `/`                |

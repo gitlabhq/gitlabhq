@@ -16,7 +16,7 @@
 #
 # REQUIRED FIELDS
 #
-- title: "Deprecated in favor of option"  # (required) Actionable title. e.g., The `confidential` field for a `Note` is deprecated. Use `internal` instead.
+- title: "Feature A is deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "The maximum number of characters in a job name will be limited to 250."
   announcement_milestone: "XX.YY"  # (required) The milestone when this feature was first announced as deprecated.
   announcement_date: "YYYY-MM-DD"  # (required) The date of the milestone release when this feature was first announced as deprecated. This should almost always be the 22nd of a month (YYYY-MM-22), unless you did an out of band blog post.
   removal_milestone: "XX.YY"  # (required) The milestone when this feature is planned to be removed
@@ -28,18 +28,18 @@
   body: |  # (required) Do not modify this line, instead modify the lines below.
     <!-- START OF BODY COMMENT
 
-    This area supports markdown.  Delete this entire comment and replace it with your markdown content.
+    Be clear and concise. Give a brief explanation of the details or reasons for the change.
 
-    Deprecations must be actionable.
+    Additionally, deprecations and other planned changes should be actionable, so add details that explain what users need to do to address the change. For example:
 
-    Use terms such as "deprecated in favor of" or "use X instead."
+    - "Use the `internal` keyword instead of `confidential`."
+    - "Reduce the number of characters in all jobs to be 250 characters or less."
+    - "Give an expiration date to any access tokens that have no expiration date."
+    - "Stop using the `omniauth_crowd` gem. It will be removed and will not be replaced."
 
-    For example:
+    When ready, assign to your tech writer for review. They will run `bin/rake gitlab:docs:compile_deprecations` to update the deprecations doc, then merge.
 
-    - The `confidential` field for a `Note` is deprecated. Use `internal` instead.
-    - The `merge_status` field in the merge request API has been deprecated in favor of `detailed_merge_status`.
-
-    When ready, assign to your tech writer for review. When ready, they will run `bin/rake gitlab:docs:compile_deprecations` to update the deprecations doc, then merge.
+    This area supports markdown. Delete this entire comment and replace it with your markdown content.
 
     END OF BODY COMMENT -->
 #

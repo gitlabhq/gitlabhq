@@ -1209,7 +1209,7 @@ These types of bugs are often seen in environments which allow multi-threading a
 
 ### Examples
 
-**Example 1:** you have a model which accepts a URL as input. When the model is created you verify that the URL's host resolves to a public IP address, to prevent attackers making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)]). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves those URL's host it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
+**Example 1:** you have a model which accepts a URL as input. When the model is created you verify that the URL host resolves to a public IP address, to prevent attackers making internal network calls. But DNS records can change ([DNS rebinding](#server-side-request-forgery-ssrf)]). An attacker updates the DNS record to `127.0.0.1`, and when your code resolves those URL host it results in sending a potentially malicious request to a server on the internal network. The property was valid at the "time of check", but invalid and malicious at "time of use".
 
 GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/214401) where, although `Gitlab::UrlBlocker.validate!` was called, the returned value was not used. This made it vulnerable to TOCTOU bug and SSRF protection bypass through [DNS rebinding](#server-side-request-forgery-ssrf). The fix was to [use the validated IP address](https://gitlab.com/gitlab-org/gitlab/-/commit/7af8abd4df9a98f7a1ae7c4ec9840d0a7a8c684d).
 

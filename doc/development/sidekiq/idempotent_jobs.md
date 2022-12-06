@@ -189,7 +189,7 @@ that can tolerate some duplication.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/69372) in GitLab 14.3.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.4.
 > - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/338350) in GitLab 14.6.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/346598) in GitLab 14.9. [Feature flag preserve_latest_wal_locations_for_idempotent_jobs](https://gitlab.com/gitlab-org/gitlab/-/issues/346598) removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/346598) in GitLab 14.9. [Feature flag `preserve_latest_wal_locations_for_idempotent_jobs`](https://gitlab.com/gitlab-org/gitlab/-/issues/346598) removed.
 
 The deduplication always take into account the latest binary replication pointer, not the first one.
 This happens because we drop the same job scheduled for the second time and the Write-Ahead Log (WAL) is lost.

@@ -192,7 +192,7 @@ briefly waits for jobs to complete before deciding what the next action should
 be. For small projects, this may slow down the import process a bit, but it
 also reduces pressure on the system as a whole.
 
-## Refreshing import JIDs
+## Refreshing import job IDs
 
 GitLab includes a worker called `Gitlab::Import::StuckProjectImportJobsWorker`
 that periodically runs and marks project imports as failed if they have been
@@ -203,7 +203,7 @@ often we hit the GitHub rate limit (more on this below), but we don't want
 
 To prevent this from happening we periodically refresh the expiration time of
 the import process. This works by storing the JID of the import job in the
-database, then refreshing this JID's TTL at various stages throughout the import
+database, then refreshing this JID TTL at various stages throughout the import
 process. This is done by calling `ProjectImportState#refresh_jid_expiration`. By
 refreshing this TTL we can ensure our import does not get marked as failed so
 long we're still performing work.

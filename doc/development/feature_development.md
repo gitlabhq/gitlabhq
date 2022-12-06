@@ -127,7 +127,7 @@ See [database guidelines](database/index.md).
 - [Security Scanners](integrations/secure.md)
 - [Secure Partner Integration](integrations/secure_partner_integration.md)
 - [How to run Jenkins in development environment](integrations/jenkins.md)
-- [How to run local `Codesandbox` integration for Web IDE Live Preview](integrations/codesandbox.md)
+- [How to run local CodeSandbox integration for Web IDE Live Preview](integrations/codesandbox.md)
 
 The following integration guides are internal. Some integrations require access to administrative accounts of third-party services and are available only for GitLab team members to contribute to:
 

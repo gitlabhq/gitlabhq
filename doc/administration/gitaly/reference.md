@@ -159,7 +159,7 @@ sum(rate(gitaly_catfile_cache_total{type="hit"}[5m])) / sum(rate(gitaly_catfile_
 ### `gitaly-ruby`
 
 A Gitaly process uses one or more `gitaly-ruby` helper processes to
-execute RPC's implemented in Ruby instead of Go. The `[gitaly-ruby]`
+execute RPCs implemented in Ruby instead of Go. The `[gitaly-ruby]`
 section of the configuration file contains settings for these helper processes.
 
 These processes are known to occasionally suffer from memory leaks.

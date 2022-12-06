@@ -256,7 +256,7 @@ NOTE:
 If you're using a Vault instance provided by HashiCorp Cloud Platform,
 you need to export the `VAULT_NAMESPACE` variable. Its default value is `admin`.
 
-![read_secrets staging](img/vault-read-secrets-staging.png)
+![`read_secrets` staging](img/vault-read-secrets-staging.png)
 
 The following job is able to authenticate using the `myproject-production` role and read secrets under `/secret/myproject/production/`:
 
@@ -279,14 +279,14 @@ read_secrets:
     - echo $PASSWORD
 ```
 
-![read_secrets production](img/vault-read-secrets-production.png)
+![`read_secrets` production](img/vault-read-secrets-production.png)
 
 ### Limit token access to Vault secrets
 
 You can control `CI_JOB_JWT` access to Vault secrets by using Vault protections
 and GitLab features. For example, restrict the token by:
 
-- Using Vault [bound_claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims)
+- Using Vault [bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims)
   for specific groups using `group_claim`.
 - Hard coding values for Vault bound claims based on the `user_login` and `user_email`
   of specific users.

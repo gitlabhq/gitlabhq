@@ -26,7 +26,7 @@ Whether we allow an image to be rescaled or not is decided by combination of har
 The hard-coded rules only permit:
 
 - [Project, group and user avatars](https://gitlab.com/gitlab-org/gitlab/-/blob/fd08748862a5fe5c25b919079858146ea85843ae/app/controllers/concerns/send_file_upload.rb#L65-67)
-- [PNGs or JPEGs](https://gitlab.com/gitlab-org/gitlab/-/blob/5dff8fa3814f2a683d8884f468cba1ec06a60972/lib/gitlab/file_type_detection.rb#L23)
+- [PNG or JPEG images](https://gitlab.com/gitlab-org/gitlab/-/blob/5dff8fa3814f2a683d8884f468cba1ec06a60972/lib/gitlab/file_type_detection.rb#L23)
 - [Specific dimensions](https://gitlab.com/gitlab-org/gitlab/-/blob/5dff8fa3814f2a683d8884f468cba1ec06a60972/app/models/concerns/avatarable.rb#L6)
 
 Furthermore, configuration in Workhorse can lead to the image scaler rejecting a request if:

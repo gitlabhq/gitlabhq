@@ -434,7 +434,11 @@ module QA
         end
 
         def revert_change!
-          click_element(:revert_button, Page::Component::CommitModal)
+          # retry when the modal doesn't appear for large MRs as the onClick listener is initialized after the click
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/366336
+          retry_on_exception do
+            click_element(:revert_button, Page::Component::CommitModal)
+          end
           click_element(:submit_commit_button)
         end
 

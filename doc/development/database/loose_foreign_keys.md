@@ -134,7 +134,7 @@ scripts/decomposition/generate-loose-foreign-key -c ci_job_token_project_scope_l
 ```
 
 To swap all the foreign keys (all having `_id` appended), but not create a new branch (only commit
-the changes) and not create rspecs, run:
+the changes) and not create RSpec tests, run:
 
 ```shell
 scripts/decomposition/generate-loose-foreign-key -c --no-branch --no-rspec _id

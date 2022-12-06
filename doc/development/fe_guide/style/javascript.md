@@ -7,7 +7,7 @@ disqus_identifier: 'https://docs.gitlab.com/ee/development/fe_guide/style_guide_
 
 # JavaScript style guide
 
-We use [Airbnb's JavaScript Style Guide](https://github.com/airbnb/javascript) and its accompanying
+We use [the Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript) and its accompanying
 linter to manage most of our JavaScript style guidelines.
 
 In addition to the style guidelines set by Airbnb, we also have a few specific rules
@@ -16,11 +16,11 @@ listed below.
 NOTE:
 You can run ESLint locally by running `yarn run lint:eslint:all` or `yarn run lint:eslint $PATH_TO_FILE`.
 
-## Avoid forEach
+## Avoid `forEach`
 
-Avoid forEach when mutating data. Use `map`, `reduce` or `filter` instead of `forEach`
+Avoid `forEach` when mutating data. Use `map`, `reduce` or `filter` instead of `forEach`
 when mutating data. This minimizes mutations in functions,
-which aligns with [Airbnb's style guide](https://github.com/airbnb/javascript#testing--for-real).
+which aligns with [the Airbnb style guide](https://github.com/airbnb/javascript#testing--for-real).
 
 ```javascript
 // bad

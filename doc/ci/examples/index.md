@@ -33,7 +33,7 @@ The following table lists examples with step-by-step tutorials that are containe
 | npm with semantic-release     | [Publish npm packages to the GitLab Package Registry using semantic-release](semantic-release.md). |
 | PHP with Laravel, Envoy       | [Test and deploy Laravel applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md). |
 | PHP with npm, SCP             | [Running Composer and npm scripts with deployment via SCP in GitLab CI/CD](deployment/composer-npm-deploy.md). |
-| PHP with PHPunit, `atoum`     | [Testing PHP projects](php.md). |
+| PHP with PHPUnit, `atoum`     | [Testing PHP projects](php.md). |
 | Secrets management with Vault | [Authenticating and Reading Secrets With HashiCorp Vault](authenticating-with-hashicorp-vault/index.md). |
 
 ### Contributed examples

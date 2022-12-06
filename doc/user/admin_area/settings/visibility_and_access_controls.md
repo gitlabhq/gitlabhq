@@ -219,7 +219,7 @@ If only one protocol is enabled:
 
 - The project page shows only the allowed protocol's URL, with no option to
   change it.
-- GitLab shows a tooltip when you hover over the URL's protocol, if user action
+- GitLab shows a tooltip when you hover over the protocol for the URL, if user action
   (such as adding a SSH key or setting a password) is required:
 
   ![Project URL with SSH only access](img/restricted_url.png)

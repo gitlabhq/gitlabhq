@@ -62,7 +62,7 @@ How this feature works:
 With some [runner executors](https://docs.gitlab.com/runner/executors/),
 if you can run a job on the runner, you can get full access to the file system,
 and thus any code it runs as well as the token of the runner. With shared runners, this means that anyone
-that runs jobs on the runner, can access anyone else's code that runs on the
+that runs jobs on the runner, can access another user's code that runs on the
 runner.
 
 In addition, because you can get access to the runner token, it is possible
@@ -903,7 +903,7 @@ The default is the number of CPUs available, but given the memory ramifications,
 setting.
 
 `FASTZIP_EXTRACTOR_CONCURRENCY` controls how many files are decompressed at once. Files from a zip archive can natively
-be read from concurrency, so no additional memory is allocated in additional to what the decompressor requires. This
+be read from concurrency, so no additional memory is allocated in addition to what the decompressor requires. This
 defaults to the number of CPUs available.
 
 ## Clean up stale runners **(ULTIMATE)**

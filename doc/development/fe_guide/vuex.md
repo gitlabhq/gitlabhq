@@ -431,7 +431,7 @@ export default {
 
 Refer to [Vuex documentation](https://vuex.vuejs.org/guide/testing.html) regarding testing Actions, Getters and Mutations.
 
-#### Testing components that need a store
+#### Testing components that need a store 
 
 Smaller components might use `store` properties to access the data. To write unit tests for those
 components, we need to include the store and provide the correct state:

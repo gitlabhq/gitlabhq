@@ -166,7 +166,7 @@ graph TD;
 1. A new column `routes.pod_id` is added to `routes` table
 1. A new Router service exists to choose which pod to route a request to.
 1. A new concept will be introduced in GitLab called an organization and a user can select a "default organization" and this will be a user level setting. The default organization is used to redirect users away from ambiguous routes like `/dashboard` to organization scoped routes like `/organizations/my-organization/-/dashboard`. Legacy users will have a special default organization that allows them to keep using global resources on `Pod US0`. All existing namespaces will initially move to this public organization.
-1. If a pod receives a request for a `routes.pod_id` that it does not own it returns a `302` with `X-Gitlab-Pod-Redirect` header so that the router can send the request to the correct pod. The correct pod can also set a header `X-Gitlab-Pod-Cache` which contains information about how this request should be cached to remember the pod. For example if the request was `/gitlab-org/gitlab` then the header would encode `/gitlab-org/* => Pod US0` (ie. any requests starting with `/gitlab-org/` can always be routed to `Pod US0`
+1. If a pod receives a request for a `routes.pod_id` that it does not own it returns a `302` with `X-Gitlab-Pod-Redirect` header so that the router can send the request to the correct pod. The correct pod can also set a header `X-Gitlab-Pod-Cache` which contains information about how this request should be cached to remember the pod. For example if the request was `/gitlab-org/gitlab` then the header would encode `/gitlab-org/* => Pod US0` (for example, any requests starting with `/gitlab-org/` can always be routed to `Pod US0`
 1. When the pod does not know (from the cache) which pod to send a request to it just picks a random pod within it's region
 1. Writes to `gitlab_users` and `gitlab_routes` are sent to a primary PostgreSQL server in our `US` region but reads can come from replicas in the same region. This will add latency for these writes but we expect they are infrequent relative to the rest of GitLab.
 
@@ -176,7 +176,7 @@ All users will get a new column `users.default_organization` which they can
 control in user settings. We will introduce a concept of the
 `GitLab.com Public` organization. This will be set as the default organization for all existing
 users. This organization will allow the user to see data from all namespaces in
-`Pod US0` (ie. our original GitLab.com instance). This behavior can be invisible to
+`Pod US0` (for example, our original GitLab.com instance). This behavior can be invisible to
 existing users such that they don't even get told when they are viewing a
 global page like `/dashboard` that it's even scoped to an organization.
 
@@ -195,7 +195,7 @@ frustrating and painful so to avoid this we will decompose and share all Admin A
 settings in the `gitlab_admin` schema. This should be safe (similar to other
 shared schemas) because these receive very little write traffic.
 
-In cases where different pods need different settings (eg. the
+In cases where different pods need different settings (for example, the
 Elasticsearch URL), we will either decide to use a templated
 format in the relevant `application_settings` row which allows it to be dynamic
 per pod. Alternatively if that proves difficult we'll introduce a new table
@@ -241,7 +241,7 @@ keeping settings in sync for all pods.
 1. Data in `gitlab_users` and `gitlab_routes` databases must be replicated in
    all regions which may be an issue for certain types of compliance.
 1. The router cache may need to be very large if we get a wide variety of URLs
-   (ie. long tail). In such a case we may need to implement a 2nd level of
+   (for example, long tail). In such a case we may need to implement a 2nd level of
    caching in user cookies so their frequently accessed pages always go to the
    right pod the first time.
 1. Having shared database access for `gitlab_users` and `gitlab_routes`
@@ -363,7 +363,7 @@ sequenceDiagram
 1. User is in Europe so DNS resolves to the router in Europe
 1. The router does not have `/my-company/*` cached yet so it chooses randomly `Pod EU1`
 1. `Pod EU1` redirects them through a login flow
-1. Stil they request `/my-company/my-project` without the router cache, so the router chooses a random pod `Pod EU1`
+1. Still they request `/my-company/my-project` without the router cache, so the router chooses a random pod `Pod EU1`
 1. `Pod EU1` does not have `/my-company`, but it knows that it lives in `Pod EU0` so it redirects the router to `Pod EU0`
 1. `Pod EU0` returns the correct response as well as setting the cache headers for the router `/my-company/* => Pod EU0`
 1. The router now caches and remembers any request paths matching `/my-company/*` should go to `Pod EU0`
@@ -499,7 +499,7 @@ allowed to use legacy global functionality like `/dashboard` to see data across
 namespaces located on `Pod US0`. The rails backend also knows that the default pod to render any ambiguous
 routes like `/dashboard` is `Pod US0`. Lastly the user will be allowed to
 navigate to organizations on another pod like `/my-organization` but when they do the
-user will see a message indicating that some data may be missing (eg. the
+user will see a message indicating that some data may be missing (for example, the
 MRs/Issues/Todos) counts.
 
 #### Navigates to `/gitlab-org/gitlab` while not logged in

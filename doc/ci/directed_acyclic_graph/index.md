@@ -38,10 +38,10 @@ It has a pipeline that looks like the following:
 
 | build | test | deploy |
 | ----- | ---- | ------ |
-| build_a | test_a | deploy_a |
-| build_b | test_b | deploy_b |
-| build_c | test_c | deploy_c |
-| build_d | test_d | deploy_d |
+| `build_a` | `test_a` | `deploy_a` |
+| `build_b` | `test_b` | `deploy_b` |
+| `build_c` | `test_c` | `deploy_c` |
+| `build_d` | `test_d` | `deploy_d` |
 
 Using a DAG, you can relate the `_a` jobs to each other separately from the `_b` jobs,
 and even if service `a` takes a very long time to build, service `b` doesn't

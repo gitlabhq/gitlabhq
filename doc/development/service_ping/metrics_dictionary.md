@@ -55,7 +55,7 @@ Each metric is defined in a separate YAML file consisting of a number of fields:
 | `options`           | no       | `object`: options information needed to calculate the metric value. |
 | `skip_validation`   | no       | This should **not** be set. [Used for imported metrics until we review, update and make them valid](https://gitlab.com/groups/gitlab-org/-/epics/5425). |
 
-### Metric key_path
+### Metric `key_path`
 
 The `key_path` of the metric is the location in the JSON Service Ping payload.
 
@@ -108,7 +108,7 @@ Metric definitions can have one of the following statuses:
 - `broken`: Metric reports broken data (for example, -1 fallback), or does not report data at all. A metric marked as `broken` must also have the `repair_issue_url` attribute.
 - `removed`: Metric was removed, but it may appear in Service Ping payloads sent from instances running on older versions of GitLab.
 
-### Metric value_type
+### Metric `value_type`
 
 Metric definitions can have one of the following values for `value_type`:
 
@@ -120,7 +120,7 @@ In general, we avoid complex objects and prefer one of the `boolean`, `number`, 
 An example of a metric that uses `value_type: object` is `topology` (`/config/metrics/settings/20210323120839_topology.yml`),
 which has a related schema in `/config/metrics/objects_schemas/topology_schema.json`.
 
-### Metric time_frame
+### Metric `time_frame`
 
 - `7d`: The metric data applies to the most recent 7-day interval. For example, the following metric counts the number of users that create epics over a 7-day interval: `ee/config/metrics/counts_7d/20210305145820_g_product_planning_epic_created_weekly.yml`.
 - `28d`: The metric data applies to the most recent 28-day interval. For example, the following metric counts the number of unique users that create issues over a 28-day interval: `config/metrics/counts_28d/20210216181139_issues.yml`.

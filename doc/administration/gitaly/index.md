@@ -689,7 +689,7 @@ To see if GitLab can access the repository file system directly, we use the foll
 
 - Gitaly ensures that the file system has a metadata file in its root with a UUID in it.
 - Gitaly reports this UUID to GitLab by using the `ServerInfo` RPC.
-- GitLab Rails tries to read the metadata file directly. If it exists, and if the UUID's match,
+- GitLab Rails tries to read the metadata file directly. If it exists, and if the UUIDs match,
   assume we have direct access.
 
 Direct Git access is:

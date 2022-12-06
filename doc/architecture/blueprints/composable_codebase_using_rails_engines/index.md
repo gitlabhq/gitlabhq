@@ -432,7 +432,7 @@ What was done?
     - We control specs from main application using environment variable `TEST_WEB_ENGINE`
     - We added new CI job that will run `engines/web_engine/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
     - We added new CI job that will run `engines/web_engine/ee/spec` tests separately using `TEST_WEB_ENGINE` environment variable.
-    - We are running all whitebox frontend tests with `TEST_WEB_ENGINE=true`
+    - We are running all white box frontend tests with `TEST_WEB_ENGINE=true`
 
 #### Results
 
@@ -498,7 +498,7 @@ Cons:
 
 - It is harder to implement GraphQL subscriptions as in case of Sidekiq as we need another way to pass subscriptions
 - `api_v4` paths can be used in some services that are used by Sidekiq (for example `api_v4_projects_path`)
-- url_helpers paths are used in models and services, that could be used by Sidekiq (for example `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18))
+- `url_helpers` paths are used in models and services, that could be used by Sidekiq (for example `Gitlab::Routing.url_helpers.project_pipelines_path` is used by [ExpirePipelineCacheService](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/ci/expire_pipeline_cache_service.rb#L20) in [ExpirePipelineCacheWorker](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/workers/expire_pipeline_cache_worker.rb#L18))
 
 #### Example: GraphQL
 

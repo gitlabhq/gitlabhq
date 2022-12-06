@@ -8,8 +8,13 @@ module Security
     # Substrings shorter than this may appear legitimately in a truly
     # random password.
     MINIMUM_SUBSTRING_SIZE = 4
-    # Passwords of this length or more are more likely to randomly
-    # include a forbidden substring.
+
+    # Passwords of 64+ characters are more likely to randomly include a
+    # forbidden substring.
+    #
+    # This length was chosen somewhat arbitrarily, balancing security,
+    # usability, and skipping checks on `::User.random_password` which
+    # is 128 chars. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105755
     PASSWORD_SUBSTRING_CHECK_MAX_LENGTH = 64
 
     class << self

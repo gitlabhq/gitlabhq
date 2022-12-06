@@ -153,7 +153,7 @@ Renders the label for a checkbox setting.
 
 [`_setting_label_fieldset.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/c2736823b8e922e26fd35df4f0cd77019243c858/app/views/shared/namespaces/cascading_settings/_setting_label_fieldset.html.haml)
 
-Renders the label for a fieldset setting.
+Renders the label for a `fieldset` setting.
 
 | Local                  | Description                                                                                                                                                                                                          | Type                 | Required (default value) |
 |:-----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:---------------------|:-------------------------|

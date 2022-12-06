@@ -143,7 +143,7 @@ Management of file uploads and caching happens in [Workhorse](../workhorse/index
 [`POST` routes](https://gitlab.com/gitlab-org/gitlab/-/blob/3f76455ac9cf90a927767e55c837d6b07af818df/config/routes/group.rb#L170-173)
 that we have for the Dependency Proxy.
 
-The [send_dependency](https://gitlab.com/gitlab-org/gitlab/-/blob/7359d23f4e078479969c872924150219c6f1665f/app/helpers/workhorse_helper.rb#L46-53)
+The [`send_dependency`](https://gitlab.com/gitlab-org/gitlab/-/blob/7359d23f4e078479969c872924150219c6f1665f/app/helpers/workhorse_helper.rb#L46-53)
 method makes a request to Workhorse including the previously fetched JWT from the external registry. Workhorse then
 can use that token to request the manifest or blob the user originally requested. The Workhorse code lives in
 [`workhorse/internal/dependencyproxy/dependencyproxy.go`](https://gitlab.com/gitlab-org/gitlab/-/blob/b8f44a8f3c26efe9932c2ada2df75ef7acb8417b/workhorse/internal/dependencyproxy/dependencyproxy.go#L4).

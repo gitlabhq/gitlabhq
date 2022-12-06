@@ -632,7 +632,7 @@ When this feature is enabled, you can use the OR operator (**is one of: `||`**)
 when you [filter the list of issues](#filter-the-list-of-issues).
 
 `is one of` represents an inclusive OR. For example, if you filter by `Assignee is one of Sidney Jones` and
-`Assignee is one of Zhang Wei`, GitLab shows issues where either Sidney, Zhang, or both of them are assignees.
+`Assignee is one of Zhang Wei`, GitLab shows issues where either `Sidney`, `Zhang`, or both of them are assignees.
 
 ### Filter issues by ID
 

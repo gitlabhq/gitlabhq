@@ -314,7 +314,7 @@ the database are preconfigured, but can be customized by setting the associated
 postgres://user:password@postgres-host:postgres-port/postgres-database
 ```
 
-### Upgrading PostgresSQL
+### Upgrading PostgreSQL
 
 WARNING:
 The CI/CD variable `AUTO_DEVOPS_POSTGRES_CHANNEL` that controls default provisioned

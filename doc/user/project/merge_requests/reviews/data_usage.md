@@ -39,6 +39,6 @@ Suggested Reviewers is off by default and requires a Project Owner or Admin to e
 
 Suggested Reviewers operates completely within the GitLab.com infrastructure providing the same level of [privacy](https://about.gitlab.com/privacy/) and [security](https://about.gitlab.com/security/) of any other feature of GitLab.com.
 
-No new additional data is collected to enable this feature. GitLab is inferencing your merge request against a trained machine learning model. The content of your source code is not used as training data. Your data also never leaves GitLab.com, all training and inference is done within GitLab.com infrastructure.
+No new additional data is collected to enable this feature. GitLab infers your merge request against a trained machine learning model. The content of your source code is not used as training data. Your data also never leaves GitLab.com, all training and inference is done within GitLab.com infrastructure.
 
 [Read more about the security of GitLab.com](https://about.gitlab.com/security/faq/)

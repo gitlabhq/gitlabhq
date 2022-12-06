@@ -228,7 +228,7 @@ follow these steps to avoid unnecessary data loss:
 
 ### Promoting the **secondary** site running GitLab 14.5 and later
 
-1. SSH to every Sidekiq, PostgresSQL, and Gitaly node in the **secondary** site and run one of the following commands:
+1. SSH to every Sidekiq, PostgreSQL, and Gitaly node in the **secondary** site and run one of the following commands:
 
    - To promote the secondary site to primary:
 

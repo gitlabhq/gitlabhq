@@ -362,7 +362,7 @@ To [prevent duplicate pipelines](jobs/job_control.md#avoid-duplicate-pipelines),
 [`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
-### Console workaround if job using resource_group gets stuck **(FREE SELF)**
+### Console workaround if job using `resource_group` gets stuck **(FREE SELF)**
 
 ```ruby
 # find resource group by name

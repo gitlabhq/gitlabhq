@@ -21,7 +21,7 @@ GitLab uses the [Devise](https://github.com/heartcombo/devise) authentication
 library to hash user passwords. Created password hashes have these attributes:
 
 - **Hashing**:
-  - **BCrypt**: By default, the [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hashing
+  - **bcrypt**: By default, the [`bcrypt`](https://en.wikipedia.org/wiki/Bcrypt) hashing
     function is used to generate the hash of the provided password. This cryptographic hashing function is
     strong and industry-standard.
   - **PBKDF2+SHA512**: PBKDF2+SHA512 is supported:
@@ -29,7 +29,7 @@ library to hash user passwords. Created password hashes have these attributes:
     - In GitLab 15.6 and later when [FIPS mode](../development/fips_compliance.md) is enabled (feature flags are not required).
 - **Stretching**: Password hashes are [stretched](https://en.wikipedia.org/wiki/Key_stretching)
   to harden against brute-force attacks. By default, GitLab uses a stretching
-  factor of 10 for BCrypt and 20,000 for PBKDF2 + SHA512.
+  factor of 10 for bcrypt and 20,000 for PBKDF2 + SHA512.
 - **Salting**: A [cryptographic salt](https://en.wikipedia.org/wiki/Salt_(cryptography))
   is added to each password to harden against pre-computed hash and dictionary
   attacks. To increase security, each salt is randomly generated for each

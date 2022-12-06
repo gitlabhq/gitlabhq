@@ -98,10 +98,10 @@ AND source_id = 4
 Instead such a table should be broken up into separate tables. For example, you
 may end up with 4 tables in this case:
 
-- project_members
-- group_members
-- pending_project_members
-- pending_group_members
+- `project_members`
+- `group_members`
+- `pending_project_members`
+- `pending_group_members`
 
 This makes querying data trivial. For example, to get the members of a group
 you'd run:

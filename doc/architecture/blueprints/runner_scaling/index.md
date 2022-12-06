@@ -234,7 +234,7 @@ them each separately.
   etc... This information is very provider specific.
 - **VM lifecycle management**. Multiple machines will be created and a
   system must keep track of which machines belong to this executor. Typically
-  a cloud provider will have a way to manage a set of homogenous machines.
+  a cloud provider will have a way to manage a set of homogeneous machines.
   E.g. GCE Instance Group. The basic operations are increase, decrease and
   usually delete a specific machine.
 - **VM autoscaling**. In addition to low-level lifecycle management,
@@ -372,7 +372,7 @@ provide a context and an environment in which a build will be executed by one
 of the Custom Executors.
 
 There are multiple solutions to implementing a custom provider abstraction. We
-can use raw Go plugins, Hashcorp's Go Plugin, HTTP interface or gRPC based
+can use raw Go plugins, HashiCorp's Go Plugin, HTTP interface or gRPC based
 facade service. There are many solutions, and we want to choose the most
 optimal one. In order to do that, we will describe the solutions in a separate
 document, define requirements and score the solution accordingly. This will
@@ -390,11 +390,11 @@ Rationale: [Description of the Custom Executor Provider proposal](https://gitlab
 
 We can introduce a more simple version of the `Machine` abstraction in the
 form of a "Fleeting" interface. Fleeting provides a low-level interface to
-a homogenous VM group which allows increasing and decreasing the set size
+a homogeneous VM group which allows increasing and decreasing the set size
 as well as consuming a VM from within the set.
 
 Plugins for cloud providers and other VM sources are implemented via the
-Hashicorp go-plugin library. This is in practice gRPC over STDIN/STDOUT
+HashiCorp go-plugin library. This is in practice gRPC over STDIN/STDOUT
 but other wire protocols can be used also.
 
 In order to make use of the new interface, the autoscaling logic is pulled

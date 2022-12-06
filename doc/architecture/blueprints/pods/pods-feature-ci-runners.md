@@ -101,7 +101,7 @@ We can pick a design where all runners are always registered and local to a give
 - In this model we would require the above endpoints to be scoped to a Pod in some way
   or made routable. It might be via prefixing them, adding additional Pod parameter,
   or providing much more robust way to decode runner token and match it to Pod.
-- If routable token is used, we could move away from cryptographical random stored in
+- If routable token is used, we could move away from cryptographic random stored in
   database to rather prefer to use JWT tokens that would encode
 - The Admin Area showing registered Runners would have to be scoped to a Pod
 

@@ -104,7 +104,7 @@ or `statement_timeout`, but to leave the third setting at 60 seconds. Setting
 `idle_in_transaction` protects the database from sessions potentially hanging for
 days. There's more discussion in [the issue relating to introducing this timeout on GitLab.com](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/1053).
 
-PostgresSQL defaults:
+PostgreSQL defaults:
 
 - `statement_timeout = 0` (never)
 - `idle_in_transaction_session_timeout = 0` (never)
@@ -188,7 +188,7 @@ To temporarily change the statement timeout:
 
 ### Database is not accepting commands to avoid wraparound data loss
 
-This error likely means that AUTOVACUUM is failing to complete its run:
+This error likely means that `autovacuum` is failing to complete its run:
 
 ```plaintext
 ERROR:  database is not accepting commands to avoid wraparound data loss in database "gitlabhq_production"

@@ -19,9 +19,9 @@ Setting up your integrations requires minimal changes to existing code.
 GitLab plays the role of proxy server, both for artifact storage and tracking data. It reflects the
 MLFlow [Scenario 5](https://www.mlflow.org/docs/latest/tracking.html#scenario-5-mlflow-tracking-server-enabled-with-proxied-artifact-storage-access).
 
-## Enable MFlow Client Integration
+## Enable MLFlow Client Integration
 
-Complete this task to enable MFlow Client Integration.
+Complete this task to enable MLFlow Client Integration.
 
 Prerequisites:
 

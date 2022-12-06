@@ -113,9 +113,9 @@ Uses a [Pattern Capture token filter](https://www.elastic.co/guide/en/elasticsea
 
 Patterns:
 
-- `"(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)"`: captures CamelCased and lowedCameCased strings as separate tokens
+- `"(\\p{Ll}+|\\p{Lu}\\p{Ll}+|\\p{Lu}+)"`: captures CamelCase and lowerCamelCase strings as separate tokens
 - `"(\\d+)"`: extracts digits
-- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCased strings recursively. For example: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
+- `"(?=([\\p{Lu}]+[\\p{L}]+))"`: captures CamelCase strings recursively. For example: `ThisIsATest` => `[ThisIsATest, IsATest, ATest, Test]`
 - `'"((?:\\"|[^"]|\\")*)"'`: captures terms inside quotes, removing the quotes
 - `"'((?:\\'|[^']|\\')*)'"`: same as above, for single-quotes
 - `'\.([^.]+)(?=\.|\s|\Z)'`: separate terms with periods in-between

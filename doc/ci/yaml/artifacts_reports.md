@@ -150,16 +150,16 @@ GitLab can display the results of one or more reports in:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
 
 This report is a Software Bill of Materials describing the components of a project
-following the [cyclonedx](https://cyclonedx.org/docs/1.4) protocol format.
+following the [CycloneDX](https://cyclonedx.org/docs/1.4) protocol format.
 
-You can specify multiple cyclonedx reports per job. These can be either supplied
+You can specify multiple CycloneDX reports per job. These can be either supplied
 as a list of filenames, a filename pattern, or both:
 
 - List of filenames: `cyclonedx: [gl-sbom-npm-npm.cdx.json, gl-sbom-bundler-gem.cdx.json]`.
 - A filename pattern: `cyclonedx: gl-sbom-*.json`.
 - Combination of both of the above: `cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`.
 
-Below is an example of a job exposing cyclonedx artifacts:
+Below is an example of a job exposing CycloneDX artifacts:
 
 ```yaml
 artifacts:

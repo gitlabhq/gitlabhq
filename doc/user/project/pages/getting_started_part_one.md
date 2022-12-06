@@ -87,7 +87,7 @@ Every Static Site Generator (SSG) default configuration expects
 to find your website under a (sub)domain (`example.com`), not
 in a subdirectory of that domain (`example.com/subdir`). Therefore,
 whenever you publish a project website (`namespace.gitlab.io/project-name`),
-you must look for this configuration (base URL) on your SSG's
+you must look for this configuration (base URL) on your static site generator's
 documentation and set it up to reflect this pattern.
 
 For example, for a Jekyll site, the `baseurl` is defined in the Jekyll

@@ -1165,7 +1165,7 @@ By now you've probably heard of [Jest snapshot tests](https://jestjs.io/docs/sna
 To use them within GitLab, there are a few guidelines that should be highlighted:
 
 - Treat snapshots as code
-- Don't think of a snapshot file as a Blackbox
+- Don't think of a snapshot file as a black box
 - Care for the output of the snapshot, otherwise, it's not providing any real value. This will usually involve reading the generated snapshot file as you would read any other piece of code
 
 Think of a snapshot test as a simple way to store a raw `String` representation of what you've put into the item being tested. This can be used to evaluate changes in a component, a store, a complex piece of generated output, etc. You can see more in the list below for some recommended `Do's and Don'ts`.
@@ -1175,7 +1175,7 @@ Jest provides a great set of docs on [best practices](https://jestjs.io/docs/sna
 
 ### How does a snapshot work?
 
-A snapshot is purely a stringified version of what you ask to be tested on the lefthand side of the function call. This means any kind of changes you make to the formatting of the string has an impact on the outcome. This process is done by leveraging serializers for an automatic transform step. For Vue this is already taken care of by leveraging the `vue-jest` package, which offers the proper serializer.
+A snapshot is purely a stringified version of what you ask to be tested on the left-hand side of the function call. This means any kind of changes you make to the formatting of the string has an impact on the outcome. This process is done by leveraging serializers for an automatic transform step. For Vue this is already taken care of by leveraging the `vue-jest` package, which offers the proper serializer.
 
 Should the outcome of your spec be different from what is in the generated snapshot file, you'll be notified about it by a failing test in your test suite.
 

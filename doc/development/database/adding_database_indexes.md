@@ -354,7 +354,7 @@ Use the asynchronous index helpers on your local environment to test changes for
 For very large tables, index destruction can be a challenge to manage.
 While `remove_concurrent_index` removes indexes in a way that does not block
 normal traffic, it can still be problematic if index destruction runs for
-during autovacuum. Necessary database operations like `autovacuum` cannot run, and
+during `autovacuum`. Necessary database operations like `autovacuum` cannot run, and
 the deployment process on GitLab.com is blocked while waiting for index
 destruction to finish.
 

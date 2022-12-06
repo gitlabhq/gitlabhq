@@ -35,8 +35,8 @@ improve their risk prediction model.
 
 NOTE:
 Enabling the `arkose_labs_prevent_login` feature flag results in sessions with a `High` risk
-score being denied access. So far, we have kept this feature flag disabled to evaluate Arkose
-Protect's predictions and to make sure we are not preventing legitimate users from signing in.
+score being denied access. So far, we have kept this feature flag disabled to evaluate Arkose Protect
+predictions and to make sure we are not preventing legitimate users from signing in.
 
 That said, we have seen that interactive challenges are effective in preventing some malicious
 sign-in attempts as not completing them prevents attackers from moving on to the next sign-in step.

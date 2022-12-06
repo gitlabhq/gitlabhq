@@ -58,7 +58,7 @@ end
 
 `Integration.prop_accessor` installs accessor methods on the class. Here we would have `#url`, `#url=` and `#url_changed?`, to manage the `url` field. Fields stored in `Integration#properties` should be accessed by these accessors directly on the model, just like other ActiveRecord attributes.
 
-You should always access the properties through their getters, and not interact with the `properties` hash directly.
+You should always access the properties through their `getters`, and not interact with the `properties` hash directly.
 You **must not** write to the `properties` hash, you **must** use the generated setter method instead. Direct writes to this
 hash are not persisted.
 

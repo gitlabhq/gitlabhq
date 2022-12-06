@@ -212,7 +212,7 @@ yarn run lint:prettier:fix
 
 Formats all files in the repository with Prettier.
 
-### VSCode Settings
+### VS Code Settings
 
 #### Select Prettier as default formatter
 

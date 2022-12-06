@@ -1456,7 +1456,7 @@ To migrate existing clusters:
 
       1. On the Praefect nodes, configure the election strategy in `/etc/gitlab/gitlab.rb` with `praefect['failover_election_strategy'] = 'per_repository'`.
 
-      1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefects.
+      1. Run `gitlab-ctl reconfigure && gitlab-ctl start` to reconfigure and start the Praefect nodes.
 
    - If downtime is unacceptable:
 
