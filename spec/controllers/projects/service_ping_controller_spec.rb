@@ -91,11 +91,14 @@ RSpec.describe Projects::ServicePingController do
           expect(response).to have_gitlab_http_status(:ok)
         end
 
-        it_behaves_like 'Snowplow event tracking' do
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
           let(:project) { create(:project) }
-          let(:category) { 'ide_edit' }
-          let(:action) { 'g_edit_by_live_preview' }
           let(:namespace) { project.namespace }
+          let(:category) { 'Gitlab::UsageDataCounters::EditorUniqueCounter' }
+          let(:action) { 'ide_edit' }
+          let(:property) { 'g_edit_by_live_preview' }
+          let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit' }
+          let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context] }
           let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
       end

@@ -192,11 +192,18 @@ RSpec.describe 'Updating a Snippet' do
           stub_session('warden.user.user.key' => [[current_user.id], current_user.authenticatable_salt])
         end
 
-        it_behaves_like 'Snowplow event tracking' do
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
           let(:user) { current_user }
+          let(:property) { 'g_edit_by_snippet_ide' }
           let(:namespace) { project.namespace }
-          let(:category) { 'ide_edit' }
-          let(:action) { 'g_edit_by_snippet_ide' }
+          let(:category) { 'Gitlab::UsageDataCounters::EditorUniqueCounter' }
+          let(:action) { 'ide_edit' }
+          let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit' }
+          let(:context) do
+            [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
+          end
+
           let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
       end

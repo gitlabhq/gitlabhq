@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::PublicKeysController do
+RSpec.describe JiraConnect::PublicKeysController, feature_category: :integrations do
   describe 'GET /-/jira_connect/public_keys/:uuid' do
     before do
       allow(Gitlab).to receive(:com?).and_return(dot_com)

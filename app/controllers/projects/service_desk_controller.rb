@@ -29,7 +29,7 @@ class Projects::ServiceDeskController < Projects::ApplicationController
   end
 
   def allowed_update_attributes
-    %i(issue_template_key outgoing_name project_key)
+    %i[issue_template_key outgoing_name project_key]
   end
 
   def service_desk_attributes

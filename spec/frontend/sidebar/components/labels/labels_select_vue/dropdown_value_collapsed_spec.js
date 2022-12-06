@@ -2,7 +2,7 @@ import { shallowMount } from '@vue/test-utils';
 import { GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
-import DropdownValueCollapsedComponent from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value_collapsed.vue';
+import DropdownValueCollapsedComponent from '~/sidebar/components/labels/labels_select_vue/dropdown_value_collapsed.vue';
 
 import { mockCollapsedLabels as mockLabels, mockRegularLabel } from './mock_data';
 

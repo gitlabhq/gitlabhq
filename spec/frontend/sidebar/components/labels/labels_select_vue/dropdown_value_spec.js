@@ -3,9 +3,9 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
 
-import DropdownValue from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value.vue';
+import DropdownValue from '~/sidebar/components/labels/labels_select_vue/dropdown_value.vue';
 
-import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
+import labelsSelectModule from '~/sidebar/components/labels/labels_select_vue/store';
 
 import { mockConfig, mockLabels, mockRegularLabel, mockScopedLabel } from './mock_data';
 

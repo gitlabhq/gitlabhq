@@ -3,15 +3,15 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
 import { isInViewport } from '~/lib/utils/common_utils';
-import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
-import DropdownButton from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_button.vue';
-import DropdownContents from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents.vue';
-import DropdownTitle from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_title.vue';
-import DropdownValue from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value.vue';
-import DropdownValueCollapsed from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_value_collapsed.vue';
-import LabelsSelectRoot from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
+import { DropdownVariant } from '~/sidebar/components/labels/labels_select_vue/constants';
+import DropdownButton from '~/sidebar/components/labels/labels_select_vue/dropdown_button.vue';
+import DropdownContents from '~/sidebar/components/labels/labels_select_vue/dropdown_contents.vue';
+import DropdownTitle from '~/sidebar/components/labels/labels_select_vue/dropdown_title.vue';
+import DropdownValue from '~/sidebar/components/labels/labels_select_vue/dropdown_value.vue';
+import DropdownValueCollapsed from '~/sidebar/components/labels/labels_select_vue/dropdown_value_collapsed.vue';
+import LabelsSelectRoot from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
 
-import labelsSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
+import labelsSelectModule from '~/sidebar/components/labels/labels_select_vue/store';
 
 import { mockConfig } from './mock_data';
 

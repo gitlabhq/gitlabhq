@@ -45,20 +45,23 @@ module Gitlab
 
         private
 
-        def track_unique_action(action, author, time, project = nil)
+        def track_unique_action(event_name, author, time, project = nil)
           return unless author
 
           if Feature.enabled?(:route_hll_to_snowplow_phase2)
             Gitlab::Tracking.event(
+              name,
               'ide_edit',
-              action.to_s,
+              property: event_name.to_s,
               project: project,
               namespace: project&.namespace,
-              user: author
+              user: author,
+              label: 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit',
+              context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context]
             )
           end
 
-          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(action, values: author.id, time: time)
+          Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: author.id, time: time)
         end
 
         def count_unique(actions, date_from, date_to)

@@ -5,7 +5,7 @@ module Integrations
     include SlackMattermostNotifier
 
     def title
-      s_('Mattermost notifications')
+      _('Mattermost notifications')
     end
 
     def description

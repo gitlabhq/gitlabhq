@@ -10,7 +10,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import {
   mockRegularLabel,
   mockLabels,
-} from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
+} from 'jest/sidebar/components/labels/labels_select_vue/mock_data';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 

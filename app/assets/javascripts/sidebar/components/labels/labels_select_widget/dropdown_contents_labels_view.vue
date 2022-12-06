@@ -4,7 +4,7 @@ import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { createAlert } from '~/flash';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __ } from '~/locale';
-import { workspaceLabelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries } from '../../../constants';
 import LabelItem from './label_item.vue';
 
 export default {

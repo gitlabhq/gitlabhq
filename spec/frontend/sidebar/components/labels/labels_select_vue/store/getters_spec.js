@@ -1,4 +1,4 @@
-import * as getters from '~/vue_shared/components/sidebar/labels_select_vue/store/getters';
+import * as getters from '~/sidebar/components/labels/labels_select_vue/store/getters';
 
 describe('LabelsSelect Getters', () => {
   describe('dropdownButtonText', () => {

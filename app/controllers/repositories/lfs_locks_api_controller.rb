@@ -72,7 +72,7 @@ module Repositories
     end
 
     def upload_request?
-      %w(create unlock verify).include?(params[:action])
+      %w[create unlock verify].include?(params[:action])
     end
 
     def lfs_params

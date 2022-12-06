@@ -114,7 +114,7 @@ class Import::FogbugzController < Import::BaseController
   end
 
   def user_map_params
-    params.permit(users: %w(name email gitlab_user))
+    params.permit(users: %w[name email gitlab_user])
   end
 
   def verify_fogbugz_import_enabled
@@ -126,7 +126,7 @@ class Import::FogbugzController < Import::BaseController
       params[:uri],
       allow_localhost: allow_local_requests?,
       allow_local_network: allow_local_requests?,
-      schemes: %w(http https)
+      schemes: %w[http https]
     )
   rescue Gitlab::UrlBlocker::BlockedUrlError => e
     redirect_to new_import_fogbugz_url, alert: _('Specified URL cannot be used: "%{reason}"') % { reason: e.message }

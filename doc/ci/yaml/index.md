@@ -4311,7 +4311,13 @@ variables:
 
 #### `variables:expand`
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature per project,
+ask an administrator to [disable the feature flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`.
 
 Use the `expand` keyword to configure a variable to be expandable or not.
 

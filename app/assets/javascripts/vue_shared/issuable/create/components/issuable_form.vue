@@ -1,8 +1,8 @@
 <script>
 import { GlForm, GlFormInput, GlFormGroup } from '@gitlab/ui';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { DropdownVariant } from '~/vue_shared/components/sidebar/labels_select_vue/constants';
-import LabelsSelect from '~/vue_shared/components/sidebar/labels_select_vue/labels_select_root.vue';
+import { DropdownVariant } from '~/sidebar/components/labels/labels_select_vue/constants';
+import LabelsSelect from '~/sidebar/components/labels/labels_select_vue/labels_select_root.vue';
 
 export default {
   LabelSelectVariant: DropdownVariant,

@@ -48,8 +48,8 @@ module Integrations
     field :archive_trace_events,
       storage: :attribute,
       type: 'checkbox',
-      title: -> { s_('Logs') },
-      checkbox_label: -> { s_('Enable logs collection') },
+      title: -> { _('Logs') },
+      checkbox_label: -> { _('Enable logs collection') },
       help: -> { s_('When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces.') }
 
     field :datadog_service,

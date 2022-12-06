@@ -48,7 +48,7 @@ RSpec.describe SchedulePopulateRequirementsIssueId do
 
         # Create one requirement with issue_id present, to make
         # sure a job won't be scheduled for it
-        work_item_type_id = work_item_types_table.find_by(namespace_id: nil, name: 'Issue').id
+        work_item_type_id = table(:work_item_types).find_by(namespace_id: nil, name: 'Issue').id
         issue = issues.create!(state_id: 1, work_item_type_id: work_item_type_id)
         create_requirement(iid: 2, title: 'r 2', issue_id: issue.id)
 

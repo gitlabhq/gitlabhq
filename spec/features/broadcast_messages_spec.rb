@@ -31,8 +31,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
       expect(page).not_to have_content 'SampleMessage'
     end
 
-    it 'broadcast message is still hidden after refresh', :js,
-        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/347118' do
+    it 'broadcast message is still hidden after refresh', :js do
       visit root_path
 
       find('.js-dismiss-current-broadcast-notification').click

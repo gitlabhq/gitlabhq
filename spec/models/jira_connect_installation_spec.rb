@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnectInstallation do
+RSpec.describe JiraConnectInstallation, feature_category: :integrations do
   describe 'associations' do
     it { is_expected.to have_many(:subscriptions).class_name('JiraConnectSubscription') }
   end

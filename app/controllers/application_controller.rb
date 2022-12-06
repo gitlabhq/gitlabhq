@@ -158,7 +158,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def workhorse_excluded_content_types
-    @workhorse_excluded_content_types ||= %w(text/html application/json)
+    @workhorse_excluded_content_types ||= %w[text/html application/json]
   end
 
   def append_info_to_payload(payload)

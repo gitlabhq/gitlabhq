@@ -104,7 +104,7 @@ module QA
       context 'with feature flag enabled' do
         before do
           Runtime::Feature.enable(:run_pipeline_graphql)
-          sleep 30
+          sleep 60
 
           Flow::Login.sign_in
           project.visit!
@@ -121,7 +121,7 @@ module QA
 
         after do
           Runtime::Feature.disable(:run_pipeline_graphql)
-          sleep 30
+          sleep 60
         end
 
         it_behaves_like 'pre-filled variables form', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378977'

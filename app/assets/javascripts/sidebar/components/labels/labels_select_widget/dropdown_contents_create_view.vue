@@ -10,7 +10,7 @@ import {
 import produce from 'immer';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
-import { workspaceLabelsQueries } from '~/sidebar/constants';
+import { workspaceLabelsQueries } from '../../../constants';
 import createLabelMutation from './graphql/create_label.mutation.graphql';
 import { LabelType } from './constants';
 

@@ -386,7 +386,7 @@ class GroupsController < Groups::ApplicationController
 
   override :has_project_list?
   def has_project_list?
-    %w(details show index).include?(action_name)
+    %w[details show index].include?(action_name)
   end
 
   def captcha_enabled?

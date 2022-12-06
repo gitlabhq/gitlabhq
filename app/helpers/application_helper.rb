@@ -124,7 +124,7 @@ module ApplicationHelper
   end
 
   def simple_sanitize(str)
-    sanitize(str, tags: %w(a span))
+    sanitize(str, tags: %w[a span])
   end
 
   def body_data

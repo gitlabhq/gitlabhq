@@ -492,10 +492,13 @@ RSpec.describe API::Commits do
           subject
         end
 
-        it_behaves_like 'Snowplow event tracking' do
-          let(:namespace) { project.namespace }
-          let(:category) { 'ide_edit' }
-          let(:action) { 'g_edit_by_web_ide' }
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+          let(:namespace) { project.namespace.reload }
+          let(:category) { 'Gitlab::UsageDataCounters::EditorUniqueCounter' }
+          let(:action) { 'ide_edit' }
+          let(:property) { 'g_edit_by_web_ide' }
+          let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_ide_edit' }
+          let(:context) { [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event_name).to_context] }
           let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
         end
 

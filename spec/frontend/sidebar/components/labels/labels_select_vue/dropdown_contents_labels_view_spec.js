@@ -9,13 +9,13 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { UP_KEY_CODE, DOWN_KEY_CODE, ENTER_KEY_CODE, ESC_KEY_CODE } from '~/lib/utils/keycodes';
-import DropdownContentsLabelsView from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue';
-import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
+import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view.vue';
+import LabelItem from '~/sidebar/components/labels/labels_select_vue/label_item.vue';
 
-import * as actions from '~/vue_shared/components/sidebar/labels_select_vue/store/actions';
-import * as getters from '~/vue_shared/components/sidebar/labels_select_vue/store/getters';
-import mutations from '~/vue_shared/components/sidebar/labels_select_vue/store/mutations';
-import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/store/state';
+import * as actions from '~/sidebar/components/labels/labels_select_vue/store/actions';
+import * as getters from '~/sidebar/components/labels/labels_select_vue/store/getters';
+import mutations from '~/sidebar/components/labels/labels_select_vue/store/mutations';
+import defaultState from '~/sidebar/components/labels/labels_select_vue/store/state';
 
 import { mockConfig, mockLabels, mockRegularLabel } from './mock_data';
 

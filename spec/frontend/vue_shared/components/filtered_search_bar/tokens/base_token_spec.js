@@ -12,7 +12,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
   mockRegularLabel,
   mockLabels,
-} from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
+} from 'jest/sidebar/components/labels/labels_select_vue/mock_data';
 
 import {
   OPTIONS_NONE_ANY,

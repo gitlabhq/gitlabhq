@@ -40,9 +40,9 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   feature_category :pages, [:lets_encrypt_terms_of_service]
   feature_category :error_tracking, [:reset_error_tracking_access_token]
 
-  VALID_SETTING_PANELS = %w(general repository
+  VALID_SETTING_PANELS = %w[general repository
                             ci_cd reporting metrics_and_profiling
-                            network preferences).freeze
+                            network preferences].freeze
 
   # The current size of a sidekiq job's jid is 24 characters. The size of the
   # jid is an internal detail of Sidekiq, and they do not guarantee that it'll

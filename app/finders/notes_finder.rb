@@ -101,7 +101,7 @@ class NotesFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def notes_of_any_type
-    types = %w(commit issue merge_request snippet)
+    types = %w[commit issue merge_request snippet]
     note_relations = types.map { |t| notes_for_type(t) }
     note_relations.map! { |notes| search(notes) }
     UnionFinder.new.find_union(note_relations, Note.includes(:author)) # rubocop: disable CodeReuse/Finder

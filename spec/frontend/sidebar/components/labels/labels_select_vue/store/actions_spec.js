@@ -3,9 +3,9 @@ import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import * as actions from '~/vue_shared/components/sidebar/labels_select_vue/store/actions';
-import * as types from '~/vue_shared/components/sidebar/labels_select_vue/store/mutation_types';
-import defaultState from '~/vue_shared/components/sidebar/labels_select_vue/store/state';
+import * as actions from '~/sidebar/components/labels/labels_select_vue/store/actions';
+import * as types from '~/sidebar/components/labels/labels_select_vue/store/mutation_types';
+import defaultState from '~/sidebar/components/labels/labels_select_vue/store/state';
 
 jest.mock('~/flash');
 

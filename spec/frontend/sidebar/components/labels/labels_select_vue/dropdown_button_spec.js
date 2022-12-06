@@ -3,9 +3,9 @@ import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 
-import DropdownButton from '~/vue_shared/components/sidebar/labels_select_vue/dropdown_button.vue';
+import DropdownButton from '~/sidebar/components/labels/labels_select_vue/dropdown_button.vue';
 
-import labelSelectModule from '~/vue_shared/components/sidebar/labels_select_vue/store';
+import labelSelectModule from '~/sidebar/components/labels/labels_select_vue/store';
 
 import { mockConfig } from './mock_data';
 

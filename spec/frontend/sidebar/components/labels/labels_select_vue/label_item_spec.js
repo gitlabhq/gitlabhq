@@ -1,7 +1,7 @@
 import { GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 
-import LabelItem from '~/vue_shared/components/sidebar/labels_select_vue/label_item.vue';
+import LabelItem from '~/sidebar/components/labels/labels_select_vue/label_item.vue';
 import { mockRegularLabel } from './mock_data';
 
 const mockLabel = { ...mockRegularLabel, set: true };

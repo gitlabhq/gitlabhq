@@ -1,5 +1,5 @@
 import { GlFilteredSearchToken } from '@gitlab/ui';
-import { mockLabels } from 'jest/vue_shared/components/sidebar/labels_select_vue/mock_data';
+import { mockLabels } from 'jest/sidebar/components/labels/labels_select_vue/mock_data';
 import Api from '~/api';
 import {
   FILTERED_SEARCH_TERM,

@@ -30,7 +30,7 @@ module OauthApplications
   end
 
   def permitted_params
-    %i{name redirect_uri scopes confidential}
+    %i[name redirect_uri scopes confidential]
   end
 
   def application_params

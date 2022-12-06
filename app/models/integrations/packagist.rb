@@ -5,15 +5,15 @@ module Integrations
     include HasWebHook
 
     field :username,
-      title: -> { s_('Username') },
-      help: -> { s_('Enter your Packagist username.') },
+      title: -> { _('Username') },
+      help: -> { _('Enter your Packagist username.') },
       placeholder: '',
       required: true
 
     field :token,
       type: 'password',
-      title: -> { s_('Token') },
-      help: -> { s_('Enter your Packagist token.') },
+      title: -> { _('Token') },
+      help: -> { _('Enter your Packagist token.') },
       non_empty_password_title: -> { s_('ProjectService|Enter new token') },
       non_empty_password_help: -> { s_('ProjectService|Leave blank to use your current token.') },
       placeholder: '',

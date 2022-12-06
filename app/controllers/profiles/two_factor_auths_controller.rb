@@ -97,7 +97,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def skip
     if two_factor_grace_period_expired?
-      redirect_to new_profile_two_factor_auth_path, alert: s_('Cannot skip two factor authentication setup')
+      redirect_to new_profile_two_factor_auth_path, alert: _('Cannot skip two factor authentication setup')
     else
       session[:skip_two_factor] = current_user.otp_grace_period_started_at + two_factor_grace_period.hours
       redirect_to root_path
@@ -216,7 +216,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
     group_links = groups.map { |group| view_context.link_to group.full_name, group_path(group) }.to_sentence
     leave_group_links = groups.map { |group| view_context.link_to (s_("leave %{group_name}") % { group_name: group.full_name }), leave_group_members_path(group), remote: false, method: :delete }.to_sentence
 
-    s_(%{The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}.})
+    s_(%(The group settings for %{group_links} require you to enable Two-Factor Authentication for your account. You can %{leave_group_links}.))
         .html_safe % { group_links: group_links.html_safe, leave_group_links: leave_group_links.html_safe }
   end
 

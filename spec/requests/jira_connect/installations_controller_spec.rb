@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::InstallationsController do
+RSpec.describe JiraConnect::InstallationsController, feature_category: :integrations do
   let_it_be(:installation) { create(:jira_connect_installation) }
 
   describe 'GET /-/jira_connect/installations' do

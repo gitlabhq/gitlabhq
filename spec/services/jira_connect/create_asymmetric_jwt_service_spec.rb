@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::CreateAsymmetricJwtService do
+RSpec.describe JiraConnect::CreateAsymmetricJwtService, feature_category: :integrations do
   describe '#execute' do
     let_it_be(:jira_connect_installation) { create(:jira_connect_installation) }
 

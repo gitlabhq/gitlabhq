@@ -7,8 +7,8 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
     next if p.directives.blank?
 
     # rubocop: disable Lint/PercentStringArray
-    script_src_values = Array.wrap(p.directives['script-src']) | %w('self' https://connect-cdn.atl-paas.net)
-    style_src_values = Array.wrap(p.directives['style-src']) | %w('self' 'unsafe-inline')
+    script_src_values = Array.wrap(p.directives['script-src']) | %w['self' https://connect-cdn.atl-paas.net]
+    style_src_values = Array.wrap(p.directives['style-src']) | %w['self' 'unsafe-inline']
     # rubocop: enable Lint/PercentStringArray
 
     # *.jira.com is needed for some legacy Jira Cloud instances, new ones will use *.atlassian.net

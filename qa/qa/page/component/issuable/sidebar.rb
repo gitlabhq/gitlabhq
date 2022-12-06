@@ -26,7 +26,7 @@ module QA
               element :labels_block
             end
 
-            base.view 'app/assets/javascripts/vue_shared/components/sidebar/labels_select_vue/dropdown_contents_labels_view.vue' do
+            base.view 'app/assets/javascripts/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view.vue' do
               element :dropdown_input_field
             end
 

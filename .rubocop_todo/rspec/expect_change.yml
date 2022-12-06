@@ -3,23 +3,6 @@
 RSpec/ExpectChange:
   Details: grace period
   Exclude:
-    - 'ee/spec/controllers/admin/geo/projects_controller_spec.rb'
-    - 'ee/spec/controllers/admin/licenses_controller_spec.rb'
-    - 'ee/spec/controllers/ee/groups_controller_spec.rb'
-    - 'ee/spec/controllers/ee/projects/protected_branches_controller_spec.rb'
-    - 'ee/spec/controllers/ee/projects/variables_controller_spec.rb'
-    - 'ee/spec/controllers/ee/registrations_controller_spec.rb'
-    - 'ee/spec/controllers/groups/epic_boards_controller_spec.rb'
-    - 'ee/spec/controllers/groups/group_members_controller_spec.rb'
-    - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
-    - 'ee/spec/controllers/groups/sso_controller_spec.rb'
-    - 'ee/spec/controllers/ldap/omniauth_callbacks_controller_spec.rb'
-    - 'ee/spec/controllers/projects/issues_controller_spec.rb'
-    - 'ee/spec/controllers/projects/protected_environments_controller_spec.rb'
-    - 'ee/spec/controllers/registrations/groups_projects_controller_spec.rb'
-    - 'ee/spec/features/groups/hooks/user_adds_hook_spec.rb'
-    - 'ee/spec/features/groups/saml_providers_spec.rb'
-    - 'ee/spec/features/groups/settings/webhooks_settings_spec.rb'
     - 'ee/spec/graphql/mutations/boards/update_spec.rb'
     - 'ee/spec/graphql/mutations/incident_management/issuable_resource_link/create_spec.rb'
     - 'ee/spec/lib/audit/compliance_framework_changes_auditor_spec.rb'
