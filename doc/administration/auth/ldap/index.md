@@ -87,9 +87,10 @@ with `start_tls` and `ssl` was replaced with `simple_tls`.
 LDAP users must have a set email address, regardless of whether or not it's used
 to sign in.
 
-### Example Omnibus GitLab configuration
+### Example Linux package (Omnibus) configuration
 
-This example shows configuration for Omnibus GitLab instances:
+This example shows a sample configuration for a GitLab instance that
+was installed by using the Linux package (Omnibus):
 
 ```ruby
 gitlab_rails['ldap_enabled'] = true
@@ -135,9 +136,14 @@ gitlab_rails['ldap_servers'] = {
 }
 ```
 
-### Example source install configuration
+### Example Helm chart (Kubernetes) configuration
 
-This example shows configuration for source install instances:
+View [how to configure LDAP for a GitLab instance that was installed by using the Helm chart](https://docs.gitlab.com/charts/charts/globals.html#ldap).
+
+### Example self-compiled (source) configuration
+
+This example shows a sample configuration for a GitLab instance that
+was installed by using the self-compiled source:
 
 ```yaml
 production:

@@ -1303,8 +1303,8 @@ RSpec.describe Integration do
 
   describe '#async_execute' do
     let(:integration) { described_class.new(id: 123) }
-    let(:data) { { object_kind: 'push' } }
-    let(:supported_events) { %w[push] }
+    let(:data) { { object_kind: 'build' } }
+    let(:supported_events) { %w[push build] }
 
     subject(:async_execute) { integration.async_execute(data) }
 

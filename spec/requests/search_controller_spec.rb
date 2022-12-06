@@ -132,6 +132,15 @@ RSpec.describe SearchController, type: :request do
       end
     end
 
+    context 'for code search' do
+      let(:params_for_code_search) { { search: 'blob: hello' } }
+
+      it 'sets scope to blobs if code search literals are used' do
+        send_search_request(params_for_code_search)
+        expect(response).to redirect_to(search_path(params_for_code_search.merge({ scope: 'blobs' })))
+      end
+    end
+
     context 'when searching by SHA' do
       let(:sha) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
 

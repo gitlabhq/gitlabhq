@@ -318,6 +318,31 @@ RSpec.describe Feature, stub_feature_flags: false do
       end
     end
 
+    context 'with a group member' do
+      let(:key) { :awesome_feature }
+      let(:guinea_pigs) { create_list(:user, 3) }
+
+      before do
+        described_class.reset
+        stub_feature_flag_definition(key)
+        Flipper.unregister_groups
+        Flipper.register(:guinea_pigs) do |actor|
+          guinea_pigs.include?(actor.thing)
+        end
+        described_class.enable(key, described_class.group(:guinea_pigs))
+      end
+
+      it 'is true for all group members' do
+        expect(described_class.enabled?(key, guinea_pigs[0])).to be_truthy
+        expect(described_class.enabled?(key, guinea_pigs[1])).to be_truthy
+        expect(described_class.enabled?(key, guinea_pigs[2])).to be_truthy
+      end
+
+      it 'is false for any other actor' do
+        expect(described_class.enabled?(key, create(:user))).to be_falsey
+      end
+    end
+
     context 'with an individual actor' do
       let(:actor) { stub_feature_flag_gate('CustomActor:5') }
       let(:another_actor) { stub_feature_flag_gate('CustomActor:10') }
@@ -495,7 +520,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     let(:expected_extra) {}
 
     it 'logs the event' do
-      expect(Feature.logger).to receive(:info).with(key: key, action: expected_action, **expected_extra)
+      expect(Feature.logger).to receive(:info).at_least(:once).with(key: key, action: expected_action, **expected_extra)
 
       subject
     end
@@ -518,10 +543,10 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'when thing is an actor' do
-      let(:thing) { create(:project) }
+      let(:thing) { create(:user) }
 
       it_behaves_like 'logging' do
-        let(:expected_action) { :enable }
+        let(:expected_action) { eq(:enable) | eq(:remove_opt_out) }
         let(:expected_extra) { { "extra.thing" => thing.flipper_id.to_s } }
       end
     end
@@ -544,11 +569,159 @@ RSpec.describe Feature, stub_feature_flags: false do
     end
 
     context 'when thing is an actor' do
-      let(:thing) { create(:project) }
+      let(:thing) { create(:user) }
+      let(:flag_opts) { {} }
 
       it_behaves_like 'logging' do
         let(:expected_action) { :disable }
         let(:expected_extra) { { "extra.thing" => thing.flipper_id.to_s } }
+      end
+
+      before do
+        stub_feature_flag_definition(key, flag_opts)
+      end
+
+      context 'when the feature flag was enabled for this actor' do
+        before do
+          described_class.enable(key, thing)
+        end
+
+        it 'marks this thing as disabled' do
+          expect { subject }.to change { thing_enabled? }.from(true).to(false)
+        end
+
+        it 'does not change the global value' do
+          expect { subject }.not_to change { described_class.enabled?(key) }.from(false)
+        end
+
+        it 'is possible to re-enable the feature' do
+          subject
+
+          expect { described_class.enable(key, thing) }
+            .to change { thing_enabled? }.from(false).to(true)
+        end
+      end
+
+      context 'when the feature flag is enabled globally' do
+        before do
+          described_class.enable(key)
+        end
+
+        it 'does not mark this thing as disabled' do
+          expect { subject }.not_to change { thing_enabled? }.from(true)
+        end
+
+        it 'does not change the global value' do
+          expect { subject }.not_to change { described_class.enabled?(key) }.from(true)
+        end
+      end
+    end
+  end
+
+  describe 'opt_out' do
+    subject { described_class.opt_out(key, thing) }
+
+    let(:key) { :awesome_feature }
+
+    before do
+      stub_feature_flag_definition(key)
+      described_class.enable(key)
+    end
+
+    context 'when thing is an actor' do
+      let_it_be(:thing) { create(:project) }
+
+      it 'marks this thing as disabled' do
+        expect { subject }.to change { thing_enabled? }.from(true).to(false)
+      end
+
+      it 'does not change the global value' do
+        expect { subject }.not_to change { described_class.enabled?(key) }.from(true)
+      end
+
+      it_behaves_like 'logging' do
+        let(:expected_action) { eq(:opt_out) }
+        let(:expected_extra) { { "extra.thing" => thing.flipper_id.to_s } }
+      end
+
+      it 'stores the opt-out information as a gate' do
+        subject
+
+        flag = described_class.get(key)
+
+        expect(flag.actors_value).to include(include(thing.flipper_id))
+        expect(flag.actors_value).not_to include(thing.flipper_id)
+      end
+    end
+
+    context 'when thing is a group' do
+      let(:thing) { Feature.group(:guinea_pigs) }
+      let(:guinea_pigs) { create_list(:user, 3) }
+
+      before do
+        Feature.reset
+        Flipper.unregister_groups
+        Flipper.register(:guinea_pigs) do |actor|
+          guinea_pigs.include?(actor.thing)
+        end
+      end
+
+      it 'has no effect' do
+        expect { subject }.not_to change { described_class.enabled?(key, guinea_pigs.first) }.from(true)
+      end
+    end
+  end
+
+  describe 'remove_opt_out' do
+    subject { described_class.remove_opt_out(key, thing) }
+
+    let(:key) { :awesome_feature }
+
+    before do
+      stub_feature_flag_definition(key)
+      described_class.enable(key)
+      described_class.opt_out(key, thing)
+    end
+
+    context 'when thing is an actor' do
+      let_it_be(:thing) { create(:project) }
+
+      it 're-enables this thing' do
+        expect { subject }.to change { thing_enabled? }.from(false).to(true)
+      end
+
+      it 'does not change the global value' do
+        expect { subject }.not_to change { described_class.enabled?(key) }.from(true)
+      end
+
+      it_behaves_like 'logging' do
+        let(:expected_action) { eq(:remove_opt_out) }
+        let(:expected_extra) { { "extra.thing" => thing.flipper_id.to_s } }
+      end
+
+      it 'removes the opt-out information' do
+        subject
+
+        flag = described_class.get(key)
+
+        expect(flag.actors_value).to be_empty
+      end
+    end
+
+    context 'when thing is a group' do
+      let(:thing) { Feature.group(:guinea_pigs) }
+      let(:guinea_pigs) { create_list(:user, 3) }
+
+      before do
+        Feature.reset
+        Flipper.unregister_groups
+        Flipper.register(:guinea_pigs) do |actor|
+          guinea_pigs.include?(actor.thing)
+        end
+      end
+
+      it 'has no effect' do
+        expect { subject }.not_to change { described_class.enabled?(key, guinea_pigs.first) }.from(true)
       end
     end
   end
@@ -562,6 +735,16 @@ RSpec.describe Feature, stub_feature_flags: false do
     it_behaves_like 'logging' do
       let(:expected_action) { :enable_percentage_of_time }
       let(:expected_extra) { { "extra.percentage" => percentage.to_s } }
+    end
+
+    context 'when the flag is on' do
+      before do
+        described_class.enable(key)
+      end
+
+      it 'fails with InvalidOperation' do
+        expect { subject }.to raise_error(described_class::InvalidOperation)
+      end
     end
   end
 
@@ -586,6 +769,16 @@ RSpec.describe Feature, stub_feature_flags: false do
       let(:expected_action) { :enable_percentage_of_actors }
       let(:expected_extra) { { "extra.percentage" => percentage.to_s } }
     end
+
+    context 'when the flag is on' do
+      before do
+        described_class.enable(key)
+      end
+
+      it 'fails with InvalidOperation' do
+        expect { subject }.to raise_error(described_class::InvalidOperation)
+      end
+    end
   end
 
   describe '.disable_percentage_of_actors' do
@@ -603,6 +796,7 @@ RSpec.describe Feature, stub_feature_flags: false do
     subject { described_class.remove(key) }
 
     let(:key) { :awesome_feature }
+    let(:actor) { create(:user) }
 
     before do
       described_class.enable(key)
@@ -617,13 +811,10 @@ RSpec.describe Feature, stub_feature_flags: false do
       it 'returns nil' do
         expect(described_class.remove(:non_persisted_feature_flag)).to be_nil
       end
-    end
 
-    context 'for a persisted feature' do
-      it 'returns true' do
-        described_class.enable(:persisted_feature_flag)
-
-        expect(described_class.remove(:persisted_feature_flag)).to be_truthy
+      it 'returns true, and cleans up' do
+        expect(subject).to be_truthy
+        expect(described_class.persisted_names).not_to include(key)
       end
     end
   end
@@ -710,6 +901,10 @@ RSpec.describe Feature, stub_feature_flags: false do
 
         adapter = adapter.instance_variable_get(:@adapter)
       end
+    end
+
+    before do
+      stub_feature_flag_definition(:enabled_feature_flag)
     end
 
     it 'gives the correct value when enabling for an additional actor' do
@@ -833,5 +1028,9 @@ RSpec.describe Feature, stub_feature_flags: false do
         end
       end
     end
+  end
+
+  def thing_enabled?
+    described_class.enabled?(key, thing)
   end
 end

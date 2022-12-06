@@ -106,19 +106,19 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const { target } = e;
-    target.setAttribute('disabled', true);
-    target.classList.add('disabled');
+    const { currentTarget } = e;
+    currentTarget.setAttribute('disabled', true);
+    currentTarget.classList.add('disabled');
 
-    target.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
+    currentTarget.querySelector('.gl-spinner-container').classList.add('gl-mr-2');
 
-    axios[target.dataset.method](target.dataset.href)
+    axios[currentTarget.dataset.method](currentTarget.href)
       .then(({ data }) => {
-        this.updateRowState(target);
+        this.updateRowState(currentTarget);
         this.updateBadges(data);
       })
       .catch(() => {
-        this.updateRowState(target, true);
+        this.updateRowState(currentTarget, true);
         return createAlert({
           message: __('Error updating status of to-do item.'),
         });

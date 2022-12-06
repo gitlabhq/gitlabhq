@@ -235,7 +235,7 @@ export default {
 
       this.saveNote(replyData)
         .then((res) => {
-          if (res.hasFlash !== true) {
+          if (res.hasAlert !== true) {
             this.isReplying = false;
             clearDraft(this.autosaveKey);
           }

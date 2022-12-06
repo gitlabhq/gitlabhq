@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::BuildTraceMetadata do
+RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration do
   it { is_expected.to belong_to(:build) }
   it { is_expected.to belong_to(:trace_artifact) }
 
@@ -106,7 +106,7 @@ RSpec.describe Ci::BuildTraceMetadata do
     let_it_be(:build) { create(:ci_build) }
 
     subject(:execute) do
-      described_class.find_or_upsert_for!(build.id)
+      described_class.find_or_upsert_for!(build.id, build.partition_id)
     end
 
     it 'creates a new record' do
@@ -156,6 +156,24 @@ RSpec.describe Ci::BuildTraceMetadata do
 
     with_them do
       it { is_expected.to eq(result) }
+    end
+  end
+
+  describe 'partitioning' do
+    include Ci::PartitioningHelpers
+
+    let_it_be(:pipeline) { create(:ci_pipeline) }
+    let_it_be(:build) { create(:ci_build, pipeline: pipeline) }
+    let(:new_pipeline) { create(:ci_pipeline) }
+    let(:new_build) { create(:ci_build, pipeline: new_pipeline) }
+    let(:metadata) { create(:ci_build_trace_metadata, build: new_build) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'assigns the same partition id as the one that build has' do
+      expect(metadata.partition_id).to eq(ci_testing_partition_id)
     end
   end
 end

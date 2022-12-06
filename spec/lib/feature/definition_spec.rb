@@ -25,6 +25,9 @@ RSpec.describe Feature::Definition do
     using RSpec::Parameterized::TableSyntax
 
     where(:param, :value, :result) do
+      :name            | 'colon:separated'          | /Feature flag 'colon:separated' is invalid/
+      :name            | 'space separated'          | /Feature flag 'space separated' is invalid/
+      :name            | 'ALL_CAPS'                 | /Feature flag 'ALL_CAPS' is invalid/
       :name            | nil                        | /Feature flag is missing name/
       :path            | nil                        | /Feature flag 'feature_flag' is missing path/
       :type            | nil                        | /Feature flag 'feature_flag' is missing type/

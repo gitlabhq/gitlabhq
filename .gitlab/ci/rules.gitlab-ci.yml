@@ -330,6 +330,7 @@
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration/**/*"
   - "{,ee/,jh/}{,spec/}lib/{,ee/,jh/}gitlab/background_migration{,_spec}.rb"
   - "{,ee/,jh/}spec/support/helpers/database/**/*"
+  - "{,ee/,jh/}spec/support/helpers/migrations_helpers/**/*"
   - "lib/gitlab/markdown_cache/active_record/**/*"
   - "lib/api/admin/batched_background_migrations.rb"
   - "spec/requests/api/admin/batched_background_migrations_spec.rb"

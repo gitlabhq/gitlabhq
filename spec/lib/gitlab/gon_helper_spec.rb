@@ -104,6 +104,7 @@ RSpec.describe Gitlab::GonHelper do
       thing = stub_feature_flag_gate('thing')
 
       stub_feature_flags(my_feature_flag: thing)
+      stub_feature_flag_definition(:my_feature_flag)
 
       allow(helper)
         .to receive(:gon)

@@ -7070,6 +7070,7 @@ RSpec.describe User do
       subject { described_class.admin_bot }
 
       it { is_expected.to be_admin }
+      it { is_expected.to be_confirmed }
     end
   end
 

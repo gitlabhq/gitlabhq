@@ -295,7 +295,7 @@ export default {
       return this.mr.divergedCommitsCount > 0;
     },
     showMergeDetailsHeader() {
-      return ['readyToMerge'].indexOf(this.mr.state) >= 0;
+      return !['readyToMerge'].includes(this.mr.state);
     },
   },
   mounted() {
@@ -558,7 +558,9 @@ export default {
                   </li>
                 </ul>
               </div>
-              <div class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5">
+              <div
+                class="gl-w-full gl-text-gray-500 gl-mb-3 gl-md-mb-0 gl-md-pb-5 mr-widget-merge-details"
+              >
                 <template v-if="sourceHasDivergedFromTarget">
                   <gl-sprintf :message="$options.i18n.sourceDivergedFromTargetText">
                     <template #link>
@@ -644,7 +646,7 @@ export default {
               class="gl-w-full gl-order-n1 mr-widget-merge-details"
               data-qa-selector="merged_status_content"
             >
-              <p v-if="showMergeDetailsHeader" class="gl-mb-3 gl-text-gray-900">
+              <p v-if="showMergeDetailsHeader" class="gl-mb-2 gl-text-gray-900">
                 {{ __('Merge details') }}
               </p>
               <ul class="gl-pl-4 gl-mb-0 gl-ml-3 gl-text-gray-600">

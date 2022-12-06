@@ -9,7 +9,7 @@ module Integrations
     URL_API_KEYS_DOCS = "https://docs.#{DEFAULT_DOMAIN}/account_management/api-app-keys/"
 
     SUPPORTED_EVENTS = %w[
-      pipeline job archive_trace
+      pipeline build archive_trace
     ].freeze
 
     TAG_KEY_VALUE_RE = %r{\A [\w-]+ : .*\S.* \z}x.freeze
@@ -156,10 +156,10 @@ module Integrations
     end
 
     def execute(data)
+      return unless supported_events.include?(data[:object_kind])
+
       object_kind = data[:object_kind]
       object_kind = 'job' if object_kind == 'build'
-      return unless supported_events.include?(object_kind)
-
       data = hook_data(data, object_kind)
       execute_web_hook!(data, "#{object_kind} hook")
     end

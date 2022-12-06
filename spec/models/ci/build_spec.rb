@@ -5442,7 +5442,7 @@ RSpec.describe Ci::Build do
     it 'delegates to Ci::BuildTraceMetadata' do
       expect(Ci::BuildTraceMetadata)
         .to receive(:find_or_upsert_for!)
-        .with(build.id)
+        .with(build.id, build.partition_id)
 
       build.ensure_trace_metadata!
     end

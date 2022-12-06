@@ -59,7 +59,9 @@ notify-pipeline-failure:
       fi
     - |
       scripts/generate-failed-pipeline-slack-message.rb -i ${BROKEN_MASTER_INCIDENT_JSON} -f ${FAILED_PIPELINE_SLACK_MESSAGE_FILE};
-      curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL";
+      curl -X POST -H 'Content-Type: application/json' --data @${FAILED_PIPELINE_SLACK_MESSAGE_FILE} "$CI_SLACK_WEBHOOK_URL" ||
+        scripts/slack ${SLACK_CHANNEL} "☠️  Broken pipeline notification failed! ☠️  See ${CI_JOB_URL}" ci_failing "Failed pipeline reporter"
+
   artifacts:
     paths:
       - ${BROKEN_MASTER_INCIDENT_JSON}

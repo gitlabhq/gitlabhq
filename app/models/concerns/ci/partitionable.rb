@@ -28,6 +28,7 @@ module Ci
         Ci::BuildReportResult
         Ci::BuildRunnerSession
         Ci::BuildTraceChunk
+        Ci::BuildTraceMetadata
         Ci::BuildPendingState
         Ci::JobArtifact
         Ci::Pipeline

@@ -98,6 +98,7 @@ export const I18N_ADMIN = s__('Runners|Administrator');
 // Runner details
 
 export const I18N_DETAILS = s__('Runners|Details');
+export const I18N_JOBS = s__('Runners|Jobs');
 export const I18N_ASSIGNED_PROJECTS = s__('Runners|Assigned Projects (%{projectCount})');
 export const I18N_FILTER_PROJECTS = s__('Runners|Filter projects');
 export const I18N_CLEAR_FILTER_PROJECTS = __('Clear');

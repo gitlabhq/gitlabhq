@@ -15,6 +15,7 @@ import Autosize from 'autosize';
 import $ from 'jquery';
 import { escape, uniqueId } from 'lodash';
 import Vue from 'vue';
+import { createAlert, VARIANT_INFO } from '~/flash';
 import '~/lib/utils/jquery_at_who';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
@@ -24,7 +25,6 @@ import * as constants from '~/notes/constants';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import Autosave from './autosave';
 import loadAwardsHandler from './awards_handler';
-import createFlash from './flash';
 import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import GLForm from './gl_form';
 import axios from './lib/utils/axios_utils';
@@ -81,7 +81,7 @@ export default class Notes {
     this.keydownNoteText = this.keydownNoteText.bind(this);
     this.toggleCommitList = this.toggleCommitList.bind(this);
     this.postComment = this.postComment.bind(this);
-    this.clearFlashWrapper = this.clearFlash.bind(this);
+    this.clearAlertWrapper = this.clearAlert.bind(this);
     this.onHashChange = this.onHashChange.bind(this);
 
     this.notes_url = notes_url;
@@ -431,9 +431,9 @@ export default class Notes {
         if (noteEntity.commands_changes && Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();
         }
-        this.addFlash({
+        this.addAlert({
           message: noteEntity.errors.commands_only,
-          type: 'notice',
+          variant: VARIANT_INFO,
           parent: this.parentTimeline.get(0),
         });
         this.refresh();
@@ -656,7 +656,7 @@ export default class Notes {
     } else if ($form.hasClass('js-discussion-note-form')) {
       formParentTimeline = $form.closest('.discussion-notes').find('.notes');
     }
-    return this.addFlash({
+    return this.addAlert({
       message: __(
         'Your comment could not be submitted! Please check your network connection and try again.',
       ),
@@ -665,7 +665,7 @@ export default class Notes {
   }
 
   updateNoteError() {
-    createFlash({
+    createAlert({
       message: __(
         'Your comment could not be updated! Please check your network connection and try again.',
       ),
@@ -1338,15 +1338,12 @@ export default class Notes {
     });
   }
 
-  addFlash(...flashParams) {
-    this.flashContainer = createFlash(...flashParams);
+  addAlert(...alertParams) {
+    this.alert = createAlert(...alertParams);
   }
 
-  clearFlash() {
-    if (this.flashContainer) {
-      this.flashContainer.style.display = 'none';
-      this.flashContainer = null;
-    }
+  clearAlert() {
+    this.alert?.dismiss();
   }
 
   cleanForm($form) {
@@ -1535,7 +1532,7 @@ export default class Notes {
    *           b. Reset comment form to original state.
    *    b) If request failed
    *        1. Remove placeholder element
-   *        2. Show error Flash message about failure
+   *        2. Show error alert message about failure
    */
   postComment(e) {
     e.preventDefault();
@@ -1645,7 +1642,7 @@ export default class Notes {
         }
 
         // Clear previous form errors
-        this.clearFlashWrapper();
+        this.clearAlertWrapper();
 
         // Check if this was discussion comment
         if (isDiscussionForm) {

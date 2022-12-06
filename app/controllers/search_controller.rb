@@ -8,6 +8,7 @@ class SearchController < ApplicationController
   include SearchRateLimitable
 
   RESCUE_FROM_TIMEOUT_ACTIONS = [:count, :show, :autocomplete, :aggregations].freeze
+  CODE_SEARCH_LITERALS = %w[blob: extension: path: filename:].freeze
 
   track_custom_event :show,
               name: 'i_search_total',
@@ -31,6 +32,9 @@ class SearchController < ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:search_page_vertical_nav, current_user)
+  end
+  before_action only: :show do
+    update_scope_for_code_search
   end
   before_action :elasticsearch_in_use, only: :show
   rescue_from ActiveRecord::QueryCanceled, with: :render_timeout
@@ -124,6 +128,15 @@ class SearchController < ApplicationController
   strong_memoize_attr :elasticsearch_in_use
 
   private
+
+  def update_scope_for_code_search
+    return if params[:scope] == 'blobs'
+    return unless params[:search].present?
+
+    if CODE_SEARCH_LITERALS.any? { |literal| literal.in? params[:search] }
+      redirect_to search_path(safe_params.except(:controller, :action).merge(scope: 'blobs'))
+    end
+  end
 
   # overridden in EE
   def default_sort

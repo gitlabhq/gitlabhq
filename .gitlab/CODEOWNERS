@@ -18,7 +18,7 @@ GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend
 /doc/**/*.md
 /doc/**/*.png
 /data/deprecations/*.yml
-/data/removals/*.yml
+/data/removals/**/*.yml
 
 ## Technical writing files that do need approval
 /data/deprecations/templates/ @marcel.amirault @gitlab-org/tw-leadership @sarahgerman

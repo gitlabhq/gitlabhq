@@ -130,5 +130,10 @@ namespace :gitlab do
         end
       end
     end
+
+    namespace :queues do
+      desc 'GitLab | Sidekiq | Validate all_queues.yml and sidekiq_queues.yml match worker definitions'
+      task check: ['gitlab:sidekiq:all_queues_yml:check', 'gitlab:sidekiq:sidekiq_queues_yml:check', :environment]
+    end
   end
 end

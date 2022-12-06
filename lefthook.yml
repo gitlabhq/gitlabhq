@@ -45,6 +45,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: '*.{rb,rake}'
       run: REVEAL_RUBOCOP_TODO=0 bundle exec rubocop --parallel --force-exclusion {files}
+    sidekiq-queues:
+      tags: backend
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{,ee/}app/workers/*.rb'
+      run: bundle exec rake gitlab:sidekiq:queues:check
     graphql_docs:
       tags: documentation
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

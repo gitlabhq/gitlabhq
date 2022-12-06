@@ -7,9 +7,9 @@ module Gitlab
         UnknownStrategyError = Class.new(StandardError)
 
         STRATEGIES = {
-          until_executing: UntilExecuting,
-          until_executed: UntilExecuted,
-          none: None
+          until_executing: ::Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuting,
+          until_executed: ::Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuted,
+          none: ::Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::None
         }.freeze
 
         def self.for(name)

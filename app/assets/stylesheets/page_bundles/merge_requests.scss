@@ -1046,8 +1046,17 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-widget-merge-details {
+  *,
+  & {
+    @include gl-font-sm;
+  }
+
+  p {
+    @include gl-font-base;
+  }
+
   li:not(:last-child) {
-    @include gl-mb-3;
+    @include gl-mb-2;
   }
 }
 

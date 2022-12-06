@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import { GlTab, GlTabs } from '@gitlab/ui';
+import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -33,12 +35,15 @@ const mockRunnerId = `${getIdFromGraphQLId(mockRunnerGraphqlId)}`;
 const mockRunnersPath = '/admin/runners';
 
 Vue.use(VueApollo);
+Vue.use(VueRouter);
 
 describe('AdminRunnerShowApp', () => {
   let wrapper;
   let mockRunnerQuery;
 
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
+  const findTabs = () => wrapper.findComponent(GlTabs);
+  const findTabAt = (i) => wrapper.findAllComponents(GlTab).at(i);
   const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
   const findRunnerDeleteButton = () => wrapper.findComponent(RunnerDeleteButton);
   const findRunnerEditButton = () => wrapper.findComponent(RunnerEditButton);
@@ -111,6 +116,16 @@ describe('AdminRunnerShowApp', () => {
                         Tags None`.replace(/\s+/g, ' ');
 
       expect(wrapper.text().replace(/\s+/g, ' ')).toContain(expected);
+    });
+
+    it.each(['#/', '#/unknown-tab'])('shows details when location hash is `%s`', async (hash) => {
+      setWindowLocation(hash);
+
+      await createComponent({ mountFn: mountExtended });
+
+      expect(findTabs().props('value')).toBe(0);
+      expect(findRunnerDetails().exists()).toBe(true);
+      expect(findRunnersJobs().exists()).toBe(false);
     });
 
     describe('when runner cannot be updated', () => {
@@ -226,7 +241,7 @@ describe('AdminRunnerShowApp', () => {
     });
   });
 
-  describe('Jobs tab', () => {
+  describe('When showing jobs', () => {
     const stubs = {
       GlTab,
       GlTabs,
@@ -245,6 +260,17 @@ describe('AdminRunnerShowApp', () => {
       expect(findRunnersJobs().exists()).toBe(false);
     });
 
+    it('when URL hash links to jobs tab', async () => {
+      mockRunnerQueryResult();
+      setWindowLocation('#/jobs');
+
+      await createComponent({ mountFn: mountExtended });
+
+      expect(findTabs().props('value')).toBe(1);
+      expect(findRunnerDetails().exists()).toBe(false);
+      expect(findRunnersJobs().exists()).toBe(true);
+    });
+
     it('without a job count, shows no jobs count', async () => {
       mockRunnerQueryResult({ jobCount: null });
 
@@ -260,7 +286,28 @@ describe('AdminRunnerShowApp', () => {
       await createComponent({ stubs });
 
       expect(findJobCountBadge().text()).toBe('3');
-      expect(findRunnersJobs().props('runner')).toEqual({ ...mockRunner, ...runner });
+    });
+  });
+
+  describe('When navigating to another tab', () => {
+    let routerPush;
+
+    beforeEach(async () => {
+      mockRunnerQueryResult();
+
+      await createComponent({ mountFn: mountExtended });
+
+      routerPush = jest.spyOn(wrapper.vm.$router, 'push').mockImplementation(() => {});
+    });
+
+    it('navigates to details', () => {
+      findTabAt(0).vm.$emit('click');
+      expect(routerPush).toHaveBeenLastCalledWith({ name: 'details' });
+    });
+
+    it('navigates to job', () => {
+      findTabAt(1).vm.$emit('click');
+      expect(routerPush).toHaveBeenLastCalledWith({ name: 'jobs' });
     });
   });
 });

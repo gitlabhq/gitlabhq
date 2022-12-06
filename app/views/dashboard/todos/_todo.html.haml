@@ -48,13 +48,13 @@
 
     .todo-actions.gl-ml-3
       - if todo.pending?
-        = link_to dashboard_todo_path(todo), method: :delete, class: 'gl-button gl-bg-gray-50 btn btn-default btn-loading d-flex align-items-center js-done-todo', data: { href: dashboard_todo_path(todo) } do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading d-flex align-items-center js-done-todo' }, method: :delete, href: dashboard_todo_path(todo)) do
           = gl_loading_icon(inline: true)
           = _('Done')
-        = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button gl-bg-gray-50 btn btn-default btn-loading d-flex align-items-center js-undo-todo hidden', data: { href: restore_dashboard_todo_path(todo) } do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading d-flex align-items-center js-undo-todo hidden'}, method: :patch, href: restore_dashboard_todo_path(todo)) do
           = gl_loading_icon(inline: true)
           = _('Undo')
       - else
-        = link_to restore_dashboard_todo_path(todo), method: :patch, class: 'gl-button gl-bg-gray-50 btn btn-default btn-loading d-flex align-items-center js-add-todo', data: { href: restore_dashboard_todo_path(todo) } do
+        = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading d-flex align-items-center js-add-todo'}, method: :patch, href: restore_dashboard_todo_path(todo)) do
           = gl_loading_icon(inline: true)
           = _('Add a to do')

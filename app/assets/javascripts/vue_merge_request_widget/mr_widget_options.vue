@@ -544,8 +544,8 @@ export default {
     <mr-widget-pipeline-container v-if="shouldRenderPipelines" :mr="mr" />
     <mr-widget-approvals v-if="shouldRenderApprovals" :mr="mr" :service="service" />
     <report-widget-container>
-      <widget-container v-if="mr && shouldShowSecurityExtension" :mr="mr" />
       <extensions-container v-if="hasExtensions" :mr="mr" />
+      <widget-container v-if="mr && shouldShowSecurityExtension" :mr="mr" />
       <security-reports-app
         v-if="shouldRenderSecurityReport && !shouldShowSecurityExtension"
         :pipeline-id="mr.pipeline.id"

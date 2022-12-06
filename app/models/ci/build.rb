@@ -722,7 +722,7 @@ module Ci
     end
 
     def ensure_trace_metadata!
-      Ci::BuildTraceMetadata.find_or_upsert_for!(id)
+      Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id)
     end
 
     def artifacts_expose_as

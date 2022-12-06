@@ -912,6 +912,7 @@ class User < ApplicationRecord
         u.name = 'GitLab Admin Bot'
         u.avatar = bot_avatar(image: 'admin-bot.png')
         u.admin = true
+        u.confirmed_at = Time.zone.now
       end
     end
 
