@@ -55,6 +55,22 @@ devise_scope :user do
   get '/users/almost_there' => 'confirmations#almost_there'
   post '/users/resend_verification_code', to: 'sessions#resend_verification_code'
   get '/users/successful_verification', to: 'sessions#successful_verification'
+
+  # Redirect on GitHub authorization request errors. E.g. it could happen when user:
+  # 1. cancel authorization the GitLab OAuth app via GitHub to import GitHub repos
+  #   (they'll be redirected to /projects/new#import_project)
+  # 2. cancel signing in to GitLab using GitHub account
+  #   (they'll be redirected to /users/sign_in)
+  # In these cases, GitHub redirects user to the GitLab OAuth app's
+  # registered callback URL - /users/auth, which is the url to the auth user's profile page
+  get '/users/auth',
+    constraints: ->(req) {
+      req.params[:error].present? && req.params[:state].present?
+    },
+    to: redirect { |_params, req|
+      redirect_path = req.session.delete(:auth_on_failure_path)
+      redirect_path || Rails.application.routes.url_helpers.new_user_session_path
+    }
 end
 
 scope '-/users', module: :users do

@@ -92,9 +92,9 @@ RSpec.shared_examples 'additional metrics query' do
             metrics: [
               {
                 title: 'title', weight: 1, y_label: 'Values', queries: [
-                { query_range: 'query_range_a', result: query_range_result },
-                { query_range: 'query_range_b', label: 'label', unit: 'unit', result: query_range_result }
-              ]
+                  { query_range: 'query_range_a', result: query_range_result },
+                  { query_range: 'query_range_b', label: 'label', unit: 'unit', result: query_range_result }
+                ]
               }
             ]
           }

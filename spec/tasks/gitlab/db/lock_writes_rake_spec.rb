@@ -19,6 +19,30 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
   let(:main_connection) { ApplicationRecord.connection }
   let(:ci_connection) { Ci::ApplicationRecord.connection }
 
+  let(:detached_partition_table) { '_test_gitlab_main_part_20220101' }
+
+  before do
+    create_detached_partition_sql = <<~SQL
+      CREATE TABLE IF NOT EXISTS gitlab_partitions_dynamic._test_gitlab_main_part_20220101 (
+        id bigserial primary key not null
+      )
+    SQL
+
+    main_connection.execute(create_detached_partition_sql)
+    ci_connection.execute(create_detached_partition_sql)
+
+    Gitlab::Database::SharedModel.using_connection(main_connection) do
+      Postgresql::DetachedPartition.create!(
+        table_name: detached_partition_table,
+        drop_after: Time.current
+      )
+    end
+
+    allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
+    allow(Gitlab::Database::GitlabSchema).to receive(:table_schema)
+      .with(detached_partition_table).and_return(:gitlab_main)
+  end
+
   context 'single database' do
     before do
       skip_if_multiple_databases_are_setup
@@ -46,6 +70,13 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
   context 'multiple databases' do
     before do
       skip_if_multiple_databases_not_setup
+
+      Gitlab::Database::SharedModel.using_connection(ci_connection) do
+        Postgresql::DetachedPartition.create!(
+          table_name: detached_partition_table,
+          drop_after: Time.current
+        )
+      end
     end
 
     context 'when locking writes' do
@@ -86,6 +117,13 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
         expect do
           main_connection.execute("truncate ci_build_needs")
         end.to raise_error(ActiveRecord::StatementInvalid, /Table: "ci_build_needs" is write protected/)
+      end
+
+      it 'prevents writes to detached partitions' do
+        run_rake_task('gitlab:db:lock_writes')
+        expect do
+          ci_connection.execute("INSERT INTO gitlab_partitions_dynamic.#{detached_partition_table} DEFAULT VALUES")
+        end.to raise_error(ActiveRecord::StatementInvalid, /Table: "#{detached_partition_table}" is write protected/)
       end
     end
 
@@ -136,6 +174,14 @@ RSpec.describe 'gitlab:db:lock_writes', :silence_stdout, :reestablished_active_r
 
         expect do
           main_connection.execute("delete from ci_builds")
+        end.not_to raise_error
+      end
+
+      it 'allows writes again to detached partitions' do
+        run_rake_task('gitlab:db:unlock_writes')
+
+        expect do
+          ci_connection.execute("INSERT INTO gitlab_partitions_dynamic._test_gitlab_main_part_20220101 DEFAULT VALUES")
         end.not_to raise_error
       end
     end

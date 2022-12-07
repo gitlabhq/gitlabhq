@@ -4,5 +4,5 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78991
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/350972
 milestone: '14.8'
 type: development
-group: group::authentication and authorization
+group: group::workspace
 default_enabled: false

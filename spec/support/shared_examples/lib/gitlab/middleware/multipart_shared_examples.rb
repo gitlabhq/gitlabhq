@@ -25,10 +25,12 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     end
 
     it 'builds UploadedFiles' do
-      expect_uploaded_files([
-        { filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file1) },
-        { filepath: uploaded_filepath2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(file2) }
-      ])
+      expect_uploaded_files(
+        [
+          { filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file1) },
+          { filepath: uploaded_filepath2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(file2) }
+        ]
+      )
 
       subject
     end
@@ -61,10 +63,12 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     end
 
     it 'builds UploadedFiles' do
-      expect_uploaded_files([
-        { filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(user avatar) },
-        { filepath: uploaded_filepath2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(user screenshot) }
-      ])
+      expect_uploaded_files(
+        [
+          { filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(user avatar) },
+          { filepath: uploaded_filepath2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(user screenshot) }
+        ]
+      )
 
       subject
     end
@@ -101,10 +105,12 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     end
 
     it 'builds UploadedFiles' do
-      expect_uploaded_files([
-        { filepath: uploaded_file, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(user avatar bananas) },
-        { filepath: uploaded_file2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(user friend ananas) }
-      ])
+      expect_uploaded_files(
+        [
+          { filepath: uploaded_file, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(user avatar bananas) },
+          { filepath: uploaded_file2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(user friend ananas) }
+        ]
+      )
 
       subject
     end
@@ -133,11 +139,13 @@ RSpec.shared_examples 'handling all upload parameters conditions' do
     end
 
     it 'builds UploadedFiles' do
-      expect_uploaded_files([
-        { filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file) },
-        { filepath: uploaded_filepath2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(user avatar) },
-        { filepath: uploaded_filepath3, original_filename: filename3, remote_id: remote_id3, size: uploaded_file3.size, params_path: %w(user friend avatar) }
-      ])
+      expect_uploaded_files(
+        [
+          { filepath: uploaded_filepath, original_filename: filename, remote_id: remote_id, size: uploaded_file.size, params_path: %w(file) },
+          { filepath: uploaded_filepath2, original_filename: filename2, remote_id: remote_id2, size: uploaded_file2.size, params_path: %w(user avatar) },
+          { filepath: uploaded_filepath3, original_filename: filename3, remote_id: remote_id3, size: uploaded_file3.size, params_path: %w(user friend avatar) }
+        ]
+      )
 
       subject
     end

@@ -16,15 +16,17 @@ Capybara.server_port = ENV['CAPYBARA_PORT'] if ENV['CAPYBARA_PORT']
 JSConsoleError = Class.new(StandardError)
 
 # Filter out innocuous JS console messages
-JS_CONSOLE_FILTER = Regexp.union([
-  '"[HMR] Waiting for update signal from WDS..."',
-  '"[WDS] Hot Module Replacement enabled."',
-  '"[WDS] Live Reloading enabled."',
-  'Download the Vue Devtools extension',
-  'Download the Apollo DevTools',
-  "Unrecognized feature: 'interest-cohort'",
-  'Does this page need fixes or improvements?'
-])
+JS_CONSOLE_FILTER = Regexp.union(
+  [
+    '"[HMR] Waiting for update signal from WDS..."',
+    '"[WDS] Hot Module Replacement enabled."',
+    '"[WDS] Live Reloading enabled."',
+    'Download the Vue Devtools extension',
+    'Download the Apollo DevTools',
+    "Unrecognized feature: 'interest-cohort'",
+    'Does this page need fixes or improvements?'
+  ]
+)
 
 CAPYBARA_WINDOW_SIZE = [1366, 768].freeze
 

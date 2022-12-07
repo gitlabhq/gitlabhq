@@ -6,7 +6,8 @@ namespace :gitlab do
     task lock_writes: [:environment, 'gitlab:db:validate_config'] do
       Gitlab::Database::EachDatabase.each_database_connection(include_shared: false) do |connection, database_name|
         schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
-        Gitlab::Database::GitlabSchema.tables_to_schema.each do |table_name, schema_name|
+
+        Gitlab::Database::LockWritesManager.tables_to_lock(connection) do |table_name, schema_name|
           # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
           next if schema_name == :gitlab_geo
 
@@ -30,7 +31,7 @@ namespace :gitlab do
     desc "GitLab | DB | Remove all triggers that prevents writes from all databases"
     task unlock_writes: :environment do
       Gitlab::Database::EachDatabase.each_database_connection do |connection, database_name|
-        Gitlab::Database::GitlabSchema.tables_to_schema.each do |table_name, schema_name|
+        Gitlab::Database::LockWritesManager.tables_to_lock(connection) do |table_name, schema_name|
           # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/366834
           next if schema_name == :gitlab_geo
 

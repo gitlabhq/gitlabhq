@@ -92,10 +92,10 @@ module MigrationHelpers
                 "url" => "http://goat:8080/WebGoat/logout",
                 "body" => "",
                 "headers" => [
-                    {
-                      "name" => "Accept",
-                      "value" => "*/*"
-                    }
+                  {
+                    "name" => "Accept",
+                    "value" => "*/*"
+                  }
                 ]
               },
               "response" => {

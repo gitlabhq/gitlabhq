@@ -14,7 +14,7 @@ RSpec.shared_context 'GroupPolicy context' do
     %i[
       read_group read_counts
       read_label read_issue_board_list read_milestone read_issue_board
-   ]
+    ]
   end
 
   let(:guest_permissions) do
@@ -22,32 +22,32 @@ RSpec.shared_context 'GroupPolicy context' do
       read_label read_group upload_file read_namespace read_group_activity
       read_group_issues read_group_boards read_group_labels read_group_milestones
       read_group_merge_requests
-   ]
+    ]
   end
 
   let(:reporter_permissions) do
     %i[
-        admin_label
-        admin_milestone
-        admin_issue_board
-        read_container_image
-        read_harbor_registry
-        read_metrics_dashboard_annotation
-        read_prometheus
-        read_crm_contact
-        read_crm_organization
-      ]
+      admin_label
+      admin_milestone
+      admin_issue_board
+      read_container_image
+      read_harbor_registry
+      read_metrics_dashboard_annotation
+      read_prometheus
+      read_crm_contact
+      read_crm_organization
+    ]
   end
 
   let(:developer_permissions) do
     %i[
-        create_metrics_dashboard_annotation
-        delete_metrics_dashboard_annotation
-        update_metrics_dashboard_annotation
-        create_custom_emoji
-        create_package
-        read_cluster
-      ]
+      create_metrics_dashboard_annotation
+      delete_metrics_dashboard_annotation
+      update_metrics_dashboard_annotation
+      create_custom_emoji
+      create_package
+      read_cluster
+    ]
   end
 
   let(:maintainer_permissions) do

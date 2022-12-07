@@ -28,11 +28,9 @@ RSpec.describe Ci::RunnerVersion, feature_category: :runner do
     end
 
     it 'contains any valid or unprocessed runner version that is not already recommended' do
-      is_expected.to match_array([
-        runner_version_nil,
-        runner_version_not_available,
-        runner_version_available
-      ])
+      is_expected.to match_array(
+        [runner_version_nil, runner_version_not_available, runner_version_available]
+      )
     end
   end
 

@@ -118,6 +118,7 @@ export default {
       return {
         'gl-text-gray-500!': this.canUpdate && this.isNoMilestone,
         'is-not-focused': !this.isFocused,
+        'gl-min-w-20': true,
       };
     },
   },
@@ -214,9 +215,10 @@ export default {
 
 <template>
   <gl-form-group
-    class="work-item-dropdown"
+    class="work-item-dropdown gl-flex-nowrap"
     :label="$options.i18n.MILESTONE"
-    label-class="gl-pb-0! gl-overflow-wrap-break gl-mt-3"
+    label-for="milestone-value"
+    label-class="gl-pb-0! gl-mt-3 gl-overflow-wrap-break"
     label-cols="3"
     label-cols-lg="2"
   >
@@ -229,6 +231,8 @@ export default {
     </span>
     <gl-dropdown
       v-else
+      id="milestone-value"
+      class="col-9 gl-pl-0"
       :toggle-class="dropdownClasses"
       :text="dropdownText"
       :loading="updateInProgress"

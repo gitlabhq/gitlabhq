@@ -37,6 +37,14 @@ RSpec.describe Gitlab::Database::LockWritesManager do
     it 'returns true for a table that is locked for writes' do
       expect { subject.lock_writes }.to change { subject.table_locked_for_writes?(test_table) }.from(false).to(true)
     end
+
+    context 'for detached partition tables in another schema' do
+      let(:test_table) { 'gitlab_partitions_dynamic._test_table_20220101' }
+
+      it 'returns true for a table that is locked for writes' do
+        expect { subject.lock_writes }.to change { subject.table_locked_for_writes?(test_table) }.from(false).to(true)
+      end
+    end
   end
 
   describe '#lock_writes' do

@@ -2224,32 +2224,34 @@ RSpec.describe Repository do
 
   describe '#after_change_head' do
     it 'flushes the method caches' do
-      expect(repository).to receive(:expire_method_caches).with([
-        :size,
-        :commit_count,
-        :readme_path,
-        :contribution_guide,
-        :changelog,
-        :license_blob,
-        :license_licensee,
-        :license_gitaly,
-        :gitignore,
-        :gitlab_ci_yml,
-        :branch_names,
-        :tag_names,
-        :branch_count,
-        :tag_count,
-        :avatar,
-        :exists?,
-        :root_ref,
-        :merged_branch_names,
-        :has_visible_content?,
-        :issue_template_names_hash,
-        :merge_request_template_names_hash,
-        :user_defined_metrics_dashboard_paths,
-        :xcode_project?,
-        :has_ambiguous_refs?
-      ])
+      expect(repository).to receive(:expire_method_caches).with(
+        [
+          :size,
+          :commit_count,
+          :readme_path,
+          :contribution_guide,
+          :changelog,
+          :license_blob,
+          :license_licensee,
+          :license_gitaly,
+          :gitignore,
+          :gitlab_ci_yml,
+          :branch_names,
+          :tag_names,
+          :branch_count,
+          :tag_count,
+          :avatar,
+          :exists?,
+          :root_ref,
+          :merged_branch_names,
+          :has_visible_content?,
+          :issue_template_names_hash,
+          :merge_request_template_names_hash,
+          :user_defined_metrics_dashboard_paths,
+          :xcode_project?,
+          :has_ambiguous_refs?
+        ]
+      )
 
       repository.after_change_head
     end

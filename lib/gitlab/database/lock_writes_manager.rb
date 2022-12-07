@@ -10,18 +10,34 @@ module Gitlab
       # See https://www.postgresql.org/message-id/16934.1568989957%40sss.pgh.pa.us
       EXPECTED_TRIGGER_RECORD_COUNT = 3
 
+      def self.tables_to_lock(connection)
+        Gitlab::Database::GitlabSchema.tables_to_schema.each do |table_name, schema_name|
+          yield table_name, schema_name
+        end
+
+        Gitlab::Database::SharedModel.using_connection(connection) do
+          Postgresql::DetachedPartition.find_each do |detached_partition|
+            yield detached_partition.fully_qualified_table_name, detached_partition.table_schema
+          end
+        end
+      end
+
       def initialize(table_name:, connection:, database_name:, logger: nil, dry_run: false)
         @table_name = table_name
         @connection = connection
         @database_name = database_name
         @logger = logger
         @dry_run = dry_run
+
+        @table_name_without_schema = ActiveRecord::ConnectionAdapters::PostgreSQL::Utils
+          .extract_schema_qualified_name(table_name)
+          .identifier
       end
 
       def table_locked_for_writes?(table_name)
         query = <<~SQL
             SELECT COUNT(*) from information_schema.triggers
-            WHERE event_object_table = '#{table_name}'
+            WHERE event_object_table = '#{table_name_without_schema}'
             AND trigger_name = '#{write_trigger_name(table_name)}'
         SQL
 
@@ -56,7 +72,7 @@ module Gitlab
 
       private
 
-      attr_reader :table_name, :connection, :database_name, :logger, :dry_run
+      attr_reader :table_name, :connection, :database_name, :logger, :dry_run, :table_name_without_schema
 
       def execute_sql_statement(sql)
         if dry_run
@@ -99,7 +115,7 @@ module Gitlab
       end
 
       def write_trigger_name(table_name)
-        "gitlab_schema_write_trigger_for_#{table_name}"
+        "gitlab_schema_write_trigger_for_#{table_name_without_schema}"
       end
     end
   end
