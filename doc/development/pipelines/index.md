@@ -68,8 +68,8 @@ Later on in [the `rspec fail-fast` job](#fail-fast-job-in-merge-request-pipeline
 
 In addition, there are a few circumstances where we would always run the full RSpec tests:
 
-- when the `pipeline:run-all-rspec` label is set on the merge request
-- when the `pipeline:run-full-rspec` label is set on the merge request, this label is assigned by triage automation when the merge request is approved by any reviewer
+- when the `pipeline:run-all-rspec` label is set on the merge request. This label will trigger all RSpec tests including those run in the `as-if-foss` jobs.
+- when the `pipeline:mr-approved` label is set on the merge request, and if the code changes satisfy the `backend-patterns` rule. Note that this label is assigned by triage automation when the merge request is approved by any reviewer. It is not recommended to apply this label manually.
 - when the merge request is created by an automation (for example, Gitaly update or MR targeting a stable branch)
 - when the merge request is created in a security mirror
 - when any CI configuration file is changed (for example, `.gitlab-ci.yml` or `.gitlab/ci/**/*`)

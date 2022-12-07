@@ -153,6 +153,7 @@ export default {
             :edit-timeline-event-active="editTimelineEventActive"
             @handle-save-edit="handleSaveEdit"
             @hide-edit="hideEdit()"
+            @delete="handleDelete(event)"
           />
           <incident-timeline-event-item
             v-else

@@ -18,8 +18,7 @@ RSpec.describe Gitlab::Git::RuggedImpl::UseRugged do
     klazz = Class.new do
       include Gitlab::Git::RuggedImpl::UseRugged
 
-      def rugged_test(ref, test_number)
-      end
+      def rugged_test(ref, test_number); end
     end
 
     klazz.new

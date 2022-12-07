@@ -229,11 +229,9 @@ RSpec.describe Gitlab::Database::Partitioning::SlidingListStrategy do
                        next_partition_if: method(:next_partition_if_wrapper),
                        detach_partition_if: method(:detach_partition_if_wrapper)
 
-        def self.next_partition?(current_partition)
-        end
+        def self.next_partition?(current_partition); end
 
-        def self.detach_partition?(partition)
-        end
+        def self.detach_partition?(partition); end
       end
     end
 

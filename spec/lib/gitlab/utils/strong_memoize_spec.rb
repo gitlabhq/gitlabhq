@@ -59,22 +59,19 @@ RSpec.describe Gitlab::Utils::StrongMemoize do
 
       protected
 
-      def private_method
-      end
+      def private_method; end
       private :private_method
       strong_memoize_attr :private_method
 
       public
 
-      def protected_method
-      end
+      def protected_method; end
       protected :protected_method
       strong_memoize_attr :protected_method
 
       private
 
-      def public_method
-      end
+      def public_method; end
       public :public_method
       strong_memoize_attr :public_method
     end

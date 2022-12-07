@@ -345,6 +345,14 @@ Some contractions, however, should be avoided:
 
 <!-- vale gitlab.Possessive = YES -->
 
+### Possessives
+
+Try to avoid using possessives (`'s`) for proper nouns, like organization or product names.
+
+For example, instead of `Docker's CLI`, use `the Docker CLI`.
+
+For details, see [the Google documentation style guide](https://developers.google.com/style/possessives#product,-feature,-and-company-names).
+
 ### Prepositions
 
 Use prepositions at the end of the sentence when needed.
@@ -361,7 +369,12 @@ These constructions are more casual than the alternatives:
 ### Acronyms
 
 If you use an acronym, spell it out on first use on a page. You do not need to spell it out more than once on a page.
-When possible, try to avoid acronyms in topic titles.
+
+- **Titles:** Try to avoid acronyms in topic titles, especially if the acronym is not widely used.
+- **Plurals:** Try not to make acronyms plural. For example, use `YAML files`, not `YAMLs`. If you must make an acronym plural, do not use an apostrophe. For example, use `APIs`, not `API's`.
+- **Possessives:** Use caution when making an acronym possessive. If possible,
+  write the sentence to avoid making the acronym possessive. If you must make the
+  acronym possessive, consider spelling out the words.
 
 ### Numbers
 

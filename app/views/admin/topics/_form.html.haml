@@ -38,10 +38,13 @@
 
   - if @topic.new_record?
     .form-actions
-      = f.submit _('Create topic'), class: "gl-button btn btn-confirm"
-      = link_to  _('Cancel'), admin_topics_path, class: "gl-button btn btn-default btn-cancel"
+      = f.submit _('Create topic'), pajamas_button: true
+      = render Pajamas::ButtonComponent.new(href: admin_topics_path) do
+        = _('Cancel')
 
   - else
     .form-actions
-      = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
-      = link_to  _('Cancel'), admin_topics_path, class: "gl-button btn btn-cancel"
+      = f.submit _('Save changes'), pajamas_button: true, data: { qa_selector: 'save_changes_button' }
+      = render Pajamas::ButtonComponent.new(href: admin_topics_path) do
+        = _('Cancel')
+

@@ -27,8 +27,7 @@ RSpec.describe Gitlab::RepositoryCacheAdapter do
           'foo/bar'
         end
 
-        def project
-        end
+        def project; end
 
         def cached_methods
           [:letters]

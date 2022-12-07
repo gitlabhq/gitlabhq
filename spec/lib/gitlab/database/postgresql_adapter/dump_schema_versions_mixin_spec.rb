@@ -9,8 +9,7 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::DumpSchemaVersionsMixin do
         original_dump_schema_information
       end
 
-      def original_dump_schema_information
-      end
+      def original_dump_schema_information; end
     end
 
     klass.prepend(described_class)

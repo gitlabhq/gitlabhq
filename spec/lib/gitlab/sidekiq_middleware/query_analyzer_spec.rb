@@ -10,8 +10,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::QueryAnalyzer, query_analyzers: false 
       let(:queue) { 'some-queue' }
       let(:middleware) { described_class.new }
 
-      def do_queries
-      end
+      def do_queries; end
 
       subject { middleware.call(worker, job, queue) { do_queries } }
 

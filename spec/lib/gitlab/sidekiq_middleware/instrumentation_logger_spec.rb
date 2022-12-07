@@ -13,8 +13,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::InstrumentationLogger do
 
       include ApplicationWorker
 
-      def perform(*args)
-      end
+      def perform(*args); end
     end
   end
 

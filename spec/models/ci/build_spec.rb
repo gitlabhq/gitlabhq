@@ -5632,4 +5632,28 @@ RSpec.describe Ci::Build do
       expect(runtime_hooks[0].script).to eq(["echo 'hello pre_get_sources_script'"])
     end
   end
+
+  describe 'partitioning', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    let(:new_pipeline) { create(:ci_pipeline) }
+    let(:ci_build) { FactoryBot.build(:ci_build, pipeline: new_pipeline) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'assigns partition_id to job variables successfully', :aggregate_failures do
+      ci_build.job_variables_attributes = [
+        { key: 'TEST_KEY', value: 'new value' },
+        { key: 'NEW_KEY', value: 'exciting new value' }
+      ]
+
+      ci_build.save!
+
+      expect(ci_build.job_variables.count).to eq(2)
+      expect(ci_build.job_variables.first.partition_id).to eq(ci_testing_partition_id)
+      expect(ci_build.job_variables.second.partition_id).to eq(ci_testing_partition_id)
+    end
+  end
 end

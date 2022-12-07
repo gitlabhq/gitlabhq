@@ -32,6 +32,7 @@ module Ci
         Ci::BuildTraceMetadata
         Ci::BuildPendingState
         Ci::JobArtifact
+        Ci::JobVariable
         Ci::Pipeline
         Ci::PendingBuild
         Ci::RunningBuild

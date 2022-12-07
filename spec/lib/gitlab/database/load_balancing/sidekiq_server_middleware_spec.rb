@@ -33,8 +33,7 @@ RSpec.describe Gitlab::Database::LoadBalancing::SidekiqServerMiddleware, :clean_
 
           data_consistency data_consistency, feature_flag: feature_flag
 
-          def perform(*args)
-          end
+          def perform(*args); end
         end
       end
 

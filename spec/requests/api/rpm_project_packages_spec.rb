@@ -216,6 +216,19 @@ RSpec.describe API::RpmProjectPackages do
             expect(response.body).to match(/File is too large/)
           end
         end
+
+        context 'when filelists.xml file size too large' do
+          before do
+            create(:rpm_repository_file, :filelists, size: 21.megabytes, project: project)
+          end
+
+          it 'returns an error' do
+            upload_file(params: { file: file_upload }, request_headers: headers)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
+            expect(response.body).to match(/Repository packages limit exceeded/)
+          end
+        end
       end
 
       def upload_file(params: {}, request_headers: headers)

@@ -218,3 +218,8 @@ function assets_image_tag() {
     echo -n "${CI_COMMIT_SHA}"
   fi
 }
+
+function setup_gcloud() {
+  gcloud auth activate-service-account --key-file="${REVIEW_APPS_GCP_CREDENTIALS}"
+  gcloud config set project "${REVIEW_APPS_GCP_PROJECT}"
+}

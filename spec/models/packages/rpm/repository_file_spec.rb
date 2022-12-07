@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Packages::Rpm::RepositoryFile, type: :model do
+RSpec.describe Packages::Rpm::RepositoryFile, type: :model, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:repository_file) { create(:rpm_repository_file) }
@@ -14,6 +14,32 @@ RSpec.describe Packages::Rpm::RepositoryFile, type: :model do
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:project) }
+  end
+
+  describe '.has_oversized_filelists?' do
+    let_it_be(:filelists) { create(:rpm_repository_file, :filelists, size: 21.megabytes) }
+
+    subject { described_class.has_oversized_filelists?(project_id: filelists.project_id) }
+
+    context 'when has oversized filelists' do
+      it { expect(subject).to be true }
+    end
+
+    context 'when filelists.xml is not oversized' do
+      before do
+        filelists.update!(size: 19.megabytes)
+      end
+
+      it { expect(subject).to be_falsey }
+    end
+
+    context 'when there is no filelists.xml' do
+      before do
+        filelists.destroy!
+      end
+
+      it { expect(subject).to be_falsey }
+    end
   end
 
   context 'when updating project statistics' do

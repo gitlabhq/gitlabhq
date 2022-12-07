@@ -18,8 +18,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Server, :clean_gitlab_r
           self.class.work
         end
 
-        def self.work
-        end
+        def self.work; end
       end
     end
 

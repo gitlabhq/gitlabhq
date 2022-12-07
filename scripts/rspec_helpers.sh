@@ -248,7 +248,35 @@ function retry_failed_rspec_examples() {
   # Merge the JUnit report from retry into the first-try report
   junit_merge "${JUNIT_RETRY_FILE}" "${JUNIT_RESULT_FILE}" --update-only
 
+  if [[ $rspec_run_status -eq 0 ]]; then
+    # The test is flaky because it succeeded after being retried.
+    # Make the pipeline "pass with warnings" if the flaky test is part of this MR.
+    warn_on_successfully_retried_test
+  fi
+
   exit $rspec_run_status
+}
+
+# Exit with an allowed_failure exit code if the flaky test was part of the MR that triggered this pipeline
+function warn_on_successfully_retried_test {
+  local changed_files=$(git diff --name-only $CI_MERGE_REQUEST_TARGET_BRANCH_SHA | grep spec)
+  echoinfo "A test was flaky and succeeded after being retried. Checking to see if flaky test is part of this MR..."
+
+  if [[ "$changed_files" == "" ]]; then
+    echoinfo "Flaky test was not part of this MR."
+    return
+  fi
+
+  while read changed_file
+  do
+    echoinfo "Searching flaky tests for ${changed_file}"
+    if grep -q "$changed_file" "$RETRIED_TESTS_REPORT_PATH"; then
+      echoinfo "Exiting with code $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE because the flaky test was part of this MR."
+      exit $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE
+    fi
+  done <<< "$changed_files"
+
+  echoinfo "Flaky test was not part of this MR."
 }
 
 function rspec_rerun_previous_failed_tests() {

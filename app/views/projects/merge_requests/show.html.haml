@@ -8,6 +8,7 @@
 - page_card_attributes @merge_request.card_attributes
 - suggest_changes_help_path = help_page_path('user/project/merge_requests/reviews/suggestions.md')
 - mr_action = j(params[:tab].presence || 'show')
+- add_page_specific_style 'page_bundles/issuable'
 - add_page_specific_style 'page_bundles/design_management'
 - add_page_specific_style 'page_bundles/merge_requests'
 - add_page_specific_style 'page_bundles/pipelines'

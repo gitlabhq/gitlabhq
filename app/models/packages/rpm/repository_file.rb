@@ -8,6 +8,8 @@ module Packages
       include Packages::Installable
 
       INSTALLABLE_STATUSES = [:default].freeze
+      FILELISTS_FILENAME = 'filelists.xml'
+      FILELISTS_SIZE_LIMITATION = 20.megabytes
 
       enum status: { default: 0, pending_destruction: 1, processing: 2, error: 3 }
 
@@ -20,6 +22,14 @@ module Packages
       mount_file_store_uploader Packages::Rpm::RepositoryFileUploader
 
       update_project_statistics project_statistics_name: :packages_size
+
+      def self.has_oversized_filelists?(project_id:)
+        where(
+          project_id: project_id,
+          file_name: FILELISTS_FILENAME,
+          size: [FILELISTS_SIZE_LIMITATION..]
+        ).exists?
+      end
     end
   end
 end

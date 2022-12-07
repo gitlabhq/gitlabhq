@@ -24,7 +24,7 @@
       .gl-font-weight-normal
         - pat_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('user/profile/personal_access_tokens') }
         - short_living_link_start = '<a href="%{url}" target="_blank">'.html_safe % { url: help_page_path('security/token_overview', anchor: 'security-considerations') }
-        = s_('GroupsNew|Create this in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, use a short expiration date when creating the token.').html_safe % { pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe, short_living_link_start: short_living_link_start, short_living_link_end: '</a>'.html_safe }
+        = s_('GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time.').html_safe % { code_start: '<code>'.html_safe, code_end: '</code>'.html_safe, pat_link_start: pat_link_start, pat_link_end: '</a>'.html_safe, short_living_link_start: short_living_link_start, short_living_link_end: '</a>'.html_safe }
       = f.text_field :bulk_import_gitlab_access_token, placeholder: s_('GroupsNew|e.g. h8d3f016698e...'), class: 'gl-form-input gl-mt-3 col-xs-12 col-sm-8',
         required: true,
         autocomplete: 'off',

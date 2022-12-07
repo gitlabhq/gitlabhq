@@ -64,6 +64,10 @@ module API
             bad_request!('File is too large')
           end
 
+          if Packages::Rpm::RepositoryFile.has_oversized_filelists?(project_id: authorized_user_project.id)
+            bad_request!('Repository packages limit exceeded')
+          end
+
           track_package_event(
             'push_package',
             :rpm,

@@ -40,7 +40,7 @@ as it can cause the pipeline to behave unexpectedly.
 | `CI_COMMIT_SHORT_SHA`                    | 11.7   | all    | The first eight characters of `CI_COMMIT_SHA`. |
 | `CI_COMMIT_TAG`                          | 9.0    | 0.5    | The commit tag name. Available only in pipelines for tags. |
 | `CI_COMMIT_TAG_MESSAGE`                  | 15.5   | all    | The commit tag message. Available only in pipelines for tags. |
-| `CI_COMMIT_TIMESTAMP`                    | 13.4   | all    | The timestamp of the commit in the ISO 8601 format. |
+| `CI_COMMIT_TIMESTAMP`                    | 13.4   | all    | The timestamp of the commit in the [ISO 8601](https://www.rfc-editor.org/rfc/rfc3339#appendix-A) format. |
 | `CI_COMMIT_TITLE`                        | 10.8   | all    | The title of the commit. The full first line of the message. |
 | `CI_CONCURRENT_ID`                       | all    | 11.10  | The unique ID of build execution in a single executor. |
 | `CI_CONCURRENT_PROJECT_ID`               | all    | 11.10  | The unique ID of build execution in a single executor and project. |

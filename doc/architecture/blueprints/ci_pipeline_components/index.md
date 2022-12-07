@@ -173,6 +173,20 @@ A `gitlab-<component-type>.yml` file:
 - Can optionally define **output data** that it returns.
 - Should be **validated statically** (for example: using JSON schema validators).
 
+```yaml
+spec:
+  inputs:
+    website:
+    environment:
+      default: test
+    test_run:
+      options:
+        - unit
+        - integration
+        - system
+content: { ... }
+```
+
 Components that are released in the catalog must have a `README.md` file in the same directory as the
 metadata YAML file. The `README.md` represents the documentation for the specific component, hence it's recommended
 even when not releasing versions in the catalog.
@@ -273,6 +287,166 @@ However, more specific test profiles could be used separately (for example `myor
 NOTE:
 Any nesting more than 1 level is initially not permitted.
 This limitation encourages cohesion at project level and keeps complexity low.
+
+## Input parameters `spec:inputs:` parameters
+
+If the component takes any input parameters they must be specified according to the following schema:
+
+```yaml
+spec:
+  inputs:
+    website: # by default all declared inputs are mandatory.
+    environment:
+      default: test # apply default if not provided. This makes the input optional.
+    test_run:
+      options: # a choice must be made from the list since there is no default value.
+        - unit
+        - integration
+        - system
+```
+
+When using the component we pass the input parameters as follows:
+
+```yaml
+include:
+  - component: org/my-component@1.0
+    with:
+      website: ${MY_WEBSITE} # variables expansion
+      test_run: system
+      environment: $[[ inputs.environment ]] # interpolation of upstream inputs
+```
+
+Variables expansion must be supported for `with:` syntax as well as interpolation of
+possible [inputs provided upstream](#input-parameters-for-pipelines).
+
+Input parameters are validated as soon as possible:
+
+1. Read the file `gitlab-template.yml` inside `org/my-component`.
+1. Parse `spec:inputs` and validate the parameters against this schema.
+1. If successfully validated, proceed with parsing `content:`. Return an error otherwise.
+1. Interpolate input parameters inside the component's `content:`.
+
+```yaml
+spec:
+  inputs:
+    environment:
+      options: [test, staging, production]
+content:
+  "run-tests-$[[ inputs.environment ]]":
+    script: ./run-test
+
+  scan-website:
+    script: ./scan-website $[[ inputs.environment ]]
+    rules:
+      - if: $[[ inputs.environment ]] == 'staging'
+      - if: $[[ inputs.environment ]] == 'production'
+```
+
+With `$[[ inputs.XXX ]]` inputs are interpolated immediately after parsing the `content:`.
+
+### Why input parameters and not environment variables?
+
+Until today we have been leveraging environment variables to pass information around.
+For example, we use environment variables to pass information from an upstream pipeline to a
+downstream pipeline.
+
+Using environment variables for passing information to a component is like declaring global
+variables in programming languages. The more variables we declare the more we risk variable
+conflicts and increase variables scope.
+
+Input parameters are like variables passed to the component which exist inside a specific
+scope and they don't leak to the outside.
+Inputs are not inherited from upstream `include`s. They must be passed explicitly.
+
+This paradigm allows to build more robust and isolated components as well as declare and
+enforce contracts.
+
+### Input parameters for existing `include:` syntax
+
+Because we are adding input parameters to components used via `include:component` we have an opportunity to
+extend it to other `include:` types support inputs via `with:` syntax:
+
+```yaml
+include:
+  - component: org/my-component@1.0
+    with:
+      foo: bar
+  - local: path/to/file.yml
+    with:
+      foo: bar
+  - project: org/another
+    file: .gitlab-ci.yml
+    with:
+      foo: bar
+  - remote: http://example.com/ci/config
+    with:
+      foo: bar
+  - template: Auto-DevOps.gitlab-ci.yml
+    with:
+      foo: bar
+```
+
+Then the configuration being included must specify the inputs:
+
+```yaml
+spec:
+  inputs:
+    foo:
+
+# rest of the configuration
+```
+
+If a YAML includes content using `with:` but the including YAML doesn't specify `inputs:`, an error should be raised.
+
+|`with:`| `inputs:` | result |
+| --- | --- | --- |
+| specified | |  raise error  |
+| specified | specified | validate inputs |
+| | specified | use defaults |
+| | | legacy `include:` without input passing |
+
+### Input parameters for pipelines
+
+Inputs can also be used to pass parameters to a pipeline when triggered and benefit from immediate validation.
+
+Today we have different use cases where using explicit input parameters would be beneficial:
+
+1. `Run Pipeline` UI form.
+    - **Problem today**: We are using top-level variables with `variables:*:description` to surface environment variables to the UI.
+    The problem with this is the mix of responsibilities as well as the jump in [precedence](../../../ci/variables/index.md#cicd-variable-precedence)
+    that a variable gets (from a YAML variable to a pipeline variable).
+    Building validation and features on top of this solution is challenging and complex.
+1. Trigger a pipeline via API. For example `POST /projects/:id/pipelines/trigger` with `{ inputs: { provider: 'aws' } }`
+1. Trigger a pipeline via `trigger:` syntax.
+
+```yaml
+deploy-app:
+  trigger:
+    project: org/deployer
+    with:
+      provider: aws
+      deploy_environment: staging
+```
+
+To solve the problem of `Run Pipeline` UI form we could fully leverage the `spec:inputs` schema:
+
+```yaml
+spec:
+  inputs:
+    concurrency:
+      default: 10    # displayed as default value in the input box
+    provider: # can enforce `required` in the form validation
+      description: Deployment provider # optional: render as input label.
+    deploy_environment:
+      options: # render a selectbox with options in order of how they are defined below
+        - staging    # 1st option
+        - canary     # 2nd option
+        - production # 3rd option
+      default: staging # selected by default in the UI.
+                     # if `default:` is not specified, the user must explicitly select
+                     # an option.
+      description: Deployment environment # optional: render as input label.
+```
 
 ## Limits
 

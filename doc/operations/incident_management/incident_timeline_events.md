@@ -85,6 +85,8 @@ of an incident.
 
 ## Delete an event
 
+> Ability to delete an event when editing it [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372265) in GitLab 15.7.
+
 You can also delete timeline events.
 
 Prerequisites:
@@ -99,3 +101,9 @@ To delete a timeline event:
 1. Select the **Timeline** tab.
 1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Delete**.
 1. To confirm, select **Delete Event**.
+
+Alternatively:
+
+1. On the right of a timeline event, select **More actions** (**{ellipsis_v}**) and then select **Edit**.
+1. Select **Delete**.
+1. To confirm, select **Delete event**.

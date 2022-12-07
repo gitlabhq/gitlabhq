@@ -22,11 +22,12 @@ describe('Timeline events form', () => {
   useFakeDate(fakeDate);
   let wrapper;
 
-  const mountComponent = ({ mountMethod = shallowMountExtended } = {}) => {
+  const mountComponent = ({ mountMethod = shallowMountExtended } = {}, props = {}) => {
     wrapper = mountMethod(TimelineEventsForm, {
       propsData: {
         showSaveAndAdd: true,
         isEventProcessed: false,
+        ...props,
       },
       stubs: {
         GlButton: true,
@@ -43,6 +44,7 @@ describe('Timeline events form', () => {
   const findSubmitButton = () => wrapper.findByText(timelineFormI18n.save);
   const findSubmitAndAddButton = () => wrapper.findByText(timelineFormI18n.saveAndAdd);
   const findCancelButton = () => wrapper.findByText(timelineFormI18n.cancel);
+  const findDeleteButton = () => wrapper.findByText(timelineFormI18n.delete);
   const findDatePicker = () => wrapper.findComponent(GlDatepicker);
   const findHourInput = () => wrapper.findByTestId('input-hours');
   const findMinuteInput = () => wrapper.findByTestId('input-minutes');
@@ -67,6 +69,9 @@ describe('Timeline events form', () => {
   const cancelForm = async () => {
     findCancelButton().vm.$emit('click');
     await waitForPromises();
+  };
+  const deleteForm = () => {
+    findDeleteButton().vm.$emit('click');
   };
 
   it('renders markdown-field component with correct list of toolbar items', () => {
@@ -163,6 +168,40 @@ describe('Timeline events form', () => {
 
       expect(findSubmitButton().props('disabled')).toBe(true);
       expect(findSubmitAndAddButton().props('disabled')).toBe(true);
+    });
+  });
+
+  describe('Delete button', () => {
+    it('does not show the delete button if showDelete prop is false', () => {
+      mountComponent({ mountMethod: mountExtended }, { showDelete: false });
+
+      expect(findDeleteButton().exists()).toBe(false);
+    });
+
+    it('shows the delete button if showDelete prop is true', () => {
+      mountComponent({ mountMethod: mountExtended }, { showDelete: true });
+
+      expect(findDeleteButton().exists()).toBe(true);
+    });
+
+    it('disables the delete button if isEventProcessed prop is true', () => {
+      mountComponent({ mountMethod: mountExtended }, { showDelete: true, isEventProcessed: true });
+
+      expect(findDeleteButton().props('disabled')).toBe(true);
+    });
+
+    it('does not disable the delete button if isEventProcessed prop is false', () => {
+      mountComponent({ mountMethod: mountExtended }, { showDelete: true, isEventProcessed: false });
+
+      expect(findDeleteButton().props('disabled')).toBe(false);
+    });
+
+    it('emits delete event on click', () => {
+      mountComponent({ mountMethod: mountExtended }, { showDelete: true, isEventProcessed: true });
+
+      deleteForm();
+
+      expect(wrapper.emitted('delete')).toEqual([[]]);
     });
   });
 });

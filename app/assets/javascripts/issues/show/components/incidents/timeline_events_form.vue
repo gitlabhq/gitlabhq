@@ -32,6 +32,11 @@ export default {
       required: false,
       default: false,
     },
+    showDelete: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isEventProcessed: {
       type: Boolean,
       required: true,
@@ -181,32 +186,42 @@ export default {
       </gl-form-group>
     </div>
     <gl-form-group class="gl-mb-0">
-      <gl-button
-        variant="confirm"
-        category="primary"
-        class="gl-mr-3"
-        data-testid="save-button"
-        :disabled="!isTimelineTextValid"
-        :loading="isEventProcessed"
-        @click="handleSave(false)"
-      >
-        {{ $options.i18n.save }}
-      </gl-button>
-      <gl-button
-        v-if="showSaveAndAdd"
-        variant="confirm"
-        category="secondary"
-        class="gl-mr-3 gl-ml-n2"
-        data-testid="save-and-add-button"
-        :disabled="!isTimelineTextValid"
-        :loading="isEventProcessed"
-        @click="handleSave(true)"
-      >
-        {{ $options.i18n.saveAndAdd }}
-      </gl-button>
-      <gl-button class="gl-ml-n2" :disabled="isEventProcessed" @click="$emit('cancel')">
-        {{ $options.i18n.cancel }}
-      </gl-button>
+      <div class="gl-display-flex">
+        <gl-button
+          variant="confirm"
+          category="primary"
+          class="gl-mr-3"
+          data-testid="save-button"
+          :disabled="!isTimelineTextValid"
+          :loading="isEventProcessed"
+          @click="handleSave(false)"
+        >
+          {{ $options.i18n.save }}
+        </gl-button>
+        <gl-button
+          v-if="showSaveAndAdd"
+          variant="confirm"
+          category="secondary"
+          class="gl-mr-3 gl-ml-n2"
+          data-testid="save-and-add-button"
+          :disabled="!isTimelineTextValid"
+          :loading="isEventProcessed"
+          @click="handleSave(true)"
+        >
+          {{ $options.i18n.saveAndAdd }}
+        </gl-button>
+        <gl-button class="gl-ml-n2" :disabled="isEventProcessed" @click="$emit('cancel')">
+          {{ $options.i18n.cancel }}
+        </gl-button>
+        <gl-button
+          v-if="showDelete"
+          class="gl-ml-auto btn-danger"
+          :disabled="isEventProcessed"
+          @click="$emit('delete')"
+        >
+          {{ $options.i18n.delete }}
+        </gl-button>
+      </div>
       <div class="timeline-event-bottom-border"></div>
     </gl-form-group>
   </form>

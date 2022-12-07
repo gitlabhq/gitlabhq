@@ -1,0 +1,183 @@
+@import 'mixins_and_variables_and_functions';
+
+.status-box {
+  padding: 0 $gl-btn-padding;
+  border-radius: $border-radius-default;
+  display: block;
+  float: left;
+  margin-right: $gl-padding-8;
+  color: var(--white, $white);
+  font-size: $gl-font-size;
+  line-height: $gl-line-height-24;
+}
+
+.issuable-warning-icon {
+  background-color: var(--orange-50, $orange-50);
+  border-radius: $border-radius-default;
+  color: var(--orange-600, $orange-600);
+  width: $issuable-warning-size;
+  height: $issuable-warning-size;
+  text-align: center;
+  margin-right: $issuable-warning-icon-margin;
+  line-height: $gl-line-height-24;
+  flex: 0 0 auto;
+}
+
+.limit-container-width {
+  .flash-container,
+  .detail-page-header,
+  .page-content-header,
+  .commit-box,
+  .info-well,
+  .commit-ci-menu,
+  .files-changed-inner,
+  .limited-header-width,
+  .limited-width-notes {
+    @include fixed-width-container;
+  }
+
+  .issuable-details {
+    .detail-page-description,
+    .mr-source-target,
+    .mr-state-widget,
+    .merge-manually {
+      @include fixed-width-container;
+    }
+  }
+
+  .merge-request-details {
+    .emoji-list-container {
+      @include fixed-width-container;
+    }
+  }
+}
+
+.issuable-details {
+  section {
+    .issuable-discussion {
+      margin-right: 1px;
+    }
+  }
+
+  .title-container {
+    display: flex;
+    align-items: flex-start;
+  }
+
+  .title {
+    padding: 0;
+    margin-bottom: $gl-padding;
+    border-bottom: 0;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    min-width: 0;
+    width: 100%;
+    text-align: initial;
+  }
+
+  .btn-edit {
+    margin-left: auto;
+  }
+}
+
+.detail-page-description {
+  padding: 16px 0;
+
+  small {
+    color: var(--gray-500, $gray-500);
+  }
+}
+
+.edited-text {
+  color: var(--gray-500, $gray-500);
+  display: block;
+  margin: 16px 0 0;
+  font-size: 85%;
+
+  .author-link {
+    color: var(--gray-500, $gray-500);
+  }
+}
+
+.user-item {
+  padding: 5px;
+  flex-basis: 20%;
+
+  .user-link {
+    display: inline-block;
+  }
+}
+
+.issuable-gutter-toggle {
+  @include media-breakpoint-down(sm) {
+    margin-left: $btn-side-margin;
+  }
+}
+
+.issuable-meta {
+  flex: 1;
+  display: inline-block;
+  font-size: 14px;
+  align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  .user-status-emoji {
+    margin-left: $gl-padding-4;
+    margin-right: 0;
+  }
+}
+
+.js-issuable-selector-wrap {
+  .js-issuable-selector {
+    width: 100%;
+  }
+
+  @include media-breakpoint-down(sm) {
+    margin-bottom: $gl-padding;
+  }
+}
+
+.add-issuable-form-input-wrapper {
+  &.focus {
+    border-color: var(--gray-700, $gray-700);
+    @include gl-focus;
+
+    input {
+      @include gl-shadow-none;
+    }
+  }
+
+  .gl-show-field-errors &.form-control:not(textarea) {
+    height: auto;
+  }
+}
+
+/*
+ * Following overrides are done to prevent
+ * legacy dropdown styles from influencing
+ * GitLab UI components used within GlDropdown
+ */
+.issuable-move-dropdown {
+  .b-dropdown-form {
+    @include gl-p-0;
+  }
+
+  .gl-search-box-by-type button.gl-clear-icon-button:hover {
+    @include gl-bg-transparent;
+  }
+
+  .issuable-move-button:not(.disabled):hover {
+    @include gl-text-white;
+  }
+}
+
+.suggestion-footer {
+  font-size: 12px;
+  line-height: 15px;
+
+  .avatar {
+    margin-top: -3px;
+    border: 0;
+  }
+}
