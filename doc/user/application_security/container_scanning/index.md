@@ -567,7 +567,7 @@ and you may be able to make occasional updates on your own.
 
 For more information, see [the specific steps on how to update an image with a pipeline](#automating-container-scanning-vulnerability-database-updates-with-a-pipeline).
 
-For details on saving and transporting Docker images as a file, see Docker's documentation on
+For details on saving and transporting Docker images as a file, see the Docker documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 

@@ -27,6 +27,8 @@ metadata:
     description: Operations related to the GitLab agent for Kubernetes
   - name: clusters
     description: Operations related to clusters
+  - name: composer_packages
+    description: Operations related to Composer packages
   - name: conan_packages
     description: Operations related to Conan packages
   - name: container_registry
@@ -91,6 +93,8 @@ metadata:
     description: Operations related to metadata of the GitLab instance
   - name: metrics_user_starred_dashboards
     description: Operations related to User-starred metrics dashboards
+  - name: npm_packages
+    description: Operations related to NPM packages
   - name: nuget_packages
     description: Operations related to Nuget packages
   - name: package_files

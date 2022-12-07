@@ -75,28 +75,6 @@ RSpec.describe Projects::ContainerRepository::DestroyService do
         end
       end
 
-      context 'when use_delete_tags_service_on_destroy_service feature flag is disabled' do
-        before do
-          stub_feature_flags(use_delete_tags_service_on_destroy_service: false)
-          stub_container_registry_tags(repository: :any, tags: [])
-        end
-
-        it 'deletes the repository' do
-          expect(repository).to receive(:delete_tags!).and_call_original
-          expect { subject.execute(repository) }.to change { ContainerRepository.count }.by(-1)
-        end
-
-        context 'when destroy fails' do
-          it 'set delete_status' do
-            allow(repository).to receive(:destroy).and_return(false)
-
-            subject.execute(repository)
-
-            expect(repository).to be_delete_failed
-          end
-        end
-      end
-
       def expect_cleanup_tags_service_with(container_repository:, return_status:, disable_timeout: true)
         delete_tags_service = instance_double(Projects::ContainerRepository::CleanupTagsService)
 

@@ -50,7 +50,15 @@ module API
           namespace '-/package/*package_name' do
             desc 'Get all tags for a given an NPM package' do
               detail 'This feature was introduced in GitLab 12.7'
-              success ::API::Entities::NpmPackageTag
+              success [
+                { code: 200, model: ::API::Entities::NpmPackageTag }
+              ]
+              failure [
+                { code: 400, message: 'Bad Request' },
+                { code: 403, message: 'Forbidden' },
+                { code: 404, message: 'Not Found' }
+              ]
+              tags %w[npm_packages]
             end
             get 'dist-tags', format: false, requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               package_name = params[:package_name]
@@ -74,6 +82,14 @@ module API
             namespace 'dist-tags/:tag', requirements: ::API::Helpers::Packages::Npm::NPM_ENDPOINT_REQUIREMENTS do
               desc 'Create or Update the given tag for the given NPM package and version' do
                 detail 'This feature was introduced in GitLab 12.7'
+                success code: 204
+                failure [
+                  { code: 400, message: 'Bad Request' },
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 403, message: 'Forbidden' },
+                  { code: 404, message: 'Not Found' }
+                ]
+                tags %w[npm_packages]
               end
               put format: false do
                 package_name = params[:package_name]
@@ -97,6 +113,14 @@ module API
 
               desc 'Deletes the given tag' do
                 detail 'This feature was introduced in GitLab 12.7'
+                success code: 204
+                failure [
+                  { code: 400, message: 'Bad Request' },
+                  { code: 401, message: 'Unauthorized' },
+                  { code: 403, message: 'Forbidden' },
+                  { code: 404, message: 'Not Found' }
+                ]
+                tags %w[npm_packages]
               end
               delete format: false do
                 package_name = params[:package_name]
@@ -122,6 +146,16 @@ module API
 
           desc 'NPM registry metadata endpoint' do
             detail 'This feature was introduced in GitLab 11.8'
+            success [
+              { code: 200, model: ::API::Entities::NpmPackage, message: 'Ok' },
+              { code: 302, message: 'Found (redirect)' }
+            ]
+            failure [
+              { code: 400, message: 'Bad Request' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            tags %w[npm_packages]
           end
           params do
             requires :package_name, type: String, desc: 'Package name'
@@ -151,6 +185,17 @@ module API
 
           desc 'NPM registry bulk advisory endpoint' do
             detail 'This feature was introduced in GitLab 15.6'
+            success [
+              { code: 200, message: 'Ok' },
+              { code: 307, message: 'Temporary Redirect' }
+            ]
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            is_array true
+            tags %w[npm_packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           post '-/npm/v1/security/advisories/bulk' do
@@ -159,6 +204,17 @@ module API
 
           desc 'NPM registry quick audit endpoint' do
             detail 'This feature was introduced in GitLab 15.6'
+            success [
+              { code: 200, message: 'Ok' },
+              { code: 307, message: 'Temporary Redirect' }
+            ]
+            failure [
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' }
+            ]
+            is_array true
+            tags %w[npm_packages]
           end
           route_setting :authentication, job_token_allowed: true, deploy_token_allowed: true
           post '-/npm/v1/security/audits/quick' do

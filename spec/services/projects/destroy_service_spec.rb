@@ -358,30 +358,6 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
           destroy_project(project, user)
         end
       end
-
-      context 'when use_delete_tags_service_on_destroy_service feature flag is disabled' do
-        before do
-          stub_feature_flags(use_delete_tags_service_on_destroy_service: false)
-        end
-
-        context 'when image repository deletion succeeds' do
-          it 'removes tags' do
-            expect_any_instance_of(ContainerRepository)
-              .to receive(:delete_tags!).and_return(true)
-
-            destroy_project(project, user)
-          end
-        end
-
-        context 'when image repository deletion fails' do
-          it 'raises an exception' do
-            expect_any_instance_of(ContainerRepository)
-              .to receive(:delete_tags!).and_raise(RuntimeError)
-
-            expect(destroy_project(project, user)).to be false
-          end
-        end
-      end
     end
 
     context 'when there are tags for legacy root repository' do

@@ -1,8 +1,0 @@
----
-name: use_delete_tags_service_on_destroy_service
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102846
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381445
-milestone: '15.7'
-type: development
-group: group::container registry
-default_enabled: false

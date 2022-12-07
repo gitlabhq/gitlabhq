@@ -61,32 +61,56 @@ module API
     end
 
     params do
-      requires :id, type: String, desc: 'The ID of a group'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a group'
     end
 
     resource :group, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      before do
+      after_validation do
         user_group
       end
 
-      desc 'Composer packages endpoint at group level'
+      desc 'Composer packages endpoint at group level' do
+        detail 'This feature was introduced in GitLab 13.1'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[composer_packages]
+      end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/packages', urgency: :low do
         presenter.root
       end
 
-      desc 'Composer packages endpoint at group level for packages list'
+      desc 'Composer packages endpoint at group level for packages list' do
+        detail 'This feature was introduced in GitLab 13.1'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[composer_packages]
+      end
       params do
-        requires :sha, type: String, desc: 'Shasum of current json'
+        requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
       end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/p/:sha', urgency: :low do
         presenter.provider
       end
 
-      desc 'Composer v2 packages p2 endpoint at group level for package versions metadata'
+      desc 'Composer v2 packages p2 endpoint at group level for package versions metadata' do
+        detail 'This feature was introduced in GitLab 13.1'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[composer_packages]
+      end
       params do
-        requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
+        requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
       end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/p2/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true, urgency: :low do
@@ -95,9 +119,17 @@ module API
         presenter.package_versions
       end
 
-      desc 'Composer packages endpoint at group level for package versions metadata'
+      desc 'Composer packages endpoint at group level for package versions metadata' do
+        detail 'This feature was introduced in GitLab 12.1'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 404, message: 'Not Found' }
+        ]
+        tags %w[composer_packages]
+      end
       params do
-        requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
+        requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
       end
       route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
       get ':id/-/packages/composer/*package_name', requirements: COMPOSER_ENDPOINT_REQUIREMENTS, file_path: true, urgency: :low do
@@ -109,17 +141,27 @@ module API
     end
 
     params do
-      requires :id, type: Integer, desc: 'The ID of a project'
+      requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of a project'
     end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-      desc 'Composer packages endpoint for registering packages'
       namespace ':id/packages/composer' do
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
 
+        desc 'Composer packages endpoint for registering packages' do
+          detail 'This feature was introduced in GitLab 13.1'
+          success code: 201
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[composer_packages]
+        end
         params do
-          optional :branch, type: String, desc: 'The name of the branch'
-          optional :tag, type: String, desc: 'The name of the tag'
+          optional :branch, type: String, desc: 'The name of the branch', documentation: { example: 'release' }
+          optional :tag, type: String, desc: 'The name of the tag', documentation: { example: 'v1.0.0' }
           exactly_one_of :tag, :branch
         end
         post urgency: :low do
@@ -142,9 +184,19 @@ module API
           created!
         end
 
+        desc 'Composer package endpoint to download a package archive' do
+          detail 'This feature was introduced in GitLab 13.1'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[composer_packages]
+        end
         params do
-          requires :sha, type: String, desc: 'Shasum of current json'
-          requires :package_name, type: String, file_path: true, desc: 'The Composer package name'
+          requires :sha, type: String, desc: 'Shasum of current json', documentation: { example: '673594f85a55fe3c0eb45df7bd2fa9d95a1601ab' }
+          requires :package_name, type: String, file_path: true, desc: 'The Composer package name', documentation: { example: 'my-composer-package' }
         end
         route_setting :authentication, job_token_allowed: true, basic_auth_personal_access_token: true, deploy_token_allowed: true
         get 'archives/*package_name', urgency: :default do

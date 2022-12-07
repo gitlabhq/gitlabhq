@@ -219,7 +219,7 @@ that download and run faster.
 
 Try to use custom Docker images with the software pre-installed. It's usually much
 faster to download a larger pre-configured image than to use a common image and install
-software on it each time. Docker's [Best practices for writing Dockerfiles](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+software on it each time. The Docker [Best practices for writing Dockerfiles article](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 has more information about building efficient Docker images.
 
 Methods to reduce Docker image size:

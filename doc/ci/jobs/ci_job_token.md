@@ -54,7 +54,7 @@ To make sure that this token doesn't leak, GitLab:
 To make sure that this token doesn't leak, you should also configure
 your [runners](../runners/index.md) to be secure. Avoid:
 
-- Using Docker's `privileged` mode if the machines are re-used.
+- Using Docker `privileged` mode if the machines are re-used.
 - Using the [`shell` executor](https://docs.gitlab.com/runner/executors/shell.html) when jobs
   run on the same machine.
 

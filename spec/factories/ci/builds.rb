@@ -25,6 +25,8 @@ FactoryBot.define do
 
     project { pipeline.project }
 
+    ref { pipeline.ref }
+
     trait :with_token do
       transient do
         generate_token { true }

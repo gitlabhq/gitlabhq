@@ -13,14 +13,9 @@ module Projects
         return false unless can?(current_user, :update_container_image, project)
 
         # Delete tags outside of the transaction to avoid hitting an idle-in-transaction timeout
-        if Feature.enabled?(:use_delete_tags_service_on_destroy_service)
-          unless delete_tags(container_repository, disable_timeout) &&
-              destroy_container_repository(container_repository)
-            container_repository.delete_failed!
-          end
-        else
-          container_repository.delete_tags!
-          container_repository.delete_failed! unless container_repository.destroy
+        unless delete_tags(container_repository, disable_timeout) &&
+            destroy_container_repository(container_repository)
+          container_repository.delete_failed!
         end
       end
 

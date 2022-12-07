@@ -2223,7 +2223,7 @@ end
   [Adding field with resolver on a Type causes "Can't determine the return type " error on a different Type](https://github.com/rmosolgo/graphql-ruby/issues/3974).
 
   Unfortunately, the errors generated don't really indicate what the problem is. For example,
-  remove the quotes from the `Rspec.descrbe` in
+  remove the quotes from the `Rspec.describe` in
   [ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb).
   Then run `rspec ee/spec/graphql/resolvers/compliance_management/merge_requests/compliance_violation_resolver_spec.rb`.
 

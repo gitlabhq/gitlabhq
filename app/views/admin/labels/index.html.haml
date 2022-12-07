@@ -27,6 +27,5 @@
         %p
           = s_('AdminLabels|They can be used to categorize issues and merge requests.')
         .gl-display-flex.gl-flex-wrap.gl-justify-content-center
-          = link_to new_admin_label_path, class: "btn gl-mb-3 btn-confirm btn-md gl-button gl-mx-2" do
-            %span.gl-button-text
-              = _('New label')
+          = render Pajamas::ButtonComponent.new(href: new_admin_label_path) do
+            = _('New label')

@@ -641,6 +641,10 @@ entry.
 - [Update Gitlab Shell to 14.13.0](gitlab-org/gitlab@691262f5c25c17efcfa50307862afa66d07366a4) ([merge request](gitlab-org/gitlab!101372))
 - [Migrate card to Pajamas](gitlab-org/gitlab@10577294ed64b13d7668be0c2041ec133e8f7f87) ([merge request](gitlab-org/gitlab!98861)) **GitLab Enterprise Edition**
 
+## 15.5.6 (2022-12-07)
+
+No changes.
+
 ## 15.5.5 (2022-11-30)
 
 ### Security (11 changes)

@@ -996,7 +996,7 @@ process by which external resources can be imported or temporarily accessed.
 These scanners are [periodically updated](../index.md#vulnerability-scanner-maintenance)
 with new definitions, and you may be able to make occasional updates on your own.
 
-For details on saving and transporting Docker images as a file, see Docker's documentation on
+For details on saving and transporting Docker images as a file, see the Docker documentation on
 [`docker save`](https://docs.docker.com/engine/reference/commandline/save/), [`docker load`](https://docs.docker.com/engine/reference/commandline/load/),
 [`docker export`](https://docs.docker.com/engine/reference/commandline/export/), and [`docker import`](https://docs.docker.com/engine/reference/commandline/import/).
 
