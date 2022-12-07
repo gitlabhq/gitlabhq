@@ -13,9 +13,8 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com, this feature is not available.
 This feature is not ready for production use.
 
-## Overview
-
-You can view the [product category](https://about.gitlab.com/direction/analytics/product-analytics/) page for more information about our direction. This page is a work in progress and will be updated as we add more features.
+This page is a work in progress, and we're updating the information as we add more features.
+For more information, visit the [Product Analytics group direction page](https://about.gitlab.com/direction/analytics/product-analytics/).
 
 ## Enable product analytics
 

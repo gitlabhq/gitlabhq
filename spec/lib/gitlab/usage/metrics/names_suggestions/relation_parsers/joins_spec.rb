@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::RelationParsers::Joins do
   describe '#accept' do
-    let(:collector) { Arel::Collectors::SubstituteBinds.new(ActiveRecord::Base.connection, Arel::Collectors::SQLString.new) }
+    let(:collector) do
+      Arel::Collectors::SubstituteBinds.new(ApplicationRecord.connection, Arel::Collectors::SQLString.new)
+    end
 
     context 'with join added via string' do
       it 'collects join parts' do
@@ -33,7 +35,10 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::RelationParsers::Joins 
 
         result = described_class.new(ApplicationRecord.connection).accept(arel)
 
-        expect(result).to match_array [{ source: "joins", constraints: "records.id = joins.records_id" }, { source: "second_level_joins", constraints: "joins.id = second_level_joins.joins_id" }]
+        expect(result).to match_array [
+          { source: "joins", constraints: "records.id = joins.records_id" },
+          { source: "second_level_joins", constraints: "joins.id = second_level_joins.joins_id" }
+        ]
       end
     end
   end

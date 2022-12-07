@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByClick } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSearchBoxByClick } from '@gitlab/ui';
 import { mergeUrlParams, visitUrl, getParameterValues } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 
@@ -10,8 +10,7 @@ export default {
     searchPlaceholder: s__('Branches|Filter by branch name'),
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlSearchBoxByClick,
   },
   inject: ['projectBranchesFilteredPath', 'sortOptions', 'mode'],
@@ -28,6 +27,9 @@ export default {
     selectedSortMethodName() {
       return this.sortOptions[this.selectedKey];
     },
+    listboxItems() {
+      return Object.entries(this.sortOptions).map(([value, text]) => ({ value, text }));
+    },
   },
   created() {
     const sortValue = getParameterValues('sort');
@@ -42,9 +44,6 @@ export default {
     }
   },
   methods: {
-    isSortMethodSelected(sortKey) {
-      return sortKey === this.selectedKey;
-    },
     visitUrlFromOption(sortKey) {
       this.selectedKey = sortKey;
       const urlParams = {};
@@ -70,20 +69,15 @@ export default {
       data-testid="branch-search"
       @submit="visitUrlFromOption(selectedKey)"
     />
-    <gl-dropdown
+
+    <gl-collapsible-listbox
       v-if="shouldShowDropdown"
-      :text="selectedSortMethodName"
+      v-model="selectedKey"
+      :items="listboxItems"
+      :toggle-text="selectedSortMethodName"
       class="gl-mr-3"
       data-testid="branches-dropdown"
-    >
-      <gl-dropdown-item
-        v-for="(value, key) in sortOptions"
-        :key="key"
-        :is-checked="isSortMethodSelected(key)"
-        is-check-item
-        @click="visitUrlFromOption(key)"
-        >{{ value }}</gl-dropdown-item
-      >
-    </gl-dropdown>
+      @select="visitUrlFromOption(selectedKey)"
+    />
   </div>
 </template>

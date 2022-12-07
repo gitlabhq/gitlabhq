@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Mapper do
+RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
   include StubRequests
+  include RepoHelpers
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { project.owner }
@@ -12,13 +13,13 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
   let(:remote_url) { 'https://gitlab.com/gitlab-org/gitlab-foss/blob/1234/.gitlab-ci-1.yml' }
   let(:template_file) { 'Auto-DevOps.gitlab-ci.yml' }
   let(:variables) { project.predefined_variables }
-  let(:context_params) { { project: project, sha: '123456', user: user, variables: variables } }
+  let(:context_params) { { project: project, sha: project.commit.sha, user: user, variables: variables } }
   let(:context) { Gitlab::Ci::Config::External::Context.new(**context_params) }
 
   let(:file_content) do
-    <<~HEREDOC
+    <<~YAML
     image: 'image:1.0'
-    HEREDOC
+    YAML
   end
 
   subject(:mapper) { described_class.new(values, context) }
@@ -379,17 +380,28 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper do
     end
 
     context 'when local file path has wildcard' do
-      let(:project) { create(:project, :repository) }
+      let_it_be(:project) { create(:project, :repository) }
 
       let(:values) do
         { include: 'myfolder/*.yml' }
       end
 
-      before do
-        allow_next_instance_of(Repository) do |repository|
-          allow(repository).to receive(:search_files_by_wildcard_path).with('myfolder/*.yml', '123456') do
-            ['myfolder/file1.yml', 'myfolder/file2.yml']
-          end
+      let(:project_files) do
+        {
+          'myfolder/file1.yml' => <<~YAML,
+            my_build:
+              script: echo Hello World
+          YAML
+          'myfolder/file2.yml' => <<~YAML
+            my_test:
+              script: echo Hello World
+          YAML
+        }
+      end
+
+      around do |example|
+        create_and_delete_files(project, project_files) do
+          example.run
         end
       end
 

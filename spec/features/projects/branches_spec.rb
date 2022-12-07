@@ -143,7 +143,7 @@ RSpec.describe 'Branches', feature_category: :projects do
 
         click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
-          find('p', text: 'Name').click
+          first('span', text: 'Name').click
         end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :name))
@@ -154,7 +154,7 @@ RSpec.describe 'Branches', feature_category: :projects do
 
         click_button "Updated date" # Open sorting dropdown
         within '[data-testid="branches-dropdown"]' do
-          find('p', text: 'Oldest updated').click
+          first('span', text: 'Oldest updated').click
         end
 
         expect(page).to have_content(sorted_branches(repository, count: 20, sort_by: :updated_asc))

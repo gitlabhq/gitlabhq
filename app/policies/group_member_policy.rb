@@ -6,7 +6,7 @@ class GroupMemberPolicy < BasePolicy
   delegate :group
 
   with_scope :subject
-  condition(:last_owner) { @subject.group.member_last_owner?(@subject) || @subject.group.member_last_blocked_owner?(@subject) }
+  condition(:last_owner) { @subject.last_owner_of_the_group? }
   condition(:project_bot) { @subject.user&.project_bot? && @subject.group.member?(@subject.user) }
 
   desc "Membership is users' own"

@@ -1,0 +1,8 @@
+---
+name: validate_allowed_cross_slot_commands
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105302
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384909
+milestone: '15.7'
+type: development
+group: group::scalability
+default_enabled: false

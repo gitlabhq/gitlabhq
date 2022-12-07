@@ -218,7 +218,7 @@ module Backup
 
       build_backup_information
 
-      definitions.keys.each do |task_name|
+      definitions.each_key do |task_name|
         run_create_task(task_name)
       end
 
@@ -239,7 +239,7 @@ module Backup
       read_backup_information
       verify_backup_version
 
-      definitions.keys.each do |task_name|
+      definitions.each_key do |task_name|
         if !skipped?(task_name) && enabled_task?(task_name)
           run_restore_task(task_name)
         end
@@ -263,7 +263,7 @@ module Backup
 
     def write_backup_information
       # Make sure there is a connection
-      ::Gitlab::Database.database_base_models.values.each do |base_model|
+      ::Gitlab::Database.database_base_models.each_value do |base_model|
         base_model.connection.reconnect!
       end
 

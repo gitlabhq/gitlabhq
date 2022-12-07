@@ -4699,7 +4699,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/usage/metrics/instrumentations/redis_hll_metric_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/name_suggestion_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/names_suggestions/generator_spec.rb'
-    - 'spec/lib/gitlab/usage/metrics/names_suggestions/relation_parsers/joins_spec.rb'
     - 'spec/lib/gitlab/usage/metrics/query_spec.rb'
     - 'spec/lib/gitlab/usage/service_ping/payload_keys_processor_spec.rb'
     - 'spec/lib/gitlab/usage/service_ping_report_spec.rb'

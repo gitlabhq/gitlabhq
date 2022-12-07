@@ -54,6 +54,24 @@ RSpec.describe ProjectMemberPresenter do
     end
   end
 
+  describe '#last_owner?' do
+    context 'when member is the holder of the personal namespace' do
+      before do
+        allow(project_member).to receive(:holder_of_the_personal_namespace?).and_return(true)
+      end
+
+      it { expect(presenter.last_owner?).to eq(true) }
+    end
+
+    context 'when member is not the holder of the personal namespace' do
+      before do
+        allow(project_member).to receive(:holder_of_the_personal_namespace?).and_return(false)
+      end
+
+      it { expect(presenter.last_owner?).to eq(false) }
+    end
+  end
+
   describe '#can_update?' do
     context 'when user is NOT attempting to update an Owner' do
       before do

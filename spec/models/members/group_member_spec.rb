@@ -120,6 +120,40 @@ RSpec.describe GroupMember do
     end
   end
 
+  describe '#last_owner_of_the_group?' do
+    context 'when member is an owner' do
+      let_it_be(:group_member) { build(:group_member, :owner) }
+
+      using RSpec::Parameterized::TableSyntax
+
+      where(:member_last_owner?, :member_last_blocked_owner?, :expected) do
+        false | false | false
+        true  | false | true
+        false | true  | true
+        true  | true  | true
+      end
+
+      with_them do
+        it "returns expected" do
+          allow(group_member.group).to receive(:member_last_owner?).with(group_member).and_return(member_last_owner?)
+          allow(group_member.group).to receive(:member_last_blocked_owner?)
+            .with(group_member)
+            .and_return(member_last_blocked_owner?)
+
+          expect(group_member.last_owner_of_the_group?).to be(expected)
+        end
+      end
+    end
+
+    context 'when member is not an owner' do
+      let_it_be(:group_member) { build(:group_member, :guest) }
+
+      subject { group_member.last_owner_of_the_group? }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   context 'access levels' do
     context 'with parent group' do
       it_behaves_like 'inherited access level as a member of entity' do

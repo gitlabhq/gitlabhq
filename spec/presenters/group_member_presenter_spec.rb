@@ -54,6 +54,24 @@ RSpec.describe GroupMemberPresenter do
     end
   end
 
+  describe '#last_owner?' do
+    context 'when member is the last owner of the group' do
+      before do
+        allow(group_member).to receive(:last_owner_of_the_group?).and_return(true)
+      end
+
+      it { expect(presenter.last_owner?).to eq(true) }
+    end
+
+    context 'when member is not the last owner of the group' do
+      before do
+        allow(group_member).to receive(:last_owner_of_the_group?).and_return(false)
+      end
+
+      it { expect(presenter.last_owner?).to eq(false) }
+    end
+  end
+
   describe '#can_update?' do
     context 'when user can update_group_member' do
       before do

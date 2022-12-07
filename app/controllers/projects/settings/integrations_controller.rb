@@ -79,7 +79,7 @@ module Projects
           return {
             error: true,
             message: _('Validations failed.'),
-            service_response: integration.errors.full_messages.join(','),
+            service_response: integration.errors.full_messages.join(', '),
             test_failed: false
           }
         end
@@ -90,7 +90,7 @@ module Projects
           return {
             error: true,
             message: s_('Integrations|Connection failed. Check your integration settings.'),
-            service_response: result[:message].to_s,
+            service_response: result[:result].to_s,
             test_failed: true
           }
         end

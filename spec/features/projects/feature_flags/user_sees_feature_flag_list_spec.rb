@@ -42,7 +42,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
         expect_status_toggle_button_not_to_be_checked
 
         within_feature_flag_scopes do
-          expect(page.find('[data-testid="strategy-badge"]')).to have_content('All Users: All Environments, review/*')
+          expect(page.find('[data-testid="strategy-label"]')).to have_content('All Users: All Environments, review/*')
         end
       end
     end
@@ -66,7 +66,7 @@ RSpec.describe 'User sees feature flag list', :js, feature_category: :feature_fl
         expect_status_toggle_button_to_be_checked
 
         within_feature_flag_scopes do
-          expect(page.find('[data-testid="strategy-badge"]')).to have_content('All Users: production')
+          expect(page.find('[data-testid="strategy-label"]')).to have_content('All Users: production')
         end
       end
     end

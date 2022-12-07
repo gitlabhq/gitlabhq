@@ -4,6 +4,8 @@ import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { labelForStrategy } from '../utils';
 
+import StrategyLabel from './strategy_label.vue';
+
 export default {
   i18n: {
     deleteLabel: __('Delete'),
@@ -15,6 +17,7 @@ export default {
     GlButton,
     GlModal,
     GlToggle,
+    StrategyLabel,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -166,14 +169,13 @@ export default {
           <div
             class="table-mobile-content d-flex flex-wrap justify-content-end justify-content-md-start js-feature-flag-environments"
           >
-            <gl-badge
+            <strategy-label
               v-for="strategy in featureFlag.strategies"
               :key="strategy.id"
-              data-testid="strategy-badge"
-              variant="info"
-              class="gl-mr-3 gl-mt-2 gl-white-space-normal gl-text-left gl-px-5"
-              >{{ strategyBadgeText(strategy) }}</gl-badge
-            >
+              data-testid="strategy-label"
+              class="w-100 gl-mr-3 gl-mt-2 gl-white-space-normal gl-text-left"
+              v-bind="strategyBadgeText(strategy)"
+            />
           </div>
         </div>
 

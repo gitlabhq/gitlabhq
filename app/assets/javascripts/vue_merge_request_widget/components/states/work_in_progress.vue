@@ -94,6 +94,7 @@ export default {
               errors: [],
               mergeRequest: {
                 __typename: 'MergeRequest',
+                id: this.mr.issuableId,
                 mergeableDiscussionsState: true,
                 title: this.mr.title,
                 draft: false,
@@ -111,7 +112,10 @@ export default {
           }) => {
             toast(__('Marked as ready. Merging is now allowed.'));
             $('.merge-request .detail-page-description .title').text(title);
-            eventHub.$emit('MRWidgetUpdateRequested');
+
+            if (!window.gon?.features?.realtimeMrStatusChange) {
+              eventHub.$emit('MRWidgetUpdateRequested');
+            }
           },
         )
         .catch(() =>

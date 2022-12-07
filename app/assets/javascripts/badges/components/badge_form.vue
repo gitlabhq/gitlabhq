@@ -6,6 +6,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { createAlert, VARIANT_INFO } from '~/flash';
 import { s__, sprintf } from '~/locale';
 import createEmptyBadge from '../empty_badge';
+import { PLACEHOLDERS } from '../constants';
 import Badge from './badge.vue';
 
 const badgePreviewDelayInMilliseconds = 1500;
@@ -50,9 +51,9 @@ export default {
       return this.badgeInAddForm;
     },
     helpText() {
-      const placeholders = ['project_path', 'project_id', 'default_branch', 'commit_sha']
-        .map((placeholder) => `<code>%{${placeholder}}</code>`)
-        .join(', ');
+      const placeholders = PLACEHOLDERS.map((placeholder) => `<code>%{${placeholder}}</code>`).join(
+        ', ',
+      );
       return sprintf(
         s__('Badges|Supported %{docsLinkStart}variables%{docsLinkEnd}: %{placeholders}'),
         {

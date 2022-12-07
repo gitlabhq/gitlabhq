@@ -44,10 +44,6 @@ This section is for links to information elsewhere in the GitLab documentation.
 
 - Consuming PostgreSQL from [within CI runners](../../ci/services/postgres.md).
 
-- [Using Slony to update PostgreSQL](../../update/upgrading_postgresql_using_slony.md).
-  - Uses replication to handle PostgreSQL upgrades if the schemas are the same.
-  - Reduces downtime to a short window for switching to the newer version.
-
 - Managing Omnibus PostgreSQL versions [from the development docs](https://docs.gitlab.com/omnibus/development/managing-postgresql-versions.html).
 
 - [PostgreSQL scaling](../postgresql/replication_and_failover.md)

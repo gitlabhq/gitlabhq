@@ -96,6 +96,10 @@ class ProjectMember < Member
     { project: project }
   end
 
+  def holder_of_the_personal_namespace?
+    project.personal_namespace_holder?(user)
+  end
+
   private
 
   override :access_level_inclusion

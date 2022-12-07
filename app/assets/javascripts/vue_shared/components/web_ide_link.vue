@@ -1,9 +1,11 @@
 <script>
-import { GlModal, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlModal, GlSprintf, GlLink, GlPopover } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const KEY_EDIT = 'edit';
 const KEY_WEB_IDE = 'webide';
@@ -32,9 +34,12 @@ export default {
     GlModal,
     GlSprintf,
     GlLink,
+    GlPopover,
     ConfirmForkModal,
+    UserCalloutDismisser,
   },
   i18n,
+  mixins: [glFeatureFlagsMixin()],
   props: {
     isFork: {
       type: Boolean,
@@ -296,6 +301,9 @@ export default {
         },
       };
     },
+    displayVscodeWebIdeCallout() {
+      return this.glFeatures.vscodeWebIde && !this.showEditButton;
+    },
   },
   methods: {
     select(key) {
@@ -305,40 +313,66 @@ export default {
       this[dataKey] = true;
     },
   },
+  webIdeButtonId: 'web-ide-link',
 };
 </script>
 
 <template>
-  <div class="gl-sm-ml-3">
-    <actions-button
-      :actions="actions"
-      :selected-key="selection"
-      :variant="isBlob ? 'confirm' : 'default'"
-      :category="isBlob ? 'primary' : 'secondary'"
-      @select="select"
-    />
-    <local-storage-sync
-      storage-key="gl-web-ide-button-selected"
-      :value="selection"
-      as-string
-      @input="select"
-    />
-    <gl-modal
-      v-if="computedShowGitpodButton && !gitpodEnabled"
-      v-model="showEnableGitpodModal"
-      v-bind="enableGitpodModalProps"
-    >
-      <gl-sprintf :message="$options.i18n.modal.content">
-        <template #link="{ content }">
-          <gl-link :href="userPreferencesGitpodPath">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-modal>
-    <confirm-fork-modal
-      v-if="showWebIdeButton || showEditButton"
-      v-model="showForkModal"
-      :modal-id="forkModalId"
-      :fork-path="forkPath"
-    />
-  </div>
+  <user-callout-dismisser :skip-query="!displayVscodeWebIdeCallout" feature-name="vscode_web_ide">
+    <template #default="{ dismiss, shouldShowCallout }">
+      <div class="gl-sm-ml-3">
+        <actions-button
+          :id="$options.webIdeButtonId"
+          :actions="actions"
+          :selected-key="selection"
+          :variant="isBlob ? 'confirm' : 'default'"
+          :category="isBlob ? 'primary' : 'secondary'"
+          :show-action-tooltip="!displayVscodeWebIdeCallout || !shouldShowCallout"
+          @select="select"
+          @actionClicked="dismiss"
+        />
+        <local-storage-sync
+          storage-key="gl-web-ide-button-selected"
+          :value="selection"
+          as-string
+          @input="select"
+        />
+        <gl-modal
+          v-if="computedShowGitpodButton && !gitpodEnabled"
+          v-model="showEnableGitpodModal"
+          v-bind="enableGitpodModalProps"
+        >
+          <gl-sprintf :message="$options.i18n.modal.content">
+            <template #link="{ content }">
+              <gl-link :href="userPreferencesGitpodPath">{{ content }}</gl-link>
+            </template>
+          </gl-sprintf>
+        </gl-modal>
+        <confirm-fork-modal
+          v-if="showWebIdeButton || showEditButton"
+          v-model="showForkModal"
+          :modal-id="forkModalId"
+          :fork-path="forkPath"
+        />
+        <gl-popover
+          v-if="displayVscodeWebIdeCallout"
+          :target="$options.webIdeButtonId"
+          :show="shouldShowCallout"
+          show-close-button
+          triggers="manual"
+          @close-button-clicked="dismiss"
+        >
+          <template #title>
+            {{ __('Try out the new Web IDE') }}
+          </template>
+
+          {{
+            __(
+              'VS Code in your browser. View code and make changes from the same UI as in your local IDE 🎉',
+            )
+          }}
+        </gl-popover>
+      </div>
+    </template>
+  </user-callout-dismisser>
 </template>

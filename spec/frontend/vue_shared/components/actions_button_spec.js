@@ -1,6 +1,5 @@
-import { GlDropdown, GlDropdownDivider, GlButton } from '@gitlab/ui';
+import { GlDropdown, GlDropdownDivider, GlButton, GlTooltip } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 
 const TEST_ACTION = {
@@ -32,7 +31,6 @@ describe('Actions button component', () => {
   function createComponent(props) {
     wrapper = shallowMount(ActionsButton, {
       propsData: { ...props },
-      directives: { GlTooltip: createMockDirective() },
     });
   }
 
@@ -40,15 +38,9 @@ describe('Actions button component', () => {
     wrapper.destroy();
   });
 
-  const getTooltip = (child) => {
-    const directiveBinding = getBinding(child.element, 'gl-tooltip');
-
-    return directiveBinding.value;
-  };
   const findButton = () => wrapper.findComponent(GlButton);
-  const findButtonTooltip = () => getTooltip(findButton());
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findDropdownTooltip = () => getTooltip(findDropdown());
   const parseDropdownItems = () =>
     findDropdown()
       .findAll('gl-dropdown-item-stub,gl-dropdown-divider-stub')
@@ -88,8 +80,8 @@ describe('Actions button component', () => {
       expect(findButton().text()).toBe(TEST_ACTION.text);
     });
 
-    it('should have tooltip', () => {
-      expect(findButtonTooltip()).toBe(TEST_ACTION.tooltip);
+    it('should not have tooltip', () => {
+      expect(findTooltip().exists()).toBe(false);
     });
 
     it('should have attrs', () => {
@@ -105,7 +97,18 @@ describe('Actions button component', () => {
     it('should have tooltip', () => {
       createComponent({ actions: [{ ...TEST_ACTION, tooltip: TEST_TOOLTIP }] });
 
-      expect(findButtonTooltip()).toBe(TEST_TOOLTIP);
+      expect(findTooltip().text()).toBe(TEST_TOOLTIP);
+    });
+  });
+
+  describe('when showActionTooltip is false', () => {
+    it('should not have tooltip', () => {
+      createComponent({
+        actions: [{ ...TEST_ACTION, tooltip: TEST_TOOLTIP }],
+        showActionTooltip: false,
+      });
+
+      expect(findTooltip().exists()).toBe(false);
     });
   });
 
@@ -174,8 +177,8 @@ describe('Actions button component', () => {
       expect(wrapper.emitted('select')).toEqual([[TEST_ACTION_2.key]]);
     });
 
-    it('should have tooltip value', () => {
-      expect(findDropdownTooltip()).toBe(TEST_ACTION.tooltip);
+    it('should not have tooltip value', () => {
+      expect(findTooltip().exists()).toBe(false);
     });
   });
 
@@ -199,7 +202,7 @@ describe('Actions button component', () => {
     });
 
     it('should have tooltip value', () => {
-      expect(findDropdownTooltip()).toBe(TEST_ACTION_2.tooltip);
+      expect(findTooltip().text()).toBe(TEST_ACTION_2.tooltip);
     });
   });
 });

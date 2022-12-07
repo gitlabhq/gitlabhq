@@ -14,7 +14,13 @@ export default function mountBranchRules(el) {
     defaultClient: createDefaultClient(),
   });
 
-  const { projectPath, protectedBranchesPath, approvalRulesPath, statusChecksPath } = el.dataset;
+  const {
+    projectPath,
+    protectedBranchesPath,
+    approvalRulesPath,
+    statusChecksPath,
+    branchesPath,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -24,6 +30,7 @@ export default function mountBranchRules(el) {
       protectedBranchesPath,
       approvalRulesPath,
       statusChecksPath,
+      branchesPath,
     },
     render(h) {
       return h(View);

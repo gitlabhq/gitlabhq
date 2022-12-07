@@ -20,6 +20,8 @@ import simplePoll from '~/lib/utils/simple_poll';
 import { __, s__, n__ } from '~/locale';
 import SmartInterval from '~/smart_interval';
 import { helpPagePath } from '~/helpers/help_page_helper';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 import {
   AUTO_MERGE_STRATEGIES,
   WARNING,
@@ -86,6 +88,31 @@ export default {
         if (this.state.mergeTrainsCount !== null && this.state.mergeTrainsCount !== undefined) {
           this.initPolling();
         }
+      },
+      subscribeToMore: {
+        document() {
+          return readyToMergeSubscription;
+        },
+        skip() {
+          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+        },
+        variables() {
+          return {
+            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+          };
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { mergeRequestMergeStatusUpdated },
+            },
+          },
+        ) {
+          if (mergeRequestMergeStatusUpdated) {
+            this.state = mergeRequestMergeStatusUpdated;
+          }
+        },
       },
     },
   },

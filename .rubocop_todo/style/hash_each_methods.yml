@@ -52,7 +52,6 @@ Style/HashEachMethods:
     - 'ee/spec/helpers/application_helper_spec.rb'
     - 'ee/spec/lib/gitlab/geo_spec.rb'
     - 'lib/api/todos.rb'
-    - 'lib/backup/manager.rb'
     - 'lib/gitlab/changelog/release.rb'
     - 'lib/gitlab/ci/parsers.rb'
     - 'lib/gitlab/ci/reports/test_suite.rb'

@@ -94,7 +94,11 @@ MergeRequest.prototype.initMRBtnListeners = function () {
           .put(draftToggle.href, null, { params: { format: 'json' } })
           .then(({ data }) => {
             draftToggle.removeAttribute('disabled');
-            eventHub.$emit('MRWidgetUpdateRequested');
+
+            if (!window.gon?.features?.realtimeMrStatusChange) {
+              eventHub.$emit('MRWidgetUpdateRequested');
+            }
+
             MergeRequest.toggleDraftStatus(data.title, wipEvent === 'ready');
           })
           .catch(() => {

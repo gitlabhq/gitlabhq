@@ -109,6 +109,8 @@ export const accessLevelsMockResponse = [
   },
 ];
 
+export const matchingBranchesCount = 3;
+
 export const branchProtectionsMockResponse = {
   data: {
     project: {
@@ -141,6 +143,7 @@ export const branchProtectionsMockResponse = {
               __typename: 'ExternalStatusCheckConnection',
               nodes: statusChecksRulesMock,
             },
+            matchingBranchesCount,
           },
           {
             __typename: 'BranchRule',
@@ -166,6 +169,7 @@ export const branchProtectionsMockResponse = {
               __typename: 'ExternalStatusCheckConnection',
               nodes: [],
             },
+            matchingBranchesCount,
           },
         ],
       },

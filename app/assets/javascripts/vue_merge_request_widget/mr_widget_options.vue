@@ -15,6 +15,7 @@ import notify from '~/lib/utils/notify';
 import { sprintf, s__, __ } from '~/locale';
 import Project from '~/pages/projects/project';
 import SmartInterval from '~/smart_interval';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { setFaviconOverlay } from '../lib/utils/favicon';
 import Loading from './components/loading.vue';
 import MrWidgetAlertMessage from './components/mr_widget_alert_message.vue';
@@ -46,11 +47,13 @@ import { STATE_MACHINE, stateToComponentMap } from './constants';
 import eventHub from './event_hub';
 import mergeRequestQueryVariablesMixin from './mixins/merge_request_query_variables';
 import getStateQuery from './queries/get_state.query.graphql';
+import getStateSubscription from './queries/get_state.subscription.graphql';
 import terraformExtension from './extensions/terraform';
 import accessibilityExtension from './extensions/accessibility';
 import codeQualityExtension from './extensions/code_quality';
 import testReportExtension from './extensions/test_report';
 import ReportWidgetContainer from './components/report_widget_container.vue';
+import MrWidgetReadyToMerge from './components/states/new_ready_to_merge.vue';
 
 export default {
   // False positive i18n lint: https://gitlab.com/gitlab-org/frontend/eslint-plugin-i18n/issues/25
@@ -76,7 +79,7 @@ export default {
     MrWidgetNothingToMerge: NothingToMergeState,
     MrWidgetNotAllowed: NotAllowedState,
     MrWidgetMissingBranch: MissingBranchState,
-    MrWidgetReadyToMerge: () => import('./components/states/new_ready_to_merge.vue'),
+    MrWidgetReadyToMerge,
     ShaMismatch,
     MrWidgetChecking: CheckingState,
     MrWidgetUnresolvedDiscussions: UnresolvedDiscussionsState,
@@ -108,6 +111,31 @@ export default {
           this.loading = false;
         }
       },
+      subscribeToMore: {
+        document() {
+          return getStateSubscription;
+        },
+        skip() {
+          return !this.mr?.id || this.loading || !window.gon?.features?.realtimeMrStatusChange;
+        },
+        variables() {
+          return {
+            issuableId: convertToGraphQLId('MergeRequest', this.mr?.id),
+          };
+        },
+        updateQuery(
+          _,
+          {
+            subscriptionData: {
+              data: { mergeRequestMergeStatusUpdated },
+            },
+          },
+        ) {
+          if (mergeRequestMergeStatusUpdated) {
+            this.mr.setGraphqlSubscriptionData(mergeRequestMergeStatusUpdated);
+          }
+        },
+      },
     },
   },
   mixins: [mergeRequestQueryVariablesMixin],
@@ -128,6 +156,7 @@ export default {
       machineState: store?.machineValue || STATE_MACHINE.definition.initial,
       loading: true,
       recomputeComponentName: 0,
+      issuableId: false,
     };
   },
   computed: {

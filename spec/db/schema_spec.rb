@@ -6,7 +6,6 @@ require Rails.root.join('ee', 'spec', 'db', 'schema_support') if Gitlab.ee?
 RSpec.describe 'Database schema' do
   prepend_mod_with('DB::SchemaSupport')
 
-  let(:connection) { ActiveRecord::Base.connection }
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
@@ -121,56 +120,62 @@ RSpec.describe 'Database schema' do
   }.with_indifferent_access.freeze
 
   context 'for table' do
-    (ActiveRecord::Base.connection.tables - TABLE_PARTITIONS).sort.each do |table|
-      describe table do
-        let(:indexes) { connection.indexes(table) }
-        let(:columns) { connection.columns(table) }
-        let(:foreign_keys) { connection.foreign_keys(table) }
-        let(:loose_foreign_keys) { Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table).fetch(table, []) }
-        let(:all_foreign_keys) { foreign_keys + loose_foreign_keys }
-        # take the first column in case we're using a composite primary key
-        let(:primary_key_column) { Array(connection.primary_key(table)).first }
+    Gitlab::Database::EachDatabase.each_database_connection do |connection, _|
+      schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
+      (connection.tables - TABLE_PARTITIONS).sort.each do |table|
+        table_schema = Gitlab::Database::GitlabSchema.table_schema(table)
+        next unless schemas_for_connection.include?(table_schema)
 
-        context 'all foreign keys' do
-          # for index to be effective, the FK constraint has to be at first place
-          it 'are indexed' do
-            first_indexed_column = indexes.filter_map do |index|
-              columns = index.columns
+        describe table do
+          let(:indexes) { connection.indexes(table) }
+          let(:columns) { connection.columns(table) }
+          let(:foreign_keys) { connection.foreign_keys(table) }
+          let(:loose_foreign_keys) { Gitlab::Database::LooseForeignKeys.definitions.group_by(&:from_table).fetch(table, []) }
+          let(:all_foreign_keys) { foreign_keys + loose_foreign_keys }
+          # take the first column in case we're using a composite primary key
+          let(:primary_key_column) { Array(connection.primary_key(table)).first }
 
-              # In cases of complex composite indexes, a string is returned eg:
-              # "lower((extern_uid)::text), group_id"
-              columns = columns.split(',') if columns.is_a?(String)
-              column = columns.first.chomp
+          context 'all foreign keys' do
+            # for index to be effective, the FK constraint has to be at first place
+            it 'are indexed' do
+              first_indexed_column = indexes.filter_map do |index|
+                columns = index.columns
 
-              # A partial index is not suitable for a foreign key column, unless
-              # the only condition is for the presence of the foreign key itself
-              column if index.where.nil? || index.where == "(#{column} IS NOT NULL)"
+                # In cases of complex composite indexes, a string is returned eg:
+                # "lower((extern_uid)::text), group_id"
+                columns = columns.split(',') if columns.is_a?(String)
+                column = columns.first.chomp
+
+                # A partial index is not suitable for a foreign key column, unless
+                # the only condition is for the presence of the foreign key itself
+                column if index.where.nil? || index.where == "(#{column} IS NOT NULL)"
+              end
+              foreign_keys_columns = all_foreign_keys.map(&:column)
+              required_indexed_columns = foreign_keys_columns - ignored_index_columns(table)
+
+              # Add the primary key column to the list of indexed columns because
+              # postgres and mysql both automatically create an index on the primary
+              # key. Also, the rails connection.indexes() method does not return
+              # automatically generated indexes (like the primary key index).
+              first_indexed_column.push(primary_key_column)
+
+              expect(first_indexed_column.uniq).to include(*required_indexed_columns)
             end
-            foreign_keys_columns = all_foreign_keys.map(&:column)
-            required_indexed_columns = foreign_keys_columns - ignored_index_columns(table)
-
-            # Add the primary key column to the list of indexed columns because
-            # postgres and mysql both automatically create an index on the primary
-            # key. Also, the rails connection.indexes() method does not return
-            # automatically generated indexes (like the primary key index).
-            first_indexed_column.push(primary_key_column)
-
-            expect(first_indexed_column.uniq).to include(*required_indexed_columns)
-          end
-        end
-
-        context 'columns ending with _id' do
-          let(:column_names) { columns.map(&:name) }
-          let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
-          let(:foreign_keys_columns) { all_foreign_keys.map(&:column).uniq } # we can have FK and loose FK present at the same time
-          let(:ignored_columns) { ignored_fk_columns(table) }
-
-          it 'do have the foreign keys' do
-            expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)
           end
 
-          it 'and having foreign key are not in the ignore list' do
-            expect(ignored_columns).to match_array(ignored_columns - foreign_keys)
+          context 'columns ending with _id' do
+            let(:column_names) { columns.map(&:name) }
+            let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
+            let(:foreign_keys_columns) { all_foreign_keys.map(&:column).uniq } # we can have FK and loose FK present at the same time
+            let(:ignored_columns) { ignored_fk_columns(table) }
+
+            it 'do have the foreign keys' do
+              expect(column_names_with_id - ignored_columns).to match_array(foreign_keys_columns)
+            end
+
+            it 'and having foreign key are not in the ignore list' do
+              expect(ignored_columns).to match_array(ignored_columns - foreign_keys)
+            end
           end
         end
       end
@@ -288,13 +293,16 @@ RSpec.describe 'Database schema' do
 
   context 'primary keys' do
     it 'expects every table to have a primary key defined' do
-      connection = ActiveRecord::Base.connection
+      Gitlab::Database::EachDatabase.each_database_connection do |connection, _|
+        schemas_for_connection = Gitlab::Database.gitlab_schemas_for_connection(connection)
 
-      problematic_tables = connection.tables.select do |table|
-        !connection.primary_key(table).present?
-      end.map(&:to_sym)
+        problematic_tables = connection.tables.select do |table|
+          table_schema = Gitlab::Database::GitlabSchema.table_schema(table)
+          schemas_for_connection.include?(table_schema) && !connection.primary_key(table).present?
+        end.map(&:to_sym)
 
-      expect(problematic_tables).to be_empty
+        expect(problematic_tables).to be_empty
+      end
     end
   end
 

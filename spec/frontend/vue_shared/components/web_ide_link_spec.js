@@ -1,10 +1,11 @@
-import { GlModal } from '@gitlab/ui';
+import { GlButton, GlModal, GlPopover } from '@gitlab/ui';
 import { nextTick } from 'vue';
 
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
+import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -81,7 +82,14 @@ const ACTION_PIPELINE_EDITOR = {
 describe('Web IDE link component', () => {
   let wrapper;
 
-  function createComponent(props, mountFn = shallowMountExtended) {
+  function createComponent(
+    props,
+    {
+      mountFn = shallowMountExtended,
+      glFeatures = {},
+      userCalloutDismisserSlotProps = { dismiss: jest.fn() },
+    } = {},
+  ) {
     wrapper = mountFn(WebIdeLink, {
       propsData: {
         editUrl: TEST_EDIT_URL,
@@ -91,6 +99,9 @@ describe('Web IDE link component', () => {
         forkPath,
         ...props,
       },
+      provide: {
+        glFeatures,
+      },
       stubs: {
         GlModal: stubComponent(GlModal, {
           template: `
@@ -99,6 +110,11 @@ describe('Web IDE link component', () => {
               <slot></slot>
               <slot name="modal-footer"></slot>
             </div>`,
+        }),
+        UserCalloutDismisser: stubComponent(UserCalloutDismisser, {
+          render() {
+            return this.$scopedSlots.default(userCalloutDismisserSlotProps);
+          },
         }),
       },
     });
@@ -112,6 +128,8 @@ describe('Web IDE link component', () => {
   const findLocalStorageSync = () => wrapper.findComponent(LocalStorageSync);
   const findModal = () => wrapper.findComponent(GlModal);
   const findForkConfirmModal = () => wrapper.findComponent(ConfirmForkModal);
+  const findUserCalloutDismisser = () => wrapper.findComponent(UserCalloutDismisser);
+  const findNewWebIdeCalloutPopover = () => wrapper.findComponent(GlPopover);
 
   it.each([
     {
@@ -322,9 +340,9 @@ describe('Web IDE link component', () => {
     });
 
     it.each(testActions)('opens the modal when the button is clicked', async ({ props }) => {
-      createComponent({ ...props, needsToFork: true }, mountExtended);
+      createComponent({ ...props, needsToFork: true }, { mountFn: mountExtended });
 
-      await findActionsButton().trigger('click');
+      await findActionsButton().findComponent(GlButton).trigger('click');
 
       expect(findForkConfirmModal().props()).toEqual({
         visible: true,
@@ -377,7 +395,7 @@ describe('Web IDE link component', () => {
           gitpodEnabled: false,
           gitpodText,
         },
-        mountExtended,
+        { mountFn: mountExtended },
       );
 
       findLocalStorageSync().vm.$emit('input', ACTION_GITPOD.key);
@@ -400,5 +418,111 @@ describe('Web IDE link component', () => {
 
       expect(findModal().exists()).toBe(false);
     });
+  });
+
+  describe('Web IDE callout', () => {
+    describe('vscode_web_ide feature flag is enabled and the edit button is not shown', () => {
+      let dismiss;
+
+      beforeEach(() => {
+        dismiss = jest.fn();
+        createComponent(
+          {
+            showEditButton: false,
+          },
+          { glFeatures: { vscodeWebIde: true }, userCalloutDismisserSlotProps: { dismiss } },
+        );
+      });
+      it('does not skip the user_callout_dismisser query', () => {
+        expect(findUserCalloutDismisser().props()).toEqual(
+          expect.objectContaining({
+            skipQuery: false,
+            featureName: 'vscode_web_ide',
+          }),
+        );
+      });
+
+      it('mounts new web ide callout popover', () => {
+        expect(findNewWebIdeCalloutPopover().props()).toEqual(
+          expect.objectContaining({
+            showCloseButton: '',
+            target: 'web-ide-link',
+            triggers: 'manual',
+          }),
+        );
+      });
+
+      describe.each`
+        calloutStatus | shouldShowCallout | popoverVisibility | tooltipVisibility
+        ${'show'}     | ${true}           | ${true}           | ${false}
+        ${'hide'}     | ${false}          | ${false}          | ${true}
+      `(
+        'when should $calloutStatus web ide callout',
+        ({ shouldShowCallout, popoverVisibility, tooltipVisibility }) => {
+          beforeEach(() => {
+            createComponent(
+              {
+                showEditButton: false,
+              },
+              {
+                glFeatures: { vscodeWebIde: true },
+                userCalloutDismisserSlotProps: { shouldShowCallout, dismiss },
+              },
+            );
+          });
+
+          it(`popover visibility = ${popoverVisibility}`, () => {
+            expect(findNewWebIdeCalloutPopover().props().show).toBe(popoverVisibility);
+          });
+
+          it(`action button tooltip visibility = ${tooltipVisibility}`, () => {
+            expect(findActionsButton().props().showActionTooltip).toBe(tooltipVisibility);
+          });
+        },
+      );
+
+      it('dismisses the callout when popover close button is clicked', () => {
+        findNewWebIdeCalloutPopover().vm.$emit('close-button-clicked');
+
+        expect(dismiss).toHaveBeenCalled();
+      });
+
+      it('dismisses the callout when action button is clicked', () => {
+        findActionsButton().vm.$emit('actionClicked');
+
+        expect(dismiss).toHaveBeenCalled();
+      });
+    });
+
+    describe.each`
+      featureFlag | showEditButton
+      ${false}    | ${true}
+      ${true}     | ${false}
+      ${false}    | ${false}
+    `(
+      'when vscode_web_ide=$featureFlag and showEditButton = $showEditButton',
+      ({ vscodeWebIde, showEditButton }) => {
+        beforeEach(() => {
+          createComponent(
+            {
+              showEditButton,
+            },
+            { glFeatures: { vscodeWebIde } },
+          );
+        });
+
+        it('skips the user_callout_dismisser query', () => {
+          expect(findUserCalloutDismisser().props().skipQuery).toBe(true);
+        });
+
+        it('displays actions button tooltip', () => {
+          expect(findActionsButton().props().showActionTooltip).toBe(true);
+        });
+
+        it('mounts new web ide callout popover', () => {
+          expect(findNewWebIdeCalloutPopover().exists()).toBe(false);
+        });
+      },
+    );
   });
 });

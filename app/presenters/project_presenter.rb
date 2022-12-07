@@ -179,7 +179,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     return if releases_count < 1
 
     AnchorData.new(true,
-                   statistic_icon('rocket') +
+                   statistic_icon('deployments') +
                    n_('%{strong_start}%{release_count}%{strong_end} Release', '%{strong_start}%{release_count}%{strong_end} Releases', releases_count).html_safe % {
                      release_count: number_with_delimiter(releases_count),
                      strong_start: '<strong class="project-stat-value">'.html_safe,

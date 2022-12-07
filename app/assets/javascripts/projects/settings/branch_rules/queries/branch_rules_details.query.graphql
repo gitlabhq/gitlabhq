@@ -68,6 +68,7 @@ query getBranchRulesDetails($projectPath: ID!) {
             externalUrl
           }
         }
+        matchingBranchesCount
       }
     }
   }

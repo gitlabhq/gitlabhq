@@ -1,0 +1,9 @@
+#import "./ready_to_merge_merge_request.fragment.graphql"
+
+subscription readyToMergeSubscription($issuableId: IssuableID!) {
+  mergeRequestMergeStatusUpdated(issuableId: $issuableId) {
+    ... on MergeRequest {
+      ...ReadyToMergeMergeRequest
+    }
+  }
+}

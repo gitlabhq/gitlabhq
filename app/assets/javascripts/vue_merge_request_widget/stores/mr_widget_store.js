@@ -30,6 +30,7 @@ export default class MergeRequestStore {
     this.machineValue = this.stateMachine.value;
     this.mergeDetailsCollapsed = window.innerWidth < 768;
     this.mergeError = data.mergeError;
+    this.id = data.id;
 
     this.setPaths(data);
 
@@ -177,6 +178,7 @@ export default class MergeRequestStore {
 
     this.updateStatusState(mergeRequest.state);
 
+    this.issuableId = mergeRequest.id;
     this.projectArchived = project.archived;
     this.onlyAllowMergeIfPipelineSucceeds = project.onlyAllowMergeIfPipelineSucceeds;
     this.allowMergeOnSkippedPipeline = project.allowMergeOnSkippedPipeline;
@@ -202,6 +204,12 @@ export default class MergeRequestStore {
     this.draft = mergeRequest.draft;
     this.mergeRequestState = mergeRequest.state;
     this.detailedMergeStatus = mergeRequest.detailedMergeStatus;
+
+    this.setState();
+  }
+
+  setGraphqlSubscriptionData(data) {
+    this.detailedMergeStatus = data.detailedMergeStatus;
 
     this.setState();
   }

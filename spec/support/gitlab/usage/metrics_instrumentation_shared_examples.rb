@@ -30,7 +30,7 @@ RSpec.shared_examples 'a correct instrumented metric query' do |params|
   end
 
   before do
-    allow(ActiveRecord::Base.connection).to receive(:transaction_open?).and_return(false)
+    allow(metric.send(:relation).connection).to receive(:transaction_open?).and_return(false)
   end
 
   it 'has correct generate query' do

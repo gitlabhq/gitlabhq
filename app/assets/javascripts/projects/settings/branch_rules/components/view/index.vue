@@ -1,7 +1,7 @@
 <script>
 import { GlSprintf, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import { sprintf } from '~/locale';
-import { getParameterByName } from '~/lib/utils/url_utility';
+import { sprintf, n__ } from '~/locale';
+import { getParameterByName, mergeUrlParams } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from '../../queries/branch_rules_details.query.graphql';
 import { getAccessLevels } from '../../../utils';
@@ -42,6 +42,9 @@ export default {
     statusChecksPath: {
       default: '',
     },
+    branchesPath: {
+      default: '',
+    },
   },
   apollo: {
     project: {
@@ -56,6 +59,7 @@ export default {
         this.branchProtection = branchRule?.branchProtection;
         this.approvalRules = branchRule?.approvalRules;
         this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
+        this.matchingBranchesCount = branchRule?.matchingBranchesCount;
       },
     },
   },
@@ -65,6 +69,7 @@ export default {
       branchProtection: {},
       approvalRules: {},
       statusChecks: [],
+      matchingBranchesCount: null,
     };
   },
   computed: {
@@ -116,6 +121,14 @@ export default {
         ? this.$options.i18n.targetBranch
         : this.$options.i18n.branchNameOrPattern;
     },
+    matchingBranchesLinkHref() {
+      return mergeUrlParams({ state: 'all', search: this.branch }, this.branchesPath);
+    },
+    matchingBranchesLinkTitle() {
+      const total = this.matchingBranchesCount;
+      const subject = n__('branch', 'branches', total);
+      return sprintf(this.$options.i18n.matchingBranchesLinkTitle, { total, subject });
+    },
     approvals() {
       return this.approvalRules?.nodes || [];
     },
@@ -145,6 +158,10 @@ export default {
       {{ allBranchesLabel }}
     </div>
     <code v-else class="gl-mt-2" data-testid="branch">{{ branch }}</code>
+
+    <p v-if="matchingBranchesCount" class="gl-mt-3">
+      <gl-link :href="matchingBranchesLinkHref">{{ matchingBranchesLinkTitle }}</gl-link>
+    </p>
 
     <h4 class="gl-mb-1 gl-mt-5">{{ $options.i18n.protectBranchTitle }}</h4>
     <gl-sprintf :message="$options.i18n.protectBranchDescription">

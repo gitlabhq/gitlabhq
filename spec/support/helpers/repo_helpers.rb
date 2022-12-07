@@ -137,4 +137,28 @@ eos
       file_content: content
     ).execute
   end
+
+  def create_and_delete_files(project, files, &block)
+    files.each do |filename, content|
+      project.repository.create_file(
+        project.creator,
+        filename,
+        content,
+        message: "Automatically created file #{filename}",
+        branch_name: project.default_branch_or_main
+      )
+    end
+
+    yield
+
+  ensure
+    files.each do |filename, _content|
+      project.repository.delete_file(
+        project.creator,
+        filename,
+        message: "Automatically deleted file #{filename}",
+        branch_name: project.default_branch_or_main
+      )
+    end
+  end
 end
