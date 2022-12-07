@@ -18,7 +18,7 @@ class MergeRequestPolicy < IssuablePolicy
     enable :approve_merge_request
   end
 
-  rule { can?(:approve_merge_request) & is_bot? }.policy do
+  rule { can?(:approve_merge_request) & bot }.policy do
     enable :reset_merge_request_approvals
   end
 

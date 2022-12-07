@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class ProjectExportJob < ApplicationRecord
+  include EachBatch
+
+  EXPIRES_IN = 7.days
+
   belongs_to :project
   has_many :relation_exports, class_name: 'Projects::ImportExport::RelationExport'
 
@@ -12,6 +16,8 @@ class ProjectExportJob < ApplicationRecord
     finished: 2,
     failed: 3
   }.freeze
+
+  scope :prunable, -> { where("updated_at < ?", EXPIRES_IN.ago) }
 
   state_machine :status, initial: :queued do
     event :start do
@@ -30,5 +36,13 @@ class ProjectExportJob < ApplicationRecord
     state :started, value: STATUS[:started]
     state :finished, value: STATUS[:finished]
     state :failed, value: STATUS[:failed]
+  end
+
+  class << self
+    def prune_expired_jobs
+      prunable.each_batch do |relation| # rubocop:disable Style/SymbolProc
+        relation.delete_all
+      end
+    end
   end
 end

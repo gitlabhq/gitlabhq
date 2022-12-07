@@ -36,7 +36,7 @@ class AuditEventTypeOptionParser
   Options = Struct.new(
     :name,
     :description,
-    :group,
+    :feature_category,
     :milestone,
     :saved_to_database,
     :streamed,
@@ -71,9 +71,9 @@ class AuditEventTypeOptionParser
           options.description = value
         end
 
-        opts.on('-g', '--group [string]', String,
-"Name of the group that introduced this audit event. For example, govern::compliance") do |value|
-          options.group = value
+        opts.on('-c', '--feature-category [string]', String,
+"The feature category of this audit event. For example, compliance_management") do |value|
+          options.feature_category = value
         end
 
         opts.on('-M', '--milestone [string]', String,
@@ -145,16 +145,16 @@ class AuditEventTypeOptionParser
       end
     end
 
-    def read_group
+    def read_feature_category
       $stdout.puts
-      $stdout.puts ">> Specify the group introducing the audit event type, like `govern::compliance`:"
+      $stdout.puts ">> Specify the feature category of this audit event, like `compliance_management`:"
 
       loop do
-        group = Readline.readline('?> ', false)&.strip
-        group = nil if group.empty?
-        return group unless group.nil?
+        feature_category = Readline.readline('?> ', false)&.strip
+        feature_category = nil if feature_category.empty?
+        return feature_category unless feature_category.nil?
 
-        warn "group is a required field."
+        warn "feature_category is a required field."
       end
     end
 
@@ -231,7 +231,7 @@ class AuditEventTypeCreator
     assert_existing_audit_event_type!
 
     options.description ||= AuditEventTypeOptionParser.read_description
-    options.group ||= AuditEventTypeOptionParser.read_group
+    options.feature_category ||= AuditEventTypeOptionParser.read_feature_category
     options.milestone ||= AuditEventTypeOptionParser.read_milestone
     options.saved_to_database = AuditEventTypeOptionParser.read_saved_to_database if options.saved_to_database.nil?
     options.streamed = AuditEventTypeOptionParser.read_streamed if options.streamed.nil?
@@ -263,7 +263,7 @@ class AuditEventTypeCreator
     {
       'name' => options.name,
       'description' => options.description,
-      'group' => options.group,
+      'feature_category' => options.feature_category,
       'milestone' => options.milestone,
       'saved_to_database' => options.saved_to_database,
       'streamed' => options.streamed,

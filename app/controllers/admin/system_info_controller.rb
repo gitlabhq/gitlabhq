@@ -59,11 +59,11 @@ class Admin::SystemInfoController < Admin::ApplicationController
       begin
         disk = Sys::Filesystem.stat(mount.mount_point)
         @disks.push({
-          bytes_total: disk.bytes_total,
-          bytes_used: disk.bytes_used,
-          disk_name: mount.name,
-          mount_path: disk.path
-        })
+                      bytes_total: disk.bytes_total,
+                      bytes_used: disk.bytes_used,
+                      disk_name: mount.name,
+                      mount_path: disk.path
+                    })
       rescue Sys::Filesystem::Error
       end
     end

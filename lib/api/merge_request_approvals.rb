@@ -88,6 +88,7 @@ module API
 
           present_approval(merge_request)
         end
+
         desc 'Remove all merge request approvals' do
           detail 'Clear all approvals of merge request. This feature was added in GitLab 15.4'
           failure [

@@ -13803,6 +13803,9 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Descriptions"
+msgstr ""
+
 msgid "Descriptive label"
 msgstr ""
 
@@ -36199,6 +36202,9 @@ msgstr ""
 msgid "Search GitLab"
 msgstr ""
 
+msgid "Search Within"
+msgstr ""
+
 msgid "Search a group"
 msgstr ""
 
@@ -42777,6 +42783,9 @@ msgid "Title (required)"
 msgstr ""
 
 msgid "Title:"
+msgstr ""
+
+msgid "Titles"
 msgstr ""
 
 msgid "Titles and Descriptions"

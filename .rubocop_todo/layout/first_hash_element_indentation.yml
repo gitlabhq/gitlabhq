@@ -2,22 +2,6 @@
 # Cop supports --autocorrect.
 Layout/FirstHashElementIndentation:
   Exclude:
-    - 'app/components/diffs/stats_component.rb'
-    - 'app/controllers/admin/ci/variables_controller.rb'
-    - 'app/controllers/admin/system_info_controller.rb'
-    - 'app/controllers/concerns/milestone_actions.rb'
-    - 'app/controllers/concerns/render_service_results.rb'
-    - 'app/controllers/concerns/sourcegraph_decorator.rb'
-    - 'app/controllers/profiles/two_factor_auths_controller.rb'
-    - 'app/controllers/projects/badges_controller.rb'
-    - 'app/controllers/repositories/lfs_locks_api_controller.rb'
-    - 'app/experiments/concerns/project_commit_count.rb'
-    - 'app/graphql/mutations/clusters/agent_tokens/create.rb'
-    - 'app/graphql/mutations/notes/create/diff_note.rb'
-    - 'app/graphql/mutations/notes/create/image_diff_note.rb'
-    - 'app/graphql/mutations/notes/create/note.rb'
-    - 'app/graphql/mutations/todos/restore_many.rb'
-    - 'app/graphql/resolvers/group_packages_resolver.rb'
     - 'app/helpers/avatars_helper.rb'
     - 'app/helpers/breadcrumbs_helper.rb'
     - 'app/helpers/broadcast_messages_helper.rb'

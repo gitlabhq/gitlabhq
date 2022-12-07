@@ -14,14 +14,14 @@ module Diffs
     def diff_files_data
       diffs_map = @diff_files.map do |f|
         {
-            href: "##{helpers.hexdigest(f.file_path)}",
-            title: f.new_path,
-            name: f.file_path,
-            path: diff_file_path_text(f),
-            icon: diff_file_changed_icon(f),
-            iconColor: diff_file_changed_icon_color(f).to_s,
-            added: f.added_lines,
-            removed: f.removed_lines
+          href: "##{helpers.hexdigest(f.file_path)}",
+          title: f.new_path,
+          name: f.file_path,
+          path: diff_file_path_text(f),
+          icon: diff_file_changed_icon(f),
+          iconColor: diff_file_changed_icon_color(f).to_s,
+          added: f.added_lines,
+          removed: f.removed_lines
         }
       end
 

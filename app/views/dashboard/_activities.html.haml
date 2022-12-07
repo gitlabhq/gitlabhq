@@ -1,8 +1,7 @@
 .nav-block.activities
   = render 'shared/event_filter'
   .controls
-    = link_to dashboard_projects_path(rss_url_options), class: 'btn gl-button btn-default btn-icon d-none d-sm-inline-flex has-tooltip', title: 'Subscribe' do
-      = sprite_icon('rss', css_class: 'gl-icon')
+    = render Pajamas::ButtonComponent.new(href: dashboard_projects_path(rss_url_options), icon: 'rss', button_options: { title: _('Subscribe'), aria: { label: _('Subscribe') }, class: 'gl-display-none gl-sm-display-inline-flex' })
 
 .content_list
 .loading

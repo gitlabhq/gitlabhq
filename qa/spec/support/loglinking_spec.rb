@@ -37,7 +37,7 @@ RSpec.describe QA::Support::Loglinking do
 
           expect(QA::Support::Loglinking.failure_metadata('foo123')).to eql(<<~ERROR.chomp)
           Correlation Id: foo123
-          Kibana Url: https://kibana.address/app/discover#/?_a=%28index:pubsub-rails-inf-foo%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foo123%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
+          Kibana Url: https://kibana.address/app/discover#/?_a=%28index:%27pubsub-rails-inf-foo%27%2Cquery%3A%28language%3Akuery%2Cquery%3A%27json.correlation_id%20%3A%20foo123%27%29%29&_g=%28time%3A%28from%3A%272022-11-13T00:00:00.000Z%27%2Cto%3A%272022-11-14T00:00:00.000Z%27%29%29
           ERROR
         end
       end
@@ -93,9 +93,9 @@ RSpec.describe QA::Support::Loglinking do
   describe '.get_kibana_index' do
     let(:index_hash) do
       {
-        :staging => 'pubsub-rails-inf-gstg',
+        :staging => 'ed942d00-5186-11ea-ad8a-f3610a492295',
         :staging_ref => nil,
-        :production => 'pubsub-rails-inf-gprd',
+        :production => '7092c4e2-4eb5-46f2-8305-a7da2edad090',
         :pre => 'pubsub-rails-inf-pre',
         :foo => nil,
         nil => nil

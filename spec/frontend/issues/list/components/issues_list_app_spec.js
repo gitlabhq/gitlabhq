@@ -61,6 +61,7 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
+  TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
@@ -597,6 +598,7 @@ describe('CE IssuesListApp component', () => {
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_ORGANIZATION },
           { type: TOKEN_TYPE_RELEASE },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
           { type: TOKEN_TYPE_TYPE },
         ]);
       });

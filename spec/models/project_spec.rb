@@ -21,7 +21,6 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to belong_to(:creator).class_name('User') }
     it { is_expected.to belong_to(:pool_repository) }
     it { is_expected.to have_many(:users) }
-    it { is_expected.to have_many(:integrations) }
     it { is_expected.to have_many(:events) }
     it { is_expected.to have_many(:merge_requests) }
     it { is_expected.to have_many(:merge_request_metrics).class_name('MergeRequest::Metrics') }
@@ -150,6 +149,20 @@ RSpec.describe Project, factory_default: :keep do
     it { is_expected.to have_many(:project_callouts).class_name('Users::ProjectCallout').with_foreign_key(:project_id) }
     it { is_expected.to have_many(:pipeline_metadata).class_name('Ci::PipelineMetadata') }
     it { is_expected.to have_many(:incident_management_timeline_event_tags).class_name('IncidentManagement::TimelineEventTag') }
+    it { is_expected.to have_many(:integrations) }
+    it { is_expected.to have_many(:push_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:tag_push_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:issue_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:confidential_issue_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:merge_request_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:note_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:confidential_note_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:job_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:archive_trace_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:pipeline_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:wiki_page_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:deployment_hooks_integrations).class_name('Integration') }
+    it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -5757,6 +5770,32 @@ RSpec.describe Project, factory_default: :keep do
       end
 
       integration.project.execute_integrations(anything, :merge_request_hooks)
+    end
+
+    it 'does not trigger extra queries when called multiple times' do
+      integration.project.execute_integrations({}, :push_hooks)
+
+      recorder = ActiveRecord::QueryRecorder.new do
+        integration.project.execute_integrations({}, :push_hooks)
+      end
+
+      expect(recorder.count).to be_zero
+    end
+
+    context 'with cache_project_integrations disabled' do
+      before do
+        stub_feature_flags(cache_project_integrations: false)
+      end
+
+      it 'triggers extra queries when called multiple times' do
+        integration.project.execute_integrations({}, :push_hooks)
+
+        recorder = ActiveRecord::QueryRecorder.new do
+          integration.project.execute_integrations({}, :push_hooks)
+        end
+
+        expect(recorder.count).not_to be_zero
+      end
     end
   end
 

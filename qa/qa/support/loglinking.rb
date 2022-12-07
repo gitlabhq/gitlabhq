@@ -22,8 +22,8 @@ module QA
         pre: 'https://nonprod-log.gitlab.net/'
       }.freeze
       KIBANA_INDICES = {
-        staging: 'pubsub-rails-inf-gstg',
-        production: 'pubsub-rails-inf-gprd',
+        staging: 'ed942d00-5186-11ea-ad8a-f3610a492295',
+        production: '7092c4e2-4eb5-46f2-8305-a7da2edad090',
         pre: 'pubsub-rails-inf-pre'
       }.freeze
 
@@ -64,7 +64,7 @@ module QA
         end
 
         def get_kibana_url(base_url, index, correlation_id)
-          "#{base_url}app/discover#/?_a=%28index:#{index}%2Cquery%3A%28language%3Akuery%2C" \
+          "#{base_url}app/discover#/?_a=%28index:%27#{index}%27%2Cquery%3A%28language%3Akuery%2C" \
           "query%3A%27json.correlation_id%20%3A%20#{correlation_id}%27%29%29" \
           "&_g=%28time%3A%28from%3A%27#{start_time}%27%2Cto%3A%27#{end_time}%27%29%29"
         end

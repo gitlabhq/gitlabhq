@@ -404,6 +404,7 @@ module Integrations
         label: Integration::SNOWPLOW_EVENT_LABEL,
         property: key,
         user: user,
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: key).to_context],
         **optional_arguments
       )
     end

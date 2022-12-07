@@ -31,10 +31,10 @@ module Mutations
 
         def create_note_params(noteable, args)
           super(noteable, args).merge({
-            type: 'DiffNote',
-            position: position(noteable, args),
-            merge_request_diff_head_sha: args[:position][:head_sha]
-          })
+                                        type: 'DiffNote',
+                                        position: position(noteable, args),
+                                        merge_request_diff_head_sha: args[:position][:head_sha]
+                                      })
         end
 
         def position(noteable, args)

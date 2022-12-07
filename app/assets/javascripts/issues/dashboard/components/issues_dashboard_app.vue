@@ -5,9 +5,17 @@ import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import { IssuableStatus } from '~/issues/constants';
-import { PAGE_SIZE } from '~/issues/list/constants';
-import { getInitialPageParams } from '~/issues/list/utils';
+import {
+  CREATED_DESC,
+  PAGE_SIZE,
+  PARAM_STATE,
+  UPDATED_DESC,
+  urlSortParams,
+} from '~/issues/list/constants';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import { getInitialPageParams, getSortKey, getSortOptions, isSortKey } from '~/issues/list/utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -17,13 +25,10 @@ export default {
     calendarButtonText: __('Subscribe to calendar'),
     closed: __('CLOSED'),
     closedMoved: __('CLOSED (MOVED)'),
-    downvotes: __('Downvotes'),
     emptyStateTitle: __('Please select at least one filter to see results'),
     errorFetchingIssues: __('An error occurred while loading issues'),
-    relatedMergeRequests: __('Related merge requests'),
     rssButtonText: __('Subscribe to RSS feed'),
     searchInputPlaceholder: __('Search or filter results...'),
-    upvotes: __('Upvotes'),
   },
   IssuableListTabs,
   components: {
@@ -39,20 +44,35 @@ export default {
   inject: [
     'calendarPath',
     'emptyStateSvgPath',
+    'hasBlockedIssuesFeature',
+    'hasIssuableHealthStatusFeature',
+    'hasIssueWeightsFeature',
     'hasScopedLabelsFeature',
+    'initialSort',
     'isPublicVisibilityRestricted',
     'isSignedIn',
     'rssPath',
   ],
   data() {
+    const state = getParameterByName(PARAM_STATE);
+
+    const defaultSortKey = state === IssuableStates.Closed ? UPDATED_DESC : CREATED_DESC;
+    const dashboardSortKey = getSortKey(this.initialSort);
+    const graphQLSortKey =
+      isSortKey(this.initialSort?.toUpperCase()) && this.initialSort.toUpperCase();
+
+    // The initial sort is an old enum value when it is saved on the dashboard issues page.
+    // The initial sort is a GraphQL enum value when it is saved on the Vue issues list page.
+    const sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
+
     return {
       issues: [],
       issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(),
       searchTokens: [],
-      sortOptions: [],
-      state: IssuableStates.Opened,
+      sortKey,
+      state: state || IssuableStates.Opened,
     };
   },
   apollo: {
@@ -62,6 +82,7 @@ export default {
         return {
           hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
           isSignedIn: this.isSignedIn,
+          sort: this.sortKey,
           state: this.state,
           ...this.pageParams,
         };
@@ -81,6 +102,19 @@ export default {
   computed: {
     showPaginationControls() {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
+    },
+    sortOptions() {
+      return getSortOptions({
+        hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
+        hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
+        hasIssueWeightsFeature: this.hasIssueWeightsFeature,
+      });
+    },
+    urlParams() {
+      return {
+        sort: urlSortParams[this.sortKey],
+        state: this.state,
+      };
     },
   },
   methods: {
@@ -117,6 +151,33 @@ export default {
       };
       scrollUp();
     },
+    handleSort(sortKey) {
+      if (this.sortKey === sortKey) {
+        return;
+      }
+
+      this.pageParams = getInitialPageParams();
+      this.sortKey = sortKey;
+
+      if (this.isSignedIn) {
+        this.saveSortPreference(sortKey);
+      }
+    },
+    saveSortPreference(sortKey) {
+      this.$apollo
+        .mutate({
+          mutation: setSortPreferenceMutation,
+          variables: { input: { issuesSort: sortKey } },
+        })
+        .then(({ data }) => {
+          if (data.userPreferencesUpdate.errors.length) {
+            throw new Error(data.userPreferencesUpdate.errors);
+          }
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+        });
+    },
   },
 };
 </script>
@@ -128,6 +189,7 @@ export default {
     :has-next-page="pageInfo.hasNextPage"
     :has-previous-page="pageInfo.hasPreviousPage"
     :has-scoped-labels-feature="hasScopedLabelsFeature"
+    :initial-sort-by="sortKey"
     :issuables="issues"
     :issuables-loading="$apollo.queries.issues.loading"
     namespace="dashboard"
@@ -137,11 +199,13 @@ export default {
     :show-pagination-controls="showPaginationControls"
     :sort-options="sortOptions"
     :tabs="$options.IssuableListTabs"
+    :url-params="urlParams"
     use-keyset-pagination
     @click-tab="handleClickTab"
     @dismiss-alert="handleDismissAlert"
     @next-page="handleNextPage"
     @previous-page="handlePreviousPage"
+    @sort="handleSort"
   >
     <template #nav-actions>
       <gl-button :href="rssPath" icon="rss">

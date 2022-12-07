@@ -19,6 +19,14 @@ class BasePolicy < DeclarativePolicy::Base
   with_options scope: :user, score: 0
   condition(:deactivated) { @user&.deactivated? }
 
+  desc "User is bot"
+  with_options scope: :user, score: 0
+  condition(:bot) { @user&.bot? }
+
+  desc "User is alert bot"
+  with_options scope: :user, score: 0
+  condition(:alert_bot) { @user&.alert_bot? }
+
   desc "User is support bot"
   with_options scope: :user, score: 0
   condition(:support_bot) { @user&.support_bot? }
@@ -50,9 +58,6 @@ class BasePolicy < DeclarativePolicy::Base
     ::Gitlab::ExternalAuthorization.perform_check?
   end
 
-  with_options scope: :user, score: 0
-  condition(:alert_bot) { @user&.alert_bot? }
-
   rule { external_authorization_enabled & ~can?(:read_all_resources) }.policy do
     prevent :read_cross_project
   end
@@ -68,8 +73,6 @@ class BasePolicy < DeclarativePolicy::Base
   rule { default }.enable :read_cross_project
 
   condition(:is_gitlab_com, score: 0, scope: :global) { ::Gitlab.com? }
-
-  condition(:is_bot?) { @user&.bot? }
 end
 
 BasePolicy.prepend_mod_with('BasePolicy')

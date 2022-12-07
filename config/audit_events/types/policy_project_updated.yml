@@ -3,6 +3,6 @@ description: "This event is triggered whenever the security policy project is up
 introduced_by_issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/377877"
 introduced_by_mr: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154"
 milestone: "15.6"
-group: "govern::security policies"
+feature_category: "security_policy_management"
 saved_to_database: true
 streamed: false

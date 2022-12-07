@@ -9,7 +9,6 @@ RSpec.describe API::MergeRequests do
   let_it_be(:user)  { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:admin) { create(:user, :admin) }
-  let_it_be(:bot) { create(:user, :project_bot) }
   let_it_be(:project) { create(:project, :public, :repository, creator: user, namespace: user.namespace, only_allow_merge_if_pipeline_succeeds: false) }
 
   let(:milestone1) { create(:milestone, title: '0.9', project: project) }
@@ -3609,85 +3608,6 @@ RSpec.describe API::MergeRequests do
 
       expect(response).to have_gitlab_http_status(:conflict)
       expect(json_response['message']).to eq('Failed to enqueue the rebase operation, possibly due to a long-lived transaction. Try again later.')
-    end
-  end
-
-  describe 'PUT :id/merge_requests/:merge_request_iid/reset_approvals' do
-    before do
-      merge_request.approvals.create!(user: user2)
-      create(:project_member, :maintainer, user: bot, source: project)
-    end
-
-    context 'when reset_approvals can be performed' do
-      it 'clears approvals of the merge_request' do
-        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
-
-        merge_request.reload
-        expect(response).to have_gitlab_http_status(:accepted)
-        expect(merge_request.approvals).to be_empty
-      end
-
-      context 'for users with non-bot roles' do
-        let(:human_user) { create(:user) }
-
-        [:add_owner, :add_maintainer, :add_developer, :add_guest].each do |role_method|
-          it 'returns 401' do
-            project.send(role_method, human_user)
-
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", human_user)
-
-            merge_request.reload
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(merge_request.approvals.pluck(:user_id)).to eql([user2.id])
-          end
-        end
-      end
-
-      context 'for bot-users from external namespaces' do
-        let_it_be(:external_bot) { create(:user, :project_bot) }
-
-        context 'external group bot-user' do
-          before do
-            create(:group_member, :maintainer, user: external_bot, source: create(:group))
-          end
-
-          it 'returns 401' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
-
-            merge_request.reload
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(merge_request.approvals.pluck(:user_id)).to eql([user2.id])
-          end
-        end
-
-        context 'external project bot-user' do
-          before do
-            create(:project_member, :maintainer, user: external_bot, source: create(:project))
-          end
-
-          it 'returns 401' do
-            put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", external_bot)
-
-            merge_request.reload
-            expect(response).to have_gitlab_http_status(:unauthorized)
-            expect(merge_request.approvals.pluck(:user_id)).to eql([user2.id])
-          end
-        end
-      end
-
-      context 'for a bot user who approved the merge request' do
-        before do
-          merge_request.approvals.create!(user: bot)
-        end
-
-        it "returns 200" do
-          put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/reset_approvals", bot)
-
-          merge_request.reload
-          expect(response).to have_gitlab_http_status(:accepted)
-          expect(merge_request.approvals).to be_empty
-        end
-      end
     end
   end
 

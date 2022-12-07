@@ -8,7 +8,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       description: 'Group deploy token is deleted',
       introduced_by_issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/1',
       introduced_by_mr: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/1',
-      group: 'govern::compliance',
+      feature_category: 'continuous_delivery',
       milestone: '15.4',
       saved_to_database: true,
       streamed: true }
@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
       :description         | nil                             | %r{property '/description' is not of type: string}
       :introduced_by_issue | nil                             | %r{property '/introduced_by_issue' is not of type: string}
       :introduced_by_mr    | nil                             | %r{property '/introduced_by_mr' is not of type: string}
-      :group               | nil                             | %r{property '/group' is not of type: string}
+      :feature_category    | nil                             | %r{property '/feature_category' is not of type: string}
       :milestone           | nil                             | %r{property '/milestone' is not of type: string}
     end
     # rubocop:enable Layout/LineLength
@@ -109,7 +109,7 @@ RSpec.describe Gitlab::Audit::Type::Definition do
 
         expect(audit_event_type_definition.name).to eq "group_deploy_token_destroyed"
         expect(audit_event_type_definition.description).to eq "Group deploy token is deleted"
-        expect(audit_event_type_definition.group).to eq "govern::compliance"
+        expect(audit_event_type_definition.feature_category).to eq "continuous_delivery"
         expect(audit_event_type_definition.milestone).to eq "15.4"
         expect(audit_event_type_definition.saved_to_database).to be true
         expect(audit_event_type_definition.streamed).to be true

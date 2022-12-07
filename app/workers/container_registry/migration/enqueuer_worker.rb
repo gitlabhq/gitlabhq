@@ -130,13 +130,13 @@ module ContainerRegistry
           # this issue.
           # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87733 and
           # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90735 for details.
-          ContainerRepository.ready_for_import.limit(25)[0] # rubocop:disable CodeReuse/ActiveRecord
+          ContainerRepository.ready_for_import.ordered.limit(25)[0] # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 
       def next_aborted_repository
         strong_memoize(:next_aborted_repository) do
-          ContainerRepository.with_migration_state('import_aborted').limit(25)[0] # rubocop:disable CodeReuse/ActiveRecord
+          ContainerRepository.with_migration_state('import_aborted').ordered.limit(25)[0] # rubocop:disable CodeReuse/ActiveRecord
         end
       end
 

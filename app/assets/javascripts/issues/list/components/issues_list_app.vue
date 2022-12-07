@@ -23,6 +23,7 @@ import {
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
   OPTIONS_NONE_ANY,
+  TOKEN_TITLE_SEARCH_WITHIN,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -43,6 +44,7 @@ import {
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
+  TOKEN_TYPE_SEARCH_WITHIN,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -304,6 +306,22 @@ export default {
       }
 
       const tokens = [
+        {
+          type: TOKEN_TYPE_SEARCH_WITHIN,
+          title: TOKEN_TITLE_SEARCH_WITHIN,
+          icon: 'search',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'title', value: 'TITLE', title: this.$options.i18n.titles },
+            {
+              icon: 'text-description',
+              value: 'DESCRIPTION',
+              title: this.$options.i18n.descriptions,
+            },
+          ],
+        },
         {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,

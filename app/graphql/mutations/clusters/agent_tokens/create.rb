@@ -49,9 +49,9 @@ module Mutations
           payload = result.payload
 
           {
-           secret: payload[:secret],
-           token: payload[:token],
-           errors: Array.wrap(result.message)
+            secret: payload[:secret],
+            token: payload[:token],
+            errors: Array.wrap(result.message)
           }
         end
 

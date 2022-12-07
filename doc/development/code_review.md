@@ -221,6 +221,9 @@ See the [test engineering process](https://about.gitlab.com/handbook/engineering
 
 1. You have confirmed that if this MR contains changes to processing or storing of credentials or tokens, authorization, and authentication methods, or other items described in [the security review guidelines](https://about.gitlab.com/handbook/security/#when-to-request-a-security-review), you have added the `~security` label and you have `@`-mentioned `@gitlab-com/gl-security/appsec`.
 1. You have reviewed the documentation regarding [internal application security reviews](https://about.gitlab.com/handbook/security/#internal-application-security-reviews) for **when** and **how** to request a security review and requested a security review if this is warranted for this change.
+1. If there are security scan results that are blocking the MR (due to the [scan result policies](https://gitlab.com/gitlab-com/gl-security/security-policies)):
+    - For true positive findings, they should be corrected before the merge request is merged. This will remove the AppSec approval required by the scan result policy.
+    - For false positive findings, something that should be discussed for risk acceptance, or anything questionable, please ping `@gitlab-com/gl-security/appsec`.
 
 ##### Deployment
 

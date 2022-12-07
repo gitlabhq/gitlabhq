@@ -265,9 +265,23 @@ class Project < ApplicationRecord
   has_many :incident_management_issuable_escalation_statuses, through: :issues, inverse_of: :project, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_many :incident_management_timeline_event_tags, inverse_of: :project, class_name: 'IncidentManagement::TimelineEventTag'
   has_many :labels, class_name: 'ProjectLabel'
-  has_many :integrations
   has_many :events
   has_many :milestones
+
+  has_many :integrations
+  has_many :alert_hooks_integrations, -> { alert_hooks }, class_name: 'Integration'
+  has_many :archive_trace_hooks_integrations, -> { archive_trace_hooks }, class_name: 'Integration'
+  has_many :confidential_issue_hooks_integrations, -> { confidential_issue_hooks }, class_name: 'Integration'
+  has_many :confidential_note_hooks_integrations, -> { confidential_note_hooks }, class_name: 'Integration'
+  has_many :deployment_hooks_integrations, -> { deployment_hooks }, class_name: 'Integration'
+  has_many :issue_hooks_integrations, -> { issue_hooks }, class_name: 'Integration'
+  has_many :job_hooks_integrations, -> { job_hooks }, class_name: 'Integration'
+  has_many :merge_request_hooks_integrations, -> { merge_request_hooks }, class_name: 'Integration'
+  has_many :note_hooks_integrations, -> { note_hooks }, class_name: 'Integration'
+  has_many :pipeline_hooks_integrations, -> { pipeline_hooks }, class_name: 'Integration'
+  has_many :push_hooks_integrations, -> { push_hooks }, class_name: 'Integration'
+  has_many :tag_push_hooks_integrations, -> { tag_push_hooks }, class_name: 'Integration'
+  has_many :wiki_page_hooks_integrations, -> { wiki_page_hooks }, class_name: 'Integration'
 
   # Projects with a very large number of notes may time out destroying them
   # through the foreign key. Additionally, the deprecated attachment uploader
@@ -1713,8 +1727,14 @@ class Project < ApplicationRecord
   def execute_integrations(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
     run_after_commit_or_now do
-      integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
-        integration.async_execute(data)
+      if use_integration_relations?
+        association("#{hooks_scope}_integrations").reader.each do |integration|
+          integration.async_execute(data)
+        end
+      else
+        integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
+          integration.async_execute(data)
+        end
       end
     end
   end
@@ -3345,6 +3365,12 @@ class Project < ApplicationRecord
       ProjectFeature::ENABLED
     else
       ProjectFeature::PRIVATE
+    end
+  end
+
+  def use_integration_relations?
+    strong_memoize(:use_integration_relations) do
+      Feature.enabled?(:cache_project_integrations, self)
     end
   end
 end

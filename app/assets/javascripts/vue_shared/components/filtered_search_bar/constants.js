@@ -60,6 +60,7 @@ export const TOKEN_TITLE_SOURCE_BRANCH = __('Source Branch');
 export const TOKEN_TITLE_STATUS = __('Status');
 export const TOKEN_TITLE_TARGET_BRANCH = __('Target Branch');
 export const TOKEN_TITLE_TYPE = __('Type');
+export const TOKEN_TITLE_SEARCH_WITHIN = __('Search Within');
 
 export const TOKEN_TYPE_APPROVED_BY = 'approved-by';
 export const TOKEN_TYPE_ASSIGNEE = 'assignee';
@@ -84,3 +85,5 @@ export const TOKEN_TYPE_STATUS = 'status';
 export const TOKEN_TYPE_TARGET_BRANCH = 'target-branch';
 export const TOKEN_TYPE_TYPE = 'type';
 export const TOKEN_TYPE_WEIGHT = 'weight';
+
+export const TOKEN_TYPE_SEARCH_WITHIN = 'in';

@@ -7,10 +7,17 @@ import getIssuesQuery from 'ee_else_ce/issues/dashboard/queries/get_issues.query
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import {
+  setSortPreferenceMutationResponse,
+  setSortPreferenceMutationResponseWithErrors,
+} from 'jest/issues/list/mock_data';
 import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_app.vue';
-import { i18n } from '~/issues/list/constants';
+import { CREATED_DESC, i18n, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
+import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import { getSortKey, getSortOptions } from '~/issues/list/utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -31,6 +38,7 @@ describe('IssuesDashboardApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasScopedLabelsFeature: true,
+    initialSort: CREATED_DESC,
     isPublicVisibilityRestricted: false,
     isSignedIn: true,
     rssPath: 'rss/path',
@@ -54,11 +62,19 @@ describe('IssuesDashboardApp component', () => {
     wrapper.findByRole('link', { name: IssuesDashboardApp.i18n.rssButtonText });
 
   const mountComponent = ({
+    provide = {},
     issuesQueryHandler = jest.fn().mockResolvedValue(defaultQueryResponse),
+    sortPreferenceMutationResponse = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse),
   } = {}) => {
     wrapper = mountExtended(IssuesDashboardApp, {
-      apolloProvider: createMockApollo([[getIssuesQuery, issuesQueryHandler]]),
-      provide: defaultProvide,
+      apolloProvider: createMockApollo([
+        [getIssuesQuery, issuesQueryHandler],
+        [setSortPreferenceMutation, sortPreferenceMutationResponse],
+      ]),
+      provide: {
+        ...defaultProvide,
+        ...provide,
+      },
     });
   };
 
@@ -71,11 +87,23 @@ describe('IssuesDashboardApp component', () => {
       hasNextPage: true,
       hasPreviousPage: false,
       hasScopedLabelsFeature: defaultProvide.hasScopedLabelsFeature,
+      initialSortBy: CREATED_DESC,
+      issuables: issuesQueryResponse.data.issues.nodes,
+      issuablesLoading: false,
       namespace: 'dashboard',
       recentSearchesStorageKey: 'issues',
       searchInputPlaceholder: IssuesDashboardApp.i18n.searchInputPlaceholder,
       showPaginationControls: true,
+      sortOptions: getSortOptions({
+        hasBlockedIssuesFeature: defaultProvide.hasBlockedIssuesFeature,
+        hasIssuableHealthStatusFeature: defaultProvide.hasIssuableHealthStatusFeature,
+        hasIssueWeightsFeature: defaultProvide.hasIssueWeightsFeature,
+      }),
       tabs: IssuesDashboardApp.IssuableListTabs,
+      urlParams: {
+        sort: urlSortParams[CREATED_DESC],
+        state: IssuableStates.Opened,
+      },
       useKeysetPagination: true,
     });
   });
@@ -118,6 +146,51 @@ describe('IssuesDashboardApp component', () => {
     });
   });
 
+  describe('initial url params', () => {
+    describe('sort', () => {
+      describe('when initial sort value uses old enum values', () => {
+        const oldEnumSortValues = Object.values(urlSortParams);
+
+        it.each(oldEnumSortValues)('initial sort is set with value %s', (sort) => {
+          mountComponent({ provide: { initialSort: sort } });
+
+          expect(findIssuableList().props('initialSortBy')).toBe(getSortKey(sort));
+        });
+      });
+
+      describe('when initial sort value uses new GraphQL enum values', () => {
+        const graphQLEnumSortValues = Object.keys(urlSortParams);
+
+        it.each(graphQLEnumSortValues)('initial sort is set with value %s', (sort) => {
+          mountComponent({ provide: { initialSort: sort.toLowerCase() } });
+
+          expect(findIssuableList().props('initialSortBy')).toBe(sort);
+        });
+      });
+
+      describe('when initial sort value is invalid', () => {
+        it.each(['', 'asdf', null, undefined])(
+          'initial sort is set to value CREATED_DESC',
+          (sort) => {
+            mountComponent({ provide: { initialSort: sort } });
+
+            expect(findIssuableList().props('initialSortBy')).toBe(CREATED_DESC);
+          },
+        );
+      });
+    });
+
+    describe('state', () => {
+      it('is set from the url params', () => {
+        const initialState = IssuableStates.All;
+        setWindowLocation(`?state=${initialState}`);
+        mountComponent();
+
+        expect(findIssuableList().props('currentTab')).toBe(initialState);
+      });
+    });
+  });
+
   describe('when there is an error fetching issues', () => {
     beforeEach(() => {
       mountComponent({ issuesQueryHandler: jest.fn().mockRejectedValue(new Error('ERROR')) });
@@ -148,6 +221,12 @@ describe('IssuesDashboardApp component', () => {
       it('updates ui to the new tab', () => {
         expect(findIssuableList().props('currentTab')).toBe(IssuableStates.Closed);
       });
+
+      it('updates url to the new tab', () => {
+        expect(findIssuableList().props('urlParams')).toMatchObject({
+          state: IssuableStates.Closed,
+        });
+      });
     });
 
     describe.each(['next-page', 'previous-page'])(
@@ -164,5 +243,63 @@ describe('IssuesDashboardApp component', () => {
         });
       },
     );
+
+    describe('when "sort" event is emitted by IssuableList', () => {
+      it.each(Object.keys(urlSortParams))(
+        'updates to the new sort when payload is `%s`',
+        async (sortKey) => {
+          // Ensure initial sort key is different so we can trigger an update when emitting a sort key
+          if (sortKey === CREATED_DESC) {
+            mountComponent({ provide: { initialSort: UPDATED_DESC } });
+          } else {
+            mountComponent();
+          }
+
+          findIssuableList().vm.$emit('sort', sortKey);
+          await nextTick();
+
+          expect(findIssuableList().props('urlParams')).toMatchObject({
+            sort: urlSortParams[sortKey],
+          });
+        },
+      );
+
+      describe('when user is signed in', () => {
+        it('calls mutation to save sort preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+
+          findIssuableList().vm.$emit('sort', UPDATED_DESC);
+
+          expect(mutationMock).toHaveBeenCalledWith({ input: { issuesSort: UPDATED_DESC } });
+        });
+
+        it('captures error when mutation response has errors', async () => {
+          const mutationMock = jest
+            .fn()
+            .mockResolvedValue(setSortPreferenceMutationResponseWithErrors);
+          mountComponent({ sortPreferenceMutationResponse: mutationMock });
+
+          findIssuableList().vm.$emit('sort', UPDATED_DESC);
+          await waitForPromises();
+
+          expect(Sentry.captureException).toHaveBeenCalledWith(new Error('oh no!'));
+        });
+      });
+
+      describe('when user is signed out', () => {
+        it('does not call mutation to save sort preference', () => {
+          const mutationMock = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+          mountComponent({
+            provide: { isSignedIn: false },
+            sortPreferenceMutationResponse: mutationMock,
+          });
+
+          findIssuableList().vm.$emit('sort', CREATED_DESC);
+
+          expect(mutationMock).not.toHaveBeenCalled();
+        });
+      });
+    });
   });
 });

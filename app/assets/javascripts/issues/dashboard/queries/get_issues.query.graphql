@@ -4,6 +4,7 @@
 query getDashboardIssues(
   $hideUsers: Boolean = false
   $isSignedIn: Boolean = false
+  $sort: IssueSort
   $state: IssuableState
   $afterCursor: String
   $beforeCursor: String
@@ -11,6 +12,7 @@ query getDashboardIssues(
   $lastPageSize: Int
 ) {
   issues(
+    sort: $sort
     state: $state
     after: $afterCursor
     before: $beforeCursor

@@ -186,9 +186,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def u2f_registrations
     current_user.u2f_registrations.map do |u2f_registration|
       {
-          name: u2f_registration.name,
-          created_at: u2f_registration.created_at,
-          delete_path: profile_u2f_registration_path(u2f_registration)
+        name: u2f_registration.name,
+        created_at: u2f_registration.created_at,
+        delete_path: profile_u2f_registration_path(u2f_registration)
       }
     end
   end
@@ -196,9 +196,9 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def webauthn_registrations
     current_user.webauthn_registrations.map do |webauthn_registration|
       {
-          name: webauthn_registration.name,
-          created_at: webauthn_registration.created_at,
-          delete_path: profile_webauthn_registration_path(webauthn_registration)
+        name: webauthn_registration.name,
+        created_at: webauthn_registration.created_at,
+        delete_path: profile_webauthn_registration_path(webauthn_registration)
       }
     end
   end

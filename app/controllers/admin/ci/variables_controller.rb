@@ -32,8 +32,8 @@ class Admin::Ci::VariablesController < Admin::ApplicationController
   def render_instance_variables
     render status: :ok,
            json: {
-        variables: Ci::InstanceVariableSerializer.new.represent(variables)
-      }
+             variables: Ci::InstanceVariableSerializer.new.represent(variables)
+           }
   end
 
   def render_error(errors)

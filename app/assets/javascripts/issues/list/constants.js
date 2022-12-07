@@ -22,6 +22,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
   TOKEN_TYPE_WEIGHT,
+  TOKEN_TYPE_SEARCH_WITHIN,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
@@ -111,6 +112,8 @@ export const i18n = {
   rssLabel: __('Subscribe to RSS feed'),
   searchPlaceholder: __('Search or filter results...'),
   upvotes: __('Upvotes'),
+  titles: __('Titles'),
+  descriptions: __('Descriptions'),
 };
 
 export const urlSortParams = {
@@ -120,8 +123,8 @@ export const urlSortParams = {
   [CREATED_DESC]: 'created_date',
   [UPDATED_ASC]: 'updated_asc',
   [UPDATED_DESC]: 'updated_desc',
-  [CLOSED_AT_ASC]: 'closed_asc',
-  [CLOSED_AT_DESC]: 'closed_desc',
+  [CLOSED_AT_ASC]: 'closed_at',
+  [CLOSED_AT_DESC]: 'closed_at_desc',
   [MILESTONE_DUE_ASC]: 'milestone',
   [MILESTONE_DUE_DESC]: 'milestone_due_desc',
   [DUE_DATE_ASC]: 'due_date',
@@ -186,6 +189,19 @@ export const filters = {
       },
       [OPERATOR_OR]: {
         [ALTERNATIVE_FILTER]: 'or[author_username]',
+      },
+    },
+  },
+  [TOKEN_TYPE_SEARCH_WITHIN]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'in',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'in',
+      },
+      [OPERATOR_NOT]: {
+        [NORMAL_FILTER]: 'not[in]',
       },
     },
   },

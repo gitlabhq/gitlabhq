@@ -237,7 +237,8 @@ RSpec.describe 'Database schema' do
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],
-    "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
+    "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
+    "EE::Gitlab::BackgroundMigration::FixSecurityScanStatuses::SecurityScan" => %w[info] # This is a migration model
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity

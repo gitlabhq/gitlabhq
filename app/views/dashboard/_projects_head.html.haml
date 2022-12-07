@@ -9,7 +9,8 @@
 
   - if current_user.can_create_project?
     .page-title-controls
-      = link_to _("New project"), new_project_path, class: "gl-button btn btn-confirm", data: { qa_selector: 'new_project_button' }
+      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { qa_selector: 'new_project_button' } }) do
+        = _("New project")
 
 .top-area
   .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
