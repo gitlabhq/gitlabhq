@@ -44,7 +44,6 @@
     .form-group
       = f.label :email, class: "label-bold #{'gl-mb-1' if Feature.enabled?(:restyle_login_page, @project)}"
       = f.email_field :email,
-        value: @invite_email,
         class: 'form-control gl-form-input middle js-validate-email',
         data: { qa_selector: 'new_user_email_field' },
         required: true,

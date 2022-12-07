@@ -4,13 +4,10 @@
   .main-notes-list::before {
     content: none;
   }
+}
 
-  .timeline-event-note {
-    p {
-      margin-bottom: 0;
-      font-size: 0.875rem;
-    }
-  }
+.timeline-event {
+  grid-template-columns: #{$gl-spacing-scale-9} minmax(0, 1fr) #{$gl-spacing-scale-7};
 }
 
 /**

@@ -213,6 +213,7 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
             expect { fill_in_sign_up_form(new_user) }.not_to change { User.count }
             expect(page).to have_content('prohibited this user from being saved')
             expect(page).to have_current_path(user_registration_path, ignore_query: true)
+            expect(find_field('Email').value).to eq(group_invite.invite_email)
           end
         end
 

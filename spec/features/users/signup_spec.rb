@@ -282,7 +282,7 @@ RSpec.describe 'Signup', feature_category: :users do
         expect(page).to have_content("Email has already been taken")
       end
 
-      it 'does not redisplay the password' do
+      it 'redisplays all fields except password' do
         create(:user, email: new_user.email)
         visit new_user_registration_path
 
@@ -291,6 +291,11 @@ RSpec.describe 'Signup', feature_category: :users do
 
         expect(page).to have_current_path user_registration_path, ignore_query: true
         expect(page.body).not_to match(/#{new_user.password}/)
+
+        expect(find_field('First name').value).to eq(new_user.first_name)
+        expect(find_field('Last name').value).to eq(new_user.last_name)
+        expect(find_field('Username').value).to eq(new_user.username)
+        expect(find_field('Email').value).to eq(new_user.email)
       end
     end
 

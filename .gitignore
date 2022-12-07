@@ -73,7 +73,6 @@ eslint-report.html
 /.gitlab_workhorse_secret
 /.gitlab_pages_secret
 /.gitlab_kas_secret
-/.gitlab_suggested_reviewers_secret
 /webpack-report/
 /crystalball/
 /test_results/

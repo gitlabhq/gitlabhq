@@ -24,10 +24,12 @@
     %p
       #{_('Status')}: #{current_user.two_factor_enabled? ? _('Enabled') : _('Disabled')}
     - if current_user.two_factor_enabled?
-      = link_to _('Manage two-factor authentication'), profile_two_factor_auth_path, class: 'gl-button btn btn-confirm'
+      = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_two_factor_auth_path) do
+        = _('Manage two-factor authentication')
     - else
       .gl-mb-3
-        = link_to _('Enable two-factor authentication'), profile_two_factor_auth_path, class: 'gl-button btn btn-confirm', data: { qa_selector: 'enable_2fa_button' }
+        = render Pajamas::ButtonComponent.new(variant: :confirm, href: profile_two_factor_auth_path, button_options: { data: { qa_selector: 'enable_2fa_button' }}) do
+          = _('Enable two-factor authentication')
   .col-lg-12
     %hr
 

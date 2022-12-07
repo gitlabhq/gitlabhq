@@ -329,6 +329,8 @@ $tabs-holder-z-index: 250;
       top: 0;
       // !important is required to override inline styles of resizable sidebar
       width: 100% !important;
+      // avoid sticky elements overlap header and other elements
+      z-index: 1;
     }
 
     .tree-list-holder {

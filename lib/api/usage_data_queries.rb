@@ -14,6 +14,12 @@ module API
 
       desc 'Get raw SQL queries for usage data SQL metrics' do
         detail 'This feature was introduced in GitLab 13.11.'
+        success code: 200
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Forbidden' },
+          { code: 404, message: 'Not Found' }
+        ]
       end
 
       get 'queries' do

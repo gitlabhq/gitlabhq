@@ -18,7 +18,6 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
   before_action :init_preferred_language, only: :new
   before_action :load_recaptcha, only: :new
-  before_action :set_invite_params, only: :new
   before_action only: [:create] do
     check_rate_limit!(:user_sign_up, scope: request.ip)
   end
@@ -32,6 +31,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def new
     @resource = build_resource
+    set_invite_params
   end
 
   def create
@@ -221,7 +221,9 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def set_invite_params
-    @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
+    if resource.email.blank? && params[:invite_email].present?
+      resource.email = @invite_email = ActionController::Base.helpers.sanitize(params[:invite_email])
+    end
   end
 
   def after_pending_invitations_hook

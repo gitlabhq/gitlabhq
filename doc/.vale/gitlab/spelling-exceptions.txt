@@ -84,6 +84,7 @@ backtraces
 backtracing
 badging
 balancer
+balancer's
 Bamboo
 Bazel
 bcrypt
@@ -100,6 +101,7 @@ boolean
 booleans
 Bootsnap
 bot
+bot's
 Bottlerocket
 browsable
 bugfix
@@ -179,6 +181,7 @@ Coinbase
 colocate
 colocated
 colocating
+commit's
 CommonMark
 compilable
 composable
@@ -205,7 +208,7 @@ crosslinking
 crosslinks
 Crossplane
 Crowdin
-Crypto
+crypto
 CSSComb
 CSV
 CSVs
@@ -586,6 +589,7 @@ nameserver
 nameservers
 namespace
 namespaced
+namespace's
 namespaces
 namespacing
 namespacings
@@ -916,6 +920,7 @@ sublicensed
 sublicenses
 sublicensing
 submodule
+submodule's
 subnet
 subnets
 subnetting
