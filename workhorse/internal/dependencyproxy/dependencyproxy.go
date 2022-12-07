@@ -74,7 +74,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	if err != nil {
 		helper.Fail500(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
-	saveFileRequest.Header = helper.HeaderClone(r.Header)
+	saveFileRequest.Header = r.Header.Clone()
 
 	// forward headers from dependencyResponse to rails and client
 	for key, values := range dependencyResponse.Header {

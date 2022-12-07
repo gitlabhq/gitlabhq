@@ -83,6 +83,7 @@ FactoryBot.define do
       end
 
       trait :running do
+        started_at { Time.current }
         status { :running }
       end
 

@@ -48490,7 +48490,7 @@ msgstr ""
 msgid "ciReport|Found %{issuesWithCount}"
 msgstr ""
 
-msgid "ciReport|Full Report"
+msgid "ciReport|Full report"
 msgstr ""
 
 msgid "ciReport|Generic Report"

@@ -59,11 +59,8 @@ their GitHub authors and assignees in the database of the GitLab instance. Pull 
 GitLab.
 
 For this association to succeed, each GitHub author and assignee in the repository
-must meet one of the following conditions prior to the import:
-
-- Have previously logged in to a GitLab account using the GitHub icon.
-- Have a GitHub account with a [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
-  that matches their GitLab account's email address.
+must have a [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
+on GitHub that matches their GitLab email address (regardless of how the account was created).
 
 GitLab content imports that use GitHub accounts require that the GitHub public-facing email address is populated. This means
 all comments and contributions are properly mapped to the same user in GitLab. GitHub Enterprise does not require this
@@ -73,10 +70,8 @@ field to be populated so you may have to add it on existing accounts.
 
 ### Use the GitHub integration
 
-Before you begin, ensure that any GitHub users who you want to map to GitLab users have either:
-
-- A GitLab account that has logged in using the GitHub icon.
-- A GitLab account with an email address that matches the [publicly visible email address](https://docs.github.com/en/rest/users#get-a-user) in the profile of the GitHub user
+Before you begin, ensure that any GitHub user you want to map to a GitLab user has a GitLab email address that matches their
+[publicly visible email address](https://docs.github.com/en/rest/users#get-a-user) on GitHub.
 
 If you are importing to GitLab.com, you can alternatively import GitHub repositories using a [personal access token](#use-a-github-token).
 We do not recommend this method, as it does not associate all user activity (such as issues and pull requests) with matching GitLab users.

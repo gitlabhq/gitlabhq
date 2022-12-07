@@ -492,9 +492,9 @@ func TestSendURLForArtifacts(t *testing.T) {
 		transferEncoding []string
 		contentLength    int
 	}{
-		{"No content-length, chunked TE", chunkedHandler, []string{"chunked"}, -1},    // Case 3 in https://tools.ietf.org/html/rfc7230#section-3.3.2
-		{"Known content-length, identity TE", regularHandler, nil, len(expectedBody)}, // Case 5 in https://tools.ietf.org/html/rfc7230#section-3.3.2
-		{"No content-length, identity TE", rawHandler, []string{"chunked"}, -1},       // Case 7 in https://tools.ietf.org/html/rfc7230#section-3.3.2
+		{"No content-length, chunked TE", chunkedHandler, []string{"chunked"}, -1},    // Case 3 in https://www.rfc-editor.org/rfc/rfc7230#section-3.3.2
+		{"Known content-length, identity TE", regularHandler, nil, len(expectedBody)}, // Case 5 in https://www.rfc-editor.org/rfc/rfc7230#section-3.3.2
+		{"No content-length, identity TE", rawHandler, []string{"chunked"}, -1},       // Case 7 in https://www.rfc-editor.org/rfc/rfc7230#section-3.3.2
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			server := httptest.NewServer(tc.handler)

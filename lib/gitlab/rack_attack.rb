@@ -49,7 +49,7 @@ module Gitlab
     #
     # - Retry-After: the remaining duration in seconds until the quota is
     # reset. This is a standardized HTTP header:
-    # https://tools.ietf.org/html/rfc7231#page-69
+    # https://www.rfc-editor.org/rfc/rfc7231#page-69
     #
     # - RateLimit-Reset: the point of time that the request quota is reset, in Unix time
     #

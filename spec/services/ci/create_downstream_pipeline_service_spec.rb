@@ -13,7 +13,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
   let(:downstream_project) { create(:project, :repository) }
 
   let!(:upstream_pipeline) do
-    create(:ci_pipeline, :running, project: upstream_project)
+    create(:ci_pipeline, :created, project: upstream_project)
   end
 
   let(:trigger) do
@@ -33,6 +33,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
   end
 
   let(:service) { described_class.new(upstream_project, user) }
+  let(:pipeline) { subject.payload }
 
   before do
     upstream_project.add_developer(user)
@@ -48,6 +49,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     it 'does not create a pipeline' do
       expect { subject }
         .not_to change { Ci::Pipeline.count }
+      expect(subject).to be_error
+      expect(subject.message).to eq("Pre-conditions not met")
     end
 
     it 'changes pipeline bridge job status to failed' do
@@ -63,9 +66,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     it 'does not create a new pipeline' do
       expect { subject }
         .not_to change { Ci::Pipeline.count }
+      expect(subject).to be_error
+      expect(subject.message).to eq("Pre-conditions not met")
     end
 
-    it 'changes status of the bridge build' do
+    it 'changes status of the bridge build to failed' do
       subject
 
       expect(bridge.reload).to be_failed
@@ -82,9 +87,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     it 'does not create a new pipeline' do
       expect { subject }
         .not_to change { Ci::Pipeline.count }
+      expect(subject).to be_error
+      expect(subject.message).to eq("Pre-conditions not met")
     end
 
-    it 'changes status of the bridge build' do
+    it 'changes status of the bridge build to failed' do
       subject
 
       expect(bridge.reload).to be_failed
@@ -103,11 +110,10 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     it 'creates only one new pipeline' do
       expect { subject }
         .to change { Ci::Pipeline.count }.by(1)
+      expect(subject).to be_success
     end
 
     it 'creates a new pipeline in a downstream project' do
-      pipeline = subject
-
       expect(pipeline.user).to eq bridge.user
       expect(pipeline.project).to eq downstream_project
       expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
@@ -117,16 +123,31 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     end
 
     it_behaves_like 'logs downstream pipeline creation' do
+      let(:downstream_pipeline) { pipeline }
       let(:expected_root_pipeline) { upstream_pipeline }
       let(:expected_hierarchy_size) { 2 }
       let(:expected_downstream_relationship) { :multi_project }
     end
 
     it 'updates bridge status when downstream pipeline gets processed' do
-      pipeline = subject
-
       expect(pipeline.reload).to be_created
       expect(bridge.reload).to be_success
+    end
+
+    it 'triggers the upstream pipeline duration calculation', :sidekiq_inline do
+      expect { subject }
+        .to change { upstream_pipeline.reload.duration }.from(nil).to(an_instance_of(Integer))
+    end
+
+    context 'when feature flag ci_run_bridge_for_pipeline_duration_calculation is disabled' do
+      before do
+        stub_feature_flags(ci_run_bridge_for_pipeline_duration_calculation: false)
+      end
+
+      it 'does not trigger the upstream pipeline duration calculation', :sidekiq_inline do
+        expect { subject }
+          .not_to change { upstream_pipeline.reload.duration }.from(nil)
+      end
     end
 
     context 'when bridge job has already any downstream pipelines' do
@@ -147,7 +168,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             bridge_id: bridge.id, project_id: bridge.project.id)
           .and_call_original
         expect(Ci::CreatePipelineService).not_to receive(:new)
-        expect(subject).to eq({ message: "Already has a downstream pipeline", status: :error })
+        expect(subject).to be_error
+        expect(subject.message).to eq("Already has a downstream pipeline")
       end
     end
 
@@ -157,8 +179,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       end
 
       it 'is using default branch name' do
-        pipeline = subject
-
         expect(pipeline.ref).to eq 'master'
       end
     end
@@ -171,11 +191,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       it 'creates only one new pipeline' do
         expect { subject }
           .to change { Ci::Pipeline.count }.by(1)
+        expect(subject).to be_error
+        expect(subject.message).to match_array(["jobs job config should implement a script: or a trigger: keyword"])
       end
 
       it 'creates a new pipeline in a downstream project' do
-        pipeline = subject
-
         expect(pipeline.user).to eq bridge.user
         expect(pipeline.project).to eq downstream_project
         expect(bridge.sourced_pipelines.first.pipeline).to eq pipeline
@@ -185,8 +205,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       end
 
       it 'updates the bridge status when downstream pipeline gets processed' do
-        pipeline = subject
-
         expect(pipeline.reload).to be_failed
         expect(bridge.reload).to be_failed
       end
@@ -201,6 +219,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         it 'does not create a new pipeline' do
           expect { subject }
             .not_to change { Ci::Pipeline.count }
+          expect(subject).to be_error
+          expect(subject.message).to eq("Pre-conditions not met")
         end
 
         it 'changes status of the bridge build' do
@@ -222,12 +242,10 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           it 'creates only one new pipeline' do
             expect { subject }
               .to change { Ci::Pipeline.count }.by(1)
+            expect(subject).to be_success
           end
 
           it 'creates a child pipeline in the same project' do
-            pipeline = subject
-            pipeline.reload
-
             expect(pipeline.builds.map(&:name)).to match_array(%w[rspec echo])
             expect(pipeline.user).to eq bridge.user
             expect(pipeline.project).to eq bridge.project
@@ -238,16 +256,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           end
 
           it 'updates bridge status when downstream pipeline gets processed' do
-            pipeline = subject
-
             expect(pipeline.reload).to be_created
             expect(bridge.reload).to be_success
           end
 
           it 'propagates parent pipeline settings to the child pipeline' do
-            pipeline = subject
-            pipeline.reload
-
             expect(pipeline.ref).to eq(upstream_pipeline.ref)
             expect(pipeline.sha).to eq(upstream_pipeline.sha)
             expect(pipeline.source_sha).to eq(upstream_pipeline.source_sha)
@@ -276,6 +289,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         it_behaves_like 'creates a child pipeline'
 
         it_behaves_like 'logs downstream pipeline creation' do
+          let(:downstream_pipeline) { pipeline }
           let(:expected_root_pipeline) { upstream_pipeline }
           let(:expected_hierarchy_size) { 2 }
           let(:expected_downstream_relationship) { :parent_child }
@@ -283,6 +297,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
         it 'updates the bridge job to success' do
           expect { subject }.to change { bridge.status }.to 'success'
+          expect(subject).to be_success
         end
 
         context 'when bridge uses "depend" strategy' do
@@ -292,8 +307,9 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
             }
           end
 
-          it 'does not update the bridge job status' do
-            expect { subject }.not_to change { bridge.status }
+          it 'update the bridge job to running status' do
+            expect { subject }.to change { bridge.status }.from('pending').to('running')
+            expect(subject).to be_success
           end
         end
 
@@ -323,8 +339,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           it_behaves_like 'creates a child pipeline'
 
           it 'propagates the merge request to the child pipeline' do
-            pipeline = subject
-
             expect(pipeline.merge_request).to eq(merge_request)
             expect(pipeline).to be_merge_request
           end
@@ -341,11 +355,13 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           it 'creates the pipeline' do
             expect { subject }
               .to change { Ci::Pipeline.count }.by(1)
+            expect(subject).to be_success
 
             expect(bridge.reload).to be_success
           end
 
           it_behaves_like 'logs downstream pipeline creation' do
+            let(:downstream_pipeline) { pipeline }
             let(:expected_root_pipeline) { upstream_pipeline.parent_pipeline }
             let(:expected_hierarchy_size) { 3 }
             let(:expected_downstream_relationship) { :parent_child }
@@ -394,6 +410,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
           it 'create the pipeline' do
             expect { subject }.to change { Ci::Pipeline.count }.by(1)
+            expect(subject).to be_success
           end
         end
 
@@ -406,11 +423,10 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
           it 'creates a new pipeline allowing variables to be passed downstream' do
             expect { subject }.to change { Ci::Pipeline.count }.by(1)
+            expect(subject).to be_success
           end
 
           it 'passes variables downstream from the bridge' do
-            pipeline = subject
-
             pipeline.variables.map(&:key).tap do |variables|
               expect(variables).to include 'BRIDGE'
             end
@@ -466,6 +482,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         it 'does not create a new pipeline' do
           expect { subject }
             .not_to change { Ci::Pipeline.count }
+          expect(subject).to be_error
+          expect(subject.message).to eq("Pre-conditions not met")
         end
 
         it 'changes status of the bridge build' do
@@ -480,6 +498,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         it 'creates a new pipeline' do
           expect { subject }
             .to change { Ci::Pipeline.count }
+          expect(subject).to be_success
         end
 
         it 'expect bridge build not to be failed' do
@@ -559,18 +578,16 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       it 'creates only one new pipeline' do
         expect { subject }
           .to change { Ci::Pipeline.count }.by(1)
+        expect(subject).to be_error
+        expect(subject.message).to match_array(["jobs invalid config should implement a script: or a trigger: keyword"])
       end
 
       it 'creates a new pipeline in the downstream project' do
-        pipeline = subject
-
         expect(pipeline.user).to eq bridge.user
         expect(pipeline.project).to eq downstream_project
       end
 
       it 'drops the bridge' do
-        pipeline = subject
-
         expect(pipeline.reload).to be_failed
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
@@ -585,15 +602,30 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         bridge.drop!
       end
 
-      it 'tracks the exception' do
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(
-            instance_of(Ci::Bridge::InvalidTransitionError),
-            bridge_id: bridge.id,
-            downstream_pipeline_id: kind_of(Numeric))
+      it 'returns the error' do
+        expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
+        expect(subject).to be_error
+        expect(subject.message).to eq('Can not run the bridge')
+      end
 
-        subject
+      context 'when feature flag ci_run_bridge_for_pipeline_duration_calculation is disabled' do
+        before do
+          stub_feature_flags(ci_run_bridge_for_pipeline_duration_calculation: false)
+        end
+
+        it 'tracks the exception' do
+          expect(Gitlab::ErrorTracking)
+            .to receive(:track_exception)
+            .with(
+              instance_of(Ci::Bridge::InvalidTransitionError),
+              bridge_id: bridge.id,
+              downstream_pipeline_id: kind_of(Numeric))
+
+          expect(subject).to be_error
+          expect(subject.message).to eq(
+            "Cannot transition status via :drop from :failed (Reason(s): Status cannot transition via \"drop\")"
+          )
+        end
       end
     end
 
@@ -603,8 +635,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       end
 
       it 'passes bridge variables to downstream pipeline' do
-        pipeline = subject
-
         expect(pipeline.variables.first)
           .to have_attributes(key: 'BRIDGE', value: 'var')
       end
@@ -616,8 +646,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
       end
 
       it 'does not pass pipeline variables directly downstream' do
-        pipeline = subject
-
         pipeline.variables.map(&:key).tap do |variables|
           expect(variables).not_to include 'PIPELINE_VARIABLE'
         end
@@ -629,8 +657,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         end
 
         it 'makes it possible to pass pipeline variable downstream' do
-          pipeline = subject
-
           pipeline.variables.find_by(key: 'BRIDGE').tap do |variable|
             expect(variable.value).to eq 'my-value-var'
           end
@@ -644,11 +670,11 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
           it 'does not create a new pipeline' do
             expect { subject }
               .not_to change { Ci::Pipeline.count }
+            expect(subject).to be_error
+            expect(subject.message).to match_array(["Insufficient permissions to set pipeline variables"])
           end
 
           it 'ignores variables passed downstream from the bridge' do
-            pipeline = subject
-
             pipeline.variables.map(&:key).tap do |variables|
               expect(variables).not_to include 'BRIDGE'
             end
@@ -668,7 +694,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
     # TODO: Move this context into a feature spec that uses
     # multiple pipeline processing services. Location TBD in:
     # https://gitlab.com/gitlab-org/gitlab/issues/36216
-    context 'when configured with bridge job rules' do
+    context 'when configured with bridge job rules', :sidekiq_inline do
       before do
         stub_ci_pipeline_yaml_file(config)
         downstream_project.add_maintainer(upstream_project.first_owner)
@@ -701,6 +727,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
         it 'creates the downstream pipeline' do
           expect { subject }
             .to change(downstream_project.ci_pipelines, :count).by(1)
+          expect(subject).to be_error
+          expect(subject.message).to eq("Already has a downstream pipeline")
         end
       end
     end
@@ -731,6 +759,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
       it 'does not create a pipeline and drops the bridge' do
         expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
+        expect(subject).to be_error
+        expect(subject.message).to match_array(["Reference not found"])
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
@@ -754,6 +784,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
       it 'does not create a pipeline and drops the bridge' do
         expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
+        expect(subject).to be_error
+        expect(subject.message).to match_array(["No stages / jobs for this pipeline."])
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
@@ -776,6 +808,10 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
       it 'creates the pipeline but drops the bridge' do
         expect { subject }.to change(downstream_project.ci_pipelines, :count).by(1)
+        expect(subject).to be_error
+        expect(subject.message).to eq(
+          ["test job: chosen stage does not exist; available stages are .pre, build, test, deploy, .post"]
+        )
 
         expect(bridge.reload).to be_failed
         expect(bridge.failure_reason).to eq('downstream_pipeline_creation_failed')
@@ -808,6 +844,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
         it 'creates the pipeline' do
           expect { subject }.to change(downstream_project.ci_pipelines, :count).by(1)
+          expect(subject).to be_success
 
           expect(bridge.reload).to be_success
         end
@@ -822,6 +859,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
     context 'when a downstream pipeline has sibling pipelines' do
       it_behaves_like 'logs downstream pipeline creation' do
+        let(:downstream_pipeline) { pipeline }
         let(:expected_root_pipeline) { upstream_pipeline }
         let(:expected_downstream_relationship) { :multi_project }
 
@@ -849,6 +887,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
       it 'does not create a new pipeline' do
         expect { subject }.not_to change { Ci::Pipeline.count }
+        expect(subject).to be_error
+        expect(subject.message).to eq("Pre-conditions not met")
       end
 
       it 'drops the trigger job with an explanatory reason' do
@@ -865,6 +905,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute' do
 
         it 'creates a new pipeline' do
           expect { subject }.to change { Ci::Pipeline.count }.by(1)
+          expect(subject).to be_success
         end
 
         it 'marks the bridge job as successful' do

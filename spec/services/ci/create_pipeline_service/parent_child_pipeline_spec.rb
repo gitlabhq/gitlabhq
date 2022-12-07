@@ -108,7 +108,7 @@ RSpec.describe Ci::CreatePipelineService, '#execute', :yaml_processor_feature_fl
           pipeline = create_pipeline!
 
           test = pipeline.statuses.find_by(name: 'instrumentation_test')
-          expect(test).to be_pending
+          expect(test).to be_running
           expect(pipeline.triggered_pipelines.count).to eq(1)
         end
 

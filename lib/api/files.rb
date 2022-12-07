@@ -172,14 +172,24 @@ module API
                              desc: 'The url encoded path to the file.', documentation: { example: 'lib%2Fclass%2Erb' }
         optional :ref, type: String,
                        desc: 'The name of branch, tag or commit', allow_blank: false, documentation: { example: 'main' }
+        optional :lfs, type: Boolean,
+                       desc: 'Retrieve binary data for a file that is an lfs pointer',
+                       default: false
       end
       get ":id/repository/files/:file_path/raw", requirements: FILE_ENDPOINT_REQUIREMENTS, urgency: :low do
         assign_file_vars!
 
-        no_cache_headers
-        set_http_headers(blob_data)
+        if params[:lfs] && @blob.stored_externally?
+          lfs_object = LfsObject.find_by_oid(@blob.lfs_oid)
+          not_found! unless lfs_object&.project_allowed_access?(@project)
 
-        send_git_blob @repo, @blob
+          present_carrierwave_file!(lfs_object.file)
+        else
+          no_cache_headers
+          set_http_headers(blob_data)
+
+          send_git_blob @repo, @blob
+        end
       end
 
       desc 'Get file metadata from repository'

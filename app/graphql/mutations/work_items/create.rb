@@ -73,3 +73,5 @@ module Mutations
     end
   end
 end
+
+Mutations::WorkItems::Create.prepend_mod

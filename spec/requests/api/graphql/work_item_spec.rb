@@ -116,6 +116,7 @@ RSpec.describe 'Query.work_item(id)' do
                     id
                   }
                 }
+                hasChildren
               }
             }
           GRAPHQL
@@ -132,7 +133,8 @@ RSpec.describe 'Query.work_item(id)' do
                   [
                     hash_including('id' => child_link1.work_item.to_gid.to_s),
                     hash_including('id' => child_link2.work_item.to_gid.to_s)
-                  ]) }
+                  ]) },
+                'hasChildren' => true
               )
             )
           )
@@ -165,7 +167,8 @@ RSpec.describe 'Query.work_item(id)' do
                   'children' => { 'nodes' => match_array(
                     [
                       hash_including('id' => child_link1.work_item.to_gid.to_s)
-                    ]) }
+                    ]) },
+                  'hasChildren' => true
                 )
               )
             )
@@ -183,7 +186,8 @@ RSpec.describe 'Query.work_item(id)' do
                 hash_including(
                   'type' => 'HIERARCHY',
                   'parent' => hash_including('id' => parent_link.work_item_parent.to_gid.to_s),
-                  'children' => { 'nodes' => match_array([]) }
+                  'children' => { 'nodes' => match_array([]) },
+                  'hasChildren' => false
                 )
               )
             )

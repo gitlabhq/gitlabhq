@@ -5929,6 +5929,7 @@ Input type: `WorkItemCreateInput`
 | <a id="mutationworkitemcreateconfidential"></a>`confidential` | [`Boolean`](#boolean) | Sets the work item confidentiality. |
 | <a id="mutationworkitemcreatedescription"></a>`description` | [`String`](#string) | Description of the work item. |
 | <a id="mutationworkitemcreatehierarchywidget"></a>`hierarchyWidget` | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | Input for hierarchy widget. |
+| <a id="mutationworkitemcreateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Iteration widget of the work item. |
 | <a id="mutationworkitemcreatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
 | <a id="mutationworkitemcreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the work item is associated with. |
 | <a id="mutationworkitemcreatetitle"></a>`title` | [`String!`](#string) | Title of the work item. |
@@ -20733,6 +20734,7 @@ Represents a hierarchy widget.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgethierarchychildren"></a>`children` | [`WorkItemConnection`](#workitemconnection) | Child work items. (see [Connections](#connections)) |
+| <a id="workitemwidgethierarchyhaschildren"></a>`hasChildren` | [`Boolean!`](#boolean) | Indicates if the work item has children. |
 | <a id="workitemwidgethierarchyparent"></a>`parent` | [`WorkItem`](#workitem) | Parent work item. |
 | <a id="workitemwidgethierarchytype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 
@@ -24532,6 +24534,7 @@ Represents an escalation rule.
 | <a id="negatedboardissueinputassigneeusername"></a>`assigneeUsername` | [`[String]`](#string) | Filter by assignee username. |
 | <a id="negatedboardissueinputauthorusername"></a>`authorUsername` | [`String`](#string) | Filter by author username. |
 | <a id="negatedboardissueinputepicid"></a>`epicId` | [`EpicID`](#epicid) | Filter by epic ID. Incompatible with epicWildcardId. |
+| <a id="negatedboardissueinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatus`](#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | <a id="negatedboardissueinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues. For example `["1", "2"]`. |
 | <a id="negatedboardissueinputiterationid"></a>`iterationId` | [`[IterationID!]`](#iterationid) | Filter by a list of iteration IDs. Incompatible with iterationWildcardId. |
 | <a id="negatedboardissueinputiterationtitle"></a>`iterationTitle` | [`String`](#string) | Filter by iteration title. |
@@ -24574,6 +24577,7 @@ Represents an escalation rule.
 | <a id="negatedissuefilterinputassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of users not assigned to the issue. |
 | <a id="negatedissuefilterinputauthorusername"></a>`authorUsername` | [`String`](#string) | Username of a user who didn't author the issue. |
 | <a id="negatedissuefilterinputepicid"></a>`epicId` | [`String`](#string) | ID of an epic not associated with the issues. |
+| <a id="negatedissuefilterinputhealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatus`](#healthstatus) | Health status not applied to the issue. Includes issues where health status is not set. |
 | <a id="negatedissuefilterinputiids"></a>`iids` | [`[String!]`](#string) | List of IIDs of issues to exclude. For example, `[1, 2]`. |
 | <a id="negatedissuefilterinputiterationid"></a>`iterationId` | [`[ID!]`](#id) | List of iteration Global IDs not applied to the issue. |
 | <a id="negatedissuefilterinputiterationwildcardid"></a>`iterationWildcardId` | [`IterationWildcardId`](#iterationwildcardid) | Filter by negated iteration ID wildcard. |

@@ -1,7 +1,7 @@
 import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlBanner } from '@gitlab/ui';
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import AgentEmptyState from '~/clusters_list/components/agent_empty_state.vue';
 import AgentTable from '~/clusters_list/components/agent_table.vue';
 import Agents from '~/clusters_list/components/agents.vue';
@@ -12,10 +12,10 @@ import {
 } from '~/clusters_list/constants';
 import getAgentsQuery from '~/clusters_list/graphql/queries/get_agents.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
-const localVue = createLocalVue();
-localVue.use(VueApollo);
+Vue.use(VueApollo);
 
 describe('Agents', () => {
   let wrapper;
@@ -34,9 +34,10 @@ describe('Agents', () => {
     pageInfo = null,
     trees = [],
     count = 0,
+    queryResponse = null,
   }) => {
     const provide = provideData;
-    const apolloQueryResponse = {
+    const queryResponseData = {
       data: {
         project: {
           id: '1',
@@ -51,13 +52,12 @@ describe('Agents', () => {
         },
       },
     };
+    const agentQueryResponse =
+      queryResponse || jest.fn().mockResolvedValue(queryResponseData, provide);
 
-    const apolloProvider = createMockApollo([
-      [getAgentsQuery, jest.fn().mockResolvedValue(apolloQueryResponse, provide)],
-    ]);
+    const apolloProvider = createMockApollo([[getAgentsQuery, agentQueryResponse]]);
 
     wrapper = shallowMount(Agents, {
-      localVue,
       apolloProvider,
       propsData: {
         ...defaultProps,
@@ -313,24 +313,11 @@ describe('Agents', () => {
   });
 
   describe('when agents query is loading', () => {
-    const mocks = {
-      $apollo: {
-        queries: {
-          agents: {
-            loading: true,
-          },
-        },
-      },
-    };
-
-    beforeEach(async () => {
-      wrapper = shallowMount(Agents, {
-        mocks,
-        propsData: defaultProps,
-        provide: provideData,
+    beforeEach(() => {
+      createWrapper({
+        queryResponse: jest.fn().mockReturnValue(new Promise(() => {})),
       });
-
-      await nextTick();
+      return waitForPromises();
     });
 
     it('displays a loading icon', () => {

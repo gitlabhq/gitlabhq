@@ -50,7 +50,7 @@ RSpec.describe 'Database schema' do
     ci_resources: %w[partition_id],
     ci_runner_projects: %w[runner_id],
     ci_running_builds: %w[partition_id],
-    ci_sources_pipelines: %w[partition_id],
+    ci_sources_pipelines: %w[partition_id source_partition_id],
     ci_stages: %w[partition_id],
     ci_trigger_requests: %w[commit_id],
     ci_unit_test_failures: %w[partition_id],

@@ -9,7 +9,7 @@ product_category: integrations
 value_type: boolean
 status: active
 time_frame: none
-data_source: database
+data_source: system
 distribution:
 - ce
 - ee

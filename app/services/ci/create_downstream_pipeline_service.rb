@@ -16,19 +16,23 @@ module Ci
     def execute(bridge)
       @bridge = bridge
 
-      if bridge.has_downstream_pipeline?
+      if @bridge.has_downstream_pipeline?
         Gitlab::ErrorTracking.track_exception(
           DuplicateDownstreamPipelineError.new,
           bridge_id: @bridge.id, project_id: @bridge.project_id
         )
 
-        return error('Already has a downstream pipeline')
+        return ServiceResponse.error(message: 'Already has a downstream pipeline')
       end
 
       pipeline_params = @bridge.downstream_pipeline_params
       target_ref = pipeline_params.dig(:target_revision, :ref)
 
-      return error('Pre-conditions not met') unless ensure_preconditions!(target_ref)
+      return ServiceResponse.error(message: 'Pre-conditions not met') unless ensure_preconditions!(target_ref)
+
+      if Feature.enabled?(:ci_run_bridge_for_pipeline_duration_calculation, project) && !@bridge.run
+        return ServiceResponse.error(message: 'Can not run the bridge')
+      end
 
       service = ::Ci::CreatePipelineService.new(
         pipeline_params.fetch(:project),
@@ -40,10 +44,7 @@ module Ci
         .payload
 
       log_downstream_pipeline_creation(downstream_pipeline)
-
-      downstream_pipeline.tap do |pipeline|
-        update_bridge_status!(@bridge, pipeline)
-      end
+      update_bridge_status!(@bridge, downstream_pipeline)
     end
 
     private
@@ -54,9 +55,12 @@ module Ci
           # If bridge uses `strategy:depend` we leave it running
           # and update the status when the downstream pipeline completes.
           subject.success! unless subject.dependent?
+          ServiceResponse.success(payload: pipeline)
         else
-          subject.options[:downstream_errors] = pipeline.errors.full_messages
+          message = pipeline.errors.full_messages
+          subject.options[:downstream_errors] = message
           subject.drop!(:downstream_pipeline_creation_failed)
+          ServiceResponse.error(payload: pipeline, message: message)
         end
       end
     rescue StateMachines::InvalidTransition => e
@@ -64,6 +68,7 @@ module Ci
         Ci::Bridge::InvalidTransitionError.new(e.message),
         bridge_id: bridge.id,
         downstream_pipeline_id: pipeline.id)
+      ServiceResponse.error(payload: pipeline, message: e.message)
     end
 
     def ensure_preconditions!(target_ref)

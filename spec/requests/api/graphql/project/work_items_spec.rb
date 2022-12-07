@@ -112,6 +112,57 @@ RSpec.describe 'getting a work item list for a project' do
     end
   end
 
+  context 'when querying WorkItemWidgetHierarchy' do
+    let_it_be(:children) { create_list(:work_item, 3, :task, project: project) }
+    let_it_be(:child_link1) { create(:parent_link, work_item_parent: item1, work_item: children[0]) }
+
+    let(:fields) do
+      <<~GRAPHQL
+          nodes {
+            widgets {
+              type
+              ... on WorkItemWidgetHierarchy {
+                hasChildren
+                parent { id }
+                children { nodes { id } }
+              }
+            }
+          }
+      GRAPHQL
+    end
+
+    it 'executes limited number of N+1 queries' do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: current_user)
+      end
+
+      parent_work_items = create_list(:work_item, 2, project: project)
+      create(:parent_link, work_item_parent: parent_work_items[0], work_item: children[1])
+      create(:parent_link, work_item_parent: parent_work_items[1], work_item: children[2])
+
+      # There are 2 extra queries for fetching the children field
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/363569
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_query_limit(control).with_threshold(2)
+    end
+
+    it 'avoids N+1 queries when children are added to a work item' do
+      post_graphql(query, current_user: current_user) # warm-up
+
+      control = ActiveRecord::QueryRecorder.new do
+        post_graphql(query, current_user: current_user)
+      end
+
+      create(:parent_link, work_item_parent: item1, work_item: children[1])
+      create(:parent_link, work_item_parent: item1, work_item: children[2])
+
+      expect { post_graphql(query, current_user: current_user) }
+        .not_to exceed_query_limit(control)
+    end
+  end
+
   it_behaves_like 'a working graphql query' do
     before do
       post_graphql(query, current_user: current_user)

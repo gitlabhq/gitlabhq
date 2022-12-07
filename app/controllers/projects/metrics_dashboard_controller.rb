@@ -9,9 +9,6 @@ module Projects
     include Gitlab::Utils::StrongMemoize
 
     before_action :authorize_metrics_dashboard!
-    before_action do
-      push_frontend_feature_flag(:prometheus_computed_alerts)
-    end
 
     feature_category :metrics
     urgency :low

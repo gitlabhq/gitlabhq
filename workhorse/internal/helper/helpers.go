@@ -70,16 +70,6 @@ func URLMustParse(s string) *url.URL {
 	return u
 }
 
-func HeaderClone(h http.Header) http.Header {
-	h2 := make(http.Header, len(h))
-	for k, vv := range h {
-		vv2 := make([]string, len(vv))
-		copy(vv2, vv)
-		h2[k] = vv2
-	}
-	return h2
-}
-
 func IsContentType(expected, actual string) bool {
 	parsed, _, err := mime.ParseMediaType(actual)
 	return err == nil && parsed == expected

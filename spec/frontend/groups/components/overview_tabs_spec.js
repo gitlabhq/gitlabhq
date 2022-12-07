@@ -1,6 +1,5 @@
 import { GlSorting, GlSortingItem, GlTab } from '@gitlab/ui';
-import { nextTick } from 'vue';
-import { createLocalVue } from '@vue/test-utils';
+import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import OverviewTabs from '~/groups/components/overview_tabs.vue';
@@ -18,8 +17,7 @@ import {
 } from '~/groups/constants';
 import axios from '~/lib/utils/axios_utils';
 
-const localVue = createLocalVue();
-localVue.component('GroupFolder', GroupFolderComponent);
+Vue.component('GroupFolder', GroupFolderComponent);
 const router = createRouter();
 const [SORTING_ITEM_NAME, , SORTING_ITEM_UPDATED] = OVERVIEW_TABS_SORTING_ITEMS;
 
@@ -57,7 +55,6 @@ describe('OverviewTabs', () => {
         ...defaultProvide,
         ...provide,
       },
-      localVue,
       mocks: { $route: route, $router: routerMock },
     });
 

@@ -19,6 +19,8 @@ module WorkItems
     validate :validate_max_children
     validate :validate_confidentiality
 
+    scope :for_parents, ->(parent_ids) { where(work_item_parent_id: parent_ids) }
+
     class << self
       def has_public_children?(parent_id)
         joins(:work_item).where(work_item_parent_id: parent_id, 'issues.confidential': false).exists?

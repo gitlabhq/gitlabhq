@@ -30,7 +30,7 @@ module Gitlab
       # Remove all invalid scheme characters before checking against the
       # list of unsafe protocols.
       #
-      # See https://tools.ietf.org/html/rfc3986#section-3.1
+      # See https://www.rfc-editor.org/rfc/rfc3986#section-3.1
       #
       def safe_protocol?(scheme)
         return false unless scheme

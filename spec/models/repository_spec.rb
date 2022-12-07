@@ -5,7 +5,9 @@ require 'spec_helper'
 RSpec.describe Repository do
   include RepoHelpers
 
-  TestBlob = Struct.new(:path)
+  before do
+    stub_const('TestBlob', Struct.new(:path))
+  end
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :repository) }

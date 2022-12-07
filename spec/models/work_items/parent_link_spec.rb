@@ -141,6 +141,25 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
     end
   end
 
+  describe 'scopes' do
+    let_it_be(:project) { create(:project) }
+    let_it_be(:issue1) { build(:work_item, project: project) }
+    let_it_be(:issue2) { build(:work_item, project: project) }
+    let_it_be(:issue3) { build(:work_item, project: project) }
+    let_it_be(:task1) { build(:work_item, :task, project: project) }
+    let_it_be(:task2) { build(:work_item, :task, project: project) }
+    let_it_be(:link1) { create(:parent_link, work_item_parent: issue1, work_item: task1) }
+    let_it_be(:link2) { create(:parent_link, work_item_parent: issue2, work_item: task2) }
+
+    describe 'for_parents' do
+      it 'includes the correct records' do
+        result = described_class.for_parents([issue1.id, issue2.id, issue3.id])
+
+        expect(result).to include(link1, link2)
+      end
+    end
+  end
+
   context 'with confidential work items' do
     let_it_be(:confidential_child) { create(:work_item, :task, confidential: true, project: project) }
     let_it_be(:putlic_child) { create(:work_item, :task, project: project) }

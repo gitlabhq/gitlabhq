@@ -14,8 +14,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   before_action only: [:metrics, :additional_metrics, :metrics_dashboard] do
     authorize_metrics_dashboard!
-
-    push_frontend_feature_flag(:prometheus_computed_alerts)
   end
 
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]

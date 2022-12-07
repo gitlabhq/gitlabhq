@@ -13509,7 +13509,8 @@ CREATE TABLE ci_sources_pipelines (
     source_project_id integer,
     source_pipeline_id integer,
     source_job_id bigint,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint DEFAULT 100 NOT NULL,
+    source_partition_id bigint DEFAULT 100 NOT NULL
 );
 
 CREATE SEQUENCE ci_sources_pipelines_id_seq

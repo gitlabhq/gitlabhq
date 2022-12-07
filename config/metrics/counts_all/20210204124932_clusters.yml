@@ -9,7 +9,7 @@ product_category: gitaly
 value_type: number
 status: active
 time_frame: all
-data_source: database
+data_source: system
 distribution:
 - ce
 - ee

@@ -202,39 +202,52 @@ worker and it would not recognize `incoming_email` emails.
 
 To configure a custom mailbox for Service Desk with IMAP, add the following snippets to your configuration file in full:
 
-- Example for installations from source:
+::Tabs
 
-  ```yaml
-  service_desk_email:
-    enabled: true
-    address: "project_contact+%{key}@example.com"
-    user: "project_contact@example.com"
-    password: "[REDACTED]"
-    host: "imap.gmail.com"
-    port: 993
-    ssl: true
-    start_tls: false
-    log_path: "log/mailroom.log"
-    mailbox: "inbox"
-    idle_timeout: 60
-    expunge_deleted: true
-  ```
+:::TabTitle Linux package (Omnibus)
 
-- Example for Omnibus GitLab installations:
+NOTE:
+In GitLab 15.3 and later, Service Desk uses `webhook` (internal API call) by default instead of enqueuing a Sidekiq job.
+To use `webhook` on an Omnibus installation running GitLab 15.3, you must generate a secret file.
+For more context, visit [Omnibus GitLab MR 5927](https://gitlab.com/gitlab-org/omnibus-gitlab/-/merge_requests/5927).
+In GitLab 15.4, reconfiguring an Omnibus installation generates this secret file automatically, so no secret file configuration setting is needed.
+For details, visit [issue 1462](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1462).
 
-  ```ruby
-  gitlab_rails['service_desk_email_enabled'] = true
-  gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
-  gitlab_rails['service_desk_email_email'] = "project_contact@gmail.com"
-  gitlab_rails['service_desk_email_password'] = "[REDACTED]"
-  gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
-  gitlab_rails['service_desk_email_idle_timeout'] = 60
-  gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
-  gitlab_rails['service_desk_email_host'] = "imap.gmail.com"
-  gitlab_rails['service_desk_email_port'] = 993
-  gitlab_rails['service_desk_email_ssl'] = true
-  gitlab_rails['service_desk_email_start_tls'] = false
-  ```
+```ruby
+gitlab_rails['service_desk_email_enabled'] = true
+gitlab_rails['service_desk_email_address'] = "project_contact+%{key}@gmail.com"
+gitlab_rails['service_desk_email_email'] = "project_contact@gmail.com"
+gitlab_rails['service_desk_email_password'] = "[REDACTED]"
+gitlab_rails['service_desk_email_mailbox_name'] = "inbox"
+gitlab_rails['service_desk_email_idle_timeout'] = 60
+gitlab_rails['service_desk_email_log_file'] = "/var/log/gitlab/mailroom/mail_room_json.log"
+gitlab_rails['service_desk_email_host'] = "imap.gmail.com"
+gitlab_rails['service_desk_email_port'] = 993
+gitlab_rails['service_desk_email_ssl'] = true
+gitlab_rails['service_desk_email_start_tls'] = false
+```
+
+:::TabTitle Self-compiled (source)
+
+```yaml
+service_desk_email:
+  enabled: true
+  address: "project_contact+%{key}@example.com"
+  user: "project_contact@example.com"
+  password: "[REDACTED]"
+  host: "imap.gmail.com"
+  delivery_method: webhook
+  secret_file: .gitlab-mailroom-secret
+  port: 993
+  ssl: true
+  start_tls: false
+  log_path: "log/mailroom.log"
+  mailbox: "inbox"
+  idle_timeout: 60
+  expunge_deleted: true
+```
+
+::EndTabs
 
 The configuration options are the same as for configuring
 [incoming email](../../administration/incoming_email.md#set-it-up).

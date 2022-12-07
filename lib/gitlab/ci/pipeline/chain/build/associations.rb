@@ -31,7 +31,8 @@ module Gitlab
                 source_pipeline: @command.bridge.pipeline,
                 source_project: @command.bridge.project,
                 source_bridge: @command.bridge,
-                project: @command.project
+                project: @command.project,
+                source_partition_id: @command.bridge.partition_id
               )
             end
 

@@ -11,8 +11,6 @@ module Groups
     def index
       # To be used in ee/app/controllers/ee/groups/usage_quotas_controller.rb
       @seat_count_data = seat_count_data
-      @current_namespace_usage = current_namespace_usage
-      @projects_usage = projects_usage
     end
 
     private
@@ -24,10 +22,6 @@ module Groups
 
     # To be overriden in ee/app/controllers/ee/groups/usage_quotas_controller.rb
     def seat_count_data; end
-
-    def current_namespace_usage; end
-
-    def projects_usage; end
   end
 end
 

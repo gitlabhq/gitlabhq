@@ -4,8 +4,10 @@ require 'spec_helper'
 
 RSpec.describe TriggerableHooks do
   before do
-    class TestableHook < WebHook
-      include TriggerableHooks
+    stub_const('TestableHook', Class.new(WebHook))
+
+    TestableHook.class_eval do
+      include TriggerableHooks # rubocop:disable Rspec/DescribedClass
       triggerable_hooks [:push_hooks]
     end
   end

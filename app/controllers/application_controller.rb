@@ -525,7 +525,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_page_title_header
-    # Per https://tools.ietf.org/html/rfc5987, headers need to be ISO-8859-1, not UTF-8
+    # Per https://www.rfc-editor.org/rfc/rfc5987, headers need to be ISO-8859-1, not UTF-8
     response.headers['Page-Title'] = Addressable::URI.encode_component(page_title('GitLab'))
   end
 

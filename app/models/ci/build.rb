@@ -172,8 +172,6 @@ module Ci
 
     add_authentication_token_field :token, encrypted: :required
 
-    before_save :ensure_token, unless: :assign_token_on_scheduling?
-
     after_save :stick_build_if_status_changed
 
     after_create unless: :importing? do |build|
@@ -247,11 +245,8 @@ module Ci
         !build.waiting_for_deployment_approval? # If false is returned, it stops the transition
       end
 
-      before_transition any => [:pending] do |build, transition|
-        if build.assign_token_on_scheduling?
-          build.ensure_token
-        end
-
+      before_transition any => [:pending] do |build|
+        build.ensure_token
         true
       end
 
@@ -1138,10 +1133,6 @@ module Ci
       else
         group_name
       end
-    end
-
-    def assign_token_on_scheduling?
-      ::Feature.enabled?(:ci_assign_job_token_on_scheduling, project)
     end
 
     protected

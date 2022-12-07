@@ -177,9 +177,8 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 }
 
 func cloneRequestWithNewBody(r *http.Request, body []byte) *http.Request {
-	newReq := *r
+	newReq := r.Clone(r.Context())
 	newReq.Body = io.NopCloser(bytes.NewReader(body))
-	newReq.Header = helper.HeaderClone(r.Header)
 	newReq.ContentLength = int64(len(body))
-	return &newReq
+	return newReq
 }

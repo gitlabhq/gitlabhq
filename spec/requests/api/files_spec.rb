@@ -774,6 +774,63 @@ RSpec.describe API::Files do
           let(:request) { get api(route(file_path), current_user), params: params }
         end
       end
+
+      context 'when lfs parameter is true and the project has lfs enabled' do
+        before do
+          allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+          project.update_attribute(:lfs_enabled, true)
+        end
+
+        let(:request) { get api(route(file_path) + '/raw', current_user), params: params.merge(lfs: true) }
+        let(:file_path) { 'files%2Flfs%2Flfs_object.iso' }
+
+        it_behaves_like '404 response'
+
+        context 'and the file has an lfs object' do
+          let_it_be(:lfs_object) { create(:lfs_object, :with_file, oid: '91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897') }
+
+          it_behaves_like '404 response'
+
+          context 'and the project has access to the lfs object' do
+            before do
+              project.lfs_objects << lfs_object
+            end
+
+            context 'and lfs uses local file storage' do
+              before do
+                Grape::Endpoint.before_each do |endpoint|
+                  allow(endpoint).to receive(:sendfile).with(lfs_object.file.path)
+                end
+              end
+
+              after do
+                Grape::Endpoint.before_each nil
+              end
+
+              it 'responds with the lfs object file' do
+                request
+                expect(response.headers["Content-Disposition"]).to eq(
+                  "attachment; filename=\"#{lfs_object.file.filename}\"; filename*=UTF-8''#{lfs_object.file.filename}"
+                )
+              end
+            end
+
+            context 'and lfs uses remote object storage' do
+              before do
+                stub_lfs_object_storage
+                lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
+              end
+
+              it 'redirects to the lfs object file' do
+                request
+
+                expect(response).to have_gitlab_http_status(:found)
+                expect(response.location).to include(lfs_object.reload.file.path)
+              end
+            end
+          end
+        end
+      end
     end
 
     context 'when unauthenticated' do
