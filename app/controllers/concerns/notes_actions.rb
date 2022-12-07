@@ -89,9 +89,7 @@ module NotesActions
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def destroy
-    if note.editable?
-      Notes::DestroyService.new(project, current_user).execute(note)
-    end
+    Notes::DestroyService.new(project, current_user).execute(note) if note.editable?
 
     respond_to do |format|
       format.js { head :ok }

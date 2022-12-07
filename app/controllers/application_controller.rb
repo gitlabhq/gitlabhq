@@ -179,9 +179,7 @@ class ApplicationController < ActionController::Base
 
     payload[:queue_duration_s] = request.env[::Gitlab::Middleware::RailsQueueDuration::GITLAB_RAILS_QUEUE_DURATION_KEY]
 
-    if Feature.enabled?(:log_response_length)
-      payload[:response_bytes] = response.body_parts.sum(&:bytesize)
-    end
+    payload[:response_bytes] = response.body_parts.sum(&:bytesize) if Feature.enabled?(:log_response_length)
 
     store_cloudflare_headers!(payload, request)
   end
@@ -349,9 +347,7 @@ class ApplicationController < ActionController::Base
   def check_password_expiration
     return if session[:impersonator_id] || !current_user&.allow_password_authentication?
 
-    if current_user&.password_expired?
-      redirect_to new_profile_password_path
-    end
+    redirect_to new_profile_password_path if current_user&.password_expired?
   end
 
   def active_user_check
@@ -565,9 +561,7 @@ class ApplicationController < ActionController::Base
 
     session[:ask_for_usage_stats_consent] = current_user.requires_usage_stats_consent?
 
-    if session[:ask_for_usage_stats_consent]
-      disable_usage_stats
-    end
+    disable_usage_stats if session[:ask_for_usage_stats_consent]
   end
 
   def disable_usage_stats

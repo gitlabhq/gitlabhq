@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Pipeline Editor', :js do
+RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_authoring do
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
 
   let(:project) { create(:project_empty_repo, :public) }

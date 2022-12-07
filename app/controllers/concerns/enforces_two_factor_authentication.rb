@@ -15,9 +15,7 @@ module EnforcesTwoFactorAuthentication
 
     # to include this in controllers inheriting from `ActionController::Metal`
     # we need to add this block
-    if respond_to?(:helper_method)
-      helper_method :two_factor_grace_period_expired?, :two_factor_skippable?
-    end
+    helper_method :two_factor_grace_period_expired?, :two_factor_skippable? if respond_to?(:helper_method)
   end
 
   def check_two_factor_requirement

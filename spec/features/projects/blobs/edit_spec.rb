@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Editing file blob', :js do
+RSpec.describe 'Editing file blob', :js, feature_category: :projects do
   include Spec::Support::Helpers::Features::SourceEditorSpecHelpers
   include TreeHelper
   include BlobSpecHelpers

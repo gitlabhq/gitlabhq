@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Activity > User sees design comment', :js do
+RSpec.describe 'Projects > Activity > User sees design comment', :js, feature_category: :design_management do
   include DesignManagementTestHelpers
 
   let_it_be(:project) { create(:project, :repository, :public) }

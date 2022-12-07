@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'project commit pipelines', :js do
+RSpec.describe 'project commit pipelines', :js, feature_category: :continuous_integration do
   let(:project) { create(:project, :repository) }
 
   before do

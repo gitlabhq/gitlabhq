@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples "no multiple viewers" do |commit_ref|
+RSpec.shared_examples "no multiple viewers", feature_category: :source_code_management do |commit_ref|
   let(:ref) { commit_ref }
 
   it "does not display multiple diff viewers" do

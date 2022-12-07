@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js do
+RSpec.describe 'Blob button line permalinks (BlobLinePermalinkUpdater)', :js, feature_category: :projects do
   include TreeHelper
 
   let(:project) { create(:project, :public, :repository) }

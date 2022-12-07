@@ -151,6 +151,7 @@
     "WorkItemWidgetLabels",
     "WorkItemWidgetMilestone",
     "WorkItemWidgetNotes",
+    "WorkItemWidgetProgress",
     "WorkItemWidgetStartAndDueDate",
     "WorkItemWidgetStatus",
     "WorkItemWidgetWeight"

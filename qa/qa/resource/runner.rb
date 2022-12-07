@@ -69,14 +69,14 @@ module QA
       def api_post_body; end
 
       def not_found_by_tags?
-        url = "#{api_get_path}?tag_list=#{@tags.compact.join(',')}"
+        url = "#{api_get_path}?tag_list=#{tags.compact.join(',')}"
         auto_paginated_response(request_url(url)).empty?
       end
 
       def runners_list
         runners_list = nil
         url = tags ? "#{api_get_path}?tag_list=#{tags.compact.join(',')}" : api_get_path
-        QA::Runtime::Logger.info('Looking for list of runners via API...')
+        Runtime::Logger.info('Looking for list of runners via API...')
         Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1) do
           runners_list = auto_paginated_response(request_url(url))
           runners_list.present?
@@ -85,11 +85,24 @@ module QA
         runners_list
       end
 
+      def wait_until_online
+        Runtime::Logger.info('Waiting for runner to come online...')
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1) do
+          this_runner[:status] == 'online'
+        end
+      end
+
+      def restart
+        Runtime::Logger.info("Restarting runner container #{name}...")
+        @docker_container.restart
+        wait_until_online
+      end
+
       private
 
       def start_container_and_register
         @docker_container = Service::DockerRun::GitlabRunner.new(name).tap do |runner|
-          QA::Support::Retrier.retry_on_exception(sleep_interval: 5) do
+          Support::Retrier.retry_on_exception(sleep_interval: 5) do
             runner.pull
           end
 

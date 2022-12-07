@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'File blame', :js do
+RSpec.describe 'File blame', :js, feature_category: :projects do
   include TreeHelper
 
   let_it_be(:project) { create(:project, :public, :repository) }

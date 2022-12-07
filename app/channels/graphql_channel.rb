@@ -25,9 +25,7 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
 
     # Track the subscription here so we can remove it
     # on unsubscribe.
-    if result.context[:subscription_id]
-      @subscription_ids << result.context[:subscription_id]
-    end
+    @subscription_ids << result.context[:subscription_id] if result.context[:subscription_id]
 
     transmit(payload)
   end

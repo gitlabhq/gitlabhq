@@ -37103,6 +37103,9 @@ msgstr ""
 msgid "SecurityReports|All images"
 msgstr ""
 
+msgid "SecurityReports|All projects"
+msgstr ""
+
 msgid "SecurityReports|All severities"
 msgstr ""
 

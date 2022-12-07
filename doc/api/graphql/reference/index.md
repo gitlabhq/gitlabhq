@@ -20798,6 +20798,17 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetnotesdiscussionsfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
 
+### `WorkItemWidgetProgress`
+
+Represents a progress widget.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetprogressprogress"></a>`progress` | [`Int`](#int) | Progress of the work item. |
+| <a id="workitemwidgetprogresstype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetStartAndDueDate`
 
 Represents a start and due date widget.
@@ -22960,6 +22971,7 @@ Type of a work item widget.
 | <a id="workitemwidgettypelabels"></a>`LABELS` | Labels widget. |
 | <a id="workitemwidgettypemilestone"></a>`MILESTONE` | Milestone widget. |
 | <a id="workitemwidgettypenotes"></a>`NOTES` | Notes widget. |
+| <a id="workitemwidgettypeprogress"></a>`PROGRESS` | Progress widget. |
 | <a id="workitemwidgettypestart_and_due_date"></a>`START_AND_DUE_DATE` | Start And Due Date widget. |
 | <a id="workitemwidgettypestatus"></a>`STATUS` | Status widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
@@ -24257,6 +24269,7 @@ Implementations:
 - [`WorkItemWidgetLabels`](#workitemwidgetlabels)
 - [`WorkItemWidgetMilestone`](#workitemwidgetmilestone)
 - [`WorkItemWidgetNotes`](#workitemwidgetnotes)
+- [`WorkItemWidgetProgress`](#workitemwidgetprogress)
 - [`WorkItemWidgetStartAndDueDate`](#workitemwidgetstartandduedate)
 - [`WorkItemWidgetStatus`](#workitemwidgetstatus)
 - [`WorkItemWidgetWeight`](#workitemwidgetweight)

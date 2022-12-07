@@ -1,0 +1,10 @@
+---
+table_name: work_item_progresses
+classes:
+- WorkItems::Progress
+feature_categories:
+- team_planning
+description: The progress of a Work Item.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104591/
+milestone: '15.7'
+gitlab_schema: gitlab_main

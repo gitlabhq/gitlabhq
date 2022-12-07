@@ -23448,6 +23448,13 @@ CREATE SEQUENCE work_item_parent_links_id_seq
 
 ALTER SEQUENCE work_item_parent_links_id_seq OWNED BY work_item_parent_links.id;
 
+CREATE TABLE work_item_progresses (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    issue_id bigint NOT NULL,
+    progress smallint DEFAULT 0 NOT NULL
+);
+
 CREATE TABLE work_item_types (
     id bigint NOT NULL,
     base_type smallint DEFAULT 0 NOT NULL,
@@ -27025,6 +27032,9 @@ ALTER TABLE ONLY work_item_hierarchy_restrictions
 
 ALTER TABLE ONLY work_item_parent_links
     ADD CONSTRAINT work_item_parent_links_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY work_item_progresses
+    ADD CONSTRAINT work_item_progresses_pkey PRIMARY KEY (issue_id);
 
 ALTER TABLE ONLY work_item_types
     ADD CONSTRAINT work_item_types_pkey PRIMARY KEY (id);
@@ -34754,6 +34764,9 @@ ALTER TABLE ONLY cluster_projects
 
 ALTER TABLE ONLY project_pages_metadata
     ADD CONSTRAINT fk_rails_8c28a61485 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY work_item_progresses
+    ADD CONSTRAINT fk_rails_8c584bfb37 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY packages_conan_metadata
     ADD CONSTRAINT fk_rails_8c68cfec8b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;

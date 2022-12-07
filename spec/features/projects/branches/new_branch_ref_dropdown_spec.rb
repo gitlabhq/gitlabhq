@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'New Branch Ref Dropdown', :js do
+RSpec.describe 'New Branch Ref Dropdown', :js, feature_category: :projects do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:toggle) { find('.create-from .dropdown-menu-toggle') }

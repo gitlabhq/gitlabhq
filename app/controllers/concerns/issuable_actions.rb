@@ -146,13 +146,17 @@ module IssuableActions
     finder = Issuable::DiscussionsListService.new(current_user, issuable, finder_params_for_issuable)
     discussion_notes = finder.execute
 
-    response.headers['X-Next-Page-Cursor'] = finder.paginator.cursor_for_next_page if finder.paginator.present? && finder.paginator.has_next_page?
+    if finder.paginator.present? && finder.paginator.has_next_page?
+      response.headers['X-Next-Page-Cursor'] = finder.paginator.cursor_for_next_page
+    end
 
     case issuable
     when MergeRequest
       render_mr_discussions(discussion_notes, discussion_serializer, discussion_cache_context)
     when Issue
-      render json: discussion_serializer.represent(discussion_notes, context: self) if stale?(etag: [discussion_cache_context, discussion_notes])
+      if stale?(etag: [discussion_cache_context, discussion_notes])
+        render json: discussion_serializer.represent(discussion_notes, context: self)
+      end
     else
       render json: discussion_serializer.represent(discussion_notes, context: self)
     end
@@ -230,15 +234,11 @@ module IssuableActions
   end
 
   def authorize_destroy_issuable!
-    unless can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable)
-      access_denied!
-    end
+    access_denied! unless can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable)
   end
 
   def authorize_admin_issuable!
-    unless can?(current_user, :"admin_#{resource_name}", parent)
-      access_denied!
-    end
+    access_denied! unless can?(current_user, :"admin_#{resource_name}", parent)
   end
 
   def authorize_update_issuable!

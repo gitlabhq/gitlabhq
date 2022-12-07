@@ -94,13 +94,12 @@ can help you manage and configure your instance.
 
 | Topic | Description | Good for beginners |
 |-------|-------------|--------------------|
-| [Install GitLab](../install/index.md)  |  Install GitLab according to your requirements.| |
+| [Install GitLab](../install/install_methods.md)  |  Install GitLab according to your requirements.| |
 | [Get started administering GitLab](../administration/get_started.md) | Configure your organization and its authentication, then secure, monitor, and back up GitLab. | |
-| [Secure your instance](https://about.gitlab.com/blog/2020/05/20/gitlab-instance-security-best-practices/)  |  Implement security features for your instance. | |
 
 ## Integrate with GitLab
 
-GitLab [integrates](../integration/index.md) with a number of third-party services,
+GitLab [integrates](../user/project/integrations/index.md) with a number of third-party services,
 enabling you to work with those services directly from GitLab.
 
 | Topic | Description | Good for beginners |

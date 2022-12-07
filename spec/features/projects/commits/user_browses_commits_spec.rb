@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User browses commits' do
+RSpec.describe 'User browses commits', feature_category: :source_code_management do
   include RepoHelpers
 
   let(:user) { create(:user) }

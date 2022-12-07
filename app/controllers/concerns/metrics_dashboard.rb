@@ -118,9 +118,7 @@ module MetricsDashboard
   def decoded_params
     params = metrics_dashboard_params
 
-    if params[:dashboard_path]
-      params[:dashboard_path] = CGI.unescape(params[:dashboard_path])
-    end
+    params[:dashboard_path] = CGI.unescape(params[:dashboard_path]) if params[:dashboard_path]
 
     params
   end

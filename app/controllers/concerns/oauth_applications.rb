@@ -12,9 +12,7 @@ module OauthApplications
   def prepare_scopes
     scopes = params.fetch(:doorkeeper_application, {}).fetch(:scopes, nil)
 
-    if scopes
-      params[:doorkeeper_application][:scopes] = scopes.join(' ')
-    end
+    params[:doorkeeper_application][:scopes] = scopes.join(' ') if scopes
   end
 
   def set_created_session

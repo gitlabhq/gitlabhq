@@ -23,7 +23,10 @@ module CycleAnalyticsParams
       opts[:from] = params[:from] || start_date(params)
       opts[:to] = params[:to] if params[:to]
       opts[:end_event_filter] = params[:end_event_filter] if params[:end_event_filter]
-      opts[:use_aggregated_data_collector] = params[:use_aggregated_data_collector] if params[:use_aggregated_data_collector]
+      if params[:use_aggregated_data_collector]
+        opts[:use_aggregated_data_collector] = params[:use_aggregated_data_collector]
+      end
+
       opts.merge!(params.slice(*::Gitlab::Analytics::CycleAnalytics::RequestParams::FINDER_PARAM_NAMES))
       opts.merge!(date_range(params))
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Activity > User sees activity' do
+RSpec.describe 'Projects > Activity > User sees activity', feature_category: :projects do
   let(:project) { create(:project, :repository, :public) }
   let(:user) { project.creator }
   let(:issue) { create(:issue, project: project) }
