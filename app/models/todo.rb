@@ -19,6 +19,7 @@ class Todo < ApplicationRecord
   DIRECTLY_ADDRESSED  = 7
   MERGE_TRAIN_REMOVED = 8 # This is an EE-only feature
   REVIEW_REQUESTED    = 9
+  MEMBER_ACCESS_REQUESTED = 10
 
   ACTION_NAMES = {
     ASSIGNED => :assigned,
@@ -29,10 +30,11 @@ class Todo < ApplicationRecord
     APPROVAL_REQUIRED => :approval_required,
     UNMERGEABLE => :unmergeable,
     DIRECTLY_ADDRESSED => :directly_addressed,
-    MERGE_TRAIN_REMOVED => :merge_train_removed
+    MERGE_TRAIN_REMOVED => :merge_train_removed,
+    MEMBER_ACCESS_REQUESTED => :member_access_requested
   }.freeze
 
-  ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED].freeze
+  ACTIONS_MULTIPLE_ALLOWED = [Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED, Todo::MEMBER_ACCESS_REQUESTED].freeze
 
   belongs_to :author, class_name: "User"
   belongs_to :note
@@ -196,6 +198,16 @@ class Todo < ApplicationRecord
 
   def merge_train_removed?
     action == MERGE_TRAIN_REMOVED
+  end
+
+  def member_access_requested?
+    action == MEMBER_ACCESS_REQUESTED
+  end
+
+  def access_request_url
+    return "" unless self.target_type == 'Namespace'
+
+    Gitlab::Routing.url_helpers.group_group_members_url(self.target, tab: 'access_requests')
   end
 
   def done?

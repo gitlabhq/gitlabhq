@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PwaController do
+RSpec.describe PwaController, feature_category: :navigation do
   describe 'GET #manifest' do
     it 'responds with json' do
       get manifest_path(format: :json)

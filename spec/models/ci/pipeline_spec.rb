@@ -219,6 +219,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep do
     end
   end
 
+  describe '.for_name' do
+    subject { described_class.for_name(name) }
+
+    let_it_be(:pipeline1) { create(:ci_pipeline, name: 'Build pipeline') }
+    let_it_be(:pipeline2) { create(:ci_pipeline, name: 'Chatops pipeline') }
+
+    context 'when name exists' do
+      let(:name) { 'build Pipeline' }
+
+      it 'performs case insensitive compare' do
+        is_expected.to contain_exactly(pipeline1)
+      end
+    end
+
+    context 'when name does not exist' do
+      let(:name) { 'absent-name' }
+
+      it 'returns empty' do
+        is_expected.to be_empty
+      end
+    end
+  end
+
   describe '.created_after' do
     let_it_be(:old_pipeline) { create(:ci_pipeline, created_at: 1.week.ago) }
     let_it_be(:pipeline) { create(:ci_pipeline) }

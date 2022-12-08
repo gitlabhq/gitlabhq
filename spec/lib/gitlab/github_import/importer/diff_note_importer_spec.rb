@@ -218,6 +218,16 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
           end
         end
       end
+
+      context 'when diff note is invalid' do
+        it 'fails validation' do
+          stub_user_finder(user.id, true)
+
+          expect(note_representation).to receive(:line_code).and_return(nil)
+
+          expect { subject.execute }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
     end
   end
 

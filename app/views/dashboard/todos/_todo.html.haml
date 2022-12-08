@@ -26,8 +26,9 @@
         %span.title-item.todo-target-title{ data: { qa_selector: "todo_target_title_content" } }
           = todo_target_title(todo)
 
-        %span.title-item.todo-project.todo-label
-          = s_('Todo|at %{todo_parent_path}').html_safe % { todo_parent_path: todo_parent_path(todo) }
+        - unless todo.member_access_requested?
+          %span.title-item.todo-project.todo-label
+            = s_('Todo|at %{todo_parent_path}').html_safe % { todo_parent_path: todo_parent_path(todo) }
 
         - if todo.self_assigned?
           %span.title-item.action-name

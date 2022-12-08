@@ -11,7 +11,7 @@ module Mutations
                description: 'Amount of time spent.'
 
       argument :spent_at,
-               Types::DateType,
+               Types::TimeType,
                required: true,
                description: 'When the time was spent.'
 
@@ -28,8 +28,12 @@ module Mutations
       authorize :create_timelog
 
       def resolve(issuable_id:, time_spent:, spent_at:, summary:, **args)
-        issuable = authorized_find!(id: issuable_id)
         parsed_time_spent = Gitlab::TimeTrackingFormatter.parse(time_spent)
+        if parsed_time_spent.nil?
+          return { timelog: nil, errors: [_('Time spent must be formatted correctly. For example: 1h 30m.')] }
+        end
+
+        issuable = authorized_find!(id: issuable_id)
 
         result = ::Timelogs::CreateService.new(
           issuable, parsed_time_spent, spent_at, summary, current_user

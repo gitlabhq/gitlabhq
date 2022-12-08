@@ -65,12 +65,13 @@ describe('search_params.js', () => {
     it.each([
       'http://test.host/?status[]=ACTIVE',
       'http://test.host/?runner_type[]=INSTANCE_TYPE',
+      'http://test.host/?paused[]=true',
       'http://test.host/?search=my_text',
-    ])('When a filter is removed, it is removed from the URL', (initalUrl) => {
+    ])('When a filter is removed, it is removed from the URL', (initialUrl) => {
       const search = { filters: [], sort: 'CREATED_DESC' };
       const expectedUrl = `http://test.host/`;
 
-      expect(fromSearchToUrl(search, initalUrl)).toBe(expectedUrl);
+      expect(fromSearchToUrl(search, initialUrl)).toBe(expectedUrl);
     });
 
     it('When unrelated search parameter is present, it does not get removed', () => {

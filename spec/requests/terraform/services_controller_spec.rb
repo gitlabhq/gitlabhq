@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Terraform::ServicesController do
+RSpec.describe Terraform::ServicesController, feature_category: :package_registry do
   describe 'GET /.well-known/terraform.json' do
     subject { get '/.well-known/terraform.json' }
 

@@ -22,6 +22,12 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
+  def open_create_timelog_form
+    page.within time_tracker_selector do
+      find('[data-testid="add-time-entry-button"]').click
+    end
+  end
+
   it 'renders the sidebar component empty state' do
     page.within '[data-testid="noTrackingPane"]' do
       expect(page).to have_content 'No estimate or time spent'
@@ -74,11 +80,13 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     end
   end
 
-  it 'shows the help state when icon is clicked' do
-    page.within time_tracker_selector do
-      find('[data-testid="helpButton"]').click
-      expect(page).to have_content 'Track time with quick actions'
-      expect(page).to have_content 'Learn more'
+  it 'shows the create timelog form when add button is clicked' do
+    open_create_timelog_form
+
+    page.within '[data-testid="create-timelog-modal"]' do
+      expect(page).to have_content 'Add time entry'
+      expect(page).to have_content 'Time spent'
+      expect(page).to have_content 'Spent at'
     end
   end
 
@@ -121,24 +129,6 @@ RSpec.shared_examples 'issuable time tracker' do |issuable_type|
     # Assert that the time tracking widget was reactively updated
     page.within '[data-testid="timeTrackingComparisonPane"]' do
       expect(page).to have_content '1d'
-    end
-  end
-
-  it 'hides the help state when close icon is clicked' do
-    page.within time_tracker_selector do
-      find('[data-testid="helpButton"]').click
-      find('[data-testid="closeHelpButton"]').click
-
-      expect(page).not_to have_content 'Track time with quick actions'
-      expect(page).not_to have_content 'Learn more'
-    end
-  end
-
-  it 'displays the correct help url' do
-    page.within time_tracker_selector do
-      find('[data-testid="helpButton"]').click
-
-      expect(find_link('Learn more')[:href]).to have_content('/help/user/project/time_tracking.md')
     end
   end
 end

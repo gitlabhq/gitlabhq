@@ -11,14 +11,6 @@ RSpec.describe 'Create a timelog' do
 
   let(:current_user) { nil }
   let(:users_container) { project }
-  let(:mutation) do
-    graphql_mutation(:timelogCreate, {
-      'time_spent' => time_spent,
-      'spent_at' => '2022-07-08',
-      'summary' => 'Test summary',
-      'issuable_id' => issuable.to_global_id.to_s
-    })
-  end
 
   let(:mutation_response) { graphql_mutation_response(:timelog_create) }
 

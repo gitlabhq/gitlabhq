@@ -1306,7 +1306,7 @@ Some text to show that the reference links can follow later.
 
 Using header ID anchors:
 
-- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-features-permissions)
+- This line links to [a section on a different Markdown page, using a "#" and the header ID](permissions.md#project-members-permissions)
 - This line links to [a different section on the same page, using a "#" and the header ID](#header-ids-and-links)
 
 Using references:

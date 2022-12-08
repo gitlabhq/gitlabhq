@@ -544,7 +544,15 @@ function mountSidebarSubscriptionsWidget() {
 
 function mountSidebarTimeTracking() {
   const el = document.querySelector('.js-sidebar-time-tracking-root');
-  const { id, iid, fullPath, issuableType, timeTrackingLimitToHours } = getSidebarOptions();
+
+  const {
+    id,
+    iid,
+    fullPath,
+    issuableType,
+    timeTrackingLimitToHours,
+    canCreateTimelogs,
+  } = getSidebarOptions();
 
   if (!el) {
     return null;
@@ -562,6 +570,7 @@ function mountSidebarTimeTracking() {
           issuableId: id.toString(),
           issuableIid: iid.toString(),
           limitToHours: timeTrackingLimitToHours,
+          canAddTimeEntries: canCreateTimelogs,
         },
       }),
   });

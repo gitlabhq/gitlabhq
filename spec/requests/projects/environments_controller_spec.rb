@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::EnvironmentsController do
+RSpec.describe Projects::EnvironmentsController, feature_category: :continuous_delivery do
   let_it_be_with_refind(:project) { create(:project, :repository) }
 
   let(:environment) { create(:environment, name: 'production', project: project) }

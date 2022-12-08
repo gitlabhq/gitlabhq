@@ -25,6 +25,7 @@ module QA
         def click_configure_it_later_button
           # TO DO: Investigate why button does not appear sometimes:
           # https://gitlab.com/gitlab-org/gitlab/-/issues/382698
+          page.refresh
           return unless has_element?(:configure_it_later_button, wait: 60)
 
           click_element :configure_it_later_button

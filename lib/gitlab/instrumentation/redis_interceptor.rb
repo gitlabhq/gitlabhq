@@ -34,7 +34,7 @@ module Gitlab
         start = Gitlab::Metrics::System.monotonic_time # must come first so that 'start' is always defined
         instrumentation_class.instance_count_request(commands.size)
 
-        if ::RequestStore.active? && !instrumentation_class.redis_cluster_validate!(commands)
+        if !instrumentation_class.redis_cluster_validate!(commands) && ::RequestStore.active?
           instrumentation_class.increment_cross_slot_request_count
         end
 

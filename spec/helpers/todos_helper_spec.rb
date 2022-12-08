@@ -155,6 +155,26 @@ RSpec.describe TodosHelper do
         expect(path).to eq("/#{issue.project.full_path}/-/issues/#{issue.iid}##{dom_id(note)}")
       end
     end
+
+    context 'when a user requests access to group' do
+      let(:group) { create(:group, :public) }
+
+      let(:group_access_request_todo) do
+        create(:todo,
+               target_id: group.id,
+               target_type: group.class.polymorphic_name,
+               group: group,
+               action: Todo::MEMBER_ACCESS_REQUESTED)
+      end
+
+      it 'responds with access requests tab' do
+        path = helper.todo_target_path(group_access_request_todo)
+
+        access_request_path = Gitlab::Routing.url_helpers.group_group_members_url(group, tab: 'access_requests')
+
+        expect(path).to eq(access_request_path)
+      end
+    end
   end
 
   describe '#todo_target_type_name' do
@@ -340,6 +360,7 @@ RSpec.describe TodosHelper do
       Todo::APPROVAL_REQUIRED   | false | format(s_("Todos|set %{who} as an approver for"), who: _('you'))
       Todo::UNMERGEABLE         | true  | s_('Todos|Could not merge')
       Todo::MERGE_TRAIN_REMOVED | true  | s_("Todos|Removed from Merge Train:")
+      Todo::MEMBER_ACCESS_REQUESTED | true | s_("Todos|has requested access to")
     end
 
     with_them do

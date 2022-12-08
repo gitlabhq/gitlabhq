@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, feature_category: :pipeline_authoring do
   include Ci::TemplateHelpers
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, :repository, namespace: group) }
@@ -13,7 +13,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
       name: 'rspec:test 1',
       pipeline: pipeline,
       user: user,
-      yaml_variables: [{ key: 'YAML_VARIABLE', value: 'value' }]
+      yaml_variables: [{ key: 'YAML_VARIABLE', value: 'value' }],
+      environment: 'test'
     )
   end
 
@@ -32,6 +33,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
           value: job.stage_name },
         { key: 'CI_NODE_TOTAL',
           value: '1' },
+        { key: 'CI_ENVIRONMENT_NAME',
+          value: 'test' },
         { key: 'CI_BUILD_NAME',
           value: 'rspec:test 1' },
         { key: 'CI_BUILD_STAGE',

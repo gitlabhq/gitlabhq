@@ -1454,13 +1454,10 @@ Before executing any page interaction when navigating or making asynchronous cal
 
 #### Elements interaction
 
-There are a lot of different ways to find and interact with elements. For example, you could use the basic `find` method with the `selector` and `text` parameter and then use the `.click` method
+There are a lot of different ways to find and interact with elements.
+For best practises, refer to the [UI testing](best_practices.md#ui-testing) section.
 
-```ruby
-  find('.gl-tab-nav-item', text: 'Tests').click
-```
-
-Alternatively, you could use `click_button` with a string of text that is found within the button, which is a more semantically meaningful way of clicking the element.
+To click a button, use `click_button` with the string of text found in the button:
 
 ```ruby
   click_button 'Text inside the button element'
@@ -1480,25 +1477,31 @@ You can use `fill_in` to fill input / form elements. The first argument is the s
 
 Alternatively, you can use the `find` selector paired with `send_keys` to add keys in a field without removing previous text, or `set` which completely replaces the value of the input element.
 
-All of these are valid selectors and methods. Pick whichever suits your needs and look around as there are many more useful ones!
+You can find a more comprehensive list of actions in the [feature tests actions](best_practices.md#actions) documentation.
 
 #### Assertions
 
 To assert anything in a page, you can always access `page` variable, which is automatically defines and actually means the page document. This means you can expect the `page` to have certain components like selectors or content. Here are a few examples:
 
 ```ruby
-  # Finding an element by ID
-  expect(page).to have_selector('#js-pipeline-graph')
+  # Finding a button
+  expect(page).to have_button('Submit review')
 ```
 
 ```ruby
   # Finding by text
-  expect(page).to have_content('build')
+  expect(page).to have_text('build')
 ```
 
 ```ruby
   # Finding by `href` value
   expect(page).to have_link(pipeline.ref)
+```
+
+```ruby
+  # Find by data-testid
+  # Like CSS selector, this is acceptable when there isn't a specific matcher available.
+  expect(page).to have_css('[data-testid="pipeline-multi-actions-dropdown"]')
 ```
 
 ```ruby
@@ -1508,14 +1511,8 @@ To assert anything in a page, you can always access `page` variable, which is au
 ```
 
 ```ruby
-  # Find by data-testid
-  # Like CSS selector, this is acceptable when there isn't a specific matcher available.
-  expect(page).to have_selector('[data-testid="pipeline-multi-actions-dropdown"]')
-```
-
-```ruby
   # You can combine any of these selectors with `not_to` instead
-  expect(page).not_to have_selector('#js-pipeline-graph')
+  expect(page).not_to have_button('Submit review')
 ```
 
 ```ruby
@@ -1535,10 +1532,12 @@ You can also create a sub-block to look into, to:
 - Make sure an element is found within the right boundaries.
 
 ```ruby
-  page.within('#js-pipeline-graph') do
+  page.within('[data-testid="pipeline-multi-actions-dropdown"]') do
     ...
   end
 ```
+
+You can find a more comprehensive list of matchers in the [feature tests matchers](best_practices.md#matchers) documentation.
 
 #### Feature flags
 

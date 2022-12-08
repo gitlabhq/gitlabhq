@@ -19,7 +19,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
-  before_action :redirect_if_task, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
+  before_action :redirect_if_work_item, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
 
   after_action :log_issue_show, only: :show
 
@@ -434,14 +434,18 @@ class Projects::IssuesController < Projects::ApplicationController
   # Overridden in EE
   def create_vulnerability_issue_feedback(issue); end
 
-  def redirect_if_task
-    return unless issue.task?
+  def redirect_if_work_item
+    return unless allowed_work_item?
 
     if Feature.enabled?(:use_iid_in_work_items_path, project.group)
       redirect_to project_work_items_path(project, issue.iid, params: request.query_parameters.merge(iid_path: true))
     else
       redirect_to project_work_items_path(project, issue.id, params: request.query_parameters)
     end
+  end
+
+  def allowed_work_item?
+    issue.task?
   end
 end
 

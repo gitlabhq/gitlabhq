@@ -3,11 +3,9 @@
 module Ci
   class Variable < Ci::ApplicationRecord
     include Ci::HasVariable
+    include Presentable
     include Ci::Maskable
     include Ci::RawVariable
-    include Limitable
-    include Presentable
-
     prepend HasEnvironmentScope
 
     belongs_to :project
@@ -21,9 +19,6 @@ module Ci
 
     scope :unprotected, -> { where(protected: false) }
     scope :by_environment_scope, -> (environment_scope) { where(environment_scope: environment_scope) }
-
-    self.limit_name = 'project_ci_variables'
-    self.limit_scope = :project
 
     def audit_details
       key

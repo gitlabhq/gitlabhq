@@ -122,7 +122,8 @@ AtlErSqafbECNDSwS5BX8yDpu5yRBJ4xegO/rNlmb8ICRYkuJapD1xXicFOsmfUK
         host: 'ldap.example.com',
         port: 386,
         hosts: nil,
-        encryption: nil
+        encryption: nil,
+        instrumentation_service: ActiveSupport::Notifications
       )
     end
 

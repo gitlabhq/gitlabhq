@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::MergeRequestsController do
+RSpec.describe Projects::MergeRequestsController, feature_category: :source_code_management do
   describe 'GET #discussions' do
     let_it_be(:merge_request) { create(:merge_request) }
     let_it_be(:project) { merge_request.project }

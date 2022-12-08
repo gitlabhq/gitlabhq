@@ -1,6 +1,17 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'issuable supports timelog creation mutation' do
+  let(:mutation_response) { graphql_mutation_response(:timelog_create) }
+  let(:mutation) do
+    variables = {
+      'time_spent' => time_spent,
+      'spent_at' => '2022-11-16T12:59:35+0100',
+      'summary' => 'Test summary',
+      'issuable_id' => issuable.to_global_id.to_s
+    }
+    graphql_mutation(:timelogCreate, variables)
+  end
+
   context 'when the user is anonymous' do
     before do
       post_graphql_mutation(mutation, current_user: current_user)
@@ -38,7 +49,8 @@ RSpec.shared_examples 'issuable supports timelog creation mutation' do
         expect(mutation_response['errors']).to be_empty
         expect(mutation_response['timelog']).to include(
           'timeSpent' => 3600,
-          'spentAt' => '2022-07-08T00:00:00Z',
+          # This also checks that the ISO time was converted to UTC
+          'spentAt' => '2022-11-16T11:59:35Z',
           'summary' => 'Test summary'
         )
       end
@@ -53,7 +65,8 @@ RSpec.shared_examples 'issuable supports timelog creation mutation' do
         end.to change { Timelog.count }.by(0)
 
         expect(response).to have_gitlab_http_status(:success)
-        expect(mutation_response['errors']).to match_array(['Time spent can\'t be blank'])
+        expect(mutation_response['errors']).to match_array(
+          ['Time spent must be formatted correctly. For example: 1h 30m.'])
         expect(mutation_response['timelog']).to be_nil
       end
     end
@@ -61,6 +74,17 @@ RSpec.shared_examples 'issuable supports timelog creation mutation' do
 end
 
 RSpec.shared_examples 'issuable does not support timelog creation mutation' do
+  let(:mutation_response) { graphql_mutation_response(:timelog_create) }
+  let(:mutation) do
+    variables = {
+      'time_spent' => time_spent,
+      'spent_at' => '2022-11-16T12:59:35+0100',
+      'summary' => 'Test summary',
+      'issuable_id' => issuable.to_global_id.to_s
+    }
+    graphql_mutation(:timelogCreate, variables)
+  end
+
   context 'when the user is anonymous' do
     before do
       post_graphql_mutation(mutation, current_user: current_user)

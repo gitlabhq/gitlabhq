@@ -65,7 +65,7 @@ module Gitlab
           # To work around this we're using bulk_insert with a single row. This
           # allows us to efficiently insert data (even if it's just 1 row)
           # without having to use all sorts of hacks to disable callbacks.
-          ApplicationRecord.legacy_bulk_insert(LegacyDiffNote.table_name, [{
+          attributes = {
             noteable_type: note.noteable_type,
             system: false,
             type: 'LegacyDiffNote',
@@ -79,7 +79,12 @@ module Gitlab
             created_at: note.created_at,
             updated_at: note.updated_at,
             st_diff: note.diff_hash.to_yaml
-          }])
+          }
+
+          diff_note = LegacyDiffNote.new(attributes.merge(importing: true))
+          diff_note.validate!
+
+          ApplicationRecord.legacy_bulk_insert(LegacyDiffNote.table_name, [attributes])
         end
         # rubocop:enabled Gitlab/BulkInsert
 

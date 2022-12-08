@@ -226,6 +226,10 @@ class ApplicationSetting < ApplicationRecord
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
+  validates :max_terraform_state_size_bytes,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
   validates :default_artifacts_expire_in, presence: true, duration: true
 
   validates :container_expiration_policies_enable_historic_entries,

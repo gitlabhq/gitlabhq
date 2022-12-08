@@ -218,6 +218,16 @@ class TodoService
     create_todos(reviewers, attributes)
   end
 
+  def create_member_access_request(member)
+    source = member.source
+    attributes = attributes_for_access_request_todos(source, member.user, Todo::MEMBER_ACCESS_REQUESTED)
+
+    approvers = source.access_request_approvers_to_be_notified.map(&:user)
+    return true if approvers.empty?
+
+    create_todos(approvers, attributes)
+  end
+
   private
 
   def create_todos(users, attributes)
@@ -386,6 +396,20 @@ class TodoService
     return unless issue_type == 'incident'
 
     track_usage_event(:incident_management_incident_todo, user.id)
+  end
+
+  def attributes_for_access_request_todos(source, author, action, note = nil)
+    attributes = {
+      target_id: source.id,
+      target_type: source.class.polymorphic_name,
+      author_id: author.id,
+      action: action,
+      note: note
+    }
+
+    attributes[:group_id] = source.id unless source.instance_of? Project
+
+    attributes
   end
 end
 

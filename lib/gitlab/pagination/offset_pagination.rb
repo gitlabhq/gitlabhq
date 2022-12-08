@@ -12,7 +12,9 @@ module Gitlab
       end
 
       def paginate(relation, exclude_total_headers: false, skip_default_order: false, without_count: false)
-        paginate_with_limit_optimization(add_default_order(relation, skip_default_order: skip_default_order), without_count: without_count).tap do |data|
+        ordered_relation = add_default_order(relation, skip_default_order: skip_default_order)
+
+        paginate_with_limit_optimization(ordered_relation, without_count: without_count).tap do |data|
           add_pagination_headers(data, exclude_total_headers)
         end
       end

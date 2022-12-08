@@ -6,7 +6,7 @@ export default {
   components: {
     IssuableTimeTracker,
   },
-  inject: ['timeTrackingLimitToHours'],
+  inject: ['timeTrackingLimitToHours', 'canUpdate'],
   computed: {
     ...mapGetters(['activeBoardItem']),
     initialTimeTracking() {
@@ -34,5 +34,6 @@ export default {
     :limit-to-hours="timeTrackingLimitToHours"
     :initial-time-tracking="initialTimeTracking"
     :show-collapsed="false"
+    :can-add-time-entries="canUpdate"
   />
 </template>

@@ -2,11 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::GroupVariable, feature_category: :pipeline_authoring do
+RSpec.describe Ci::GroupVariable do
   subject { build(:ci_group_variable) }
 
   it_behaves_like "CI variable"
-  it_behaves_like 'includes Limitable concern'
 
   it { is_expected.to include_module(Presentable) }
   it { is_expected.to include_module(Ci::Maskable) }

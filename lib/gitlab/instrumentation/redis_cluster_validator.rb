@@ -183,18 +183,22 @@ module Gitlab
       CrossSlotError = Class.new(StandardError)
 
       class << self
-        def validate!(commands)
-          return if allow_cross_slot_commands?
+        def validate(commands)
           return if commands.empty?
 
           # early exit for single-command (non-pipelined) if it is a single-key-command
           command_name = commands.size > 1 ? "PIPELINE/MULTI" : commands.first.first.to_s.upcase
           return if commands.size == 1 && REDIS_COMMANDS.dig(command_name, :single_key)
 
-          key_slots = commands.map { |command| key_slots(command) }.flatten
-          if key_slots.uniq.many? # rubocop: disable CodeReuse/ActiveRecord
-            raise CrossSlotError, "Redis command #{command_name} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
-          end
+          keys = commands.map { |command| extract_keys(command) }.flatten
+
+          {
+            # calculate key-slots only if not allowed
+            valid: allow_cross_slot_commands? || !has_cross_slot_keys?(keys),
+            command_name: command_name,
+            key_count: keys.size,
+            allowed: allow_cross_slot_commands?
+          }
         end
 
         # Keep track of the call stack to allow nested calls to work.
@@ -209,15 +213,17 @@ module Gitlab
 
         private
 
-        def key_slots(command)
+        def extract_keys(command)
           argument_positions = REDIS_COMMANDS[command.first.to_s.upcase]
 
           return [] unless argument_positions
 
           arguments = command.flatten[argument_positions[:first]..argument_positions[:last]]
-          arguments.each_slice(argument_positions[:step]).map do |args|
-            key_slot(args.first)
-          end
+          arguments.each_slice(argument_positions[:step]).map(&:first)
+        end
+
+        def has_cross_slot_keys?(keys)
+          keys.map { |key| key_slot(key) }.uniq.many? # rubocop: disable CodeReuse/ActiveRecord
         end
 
         def allow_cross_slot_commands?

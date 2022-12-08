@@ -27,6 +27,7 @@ module TodosHelper
     )
     when Todo::UNMERGEABLE then s_('Todos|Could not merge')
     when Todo::MERGE_TRAIN_REMOVED then s_("Todos|Removed from Merge Train:")
+    when Todo::MEMBER_ACCESS_REQUESTED then s_("Todos|has requested access to")
     end
   end
 
@@ -52,7 +53,7 @@ module TodosHelper
     # Design To Dos' filenames are displayed in `#todo_target_link` (see `Design#to_reference`),
     # so to avoid displaying duplicate filenames in the To Do list for designs,
     # we return an empty string here.
-    return "" if todo.target.blank? || todo.for_design?
+    return "" if todo.target.blank? || todo.for_design? || todo.member_access_requested?
 
     "\"#{todo.target.title}\""
   end
@@ -68,6 +69,7 @@ module TodosHelper
   def todo_target_type_name(todo)
     return _('design') if todo.for_design?
     return _('alert') if todo.for_alert?
+    return _('group') if todo.member_access_requested?
 
     target_type = if todo.for_issue_or_work_item?
                     IntegrationsHelper.integration_issue_type(todo.target.issue_type)
@@ -92,6 +94,8 @@ module TodosHelper
     elsif todo.for_issue_or_work_item?
       path_options[:only_path] = true
       Gitlab::UrlBuilder.build(todo.target, **path_options)
+    elsif todo.member_access_requested?
+      todo.access_request_url
     else
       path = [todo.resource_parent, todo.target]
 
@@ -183,7 +187,8 @@ module TodosHelper
       { id: Todo::REVIEW_REQUESTED, text: s_('Todos|Review requested') },
       { id: Todo::MENTIONED, text: s_('Todos|Mentioned') },
       { id: Todo::MARKED, text: s_('Todos|Added') },
-      { id: Todo::BUILD_FAILED, text: s_('Todos|Pipelines') }
+      { id: Todo::BUILD_FAILED, text: s_('Todos|Pipelines') },
+      { id: Todo::MEMBER_ACCESS_REQUESTED, text: s_('Todos|Member access requested') }
     ]
   end
 

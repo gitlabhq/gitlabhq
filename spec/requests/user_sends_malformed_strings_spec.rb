@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User sends malformed strings' do
+RSpec.describe 'User sends malformed strings', feature_category: :user_management do
   include GitHttpHelpers
 
   let(:null_byte) { "\u0000" }

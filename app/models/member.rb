@@ -531,6 +531,7 @@ class Member < ApplicationRecord
 
   def send_request
     notification_service.new_access_request(self)
+    todo_service.create_member_access_request(self) if source_type != 'Project'
   end
 
   def post_create_hook
@@ -586,6 +587,12 @@ class Member < ApplicationRecord
   # rubocop: disable CodeReuse/ServiceClass
   def notification_service
     NotificationService.new
+  end
+  # rubocop: enable CodeReuse/ServiceClass
+
+  # rubocop: disable CodeReuse/ServiceClass
+  def todo_service
+    TodoService.new
   end
   # rubocop: enable CodeReuse/ServiceClass
 

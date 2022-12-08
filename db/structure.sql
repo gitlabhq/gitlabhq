@@ -11529,12 +11529,14 @@ CREATE TABLE application_settings (
     encrypted_telesign_customer_xid_iv bytea,
     encrypted_telesign_api_key bytea,
     encrypted_telesign_api_key_iv bytea,
+    max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
     CONSTRAINT app_settings_git_rate_limit_users_allowlist_max_usernames CHECK ((cardinality(git_rate_limit_users_allowlist) <= 100)),
     CONSTRAINT app_settings_max_pages_custom_domains_per_project_check CHECK ((max_pages_custom_domains_per_project >= 0)),
+    CONSTRAINT app_settings_max_terraform_state_size_bytes_check CHECK ((max_terraform_state_size_bytes >= 0)),
     CONSTRAINT app_settings_p_cleanup_package_file_worker_capacity_positive CHECK ((packages_cleanup_package_file_worker_capacity >= 0)),
     CONSTRAINT app_settings_pkg_registry_cleanup_pol_worker_capacity_gte_zero CHECK ((package_registry_cleanup_policies_worker_capacity >= 0)),
     CONSTRAINT app_settings_registry_exp_policies_worker_capacity_positive CHECK ((container_registry_expiration_policies_worker_capacity >= 0)),
@@ -28671,8 +28673,6 @@ CREATE UNIQUE INDEX index_ci_pipeline_chat_data_on_pipeline_id ON ci_pipeline_ch
 
 CREATE INDEX index_ci_pipeline_messages_on_pipeline_id ON ci_pipeline_messages USING btree (pipeline_id);
 
-CREATE INDEX index_ci_pipeline_metadata_on_pipeline_id_name ON ci_pipeline_metadata USING btree (pipeline_id, name);
-
 CREATE INDEX index_ci_pipeline_metadata_on_project_id ON ci_pipeline_metadata USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_pipeline_schedule_variables_on_schedule_id_and_key ON ci_pipeline_schedule_variables USING btree (pipeline_schedule_id, key);
@@ -30318,6 +30318,8 @@ CREATE INDEX index_personal_access_tokens_on_id_and_created_at ON personal_acces
 CREATE UNIQUE INDEX index_personal_access_tokens_on_token_digest ON personal_access_tokens USING btree (token_digest);
 
 CREATE INDEX index_personal_access_tokens_on_user_id ON personal_access_tokens USING btree (user_id);
+
+CREATE INDEX index_pipeline_metadata_on_pipeline_id_name_lower_text_pattern ON ci_pipeline_metadata USING btree (pipeline_id, lower(name) text_pattern_ops);
 
 CREATE UNIQUE INDEX index_plan_limits_on_plan_id ON plan_limits USING btree (plan_id);
 

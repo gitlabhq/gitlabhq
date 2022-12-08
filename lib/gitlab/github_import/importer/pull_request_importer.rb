@@ -61,6 +61,9 @@ module Gitlab
             updated_at: pull_request.updated_at
           }
 
+          mr = project.merge_requests.new(attributes.merge(importing: true))
+          mr.validate!
+
           create_merge_request_without_hooks(project, attributes, pull_request.iid)
         end
 

@@ -39,6 +39,7 @@ export default class SidebarMilestone {
               humanTimeEstimate,
               humanTotalTimeSpent: humanTimeSpent,
             },
+            canAddTimeEntries: false,
           },
         }),
     });

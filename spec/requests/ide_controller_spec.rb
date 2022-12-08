@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IdeController do
+RSpec.describe IdeController, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:reporter) { create(:user) }

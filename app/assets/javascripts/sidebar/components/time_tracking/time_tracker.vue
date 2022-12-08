@@ -9,15 +9,17 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { IssuableType } from '~/issues/constants';
+import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, __ } from '~/locale';
 
 import { HOW_TO_TRACK_TIME, timeTrackingQueries } from '../../constants';
 import eventHub from '../../event_hub';
 import TimeTrackingCollapsedState from './collapsed_state.vue';
 import TimeTrackingComparisonPane from './comparison_pane.vue';
-import TimeTrackingHelpState from './help_state.vue';
 import TimeTrackingReport from './report.vue';
 import TimeTrackingSpentOnlyPane from './spent_only_pane.vue';
+import { CREATE_TIMELOG_MODAL_ID } from './constants';
+import CreateTimelogForm from './create_timelog_form.vue';
 
 export default {
   name: 'IssuableTimeTracker',
@@ -34,8 +36,8 @@ export default {
     TimeTrackingCollapsedState,
     TimeTrackingSpentOnlyPane,
     TimeTrackingComparisonPane,
-    TimeTrackingHelpState,
     TimeTrackingReport,
+    CreateTimelogForm,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -86,6 +88,11 @@ export default {
       type: Boolean,
       default: true,
       required: false,
+    },
+    canAddTimeEntries: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -192,11 +199,11 @@ export default {
     eventHub.$on('timeTracker:refresh', this.refresh);
   },
   methods: {
-    toggleHelpState(show) {
-      this.showHelp = show;
-    },
     refresh() {
       this.$apollo.queries.issuableTimeTracking.refetch();
+    },
+    openRegisterTimeSpentModal() {
+      this.$root.$emit(BV_SHOW_MODAL, CREATE_TIMELOG_MODAL_ID);
     },
   },
 };
@@ -215,24 +222,21 @@ export default {
       :time-estimate-human-readable="humanTimeEstimate"
     />
     <div
-      class="hide-collapsed gl-line-height-20 gl-text-gray-900 gl-display-flex gl-align-items-center gl-font-weight-bold gl-mr-3"
+      class="hide-collapsed gl-line-height-20 gl-text-gray-900 gl-display-flex gl-align-items-center gl-font-weight-bold"
     >
       {{ __('Time tracking') }}
       <gl-loading-icon v-if="isTimeTrackingInfoLoading" size="sm" class="gl-ml-2" inline />
       <gl-button
-        :data-testid="showHelpState ? 'closeHelpButton' : 'helpButton'"
+        v-if="canAddTimeEntries"
+        v-gl-tooltip.left
         category="tertiary"
         size="small"
-        variant="link"
         class="gl-ml-auto"
-        @click="toggleHelpState(!showHelpState)"
+        data-testid="add-time-entry-button"
+        :title="__('Add time entry')"
+        @click="openRegisterTimeSpentModal()"
       >
-        <gl-icon
-          v-gl-tooltip.left
-          :title="timeTrackingIconTitle"
-          :name="timeTrackingIconName"
-          class="gl-text-gray-900!"
-        />
+        <gl-icon name="plus" class="gl-text-gray-900!" />
       </gl-button>
     </div>
     <div v-if="!isTimeTrackingInfoLoading" class="hide-collapsed">
@@ -272,9 +276,7 @@ export default {
           <time-tracking-report :limit-to-hours="limitToHours" :issuable-id="issuableId" />
         </gl-modal>
       </template>
-      <transition name="help-state-toggle">
-        <time-tracking-help-state v-if="showHelpState" />
-      </transition>
+      <create-timelog-form :issuable-id="issuableId" />
     </div>
   </div>
 </template>

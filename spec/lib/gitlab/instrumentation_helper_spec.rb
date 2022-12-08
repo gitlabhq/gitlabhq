@@ -71,6 +71,26 @@ RSpec.describe Gitlab::InstrumentationHelper do
       end
     end
 
+    context 'when LDAP requests are made' do
+      let(:provider) { 'ldapmain' }
+      let(:adapter) { Gitlab::Auth::Ldap::Adapter.new(provider) }
+      let(:conn) { instance_double(Net::LDAP::Connection, search: search) }
+      let(:search) { double(:search, result_code: 200) } # rubocop: disable RSpec/VerifiedDoubles
+
+      it 'adds LDAP data' do
+        allow_next_instance_of(Net::LDAP) do |net_ldap|
+          allow(net_ldap).to receive(:use_connection).and_yield(conn)
+        end
+
+        adapter.users('uid', 'foo')
+        subject
+
+        # Query count should be 2, as it will call `open` then `search`
+        expect(payload[:net_ldap_count]).to eq(2)
+        expect(payload[:net_ldap_duration_s]).to be >= 0
+      end
+    end
+
     context 'when the request matched a Rack::Attack safelist' do
       it 'logs the safelist name' do
         Gitlab::Instrumentation::Throttle.safelist = 'foobar'

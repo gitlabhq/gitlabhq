@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GoogleCloud::RevokeOauthController do
+RSpec.describe Projects::GoogleCloud::RevokeOauthController, feature_category: :kubernetes_management do
   include SessionHelpers
 
   describe 'POST #create', :snowplow, :clean_gitlab_redis_sessions, :aggregate_failures do

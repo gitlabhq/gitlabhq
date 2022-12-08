@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group callouts' do
+RSpec.describe 'Group callouts', feature_category: :navigation do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
 

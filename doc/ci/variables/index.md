@@ -718,7 +718,7 @@ You can override the value of a CI/CD variable when you
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/295234) in GitLab 13.8.
 
-You can grant permission to override variables to [maintainers](../../user/permissions.md#project-features) only. When other users try to run a pipeline
+You can grant permission to override variables to users with the Maintainer role only. When other users try to run a pipeline
 with overridden variables, they receive the `Insufficient permissions to set pipeline variables`
 error message.
 
@@ -779,7 +779,7 @@ or job scripts. Debug logging exposes job execution details that are usually hid
 by the runner and makes job logs more verbose. It also exposes all variables and secrets
 available to the job.
 
-Before you enable debug logging, make sure only [team members](../../user/permissions.md#project-features)
+Before you enable debug logging, make sure only team members
 can view job logs. You should also [delete job logs](../jobs/index.md#view-jobs-in-a-pipeline)
 with debug output before you make logs public again.
 

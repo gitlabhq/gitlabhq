@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::CommitsController do
+RSpec.describe Projects::CommitsController, feature_category: :source_code_management do
   context 'token authentication' do
     context 'when public project' do
       let_it_be(:public_project) { create(:project, :repository, :public) }

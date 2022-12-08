@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_redis_cache, feature_category: :importer do
   let(:project) { create(:project, import_source: 'foo/bar') }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }
@@ -11,40 +11,58 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
     it 'imports the labels in bulk' do
       label_hash = { title: 'bug', color: '#fffaaa' }
 
-      expect(importer)
-        .to receive(:build_labels)
-        .and_return([label_hash])
-
-      expect(importer)
-        .to receive(:bulk_insert)
-        .with(Label, [label_hash])
-
-      expect(importer)
-        .to receive(:build_labels_cache)
+      expect(importer).to receive(:build_labels).and_return([[label_hash], []])
+      expect(importer).to receive(:bulk_insert).with([label_hash])
+      expect(importer).to receive(:build_labels_cache)
 
       importer.execute
     end
   end
 
   describe '#build_labels' do
-    it 'returns an Array containnig label rows' do
+    it 'returns an Array containing label rows' do
       label = { name: 'bug', color: 'ffffff' }
 
       expect(importer).to receive(:each_label).and_return([label])
 
-      rows = importer.build_labels
+      rows, errors = importer.build_labels
 
       expect(rows.length).to eq(1)
       expect(rows[0][:title]).to eq('bug')
+      expect(errors).to be_blank
     end
 
-    it 'does not create labels that already exist' do
+    it 'does not build labels that already exist' do
       create(:label, project: project, title: 'bug')
 
       label = { name: 'bug', color: 'ffffff' }
 
       expect(importer).to receive(:each_label).and_return([label])
-      expect(importer.build_labels).to be_empty
+
+      rows, errors = importer.build_labels
+
+      expect(rows).to be_empty
+      expect(errors).to be_empty
+    end
+
+    it 'does not build labels that are invalid' do
+      label = { id: 1, name: 'bug,bug', color: 'ffffff' }
+
+      expect(importer).to receive(:each_label).and_return([label])
+      expect(Gitlab::Import::Logger).to receive(:error)
+        .with(
+          import_type: :github,
+          project_id: project.id,
+          importer: described_class.name,
+          message: ['Title is invalid'],
+          github_identifier: 1
+        )
+
+      rows, errors = importer.build_labels
+
+      expect(rows).to be_empty
+      expect(errors.length).to eq(1)
+      expect(errors[0].full_messages).to match_array(['Title is invalid'])
     end
   end
 
@@ -58,9 +76,9 @@ RSpec.describe Gitlab::GithubImport::Importer::LabelsImporter, :clean_gitlab_red
     end
   end
 
-  describe '#build' do
+  describe '#build_attributes' do
     let(:label_hash) do
-      importer.build({ name: 'bug', color: 'ffffff' })
+      importer.build_attributes({ name: 'bug', color: 'ffffff' })
     end
 
     it 'returns the attributes of the label as a Hash' do

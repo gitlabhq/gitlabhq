@@ -412,6 +412,7 @@ module IssuablesHelper
       id: issuable[:id],
       severity: issuable[:severity],
       timeTrackingLimitToHours: Gitlab::CurrentSettings.time_tracking_limit_to_hours,
+      canCreateTimelogs: issuable.dig(:current_user, :can_create_timelogs),
       createNoteEmail: issuable[:create_note_email],
       issuableType: issuable[:type]
     }

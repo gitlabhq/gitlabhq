@@ -53,6 +53,16 @@ AllCops:
   NewCops: disable
   SuggestExtensions: false
 
+Rails:
+  Exclude:
+    # User defined excludes on top (department) level don't cancel default
+    # includes set by child cops. Directories below are not affected (tested
+    # manually). Watch https://github.com/rubocop/rubocop/issues/11148 to
+    # know when this comment can be removed.
+    - 'danger/**/*'
+    - 'tooling/danger/**/*'
+    - 'rubocop/**/*'
+
 RSpec:
   Language:
     Includes:
@@ -271,10 +281,6 @@ Rails/FindBy:
     - 'ee/lib/**/*.rb'
     - 'spec/**/*.rb'
     - 'ee/spec/**/*.rb'
-
-Rails/IndexBy:
-  Exclude:
-    - 'tooling/danger/**/*.rb'
 
 Rails/InverseOf:
   Include:

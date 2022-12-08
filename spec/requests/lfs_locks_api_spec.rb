@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Git LFS File Locking API' do
+RSpec.describe 'Git LFS File Locking API', feature_category: :source_code_management do
   include LfsHttpHelpers
   include WorkhorseHelpers
 

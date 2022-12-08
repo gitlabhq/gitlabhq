@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
+RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_category: :importer do
   let(:project) { create(:project) }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }
@@ -48,8 +48,8 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
         released_at: released_at
       }
 
-      expect(importer).to receive(:build_releases).and_return([release_hash])
-      expect(importer).to receive(:bulk_insert).with(Release, [release_hash])
+      expect(importer).to receive(:build_releases).and_return([[release_hash], []])
+      expect(importer).to receive(:bulk_insert).with([release_hash])
 
       importer.execute
     end
@@ -86,24 +86,29 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
     it 'returns an Array containing release rows' do
       expect(importer).to receive(:each_release).and_return([github_release])
 
-      rows = importer.build_releases
+      rows, errors = importer.build_releases
 
       expect(rows.length).to eq(1)
       expect(rows[0][:tag]).to eq('1.0')
+      expect(errors).to be_empty
     end
 
     it 'does not create releases that already exist' do
       create(:release, project: project, tag: '1.0', description: '1.0')
 
       expect(importer).to receive(:each_release).and_return([github_release])
-      expect(importer.build_releases).to be_empty
+
+      rows, errors = importer.build_releases
+
+      expect(rows).to be_empty
+      expect(errors).to be_empty
     end
 
     it 'uses a default release description if none is provided' do
       github_release[:body] = nil
       expect(importer).to receive(:each_release).and_return([github_release])
 
-      release = importer.build_releases.first
+      release, _ = importer.build_releases.first
 
       expect(release[:description]).to eq('Release for tag 1.0')
     end
@@ -115,20 +120,36 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter do
       }
 
       expect(importer).to receive(:each_release).and_return([null_tag_release])
-      expect(importer.build_releases).to be_empty
+
+      rows, errors = importer.build_releases
+
+      expect(rows).to be_empty
+      expect(errors).to be_empty
     end
 
     it 'does not create duplicate release tags' do
       expect(importer).to receive(:each_release).and_return([github_release, github_release])
 
-      releases = importer.build_releases
+      releases, _ = importer.build_releases
       expect(releases.length).to eq(1)
       expect(releases[0][:description]).to eq('This is my release')
     end
+
+    it 'does not create invalid release' do
+      github_release[:body] = SecureRandom.alphanumeric(Gitlab::Database::MAX_TEXT_SIZE_LIMIT + 1)
+
+      expect(importer).to receive(:each_release).and_return([github_release])
+
+      releases, errors = importer.build_releases
+
+      expect(releases).to be_empty
+      expect(errors.length).to eq(1)
+      expect(errors[0].full_messages).to match_array(['Description is too long (maximum is 1000000 characters)'])
+    end
   end
 
-  describe '#build' do
-    let(:release_hash) { importer.build(github_release) }
+  describe '#build_attributes' do
+    let(:release_hash) { importer.build_attributes(github_release) }
 
     context 'the returned Hash' do
       before do

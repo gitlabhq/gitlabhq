@@ -799,9 +799,35 @@ RSpec.describe Member do
   end
 
   describe '#request?' do
-    subject { create(:project_member, requested_at: Time.current.utc) }
+    context 'when request for project' do
+      subject { create(:project_member, requested_at: Time.current.utc) }
 
-    it { is_expected.to be_request }
+      it 'calls notification service but not todo service' do
+        expect_next_instance_of(NotificationService) do |instance|
+          expect(instance).to receive(:new_access_request)
+        end
+
+        expect(TodoService).not_to receive(:new)
+
+        is_expected.to be_request
+      end
+    end
+
+    context 'when request for group' do
+      subject { create(:group_member, requested_at: Time.current.utc) }
+
+      it 'calls notification and todo service' do
+        expect_next_instance_of(NotificationService) do |instance|
+          expect(instance).to receive(:new_access_request)
+        end
+
+        expect_next_instance_of(TodoService) do |instance|
+          expect(instance).to receive(:create_member_access_request)
+        end
+
+        is_expected.to be_request
+      end
+    end
   end
 
   describe '#pending?' do

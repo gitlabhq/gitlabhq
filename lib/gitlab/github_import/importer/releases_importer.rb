@@ -16,7 +16,10 @@ module Gitlab
         # to generate HTML version - you also need to regenerate it in
         # Gitlab::GithubImport::Importer::NoteAttachmentsImporter.
         def execute
-          bulk_insert(Release, build_releases)
+          rows, validation_errors = build_releases
+
+          bulk_insert(rows)
+          bulk_insert_failures(validation_errors) if validation_errors.any?
         end
 
         def build_releases
@@ -27,7 +30,7 @@ module Gitlab
           existing_tags.include?(release[:tag_name]) || release[:tag_name].nil?
         end
 
-        def build(release)
+        def build_attributes(release)
           existing_tags.add(release[:tag_name])
 
           {
@@ -65,6 +68,10 @@ module Gitlab
 
         def user_finder
           @user_finder ||= GithubImport::UserFinder.new(project, client)
+        end
+
+        def model
+          Release
         end
       end
     end

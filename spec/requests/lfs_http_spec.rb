@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Git LFS API and storage' do
+RSpec.describe 'Git LFS API and storage', feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
   include LfsHttpHelpers

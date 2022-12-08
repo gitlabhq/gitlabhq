@@ -373,7 +373,7 @@ function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
   echoinfo "[debugging data] k8s resources:"
-  kubectl get svc,pods,jobs -o wide --namespace "${namespace}"
+  kubectl get pods --namespace "${namespace}"
 
   echoinfo "[debugging data] PostgreSQL logs:"
   kubectl logs -l app=postgresql --all-containers --namespace "${namespace}"
@@ -382,8 +382,5 @@ function display_deployment_debug() {
   kubectl logs -l app=migrations --all-containers --namespace "${namespace}"
 
   echoinfo "[debugging data] Webservice logs:"
-  kubectl logs -l app=webservice --all-containers --namespace "${namespace}"
-
-  echoinfo "[debugging data] k8s events in namespace:"
-  kubectl get events --sort-by='.metadata.creationTimestamp' --namespace "${namespace}"
+  kubectl logs -l app=webservice -c webservice --namespace "${namespace}"
 }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Packages::PackageFilesController do
+RSpec.describe Projects::Packages::PackageFilesController, feature_category: :package_registry do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:package) { create(:package, project: project) }
   let_it_be(:package_file) { create(:package_file, package: package) }

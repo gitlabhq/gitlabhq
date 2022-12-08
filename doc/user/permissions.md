@@ -33,10 +33,6 @@ The available roles are:
 A user assigned the Guest role has the least permissions,
 and the Owner has the most.
 
-## Principles behind permissions
-
-See our [product handbook on permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab).
-
 ## Instance-wide user permissions
 
 By default, users can create top-level groups and change their
@@ -341,16 +337,6 @@ This table shows granted privileges for jobs triggered by specific types of user
 1. Only if the triggering user is not an external one.
 1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlabl.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
-### Wiki and issues
-
-Project features like [wikis](project/wiki/index.md) and issues can be hidden from users depending on
-which visibility level you select on project settings.
-
-- Disabled: disabled for everyone
-- Only team members: only team members can see even if your project is public or internal
-- Everyone with access: everyone can see depending on your project's visibility level
-- Everyone: enabled for everyone (only available for GitLab Pages)
-
 ### Protected branches
 
 Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
@@ -491,6 +477,11 @@ Owners can add members with a "minimal access" role to a parent group. Such user
 projects and subgroups underneath. Owners must explicitly add these "minimal access" users to the specific subgroups and
 projects.
 
+You can use minimal access to give the same member more than one role in a group:
+
+1. Add the member to the parent group with a minimal access role.
+1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
+
 Because of an [outstanding issue](https://gitlab.com/gitlab-org/gitlab/-/issues/267996), when minimal access users:
 
 - Sign in with standard web authentication, they receive a `404` error when accessing the parent group.
@@ -504,16 +495,6 @@ Users with even a "minimal access" role are counted against your number of licen
 requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
 subscriptions.
 
-## Project features
-
-Project features like wiki and issues can be hidden from users depending on
-which visibility level you select on project settings.
-
-- Disabled: disabled for everyone.
-- Only team members: only team members can see, even if your project is public or internal.
-- Everyone with access: everyone can see depending on your project visibility level.
-- Everyone: enabled for everyone (only available for GitLab Pages).
-
 ## Release permissions with protected tags
 
 [The permission to create tags](project/protected_tags.md) is used to define if a user can
@@ -522,12 +503,8 @@ create, edit, and delete [Releases](project/releases/index.md).
 See [Release permissions](project/releases/index.md#release-permissions)
 for more information.
 
-## LDAP users permissions
+## Related topics
 
-LDAP user permissions can be manually overridden by an administrator.
-Read through the documentation on [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap) to learn more.
-
-## Project aliases
-
-Project aliases can only be read, created and deleted by a GitLab administrator.
-Read through the documentation on [Project aliases](../user/project/import/index.md#project-aliases) to learn more.
+- [The GitLab principles behind permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
+- [Project aliases](../user/project/import/index.md#project-aliases)
+- [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Jira authorization requests' do
+RSpec.describe 'Jira authorization requests', feature_category: :integrations do
   let(:user) { create :user }
   let(:application) { create :oauth_application, scopes: 'api' }
   let(:redirect_uri) { oauth_jira_dvcs_callback_url(host: "http://www.example.com") }

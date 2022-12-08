@@ -82,7 +82,8 @@ module Gitlab
 
         def adapter_options
           opts = base_options.merge(
-            encryption: encryption_options
+            encryption: encryption_options,
+            instrumentation_service: ActiveSupport::Notifications
           )
 
           opts.merge!(auth_options) if has_auth?

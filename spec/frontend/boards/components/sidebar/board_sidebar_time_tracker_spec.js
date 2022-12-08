@@ -42,13 +42,20 @@ describe('BoardSidebarTimeTracker', () => {
     wrapper = null;
   });
 
-  it.each([[true], [false]])(
-    'renders IssuableTimeTracker with correct spent and estimated time (timeTrackingLimitToHours=%s)',
-    (timeTrackingLimitToHours) => {
-      createComponent({ provide: { timeTrackingLimitToHours } });
+  it.each`
+    timeTrackingLimitToHours | canUpdate
+    ${true}                  | ${false}
+    ${true}                  | ${true}
+    ${false}                 | ${false}
+    ${false}                 | ${true}
+  `(
+    'renders IssuableTimeTracker with correct spent and estimated time (timeTrackingLimitToHours=$timeTrackingLimitToHours, canUpdate=$canUpdate)',
+    ({ timeTrackingLimitToHours, canUpdate }) => {
+      createComponent({ provide: { timeTrackingLimitToHours, canUpdate } });
 
       expect(wrapper.findComponent(IssuableTimeTracker).props()).toEqual({
         limitToHours: timeTrackingLimitToHours,
+        canAddTimeEntries: canUpdate,
         showCollapsed: false,
         issuableId: '1',
         issuableIid: '1',

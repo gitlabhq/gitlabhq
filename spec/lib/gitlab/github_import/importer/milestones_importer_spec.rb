@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab_redis_cache,
+                                                                   feature_category: :importer do
   let(:project) { create(:project, import_source: 'foo/bar') }
   let(:client) { double(:client) }
   let(:importer) { described_class.new(project, client) }
@@ -38,41 +39,61 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
     it 'imports the milestones in bulk' do
       milestone_hash = { number: 1, title: '1.0' }
 
-      expect(importer)
-        .to receive(:build_milestones)
-        .and_return([milestone_hash])
-
-      expect(importer)
-        .to receive(:bulk_insert)
-        .with(Milestone, [milestone_hash])
-
-      expect(importer)
-        .to receive(:build_milestones_cache)
+      expect(importer).to receive(:build_milestones).and_return([[milestone_hash], []])
+      expect(importer).to receive(:bulk_insert).with([milestone_hash])
+      expect(importer).to receive(:build_milestones_cache)
 
       importer.execute
     end
   end
 
   describe '#build_milestones' do
-    it 'returns an Array containnig milestone rows' do
+    it 'returns an Array containing milestone rows' do
       expect(importer)
         .to receive(:each_milestone)
         .and_return([milestone])
 
-      rows = importer.build_milestones
+      rows, errors = importer.build_milestones
 
       expect(rows.length).to eq(1)
       expect(rows[0][:title]).to eq('1.0')
+      expect(errors).to be_empty
     end
 
-    it 'does not create milestones that already exist' do
+    it 'does not build milestones that already exist' do
       create(:milestone, project: project, title: '1.0', iid: 1)
 
       expect(importer)
         .to receive(:each_milestone)
         .and_return([milestone])
 
-      expect(importer.build_milestones).to be_empty
+      rows, errors = importer.build_milestones
+
+      expect(rows).to be_empty
+      expect(errors).to be_empty
+    end
+
+    it 'does not build milestones that are invalid' do
+      milestone = { id: 1, title: nil }
+
+      expect(importer)
+        .to receive(:each_milestone)
+        .and_return([milestone])
+
+      expect(Gitlab::Import::Logger).to receive(:error)
+        .with(
+          import_type: :github,
+          project_id: project.id,
+          importer: described_class.name,
+          message: ["Title can't be blank"],
+          github_identifier: 1
+        )
+
+      rows, errors = importer.build_milestones
+
+      expect(rows).to be_empty
+      expect(errors.length).to eq(1)
+      expect(errors[0].full_messages).to match_array(["Title can't be blank"])
     end
   end
 
@@ -86,9 +107,9 @@ RSpec.describe Gitlab::GithubImport::Importer::MilestonesImporter, :clean_gitlab
     end
   end
 
-  describe '#build' do
-    let(:milestone_hash) { importer.build(milestone) }
-    let(:milestone_hash2) { importer.build(milestone2) }
+  describe '#build_attributes' do
+    let(:milestone_hash) { importer.build_attributes(milestone) }
+    let(:milestone_hash2) { importer.build_attributes(milestone2) }
 
     it 'returns the attributes of the milestone as a Hash' do
       expect(milestone_hash).to be_an_instance_of(Hash)

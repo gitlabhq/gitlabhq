@@ -20,6 +20,7 @@ class Group < Namespace
   include BulkUsersByEmailLoad
   include ChronicDurationAttribute
   include RunnerTokenExpirationInterval
+  include Todoable
 
   extend ::Gitlab::Utils::Override
 
@@ -165,7 +166,16 @@ class Group < Namespace
 
   scope :by_id, ->(groups) { where(id: groups) }
 
-  scope :by_ids_or_paths, -> (ids, paths) { by_id(ids).or(where(path: paths)) }
+  scope :by_ids_or_paths, -> (ids, paths) do
+    return by_id(ids) unless paths.present?
+
+    ids_by_full_path = Route
+      .for_routable_type(Namespace.name)
+      .where('LOWER(routes.path) IN (?)', paths.map(&:downcase))
+      .select(:namespace_id)
+
+    Group.from_union([by_id(ids), by_id(ids_by_full_path), where('LOWER(path) IN (?)', paths.map(&:downcase))])
+  end
 
   scope :for_authorized_group_members, -> (user_ids) do
     joins(:group_members)

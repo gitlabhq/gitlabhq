@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects::ReleasesController' do
+RSpec.describe 'Projects::ReleasesController', feature_category: :release_orchestration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 

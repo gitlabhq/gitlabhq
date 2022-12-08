@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'issue discussions' do
+RSpec.describe 'issue discussions', feature_category: :team_planning do
   describe 'GET /:namespace/:project/-/issues/:iid/discussions' do
     let_it_be(:user) { create(:user) }
     let_it_be(:project) { create(:project) }

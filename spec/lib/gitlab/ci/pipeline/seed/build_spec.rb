@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
+RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_authoring do
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:head_sha) { project.repository.head_commit.id }
 
@@ -941,6 +941,40 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build do
         end
 
         with_them do
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+      end
+
+      context 'with a rule using CI_ENVIRONMENT_NAME variable' do
+        let(:rule_set) do
+          [{ if: '$CI_ENVIRONMENT_NAME == "test"' }]
+        end
+
+        context 'when environment:name satisfies the rule' do
+          let(:attributes) { { name: 'rspec', rules: rule_set, environment: 'test', when: 'on_success' } }
+
+          it { is_expected.to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'on_success')
+          end
+        end
+
+        context 'when environment:name does not satisfy rule' do
+          let(:attributes) { { name: 'rspec', rules: rule_set, environment: 'dev', when: 'on_success' } }
+
+          it { is_expected.not_to be_included }
+
+          it 'correctly populates when:' do
+            expect(seed_build.attributes).to include(when: 'never')
+          end
+        end
+
+        context 'when environment:name is not set' do
           it { is_expected.not_to be_included }
 
           it 'correctly populates when:' do

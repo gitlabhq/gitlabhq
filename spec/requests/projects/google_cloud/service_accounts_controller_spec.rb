@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::GoogleCloud::ServiceAccountsController do
+RSpec.describe Projects::GoogleCloud::ServiceAccountsController, feature_category: :kubernetes_management do
   let_it_be(:project) { create(:project, :public) }
 
   describe 'GET index', :snowplow do

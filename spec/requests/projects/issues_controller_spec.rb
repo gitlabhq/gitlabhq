@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::IssuesController do
+RSpec.describe Projects::IssuesController, feature_category: :team_planning do
   let_it_be(:issue) { create(:issue) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { issue.project }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Git HTTP requests' do
+RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
   include ProjectForksHelper
   include TermsHelper
   include GitHttpHelpers

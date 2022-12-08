@@ -64,12 +64,6 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       end
     end
 
-    it 'skips count for non-cross-slot requests' do
-      expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
-
-      Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, '{foo}bar', '{foo}baz') }
-    end
-
     it 'counts exceptions' do
       expect(instrumentation_class).to receive(:instance_count_exception)
         .with(instance_of(Redis::CommandError)).and_call_original
@@ -82,15 +76,41 @@ RSpec.describe Gitlab::Instrumentation::RedisInterceptor, :clean_gitlab_redis_sh
       end.to raise_exception(Redis::CommandError)
     end
 
-    context 'in production env' do
+    context 'in production environment' do
       before do
         stub_rails_env('production') # to avoid raising CrossSlotError
       end
 
-      it 'counts cross-slot requests' do
+      it 'counts disallowed cross-slot requests' do
         expect(instrumentation_class).to receive(:increment_cross_slot_request_count).and_call_original
 
         Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+      end
+
+      it 'does not count allowed cross-slot requests' do
+        expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
+
+        Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+          Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, 'foo', 'bar') }
+        end
+      end
+
+      it 'skips count for non-cross-slot requests' do
+        expect(instrumentation_class).not_to receive(:increment_cross_slot_request_count).and_call_original
+
+        Gitlab::Redis::SharedState.with { |redis| redis.call(:mget, '{foo}bar', '{foo}baz') }
+      end
+    end
+
+    context 'without active RequestStore' do
+      before do
+        ::RequestStore.end!
+      end
+
+      it 'still runs cross-slot validation' do
+        expect do
+          Gitlab::Redis::SharedState.with { |redis| redis.mget('foo', 'bar') }
+        end.to raise_error(instance_of(Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError))
       end
     end
   end

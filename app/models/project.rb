@@ -2742,7 +2742,13 @@ class Project < ApplicationRecord
   def access_request_approvers_to_be_notified
     access_request_approvers = members.owners_and_maintainers
 
-    access_request_approvers.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+    recipients = access_request_approvers.connected_to_user.order_recent_sign_in.limit(Member::ACCESS_REQUEST_APPROVERS_TO_BE_NOTIFIED_LIMIT)
+
+    if recipients.blank?
+      recipients = group.access_request_approvers_to_be_notified
+    end
+
+    recipients
   end
 
   def pages_lookup_path(trim_prefix: nil, domain: nil)

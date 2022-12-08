@@ -22,9 +22,9 @@ module Timelogs
     end
 
     def error_in_save(timelog)
-      return error(_("Failed to save timelog")) if timelog.errors.empty?
+      return error(_("Failed to save timelog"), 404) if timelog.errors.empty?
 
-      error(timelog.errors.full_messages.to_sentence)
+      error(timelog.errors.full_messages.to_sentence, 404)
     end
   end
 end

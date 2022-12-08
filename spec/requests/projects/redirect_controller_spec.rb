@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Projects::RedirectController requests" do
+RSpec.describe "Projects::RedirectController requests", feature_category: :projects do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:private_project) { create(:project, :private) }

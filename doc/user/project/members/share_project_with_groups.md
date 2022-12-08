@@ -48,12 +48,13 @@ After sharing 'Project Acme' with 'Engineering':
 
 - The group is listed in the **Groups** tab.
 - The project is listed on the group dashboard.
-- All members, including members from the ancestors of the 'Engineering' group, gain access to 'Project Acme' with a role based on the outcome of [maximum role](#maximum-role).
+- All members, including members of subgroups or projects that belong to the group, gain access
+to the project with a role based on the outcome of [maximum role](#maximum-role).
 
 When you share a project, be aware of the following restrictions and outcomes:
 
 - [Maximum role](#maximum-role)
-- [Sharing projects with groups of a higher restrictive visibility level](#sharing-projects-with-groups-of-a-higher-restrictive-visibility-level)
+- [Sharing projects with groups with a more restrictive visibility level](#sharing-projects-with-groups-with-a-more-restrictive-visibility-level)
 - [Sharing project with group lock](#share-project-with-group-lock)
 
 ## Maximum role
@@ -68,7 +69,7 @@ in. That means you can only share down the group's organization structure. For e
 - Can not be shared with `group`.
 - Can be shared with `group/subgroup02` or  `group/subgroup01/subgroup03`.
 
-## Sharing projects with groups of a higher restrictive visibility level
+## Sharing projects with groups with a more restrictive visibility level
 
 There are several outcomes you must be aware of when you share a project with a group that has a more restrictive [visibility level](../../public_access.md#project-and-group-visibility) than the project. For example, when you:
 

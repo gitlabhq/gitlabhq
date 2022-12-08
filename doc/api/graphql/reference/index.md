@@ -5106,7 +5106,7 @@ Input type: `TimelogCreateInput`
 | ---- | ---- | ----------- |
 | <a id="mutationtimelogcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationtimelogcreateissuableid"></a>`issuableId` | [`IssuableID!`](#issuableid) | Global ID of the issuable (Issue, WorkItem or MergeRequest). |
-| <a id="mutationtimelogcreatespentat"></a>`spentAt` | [`Date!`](#date) | When the time was spent. |
+| <a id="mutationtimelogcreatespentat"></a>`spentAt` | [`Time!`](#time) | When the time was spent. |
 | <a id="mutationtimelogcreatesummary"></a>`summary` | [`String!`](#string) | Summary of time spent. |
 | <a id="mutationtimelogcreatetimespent"></a>`timeSpent` | [`String!`](#string) | Amount of time spent. |
 
@@ -22651,6 +22651,7 @@ Category of error.
 | <a id="todoactionenumbuild_failed"></a>`build_failed` | Build triggered by the user failed. |
 | <a id="todoactionenumdirectly_addressed"></a>`directly_addressed` | User was directly addressed. |
 | <a id="todoactionenummarked"></a>`marked` | User added a TODO. |
+| <a id="todoactionenummember_access_requested"></a>`member_access_requested` | Group access requested from the user. |
 | <a id="todoactionenummentioned"></a>`mentioned` | User was mentioned. |
 | <a id="todoactionenummerge_train_removed"></a>`merge_train_removed` | Merge request authored by the user was removed from the merge train. |
 | <a id="todoactionenumreview_requested"></a>`review_requested` | Review was requested from the user. |

@@ -2383,6 +2383,9 @@ msgstr ""
 msgid "Add text to the sign-in page. Markdown enabled."
 msgstr ""
 
+msgid "Add time entry"
+msgstr ""
+
 msgid "Add to board"
 msgstr ""
 
@@ -11482,6 +11485,42 @@ msgid "CreateGroup|You don’t have permission to create groups."
 msgstr ""
 
 msgid "CreateTag|Tag"
+msgstr ""
+
+msgid "CreateTimelogForm|Add time entry"
+msgstr ""
+
+msgid "CreateTimelogForm|An error occurred while saving the time entry."
+msgstr ""
+
+msgid "CreateTimelogForm|Cancel"
+msgstr ""
+
+msgid "CreateTimelogForm|Example: 1h 30m"
+msgstr ""
+
+msgid "CreateTimelogForm|How do I track and estimate time?"
+msgstr ""
+
+msgid "CreateTimelogForm|Save"
+msgstr ""
+
+msgid "CreateTimelogForm|Spent at"
+msgstr ""
+
+msgid "CreateTimelogForm|Summary"
+msgstr ""
+
+msgid "CreateTimelogForm|Time spent"
+msgstr ""
+
+msgid "CreateTimelogForm|Track time spent on this %{issuableTypeNameStart}%{issuableTypeNameEnd}. %{timeTrackingDocsLinkStart}%{timeTrackingDocsLinkEnd}"
+msgstr ""
+
+msgid "CreateTimelogForm|issue"
+msgstr ""
+
+msgid "CreateTimelogForm|merge request"
 msgstr ""
 
 msgid "CreateValueStreamForm|%{name} (default)"
@@ -39252,6 +39291,9 @@ msgstr ""
 msgid "Spent at"
 msgstr ""
 
+msgid "Spent at can't be a future date and time."
+msgstr ""
+
 msgid "Squash commit message"
 msgstr ""
 
@@ -42532,6 +42574,12 @@ msgstr ""
 msgid "Time spent"
 msgstr ""
 
+msgid "Time spent can't be zero."
+msgstr ""
+
+msgid "Time spent must be formatted correctly. For example: 1h 30m."
+msgstr ""
+
 msgid "Time to Restore Service"
 msgstr ""
 
@@ -43064,6 +43112,9 @@ msgstr ""
 msgid "Todos|Mark all as done"
 msgstr ""
 
+msgid "Todos|Member access requested"
+msgstr ""
+
 msgid "Todos|Mentioned"
 msgstr ""
 
@@ -43101,6 +43152,9 @@ msgid "Todos|Your To-Do List shows what to work on next"
 msgstr ""
 
 msgid "Todos|added a todo for"
+msgstr ""
+
+msgid "Todos|has requested access to"
 msgstr ""
 
 msgid "Todos|mentioned %{who} on"

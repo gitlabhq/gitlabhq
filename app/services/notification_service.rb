@@ -495,13 +495,7 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    source = member.source
-
-    recipients = source.access_request_approvers_to_be_notified
-
-    if fallback_to_group_access_request_approvers?(recipients, source)
-      recipients = source.group.access_request_approvers_to_be_notified
-    end
+    recipients = member.source.access_request_approvers_to_be_notified
 
     return true if recipients.empty?
 
@@ -957,12 +951,6 @@ class NotificationService
 
   def deliver_access_request_email(recipient, member)
     mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.id).deliver_later
-  end
-
-  def fallback_to_group_access_request_approvers?(recipients, source)
-    return false if recipients.present?
-
-    source.respond_to?(:group) && source.group
   end
 
   def warn_skipping_notifications(user, object)

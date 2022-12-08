@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Build do
+RSpec.describe Ci::Build, feature_category: :continuous_integration do
   include Ci::TemplateHelpers
   include AfterNextHelpers
 
@@ -2883,6 +2883,9 @@ RSpec.describe Ci::Build do
                                       value: 'var',
                                       public: true }]
             build.environment = 'staging'
+
+            # CI_ENVIRONMENT_NAME is set in predefined_variables when job environment is provided
+            predefined_variables.insert(20, { key: 'CI_ENVIRONMENT_NAME', value: 'staging', public: true, masked: false })
           end
 
           it 'matches explicit variables ordering' do

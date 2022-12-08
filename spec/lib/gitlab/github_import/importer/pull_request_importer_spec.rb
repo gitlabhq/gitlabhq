@@ -202,6 +202,20 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitla
         importer.create_merge_request
       end
     end
+
+    context 'when merge request is invalid' do
+      before do
+        allow(pull_request).to receive(:formatted_source_branch).and_return(nil)
+        allow(importer.user_finder)
+          .to receive(:author_id_for)
+          .with(pull_request)
+          .and_return([project.creator_id, false])
+      end
+
+      it 'fails validation' do
+        expect { importer.create_merge_request }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 
   describe '#set_merge_request_assignees' do
