@@ -445,11 +445,25 @@ RSpec.describe MarkupHelper do
     shared_examples_for 'common markdown examples' do
       let(:project_base) { build(:project, :repository) }
 
+      it 'displays inline code' do
+        object = create_object('Text with `inline code`')
+        expected = 'Text with <code>inline code</code>'
+
+        expect(first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)).to match(expected)
+      end
+
+      it 'truncates the text with multiple paragraphs' do
+        object = create_object("Paragraph 1\n\nParagraph 2")
+        expected = 'Paragraph 1...'
+
+        expect(first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)).to match(expected)
+      end
+
       it 'displays the first line of a code block' do
         object = create_object("```\nCode block\nwith two lines\n```")
         expected = %r{<pre.+><code><span class="line">Code block\.\.\.</span>\n</code></pre>}
 
-        expect(first_line_in_markdown(object, attribute, 100, project: project)).to match(expected)
+        expect(first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)).to match(expected)
       end
 
       it 'truncates a single long line of text' do
@@ -457,7 +471,7 @@ RSpec.describe MarkupHelper do
         object = create_object(text * 4)
         expected = (text * 2).sub(/.{3}/, '...')
 
-        expect(first_line_in_markdown(object, attribute, 150, project: project)).to match(expected)
+        expect(first_line_in_markdown(object, attribute, 150, is_todo: true, project: project)).to match(expected)
       end
 
       it 'preserves code color scheme' do
@@ -466,28 +480,15 @@ RSpec.describe MarkupHelper do
           "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
           "</code></pre>\n"
 
-        expect(first_line_in_markdown(object, attribute, 150, project: project)).to eq(expected)
+        expect(first_line_in_markdown(object, attribute, 150, is_todo: true, project: project)).to eq(expected)
       end
 
-      context 'when images are allowed' do
-        it 'preserves data-src for lazy images' do
-          object    = create_object("![ImageTest](/uploads/test.png)")
-          image_url = "data-src=\".*/uploads/test.png\""
-          text      = first_line_in_markdown(object, attribute, 150, project: project, allow_images: true)
+      it 'removes any images' do
+        object = create_object("![ImageTest](/uploads/test.png)")
+        text   = first_line_in_markdown(object, attribute, 150, is_todo: true, project: project)
 
-          expect(text).to match(image_url)
-          expect(text).to match('<a')
-        end
-      end
-
-      context 'when images are not allowed' do
-        it 'removes any images' do
-          object = create_object("![ImageTest](/uploads/test.png)")
-          text   = first_line_in_markdown(object, attribute, 150, project: project)
-
-          expect(text).not_to match('<img')
-          expect(text).not_to match('<a')
-        end
+        expect(text).not_to match('<img')
+        expect(text).not_to match('<a')
       end
 
       context 'labels formatting' do
@@ -497,7 +498,7 @@ RSpec.describe MarkupHelper do
           create(:label, title: 'label_1', project: project)
           object = create_object(label_title, project: project)
 
-          first_line_in_markdown(object, attribute, 150, project: project)
+          first_line_in_markdown(object, attribute, 150, is_todo: true, project: project)
         end
 
         it 'preserves style attribute for a label that can be accessed by current_user' do
@@ -518,10 +519,10 @@ RSpec.describe MarkupHelper do
       end
 
       it 'keeps whitelisted tags' do
-        html = '<a><i></i></a> <strong>strong</strong><em>em</em><b>b</b>'
+        html = '<i></i> <strong>strong</strong><em>em</em><b>b</b>'
 
         object = create_object(html)
-        result = first_line_in_markdown(object, attribute, 100, project: project)
+        result = first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)
 
         expect(result).to include(html)
       end
@@ -530,7 +531,7 @@ RSpec.describe MarkupHelper do
         object = create_object("hello \n\n [Test](README.md)")
 
         expect do
-          first_line_in_markdown(object, attribute, nil, project: project)
+          first_line_in_markdown(object, attribute, 100, is_todo: true, project: project)
         end.not_to change { Gitlab::GitalyClient.get_request_count }
       end
     end

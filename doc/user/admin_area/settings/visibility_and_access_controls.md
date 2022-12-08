@@ -273,7 +273,7 @@ This option is enabled by default. By disabling it, both
 [pull mirroring](../../project/repository/mirror/pull.md) and [push mirroring](../../project/repository/mirror/push.md) no longer
 work in every repository. They can only be re-enabled by an administrator user on a per-project basis.
 
-![Mirror settings](img/mirror_settings.png)
+![Mirror settings](img/mirror_settings_v15_7.png)
 
 ## Configure globally-allowed IP address ranges
 

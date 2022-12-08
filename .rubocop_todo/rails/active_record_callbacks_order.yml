@@ -12,7 +12,6 @@ Rails/ActiveRecordCallbacksOrder:
     - 'app/models/namespace_statistics.rb'
     - 'app/models/note.rb'
     - 'app/models/pages_domain.rb'
-    - 'app/models/project.rb'
     - 'app/models/prometheus_alert.rb'
     - 'app/models/remote_mirror.rb'
     - 'app/models/resource_label_event.rb'

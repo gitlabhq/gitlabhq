@@ -277,6 +277,7 @@ export default {
               v-if="pipeline.details.stages"
               :downstream-pipelines="pipeline.triggered"
               :is-merge-train="isMergeTrain"
+              :pipeline-path="pipeline.path"
               :stages="pipeline.details.stages"
               :upstream-pipeline="pipeline.triggered_by"
               stages-class="mr-widget-pipeline-stages"

@@ -135,7 +135,7 @@ You can manually mark a to-do item as done.
 
 There are two ways to do this:
 
-- In the To-Do List, to the right of the to-do item, select **Done**.
+- In the To-Do List, to the right of the to-do item, select **Mark as done** (**{check}**).
 - In the sidebar of an issue, merge request, or epic, select **Mark as done**.
 
   ![Mark as done from the sidebar](img/todos_mark_done_sidebar_v14_1.png)

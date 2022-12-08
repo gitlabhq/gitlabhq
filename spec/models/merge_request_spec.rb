@@ -4244,6 +4244,18 @@ RSpec.describe MergeRequest, factory_default: :keep do
 
         transition!
       end
+
+      context 'when transaction is not committed' do
+        it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription' do
+          def transition!
+            MergeRequest.transaction do
+              super
+
+              raise ActiveRecord::Rollback
+            end
+          end
+        end
+      end
     end
 
     shared_examples 'for an invalid state transition' do

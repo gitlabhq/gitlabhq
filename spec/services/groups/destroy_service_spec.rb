@@ -8,8 +8,8 @@ RSpec.describe Groups::DestroyService do
   let!(:nested_group) { create(:group, parent: group) }
   let!(:project)      { create(:project, :repository, :legacy_storage, namespace: group) }
   let!(:notification_setting) { create(:notification_setting, source: group) }
-  let(:gitlab_shell) { Gitlab::Shell.new }
   let(:remove_path)  { group.path + "+#{group.id}+deleted" }
+  let(:removed_repo) { Gitlab::Git::Repository.new(project.repository_storage, remove_path, nil, nil) }
 
   before do
     group.add_member(user, Gitlab::Access::OWNER)
@@ -70,8 +70,11 @@ RSpec.describe Groups::DestroyService do
         end
 
         it 'verifies that paths have been deleted' do
-          expect(TestEnv.storage_dir_exists?(project.repository_storage, group.path)).to be_falsey
-          expect(TestEnv.storage_dir_exists?(project.repository_storage, remove_path)).to be_falsey
+          Gitlab::GitalyClient::NamespaceService.allow do
+            expect(Gitlab::GitalyClient::NamespaceService.new(project.repository_storage)
+              .exists?(group.path)).to be_falsey
+          end
+          expect(removed_repo).not_to exist
         end
       end
     end
@@ -98,8 +101,11 @@ RSpec.describe Groups::DestroyService do
       end
 
       it 'verifies original paths and projects still exist' do
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, group.path)).to be_truthy
-        expect(TestEnv.storage_dir_exists?(project.repository_storage, remove_path)).to be_falsey
+        Gitlab::GitalyClient::NamespaceService.allow do
+          expect(Gitlab::GitalyClient::NamespaceService.new(project.repository_storage)
+            .exists?(group.path)).to be_truthy
+        end
+        expect(removed_repo).not_to exist
         expect(Project.unscoped.count).to eq(1)
         expect(Group.unscoped.count).to eq(2)
       end
@@ -150,7 +156,7 @@ RSpec.describe Groups::DestroyService do
       let!(:project) { create(:project, :legacy_storage, :empty_repo, namespace: group) }
 
       it 'removes repository' do
-        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
+        expect(project.repository.raw).not_to exist
       end
     end
 
@@ -158,7 +164,7 @@ RSpec.describe Groups::DestroyService do
       let!(:project) { create(:project, :empty_repo, namespace: group) }
 
       it 'removes repository' do
-        expect(gitlab_shell.repository_exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
+        expect(project.repository.raw).not_to exist
       end
     end
   end

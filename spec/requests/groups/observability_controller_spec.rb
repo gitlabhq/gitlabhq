@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::ObservabilityController do
+RSpec.describe Groups::ObservabilityController, feature_category: :tracing do
   let_it_be(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 

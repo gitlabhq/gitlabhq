@@ -247,7 +247,9 @@ class MergeRequest < ApplicationRecord
     end
 
     after_transition any => [:unchecked, :cannot_be_merged_recheck, :checking, :cannot_be_merged_rechecking, :can_be_merged, :cannot_be_merged] do |merge_request, transition|
-      GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      merge_request.run_after_commit do
+        GraphqlTriggers.merge_request_merge_status_updated(merge_request)
+      end
     end
 
     # rubocop: disable CodeReuse/ServiceClass

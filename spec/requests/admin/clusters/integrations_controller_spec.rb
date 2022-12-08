@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::Clusters::IntegrationsController, :enable_admin_mode do
+RSpec.describe Admin::Clusters::IntegrationsController, :enable_admin_mode, feature_category: :integrations do
   include AccessMatchersForController
 
   shared_examples 'a secure endpoint' do

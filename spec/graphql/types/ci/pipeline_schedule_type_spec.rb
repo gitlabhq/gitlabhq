@@ -23,6 +23,7 @@ RSpec.describe Types::Ci::PipelineScheduleType do
       cron
       cronTimezone
       userPermissions
+      editPath
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

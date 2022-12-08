@@ -9,6 +9,16 @@ RSpec.describe Projects::AfterRenameService do
   let!(:full_path_before_rename) { project.full_path }
   let!(:path_after_rename) { "#{project.path}-renamed" }
   let!(:full_path_after_rename) { "#{project.full_path}-renamed" }
+  let!(:repo_before_rename) { project.repository.raw }
+  let!(:wiki_repo_before_rename) { project.wiki.repository.raw }
+
+  let(:repo_after_rename) do
+    Gitlab::Git::Repository.new(project.repository_storage, "#{full_path_after_rename}.git", nil, nil)
+  end
+
+  let(:wiki_repo_after_rename) do
+    Gitlab::Git::Repository.new(project.repository_storage, "#{full_path_after_rename}.wiki.git", nil, nil)
+  end
 
   describe '#execute' do
     context 'using legacy storage' do
@@ -35,13 +45,15 @@ RSpec.describe Projects::AfterRenameService do
           .to receive(:rename_project)
           .with(path_before_rename, path_after_rename, project.namespace.full_path)
 
-        expect_repository_exist("#{full_path_before_rename}.git")
-        expect_repository_exist("#{full_path_before_rename}.wiki.git")
+        expect(repo_before_rename).to exist
+        expect(wiki_repo_before_rename).to exist
 
         service_execute
 
-        expect_repository_exist("#{full_path_after_rename}.git")
-        expect_repository_exist("#{full_path_after_rename}.wiki.git")
+        expect(repo_before_rename).not_to exist
+        expect(wiki_repo_before_rename).not_to exist
+        expect(repo_after_rename).to exist
+        expect(wiki_repo_after_rename).to exist
       end
 
       context 'container registry with images' do
@@ -211,14 +223,5 @@ RSpec.describe Projects::AfterRenameService do
     project.update!(path: path_after_rename)
 
     described_class.new(project, path_before: path_before_rename, full_path_before: full_path_before_rename).execute
-  end
-
-  def expect_repository_exist(full_path_with_extension)
-    expect(
-      TestEnv.storage_dir_exists?(
-        project.repository_storage,
-        full_path_with_extension
-      )
-    ).to be_truthy
   end
 end

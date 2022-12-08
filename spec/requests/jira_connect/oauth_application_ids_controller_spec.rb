@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::OauthApplicationIdsController do
+RSpec.describe JiraConnect::OauthApplicationIdsController, feature_category: :integrations do
   describe 'GET /-/jira_connect/oauth_application_id' do
     let(:cors_request_headers) { { 'Origin' => 'https://gitlab.com' } }
 

@@ -313,12 +313,6 @@ module TestEnv
     end
   end
 
-  def storage_dir_exists?(storage, dir)
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      File.exist?(File.join(GitalySetup.repos_path(storage), dir))
-    end
-  end
-
   def repos_path
     @repos_path ||= GitalySetup.repos_path
   end

@@ -13845,6 +13845,9 @@ msgstr ""
 msgid "Descriptive label"
 msgstr ""
 
+msgid "Design"
+msgstr ""
+
 msgid "Design Management files and data"
 msgstr ""
 
@@ -43130,13 +43133,13 @@ msgstr ""
 msgid "Todos|Pipelines"
 msgstr ""
 
-msgid "Todos|Removed from Merge Train:"
+msgid "Todos|Removed from Merge Train"
 msgstr ""
 
 msgid "Todos|Review requested"
 msgstr ""
 
-msgid "Todos|The pipeline failed in"
+msgid "Todos|The pipeline failed"
 msgstr ""
 
 msgid "Todos|Undo mark all as done"
@@ -43151,25 +43154,22 @@ msgstr ""
 msgid "Todos|Your To-Do List shows what to work on next"
 msgstr ""
 
-msgid "Todos|added a todo for"
+msgid "Todos|added a to-do item"
 msgstr ""
 
-msgid "Todos|has requested access to"
+msgid "Todos|has requested access"
 msgstr ""
 
-msgid "Todos|mentioned %{who} on"
+msgid "Todos|mentioned %{who}"
 msgstr ""
 
-msgid "Todos|requested a review of"
+msgid "Todos|requested a review"
 msgstr ""
 
-msgid "Todos|set %{who} as an approver for"
+msgid "Todos|set %{who} as an approver"
 msgstr ""
 
 msgid "Todos|yourself"
-msgstr ""
-
-msgid "Todo|at %{todo_parent_path}"
 msgstr ""
 
 msgid "Toggle GitLab Next"

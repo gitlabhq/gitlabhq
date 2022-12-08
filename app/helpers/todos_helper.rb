@@ -16,18 +16,18 @@ module TodosHelper
   def todo_action_name(todo)
     case todo.action
     when Todo::ASSIGNED then todo.self_added? ? _('assigned') : _('assigned you')
-    when Todo::REVIEW_REQUESTED then s_('Todos|requested a review of')
+    when Todo::REVIEW_REQUESTED then s_('Todos|requested a review')
     when Todo::MENTIONED, Todo::DIRECTLY_ADDRESSED then format(
-      s_("Todos|mentioned %{who} on"), who: todo_action_subject(todo)
+      s_("Todos|mentioned %{who}"), who: todo_action_subject(todo)
     )
-    when Todo::BUILD_FAILED then s_('Todos|The pipeline failed in')
-    when Todo::MARKED then s_('Todos|added a todo for')
+    when Todo::BUILD_FAILED then s_('Todos|The pipeline failed')
+    when Todo::MARKED then s_('Todos|added a to-do item')
     when Todo::APPROVAL_REQUIRED then format(
-      s_("Todos|set %{who} as an approver for"), who: todo_action_subject(todo)
+      s_("Todos|set %{who} as an approver"), who: todo_action_subject(todo)
     )
     when Todo::UNMERGEABLE then s_('Todos|Could not merge')
-    when Todo::MERGE_TRAIN_REMOVED then s_("Todos|Removed from Merge Train:")
-    when Todo::MEMBER_ACCESS_REQUESTED then s_("Todos|has requested access to")
+    when Todo::MERGE_TRAIN_REMOVED then s_("Todos|Removed from Merge Train")
+    when Todo::MEMBER_ACCESS_REQUESTED then s_("Todos|has requested access")
     end
   end
 
@@ -38,46 +38,48 @@ module TodosHelper
     end
   end
 
-  def todo_target_link(todo)
-    text = raw(todo_target_type_name(todo) + ' ') +
-      if todo.for_commit?
-        content_tag(:span, todo.target_reference, class: 'commit-sha')
-      else
-        todo.target_reference
-      end
+  def todo_target_name(todo)
+    return todo.target_reference unless todo.for_commit?
 
-    link_to text, todo_target_path(todo)
+    content_tag(:span, todo.target_reference, class: 'commit-sha')
   end
 
   def todo_target_title(todo)
-    # Design To Dos' filenames are displayed in `#todo_target_link` (see `Design#to_reference`),
+    # Design To Dos' filenames are displayed in `#todo_target_name` (see `Design#to_reference`),
     # so to avoid displaying duplicate filenames in the To Do list for designs,
     # we return an empty string here.
     return "" if todo.target.blank? || todo.for_design? || todo.member_access_requested?
 
-    "\"#{todo.target.title}\""
+    todo.target.title.to_s
   end
 
   def todo_parent_path(todo)
     if todo.resource_parent.is_a?(Group)
-      link_to todo.resource_parent.name, group_path(todo.resource_parent)
+      todo.resource_parent.name
     else
-      link_to_project(todo.project)
+      title = content_tag(:span, todo.project.name, class: 'project-name')
+      namespace = content_tag(:span, "#{todo.project.namespace.human_name} / ", class: 'namespace-name')
+
+      title.prepend(namespace) if todo.project.namespace
+
+      title
     end
   end
 
-  def todo_target_type_name(todo)
-    return _('design') if todo.for_design?
-    return _('alert') if todo.for_alert?
-    return _('group') if todo.member_access_requested?
-
-    target_type = if todo.for_issue_or_work_item?
+  def todo_target_aria_label(todo)
+    target_type = if todo.for_design?
+                    _('Design')
+                  elsif todo.for_alert?
+                    _('Alert')
+                  elsif todo.member_access_requested?
+                    _('Group')
+                  elsif todo.for_issue_or_work_item?
                     IntegrationsHelper.integration_issue_type(todo.target.issue_type)
                   else
                     IntegrationsHelper.integration_todo_target_type(todo.target_type)
                   end
 
-    target_type.titleize.downcase
+    target_type + ' ' + todo_target_name(todo)
   end
 
   def todo_target_path(todo)
@@ -127,18 +129,18 @@ module TodosHelper
     when MergeRequest
       case state
       when 'closed'
-        background_class = 'gl-bg-red-500'
+        variant = 'danger'
       when 'merged'
-        background_class = 'gl-bg-blue-500'
+        variant = 'info'
       end
     when Issue
-      background_class = 'gl-bg-blue-500' if state == 'closed'
+      variant = 'info' if state == 'closed'
     when AlertManagement::Alert
-      background_class = 'gl-bg-blue-500' if state == 'resolved'
+      variant = 'info' if state == 'resolved'
     end
 
-    tag.span class: "gl-my-0 gl-px-2 status-box #{background_class}" do
-      raw_state_to_i18n[state] || state.capitalize
+    content_tag(:span, class: 'todo-target-state') do
+      gl_badge_tag(raw_state_to_i18n[state] || state.capitalize, { variant: variant, size: 'sm' })
     end
   end
 
@@ -235,7 +237,7 @@ module TodosHelper
                                                     end)
     end
 
-    "&middot; #{content}".html_safe
+    "#{content} &middot;".html_safe
   end
 
   def todo_author_display?(todo)

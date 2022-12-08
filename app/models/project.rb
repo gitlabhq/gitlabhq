@@ -111,14 +111,25 @@ class Project < ApplicationRecord
                                  encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },
                                  prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
+  # Storage specific hooks
+  after_initialize :use_hashed_storage
   before_validation :mark_remote_mirrors_for_removal, if: -> { RemoteMirror.table_exists? }
 
-  before_save :ensure_runners_token
   before_validation :ensure_project_namespace_in_sync
-
   before_validation :set_package_registry_access_level, if: :packages_enabled_changed?
   before_validation :remove_leading_spaces_on_name
+  after_validation :check_pending_delete
+  before_save :ensure_runners_token
 
+  after_create -> { create_or_load_association(:project_feature) }
+  after_create -> { create_or_load_association(:ci_cd_settings) }
+  after_create -> { create_or_load_association(:container_expiration_policy) }
+  after_create -> { create_or_load_association(:pages_metadatum) }
+  after_create :set_timestamps_for_create
+  after_create :check_repository_absence!
+  after_update :update_forks_visibility_level
+  before_destroy :remove_private_deploy_keys
+  after_destroy :remove_exports
   after_save :update_project_statistics, if: :saved_change_to_namespace_id?
 
   after_save :schedule_sync_event_worker, if: -> { saved_change_to_id? || saved_change_to_namespace_id? }
@@ -129,28 +140,7 @@ class Project < ApplicationRecord
 
   after_save :reload_project_namespace_details
 
-  after_create -> { create_or_load_association(:project_feature) }
-
-  after_create -> { create_or_load_association(:ci_cd_settings) }
-
-  after_create -> { create_or_load_association(:container_expiration_policy) }
-
-  after_create -> { create_or_load_association(:pages_metadatum) }
-
-  after_create :set_timestamps_for_create
-  after_update :update_forks_visibility_level
-
-  before_destroy :remove_private_deploy_keys
-
   use_fast_destroy :build_trace_chunks
-
-  after_destroy :remove_exports
-
-  after_validation :check_pending_delete
-
-  # Storage specific hooks
-  after_initialize :use_hashed_storage
-  after_create :check_repository_absence!
 
   has_many :project_topics, -> { order(:id) }, class_name: 'Projects::ProjectTopic'
   has_many :topics, through: :project_topics, class_name: 'Projects::Topic'

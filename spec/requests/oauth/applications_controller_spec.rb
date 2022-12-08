@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Oauth::ApplicationsController do
+RSpec.describe Oauth::ApplicationsController, feature_category: :authentication_and_authorization do
   let_it_be(:user) { create(:user) }
   let_it_be(:application) { create(:oauth_application, owner: user) }
   let_it_be(:show_path) { oauth_application_path(application) }

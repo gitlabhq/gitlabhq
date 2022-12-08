@@ -58,9 +58,9 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_pl
 
     wait_for_requests
 
-    expect(page).to     have_content "issue #{issue1.to_reference} \"issue\" at #{group1.name} / project_1"
-    expect(page).to     have_content "merge request #{merge_request.to_reference}"
-    expect(page).not_to have_content "issue #{issue2.to_reference} \"issue\" at #{group2.name} / project_3"
+    expect(page).to     have_content "#{group1.name} / project_1 #{issue1.to_reference} · issue"
+    expect(page).to     have_content merge_request.to_reference.to_s
+    expect(page).not_to have_content "#{group2.name} / project_3 #{issue2.to_reference} · issue"
   end
 
   context 'Author filter' do
@@ -74,8 +74,8 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_pl
 
       wait_for_requests
 
-      expect(find('.todos-list')).to     have_content 'merge request'
-      expect(find('.todos-list')).not_to have_content 'issue'
+      expect(find('.todos-list')).to     have_content '!'
+      expect(find('.todos-list')).not_to have_content '#'
     end
 
     it 'shows only authors of existing todos' do
@@ -174,11 +174,11 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_pl
 
     def expect_to_see_action(action_name)
       action_names = {
-        assigned: ' assigned you ',
-        review_requested: ' requested a review of ',
-        mentioned: ' mentioned ',
-        marked: ' added a todo for ',
-        build_failed: ' pipeline failed in '
+        assigned: ' assigned you',
+        review_requested: ' requested a review',
+        mentioned: ' mentioned',
+        marked: ' added a to-do item',
+        build_failed: ' pipeline failed'
       }
 
       action_name_text = action_names.delete(action_name)

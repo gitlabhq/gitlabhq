@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode do
+RSpec.describe Admin::BackgroundMigrationsController, :enable_admin_mode, feature_category: :database do
   let(:admin) { create(:admin) }
 
   before do

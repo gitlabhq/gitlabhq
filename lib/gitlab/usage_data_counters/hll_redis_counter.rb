@@ -25,32 +25,6 @@ module Gitlab
         pipeline_authoring
       ].freeze
 
-      CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS = %w[
-        analytics
-        ci_users
-        deploy_token_packages
-        code_review
-        ecosystem
-        error_tracking
-        ide_edit
-        importer
-        incident_management
-        incident_management_alerts
-        issues_edit
-        kubernetes_agent
-        manage
-        pipeline_authoring
-        quickactions
-        search
-        secure
-        snippets
-        source_code
-        terraform
-        testing
-        user_packages
-        work_items
-      ].freeze
-
       # Track event on entity_id
       # Increment a Redis HLL counter for unique event_name and entity_id
       #
@@ -114,39 +88,10 @@ module Gitlab
           @categories ||= known_events.map { |event| event[:category] }.uniq
         end
 
-        def categories_collected_from_metrics_definitions
-          CATEGORIES_COLLECTED_FROM_METRICS_DEFINITIONS
-        end
-
         # @param category [String] the category name
         # @return [Array<String>] list of event names for given category
         def events_for_category(category)
           known_events.select { |event| event[:category] == category.to_s }.map { |event| event[:name] }
-        end
-
-        # Recent 7 or 28 days unique events data for events defined in /lib/gitlab/usage_data_counters/known_events/
-        #
-        #   - For metrics for which we store a key per day, we have the last 7 days or last 28 days of data.
-        #   - For metrics for which we store a key per week, we have the last complete week or last 4 complete weeks
-        #     daily or weekly information is in the file we have for events definition /lib/gitlab/usage_data_counters/known_events/
-        #   - Most of the metrics have weekly aggregation. We recommend this as it generates fewer keys in Redis to store.
-        #   - The aggregation used doesn't affect data granulation.
-        def unique_events_data
-          categories_pending_migration.each_with_object({}) do |category, category_results|
-            events_names = events_for_category(category)
-
-            event_results = events_names.each_with_object({}) do |event, hash|
-              hash["#{event}_weekly"] = unique_events(**weekly_time_range.merge(event_names: [event])) unless event == "i_package_composer_deploy_token"
-              hash["#{event}_monthly"] = unique_events(**monthly_time_range.merge(event_names: [event]))
-            end
-
-            if eligible_for_totals?(events_names) && CATEGORIES_FOR_TOTALS.include?(category)
-              event_results["#{category}_total_unique_counts_weekly"] = unique_events(**weekly_time_range.merge(event_names: events_names))
-              event_results["#{category}_total_unique_counts_monthly"] = unique_events(**monthly_time_range.merge(event_names: events_names))
-            end
-
-            category_results["#{category}"] = event_results
-          end
         end
 
         def known_event?(event_name)
@@ -165,10 +110,6 @@ module Gitlab
         end
 
         private
-
-        def categories_pending_migration
-          (categories - categories_collected_from_metrics_definitions)
-        end
 
         def track(values, event_name, context: '', time: Time.zone.now)
           return unless ::ServicePing::ServicePingSettings.enabled?

@@ -590,10 +590,6 @@ module Gitlab
         {}
       end
 
-      def redis_hll_counters
-        { redis_hll_counters: ::Gitlab::UsageDataCounters::HLLRedisCounter.unique_events_data }
-      end
-
       def action_monthly_active_users(time_period)
         counter = Gitlab::UsageDataCounters::EditorUniqueCounter
         date_range = { date_from: time_period[:created_at].first, date_to: time_period[:created_at].last }
@@ -644,7 +640,6 @@ module Gitlab
           .merge(topology_usage_data)
           .merge(usage_activity_by_stage)
           .merge(usage_activity_by_stage(:usage_activity_by_stage_monthly, monthly_time_range_db_params))
-          .merge(redis_hll_counters)
       end
 
       def metric_time_period(time_period)

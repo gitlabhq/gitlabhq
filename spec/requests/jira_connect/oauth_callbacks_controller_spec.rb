@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraConnect::OauthCallbacksController do
+RSpec.describe JiraConnect::OauthCallbacksController, feature_category: :integrations do
   describe 'GET /-/jira_connect/oauth_callbacks' do
     context 'when logged in' do
       it 'renders a page prompting the user to close the window' do

@@ -37,8 +37,15 @@ module Types
 
       field :cron_timezone, GraphQL::Types::String, null: false, description: 'Timezone for the pipeline schedule.'
 
+      field :edit_path, GraphQL::Types::String, null: true, description: 'Edit path of the pipeline schedule.'
+
       def ref_path
         ::Gitlab::Routing.url_helpers.project_commits_path(object.project, object.ref_for_display)
+      end
+
+      def edit_path
+        ::Gitlab::Routing.url_helpers.edit_project_pipeline_schedule_path(object.project, object) if Ability.allowed?(
+          current_user, :update_pipeline_schedule, object)
       end
     end
   end

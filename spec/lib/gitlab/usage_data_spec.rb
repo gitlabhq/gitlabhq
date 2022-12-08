@@ -1109,36 +1109,6 @@ RSpec.describe Gitlab::UsageData, :aggregate_failures do
     end
   end
 
-  describe 'redis_hll_counters' do
-    subject { described_class.redis_hll_counters }
-
-    let(:migrated_categories) do
-      ::Gitlab::UsageDataCounters::HLLRedisCounter.categories_collected_from_metrics_definitions
-    end
-
-    let(:categories) { ::Gitlab::UsageDataCounters::HLLRedisCounter.categories - migrated_categories }
-    let(:ignored_metrics) { ["i_package_composer_deploy_token_weekly"] }
-
-    it 'has all known_events' do
-      expect(subject).to have_key(:redis_hll_counters)
-
-      expect(subject[:redis_hll_counters].keys).to match_array(categories)
-
-      categories.each do |category|
-        keys = ::Gitlab::UsageDataCounters::HLLRedisCounter.events_for_category(category)
-
-        metrics = keys.map { |key| "#{key}_weekly" } + keys.map { |key| "#{key}_monthly" }
-        metrics -= ignored_metrics
-
-        if ::Gitlab::UsageDataCounters::HLLRedisCounter::CATEGORIES_FOR_TOTALS.include?(category)
-          metrics.append("#{category}_total_unique_counts_weekly", "#{category}_total_unique_counts_monthly")
-        end
-
-        expect(subject[:redis_hll_counters][category].keys).to match_array(metrics)
-      end
-    end
-  end
-
   describe '.service_desk_counts' do
     subject { described_class.send(:service_desk_counts) }
 

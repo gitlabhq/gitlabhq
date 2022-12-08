@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Import::GithubGroupsController do
+RSpec.describe Import::GithubGroupsController, feature_category: :importers do
   describe 'GET status' do
     subject(:status) { get '/import/github_group/status', params: params, headers: headers }
 
