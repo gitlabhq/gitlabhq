@@ -889,6 +889,27 @@ for how to proceed.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 
+- You may see the following error when setting up two factor authentication (2FA) for accounts
+  that authenticate using an LDAP password:
+
+  ```plaintext
+  You must provide a valid current password
+  ```
+
+  - The error occurs because verification is incorrectly performed against accounts'
+    randomly generated internal GitLab passwords, not the LDAP passwords.
+  - This is [fixed in GitLab 14.5.0 and backported to 14.4.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/73538).
+  - Workarounds:
+    - Instead of upgrading to GitLab 14.3.x to comply with the supported upgrade path:
+      1. Upgrade to 14.4.5.
+      1. Make sure the [`MigrateMergeRequestDiffCommitUsers` background migration](#1430) has finished.
+      1. Upgrade to GitLab 14.5 or later.
+    - Reset the random password for affected accounts, using [the Rake task](../security/reset_user_password.md#use-a-rake-task):
+
+      ```plaintext
+      sudo gitlab-rake "gitlab:password:reset[user_handle]"
+      ```
+
 ### 14.2.0
 
 - [Instances running 14.0.0 - 14.0.4 should not upgrade directly to GitLab 14.2 or later](#upgrading-to-later-14y-releases).

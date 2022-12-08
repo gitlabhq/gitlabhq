@@ -2,7 +2,7 @@
 # Error: gitlab.Substitutions
 #
 # Checks for misused terms that should never be used at GitLab.
-# SubstitutionWarning.yml and SubstitionSuggestions.yml also exist.
+# SubstitutionWarning.yml also exists.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
