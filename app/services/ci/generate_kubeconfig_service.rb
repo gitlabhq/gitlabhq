@@ -2,9 +2,11 @@
 
 module Ci
   class GenerateKubeconfigService
-    def initialize(pipeline, token:)
+    def initialize(pipeline, token:, environment:)
       @pipeline = pipeline
       @token = token
+      @environment = environment
+
       @template = Gitlab::Kubernetes::Kubeconfig::Template.new
     end
 
@@ -36,10 +38,13 @@ module Ci
 
     private
 
-    attr_reader :pipeline, :token, :template
+    attr_reader :pipeline, :token, :environment, :template
 
     def agent_authorizations
-      pipeline.cluster_agent_authorizations
+      ::Clusters::Agents::FilterAuthorizationsService.new(
+        pipeline.cluster_agent_authorizations,
+        environment: environment
+      ).execute
     end
 
     def cluster_name

@@ -19,6 +19,7 @@ export default {
     editCommentLabel: __('Edit comment'),
     deleteCommentLabel: __('Delete comment'),
     moreActionsLabel: __('More actions'),
+    reportAbuse: __('Report abuse to administrator'),
   },
   name: 'NoteActions',
   components: {
@@ -362,7 +363,7 @@ export default {
       <!-- eslint-enable @gitlab/vue-no-data-toggle -->
       <ul class="dropdown-menu more-actions-dropdown dropdown-open-left">
         <gl-dropdown-item v-if="canReportAsAbuse" :href="reportAbusePath">
-          {{ __('Report abuse to admin') }}
+          {{ $options.i18n.reportAbuse }}
         </gl-dropdown-item>
         <gl-dropdown-item
           v-if="noteUrl"

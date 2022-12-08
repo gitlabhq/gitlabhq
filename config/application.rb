@@ -326,6 +326,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/terms.css"
     config.assets.precompile << "page_bundles/todos.css"
     config.assets.precompile << "page_bundles/tree.css"
+    config.assets.precompile << "page_bundles/users.css"
     config.assets.precompile << "page_bundles/wiki.css"
     config.assets.precompile << "page_bundles/work_items.css"
     config.assets.precompile << "page_bundles/xterm.css"

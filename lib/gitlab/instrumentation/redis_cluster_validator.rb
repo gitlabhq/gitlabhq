@@ -183,8 +183,8 @@ module Gitlab
       CrossSlotError = Class.new(StandardError)
 
       class << self
-        def validate(commands, validate_allowed_cmd)
-          return if allow_cross_slot_commands? && !validate_allowed_cmd
+        def validate!(commands)
+          return if allow_cross_slot_commands?
           return if commands.empty?
 
           # early exit for single-command (non-pipelined) if it is a single-key-command
@@ -192,14 +192,9 @@ module Gitlab
           return if commands.size == 1 && REDIS_COMMANDS.dig(command_name, :single_key)
 
           key_slots = commands.map { |command| key_slots(command) }.flatten
-
-          {
-            valid: !key_slots.uniq.many?, # rubocop: disable CodeReuse/ActiveRecord
-            command_name: command_name,
-            key_count: key_slots.size,
-            allowed: allow_cross_slot_commands?,
-            command: commands.first.join(' ')
-          }
+          if key_slots.uniq.many? # rubocop: disable CodeReuse/ActiveRecord
+            raise CrossSlotError, "Redis command #{command_name} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
+          end
         end
 
         # Keep track of the call stack to allow nested calls to work.

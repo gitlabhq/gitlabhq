@@ -40,6 +40,7 @@ export default {
     promoteSuccessMessage: __(
       'The issue was successfully promoted to an epic. Redirecting to epic...',
     ),
+    reportAbuse: __('Report abuse to administrator'),
   },
   components: {
     DeleteIssueModal,
@@ -255,7 +256,7 @@ export default {
         {{ __('Promote to epic') }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
-        {{ __('Report abuse') }}
+        {{ $options.i18n.reportAbuse }}
       </gl-dropdown-item>
       <gl-dropdown-item
         v-if="canReportSpam"
@@ -314,7 +315,7 @@ export default {
         {{ __('Promote to epic') }}
       </gl-dropdown-item>
       <gl-dropdown-item v-if="!isIssueAuthor" :href="reportAbusePath">
-        {{ __('Report abuse') }}
+        {{ $options.i18n.reportAbuse }}
       </gl-dropdown-item>
       <gl-dropdown-item
         v-if="canReportSpam"

@@ -5,8 +5,6 @@ require 'redis'
 module Gitlab
   module Instrumentation
     class RedisBase
-      VALIDATE_ALLOWED_COMMANDS_KEY = 'validate_allowed_commands_flag'
-
       class << self
         include ::Gitlab::Utils::StrongMemoize
         include ::Gitlab::Instrumentation::RedisPayload
@@ -77,23 +75,13 @@ module Gitlab
           query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
         end
 
-        def validate_allowed_commands?
-          ::Gitlab::SafeRequestStore.fetch(VALIDATE_ALLOWED_COMMANDS_KEY) do
-            Feature.enabled?(:validate_allowed_cross_slot_commands, type: :development)
-          end
-        end
-
         def redis_cluster_validate!(commands)
-          return true unless @redis_cluster_validation
+          ::Gitlab::Instrumentation::RedisClusterValidator.validate!(commands) if @redis_cluster_validation
+          true
+        rescue ::Gitlab::Instrumentation::RedisClusterValidator::CrossSlotError
+          raise if Rails.env.development? || Rails.env.test? # raise in test environments to catch violations
 
-          result = ::Gitlab::Instrumentation::RedisClusterValidator.validate(commands, validate_allowed_commands?)
-          return true if result.nil?
-
-          if !result[:valid] && !result[:allowed] && (Rails.env.development? || Rails.env.test?)
-            raise RedisClusterValidator::CrossSlotError, "Redis command #{result[:command_name]} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
-          end
-
-          result[:valid]
+          false
         end
 
         def enable_redis_cluster_validation

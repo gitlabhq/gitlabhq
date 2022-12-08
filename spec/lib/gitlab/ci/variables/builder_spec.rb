@@ -276,10 +276,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
     subject { builder.kubernetes_variables(environment: nil, job: job) }
 
     before do
-      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token).and_return(service)
+      allow(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: anything).and_return(service)
     end
 
     it { is_expected.to include(key: 'KUBECONFIG', value: 'example-kubeconfig', public: false, file: true) }
+
+    it 'calls the GenerateKubeconfigService with the correct arguments' do
+      expect(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: nil)
+
+      subject
+    end
 
     context 'generated config is invalid' do
       let(:template_valid) { false }
@@ -296,6 +302,16 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache do
       expect(template).to receive(:merge_yaml).with('deployment-kubeconfig')
       expect(subject['KUBECONFIG'].value).to eq('example-kubeconfig')
       expect(subject['OTHER'].value).to eq('some value')
+    end
+
+    context 'when environment is not nil' do
+      subject { builder.kubernetes_variables(environment: 'production', job: job) }
+
+      it 'passes the environment when generating the KUBECONFIG' do
+        expect(Ci::GenerateKubeconfigService).to receive(:new).with(job.pipeline, token: job.token, environment: 'production')
+
+        subject
+      end
     end
   end
 

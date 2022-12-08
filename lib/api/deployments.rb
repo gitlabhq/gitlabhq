@@ -50,6 +50,14 @@ module API
           type: DateTime,
           desc: 'Return deployments updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
 
+        optional :finished_after,
+          type: DateTime,
+          desc: 'Return deployments finished after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
+
+        optional :finished_before,
+          type: DateTime,
+          desc: 'Return deployments finished before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`)'
+
         optional :environment,
           type: String,
           desc: 'The name of the environment to filter deployments by'
@@ -64,7 +72,7 @@ module API
         authorize! :read_deployment, user_project
 
         deployments =
-          DeploymentsFinder.new(params.merge(project: user_project))
+          DeploymentsFinder.new(declared_params(include_missing: false).merge(project: user_project))
             .execute.with_api_entity_associations
 
         present paginate(deployments), with: Entities::Deployment

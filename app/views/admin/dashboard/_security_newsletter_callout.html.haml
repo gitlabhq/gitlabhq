@@ -10,5 +10,5 @@
   = c.body do
     = s_('AdminArea|Sign up for the GitLab Security Newsletter to get notified for security updates.')
   = c.actions do
-    = link_to 'https://about.gitlab.com/company/preference-center/', target: '_blank', rel: 'noreferrer noopener', class: 'deferred-link gl-alert-action btn-confirm btn-md gl-button' do
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: 'https://about.gitlab.com/company/preference-center/', target: '_blank', button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }) do
       = s_('AdminArea|Sign up for the GitLab newsletter')
