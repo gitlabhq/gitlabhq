@@ -25,12 +25,12 @@ RSpec.describe 'GraphQL' do
           "query_analysis.used_fields" => ['Query.echo'],
           "query_analysis.used_deprecated_fields" => [],
           # query_fingerprint starts with operation name
-          query_fingerprint: %r{^anonymous\/},
+          query_fingerprint: %r{^anonymous/},
           duration_s: kind_of(Numeric),
           trace_type: 'execute_query',
           operation_name: nil,
           # operation_fingerprint starts with operation name
-          operation_fingerprint: %r{^anonymous\/},
+          operation_fingerprint: %r{^anonymous/},
           is_mutation: false,
           variables: variables.to_s,
           query_string: query

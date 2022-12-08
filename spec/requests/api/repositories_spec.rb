@@ -300,7 +300,7 @@ RSpec.describe API::Repositories do
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.gz/)
+        expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.gz/)
         expect(response.parsed_body).to be_empty
       end
 
@@ -312,7 +312,7 @@ RSpec.describe API::Repositories do
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.zip/)
+        expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.zip/)
       end
 
       it 'returns the repository archive archive.tar.bz2' do
@@ -323,7 +323,7 @@ RSpec.describe API::Repositories do
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\.tar.bz2/)
+        expect(params['ArchivePath']).to match(/#{project.path}-[^.]+\.tar.bz2/)
       end
 
       context 'when sha does not exist' do
@@ -342,7 +342,7 @@ RSpec.describe API::Repositories do
         type, params = workhorse_send_data
 
         expect(type).to eq('git-archive')
-        expect(params['ArchivePath']).to match(/#{project.path}\-[^\.]+\-#{path}\.tar.gz/)
+        expect(params['ArchivePath']).to match(/#{project.path}-[^.]+-#{path}\.tar.gz/)
       end
 
       it 'rate limits user when thresholds hit' do

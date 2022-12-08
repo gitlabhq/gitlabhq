@@ -1326,7 +1326,7 @@ RSpec.describe ProjectsController do
                                   text: merge_request.to_reference
                                 }
 
-        expect(json_response['body']).to match(/\!#{merge_request.iid} \(closed\)/)
+        expect(json_response['body']).to match(/!#{merge_request.iid} \(closed\)/)
       end
     end
 

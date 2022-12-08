@@ -249,15 +249,6 @@ export const graphQLDeleteImageRepositoryTagsMock = {
   },
 };
 
-export const graphQLDeleteImageRepositoryTagImportingErrorMock = {
-  data: {
-    destroyContainerRepositoryTags: {
-      errors: ['repository importing'],
-      __typename: 'DestroyContainerRepositoryTagsPayload',
-    },
-  },
-};
-
 export const dockerCommands = {
   dockerBuildCommand: 'foofoo',
   dockerPushCommand: 'barbar',

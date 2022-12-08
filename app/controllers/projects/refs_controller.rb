@@ -24,7 +24,11 @@ class Projects::RefsController < Projects::ApplicationController
           when "blob"
             project_blob_path(@project, @id)
           when "graph"
-            project_network_path(@project, @id, @options)
+            if Feature.enabled?(:use_ref_type_parameter, @project)
+              project_network_path(@project, @id, ref_type: ref_type)
+            else
+              project_network_path(@project, @id, @options)
+            end
           when "graphs"
             if Feature.enabled?(:use_ref_type_parameter, @project)
               project_graph_path(@project, @id, ref_type: ref_type)

@@ -108,9 +108,15 @@ module Sidebars
         end
 
         def graphs_menu_item
+          link = if Feature.enabled?(:use_ref_type_parameter, context.project)
+                   project_network_path(context.project, context.current_ref, ref_type: ref_type_from_context(context))
+                 else
+                   project_network_path(context.project, context.current_ref)
+                 end
+
           ::Sidebars::MenuItem.new(
             title: _('Graph'),
-            link: project_network_path(context.project, context.current_ref),
+            link: link,
             active_routes: { controller: :network },
             item_id: :graphs
           )

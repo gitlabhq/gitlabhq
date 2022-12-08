@@ -210,7 +210,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo' }
 
       it 'returns a single ILIKE condition' do
-        expect(fuzzy_arel_match.to_sql).to match(/title.*I?LIKE '\%foo\%'/)
+        expect(fuzzy_arel_match.to_sql).to match(/title.*I?LIKE '%foo%'/)
       end
     end
 
@@ -232,7 +232,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo baz' }
 
       it 'returns a joining LIKE condition using a AND' do
-        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%'/)
+        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '%foo%' AND .*title.*I?LIKE '%baz%'/)
       end
     end
 
@@ -248,7 +248,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo ba' }
 
       it 'returns a single ILIKE condition using the longer word' do
-        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '\%foo\%'/)
+        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '%foo%'/)
       end
     end
 
@@ -256,7 +256,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       let(:query) { 'foo "really bar" baz' }
 
       it 'returns a joining LIKE condition using a AND' do
-        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%' AND .*title.*I?LIKE '\%really bar\%'/)
+        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '%foo%' AND .*title.*I?LIKE '%baz%' AND .*title.*I?LIKE '%really bar%'/)
       end
     end
 
@@ -266,7 +266,7 @@ RSpec.describe Gitlab::SQL::Pattern do
       subject(:fuzzy_arel_match) { Project.fuzzy_arel_match(Route.arel_table[:path], query) }
 
       it 'returns a condition with the table and column name' do
-        expect(fuzzy_arel_match.to_sql).to match(/"routes"."path".*ILIKE '\%foo\%'/)
+        expect(fuzzy_arel_match.to_sql).to match(/"routes"."path".*ILIKE '%foo%'/)
       end
     end
   end

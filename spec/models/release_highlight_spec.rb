@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ReleaseHighlight, :clean_gitlab_redis_cache do
-  let(:fixture_dir_glob) { Dir.glob(File.join(Rails.root, 'spec', 'fixtures', 'whats_new', '*.yml')).grep(/\d*\_(\d*\_\d*)\.yml$/) }
+  let(:fixture_dir_glob) { Dir.glob(File.join(Rails.root, 'spec', 'fixtures', 'whats_new', '*.yml')).grep(/\d*_(\d*_\d*)\.yml$/) }
 
   before do
     allow(Dir).to receive(:glob).with(Rails.root.join('data', 'whats_new', '*.yml')).and_return(fixture_dir_glob)

@@ -154,7 +154,7 @@ RSpec.shared_examples 'group and project packages query' do
       end
 
       it 'throws an error' do
-        expect_graphql_errors_to_include(/Argument \'sort\' on Field \'packages\' has an invalid value/)
+        expect_graphql_errors_to_include(/Argument 'sort' on Field 'packages' has an invalid value/)
       end
     end
 

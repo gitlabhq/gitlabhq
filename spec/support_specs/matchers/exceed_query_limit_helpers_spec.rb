@@ -275,7 +275,7 @@ RSpec.describe ExceedQueryLimitHelpers do
       expect(test_matcher.log_message)
         .to match(%r{ORDER BY.*#{TestQueries.table_name}.*LIMIT 1})
       expect(test_matcher.log_message)
-        .not_to match(%r{\/\*.*correlation_id.*\*\/})
+        .not_to match(%r{/\*.*correlation_id.*\*/})
     end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Variables do
+RSpec.describe API::Ci::Variables, feature_category: :pipeline_authoring do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
@@ -114,73 +114,92 @@ RSpec.describe API::Ci::Variables do
 
   describe 'POST /projects/:id/variables' do
     context 'authorized user with proper permissions' do
-      it 'creates variable' do
-        expect do
-          post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true, raw: true }
-        end.to change { project.variables.count }.by(1)
+      context 'when the project is below the plan limit for variables' do
+        it 'creates variable' do
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'PROTECTED_VALUE_2', protected: true, masked: true, raw: true }
+          end.to change { project.variables.count }.by(1)
 
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['key']).to eq('TEST_VARIABLE_2')
-        expect(json_response['value']).to eq('PROTECTED_VALUE_2')
-        expect(json_response['protected']).to be_truthy
-        expect(json_response['masked']).to be_truthy
-        expect(json_response['raw']).to be_truthy
-        expect(json_response['variable_type']).to eq('env_var')
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['key']).to eq('TEST_VARIABLE_2')
+          expect(json_response['value']).to eq('PROTECTED_VALUE_2')
+          expect(json_response['protected']).to be_truthy
+          expect(json_response['masked']).to be_truthy
+          expect(json_response['raw']).to be_truthy
+          expect(json_response['variable_type']).to eq('env_var')
+        end
+
+        it 'masks the new value when logging' do
+          masked_params = { 'key' => 'VAR_KEY', 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+
+          expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+
+          post api("/projects/#{project.id}/variables", user),
+            params: { key: 'VAR_KEY', value: 'SENSITIVE', protected: true, masked: true }
+        end
+
+        it 'creates variable with optional attributes' do
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file', key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
+          end.to change { project.variables.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['key']).to eq('TEST_VARIABLE_2')
+          expect(json_response['value']).to eq('VALUE_2')
+          expect(json_response['protected']).to be_falsey
+          expect(json_response['masked']).to be_falsey
+          expect(json_response['raw']).to be_falsey
+          expect(json_response['variable_type']).to eq('file')
+        end
+
+        it 'does not allow to duplicate variable key' do
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
+          end.to change { project.variables.count }.by(0)
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+
+        it 'creates variable with a specific environment scope' do
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2', environment_scope: 'review/*' }
+          end.to change { project.variables.reload.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['key']).to eq('TEST_VARIABLE_2')
+          expect(json_response['value']).to eq('VALUE_2')
+          expect(json_response['environment_scope']).to eq('review/*')
+        end
+
+        it 'allows duplicated variable key given different environment scopes' do
+          variable = create(:ci_variable, project: project)
+
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2', environment_scope: 'review/*' }
+          end.to change { project.variables.reload.count }.by(1)
+
+          expect(response).to have_gitlab_http_status(:created)
+          expect(json_response['key']).to eq(variable.key)
+          expect(json_response['value']).to eq('VALUE_2')
+          expect(json_response['environment_scope']).to eq('review/*')
+        end
       end
 
-      it 'masks the new value when logging' do
-        masked_params = { 'key' => 'VAR_KEY', 'value' => '[FILTERED]', 'protected' => 'true', 'masked' => 'true' }
+      context 'when the project is at the plan limit for variables' do
+        it 'returns a variable limit error' do
+          create(:plan_limits, :default_plan, project_ci_variables: 1)
 
-        expect(::API::API::LOGGER).to receive(:info).with(include(params: include(masked_params)))
+          expect(project.variables.count).to be(1)
 
-        post api("/projects/#{project.id}/variables", user),
-          params: { key: 'VAR_KEY', value: 'SENSITIVE', protected: true, masked: true }
-      end
+          expect do
+            post api("/projects/#{project.id}/variables", user), params: { key: 'TOO_MANY_VARS', value: 'too many' }
+          end.not_to change { project.variables.count }
 
-      it 'creates variable with optional attributes' do
-        expect do
-          post api("/projects/#{project.id}/variables", user), params: { variable_type: 'file', key: 'TEST_VARIABLE_2', value: 'VALUE_2' }
-        end.to change { project.variables.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['key']).to eq('TEST_VARIABLE_2')
-        expect(json_response['value']).to eq('VALUE_2')
-        expect(json_response['protected']).to be_falsey
-        expect(json_response['masked']).to be_falsey
-        expect(json_response['raw']).to be_falsey
-        expect(json_response['variable_type']).to eq('file')
-      end
-
-      it 'does not allow to duplicate variable key' do
-        expect do
-          post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
-        end.to change { project.variables.count }.by(0)
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-      end
-
-      it 'creates variable with a specific environment scope' do
-        expect do
-          post api("/projects/#{project.id}/variables", user), params: { key: 'TEST_VARIABLE_2', value: 'VALUE_2', environment_scope: 'review/*' }
-        end.to change { project.variables.reload.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['key']).to eq('TEST_VARIABLE_2')
-        expect(json_response['value']).to eq('VALUE_2')
-        expect(json_response['environment_scope']).to eq('review/*')
-      end
-
-      it 'allows duplicated variable key given different environment scopes' do
-        variable = create(:ci_variable, project: project)
-
-        expect do
-          post api("/projects/#{project.id}/variables", user), params: { key: variable.key, value: 'VALUE_2', environment_scope: 'review/*' }
-        end.to change { project.variables.reload.count }.by(1)
-
-        expect(response).to have_gitlab_http_status(:created)
-        expect(json_response['key']).to eq(variable.key)
-        expect(json_response['value']).to eq('VALUE_2')
-        expect(json_response['environment_scope']).to eq('review/*')
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']['base']).to contain_exactly(
+            'Maximum number of project ci variables (1) exceeded'
+          )
+        end
       end
     end
 

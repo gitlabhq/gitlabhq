@@ -64,7 +64,7 @@ RSpec.describe 'Setting Draft status of a merge request' do
       post_graphql_mutation(mutation, current_user: current_user)
 
       expect(response).to have_gitlab_http_status(:success)
-      expect(mutation_response['mergeRequest']['title']).not_to start_with(/draft\:/)
+      expect(mutation_response['mergeRequest']['title']).not_to start_with(/draft:/)
     end
 
     it 'unmarks the merge request as `Draft`' do

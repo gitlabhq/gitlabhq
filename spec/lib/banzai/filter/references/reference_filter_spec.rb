@@ -148,7 +148,7 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter do
     include_context 'document nodes'
     let(:node) { Nokogiri::HTML.fragment('text @reference') }
 
-    let(:ref_pattern) { %r{(?<!\w)@(?<user>[a-zA-Z0-9_\-\.]*)}x }
+    let(:ref_pattern) { %r{(?<!\w)@(?<user>[a-zA-Z0-9_\-.]*)}x }
 
     context 'when node has no reference pattern' do
       let(:node) { Nokogiri::HTML.fragment('random text') }

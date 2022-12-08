@@ -45,7 +45,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
         it_behaves_like 'name suggestion' do
           # corresponding metric is collected with count(Issue.with_alert_management_alerts.not_authored_by(::User.alert_bot), start: issue_minimum_id, finish: issue_maximum_id)
           let(:key_path) { 'counts.issues_created_manually_from_alerts' }
-          let(:name_suggestion) { /count_<adjective describing\: '\(issues\.author_id != \d+\)'>_issues_<with>_alert_management_alerts/ }
+          let(:name_suggestion) { /count_<adjective describing: '\(issues\.author_id != \d+\)'>_issues_<with>_alert_management_alerts/ }
         end
       end
     end
@@ -54,7 +54,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with distinct_count(::Clusters::Cluster.aws_installed.enabled.where(time_period), :user_id)
         let(:key_path) { 'usage_activity_by_stage_monthly.configure.clusters_platforms_eks' }
-        let(:constraints) { /<adjective describing\: '\(clusters.provider_type = \d+ AND \(cluster_providers_aws\.status IN \(\d+\)\) AND clusters\.enabled = TRUE\)'>/ }
+        let(:constraints) { /<adjective describing: '\(clusters.provider_type = \d+ AND \(cluster_providers_aws\.status IN \(\d+\)\) AND clusters\.enabled = TRUE\)'>/ }
         let(:name_suggestion) { /count_distinct_user_id_from_#{constraints}_clusters_<with>_#{constraints}_cluster_providers_aws/ }
       end
     end
@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with sum(JiraImportState.finished, :imported_issues_count)
         let(:key_path) { 'counts.jira_imports_total_imported_issues_count' }
-        let(:name_suggestion) { /sum_imported_issues_count_from_<adjective describing\: '\(jira_imports\.status = \d+\)'>_jira_imports/ }
+        let(:name_suggestion) { /sum_imported_issues_count_from_<adjective describing: '\(jira_imports\.status = \d+\)'>_jira_imports/ }
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe Gitlab::Usage::Metrics::NamesSuggestions::Generator do
       it_behaves_like 'name suggestion' do
         # corresponding metric is collected with add(data[:personal_snippets], data[:project_snippets])
         let(:key_path) { 'counts.snippets' }
-        let(:name_suggestion) { /add_count_<adjective describing\: '\(snippets\.type = 'PersonalSnippet'\)'>_snippets_and_count_<adjective describing\: '\(snippets\.type = 'ProjectSnippet'\)'>_snippets/ }
+        let(:name_suggestion) { /add_count_<adjective describing: '\(snippets\.type = 'PersonalSnippet'\)'>_snippets_and_count_<adjective describing: '\(snippets\.type = 'ProjectSnippet'\)'>_snippets/ }
       end
     end
 

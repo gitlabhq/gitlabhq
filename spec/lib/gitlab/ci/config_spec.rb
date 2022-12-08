@@ -305,7 +305,7 @@ RSpec.describe Gitlab::Ci::Config do
       it 'raises error' do
         expect { config }.to raise_error(
           described_class::ConfigError,
-          /\!reference \["job-2", "before_script"\] is part of a circular chain/
+          /!reference \["job-2", "before_script"\] is part of a circular chain/
         )
       end
     end

@@ -2,10 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Variable do
+RSpec.describe Ci::Variable, feature_category: :pipeline_authoring do
   subject { build(:ci_variable) }
 
   it_behaves_like "CI variable"
+  it_behaves_like 'includes Limitable concern'
 
   describe 'validations' do
     it { is_expected.to include_module(Presentable) }

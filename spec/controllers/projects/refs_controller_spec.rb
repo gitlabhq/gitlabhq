@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RefsController do
+RSpec.describe Projects::RefsController, feature_category: :source_code_management do
   let_it_be(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
@@ -15,7 +15,6 @@ RSpec.describe Projects::RefsController do
     using RSpec::Parameterized::TableSyntax
 
     let(:id) { 'master' }
-
     let(:params) do
       { destination: destination, namespace_id: project.namespace.to_param, project_id: project, id: id,
         ref_type: ref_type }
@@ -50,7 +49,7 @@ RSpec.describe Projects::RefsController do
       end
 
       with_them do
-        it 'redirects to commits' do
+        it 'redirects to destination' do
           expect(subject).to redirect_to(redirected_to)
         end
       end
@@ -63,7 +62,7 @@ RSpec.describe Projects::RefsController do
         'blob'           | nil     | lazy { project_blob_path(project, id) }
         'blob'           | 'heads' | lazy { project_blob_path(project, id) }
         'graph'          | nil     | lazy { project_network_path(project, id) }
-        'graph'          | 'heads' | lazy { project_network_path(project, id) }
+        'graph'          | 'heads' | lazy { project_network_path(project, id, ref_type: 'heads') }
         'graphs'         | nil     | lazy { project_graph_path(project, id) }
         'graphs'         | 'heads' | lazy { project_graph_path(project, id, ref_type: 'heads') }
         'find_file'      | nil     | lazy { project_find_file_path(project, id) }
@@ -79,7 +78,7 @@ RSpec.describe Projects::RefsController do
       end
 
       with_them do
-        it 'redirects to commits' do
+        it 'redirects to destination' do
           expect(subject).to redirect_to(redirected_to)
         end
       end

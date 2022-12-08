@@ -7,7 +7,7 @@ RSpec.describe TabHelper do
 
   describe 'gl_tabs_nav' do
     it 'creates a tabs navigation' do
-      expect(helper.gl_tabs_nav).to match(%r{<ul class="nav gl-tabs-nav"><\/ul>})
+      expect(helper.gl_tabs_nav).to match(%r{<ul class="nav gl-tabs-nav"></ul>})
     end
 
     it 'captures block output' do

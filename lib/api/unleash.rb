@@ -63,13 +63,9 @@ module API
           cache_context: -> (client) { client.unleash_api_cache_key }
       end
 
-      def project
-        @project ||= find_project(params[:project_id])
-      end
-
       def feature_flags_client
         strong_memoize(:feature_flags_client) do
-          client = Operations::FeatureFlagsClient.find_for_project_and_token(project, unleash_instance_id)
+          client = Operations::FeatureFlagsClient.find_for_project_and_token(params[:project_id], unleash_instance_id)
           client.unleash_app_name = unleash_app_name if client
           client
         end
@@ -85,12 +81,6 @@ module API
 
       def authorize_by_unleash_instance_id!
         unauthorized! unless feature_flags_client
-      end
-
-      def feature_flags
-        return [] unless unleash_app_name.present?
-
-        Operations::FeatureFlag.for_unleash_client(project, unleash_app_name)
       end
     end
   end
