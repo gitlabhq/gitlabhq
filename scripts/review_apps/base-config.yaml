@@ -16,6 +16,10 @@ global:
     secret: shared-gitlab-initial-root-password
   nodeSelector:
     preemptible: "true"
+    # TODO: Remove me as soon as the old nodepools are deleted
+    #
+    # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+    cloud.google.com/gke-nodepool: containerd-preemptible-true
 certmanager:
   install: false
 
@@ -33,6 +37,10 @@ gitlab:
       storageClass: ssd
     nodeSelector:
       preemptible: "false"
+      # TODO: Remove me as soon as the old nodepools are deleted
+      #
+      # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+      cloud.google.com/gke-nodepool: containerd-preemptible-false
     podAnnotations:
       <<: *safe-to-evict
 
@@ -131,6 +139,10 @@ gitlab-runner:
       memory: 150Mi
   nodeSelector:
     preemptible: "true"
+    # TODO: Remove me as soon as the old nodepools are deleted
+    #
+    # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+    cloud.google.com/gke-nodepool: containerd-preemptible-true
   podAnnotations:
     <<: *safe-to-evict
 
@@ -144,6 +156,10 @@ minio:
       memory: 280Mi
   nodeSelector:
     preemptible: "true"
+    # TODO: Remove me as soon as the old nodepools are deleted
+    #
+    # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+    cloud.google.com/gke-nodepool: containerd-preemptible-true
   podAnnotations:
       <<: *safe-to-evict
 
@@ -166,6 +182,10 @@ nginx-ingress:
       timeoutSeconds: 5
     nodeSelector:
       preemptible: "true"
+      # TODO: Remove me as soon as the old nodepools are deleted
+      #
+      # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+      cloud.google.com/gke-nodepool: containerd-preemptible-true
   defaultBackend:
     resources:
       requests:
@@ -176,6 +196,10 @@ nginx-ingress:
         memory: 24Mi
     nodeSelector:
       preemptible: "true"
+      # TODO: Remove me as soon as the old nodepools are deleted
+      #
+      # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+      cloud.google.com/gke-nodepool: containerd-preemptible-true
 
 postgresql:
   metrics:
@@ -190,6 +214,10 @@ postgresql:
   master:
     nodeSelector:
       preemptible: "false"
+      # TODO: Remove me as soon as the old nodepools are deleted
+      #
+      # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+      cloud.google.com/gke-nodepool: containerd-preemptible-false
     podAnnotations:
       <<: *safe-to-evict
 
@@ -209,6 +237,10 @@ redis:
   master:
     nodeSelector:
       preemptible: "true"
+      # TODO: Remove me as soon as the old nodepools are deleted
+      #
+      # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+      cloud.google.com/gke-nodepool: containerd-preemptible-true
     podAnnotations:
       <<: *safe-to-evict
 
@@ -225,3 +257,7 @@ registry:
       memory: 45Mi
   nodeSelector:
     preemptible: "true"
+    # TODO: Remove me as soon as the old nodepools are deleted
+    #
+    # See https://gitlab.com/gitlab-org/quality/engineering-productivity-infrastructure/-/issues/40
+    cloud.google.com/gke-nodepool: containerd-preemptible-true

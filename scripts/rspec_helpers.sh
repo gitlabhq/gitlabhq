@@ -269,9 +269,12 @@ function warn_on_successfully_retried_test {
 
   while read changed_file
   do
-    echoinfo "Searching flaky tests for ${changed_file}"
+    # include the root path in the regexp to eliminate false positives
+    changed_file="^\./$changed_file"
+
     if grep -q "$changed_file" "$RETRIED_TESTS_REPORT_PATH"; then
-      echoinfo "Exiting with code $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE because the flaky test was part of this MR."
+      echoinfo "Flaky test '$changed_file' was found in the list of files changed by this MR."
+      echoinfo "Exiting with code $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE."
       exit $SUCCESSFULLY_RETRIED_TEST_EXIT_CODE
     fi
   done <<< "$changed_files"

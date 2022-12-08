@@ -89,6 +89,15 @@ module Gitlab
         def do_strong_memoize(klass, method_name, member_name)
           method = klass.instance_method(method_name)
 
+          unless method.arity == 0
+            raise <<~ERROR
+              Using `strong_memoize_attr` on methods with parameters is not supported.
+
+              Use `strong_memoize_with` instead.
+              See https://docs.gitlab.com/ee/development/utilities.html#strongmemoize
+            ERROR
+          end
+
           # Methods defined within a class method are already public by default, so we don't need to
           # explicitly make them public.
           scope = %i[private protected].find do |scope|
@@ -96,9 +105,9 @@ module Gitlab
               .include? method_name
           end
 
-          klass.define_method(method_name) do |*args, &block|
+          klass.define_method(method_name) do |&block|
             strong_memoize(member_name) do
-              method.bind_call(self, *args, &block)
+              method.bind_call(self, &block)
             end
           end
 

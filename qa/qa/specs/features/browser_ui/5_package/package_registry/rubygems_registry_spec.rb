@@ -40,9 +40,6 @@ module QA
 
       after do
         Runtime::Feature.disable(:rubygem_packages, project: project)
-        runner.remove_via_api!
-        package.remove_via_api!
-        project.remove_via_api!
       end
 
       it 'publishes a Ruby gem', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347649' do

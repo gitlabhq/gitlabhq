@@ -1,9 +1,7 @@
 <script>
-import { secondsToMilliseconds } from '~/lib/utils/datetime_utility';
-import dateFormat from '~/lib/dateformat';
 import SetStatusForm from './set_status_form.vue';
-import { isUserBusy } from './utils';
-import { NEVER_TIME_RANGE, AVAILABILITY_STATUS } from './constants';
+import { isUserBusy, computedClearStatusAfterValue } from './utils';
+import { AVAILABILITY_STATUS } from './constants';
 
 export default {
   components: { SetStatusForm },
@@ -13,33 +11,22 @@ export default {
       emoji: this.fields.emoji.value,
       message: this.fields.message.value,
       availability: isUserBusy(this.fields.availability.value),
-      clearStatusAfter: NEVER_TIME_RANGE,
+      clearStatusAfter: null,
       currentClearStatusAfter: this.fields.clearStatusAfter.value,
     };
   },
   computed: {
-    clearStatusAfterInputValue() {
-      return this.clearStatusAfter.label === NEVER_TIME_RANGE.label
-        ? null
-        : this.clearStatusAfter.shortcut;
+    showClearStatusAfterHiddenInput() {
+      return this.clearStatusAfter !== null;
+    },
+    clearStatusAfterHiddenInputValue() {
+      return computedClearStatusAfterValue(this.clearStatusAfter);
     },
     availabilityInputValue() {
       return this.availability
         ? this.$options.AVAILABILITY_STATUS.BUSY
         : this.$options.AVAILABILITY_STATUS.NOT_SET;
     },
-  },
-  mounted() {
-    this.$options.formEl = document.querySelector('form.js-edit-user');
-
-    if (!this.$options.formEl) return;
-
-    this.$options.formEl.addEventListener('ajax:success', this.handleFormSuccess);
-  },
-  beforeDestroy() {
-    if (!this.$options.formEl) return;
-
-    this.$options.formEl.removeEventListener('ajax:success', this.handleFormSuccess);
   },
   methods: {
     handleMessageInput(value) {
@@ -54,24 +41,6 @@ export default {
     handleAvailabilityInput(value) {
       this.availability = value;
     },
-    handleFormSuccess() {
-      if (!this.clearStatusAfter?.duration?.seconds) {
-        this.currentClearStatusAfter = '';
-
-        return;
-      }
-
-      const now = new Date();
-      const currentClearStatusAfterDate = new Date(
-        now.getTime() + secondsToMilliseconds(this.clearStatusAfter.duration.seconds),
-      );
-
-      this.currentClearStatusAfter = dateFormat(
-        currentClearStatusAfterDate,
-        "UTC:yyyy-mm-dd HH:MM:ss 'UTC'",
-      );
-      this.clearStatusAfter = NEVER_TIME_RANGE;
-    },
   },
   AVAILABILITY_STATUS,
   formEl: null,
@@ -83,7 +52,12 @@ export default {
     <input :value="emoji" type="hidden" :name="fields.emoji.name" />
     <input :value="message" type="hidden" :name="fields.message.name" />
     <input :value="availabilityInputValue" type="hidden" :name="fields.availability.name" />
-    <input :value="clearStatusAfterInputValue" type="hidden" :name="fields.clearStatusAfter.name" />
+    <input
+      v-if="showClearStatusAfterHiddenInput"
+      :value="clearStatusAfterHiddenInputValue"
+      type="hidden"
+      :name="fields.clearStatusAfter.name"
+    />
     <set-status-form
       default-emoji="speech_balloon"
       :emoji="emoji"

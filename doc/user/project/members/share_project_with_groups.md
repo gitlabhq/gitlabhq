@@ -40,7 +40,7 @@ To share 'Project Acme' with the 'Engineering' group:
 
 1. For 'Project Acme' use the left navigation menu to go to **Project information > Members**.
 1. Select **Invite a group**.
-1. Add the 'Engineering' group with the maximum access level of your choice.
+1. Add the 'Engineering' group with the maximum role of your choice.
 1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
@@ -48,22 +48,22 @@ After sharing 'Project Acme' with 'Engineering':
 
 - The group is listed in the **Groups** tab.
 - The project is listed on the group dashboard.
-- All members, including members from the ancestors of the 'Engineering' group, gain access to 'Project Acme' with an access level based on the outcome of [maximum access level](#maximum-access-level).
+- All members, including members from the ancestors of the 'Engineering' group, gain access to 'Project Acme' with a role based on the outcome of [maximum role](#maximum-role).
 
 When you share a project, be aware of the following restrictions and outcomes:
 
-- [Maximum access level](#maximum-access-level)
+- [Maximum role](#maximum-role)
 - [Sharing projects with groups of a higher restrictive visibility level](#sharing-projects-with-groups-of-a-higher-restrictive-visibility-level)
 - [Sharing project with group lock](#share-project-with-group-lock)
 
-## Maximum access level
+## Maximum role
 
-In the example above, the maximum access level of 'Developer' for members from 'Engineering' means that users with higher access levels in 'Engineering' ('Maintainer' or 'Owner') only have 'Developer' access to 'Project Acme'.
+When you invite a group to a project, all members of the group are assigned the same role in the project. This role is displayed in the Max role column of the Project members list.
 
 ### Share a project with a subgroup
 
 You can't share a project with a group that's an ancestor of a [subgroup](../../group/subgroups/index.md) the project is
-in. That means you can only share down the hierarchy. For example, `group/subgroup01/project`:
+in. That means you can only share down the group's organization structure. For example, `group/subgroup01/project`:
 
 - Can not be shared with `group`.
 - Can be shared with `group/subgroup02` or  `group/subgroup01/subgroup03`.

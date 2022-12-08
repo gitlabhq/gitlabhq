@@ -207,7 +207,10 @@ module API
 
     resource :users, requirements: API::USER_REQUIREMENTS do
       desc 'Get a user projects' do
-        success Entities::BasicProjectDetails
+        success code: 200, model: Entities::BasicProjectDetails
+        failure [{ code: 404, message: '404 User Not Found' }]
+        tags %w[projects]
+        is_array true
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -225,7 +228,10 @@ module API
       end
 
       desc 'Get projects starred by a user' do
-        success Entities::BasicProjectDetails
+        success code: 200, model: Entities::BasicProjectDetails
+        failure [{ code: 404, message: '404 User Not Found' }]
+        tags %w[projects]
+        is_array true
       end
       params do
         requires :user_id, type: String, desc: 'The ID or username of the user'
@@ -245,7 +251,9 @@ module API
       include CustomAttributesEndpoints
 
       desc 'Get a list of visible projects for authenticated user' do
-        success Entities::BasicProjectDetails
+        success code: 200, model: Entities::BasicProjectDetails
+        tags %w[projects]
+        is_array true
       end
       params do
         use :collection_params
@@ -258,12 +266,18 @@ module API
       end
 
       desc 'Create new project' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 400, message: 'Bad request' }
+        ]
+        tags %w[projects]
       end
       params do
-        optional :name, type: String, desc: 'The name of the project'
-        optional :path, type: String, desc: 'The path of the repository'
-        optional :default_branch, type: String, desc: 'The default branch of the project'
+        optional :name, type: String, desc: 'The name of the project', documentation: { example: 'New Project' }
+        optional :path, type: String, desc: 'The path of the repository', documentation: { example: 'new_project' }
+        optional :default_branch, type: String, desc: 'The default branch of the project', documentation: { example: 'main' }
         at_least_one_of :name, :path
         use :optional_create_project_params
         use :create_params
@@ -295,13 +309,19 @@ module API
       end
 
       desc 'Create new project for a specified user. Only available to admin users.' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 400, message: 'Bad request' }
+        ]
+        tags %w[projects]
       end
       params do
-        requires :name, type: String, desc: 'The name of the project'
-        requires :user_id, type: Integer, desc: 'The ID of a user'
-        optional :path, type: String, desc: 'The path of the repository'
-        optional :default_branch, type: String, desc: 'The default branch of the project'
+        requires :name, type: String, desc: 'The name of the project', documentation: { example: 'New Project' }
+        requires :user_id, type: Integer, desc: 'The ID of a user', documentation: { example: 1 }
+        optional :path, type: String, desc: 'The path of the repository', documentation: { example: 'new_project' }
+        optional :default_branch, type: String, desc: 'The default branch of the project', documentation: { example: 'main' }
         use :optional_project_params
         use :optional_create_project_params
         use :create_params
@@ -339,7 +359,8 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Get a single project' do
-        success Entities::ProjectWithAccess
+        success code: 200, model: Entities::ProjectWithAccess
+        tags %w[projects]
       end
       params do
         use :statistics_params
@@ -364,15 +385,21 @@ module API
       end
 
       desc 'Fork new project for the current user or provided namespace.' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' },
+          { code: 409, message: 'Conflict' }
+        ]
+        tags %w[projects]
       end
       params do
-        optional :namespace, type: String, desc: '(deprecated) The ID or name of the namespace that the project will be forked into'
-        optional :namespace_id, type: Integer, desc: 'The ID of the namespace that the project will be forked into'
-        optional :namespace_path, type: String, desc: 'The path of the namespace that the project will be forked into'
-        optional :path, type: String, desc: 'The path that will be assigned to the fork'
-        optional :name, type: String, desc: 'The name that will be assigned to the fork'
-        optional :description, type: String, desc: 'The description that will be assigned to the fork'
+        optional :namespace, type: String, desc: '(deprecated) The ID or name of the namespace that the project will be forked into', documentation: { example: 'gitlab' }
+        optional :namespace_id, type: Integer, desc: 'The ID of the namespace that the project will be forked into', documentation: { example: 1 }
+        optional :namespace_path, type: String, desc: 'The path of the namespace that the project will be forked into', documentation: { example: 'new_path/gitlab' }
+        optional :path, type: String, desc: 'The path that will be assigned to the fork', documentation: { example: 'fork' }
+        optional :name, type: String, desc: 'The name that will be assigned to the fork', documentation: { example: 'Fork' }
+        optional :description, type: String, desc: 'The description that will be assigned to the fork', documentation: { example: 'Description' }
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the fork'
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
       end
@@ -410,7 +437,9 @@ module API
       end
 
       desc 'List forks of this project' do
-        success Entities::Project
+        success code: 200, model: Entities::Project
+        tags %w[projects]
+        is_array true
       end
       params do
         use :collection_params
@@ -422,19 +451,30 @@ module API
         present_projects forks, request_scope: user_project
       end
 
-      desc 'Check pages access of this project'
+      desc 'Check pages access of this project' do
+        success code: 200
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
+      end
       get ':id/pages_access', urgency: :low, feature_category: :pages do
         authorize! :read_pages_content, user_project unless user_project.public_pages?
         status 200
       end
 
       desc 'Update an existing project' do
-        success Entities::Project
+        success code: 200, model: Entities::Project
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       params do
-        optional :name, type: String, desc: 'The name of the project'
-        optional :default_branch, type: String, desc: 'The default branch of the project'
-        optional :path, type: String, desc: 'The path of the repository'
+        optional :name, type: String, desc: 'The name of the project', documentation: { example: 'project' }
+        optional :default_branch, type: String, desc: 'The default branch of the project', documentation: { example: 'main' }
+        optional :path, type: String, desc: 'The path of the repository', documentation: { example: 'group/project' }
 
         use :optional_project_params
         use :optional_update_params
@@ -466,7 +506,11 @@ module API
       end
 
       desc 'Archive a project' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       post ':id/archive', feature_category: :projects do
         authorize!(:archive_project, user_project)
@@ -477,7 +521,11 @@ module API
       end
 
       desc 'Unarchive a project' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       post ':id/unarchive', feature_category: :projects, urgency: :default do
         authorize!(:archive_project, user_project)
@@ -488,7 +536,12 @@ module API
       end
 
       desc 'Star a project' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 304, message: 'Not modified' },
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       post ':id/star', feature_category: :projects do
         if current_user.starred?(user_project)
@@ -502,7 +555,12 @@ module API
       end
 
       desc 'Unstar a project' do
-        success Entities::Project
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 304, message: 'Not modified' },
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       post ':id/unstar', feature_category: :projects do
         if current_user.starred?(user_project)
@@ -516,10 +574,16 @@ module API
       end
 
       desc 'Get the users who starred a project' do
-        success Entities::UserBasic
+        success code: 200, model: Entities::UserBasic
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
+        tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of users matching the search criteria'
+        optional :search, type: String, desc: 'Return list of users matching the search criteria', documentation: { example: 'user' }
         use :pagination
       end
       get ':id/starrers', feature_category: :projects do
@@ -528,23 +592,44 @@ module API
         present paginate(starrers), with: Entities::UserStarsProject
       end
 
-      desc 'Get languages in project repository'
+      desc 'Get languages in project repository' do
+        success code: 200
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
+        tags %w[projects]
+      end
       get ':id/languages', feature_category: :source_code_management, urgency: :medium do
         ::Projects::RepositoryLanguagesService
           .new(user_project, current_user)
           .execute.to_h { |lang| [lang.name, lang.share] }
       end
 
-      desc 'Delete a project'
+      desc 'Delete a project' do
+        success code: 202
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
       delete ":id", feature_category: :projects do
         authorize! :remove_project, user_project
 
         delete_project(user_project)
       end
 
-      desc 'Mark this project as forked from another'
+      desc 'Mark this project as forked from another' do
+        success code: 201, model: Entities::Project
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
       params do
-        requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from'
+        requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from', documentation: { example: 'gitlab' }
       end
       post ":id/fork/:forked_from_id", feature_category: :source_code_management do
         authorize! :admin_project, user_project
@@ -564,7 +649,15 @@ module API
         end
       end
 
-      desc 'Remove a forked_from relationship'
+      desc 'Remove a forked_from relationship' do
+        success code: 204
+        failure [
+          { code: 304, message: 'Not modified' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
       delete ":id/fork", feature_category: :source_code_management do
         authorize! :remove_fork_project, user_project
 
@@ -576,10 +669,16 @@ module API
       end
 
       desc 'Share the project with a group' do
-        success Entities::ProjectGroupLink
+        success code: 201, model: Entities::ProjectGroupLink
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
       end
       params do
-        requires :group_id, type: Integer, desc: 'The ID of a group'
+        requires :group_id, type: Integer, desc: 'The ID of a group', documentation: { example: 1 }
         requires :group_access, type: Integer, values: Gitlab::Access.values, as: :link_group_access, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
       end
@@ -601,6 +700,14 @@ module API
         end
       end
 
+      desc 'Remove a group share' do
+        success code: 204
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
       params do
         requires :group_id, type: Integer, desc: 'The ID of the group'
       end
@@ -619,6 +726,12 @@ module API
 
       desc 'Import members from another project' do
         detail 'This feature was introduced in GitLab 14.2'
+        success code: 201
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
       end
       params do
         requires :project_id, type: Integer, desc: 'The ID of the source project to import the members from.'
@@ -642,6 +755,11 @@ module API
 
       desc 'Workhorse authorize the file upload' do
         detail 'This feature was introduced in GitLab 13.11'
+        success code: 200
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
       end
       post ':id/uploads/authorize', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
         require_gitlab_workhorse!
@@ -651,7 +769,13 @@ module API
         FileUploader.workhorse_authorize(has_length: false, maximum_size: project_attachment_size(user_project))
       end
 
-      desc 'Upload a file'
+      desc 'Upload a file' do
+        success code: 201, model: Entities::ProjectUpload
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
       params do
         requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
       end
@@ -666,10 +790,16 @@ module API
       end
 
       desc 'Get the users list of a project' do
-        success Entities::UserBasic
+        success code: 200, model: Entities::UserBasic
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
+        tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of users matching the search criteria'
+        optional :search, type: String, desc: 'Return list of users matching the search criteria', documentation: { example: 'user' }
         optional :skip_users, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Filter out users with the specified IDs'
         use :pagination
       end
@@ -683,10 +813,16 @@ module API
       end
 
       desc 'Get ancestor and shared groups for a project' do
-        success Entities::PublicGroupDetails
+        success code: 200, model: Entities::PublicGroupDetails
+        failure [
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        is_array true
+        tags %w[projects]
       end
       params do
-        optional :search, type: String, desc: 'Return list of groups matching the search criteria'
+        optional :search, type: String, desc: 'Return list of groups matching the search criteria', documentation: { example: 'group' }
         optional :skip_groups, type: Array[Integer], coerce_with: ::API::Validations::Types::CommaSeparatedToIntegerArray.coerce, desc: 'Array of group ids to exclude from list'
         optional :with_shared, type: Boolean, default: false,
                                desc: 'Include shared groups'
@@ -705,6 +841,13 @@ module API
 
       desc 'Start the housekeeping task for a project' do
         detail 'This feature was introduced in GitLab 9.0.'
+        success code: 201
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 409, message: 'Conflict' }
+        ]
+        tags %w[projects]
       end
       post ':id/housekeeping', feature_category: :source_code_management do
         authorize_admin_project
@@ -718,6 +861,12 @@ module API
 
       desc 'Start a task to recalculate repository size for a project' do
         detail 'This feature was introduced in GitLab 15.0.'
+        success code: 201
+        failure [
+          { code: 401, message: 'Unauthorized' },
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       post ':id/repository_size', feature_category: :source_code_management do
         authorize_admin_project
@@ -727,9 +876,17 @@ module API
         ::Projects::UpdateStatisticsService.new(user_project, nil, statistics: [:repository_size, :lfs_objects_size]).execute
       end
 
-      desc 'Transfer a project to a new namespace'
+      desc 'Transfer a project to a new namespace' do
+        success code: 200, model: Entities::Project
+        failure [
+          { code: 400, message: 'Bad request' },
+          { code: 403, message: 'Unauthenticated' },
+          { code: 404, message: 'Not found' }
+        ]
+        tags %w[projects]
+      end
       params do
-        requires :namespace, type: String, desc: 'The ID or path of the new namespace'
+        requires :namespace, type: String, desc: 'The ID or path of the new namespace', documentation: { example: 'gitlab' }
       end
       put ":id/transfer", feature_category: :projects do
         authorize! :change_namespace, user_project
@@ -744,9 +901,16 @@ module API
         end
       end
 
-      desc 'Get the namespaces to where the project can be transferred'
+      desc 'Get the namespaces to where the project can be transferred' do
+        success code: 200, model: Entities::PublicGroupDetails
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        is_array true
+        tags %w[projects]
+      end
       params do
-        optional :search, type: String, desc: 'Return list of namespaces matching the search criteria'
+        optional :search, type: String, desc: 'Return list of namespaces matching the search criteria', documentation: { example: 'search' }
         use :pagination
       end
       get ":id/transfer_locations", feature_category: :projects do
@@ -761,7 +925,11 @@ module API
       end
 
       desc 'Show the storage information' do
-        success Entities::ProjectRepositoryStorage
+        success code: 200, model: Entities::ProjectRepositoryStorage
+        failure [
+          { code: 403, message: 'Unauthenticated' }
+        ]
+        tags %w[projects]
       end
       params do
         requires :id, type: String, desc: 'ID of a project'

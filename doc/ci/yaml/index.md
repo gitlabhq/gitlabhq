@@ -1904,6 +1904,33 @@ job1:
   script: echo 'hello job1 script'
 ```
 
+### `id_tokens`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356986) in GitLab 15.7.
+
+Use `id_tokens` to create [JSON web tokens (JWT)](https://www.rfc-editor.org/rfc/rfc7519) to authenticate with third party services. All
+JWTs created this way support OIDC authentication. The required `aud` sub-keyword is used to configure the `aud` claim for the JWT.
+
+**Possible inputs**:
+
+- Token names with their `aud` claims. `aud` can be a single string or as an array of strings.
+
+**Example of `id_tokens`**:
+
+```yaml
+job_with_id_tokens:
+  id_tokens:
+    ID_TOKEN_1:
+      aud: https://gitlab.com
+    ID_TOKEN_2:
+      aud:
+        - https://gcp.com
+        - https://aws.com
+  script:
+    - command_to_authenticate_with_gitlab $ID_TOKEN_1
+    - command_to_authenticate_with_aws $ID_TOKEN_2
+```
+
 ### `image`
 
 Use `image` to specify a Docker image that the job runs in.

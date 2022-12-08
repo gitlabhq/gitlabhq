@@ -267,6 +267,7 @@ module API
         mount ::API::ProjectSnapshots
         mount ::API::ProjectStatistics
         mount ::API::ProjectTemplates
+        mount ::API::Projects
         mount ::API::ProtectedBranches
         mount ::API::ProtectedTags
         mount ::API::PypiPackages
@@ -319,7 +320,6 @@ module API
       mount ::API::PagesDomains
       mount ::API::ProjectEvents
       mount ::API::ProjectMilestones
-      mount ::API::Projects
       mount ::API::ProtectedTags
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents

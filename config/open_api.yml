@@ -113,6 +113,8 @@ metadata:
     description: Operations related to importing GitHub projects
   - name: project_packages
     description: Operations related to project packages
+  - name: projects
+    description: Operations related to projects
   - name: protected environments
     description: Operations related to protected environments
   - name: pypi_packages
