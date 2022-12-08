@@ -9,9 +9,6 @@ type: reference, howto
 
 You can use an external service to validate a pipeline before it's created.
 
-WARNING:
-This is an experimental feature and subject to change without notice.
-
 GitLab sends a POST request to the external service URL with the pipeline
 data as payload. The response code from the external service determines if GitLab
 should accept or reject the pipeline. If the response is:

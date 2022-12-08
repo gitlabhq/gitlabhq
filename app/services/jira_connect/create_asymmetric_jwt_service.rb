@@ -4,10 +4,11 @@ module JiraConnect
   class CreateAsymmetricJwtService
     ARGUMENT_ERROR_MESSAGE = 'jira_connect_installation is not a proxy installation'
 
-    def initialize(jira_connect_installation)
+    def initialize(jira_connect_installation, event: :installed)
       raise ArgumentError, ARGUMENT_ERROR_MESSAGE unless jira_connect_installation.proxy?
 
       @jira_connect_installation = jira_connect_installation
+      @event = event
     end
 
     def execute
@@ -30,10 +31,16 @@ module JiraConnect
 
     def qsh_claim
       Atlassian::Jwt.create_query_string_hash(
-        @jira_connect_installation.audience_installed_event_url,
+        audience_event_url,
         'POST',
         @jira_connect_installation.audience_url
       )
+    end
+
+    def audience_event_url
+      return @jira_connect_installation.audience_uninstalled_event_url if @event == :uninstalled
+
+      @jira_connect_installation.audience_installed_event_url
     end
 
     def private_key

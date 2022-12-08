@@ -1,6 +1,7 @@
 - @hide_top_links = true
 - page_title _("Issues")
 - @breadcrumb_link = issues_dashboard_path(assignee_username: current_user.username)
+- add_page_specific_style 'page_bundles/issuable_list'
 - add_page_specific_style 'page_bundles/dashboard'
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{current_user.name} issues")
