@@ -88,6 +88,22 @@ This port is used for much more than just metrics, which warranted this change t
 
 <div class="deprecation removal-160 breaking-change">
 
+### Shimo integration
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Shimo Workspace integration](https://docs.gitlab.com/ee/user/project/integrations/shimo.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### Single merge request changes API endpoint
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
@@ -124,6 +140,22 @@ as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
 From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### ZenTao integration
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [ZenTao product integration](https://docs.gitlab.com/ee/user/project/integrations/zentao.html) has been deprecated
+and will be moved to the JiHu GitLab codebase.
 
 </div>
 

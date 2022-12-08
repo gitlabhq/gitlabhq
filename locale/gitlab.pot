@@ -44125,9 +44125,6 @@ msgstr ""
 msgid "UsageQuotas|This project-level storage statistic does not include savings for site-wide deduplication and is not used to calculate total namespace storage."
 msgstr ""
 
-msgid "UsageQuota|%{help_link_start}Shared runners%{help_link_end} are disabled, so there are no limits set on pipeline usage"
-msgstr ""
-
 msgid "UsageQuota|%{linkStart}Shared runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
 msgstr ""
 
@@ -44164,9 +44161,6 @@ msgstr ""
 msgid "UsageQuota|CI/CD minutes usage"
 msgstr ""
 
-msgid "UsageQuota|CI/CD minutes usage since %{timeElapsed}"
-msgstr ""
-
 msgid "UsageQuota|CI/CD minutes usage since %{usageSince}"
 msgstr ""
 
@@ -44174,9 +44168,6 @@ msgid "UsageQuota|Code packages and container images."
 msgstr ""
 
 msgid "UsageQuota|Container Registry"
-msgstr ""
-
-msgid "UsageQuota|Current period usage"
 msgstr ""
 
 msgid "UsageQuota|Dependency proxy"
@@ -44305,12 +44296,6 @@ msgstr ""
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
 msgstr ""
 
-msgid "UsageQuota|The table below shows current period usage"
-msgstr ""
-
-msgid "UsageQuota|The table below shows usage since %{timeElapsed}"
-msgstr ""
-
 msgid "UsageQuota|The table below shows usage since %{usageSince}"
 msgstr ""
 
@@ -44333,9 +44318,6 @@ msgid "UsageQuota|Total excess storage used"
 msgstr ""
 
 msgid "UsageQuota|Total namespace storage used"
-msgstr ""
-
-msgid "UsageQuota|Unlimited"
 msgstr ""
 
 msgid "UsageQuota|Uploads"

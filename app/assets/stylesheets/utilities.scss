@@ -251,3 +251,8 @@ to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/1709
 .gl-flex-flow-row-wrap {
   flex-flow: row wrap;
 }
+
+// Will be moved to @gitlab/ui by https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2098
+.gl-max-w-0 {
+  max-width: 0;
+}

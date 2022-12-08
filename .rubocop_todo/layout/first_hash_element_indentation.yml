@@ -196,7 +196,6 @@ Layout/FirstHashElementIndentation:
     - 'ee/spec/requests/api/members_spec.rb'
     - 'ee/spec/requests/api/merge_requests_spec.rb'
     - 'ee/spec/requests/groups/group_members_controller_spec.rb'
-    - 'ee/spec/requests/groups/usage_quotas_spec.rb'
     - 'ee/spec/requests/projects/issue_feature_flags_controller_spec.rb'
     - 'ee/spec/serializers/issues/linked_issue_feature_flag_entity_spec.rb'
     - 'ee/spec/serializers/license_entity_spec.rb'

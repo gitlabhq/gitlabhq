@@ -145,7 +145,6 @@ RSpec/ContextWording:
     - 'ee/spec/features/merge_requests/user_filters_by_approvers_spec.rb'
     - 'ee/spec/features/oncall_schedules/user_creates_schedule_spec.rb'
     - 'ee/spec/features/profiles/account_spec.rb'
-    - 'ee/spec/features/profiles/usage_quotas_spec.rb'
     - 'ee/spec/features/projects/active_tabs_spec.rb'
     - 'ee/spec/features/projects/audit_events_spec.rb'
     - 'ee/spec/features/projects/custom_projects_template_spec.rb'

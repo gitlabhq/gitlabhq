@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Lint do
+RSpec.describe Gitlab::Ci::Lint, feature_category: :pipeline_authoring do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:user) { create(:user) }
 
@@ -396,7 +396,7 @@ RSpec.describe Gitlab::Ci::Lint do
       end
 
       it 'creates a log entry' do
-        expect(Gitlab::AppJsonLogger).to receive(:info).with(expected_data)
+        expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(expected_data))
 
         validate
       end
@@ -421,7 +421,7 @@ RSpec.describe Gitlab::Ci::Lint do
         end
 
         it 'creates a log entry without project_id' do
-          expect(Gitlab::AppJsonLogger).to receive(:info).with(project_nil_loggable_data)
+          expect(Gitlab::AppJsonLogger).to receive(:info).with(a_hash_including(project_nil_loggable_data))
 
           validate
         end

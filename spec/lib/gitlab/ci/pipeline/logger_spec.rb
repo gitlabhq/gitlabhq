@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
+RSpec.describe ::Gitlab::Ci::Pipeline::Logger, feature_category: :continuous_integration do
   let_it_be(:project) { build_stubbed(:project) }
   let_it_be(:pipeline) { build_stubbed(:ci_pipeline, project: project) }
 
@@ -168,6 +168,9 @@ RSpec.describe ::Gitlab::Ci::Pipeline::Logger do
 
       let(:expected_data) do
         {
+          'correlation_id' => a_kind_of(String),
+          'meta.project' => project.full_path,
+          'meta.root_namespace' => project.root_namespace.full_path,
           'class' => described_class.name.to_s,
           'pipeline_id' => pipeline.id,
           'pipeline_persisted' => true,
