@@ -15,8 +15,8 @@ module Banzai
 
       private
 
-      def can_read_reference?(user, alert, node)
-        can?(user, :read_alert_management_alert, alert)
+      def can_read_reference?(user, project, node)
+        can?(user, :read_alert_management_alert, project)
       end
     end
   end

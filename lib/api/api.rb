@@ -203,6 +203,8 @@ module API
         mount ::API::ConanProjectPackages
         mount ::API::ContainerRegistryEvent
         mount ::API::ContainerRepositories
+        mount ::API::DebianGroupPackages
+        mount ::API::DebianProjectPackages
         mount ::API::DependencyProxy
         mount ::API::DeployKeys
         mount ::API::DeployTokens
@@ -306,8 +308,6 @@ module API
       mount ::API::Ci::Pipelines
       mount ::API::Ci::PipelineSchedules
       mount ::API::Ci::SecureFiles
-      mount ::API::DebianGroupPackages
-      mount ::API::DebianProjectPackages
       mount ::API::Discussions
       mount ::API::ErrorTracking::Collector
       mount ::API::GroupBoards

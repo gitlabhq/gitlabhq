@@ -3151,6 +3151,27 @@ Input type: `IssuableResourceLinkDestroyInput`
 | <a id="mutationissuableresourcelinkdestroyerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationissuableresourcelinkdestroyissuableresourcelink"></a>`issuableResourceLink` | [`IssuableResourceLink`](#issuableresourcelink) | Issuable resource link. |
 
+### `Mutation.issueLinkAlerts`
+
+Input type: `IssueLinkAlertsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuelinkalertsalertreferences"></a>`alertReferences` | [`[String!]!`](#string) | Alerts references to be linked to the incident. |
+| <a id="mutationissuelinkalertsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuelinkalertsiid"></a>`iid` | [`String!`](#string) | IID of the issue to mutate. |
+| <a id="mutationissuelinkalertsprojectpath"></a>`projectPath` | [`ID!`](#id) | Project the issue to mutate is in. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationissuelinkalertsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationissuelinkalertserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationissuelinkalertsissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
+
 ### `Mutation.issueMove`
 
 Input type: `IssueMoveInput`

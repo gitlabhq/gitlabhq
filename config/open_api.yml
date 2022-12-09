@@ -39,6 +39,8 @@ metadata:
     description: Operations related to dashboard annotations
   - name: debian_distribution
     description: Operations related to Debian Linux distributions
+  - name: debian_packages
+    description: Operations related to Debian Linux packages
   - name: dependency_proxy
     description: Operations to manage dependency proxy for a groups
   - name: deploy_keys

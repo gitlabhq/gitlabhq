@@ -1,8 +1,0 @@
----
-name: usage_data_ci_i_testing_coverage_report_uploaded
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102371
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/339721
-milestone: '15.6'
-type: development
-group: group::pipeline insights
-default_enabled: false

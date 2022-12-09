@@ -30,7 +30,7 @@ module API
       end
 
       params do
-        requires :id, type: String, desc: 'The ID of a group'
+        requires :id, types: [String, Integer], desc: 'The group ID or full group path.'
       end
 
       namespace ':id/-/packages/debian' do
@@ -42,8 +42,15 @@ module API
           use :shared_package_file_params
         end
 
-        desc 'The package' do
+        desc 'Download Debian package' do
           detail 'This feature was introduced in GitLab 14.2'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[debian_packages]
         end
 
         route_setting :authentication, authenticate_non_public: true

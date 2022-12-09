@@ -47449,6 +47449,9 @@ msgstr ""
 msgid "You have insufficient permissions to create an on-call schedule for this project"
 msgstr ""
 
+msgid "You have insufficient permissions to manage alerts for this project"
+msgstr ""
+
 msgid "You have insufficient permissions to manage resource links for this incident"
 msgstr ""
 

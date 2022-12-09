@@ -30103,6 +30103,10 @@ CREATE UNIQUE INDEX index_on_instance_statistics_recorded_at_and_identifier ON a
 
 CREATE INDEX index_on_issues_closed_incidents_by_project_id_and_closed_at ON issues USING btree (project_id, closed_at) WHERE ((issue_type = 1) AND (state_id = 2));
 
+CREATE INDEX index_on_issues_health_status_asc_order ON issues USING btree (project_id, health_status, id DESC, state_id, issue_type);
+
+CREATE INDEX index_on_issues_health_status_desc_order ON issues USING btree (project_id, health_status DESC NULLS LAST, id DESC, state_id, issue_type);
+
 CREATE INDEX index_on_label_links_all_columns ON label_links USING btree (target_id, label_id, target_type);
 
 CREATE INDEX index_on_merge_request_reviewers_user_id_and_state ON merge_request_reviewers USING btree (user_id, state) WHERE (state = 2);
