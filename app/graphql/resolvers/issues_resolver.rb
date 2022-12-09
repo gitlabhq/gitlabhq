@@ -12,6 +12,11 @@ module Resolvers
     # see app/graphql/types/issue_connection.rb
     type 'Types::IssueConnection', null: true
 
+    before_connection_authorization do |nodes, current_user|
+      projects = nodes.map(&:project)
+      ::Preloaders::UserMaxAccessLevelInProjectsPreloader.new(projects, current_user).execute
+    end
+
     def resolve_with_lookahead(**args)
       return unless Feature.enabled?(:root_level_issues_query)
 

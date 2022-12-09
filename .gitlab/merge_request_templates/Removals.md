@@ -78,7 +78,6 @@ yourself as a reviewer if it's not yet ready for merge.
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).
   - Capitalization: ensure the title is [sentence cased](https://design.gitlab.com/content/punctuation#case).
-  - Rewrite to exclude the words `removal` and `remove` if necessary.
 - [ ] Consistency:
   - Ensure that all resources (docs, removal, etc.) refer to the feature with the same term / feature name.
 - [ ] Content:

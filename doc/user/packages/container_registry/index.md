@@ -38,15 +38,14 @@ If a project is public, so is the Container Registry.
 
 ### View the tags of a specific image
 
-You can view a list of tags associated with a given container image:
+You can use the Container Registry **Tag Details** page to view a list of tags associated with a given container image:
 
 1. Go to your project or group.
 1. Go to **Packages and registries > Container Registry**.
 1. Select the container image you are interested in.
 
-This brings up the Container Registry **Tag Details** page. You can view details about each tag,
-such as when it was published, how much storage it consumes, and the manifest and configuration
-digests.
+You can view details about each tag, such as when it was published, how much storage it consumes,
+and the manifest and configuration digests.
 
 You can search, sort (by tag name), filter, and [delete](#delete-images-using-the-gitlab-ui)
 tags on this page. You can share a filtered view by copying the URL from your browser.
@@ -198,7 +197,7 @@ You can configure your `.gitlab-ci.yml` file to build and push images to the Con
 
   If you use the Git SHA in your image tag, each job is unique and you
   should never have a stale image. However, it's still possible to have a
-  stale image if you re-build a given commit after a dependency has changed.
+  stale image if you rebuild a given commit after a dependency has changed.
 - Don't build directly to the `latest` tag because multiple jobs may be
   happening simultaneously.
 
@@ -550,181 +549,3 @@ this setting. However, disabling the Container Registry disables all Container R
 | Private project with Container Registry visibility <br/> set to **Everyone With Access** (UI) or `enabled` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
 | Private project with Container Registry visibility <br/> set to **Only Project Members** (UI) or `private` (API)  | View Container Registry <br/> and pull images | No        | No    | Yes      |
 | Any project with Container Registry `disabled` | All operations on Container Registry | No | No | No |
-
-## Troubleshooting the GitLab Container Registry
-
-### Migrating OCI container images to GitLab Container Registry
-
-Migrating built container images to the GitLab registry is not a current feature. However, an [epic](https://gitlab.com/groups/gitlab-org/-/epics/5210) is open to track the work on this feature.
-
-Some third-party tools can help migrate container images, for example, [skopeo](https://github.com/containers/skopeo), which can [copy container images](https://github.com/containers/skopeo#copying-images) between various storage mechanisms. You can use skopeo to copy from container registries, container storage backends, local directories, and local OCI-layout directories to the GitLab Container Registry.
-
-### Docker connection error
-
-A Docker connection error can occur when there are special characters in either the group,
-project or branch name. Special characters can include:
-
-- Leading underscore
-- Trailing hyphen/dash
-
-To get around this, you can [change the group path](../../group/manage.md#change-a-groups-path),
-[change the project path](../../project/settings/index.md#rename-a-repository) or change the branch
-name.
-
-You may also get a `404 Not Found` or `Unknown Manifest` message if you are using
-a Docker Engine version earlier than 17.12. Later versions of Docker Engine use
-[the v2 API](https://docs.docker.com/registry/spec/manifest-v2-2/).
-
-The images in your GitLab Container Registry must also use the Docker v2 API.
-For information on how to update your images, see the [Docker help](https://docs.docker.com/registry/spec/deprecated-schema-v1).
-
-### `Blob unknown to registry` error when pushing a manifest list
-
-When [pushing a Docker manifest list](https://docs.docker.com/engine/reference/commandline/manifest/#create-and-push-a-manifest-list)
-to the GitLab Container Registry, you may receive the error
-`manifest blob unknown: blob unknown to registry`. This error is likely caused by having multiple images
-with different architectures, spread out over several repositories instead of the same repository.
-
-For example, you may have two images, each representing an architecture:
-
-- The `amd64` platform
-- The `arm64v8` platform
-
-To build a multi-arch image with these images, you must push them to the same repository as the
-multi-arch image.
-
-To address the `Blob unknown to registry` error, include the architecture in the tag name of
-individual images. For example, use `mygroup/myapp:1.0.0-amd64` and `mygroup/myapp:1.0.0-arm64v8`.
-You can then tag the manifest list with `mygroup/myapp:1.0.0`.
-
-### Troubleshoot as a GitLab server administrator
-
-Troubleshooting the GitLab Container Registry, most of the times, requires
-you to sign in to GitLab server with administrator access.
-
-[Read how to troubleshoot the Container Registry](../../../administration/packages/container_registry.md#troubleshooting).
-
-### Unable to change path or transfer a project
-
-If you try to change a project's path or transfer a project to a new namespace,
-you may receive one of the following errors:
-
-- "Project cannot be transferred, because tags are present in its container registry."
-- "Namespace cannot be moved because at least one project has tags in container registry."
-
-This issue occurs when the project has images in the Container Registry.
-You must delete or move these images before you can change the path or transfer
-the project.
-
-The following procedure uses these sample project names:
-
-- For the current project: `gitlab.example.com/org/build/sample_project/cr:v2.9.1`
-- For the new project: `gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1`
-
-Use your own URLs to complete the following steps:
-
-1. Download the Docker images on your computer:
-
-   ```shell
-   docker login gitlab.example.com
-   docker pull gitlab.example.com/org/build/sample_project/cr:v2.9.1
-   ```
-
-   NOTE:
-   For container registry authentication, use either a
-   [personal access token](../../profile/personal_access_tokens.md) or a
-   [deploy token](../../project/deploy_tokens/index.md).
-
-1. Rename the images to match the new project name:
-
-   ```shell
-   docker tag gitlab.example.com/org/build/sample_project/cr:v2.9.1 gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1
-   ```
-
-1. Delete the images in the old project by using the [UI](#delete-images) or [API](../../../api/packages.md#delete-a-project-package).
-   There may be a delay while the images are queued and deleted.
-1. Change the path or transfer the project by going to **Settings > General**
-   and expanding **Advanced**.
-1. Restore the images:
-
-   ```shell
-   docker push gitlab.example.com/new_org/build/new_sample_project/cr:v2.9.1
-   ```
-
-Follow [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18383) for details.
-
-### Tags on S3 backend remain after successful deletion requests
-
-With S3 as your storage backend, tags may remain even though:
-
-- In the UI, you see that the tags are scheduled for deletion.
-- In the API, you get an HTTP `200` response.
-- The registry log shows a successful `Delete` request.
-
-An example `DELETE` request in the registry log:
-
-```shell
-{"content_type":"","correlation_id":"01FQGNSKVMHQEAVE21KYTJN2P4","duration_ms":62,"host":"localhost:5000","level":"info","method":"DELETE","msg":"access","proto":"HTTP/1.1","referrer":"","remote_addr":"127.0.0.1:47498","remote_ip":"127.0.0.1","status":202,"system":"http","time":"2021-12-22T08:58:15Z","ttfb_ms":62,"uri":"/v2/<path to repo>/tags/reference/<tag_name>","user_agent":"GitLab/<version>","written_bytes":0}
-```
-
-There may be some errors not properly cached. Follow these steps to investigate further:
-
-1. In your configuration file, set the registry's log level to `debug`, and the S3 driver's log
-   level to `logdebugwithhttpbody`. For Omnibus, make these edits in the `gitlab.rb` file:
-
-   ```shell
-      # Change the registry['log_level'] to debug
-      registry['log_level'] = 'debug'
-
-      # Set log level for registry log from storage side
-      registry['storage'] = {
-        's3' => {
-          'bucket' => 'your-s3-bucket',
-          'region' => 'your-s3-region'
-        },
-
-        'loglevel' = "logdebugwithhttpbody"
-      }
-   ```
-
-   Then save and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Attempt to delete one or more tags using the GitLab UI or API.
-
-1. Inspect the registry logs and look for a response from S3. Although the response could be
-   `200 OK`, the body might have the error `AccessDenied`. This indicates a permission problem from
-   the S3 side.
-
-1. Ensure your S3 configuration has the `deleteObject` permission scope. Here's an
-   [example role for an S3 bucket](../../../administration/object_storage.md#iam-permissions).
-   Once adjusted, trigger another tag deletion. You should be able to successfully delete tags.
-
-Follow [this issue](https://gitlab.com/gitlab-org/container-registry/-/issues/551) for details.
-
-### `unauthorized: authentication required` when pushing large images
-
-When pushing large images, you might get an error like the following:
-
-```shell
-docker push gitlab.example.com/myproject/docs:latest
-The push refers to a repository [gitlab.example.com/myproject/docs]
-630816f32edb: Preparing
-530d5553aec8: Preparing
-...
-4b0bab9ff599: Waiting
-d1c800db26c7: Waiting
-42755cf4ee95: Waiting
-unauthorized: authentication required
-```
-
-On self-managed GitLab instances, by default, tokens for the Container Registry expire every five minutes.
-When pushing larger images, or images that take longer than five minutes to push,
-you might encounter this error. On GitLab.com, the expiration time is 15 minutes.
-
-If you are using self-managed GitLab, you can ask an administrator to
-[increase the token duration](../../../administration/packages/container_registry.md#increase-token-duration)
-if necessary.

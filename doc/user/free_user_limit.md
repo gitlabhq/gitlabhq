@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Free user limit **(FREE SAAS)**
 
-From October 19, 2022, a five-user limit will apply to top-level [namespaces](namespace/index.md) with private visibility on GitLab SaaS. These limits will roll out gradually, and impacted users will be notified in GitLab.com at least 60 days before the limit is applied.
+A five-user limit applies to top-level [namespaces](namespace/index.md) with private visibility on GitLab SaaS. This limit is being rolled out gradually, and impacted users will be notified in GitLab.com at least 60 days before the limit is applied.
 
 When the five-user limit is applied, top-level private namespaces exceeding the user limit are placed in a read-only state. These namespaces cannot write new data to repositories, Git Large File Storage (LFS), packages, or registries.
 

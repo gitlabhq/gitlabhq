@@ -145,6 +145,20 @@ From GitLab 16.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation removal-160 breaking-change">
 
+### The Phabricator task importer is deprecated
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+The [Phabricator task importer](https://docs.gitlab.com/ee/user/project/import/phabricator.html) is being deprecated. Phabricator itself as a project is no longer actively maintained since June 1, 2021. We haven't observed imports using this tool. There has been no activity on the open related issues on GitLab.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### ZenTao integration
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />

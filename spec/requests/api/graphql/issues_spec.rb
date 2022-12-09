@@ -164,6 +164,19 @@ RSpec.describe 'getting an issue list at root level' do
     end
   end
 
+  context 'when fetching issues from multiple projects' do
+    it 'avoids N+1 queries' do
+      post_query # warm-up
+
+      control = ActiveRecord::QueryRecorder.new { post_query }
+
+      new_private_project = create(:project, :private).tap { |project| project.add_developer(current_user) }
+      create(:issue, project: new_private_project)
+
+      expect { post_query }.not_to exceed_query_limit(control)
+    end
+  end
+
   def execute_query
     post_query
   end

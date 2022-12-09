@@ -18,6 +18,8 @@ module Ci
 
     belongs_to :project
     belongs_to :trigger_request
+
+    # To be removed upon :ci_bridge_remove_sourced_pipelines feature flag removal
     has_many :sourced_pipelines, class_name: "::Ci::Sources::Pipeline",
                                  foreign_key: :source_job_id,
                                  inverse_of: :source_bridge
@@ -87,8 +89,20 @@ module Ci
       end
     end
 
+    def sourced_pipelines
+      if Feature.enabled?(:ci_bridge_remove_sourced_pipelines, project)
+        raise 'Ci::Bridge does not have sourced_pipelines association'
+      end
+
+      super
+    end
+
     def has_downstream_pipeline?
-      sourced_pipelines.exists?
+      if Feature.enabled?(:ci_bridge_remove_sourced_pipelines, project)
+        sourced_pipeline.present?
+      else
+        sourced_pipelines.exists?
+      end
     end
 
     def downstream_pipeline_params

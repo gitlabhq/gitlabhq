@@ -20,6 +20,8 @@ module API
         render_api_error!(e.message, 422)
       end
 
+      STATE_NAME_URI_REQUIREMENTS = { name: API::NO_SLASH_URL_PART_REGEX }.freeze
+
       before do
         authenticate!
         authorize! :read_terraform_state, user_project
@@ -45,7 +47,7 @@ module API
       end
 
       resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
-        namespace ':id/terraform/state/:name' do
+        namespace ':id/terraform/state/:name', requirements: STATE_NAME_URI_REQUIREMENTS do
           params do
             requires :name, type: String, desc: 'The name of a Terraform state'
             optional :ID, type: String, limit: 255, desc: 'Terraform state lock ID'

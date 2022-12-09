@@ -9,13 +9,15 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
   let_it_be(:developer) { create(:user, developer_projects: [project]) }
   let_it_be(:maintainer) { create(:user, maintainer_projects: [project]) }
 
-  let!(:state) { create(:terraform_state, :with_version, project: project) }
-
   let(:current_user) { maintainer }
   let(:auth_header) { user_basic_auth_header(current_user) }
   let(:project_id) { project.id }
-  let(:state_name) { state.name }
+
+  let(:state_name) { "some-state" }
   let(:state_path) { "/projects/#{project_id}/terraform/state/#{state_name}" }
+  let!(:state) do
+    create(:terraform_state, :with_version, project: project, name: URI.decode_www_form_component(state_name))
+  end
 
   before do
     stub_terraform_state_object_storage
@@ -91,15 +93,24 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       end
     end
 
-    context 'personal acceess token authentication' do
+    shared_examples 'can access terraform state' do
+      it 'returns terraform state of a project of given state name' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to eq(state.reload.latest_file.read)
+      end
+    end
+
+    context 'personal access token authentication' do
       context 'with maintainer permissions' do
         let(:current_user) { maintainer }
 
-        it 'returns terraform state belonging to a project of given state name' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.reload.latest_file.read)
+        where(given_state_name: %w[test-state test.state test%2Ffoo])
+        with_them do
+          it_behaves_like 'can access terraform state' do
+            let(:state_name) { given_state_name }
+          end
         end
 
         context 'for a project that does not exist' do
@@ -112,18 +123,23 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
           end
         end
 
+        context 'with invalid state name' do
+          let(:state_name) { 'foo/bar' }
+
+          it 'returns a 404 error' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
         it_behaves_like 'cannot access a state that is scheduled for deletion'
       end
 
       context 'with developer permissions' do
         let(:current_user) { developer }
 
-        it 'returns terraform state belonging to a project of given state name' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.reload.latest_file.read)
-        end
+        it_behaves_like 'can access terraform state'
       end
     end
 
@@ -133,12 +149,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       context 'with maintainer permissions' do
         let(:job) { create(:ci_build, status: :running, project: project, user: maintainer) }
 
-        it 'returns terraform state belonging to a project of given state name' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.reload.latest_file.read)
-        end
+        it_behaves_like 'can access terraform state'
 
         it 'returns unauthorized if the the job is not running' do
           job.update!(status: :failed)
@@ -161,12 +172,7 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       context 'with developer permissions' do
         let(:job) { create(:ci_build, status: :running, project: project, user: developer) }
 
-        it 'returns terraform state belonging to a project of given state name' do
-          request
-
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response.body).to eq(state.reload.latest_file.read)
-        end
+        it_behaves_like 'can access terraform state'
       end
     end
   end
@@ -182,11 +188,26 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       context 'with maintainer permissions' do
         let(:current_user) { maintainer }
 
-        it 'updates the state' do
-          expect { request }.to change { Terraform::State.count }.by(0)
+        where(given_state_name: %w[test-state test.state test%2Ffoo])
+        with_them do
+          let(:state_name) { given_state_name }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(Gitlab::Json.parse(response.body)).to be_empty
+          it 'updates the state' do
+            expect { request }.to change { Terraform::State.count }.by(0)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(Gitlab::Json.parse(response.body)).to be_empty
+          end
+        end
+
+        context 'with invalid state name' do
+          let(:state_name) { 'foo/bar' }
+
+          it 'returns a 404 error' do
+            request
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
         end
 
         context 'when serial already exists' do
@@ -224,16 +245,24 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     end
 
     context 'when there is no terraform state of a given name' do
-      let(:state_name) { 'example2' }
+      let(:non_existing_state_name) { 'non-existing-state' }
+      let(:non_existing_state_path) { "/projects/#{project_id}/terraform/state/#{non_existing_state_name}" }
+
+      subject(:request) { post api(non_existing_state_path), headers: auth_header, as: :json, params: params }
 
       context 'with maintainer permissions' do
         let(:current_user) { maintainer }
 
-        it 'creates a new state' do
-          expect { request }.to change { Terraform::State.count }.by(1)
+        where(given_state_name: %w[test-state test.state test%2Ffoo])
+        with_them do
+          let(:state_name) { given_state_name }
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(Gitlab::Json.parse(response.body)).to be_empty
+          it 'creates a new state' do
+            expect { request }.to change { Terraform::State.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(Gitlab::Json.parse(response.body)).to be_empty
+          end
         end
       end
 
@@ -280,14 +309,29 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       let(:current_user) { maintainer }
       let(:deletion_service) { instance_double(Terraform::States::TriggerDestroyService) }
 
-      it 'schedules the state for deletion and returns empty body' do
-        expect(Terraform::States::TriggerDestroyService).to receive(:new).and_return(deletion_service)
-        expect(deletion_service).to receive(:execute).once
+      where(given_state_name: %w[test-state test.state test%2Ffoo])
+      with_them do
+        let(:state_name) { given_state_name }
 
-        request
+        it 'schedules the state for deletion and returns empty body' do
+          expect(Terraform::States::TriggerDestroyService).to receive(:new).and_return(deletion_service)
+          expect(deletion_service).to receive(:execute).once
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(Gitlab::Json.parse(response.body)).to be_empty
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(Gitlab::Json.parse(response.body)).to be_empty
+        end
+      end
+
+      context 'with invalid state name' do
+        let(:state_name) { 'foo/bar' }
+
+        it 'returns a 404 error' do
+          request
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
 
       it_behaves_like 'cannot access a state that is scheduled for deletion'
@@ -322,10 +366,25 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
     it_behaves_like 'endpoint with unique user tracking'
     it_behaves_like 'cannot access a state that is scheduled for deletion'
 
-    it 'locks the terraform state' do
-      request
+    where(given_state_name: %w[test-state test.state test%2Ffoo])
+    with_them do
+      let(:state_name) { given_state_name }
 
-      expect(response).to have_gitlab_http_status(:ok)
+      it 'locks the terraform state' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    context 'with invalid state name' do
+      let(:state_name) { 'foo/bar' }
+
+      it 'returns a 404 error' do
+        request
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
     end
 
     context 'state is already locked' do
@@ -379,23 +438,39 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
       let(:lock_id) { 'irrelevant to this test, just needs to be present' }
     end
 
-    context 'with the correct lock id' do
-      let(:lock_id) { '123-456' }
+    where(given_state_name: %w[test-state test.state test%2Ffoo])
+    with_them do
+      let(:state_name) { given_state_name }
 
-      it 'removes the terraform state lock' do
-        request
+      context 'with the correct lock id' do
+        let(:lock_id) { '123-456' }
 
-        expect(response).to have_gitlab_http_status(:ok)
+        it 'removes the terraform state lock' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'with no lock id (force-unlock)' do
+        let(:params) { {} }
+
+        it 'removes the terraform state lock' do
+          request
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
       end
     end
 
-    context 'with no lock id (force-unlock)' do
-      let(:params) { {} }
+    context 'with invalid state name' do
+      let(:lock_id) { '123-456' }
+      let(:state_name) { 'foo/bar' }
 
-      it 'removes the terraform state lock' do
+      it 'returns a 404 error' do
         request
 
-        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

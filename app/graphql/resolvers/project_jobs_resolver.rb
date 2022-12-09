@@ -26,7 +26,7 @@ module Resolvers
 
     def preloads
       {
-        previous_stage_jobs_and_needs: [:needs, :pipeline],
+        previous_stage_jobs_or_needs: [:needs, :pipeline],
         artifacts: [:job_artifacts],
         pipeline: [:user]
       }

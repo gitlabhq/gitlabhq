@@ -381,7 +381,7 @@ class Project < ApplicationRecord
   has_one :auto_devops, class_name: 'ProjectAutoDevops', inverse_of: :project, autosave: true
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
-  has_many :project_badges, class_name: 'ProjectBadge'
+  has_many :project_badges, class_name: 'ProjectBadge', inverse_of: :project
   has_one :ci_cd_settings, class_name: 'ProjectCiCdSetting', inverse_of: :project, autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   has_many :remote_mirrors, inverse_of: :project

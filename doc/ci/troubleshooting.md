@@ -116,7 +116,7 @@ if you are using that type:
 
 Troubleshooting guides are available for some CI/CD features and related topics:
 
-- [Container Registry](../user/packages/container_registry/index.md#troubleshooting-the-gitlab-container-registry)
+- [Container Registry](../user/packages/container_registry/troubleshoot_container_registry.md)
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/)
 - [Merge Trains](pipelines/merge_trains.md#troubleshooting)
 - [Docker Build](docker/using_docker_build.md#troubleshooting)

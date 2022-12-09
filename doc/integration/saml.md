@@ -7,26 +7,27 @@ type: reference
 
 # SAML SSO for self-managed GitLab instances **(FREE SELF)**
 
-This page describes instance-wide SAML 2.0 for self-managed GitLab instances. For
-SAML 2.0 on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
+This page describes how to set up instance-wide SAML single sign on (SSO) for
+self-managed GitLab instances.
 
-You should also reference the [OmniAuth documentation](omniauth.md) for general
-settings that apply to all OmniAuth providers.
+You can configure GitLab to act as a SAML service provider (SP). This allows
+GitLab to consume assertions from a SAML identity provider (IdP), such as
+Okta, to authenticate users.
 
-If required, you can find a [glossary of common terms](#glossary-of-common-terms).
+To set up SAML on GitLab.com, see [SAML SSO for GitLab.com groups](../user/group/saml_sso/index.md).
 
-GitLab can be configured to act as a SAML 2.0 Service Provider (SP). This allows
-GitLab to consume assertions from a SAML 2.0 identity provider (IdP), such as
-Okta to authenticate users.
+For more information on:
+
+- OmniAuth provider settings, see the [OmniAuth documentation](omniauth.md).
+- Commonly-used terms, see the [glossary of common terms](#glossary-of-common-terms).
 
 ## Configure SAML support in GitLab
 
-1. Make sure GitLab is configured with HTTPS.
-   See [Using HTTPS](../install/installation.md#using-https) for instructions.
+1. Make sure GitLab is [configured with HTTPS](../install/installation.md#using-https).
 
 1. On your GitLab server, open the configuration file.
 
-   For Omnibus package:
+   For Omnibus installations:
 
    ```shell
    sudo editor /etc/gitlab/gitlab.rb
@@ -40,11 +41,12 @@ Okta to authenticate users.
    sudo -u git -H editor config/gitlab.yml
    ```
 
-1. See [Configure initial settings](omniauth.md#configure-initial-settings) for initial settings.
-1. To allow your users to use SAML to sign up without having to manually create
-   an account first, add the following values to your configuration:
+1. Edit the initial [configuration settings](omniauth.md#configure-initial-settings).
 
-   For Omnibus package:
+1. To allow your users to use SAML to sign up without having to manually create
+   an account first, add the following values to your configuration.
+
+   For Omnibus installations:
 
    ```ruby
    gitlab_rails['omniauth_allow_single_sign_on'] = ['saml']
@@ -61,9 +63,9 @@ Okta to authenticate users.
    ```
 
 1. Optional. You can automatically link SAML users with existing GitLab users if their
-   email addresses match by adding the following setting:
+   email addresses match by adding the following setting.
 
-   For Omnibus package:
+   For Omnibus installations:
 
    ```ruby
    gitlab_rails['omniauth_auto_link_saml_user'] = true
@@ -76,19 +78,20 @@ Okta to authenticate users.
    ```
 
    Alternatively, a user can manually link their SAML identity to an existing GitLab
-   account by following the steps in
-   [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
+   account by [enabling OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
 
-1. Ensure that the SAML [`NameID`](../user/group/saml_sso/index.md#nameid) and email
-   address are fixed for each user. These attributes define the SAML user. If users
-   can change these attributes, they can impersonate others.
+1. Configure the following attributes so your SAML users cannot change them:
 
-   Refer to the documentation for your SAML identity provider for information on
-   how to fix these attributes.
+   - [`NameID`](../user/group/saml_sso/index.md#nameid)
+   - `Email` when used with `omniauth_auto_link_saml_user`
 
-1. Add the provider configuration:
+   If users can change these attributes, they can sign in as other authorized users.
+   See your SAML IdP documentation for information on how to make these attributes
+   unchangeable.
 
-   For Omnibus package:
+1. Add the provider configuration.
+
+   For Omnibus installations:
 
    ```ruby
    gitlab_rails['omniauth_providers'] = [
@@ -124,23 +127,26 @@ Okta to authenticate users.
        }
    ```
 
-1. Change the value for `assertion_consumer_service_url` to match the HTTPS endpoint
-   of GitLab (append `users/auth/saml/callback` to the HTTPS URL of your GitLab
-   installation to generate the correct value).
+1. Match the value for `assertion_consumer_service_url` to the HTTPS endpoint
+   of GitLab. To generate the correct value, append `users/auth/saml/callback` to the
+   HTTPS URL of your GitLab installation.
 
-1. Change the values of `idp_cert_fingerprint`, `idp_sso_target_url`,
-   `name_identifier_format` to match your IdP. If a fingerprint is used it must
-   be a SHA1 fingerprint; check
-   [the OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml)
-   for more details on these options.
-   See the [notes on configuring a SAML 2.0 app on your IdP](#configure-saml-on-your-idp) for more information.
+1. Change the following values to match your IdP:
+   - `idp_cert_fingerprint`.
+   - `idp_sso_target_url`.
+   - `name_identifier_format`.
+   If you use a `idp_cert_fingerprint`, it must be a SHA1 fingerprint. For more
+   information on these values, see the
+   [OmniAuth SAML documentation](https://github.com/omniauth/omniauth-saml).
+   For more information on other configuration settings, see
+   [configuring SAML on your IdP](#configure-saml-on-your-idp).
 
 1. Change the value of `issuer` to a unique name, which identifies the application
    to the IdP.
 
-1. For the changes to take effect:
-   - If you installed via Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
-   - If you installed from source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
+1. For the changes to take effect, if you installed:
+   - Using Omnibus, [reconfigure GitLab](../administration/restart_gitlab.md#omnibus-gitlab-reconfigure).
+   - From source, [restart GitLab](../administration/restart_gitlab.md#installations-from-source).
 
 ### Register GitLab in your SAML IdP
 
