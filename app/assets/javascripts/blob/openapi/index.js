@@ -5,7 +5,7 @@ const createSandbox = () => {
   const iframeEl = document.createElement('iframe');
   setAttributes(iframeEl, {
     src: '/-/sandbox/swagger',
-    sandbox: 'allow-scripts',
+    sandbox: 'allow-scripts allow-popups',
     frameBorder: 0,
     width: '100%',
     // TODO: the height needs to be adjust dynamically,
