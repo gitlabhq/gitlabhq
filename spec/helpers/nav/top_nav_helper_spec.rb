@@ -122,10 +122,10 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Switch to'
           )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            css_class: 'qa-projects-dropdown',
             data: {
               track_action: 'click_dropdown',
-              track_label: 'projects_dropdown'
+              track_label: 'projects_dropdown',
+              qa_selector: 'projects_dropdown'
             },
             icon: 'project',
             id: 'project',
@@ -219,10 +219,10 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Switch to'
           )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            css_class: 'qa-groups-dropdown',
             data: {
               track_action: 'click_dropdown',
-              track_label: 'groups_dropdown'
+              track_label: 'groups_dropdown',
+              qa_selector: 'groups_dropdown'
             },
             icon: 'group',
             id: 'groups',
@@ -323,10 +323,7 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Explore'
           )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            data: {
-              qa_selector: 'milestones_link',
-              **menu_data_tracking_attrs('milestones')
-            },
+            data: { **menu_data_tracking_attrs('milestones') },
             href: '/dashboard/milestones',
             icon: 'clock',
             id: 'milestones',
@@ -385,10 +382,7 @@ RSpec.describe Nav::TopNavHelper do
             title: 'Explore'
           )
           expected_primary = ::Gitlab::Nav::TopNavMenuItem.build(
-            data: {
-              qa_selector: 'activity_link',
-              **menu_data_tracking_attrs('activity')
-            },
+            data: { **menu_data_tracking_attrs('activity') },
             href: '/dashboard/activity',
             icon: 'history',
             id: 'activity',
@@ -417,15 +411,13 @@ RSpec.describe Nav::TopNavHelper do
       it 'has admin as first :secondary item' do
         expected_admin_item = ::Gitlab::Nav::TopNavMenuItem.build(
           data: {
-            qa_selector: 'menu_item_link',
-            qa_title: 'Admin',
+            qa_selector: 'admin_area_link',
             **menu_data_tracking_attrs('admin')
           },
           id: 'admin',
           title: 'Admin',
           icon: 'admin',
-          href: '/admin',
-          css_class: 'qa-admin-area-link'
+          href: '/admin'
         )
 
         expect(subject[:secondary].first).to eq(expected_admin_item)

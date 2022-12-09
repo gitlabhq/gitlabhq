@@ -301,7 +301,7 @@ module SortingHelper
   end
 
   def sort_direction_button(reverse_url, reverse_sort, sort_value)
-    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn qa-reverse-sort rspec-reverse-sort'
+    link_class = 'gl-button btn btn-default btn-icon has-tooltip reverse-sort-btn rspec-reverse-sort'
     icon = sort_direction_icon(sort_value)
     url = reverse_url
 

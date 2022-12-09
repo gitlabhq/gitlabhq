@@ -24,7 +24,9 @@ module IdeHelper
   def new_ide_data
     {
       'project-path' => @project&.path_with_namespace,
-      'csp-nonce' => content_security_policy_nonce
+      'csp-nonce' => content_security_policy_nonce,
+      # We will replace these placeholders in the FE
+      'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
     }
   end
 

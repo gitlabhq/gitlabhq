@@ -378,7 +378,7 @@ and to limit memory consumption.
 
 When using offset-based pagination in the REST API, there is a limit to the maximum
 requested offset into the set of results. This limit is only applied to endpoints that
-support keyset-based pagination. More information about pagination options can be
+also support keyset-based pagination. More information about pagination options can be
 found in the [API documentation section on pagination](../api/index.md#pagination).
 
 To set this limit for a self-managed installation, run the following in the

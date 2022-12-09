@@ -1,0 +1,5 @@
+- data = local_assigns.fetch(:data)
+
+- page_title _('Web IDE')
+
+= render partial: 'shared/ide_root', locals: { data: data, loading_text: _('Connecting to the remote environment...') }

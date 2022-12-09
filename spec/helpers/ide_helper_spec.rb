@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IdeHelper do
+RSpec.describe IdeHelper, feature_category: :web_ide do
   describe '#ide_data' do
     let_it_be(:project) { create(:project) }
     let_it_be(:user) { project.creator }
@@ -30,7 +30,8 @@ RSpec.describe IdeHelper do
               help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
             'branch-name' => 'master',
             'project-path' => project.path_with_namespace,
-            'csp-nonce' => 'test-csp-nonce'
+            'csp-nonce' => 'test-csp-nonce',
+            'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
           )
       end
 

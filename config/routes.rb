@@ -155,6 +155,12 @@ InitializerConnections.with_disabled_database_connections do
           get '/merge_requests/:merge_request_id', to: 'ide#index', constraints: { merge_request_id: /\d+/ }
           get '/', to: 'ide#index'
         end
+
+        # Remote host can contain "." characters so it needs a constraint
+        post 'remote/:remote_host(/*remote_path)',
+             as: :remote,
+             to: 'web_ide/remote_ide#index',
+             constraints: { remote_host: %r{[^/?]+} }
       end
 
       draw :operations

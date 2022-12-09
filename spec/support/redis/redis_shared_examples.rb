@@ -4,6 +4,7 @@ RSpec.shared_examples "redis_shared_examples" do
   include StubENV
 
   let(:test_redis_url) { "redis://redishost:#{redis_port}" }
+  let(:test_cluster_config) { { cluster: [{ host: "redis://redishost", port: redis_port }] } }
   let(:config_file_name) { instance_specific_config_file }
   let(:config_old_format_socket) { "spec/fixtures/config/redis_old_format_socket.yml" }
   let(:config_new_format_socket) { "spec/fixtures/config/redis_new_format_socket.yml" }
@@ -11,6 +12,7 @@ RSpec.shared_examples "redis_shared_examples" do
   let(:new_socket_path) { "/path/to/redis.sock" }
   let(:config_old_format_host) { "spec/fixtures/config/redis_old_format_host.yml" }
   let(:config_new_format_host) { "spec/fixtures/config/redis_new_format_host.yml" }
+  let(:config_cluster_format_host) { "spec/fixtures/config/redis_cluster_format_host.yml" }
   let(:redis_port) { 6379 }
   let(:redis_database) { 99 }
   let(:sentinel_port) { 26379 }
@@ -191,6 +193,30 @@ RSpec.shared_examples "redis_shared_examples" do
           end
         end
       end
+
+      context 'with redis cluster format' do
+        let(:config_file_name) { config_cluster_format_host }
+
+        where(:rails_env, :host) do
+          [
+            %w[development development-master],
+            %w[test test-master],
+            %w[production production-master]
+          ]
+        end
+
+        with_them do
+          it 'returns hash with cluster and password' do
+            is_expected.to include(password: 'myclusterpassword',
+                                   cluster: [
+                                     { host: "#{host}1", port: redis_port },
+                                     { host: "#{host}2", port: redis_port }
+                                   ]
+                                  )
+            is_expected.not_to have_key(:url)
+          end
+        end
+      end
     end
   end
 
@@ -317,6 +343,14 @@ RSpec.shared_examples "redis_shared_examples" do
         expect(subject).to eq(redis_database)
       end
     end
+
+    context 'with cluster-mode' do
+      let(:config_file_name) { config_cluster_format_host }
+
+      it 'returns the correct db' do
+        expect(subject).to eq(0)
+      end
+    end
   end
 
   describe '#sentinels' do
@@ -350,6 +384,14 @@ RSpec.shared_examples "redis_shared_examples" do
         is_expected.to be_nil
       end
     end
+
+    context 'when cluster is defined' do
+      let(:config_file_name) { config_cluster_format_host }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
+    end
   end
 
   describe '#sentinels?' do
@@ -370,12 +412,25 @@ RSpec.shared_examples "redis_shared_examples" do
         is_expected.to be_falsey
       end
     end
+
+    context 'when cluster is defined' do
+      let(:config_file_name) { config_cluster_format_host }
+
+      it 'returns false' do
+        is_expected.to be_falsey
+      end
+    end
   end
 
   describe '#raw_config_hash' do
     it 'returns old-style single url config in a hash' do
       expect(subject).to receive(:fetch_config) { test_redis_url }
       expect(subject.send(:raw_config_hash)).to eq(url: test_redis_url)
+    end
+
+    it 'returns cluster config without url key in a hash' do
+      expect(subject).to receive(:fetch_config) { test_cluster_config }
+      expect(subject.send(:raw_config_hash)).to eq(test_cluster_config)
     end
   end
 

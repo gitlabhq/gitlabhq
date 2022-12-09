@@ -12,6 +12,10 @@ module QA
           element :change_password_button
         end
 
+        view 'app/views/devise/sessions/new.html.haml' do
+          element :register_link
+        end
+
         view 'app/views/devise/sessions/_new_base.html.haml' do
           element :login_field
           element :password_field

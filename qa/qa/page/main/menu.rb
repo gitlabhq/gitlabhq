@@ -9,6 +9,7 @@ module QA
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
           element :sign_out_link
           element :edit_profile_link
+          element :user_profile_link
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
@@ -39,6 +40,7 @@ module QA
           element :projects_dropdown
           element :groups_dropdown
           element :snippets_link
+          element :menu_item_link
         end
 
         view 'app/views/layouts/_search.html.haml' do

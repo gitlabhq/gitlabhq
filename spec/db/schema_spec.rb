@@ -9,9 +9,7 @@ RSpec.describe 'Database schema' do
   let(:tables) { connection.tables }
   let(:columns_name_with_jsonb) { retrieve_columns_name_with_jsonb }
 
-  IGNORED_INDEXES_ON_FKS = {
-    issues: %w[work_item_type_id]
-  }.with_indifferent_access.freeze
+  IGNORED_INDEXES_ON_FKS = {}.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
 
