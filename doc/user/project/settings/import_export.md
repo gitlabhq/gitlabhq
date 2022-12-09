@@ -63,7 +63,10 @@ The following items are exported:
 - Project uploads
 - Project configuration, excluding integrations
 - Issues with comments, merge requests with diffs and comments, labels, milestones, snippets, time
-  tracking, and other project entities
+- Merge requests
+  - Merge request multiple assignees ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request reviewers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
+  - Merge request approvers ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) in GitLab 15.3)
 - Design Management files and data
 - LFS objects
 - Issue boards
@@ -82,7 +85,7 @@ The following items are **not** exported:
 - Pipeline triggers
 - Webhooks
 - Any encrypted tokens
-- Merge Request Approvers and [the number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
+- [Number of required approvals](https://gitlab.com/gitlab-org/gitlab/-/issues/221088)
 - Repository size limits
 - Deploy keys allowed to push to protected branches
 - Secure Files
