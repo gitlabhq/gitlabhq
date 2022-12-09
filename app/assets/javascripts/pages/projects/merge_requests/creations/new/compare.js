@@ -26,7 +26,10 @@ const updateCommitList = (url, $emptyState, $loadingIndicator, $commitList, para
 
 export default (mrNewCompareNode) => {
   const { sourceBranchUrl, targetBranchUrl } = mrNewCompareNode.dataset;
-  initTargetProjectDropdown();
+
+  if (!window.gon?.features?.mrCompareDropdowns) {
+    initTargetProjectDropdown();
+  }
 
   const updateSourceBranchCommitList = () =>
     updateCommitList(

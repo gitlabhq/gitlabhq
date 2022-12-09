@@ -5,17 +5,7 @@ module Ci
     def execute(build, job_variables_attributes = nil)
       check_access!(build, job_variables_attributes)
 
-      if build.can_enqueue?
-        build.user = current_user
-        build.job_variables_attributes = job_variables_attributes || []
-        build.enqueue!
-
-        ResetSkippedJobsService.new(project, current_user).execute(build)
-
-        build
-      else
-        retry_build(build)
-      end
+      Ci::EnqueueJobService.new(build, current_user: current_user, variables: job_variables_attributes || []).execute
     rescue StateMachines::InvalidTransition
       retry_build(build.reset)
     end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Destroying a container repository tags' do
+RSpec.describe 'Destroying a container repository tags', feature_category: :container_registry do
   include_context 'container repository delete tags service shared context'
   using RSpec::Parameterized::TableSyntax
 

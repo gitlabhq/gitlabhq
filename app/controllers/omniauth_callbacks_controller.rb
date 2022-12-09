@@ -169,6 +169,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # available in the logs for this request.
       Gitlab::ApplicationContext.push(user: user)
       log_audit_event(user, with: oauth['provider'])
+      Gitlab::Tracking.event(self.class.name, "#{oauth['provider']}_sso", user: user) if new_user
 
       set_remember_me(user)
 

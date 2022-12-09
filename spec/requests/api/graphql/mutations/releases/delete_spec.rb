@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Deleting a release' do
+RSpec.describe 'Deleting a release', feature_category: :release_orchestration do
   include GraphqlHelpers
   include Presentable
 

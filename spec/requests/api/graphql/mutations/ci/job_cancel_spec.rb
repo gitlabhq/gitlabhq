@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "JobCancel" do
+RSpec.describe "JobCancel", feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

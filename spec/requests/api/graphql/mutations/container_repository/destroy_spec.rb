@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Destroying a container repository' do
+RSpec.describe 'Destroying a container repository', feature_category: :container_registry do
   using RSpec::Parameterized::TableSyntax
 
   include GraphqlHelpers

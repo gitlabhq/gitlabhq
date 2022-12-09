@@ -36,7 +36,7 @@ RSpec.describe RegistrationsController do
 
     let(:session_params) { {} }
 
-    subject { post(:create, params: user_params, session: session_params) }
+    subject(:post_create) { post(:create, params: user_params, session: session_params) }
 
     context '`blocked_pending_approval` state' do
       context 'when the `require_admin_approval_after_user_signup` setting is turned on' do
@@ -484,18 +484,19 @@ RSpec.describe RegistrationsController do
       render_views
       let_it_be(:new_user_params) { { new_user: base_user_params.merge({ password: "password" }) } }
 
-      subject { post(:create, params: new_user_params) }
+      subject(:post_create) { post(:create, params: new_user_params) }
 
       it 'renders the form with errors' do
-        expect { subject }.not_to change(User, :count)
+        expect { post_create }.not_to change(User, :count)
 
         expect(controller.current_user).to be_nil
         expect(response).to render_template(:new)
         expect(response.body).to include(_('Password must not contain commonly used combinations of words and letters'))
       end
 
-      it 'tracks the error' do
-        subject
+      it 'tracks a weak password error' do
+        post_create
+
         expect_snowplow_event(
           category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
           action: 'track_weak_password_error',
@@ -503,14 +504,34 @@ RSpec.describe RegistrationsController do
           method: 'create'
         )
       end
+
+      it 'does not track failed form submission' do
+        post_create
+
+        expect_no_snowplow_event(
+          category: described_class.name,
+          action: 'successfully_submitted_form'
+        )
+      end
     end
 
     context 'when the password is not weak' do
       it 'does not track a weak password error' do
-        subject
+        post_create
+
         expect_no_snowplow_event(
           category: 'Gitlab::Tracking::Helpers::WeakPasswordErrorEvent',
           action: 'track_weak_password_error'
+        )
+      end
+
+      it 'tracks successful form submission' do
+        post_create
+
+        expect_snowplow_event(
+          category: described_class.name,
+          action: 'successfully_submitted_form',
+          user: User.find_by(email: base_user_params[:email])
         )
       end
     end

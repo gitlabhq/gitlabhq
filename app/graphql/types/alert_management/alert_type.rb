@@ -13,6 +13,11 @@ module Types
 
       authorize :read_alert_management_alert
 
+      field :id,
+            GraphQL::Types::ID,
+            null: false,
+            description: 'ID of the alert.'
+
       field :iid,
             GraphQL::Types::ID,
             null: false,

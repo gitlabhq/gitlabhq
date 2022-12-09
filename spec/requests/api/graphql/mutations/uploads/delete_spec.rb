@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Delete an upload' do
+RSpec.describe 'Delete an upload', feature_category: :navigation do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

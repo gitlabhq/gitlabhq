@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Moving an issue' do
+RSpec.describe 'Moving an issue', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

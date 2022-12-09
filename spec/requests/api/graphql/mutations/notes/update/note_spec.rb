@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating a Note' do
+RSpec.describe 'Updating a Note', feature_category: :team_planning do
   include GraphqlHelpers
 
   let!(:note) { create(:note, note: original_body) }

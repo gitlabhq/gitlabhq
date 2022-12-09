@@ -109,6 +109,25 @@ RSpec.describe Gitlab::Instrumentation::RedisBase, :request_store do
     end
   end
 
+  describe '.increment_allowed_cross_slot_request_count' do
+    context 'storage key overlapping' do
+      it 'keys do not overlap across storages' do
+        3.times { instrumentation_class_a.increment_allowed_cross_slot_request_count }
+        2.times { instrumentation_class_b.increment_allowed_cross_slot_request_count }
+
+        expect(instrumentation_class_a.get_allowed_cross_slot_request_count).to eq(3)
+        expect(instrumentation_class_b.get_allowed_cross_slot_request_count).to eq(2)
+      end
+
+      it 'increments by the given amount' do
+        instrumentation_class_a.increment_allowed_cross_slot_request_count(2)
+        instrumentation_class_a.increment_allowed_cross_slot_request_count(3)
+
+        expect(instrumentation_class_a.get_allowed_cross_slot_request_count).to eq(5)
+      end
+    end
+  end
+
   describe '.increment_read_bytes' do
     context 'storage key overlapping' do
       it 'keys do not overlap across storages' do

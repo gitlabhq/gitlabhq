@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating an image DiffNote' do
+RSpec.describe 'Updating an image DiffNote', feature_category: :team_planning do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 

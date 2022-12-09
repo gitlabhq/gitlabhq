@@ -27999,6 +27999,8 @@ CREATE INDEX ca_aggregations_last_incremental_run_at ON analytics_cycle_analytic
 
 CREATE INDEX ci_builds_gitlab_monitor_metrics ON ci_builds USING btree (status, created_at, project_id) WHERE ((type)::text = 'Ci::Build'::text);
 
+CREATE UNIQUE INDEX ci_job_token_scope_links_source_and_target_project_direction ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id, direction);
+
 CREATE INDEX ci_pipeline_artifacts_on_expire_at_for_removal ON ci_pipeline_artifacts USING btree (expire_at) WHERE ((locked = 0) AND (expire_at IS NOT NULL));
 
 CREATE INDEX code_owner_approval_required ON protected_branches USING btree (project_id, code_owner_approval_required) WHERE (code_owner_approval_required = true);
@@ -28028,8 +28030,6 @@ CREATE UNIQUE INDEX finding_link_url_idx ON vulnerability_finding_links USING bt
 CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_finding_links USING btree (vulnerability_occurrence_id);
 
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
-
-CREATE UNIQUE INDEX i_ci_job_token_project_scope_links_on_source_and_target_project ON ci_job_token_project_scope_links USING btree (source_project_id, target_project_id);
 
 CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
 

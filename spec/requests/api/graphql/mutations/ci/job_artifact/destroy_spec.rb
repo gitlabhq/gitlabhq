@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ArtifactDestroy' do
+RSpec.describe 'ArtifactDestroy', feature_category: :build_artifacts do
   include GraphqlHelpers
 
   let(:user) { create(:user) }

@@ -8,6 +8,30 @@ RSpec.describe Projects::IssuesController, feature_category: :team_planning do
   let_it_be(:project) { issue.project }
   let_it_be(:user) { issue.author }
 
+  describe 'GET #new' do
+    before do
+      login_as(user)
+    end
+
+    it_behaves_like "observability csp policy", described_class do
+      let(:tested_path) do
+        new_project_issue_path(project)
+      end
+    end
+  end
+
+  describe 'GET #show' do
+    before do
+      login_as(user)
+    end
+
+    it_behaves_like "observability csp policy", described_class do
+      let(:tested_path) do
+        project_issue_path(project, issue)
+      end
+    end
+  end
+
   describe 'GET #discussions' do
     before do
       login_as(user)

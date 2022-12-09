@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Promote an incident timeline event from a comment' do
+RSpec.describe 'Promote an incident timeline event from a comment', feature_category: :incident_management do
   include GraphqlHelpers
   include NotesHelper
 

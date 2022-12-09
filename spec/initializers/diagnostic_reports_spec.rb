@@ -2,16 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe 'diagnostic reports' do
+RSpec.describe 'diagnostic reports', :aggregate_failures, feature_category: :application_performance do
   subject(:load_initializer) do
     load Rails.root.join('config/initializers/diagnostic_reports.rb')
   end
 
-  shared_examples 'does not modify worker startup hooks' do
+  shared_examples 'does not modify worker hooks' do
     it do
       expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_start)
       expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_stop)
       expect(Gitlab::Memory::ReportsDaemon).not_to receive(:instance)
+      expect(Gitlab::Memory::Reporter).not_to receive(:new)
 
       load_initializer
     end
@@ -32,6 +33,7 @@ RSpec.describe 'diagnostic reports' do
 
       it 'modifies worker startup hooks, starts Gitlab::Memory::ReportsDaemon' do
         expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start).and_call_original
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop) # stub this out to not mutate global state
         expect_next_instance_of(Gitlab::Memory::ReportsDaemon) do |daemon|
           expect(daemon).to receive(:start)
         end
@@ -39,30 +41,15 @@ RSpec.describe 'diagnostic reports' do
         load_initializer
       end
 
-      context 'when GITLAB_MEMWD_DUMP_HEAP is set' do
-        before do
-          stub_env('GITLAB_MEMWD_DUMP_HEAP', '1')
-        end
+      it 'writes scheduled heap dumps in on_worker_stop' do
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
+        expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop).and_call_original
+        expect(Gitlab::Memory::Reporter).to receive(:new).and_return(reporter)
+        expect(reporter).to receive(:run_report).with(an_instance_of(Gitlab::Memory::Reports::HeapDump))
 
-        it 'writes scheduled heap dumps in on_worker_stop' do
-          expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
-          expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_stop).and_call_original
-          expect(Gitlab::Memory::Reporter).to receive(:new).and_return(reporter)
-          expect(reporter).to receive(:run_report).with(an_instance_of(Gitlab::Memory::Reports::HeapDump))
-
-          load_initializer
-          # This is necessary because this hook normally fires during worker shutdown.
-          Gitlab::Cluster::LifecycleEvents.do_worker_stop
-        end
-      end
-
-      context 'when GITLAB_MEMWD_DUMP_HEAP is not set' do
-        it 'does not write heap dumps' do
-          expect(Gitlab::Cluster::LifecycleEvents).to receive(:on_worker_start)
-          expect(Gitlab::Cluster::LifecycleEvents).not_to receive(:on_worker_stop)
-
-          load_initializer
-        end
+        load_initializer
+        # This is necessary because this hook normally fires during worker shutdown.
+        Gitlab::Cluster::LifecycleEvents.do_worker_stop
       end
     end
 
@@ -71,7 +58,7 @@ RSpec.describe 'diagnostic reports' do
         allow(::Gitlab::Runtime).to receive(:puma?).and_return(false)
       end
 
-      include_examples 'does not modify worker startup hooks'
+      include_examples 'does not modify worker hooks'
     end
   end
 
@@ -80,7 +67,7 @@ RSpec.describe 'diagnostic reports' do
       allow(::Gitlab::Runtime).to receive(:puma?).and_return(true)
     end
 
-    include_examples 'does not modify worker startup hooks'
+    include_examples 'does not modify worker hooks'
   end
 
   context 'when GITLAB_DIAGNOSTIC_REPORTS_ENABLED is set to false' do
@@ -89,6 +76,6 @@ RSpec.describe 'diagnostic reports' do
       allow(::Gitlab::Runtime).to receive(:puma?).and_return(true)
     end
 
-    include_examples 'does not modify worker startup hooks'
+    include_examples 'does not modify worker hooks'
   end
 end

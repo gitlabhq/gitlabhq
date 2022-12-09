@@ -18,9 +18,11 @@ Jobs handled by macOS shared runners on GitLab.com **time out after 3 hours**, r
 
 ## Access request process
 
-While in beta, to run CI jobs on the macOS runners, GitLab SaaS customer namespaces must be explicitly added to the macOS `allow-list`.
+While in beta, to run CI jobs on the macOS runners, you must specify the GitLab SaaS customer personal or group [namespaces](../../../user/namespace/index.md) in the macOS `allow-list`. These are the namespaces that use the macOS runners.
 
-After you have been added, you can use the macOS runners for any projects in your namespace.
+When you specify a personal or group namespace, the top level group is not added unless you specify it.
+
+After you add your namespace, you can use the macOS runners for any projects under the namespace you included.
 
 To request access, open an [access request](https://gitlab.com/gitlab-com/runner-saas-macos-limited-availability/-/issues/new).
 The expected turnaround for activation is two business days.

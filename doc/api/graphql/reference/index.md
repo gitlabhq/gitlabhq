@@ -10195,6 +10195,7 @@ Describes an alert from the project's Alert Management.
 | <a id="alertmanagementalertenvironment"></a>`environment` | [`Environment`](#environment) | Environment for the alert. |
 | <a id="alertmanagementalerteventcount"></a>`eventCount` | [`Int`](#int) | Number of events of this alert. |
 | <a id="alertmanagementalerthosts"></a>`hosts` | [`[String!]`](#string) | List of hosts the alert came from. |
+| <a id="alertmanagementalertid"></a>`id` | [`ID!`](#id) | ID of the alert. |
 | <a id="alertmanagementalertiid"></a>`iid` | [`ID!`](#id) | Internal ID of the alert. |
 | <a id="alertmanagementalertissue"></a>`issue` | [`Issue`](#issue) | Issue attached to the alert. |
 | <a id="alertmanagementalertissueiid"></a>`issueIid` **{warning-solid}** | [`ID`](#id) | **Deprecated** in 13.10. Use issue field. |

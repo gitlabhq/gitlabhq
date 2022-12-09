@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting assignees of a merge request', :assume_throttled do
+RSpec.describe 'Setting assignees of a merge request', :assume_throttled, feature_category: :code_review do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

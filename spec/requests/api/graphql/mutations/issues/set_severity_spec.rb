@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Setting severity level of an incident' do
+RSpec.describe 'Setting severity level of an incident', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

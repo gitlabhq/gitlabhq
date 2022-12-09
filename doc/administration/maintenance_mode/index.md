@@ -84,7 +84,7 @@ them to disable Maintenance Mode after it's been enabled.
 
 All users can sign in and out of the GitLab instance but no new users can be created.
 
-If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#general-setup) fail.
+If there are [LDAP syncs](../auth/ldap/index.md) scheduled for that time, they fail since user creation is disabled. Similarly, [user creations based on SAML](../../integration/saml.md#configure-saml-support-in-gitlab) fail.
 
 ### Git actions
 

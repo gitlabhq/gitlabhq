@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Creating a timeline event tag' do
+RSpec.describe 'Creating a timeline event tag', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

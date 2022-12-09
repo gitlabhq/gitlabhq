@@ -391,6 +391,32 @@ RSpec.describe OmniauthCallbacksController, type: :controller do
         end
       end
     end
+
+    context 'with snowplow tracking', :snowplow do
+      let(:provider) { 'google_oauth2' }
+      let(:extern_uid) { 'my-uid' }
+
+      context 'when sign_in' do
+        it 'does not track the event' do
+          post provider
+          expect_no_snowplow_event
+        end
+      end
+
+      context 'when sign_up' do
+        let(:user) { double(email: generate(:email)) }
+
+        it 'tracks the event' do
+          post provider
+
+          expect_snowplow_event(
+            category: described_class.name,
+            action: "#{provider}_sso",
+            user: User.find_by(email: user.email)
+          )
+        end
+      end
+    end
   end
 
   describe '#saml' do

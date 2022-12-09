@@ -40,17 +40,20 @@
         %h2.gl-font-size-h2
           = _('Target branch')
         .clearfix
-          - projects = target_projects(@project)
           .merge-request-select.dropdown
-            = f.hidden_field :target_project_id
-            = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted?, default_text: _("Select target project") }, { toggle_class: "js-compare-dropdown js-target-project" }
-            .dropdown-menu.dropdown-menu-selectable.dropdown-target-project
-              = dropdown_title(_("Select target project"))
-              = dropdown_filter(_("Search projects"))
-              = dropdown_content do
-                = render 'projects/merge_requests/dropdowns/project',
-                  projects: projects,
-                  selected: f.object.target_project_id
+            - if Feature.enabled?(:mr_compare_dropdowns, @project)
+              #js-target-project-dropdown{ data: { target_projects_path: project_new_merge_request_json_target_projects_path(@project), current_project: { value: f.object.target_project_id.to_s, text: f.object.target_project.full_path }.to_json } }
+            - else
+              - projects = target_projects(@project)
+              = f.hidden_field :target_project_id
+              = dropdown_toggle f.object.target_project.full_path, { toggle: "dropdown", 'field-name': "#{f.object_name}[target_project_id]", disabled: @merge_request.persisted?, default_text: _("Select target project") }, { toggle_class: "js-compare-dropdown js-target-project" }
+              .dropdown-menu.dropdown-menu-selectable.dropdown-target-project
+                = dropdown_title(_("Select target project"))
+                = dropdown_filter(_("Search projects"))
+                = dropdown_content do
+                  = render 'projects/merge_requests/dropdowns/project',
+                    projects: projects,
+                    selected: f.object.target_project_id
           .merge-request-select.dropdown
             = f.hidden_field :target_branch
             = dropdown_toggle f.object.target_branch.presence || _("Select target branch"), { toggle: "dropdown", 'field-name': "#{f.object_name}[target_branch]", 'refs-url': refs_project_path(f.object.target_project), selected: f.object.target_branch, default_text: _("Select target branch") }, { toggle_class: "js-compare-dropdown js-target-branch monospace" }

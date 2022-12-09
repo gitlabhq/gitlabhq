@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Destroying a package file' do
+RSpec.describe 'Destroying a package file', feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
 
   include GraphqlHelpers

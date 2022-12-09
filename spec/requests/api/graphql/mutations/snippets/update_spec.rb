@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating a Snippet' do
+RSpec.describe 'Updating a Snippet', feature_category: :source_code_management do
   include GraphqlHelpers
   include SessionHelpers
 

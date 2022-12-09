@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'CiJobTokenScopeRemoveProject' do
+RSpec.describe 'CiJobTokenScopeRemoveProject', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }

@@ -161,11 +161,13 @@ seconds:
 - `gitaly_calls`: Total number of calls made to Gitaly
 - `redis_calls`: Total number of calls made to Redis
 - `redis_cross_slot_calls`: Total number of cross-slot calls made to Redis
+- `redis_allowed_cross_slot_calls`: Total number of allowed cross-slot calls made to Redis
 - `redis_duration_s`: Total time to retrieve data from Redis
 - `redis_read_bytes`: Total bytes read from Redis
 - `redis_write_bytes`: Total bytes written to Redis
 - `redis_<instance>_calls`: Total number of calls made to a Redis instance
 - `redis_<instance>_cross_slot_calls`: Total number of cross-slot calls made to a Redis instance
+- `redis_<instance>_allowed_cross_slot_calls`: Total number of allowed cross-slot calls made to a Redis instance
 - `redis_<instance>_duration_s`: Total time to retrieve data from a Redis instance
 - `redis_<instance>_read_bytes`: Total bytes read from a Redis instance
 - `redis_<instance>_write_bytes`: Total bytes written to a Redis instance

@@ -72,7 +72,7 @@ must be specified as an attribute named `email` or `mail`.
 You can configure the following attributes with GitLab.com Group SAML:
 
 - `username` or `nickname`. We recommend you configure only one of these.
-- The [attributes available](../../../integration/saml.md#assertions) to self-managed GitLab instances.
+- The [attributes available](../../../integration/saml.md#configure-assertions) to self-managed GitLab instances.
 
 ### Metadata configuration
 
@@ -98,7 +98,7 @@ After you set up your identity provider to work with GitLab, you must configure 
 ![Group SAML Settings for GitLab.com](img/group_saml_settings_v13_12.png)
 
 NOTE:
-The certificate [fingerprint algorithm](../../../integration/saml.md#notes-on-configuring-your-identity-provider) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace-setup-notes)), use a secure signature algorithm.
+The certificate [fingerprint algorithm](../../../integration/saml.md#configure-saml-on-your-idp) must be in SHA1. When configuring the identity provider (such as [Google Workspace](#google-workspace-setup-notes)), use a secure signature algorithm.
 
 ### Additional configuration information
 
@@ -184,7 +184,7 @@ The SAML standard means that you can use a wide range of identity providers with
 
 When [configuring your identity provider](#configure-your-identity-provider), consider the notes below for specific providers to help avoid common issues and as a guide for terminology used.
 
-For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#notes-on-configuring-your-identity-provider)
+For providers not listed below, you can refer to the [instance SAML notes on configuring an identity provider](../../../integration/saml.md#configure-saml-on-your-idp)
 for additional guidance on information your identity provider may require.
 
 GitLab provides the following information for guidance only.

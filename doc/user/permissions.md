@@ -12,13 +12,7 @@ The role determines which actions they can take in GitLab.
 If you add a user to both a project's group and the
 project itself, the higher role is used.
 
-When a member leaves a team's project, all the assigned [issues](project/issues/index.md) and
-[merge requests](project/merge_requests/index.md) are automatically unassigned.
-
-GitLab [administrators](../administration/index.md) receive all permissions.
-
-To add or import a user, you can follow the
-[project members documentation](project/members/index.md).
+GitLab [administrators](../administration/index.md) have all permissions.
 
 ## Roles
 
@@ -33,11 +27,9 @@ The available roles are:
 A user assigned the Guest role has the least permissions,
 and the Owner has the most.
 
-## Instance-wide user permissions
-
-By default, users can create top-level groups and change their
-usernames. A GitLab administrator can configure the GitLab instance to
-[modify this behavior](../administration/user_settings.md).
+By default, all users can create top-level groups and change their
+usernames. A GitLab administrator can [change this behavior](../administration/user_settings.md)
+for the GitLab instance.
 
 ## Project members permissions
 
@@ -337,18 +329,6 @@ This table shows granted privileges for jobs triggered by specific types of user
 1. Only if the triggering user is not an external one.
 1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlabl.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
 
-### Protected branches
-
-Additional restrictions can be applied on a per-branch basis with [protected branches](project/protected_branches.md).
-Additionally, you can customize permissions to allow or prevent project Developers or Maintainers
-from pushing to a protected branch. Read through the documentation on
-[protected branches](project/protected_branches.md) to learn more.
-
-### Value stream analytics permissions
-
-Find the current permissions on the value stream analytics dashboard, as described in
-[related documentation](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics).
-
 ### File Locking permissions **(PREMIUM)**
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
@@ -459,16 +439,6 @@ nested groups if you have membership in one of its parents.
 To learn more, read through the documentation on
 [subgroups memberships](group/subgroups/index.md#subgroup-membership).
 
-## Auditor users **(PREMIUM SELF)**
-
-Auditor users are given read-only access to all projects, groups, and other
-resources on the GitLab instance.
-
-An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](../administration/auditor_users.md#auditor-user-permissions-and-restrictions).
-
-[Read more about Auditor users.](../administration/auditor_users.md)
-
 ## Users with minimal access **(PREMIUM)**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40942) in GitLab 13.4.
@@ -506,5 +476,9 @@ for more information.
 ## Related topics
 
 - [The GitLab principles behind permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
-- [Project aliases](../user/project/import/index.md#project-aliases)
+- [Members](project/members/index.md)
+- Customize permissions on [protected branches](project/protected_branches.md)
 - [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
+- [Value stream analytics permissions](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics)
+- [Project aliases](../user/project/import/index.md#project-aliases)
+- [Auditor users](../administration/auditor_users.md)

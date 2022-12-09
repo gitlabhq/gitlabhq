@@ -3,10 +3,23 @@
 require 'spec_helper'
 
 RSpec.describe Projects::MergeRequestsController, feature_category: :source_code_management do
+  let_it_be(:merge_request) { create(:merge_request) }
+  let_it_be(:project) { merge_request.project }
+  let_it_be(:user) { merge_request.author }
+
+  describe 'GET #show' do
+    before do
+      login_as(user)
+    end
+
+    it_behaves_like "observability csp policy", described_class do
+      let(:tested_path) do
+        project_merge_request_path(project, merge_request)
+      end
+    end
+  end
+
   describe 'GET #discussions' do
-    let_it_be(:merge_request) { create(:merge_request) }
-    let_it_be(:project) { merge_request.project }
-    let_it_be(:user) { merge_request.author }
     let_it_be(:discussion) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project) }
     let_it_be(:discussion_reply) { create(:discussion_note_on_merge_request, noteable: merge_request, project: project, in_reply_to: discussion) }
     let_it_be(:state_event) { create(:resource_state_event, merge_request: merge_request) }

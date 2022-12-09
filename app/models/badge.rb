@@ -8,7 +8,6 @@ class Badge < ApplicationRecord
   # the placeholder is found.
   PLACEHOLDERS = {
     'project_path' => :full_path,
-    'project_name' => :name,
     'project_id' => :id,
     'default_branch' => :default_branch,
     'commit_sha' => ->(project) { project.commit&.sha }

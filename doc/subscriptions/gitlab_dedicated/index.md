@@ -14,14 +14,14 @@ GitLab Dedicated is a fully isolated, single-tenant SaaS service that is:
 - Hosted and managed by GitLab, Inc.
 - Deployed on AWS in a cloud region of your choice (see the [regions that are not supported](#aws-regions-not-supported)).
 
-GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards. 
+GitLab Dedicated removes the overhead of platform management to increase your operational efficiency, reduce risk, and enhance the speed and agility of your organization. Each GitLab Dedicated instance is highly available with disaster recovery and deployed into the cloud region of your choice. GitLab teams fully manage the maintenance and operations of each isolated instance, so customers can access our latest product improvements while meeting the most complex compliance standards.
 
 It's the offering of choice for enterprises and organizations in highly regulated industries that have complex regulatory, compliance, and data residency requirements.
 
 ## Available features
 
-- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#general-setup) in order for GitLab to communicate with your IdP. This is provided during onboarding.
-  - SAML [request signing](../../integration/saml.md#request-signing-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#saml-groups) are supported.
+- Authentication: Support for instance-level [SAML OmniAuth](../../integration/saml.md) functionality. GitLab Dedicated acts as the service provider, and you must provide the necessary [configuration](../../integration/saml.md#configure-saml-support-in-gitlab) in order for GitLab to communicate with your IdP. This is provided during onboarding.
+  - SAML [request signing](../../integration/saml.md#sign-saml-authentication-requests-optional), [group sync](../../user/group/saml_sso/group_sync.md#configure-saml-group-sync), and [SAML groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) are supported.
 - Networking:
   - Public connectivity with support for IP Allowlists. During onboarding, you can optionally specify a list of IP addresses that can access your GitLab Dedicated instance. Subsequently, when an IP not on the allowlist tries to access your instance the connection is refused.
   - Optional. Private connectivity via [AWS PrivateLink](https://aws.amazon.com/privatelink/).

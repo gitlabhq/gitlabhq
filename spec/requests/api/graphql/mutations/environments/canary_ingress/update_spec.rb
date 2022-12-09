@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Update Environment Canary Ingress', :clean_gitlab_redis_cache do
+RSpec.describe 'Update Environment Canary Ingress', :clean_gitlab_redis_cache, feature_category: :deployment_management do
   include GraphqlHelpers
   include KubernetesHelpers
 

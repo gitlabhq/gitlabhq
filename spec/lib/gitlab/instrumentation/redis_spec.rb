@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Instrumentation::Redis do
 
   it_behaves_like 'aggregation of redis storage data', :get_request_count
   it_behaves_like 'aggregation of redis storage data', :get_cross_slot_request_count
+  it_behaves_like 'aggregation of redis storage data', :get_allowed_cross_slot_request_count
   it_behaves_like 'aggregation of redis storage data', :query_time
   it_behaves_like 'aggregation of redis storage data', :read_bytes
   it_behaves_like 'aggregation of redis storage data', :write_bytes
@@ -39,21 +40,26 @@ RSpec.describe Gitlab::Instrumentation::Redis do
 
       stub_rails_env('staging') # to avoid raising CrossSlotError
       Gitlab::Redis::Cache.with { |redis| redis.mset('cache-test', 321, 'cache-test-2', 321) }
+      Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+        Gitlab::Redis::Cache.with { |redis| redis.mget('cache-test', 'cache-test-2') }
+      end
       Gitlab::Redis::SharedState.with { |redis| redis.set('shared-state-test', 123) }
     end
 
     it 'returns payload filtering out zeroed values' do
       expected_payload = {
         # Aggregated results
-        redis_calls: 2,
+        redis_calls: 3,
         redis_cross_slot_calls: 1,
+        redis_allowed_cross_slot_calls: 1,
         redis_duration_s: be >= 0,
         redis_read_bytes: be >= 0,
         redis_write_bytes: be >= 0,
 
         # Cache results
-        redis_cache_calls: 1,
+        redis_cache_calls: 2,
         redis_cache_cross_slot_calls: 1,
+        redis_cache_allowed_cross_slot_calls: 1,
         redis_cache_duration_s: be >= 0,
         redis_cache_read_bytes: be >= 0,
         redis_cache_write_bytes: be >= 0,

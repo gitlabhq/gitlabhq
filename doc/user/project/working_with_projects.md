@@ -363,8 +363,11 @@ Prerequisite:
 
 ## Leave a project
 
-If you leave a project, you are no longer a project
-member and cannot contribute.
+When you leave a project:
+
+- You are no longer a project member and cannot contribute.
+- All the issues and merge requests that were assigned
+  to you are unassigned.
 
 To leave a project:
 

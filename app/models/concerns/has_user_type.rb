@@ -25,7 +25,6 @@ module HasUserType
     scope :humans, -> { where(user_type: :human) }
     scope :bots, -> { where(user_type: BOT_USER_TYPES) }
     scope :without_bots, -> { humans.or(where.not(user_type: BOT_USER_TYPES)) }
-    scope :bots_without_project_bot, -> { where(user_type: BOT_USER_TYPES - ['project_bot']) }
     scope :non_internal, -> { humans.or(where(user_type: NON_INTERNAL_USER_TYPES)) }
     scope :without_ghosts, -> { humans.or(where.not(user_type: :ghost)) }
     scope :without_project_bot, -> { humans.or(where.not(user_type: :project_bot)) }

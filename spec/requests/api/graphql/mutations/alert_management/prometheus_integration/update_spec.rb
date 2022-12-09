@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating an existing Prometheus Integration' do
+RSpec.describe 'Updating an existing Prometheus Integration', feature_category: :incident_management do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

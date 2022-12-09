@@ -4,6 +4,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   include DiffForPath
   include DiffHelper
   include RendersCommits
+  include ::Observability::ContentSecurityPolicy
 
   skip_before_action :merge_request
   before_action :authorize_create_merge_request_from!
@@ -18,6 +19,10 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     :branch_from,
     :branch_to
   ]
+
+  before_action do
+    push_frontend_feature_flag(:mr_compare_dropdowns, project)
+  end
 
   def new
     define_new_vars
@@ -87,6 +92,14 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     end
 
     render layout: false
+  end
+
+  def target_projects
+    projects = MergeRequestTargetProjectFinder
+                .new(current_user: current_user, source_project: @project, project_feature: :repository)
+                .execute(include_routes: true).limit(20).search(params[:search])
+
+    render json: ProjectSerializer.new.represent(projects)
   end
 
   private

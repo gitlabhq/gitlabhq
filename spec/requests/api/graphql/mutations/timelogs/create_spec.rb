@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Create a timelog' do
+RSpec.describe 'Create a timelog', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:author) { create(:user) }

@@ -52,7 +52,7 @@ You can use one of the following to troubleshoot SAML:
 - A [quick start guide to start a Docker container](../../../administration/troubleshooting/test_environments.md#saml)
   with a plug and play SAML 2.0 identity provider if you only require a SAML provider.
 - A local environment by
-  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#configuring-group-saml-on-a-self-managed-gitlab-instance).
+  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#group-saml-on-a-self-managed-gitlab-instance).
 
 ## Verify configuration
 
@@ -138,7 +138,7 @@ Make sure this information is provided.
 Another issue that can result in this error is when the correct information is being sent by
 the identity provider, but the attributes don't match the names in the OmniAuth `info` hash. In this case,
 you must set `attribute_statements` in the SAML configuration to
-[map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](../../../integration/saml.md#attribute_statements).
+[map the attribute names in your SAML Response to the corresponding OmniAuth `info` hash names](../../../integration/saml.md#map-saml-response-attribute-names).
 
 ## User sign in banner error messages
 
@@ -221,7 +221,7 @@ If all users are receiving a `404` when attempting to sign in using SAML, confir
 [there is an active subscription](../../../subscriptions/gitlab_com/index.md#view-your-gitlab-saas-subscription) being used in this SAML SSO namespace.
 
 If you receive a `404` during setup when using "verify configuration", make sure you have used the correct
-[SHA-1 generated fingerprint](../../../integration/saml.md#notes-on-configuring-your-identity-provider).
+[SHA-1 generated fingerprint](../../../integration/saml.md#configure-saml-on-your-idp).
 
 If a user is trying to sign in for the first time and the GitLab single sign-on URL has not [been configured](index.md#configure-your-identity-provider), they may see a 404.
 As outlined in the [user access section](index.md#linking-saml-to-your-existing-gitlabcom-account), a group Owner needs to provide the URL to users.

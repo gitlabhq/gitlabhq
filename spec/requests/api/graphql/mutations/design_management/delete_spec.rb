@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "deleting designs" do
+RSpec.describe "deleting designs", feature_category: :design_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

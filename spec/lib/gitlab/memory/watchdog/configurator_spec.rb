@@ -25,12 +25,6 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
       expect(configuration.event_reporter.logger).to eq(logger)
     end
 
-    it 'does not enable writing heap dumps by default' do
-      configurator.call(configuration)
-
-      expect(configuration.write_heap_dumps?).to be(false)
-    end
-
     context 'when sleep_time_seconds is not passed through the environment' do
       let(:sleep_time_seconds) { sleep_time }
 
@@ -52,42 +46,6 @@ RSpec.describe Gitlab::Memory::Watchdog::Configurator do
         configurator.call(configuration)
 
         expect(configuration.sleep_time_seconds).to eq(sleep_time_seconds)
-      end
-    end
-
-    context 'when GITLAB_MEMWD_DUMP_HEAP is set' do
-      before do
-        stub_env('GITLAB_MEMWD_DUMP_HEAP', env_var)
-      end
-
-      context 'with null value' do
-        let(:env_var) { nil }
-
-        it 'does not enable writing heap dumps' do
-          configurator.call(configuration)
-
-          expect(configuration.write_heap_dumps?).to be(false)
-        end
-      end
-
-      context 'with falsey value' do
-        let(:env_var) { '0' }
-
-        it 'does not enable writing heap dumps' do
-          configurator.call(configuration)
-
-          expect(configuration.write_heap_dumps?).to be(false)
-        end
-      end
-
-      context 'with truthy value' do
-        let(:env_var) { '1' }
-
-        it 'enables writing heap dumps' do
-          configurator.call(configuration)
-
-          expect(configuration.write_heap_dumps?).to be(true)
-        end
       end
     end
   end

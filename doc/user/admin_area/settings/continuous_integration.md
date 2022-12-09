@@ -46,7 +46,10 @@ limit on the number of [CI/CD minutes](../../../ci/pipelines/cicd_minutes.md) yo
 
 ## Enable a specific runner for multiple projects
 
-To enable a specific runner for one or more projects:
+If you have already registered a [specific runner](../../../ci/runners/runners_scope.md#specific-runners)
+you can assign that runner to other projects.
+
+To enable a specific runner for more than one project:
 
 1. On the top bar, select **Main menu > Admin**.
 1. From the left sidebar, select **Overview > Runners**.

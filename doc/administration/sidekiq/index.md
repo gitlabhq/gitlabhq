@@ -379,7 +379,7 @@ To enable LDAP with the synchronization worker for Sidekiq:
 
 ## Configure SAML Groups for SAML Group Sync
 
-If you use [SAML Group Sync](../../user/group/saml_sso/group_sync.md), you must configure [SAML Groups](../../integration/saml.md#saml-groups) on all your Sidekiq nodes.
+If you use [SAML Group Sync](../../user/group/saml_sso/group_sync.md), you must configure [SAML Groups](../../integration/saml.md#configure-users-based-on-saml-group-membership) on all your Sidekiq nodes.
 
 ## Disable Rugged
 

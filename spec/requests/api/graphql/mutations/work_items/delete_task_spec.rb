@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Delete a task in a work item's description" do
+RSpec.describe "Delete a task in a work item's description", feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

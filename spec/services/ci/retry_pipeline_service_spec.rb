@@ -349,7 +349,10 @@ RSpec.describe Ci::RetryPipelineService, '#execute' do
 
         it 'marks source bridge as pending' do
           expect { service.execute(pipeline) }.to change { bridge.reload.status }.to('pending')
-            .and not_change { bridge.reload.user }
+        end
+
+        it 'assigns the current user to the source bridge' do
+          expect { service.execute(pipeline) }.to change { bridge.reload.user }.to(user)
         end
       end
     end

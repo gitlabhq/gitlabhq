@@ -12,7 +12,7 @@ Instance-level analytics make it possible to aggregate analytics across
 GitLab, so that users can view information across multiple projects and groups
 in one place.
 
-[Learn more about instance-level analytics](../admin_area/analytics/index.md).
+For more information, see [instance-level analytics](../admin_area/analytics/index.md).
 
 ## Group-level analytics
 

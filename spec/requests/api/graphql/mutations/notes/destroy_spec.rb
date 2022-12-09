@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Destroying a Note' do
+RSpec.describe 'Destroying a Note', feature_category: :team_planning do
   include GraphqlHelpers
 
   let!(:note) { create(:note) }

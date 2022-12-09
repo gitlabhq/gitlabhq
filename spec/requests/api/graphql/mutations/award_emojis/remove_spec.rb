@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Removing an AwardEmoji' do
+RSpec.describe 'Removing an AwardEmoji', feature_category: :not_owned do
   include GraphqlHelpers
 
   let(:current_user) { create(:user) }

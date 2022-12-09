@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Reports::HeapDump do
+RSpec.describe Gitlab::Memory::Reports::HeapDump, feature_category: :application_performance do
   # Copy this class so we do not mess with its state.
   let(:klass) { described_class.dup }
 
@@ -16,8 +16,13 @@ RSpec.describe Gitlab::Memory::Reports::HeapDump do
   end
 
   describe '#active?' do
-    # This will be enabled once https://gitlab.com/gitlab-org/gitlab/-/issues/370077 is done.
-    it 'is false' do
+    it 'is true when report_heap_dumps is enabled' do
+      expect(report).to be_active
+    end
+
+    it 'is false when report_heap_dumps is disabled' do
+      stub_feature_flags(report_heap_dumps: false)
+
       expect(report).not_to be_active
     end
   end
@@ -29,15 +34,22 @@ RSpec.describe Gitlab::Memory::Reports::HeapDump do
 
     context 'when no heap dump is enqueued' do
       it 'does nothing and returns false' do
+        expect(ObjectSpace).not_to receive(:dump_all)
+
         expect(run).to be(false)
       end
     end
 
-    context 'when a heap dump is enqueued' do
-      it 'does nothing and returns true' do
+    context 'when a heap dump is enqueued', :aggregate_failures do
+      it 'dumps heap and returns true' do
+        expect(ObjectSpace).to receive(:dump_all).with(output: writer) do |output:|
+          output << 'heap contents'
+        end
+
         klass.enqueue!
 
         expect(run).to be(true)
+        expect(writer.string).to eq('heap contents')
       end
     end
   end

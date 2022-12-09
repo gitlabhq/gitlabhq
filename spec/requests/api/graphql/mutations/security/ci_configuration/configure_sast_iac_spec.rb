@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ConfigureSastIac' do
+RSpec.describe 'ConfigureSastIac', feature_category: :static_application_security_testing do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :test_repo) }

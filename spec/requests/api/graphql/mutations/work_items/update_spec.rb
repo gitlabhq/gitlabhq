@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Update a work item', feature_category: :project_management do
+RSpec.describe 'Update a work item', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

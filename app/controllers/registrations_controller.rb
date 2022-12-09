@@ -111,8 +111,11 @@ class RegistrationsController < Devise::RegistrationsController
     super
   end
 
+  # overridden by EE module
   def after_request_hook(user)
-    # overridden by EE module
+    return unless user.persisted?
+
+    Gitlab::Tracking.event(self.class.name, 'successfully_submitted_form', user: user)
   end
 
   def after_sign_up_path_for(user)
@@ -226,12 +229,14 @@ class RegistrationsController < Devise::RegistrationsController
     Gitlab::Recaptcha.load_configurations!
   end
 
+  # overridden by EE module
   def set_resource_fields
     return unless set_blocked_pending_approval?
 
     resource.state = User::BLOCKED_PENDING_APPROVAL_STATE
   end
 
+  # overridden by EE module
   def set_blocked_pending_approval?
     Gitlab::CurrentSettings.require_admin_approval_after_user_signup
   end

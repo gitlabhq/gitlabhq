@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Update of an existing issue' do
+RSpec.describe 'Update of an existing issue', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

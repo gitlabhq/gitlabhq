@@ -24,5 +24,17 @@ RSpec.describe 'merge requests creations', feature_category: :code_review do
 
       expect { get_new }.not_to exceed_query_limit(control)
     end
+
+    it_behaves_like "observability csp policy", Projects::MergeRequests::CreationsController do
+      let(:tested_path) do
+        project_new_merge_request_path(project, merge_request: {
+                                         title: 'Some feature',
+                                         source_branch: 'fix',
+                                         target_branch: 'feature',
+                                         target_project: project,
+                                         source_project: project
+                                       })
+      end
+    end
   end
 end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'ConfigureSecretDetection' do
+RSpec.describe 'ConfigureSecretDetection', feature_category: :secret_detection do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :test_repo) }

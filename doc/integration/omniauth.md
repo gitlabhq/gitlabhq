@@ -280,7 +280,7 @@ for the OpenID Connect provider and the Twitter OAuth provider.
 
 This method of enabling automatic linking works for all providers
 [except SAML](https://gitlab.com/gitlab-org/gitlab/-/issues/338293).
-To enable automatic linking for SAML, see the [SAML setup instructions](saml.md#general-setup).
+To enable automatic linking for SAML, see the [SAML setup instructions](saml.md#configure-saml-support-in-gitlab).
 
 ## Create an external providers list
 

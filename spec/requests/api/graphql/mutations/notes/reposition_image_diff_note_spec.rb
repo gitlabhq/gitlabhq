@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Repositioning an ImageDiffNote' do
+RSpec.describe 'Repositioning an ImageDiffNote', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:noteable) { create(:merge_request) }

@@ -78,6 +78,7 @@ scope path: 'merge_requests', controller: 'merge_requests/creations' do
     scope constraints: ->(req) { req.format == :json }, as: :json do
       get :diffs
       get :pipelines
+      get :target_projects
     end
 
     scope action: :new do

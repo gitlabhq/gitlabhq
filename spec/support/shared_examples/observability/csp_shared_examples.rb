@@ -21,9 +21,18 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
   include ContentSecurityPolicyHelpers
 
   let(:observability_url) { Gitlab::Observability.observability_url }
+  let(:signin_url) do
+    Gitlab::Utils.append_path(Gitlab.config.gitlab.url,
+  '/users/sign_in')
+  end
+
+  let(:oauth_url) do
+    Gitlab::Utils.append_path(Gitlab.config.gitlab.url,
+  '/oauth/authorize')
+  end
 
   before do
-    setup_csp_for_controller(described_class, csp)
+    setup_csp_for_controller(controller_class, csp, any_time: true)
   end
 
   subject do
@@ -48,20 +57,33 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
 
     it 'appends the proper url to frame-src CSP directives' do
       expect(subject).to include(
-        "frame-src https://something.test #{observability_url} 'self'")
+        "frame-src https://something.test #{observability_url} #{signin_url} #{oauth_url}")
     end
   end
 
-  context 'when self is already present in the policy' do
+  context 'when signin is already present in the policy' do
     let(:csp) do
       ActionDispatch::ContentSecurityPolicy.new do |p|
-        p.frame_src "'self'"
+        p.frame_src signin_url
       end
     end
 
-    it 'does not append self again' do
+    it 'does not append signin again' do
       expect(subject).to include(
-        "frame-src 'self' #{observability_url};")
+        "frame-src #{signin_url} #{observability_url} #{oauth_url};")
+    end
+  end
+
+  context 'when oauth is already present in the policy' do
+    let(:csp) do
+      ActionDispatch::ContentSecurityPolicy.new do |p|
+        p.frame_src oauth_url
+      end
+    end
+
+    it 'does not append oauth again' do
+      expect(subject).to include(
+        "frame-src #{oauth_url} #{observability_url} #{signin_url};")
     end
   end
 
@@ -79,7 +101,7 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
 
     it 'appends the proper url to frame-src CSP directives' do
       expect(subject).to include(
-        "frame-src https://something.test #{observability_url} 'self'")
+        "frame-src https://something.test #{observability_url} #{signin_url} #{oauth_url}")
     end
   end
 
@@ -93,7 +115,7 @@ RSpec.shared_examples 'observability csp policy' do |controller_class = describe
 
     it 'appends to frame-src CSP directives' do
       expect(subject).to include(
-        "frame-src https://something.test #{observability_url} 'self'")
+        "frame-src https://something.test #{observability_url} #{signin_url} #{oauth_url}")
       expect(subject).to include(
         "default-src https://something_default.test")
     end

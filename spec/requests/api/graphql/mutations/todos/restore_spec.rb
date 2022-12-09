@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Restoring Todos' do
+RSpec.describe 'Restoring Todos', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require "spec_helper"
 
-RSpec.describe "moving designs" do
+RSpec.describe "moving designs", feature_category: :design_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

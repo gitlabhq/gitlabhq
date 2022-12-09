@@ -57,7 +57,7 @@ module Gitlab
           if uses_primary?
             load_balancer.primary_write_location
           else
-            load_balancer.host.database_replica_location
+            load_balancer.host&.database_replica_location || load_balancer.primary_write_location
           end
         end
 

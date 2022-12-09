@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Mark snippet as spam' do
+RSpec.describe 'Mark snippet as spam', feature_category: :source_code_management do
   include GraphqlHelpers
   include AfterNextHelpers
 

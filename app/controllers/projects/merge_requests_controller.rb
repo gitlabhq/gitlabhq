@@ -11,6 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include SourcegraphDecorator
   include DiffHelper
   include Gitlab::Cache::Helpers
+  include ::Observability::ContentSecurityPolicy
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]

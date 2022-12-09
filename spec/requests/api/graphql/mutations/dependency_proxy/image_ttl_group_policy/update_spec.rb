@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating the dependency proxy image ttl policy' do
+RSpec.describe 'Updating the dependency proxy image ttl policy', feature_category: :dependency_proxy do
   include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Updating an existing release' do
+RSpec.describe 'Updating an existing release', feature_category: :release_orchestration do
   include GraphqlHelpers
   include Presentable
 

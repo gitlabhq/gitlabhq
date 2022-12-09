@@ -94,7 +94,7 @@ module Gitlab
       def strike_exceeded_callback(monitor_name, monitor_payload)
         event_reporter.strikes_exceeded(monitor_name, log_labels(monitor_payload))
 
-        Gitlab::Memory::Reports::HeapDump.enqueue! if @configuration.write_heap_dumps?
+        Gitlab::Memory::Reports::HeapDump.enqueue!
 
         handler.call
       end

@@ -2,13 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
+RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: :application_performance do
   context 'watchdog' do
     let(:configuration) { instance_double(described_class::Configuration) }
     let(:handler) { instance_double(described_class::NullHandler) }
     let(:reporter) { instance_double(described_class::EventReporter) }
     let(:sleep_time_seconds) { 60 }
-    let(:write_heap_dumps) { false }
     let(:threshold_violated) { false }
     let(:watchdog_iterations) { 1 }
     let(:name) { :monitor_name }
@@ -50,7 +49,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
           config.handler = handler
           config.event_reporter = reporter
           config.sleep_time_seconds = sleep_time_seconds
-          config.write_heap_dumps = write_heap_dumps
           config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
         end
 
@@ -123,16 +121,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
 
             watchdog.call
           end
-
-          context 'and heap dumps are enabled' do
-            let(:write_heap_dumps) { true }
-
-            it 'does not schedule a heap dump' do
-              expect(Gitlab::Memory::Reports::HeapDump).not_to receive(:enqueue!)
-
-              watchdog.call
-            end
-          end
         end
 
         context 'when monitor exceeds the allowed number of strikes' do
@@ -158,14 +146,10 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures do
             watchdog.call
           end
 
-          context 'and heap dumps are enabled' do
-            let(:write_heap_dumps) { true }
+          it 'schedules a heap dump' do
+            expect(Gitlab::Memory::Reports::HeapDump).to receive(:enqueue!)
 
-            it 'schedules a heap dump' do
-              expect(Gitlab::Memory::Reports::HeapDump).to receive(:enqueue!)
-
-              watchdog.call
-            end
+            watchdog.call
           end
 
           context 'when enforce_memory_watchdog ops toggle is off' do

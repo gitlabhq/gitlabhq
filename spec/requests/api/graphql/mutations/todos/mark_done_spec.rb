@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Marking todos done' do
+RSpec.describe 'Marking todos done', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

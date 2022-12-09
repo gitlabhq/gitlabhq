@@ -50,6 +50,11 @@ module Gitlab
           ::RequestStore[cross_slots_key] += amount
         end
 
+        def increment_allowed_cross_slot_request_count(amount = 1)
+          ::RequestStore[allowed_cross_slots_key] ||= 0
+          ::RequestStore[allowed_cross_slots_key] += amount
+        end
+
         def get_request_count
           ::RequestStore[request_count_key] || 0
         end
@@ -70,6 +75,10 @@ module Gitlab
           ::RequestStore[cross_slots_key] || 0
         end
 
+        def get_allowed_cross_slot_request_count
+          ::RequestStore[allowed_cross_slots_key] || 0
+        end
+
         def query_time
           query_time = ::RequestStore[call_duration_key] || 0
           query_time.round(::Gitlab::InstrumentationHelper::DURATION_PRECISION)
@@ -84,6 +93,8 @@ module Gitlab
           if !result[:valid] && !result[:allowed] && (Rails.env.development? || Rails.env.test?)
             raise RedisClusterValidator::CrossSlotError, "Redis command #{result[:command_name]} arguments hash to different slots. See https://docs.gitlab.com/ee/development/redis.html#multi-key-commands"
           end
+
+          increment_allowed_cross_slot_request_count if result[:allowed]
 
           result[:valid]
         end
@@ -142,6 +153,10 @@ module Gitlab
 
         def cross_slots_key
           strong_memoize(:cross_slots_key) { build_key(:redis_cross_slot_request_count) }
+        end
+
+        def allowed_cross_slots_key
+          strong_memoize(:allowed_cross_slots_key) { build_key(:redis_allowed_cross_slot_request_count) }
         end
 
         def build_key(namespace)
