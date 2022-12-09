@@ -1,0 +1,9 @@
+---
+table_name: web_hook_logs_archived
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60184
+milestone: '13.12'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63649
+removed_in_milestone: '14.0'

@@ -1,0 +1,9 @@
+---
+table_name: ci_test_cases
+gitlab_schema: gitlab_ci
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/45027
+milestone: '13.6'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/67180
+removed_in_milestone: '14.2'

@@ -585,6 +585,38 @@ you can pull from the Container Registry, but you cannot push.
 1. Configure your registry to [use the S3 bucket for storage](#use-object-storage).
 1. For the changes to take effect, set the Registry back to `read-write` mode and [reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure).
 
+#### Moving to Azure Object Storage
+
+When moving from an existing file system or another object storage provider to Azure Object Storage, you must configure the registry to use the standard root directory.
+This configuration is done by setting [`trimlegacyrootprefix: true]`](https://gitlab.com/gitlab-org/container-registry/-/blob/a3f64464c3ec1c5a599c0a2daa99ebcbc0100b9a/docs-gitlab/README.md#azure-storage-driver) in the Azure storage driver section of the registry configuration.
+Without this configuration, the Azure storage driver uses `//` instead of `/` as the first section of the root path, rendering the migrated images inaccessible.
+
+**Omnibus GitLab installations**
+
+```ruby
+registry['storage'] = {
+  'azure' => {
+    'accountname' => 'accountname',
+    'accesskey' => 'base64encodedaccountkey',
+    'container' => 'containername',
+    'rootdirectory' => '/azure/virtual/container',
+    'trimlegacyrootprefix' => 'true'
+  }
+}
+```
+
+**Installations from source**
+
+```yaml
+storage:
+  azure:
+    accountname: accountname
+    accountkey: base64encodedaccountkey
+    container: containername
+    rootdirectory: /azure/virtual/container
+    trimlegacyrootprefix: true
+```
+
 ### Disable redirect for storage driver
 
 By default, users accessing a registry configured with a remote backend are redirected to the default backend for the storage driver. For example, registries can be configured using the `s3` storage driver, which redirects requests to a remote S3 bucket to alleviate load on the GitLab server.

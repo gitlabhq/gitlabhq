@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::Serializers::RepositoryEntity do
+RSpec.describe Atlassian::JiraConnect::Serializers::RepositoryEntity, feature_category: :integrations do
   let(:update_sequence_id) { nil }
 
   subject do

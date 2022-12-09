@@ -58,7 +58,7 @@ Example migration adding a concurrent index that is treated as change of the str
 that is executed on all configured databases.
 
 ```ruby
-class AddUserIdAndStateIndexToMergeRequestReviewers < Gitlab::Database::Migration[2.0]
+class AddUserIdAndStateIndexToMergeRequestReviewers < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_on_merge_request_reviewers_user_id_and_state'
@@ -84,7 +84,7 @@ end
 1. Create the table in a schema migration:
 
    ```ruby
-   class CreateSshSignatures < Gitlab::Database::Migration[2.0]
+   class CreateSshSignatures < Gitlab::Database::Migration[2.1]
      def change
        create_table :ssh_signatures do |t|
          t.timestamps_with_timezone null: false
@@ -125,7 +125,7 @@ Example migration updating `archived` column of `projects` that is executed
 only for the database containing `gitlab_main` schema.
 
 ```ruby
-class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.0]
+class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
@@ -157,7 +157,7 @@ databases. For example, running migration in context of `ci:` and reading featur
 from `main:`, as no established connection to another database is present.
 
 ```ruby
-class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.0]
+class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   restrict_gitlab_migration gitlab_schema: :gitlab_main
@@ -195,7 +195,7 @@ that is marked in `lib/gitlab/database/gitlab_schemas.yml` as `gitlab_shared`.
 This migration is executed across all configured databases.
 
 ```ruby
-class DeleteAllLooseForeignKeyRecords < Gitlab::Database::Migration[2.0]
+class DeleteAllLooseForeignKeyRecords < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -217,7 +217,7 @@ This migration since it configures restriction on `gitlab_ci` is executed only
 in context of database containing `gitlab_ci` schema.
 
 ```ruby
-class DeleteCiBuildsLooseForeignKeyRecords < Gitlab::Database::Migration[2.0]
+class DeleteCiBuildsLooseForeignKeyRecords < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
@@ -279,7 +279,7 @@ as part of the migration run and prevent the migration from being completed.
 ### Exception 1: migration running in DDL mode does DML select
 
 ```ruby
-class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.0]
+class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   # Missing:
@@ -310,7 +310,7 @@ running in **DDL** mode, but the executed payload appears to be reading data fro
 ### Exception 2: migration running in DML mode changes the structure
 
 ```ruby
-class AddUserIdAndStateIndexToMergeRequestReviewers < Gitlab::Database::Migration[2.0]
+class AddUserIdAndStateIndexToMergeRequestReviewers < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   # restrict_gitlab_migration if defined indicates DML, it should be removed
@@ -341,7 +341,7 @@ but the executed payload appears to be doing structure changes (DDL).
 ### Exception 3: migration running in DML mode accesses data from a table in another schema
 
 ```ruby
-class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.0]
+class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   # Since it modifies `projects` it should use `gitlab_main`
@@ -372,7 +372,7 @@ data in `gitlab_main`.
 ### Exception 4: mixing DDL and DML mode
 
 ```ruby
-class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.0]
+class UpdateProjectsArchivedState < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   # This migration is invalid regardless of specification

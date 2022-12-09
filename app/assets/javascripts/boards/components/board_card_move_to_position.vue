@@ -1,19 +1,14 @@
 <script>
-import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mapActions, mapState } from 'vuex';
-import { s__ } from '~/locale';
-
 import Tracking from '~/tracking';
+import { BOARD_CARD_MOVE_TO_POSITION_OPTIONS, MOVE_TO_START } from '../constants';
 
 export default {
-  i18n: {
-    moveToStartText: s__('Boards|Move to start of list'),
-    moveToEndText: s__('Boards|Move to end of list'),
-  },
+  BOARD_CARD_MOVE_TO_POSITION_OPTIONS,
   name: 'BoardCardMoveToPosition',
   components: {
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -96,30 +91,30 @@ export default {
         allItemsLoadedInList: !this.listHasNextPage,
       });
     },
+    selectMoveAction(action) {
+      if (action === MOVE_TO_START) {
+        this.moveToStart();
+      } else {
+        this.moveToEnd();
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown
+  <gl-collapsible-listbox
     ref="dropdown"
     :key="itemIdentifier"
-    icon="ellipsis_v"
-    :text="s__('Boards|Move card')"
-    :text-sr-only="true"
-    class="move-to-position gl-display-block gl-mb-2 gl-ml-2 gl-mt-n3 gl-mr-n3"
     category="tertiary"
-    :tabindex="index"
+    class="move-to-position gl-display-block gl-mb-2 gl-ml-2 gl-mt-n3 gl-mr-n3 js-no-trigger"
+    icon="ellipsis_v"
+    :items="$options.BOARD_CARD_MOVE_TO_POSITION_OPTIONS"
     no-caret
+    :tabindex="index"
+    :text-sr-only="true"
+    :toggle-text="s__('Boards|Move card')"
     @keydown.esc.native="$emit('hide')"
-  >
-    <div>
-      <gl-dropdown-item @click.stop="moveToStart">
-        {{ $options.i18n.moveToStartText }}
-      </gl-dropdown-item>
-      <gl-dropdown-item @click.stop="moveToEnd">
-        {{ $options.i18n.moveToEndText }}
-      </gl-dropdown-item>
-    </div>
-  </gl-dropdown>
+    @select="selectMoveAction"
+  />
 </template>

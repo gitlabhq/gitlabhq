@@ -310,7 +310,7 @@ The `merge_status` field in the [merge request API](https://docs.gitlab.com/ee/a
 
 ### File Type variable expansion in `.gitlab-ci.yml`
 
-Planned removal: GitLab <span class="removal-milestone">15.7</span> ()
+Planned removal: GitLab <span class="removal-milestone">15.7</span> (2022-12-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

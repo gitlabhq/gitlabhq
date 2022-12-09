@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::Serializers::AuthorEntity do
+RSpec.describe Atlassian::JiraConnect::Serializers::AuthorEntity, feature_category: :integrations do
   subject { described_class.represent(user).as_json }
 
   context 'when object is a User model' do

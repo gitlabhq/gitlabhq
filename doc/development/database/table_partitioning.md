@@ -173,7 +173,7 @@ An example migration of partitioning the `audit_events` table by its
 `created_at` column would look like:
 
 ```ruby
-class PartitionAuditEvents < Gitlab::Database::Migration[2.0]
+class PartitionAuditEvents < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -200,7 +200,7 @@ into the partitioned copy.
 Continuing the above example, the migration would look like:
 
 ```ruby
-class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.0]
+class BackfillPartitionAuditEvents < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -233,7 +233,7 @@ failed jobs.
 Once again, continuing the example, this migration would look like:
 
 ```ruby
-class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.0]
+class CleanupPartitionedAuditEventsBackfill < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   def up
@@ -273,7 +273,7 @@ Include the partitioning key in the following constraints:
 Add the partitioning key column. For example, in a rails migration:
 
 ```ruby
-class AddPartitionNumberForPartitioning < Gitlab::Database::Migration[2.0]
+class AddPartitionNumberForPartitioning < Gitlab::Database::Migration[2.1]
   enable_lock_retries!
 
   TABLE_NAME = :table_name
@@ -291,7 +291,7 @@ end
 Add indexes including the partitioning key column. For example, in a rails migration:
 
 ```ruby
-class PrepareIndexesForPartitioning < Gitlab::Database::Migration[2.0]
+class PrepareIndexesForPartitioning < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   TABLE_NAME = :table_name
@@ -312,7 +312,7 @@ end
 Swap the primary key including the partitioning key column. For example, in a rails migration:
 
 ```ruby
-class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.0]
+class PreparePrimaryKeyForPartitioning < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   TABLE_NAME = :table_name
@@ -347,7 +347,7 @@ end
 Enforce unique indexes including the partitioning key column. For example, in a rails migration:
 
 ```ruby
-class PrepareUniqueContraintForPartitioning < Gitlab::Database::Migration[2.0]
+class PrepareUniqueContraintForPartitioning < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   TABLE_NAME = :table_name
@@ -373,7 +373,7 @@ end
 Enforce foreign keys including the partitioning key column. For example, in a rails migration:
 
 ```ruby
-class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.0]
+class PrepareForeignKeyForPartitioning < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   SOURCE_TABLE_NAME = :source_table_name
@@ -410,7 +410,7 @@ partition by using the following helpers provided by the database team.
 For example, using list partitioning in Rails post migrations:
 
 ```ruby
-class PrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2.0]
+class PrepareTableConstraintsForListPartitioning < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
 
   disable_ddl_transaction!
@@ -441,7 +441,7 @@ end
 ```
 
 ```ruby
-class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.0]
+class ConvertTableToListPartitioning < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers::TableManagementHelpers
 
   disable_ddl_transaction!

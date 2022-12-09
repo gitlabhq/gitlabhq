@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-module ReadonlyAbilities
+module ArchivedAbilities
   extend ActiveSupport::Concern
 
-  READONLY_ABILITIES = %i[
+  ARCHIVED_ABILITIES = %i[
     admin_tag
     push_code
     push_to_delete_protected_branch
@@ -16,7 +16,7 @@ module ReadonlyAbilities
     create_incident
   ].freeze
 
-  READONLY_FEATURES = %i[
+  ARCHIVED_FEATURES = %i[
     issue
     issue_board_list
     merge_request
@@ -40,14 +40,14 @@ module ReadonlyAbilities
   ].freeze
 
   class_methods do
-    def readonly_abilities
-      READONLY_ABILITIES
+    def archived_abilities
+      ARCHIVED_ABILITIES
     end
 
-    def readonly_features
-      READONLY_FEATURES
+    def archived_features
+      ARCHIVED_FEATURES
     end
   end
 end
 
-ReadonlyAbilities::ClassMethods.prepend_mod_with('ReadonlyAbilities::ClassMethods')
+ArchivedAbilities::ClassMethods.prepend_mod_with('ArchivedAbilities::ClassMethods')

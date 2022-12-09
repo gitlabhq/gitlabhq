@@ -202,7 +202,7 @@ build:
   script: ls -al
 ```
 
-This YAML setting configures a custom clone path. This path makes it possible to re-use worktrees 
+This YAML setting configures a custom clone path. This path makes it possible to re-use worktrees
 between the parent project and forks because we use the same clone path for all forks.
 
 Why use `$CI_CONCURRENT_ID`? The main reason is to ensure that worktrees used are not conflicting

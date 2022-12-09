@@ -200,7 +200,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    `127.0.0.1/32` to the `postgresql['md5_auth_cidr_addresses']` setting, to allow Rails to connect through
    `127.0.0.1`. For more information, see [omnibus-5258](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/5258).
 
-   Depending on your network configuration, the suggested addresses may 
+   Depending on your network configuration, the suggested addresses may
    be incorrect. If your **primary** site and **secondary** sites connect over a local
    area network, or a virtual network connecting availability zones like
    [Amazon's VPC](https://aws.amazon.com/vpc/) or [Google's VPC](https://cloud.google.com/vpc/),
@@ -509,7 +509,7 @@ data before running `pg_basebackup`.
      (for example, you know the network path is secure, or you are using a site-to-site
      VPN). It is **not** safe over the public Internet!
    - You can read more details about each `sslmode` in the
-     [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-ssl.html#LIBPQ-SSL-PROTECTION). 
+     [PostgreSQL documentation](https://www.postgresql.org/docs/12/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
      The instructions above are carefully written to ensure protection against
      both passive eavesdroppers and active "man-in-the-middle" attackers.
    - Change the `--slot-name` to the name of the replication slot

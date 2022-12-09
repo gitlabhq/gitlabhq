@@ -411,7 +411,7 @@ the following are true:
 If all the above are true and the users are still not getting access,
 [run a manual group sync](#sync-all-groups) in the rails console and
 [look through the output](#example-console-output-after-a-group-sync) to see what happens when
-GitLab syncs the `admin_group`. 
+GitLab syncs the `admin_group`.
 
 #### Sync now button stuck in the UI
 

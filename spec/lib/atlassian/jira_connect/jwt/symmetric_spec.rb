@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric do
+RSpec.describe Atlassian::JiraConnect::Jwt::Symmetric, feature_category: :integrations do
   let(:shared_secret) { 'secret' }
 
   describe '#iss_claim' do

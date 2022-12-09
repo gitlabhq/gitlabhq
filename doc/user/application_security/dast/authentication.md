@@ -34,7 +34,7 @@ time due to changes to the application.
 To run a DAST authenticated scan:
 
 - Read the [prerequisite](#prerequisites) conditions for authentication.
-- [Update your target website](#update-the-target-website) to a landing page of an authenticated user. 
+- [Update your target website](#update-the-target-website) to a landing page of an authenticated user.
 - If your login form has the username, password and submit button on a single page, use the [CI/CD variables](#available-cicd-variables) to configure [single-step](#configuration-for-a-single-step-login-form) login form authentication.
 - If your login form has the username and password fields on different pages, use the [CI/CD variables](#available-cicd-variables) to configure [multi-step](#configuration-for-a-multi-step-login-form) login form authentication.
 - Make sure the user isn't [logged out](#excluding-logout-urls) during the scan.
@@ -47,7 +47,7 @@ To run a DAST authenticated scan:
 - You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST will use to input the respective values.
 - You know the element's [selector](#finding-an-elements-selector) that will submit the login form when selected.
 - You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
-- You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application. 
+- You have checked the [known limitations](#known-limitations) to ensure DAST can authenticate to your application.
 
 ### Available CI/CD variables
 
@@ -94,7 +94,7 @@ dast:
 A single-step login form has all login form elements on a single page.
 Configuration requires the CI/CD variables `DAST_AUTH_URL`, `DAST_USERNAME`, `DAST_USERNAME_FIELD`, `DAST_PASSWORD`, `DAST_PASSWORD_FIELD`, and `DAST_SUBMIT_FIELD` to be defined for the DAST job.
 
-It is recommended to set up the URL and selectors of fields in the job definition YAML, for example: 
+It is recommended to set up the URL and selectors of fields in the job definition YAML, for example:
 
 ```yaml
 include:
@@ -149,7 +149,7 @@ Check the [known limitations](#known-limitations) of DAST authentication to dete
 
 ### Clicking to navigate to the login form
 
-Define `DAST_BROWSER_PATH_TO_LOGIN_FORM` to provide a path of elements to click on from the `DAST_AUTH_URL` so that DAST can access the 
+Define `DAST_BROWSER_PATH_TO_LOGIN_FORM` to provide a path of elements to click on from the `DAST_AUTH_URL` so that DAST can access the
 login form. This is useful for applications that show the login form in a pop-up (modal) window or when the login form does not
 have a unique URL.
 

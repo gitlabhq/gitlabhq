@@ -103,7 +103,7 @@ transaction. Transactions for migrations can be disabled using the following
 pattern:
 
 ```ruby
-class MigrationName < Gitlab::Database::Migration[2.0]
+class MigrationName < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 end
 ```
@@ -111,7 +111,7 @@ end
 For example:
 
 ```ruby
-class AddUsersLowerUsernameEmailIndexes < Gitlab::Database::Migration[2.0]
+class AddUsersLowerUsernameEmailIndexes < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up

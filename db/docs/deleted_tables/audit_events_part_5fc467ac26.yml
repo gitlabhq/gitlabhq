@@ -1,0 +1,9 @@
+---
+table_name: audit_events_part_5fc467ac26
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36298
+milestone: '13.3'
+removed_by_url: TODO
+removed_in_milestone: TODO

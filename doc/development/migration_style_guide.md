@@ -305,7 +305,7 @@ of migration helpers.
 In this example, we use version 2.0 of the migration class:
 
 ```ruby
-class TestMigration < Gitlab::Database::Migration[2.0]
+class TestMigration < Gitlab::Database::Migration[2.1]
   def change
   end
 end
@@ -600,7 +600,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[2.0]
+class MyMigration < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -657,7 +657,7 @@ by calling the method `disable_ddl_transaction!` in the body of your migration
 class like so:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[2.0]
+class MyMigration < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   INDEX_NAME = 'index_name'
@@ -700,7 +700,7 @@ The easiest way to test for existence of an index by name is to use the
 be used with a name option. For example:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[2.0]
+class MyMigration < Gitlab::Database::Migration[2.1]
   INDEX_NAME = 'index_name'
 
   def up
@@ -735,7 +735,7 @@ Here's an example where we add a new column with a foreign key
 constraint. Note it includes `index: true` to create an index for it.
 
 ```ruby
-class Migration < Gitlab::Database::Migration[2.0]
+class Migration < Gitlab::Database::Migration[2.1]
 
   def change
     add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
@@ -791,7 +791,7 @@ expensive and disruptive operation for larger tables, but in reality it's not.
 Take the following migration as an example:
 
 ```ruby
-class DefaultRequestAccessGroups < Gitlab::Database::Migration[2.0]
+class DefaultRequestAccessGroups < Gitlab::Database::Migration[2.1]
   def change
     change_column_default(:namespaces, :request_access_enabled, from: false, to: true)
   end
@@ -985,7 +985,7 @@ Re-add a sequence:
 A Rails migration example:
 
 ```ruby
-class DropSequenceTest < Gitlab::Database::Migration[2.0]
+class DropSequenceTest < Gitlab::Database::Migration[2.1]
   def up
     drop_sequence(:ci_pipelines_config, :pipeline_id, :ci_pipelines_config_pipeline_id_seq)
   end
@@ -1016,7 +1016,7 @@ Under the hood, it works like this:
 - Add the primary key using the index defined beforehand.
 
 ```ruby
-class SwapPrimaryKey < Gitlab::Database::Migration[2.0]
+class SwapPrimaryKey < Gitlab::Database::Migration[2.1]
   TABLE_NAME = :table_name
   PRIMARY_KEY = :table_name_pkey
   OLD_INDEX_NAME = :old_index_name
@@ -1107,7 +1107,7 @@ The Rails 5 natively supports `JSONB` (binary JSON) column type.
 Example migration adding this column:
 
 ```ruby
-class AddOptionsToBuildMetadata < Gitlab::Database::Migration[2.0]
+class AddOptionsToBuildMetadata < Gitlab::Database::Migration[2.1]
   def change
     add_column :ci_builds_metadata, :config_options, :jsonb
   end
@@ -1139,7 +1139,7 @@ Do not store `attr_encrypted` attributes as `:text` in the database; use
 efficient:
 
 ```ruby
-class AddSecretToSomething < Gitlab::Database::Migration[2.0]
+class AddSecretToSomething < Gitlab::Database::Migration[2.1]
   def change
     add_column :something, :encrypted_secret, :binary
     add_column :something, :encrypted_secret_iv, :binary
@@ -1197,7 +1197,7 @@ If you need more complex logic, you can define and use models local to a
 migration. For example:
 
 ```ruby
-class MyMigration < Gitlab::Database::Migration[2.0]
+class MyMigration < Gitlab::Database::Migration[2.1]
   class Project < MigrationRecord
     self.table_name = 'projects'
   end
@@ -1296,7 +1296,7 @@ in a previous migration.
 It is important not to leave out the `User.reset_column_information` command, to ensure that the old schema is dropped from the cache and ActiveRecord loads the updated schema information.
 
 ```ruby
-class AddAndSeedMyColumn < Gitlab::Database::Migration[2.0]
+class AddAndSeedMyColumn < Gitlab::Database::Migration[2.1]
   class User < MigrationRecord
     self.table_name = 'users'
   end

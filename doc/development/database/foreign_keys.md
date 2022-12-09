@@ -49,7 +49,7 @@ To replace a foreign key:
    foreign key before removing the old one.
 
    ```ruby
-   class ReplaceFkOnPackagesPackagesProjectId < Gitlab::Database::Migration[2.0]
+   class ReplaceFkOnPackagesPackagesProjectId < Gitlab::Database::Migration[2.1]
      disable_ddl_transaction!
 
      NEW_CONSTRAINT_NAME = 'fk_new'
@@ -69,7 +69,7 @@ To replace a foreign key:
 1. [Validate the new foreign key](add_foreign_key_to_existing_column.md#validate-the-foreign-key)
 
    ```ruby
-   class ValidateFkNew < Gitlab::Database::Migration[2.0]
+   class ValidateFkNew < Gitlab::Database::Migration[2.1]
      NEW_CONSTRAINT_NAME = 'fk_new'
 
      # foreign key added in <link to MR or path to migration adding new FK>
@@ -86,7 +86,7 @@ To replace a foreign key:
 1. Remove the old foreign key:
 
    ```ruby
-   class RemoveFkOld < Gitlab::Database::Migration[2.0]
+   class RemoveFkOld < Gitlab::Database::Migration[2.1]
      OLD_CONSTRAINT_NAME = 'fk_old'
 
      # new foreign key added in <link to MR or path to migration adding new FK>

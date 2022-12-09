@@ -925,6 +925,21 @@ RSpec.describe Deployment do
     end
   end
 
+  describe '#triggered_by?' do
+    subject { deployment.triggered_by?(user) }
+
+    let(:user) { create(:user) }
+    let(:deployment) { create(:deployment, user: user) }
+
+    it { is_expected.to eq(true) }
+
+    context 'when deployment triggerer is different' do
+      let(:deployment) { create(:deployment) }
+
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe '.find_successful_deployment!' do
     it 'returns a successful deployment' do
       deploy = create(:deployment, :success)

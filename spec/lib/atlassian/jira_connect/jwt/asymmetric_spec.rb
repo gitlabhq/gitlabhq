@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric do
+RSpec.describe Atlassian::JiraConnect::Jwt::Asymmetric, feature_category: :integrations do
   describe '#valid?' do
     let_it_be(:private_key) { OpenSSL::PKey::RSA.generate 3072 }
 

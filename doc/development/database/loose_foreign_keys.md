@@ -192,7 +192,7 @@ trigger needs to be configured only once. If the model already has at least one
 `loose_foreign_key` definition, then this step can be skipped:
 
 ```ruby
-class TrackProjectRecordChanges < Gitlab::Database::Migration[2.0]
+class TrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
   enable_lock_retries!
@@ -227,7 +227,7 @@ trigger. If the foreign key is deleted earlier, there is a good chance of
 introducing data inconsistency which needs manual cleanup:
 
 ```ruby
-class RemoveProjectsCiPipelineFk < Gitlab::Database::Migration[2.0]
+class RemoveProjectsCiPipelineFk < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up
@@ -258,7 +258,7 @@ records in the database.
 Migration for removing the trigger:
 
 ```ruby
-class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.0]
+class UnTrackProjectRecordChanges < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
   enable_lock_retries!
@@ -278,7 +278,7 @@ table however, there is still a chance for having leftover pending records in th
 must be removed with an inline data migration.
 
 ```ruby
-class RemoveLeftoverProjectDeletions < Gitlab::Database::Migration[2.0]
+class RemoveLeftoverProjectDeletions < Gitlab::Database::Migration[2.1]
   disable_ddl_transaction!
 
   def up

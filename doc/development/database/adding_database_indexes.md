@@ -231,7 +231,7 @@ A Rails migration example:
 ```ruby
 # in db/post_migrate/
 
-class AddIndexToPartitionedTable < Gitlab::Database::Migration[2.0]
+class AddIndexToPartitionedTable < Gitlab::Database::Migration[2.1]
   include Gitlab::Database::PartitioningMigrationHelpers
 
   disable_ddl_transaction!

@@ -2,7 +2,7 @@
 
 class ProjectPolicy < BasePolicy
   include CrudPolicyHelpers
-  include ReadonlyAbilities
+  include ArchivedAbilities
 
   desc "Project has public builds enabled"
   condition(:public_builds, scope: :subject, score: 0) { project.public_builds? }
@@ -552,15 +552,15 @@ class ProjectPolicy < BasePolicy
   rule { can?(:push_code) }.enable :admin_tag
 
   rule { archived }.policy do
-    prevent(*readonly_abilities)
+    prevent(*archived_abilities)
 
-    readonly_features.each do |feature|
+    archived_features.each do |feature|
       prevent(*create_update_admin(feature))
     end
   end
 
   rule { archived & ~pending_delete }.policy do
-    readonly_features.each do |feature|
+    archived_features.each do |feature|
       prevent(:"destroy_#{feature}")
     end
   end

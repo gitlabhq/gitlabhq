@@ -170,7 +170,7 @@ See also:
 
 - [Exposing Global IDs](#exposing-global-ids).
 - [Mutation arguments](#object-identifier-arguments).
-- [Deprecating Global IDs](#deprecate-global-ids). 
+- [Deprecating Global IDs](#deprecate-global-ids).
 
 We have a custom scalar type (`Types::GlobalIDType`) which should be used as the
 type of input and output arguments when the value is a `GlobalID`. The benefits

@@ -1,0 +1,9 @@
+---
+table_name: analytics_repository_file_edits
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17277
+milestone: '12.4'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/24222
+removed_in_milestone: '12.8'

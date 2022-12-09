@@ -1,0 +1,9 @@
+---
+table_name: terraform_state_registry
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36594
+milestone: '13.3'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/43341
+removed_in_milestone: '13.5'

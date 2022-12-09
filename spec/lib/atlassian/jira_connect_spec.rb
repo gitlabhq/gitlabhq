@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Atlassian::JiraConnect do
+RSpec.describe Atlassian::JiraConnect, feature_category: :integrations do
   describe '.app_name' do
     subject { described_class.app_name }
 

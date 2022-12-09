@@ -1,0 +1,9 @@
+---
+table_name: forked_project_links
+gitlab_schema: gitlab_main
+feature_categories: []
+description: TODO
+introduced_by_url: TODO
+milestone: TODO
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/20771
+removed_in_milestone: '12.9'

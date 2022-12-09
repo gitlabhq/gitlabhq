@@ -363,6 +363,10 @@ class Deployment < ApplicationRecord
     deployable&.user || user
   end
 
+  def triggered_by?(user)
+    deployed_by == user
+  end
+
   def link_merge_requests(relation)
     # NOTE: relation.select will perform column deduplication,
     # when id == environment_id it will outputs 2 columns instead of 3

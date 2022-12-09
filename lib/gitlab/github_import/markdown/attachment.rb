@@ -28,6 +28,7 @@ module Gitlab
           def from_markdown_image(markdown_node)
             url = markdown_node.url
 
+            return unless url
             return unless github_url?(url, media: true)
             return unless whitelisted_type?(url, media: true)
 
@@ -37,6 +38,7 @@ module Gitlab
           def from_markdown_link(markdown_node)
             url = markdown_node.url
 
+            return unless url
             return unless github_url?(url, docs: true)
             return unless whitelisted_type?(url, docs: true)
 
@@ -46,7 +48,7 @@ module Gitlab
           def from_inline_html(markdown_node)
             img = Nokogiri::HTML.parse(markdown_node.string_content).xpath('//img')[0]
 
-            return unless img
+            return if img.nil? || img[:src].blank?
             return unless github_url?(img[:src], media: true)
             return unless whitelisted_type?(img[:src], media: true)
 
