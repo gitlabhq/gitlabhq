@@ -3,7 +3,71 @@
 RSpec.shared_examples 'batched background migrations execution worker' do
   include ExclusiveLeaseHelpers
 
-  describe '#perform' do
+  it 'is a limited capacity worker' do
+    expect(described_class.new).to be_a(LimitedCapacity::Worker)
+  end
+
+  describe 'defining the job attributes' do
+    it 'defines the data_consistency as always' do
+      expect(described_class.get_data_consistency).to eq(:always)
+    end
+
+    it 'defines the feature_category as database' do
+      expect(described_class.get_feature_category).to eq(:database)
+    end
+
+    it 'defines the idempotency as false' do
+      expect(described_class).not_to be_idempotent
+    end
+
+    it 'does not retry failed jobs' do
+      expect(described_class.sidekiq_options['retry']).to eq(0)
+    end
+
+    it 'does not deduplicate jobs' do
+      expect(described_class.get_deduplicate_strategy).to eq(:none)
+    end
+
+    it 'defines the queue namespace' do
+      expect(described_class.queue_namespace).to eq('batched_background_migrations')
+    end
+  end
+
+  describe '.perform_with_capacity' do
+    it 'enqueues jobs without modifying provided arguments' do
+      expect_next_instance_of(described_class) do |instance|
+        expect(instance).to receive(:remove_failed_jobs)
+      end
+
+      args = [['main', 123]]
+
+      expect(described_class)
+        .to receive(:bulk_perform_async)
+        .with(args)
+
+      described_class.perform_with_capacity(args)
+    end
+  end
+
+  describe '.max_running_jobs' do
+    it 'returns MAX_RUNNING_MIGRATIONS' do
+      expect(described_class.max_running_jobs).to eq(described_class::MAX_RUNNING_MIGRATIONS)
+    end
+  end
+
+  describe '#max_running_jobs' do
+    it 'returns MAX_RUNNING_MIGRATIONS' do
+      expect(described_class.new.max_running_jobs).to eq(described_class::MAX_RUNNING_MIGRATIONS)
+    end
+  end
+
+  describe '#remaining_work_count' do
+    it 'returns 0' do
+      expect(described_class.new.remaining_work_count).to eq(0)
+    end
+  end
+
+  describe '#perform_work' do
     let(:database_name) { Gitlab::Database::MAIN_DATABASE_NAME.to_sym }
     let(:base_model) { Gitlab::Database.database_base_models[database_name] }
     let(:table_name) { :events }
@@ -26,7 +90,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
         expect(Gitlab::Database::BackgroundMigration::BatchedMigration).not_to receive(:find_executable)
         expect(worker).not_to receive(:run_migration_job)
 
-        worker.perform(database_name, migration.id)
+        worker.perform_work(database_name, migration.id)
       end
     end
 
@@ -48,7 +112,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
           expect(Gitlab::Database::BackgroundMigration::BatchedMigration).not_to receive(:find_executable)
           expect(worker).not_to receive(:run_migration_job)
 
-          worker.perform(:ci, 123)
+          worker.perform_work(:ci, 123)
         end
       end
 
@@ -56,7 +120,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
         it 'does nothing' do
           expect(worker).not_to receive(:run_migration_job)
 
-          worker.perform(database_name, non_existing_record_id)
+          worker.perform_work(database_name, non_existing_record_id)
         end
       end
 
@@ -79,7 +143,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
             expect(worker).not_to receive(:run_migration_job)
 
-            worker.perform(database_name, migration.id)
+            worker.perform_work(database_name, migration.id)
           end
         end
 
@@ -89,7 +153,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
             expect(migration).to receive(:interval_elapsed?).with(variance: interval_variance).and_return(false)
             expect(worker).not_to receive(:run_migration_job)
 
-            worker.perform(database_name, migration.id)
+            worker.perform_work(database_name, migration.id)
           end
         end
 
@@ -105,7 +169,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
               expect(worker).not_to receive(:run_migration_job)
 
-              worker.perform(database_name, migration.id)
+              worker.perform_work(database_name, migration.id)
             end
           end
 
@@ -115,7 +179,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
             expect(worker).to receive(:run_migration_job).and_raise(RuntimeError, 'I broke')
 
-            expect { worker.perform(database_name, migration.id) }.to raise_error(RuntimeError, 'I broke')
+            expect { worker.perform_work(database_name, migration.id) }.to raise_error(RuntimeError, 'I broke')
           end
 
           it 'runs the migration' do
@@ -130,7 +194,7 @@ RSpec.shared_examples 'batched background migrations execution worker' do
 
             expect(worker).to receive(:run_migration_job).and_call_original
 
-            worker.perform(database_name, migration.id)
+            worker.perform_work(database_name, migration.id)
           end
         end
       end

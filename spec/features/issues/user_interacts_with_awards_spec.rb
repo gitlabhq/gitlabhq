@@ -136,6 +136,10 @@ RSpec.describe 'User interacts with awards', feature_category: :team_planning do
         page.within('.note-actions') do
           find('.note-emoji-button').click
         end
+
+        # make sure emoji popup is visible
+        execute_script("window.scrollBy(0, 200)")
+
         find('gl-emoji[data-name="8ball"]').click
         wait_for_requests
 

@@ -17,9 +17,10 @@ header {
 }
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -47,8 +48,9 @@ a:not([href]):not([class]) {
   text-decoration: none;
 }
 kbd {
-  font-family: "Menlo", "DejaVu Sans Mono", "Liberation Mono", "Consolas",
-    "Ubuntu Mono", "Courier New", "andale mono", "lucida console", monospace;
+  font-family: var(--default-mono-font, "Menlo"), "DejaVu Sans Mono",
+    "Liberation Mono", "Consolas", "Ubuntu Mono", "Courier New", "andale mono",
+    "lucida console", monospace;
   font-size: 1em;
 }
 img {
@@ -426,9 +428,10 @@ a.gl-badge.badge-warning:active {
 .gl-form-input,
 .gl-form-input.form-control {
   background-color: #fff;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue", sans-serif,
-    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: var(--default-regular-font, -apple-system), BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Noto Sans", Ubuntu, Cantarell, "Helvetica Neue",
+    sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
   font-size: 0.875rem;
   line-height: 1rem;
   padding-top: 0.5rem;
@@ -820,6 +823,22 @@ kbd {
 }
 .navbar-gitlab .header-content .navbar-collapse > ul.nav > li:not(.d-none) {
   margin: 0 2px;
+}
+.navbar-gitlab .header-content .header-search-new {
+  max-width: 640px;
+}
+.navbar-gitlab .header-search {
+  min-width: 320px;
+}
+@media (min-width: 768px) and (max-width: 1199.98px) {
+  .navbar-gitlab .header-search {
+    min-width: 200px;
+  }
+}
+.navbar-gitlab .header-search .keyboard-shortcut-helper {
+  transform: translateY(calc(50% - 2px));
+  box-shadow: none;
+  border-color: transparent;
 }
 .navbar-gitlab .navbar-collapse {
   flex: 0 0 auto;
@@ -1503,87 +1522,6 @@ svg.s12 {
 }
 svg.s16 {
   vertical-align: -3px;
-}
-.header-content .header-search-new {
-  max-width: 640px;
-}
-.header-search {
-  min-width: 320px;
-}
-@media (min-width: 768px) and (max-width: 1199.98px) {
-  .header-search {
-    min-width: 200px;
-  }
-}
-.header-search .keyboard-shortcut-helper {
-  transform: translateY(calc(50% - 2px));
-  box-shadow: none;
-  border-color: transparent;
-}
-.search {
-  margin: 0 8px;
-}
-.search form {
-  display: block;
-  margin: 0;
-  padding: 4px;
-  width: 200px;
-  line-height: 24px;
-  height: 32px;
-  border: 0;
-  border-radius: 4px;
-}
-@media (min-width: 1200px) {
-  .search form {
-    width: 320px;
-  }
-}
-.search .search-input {
-  border: 0;
-  font-size: 14px;
-  padding: 0 20px 0 0;
-  margin-left: 5px;
-  line-height: 25px;
-  width: 98%;
-  color: #fff;
-  background: none;
-}
-.search .search-input-container {
-  display: flex;
-  position: relative;
-}
-.search .search-input-wrap {
-  width: 100%;
-}
-.search .search-input-wrap .search-icon,
-.search .search-input-wrap .clear-icon {
-  position: absolute;
-  right: 5px;
-  top: 4px;
-}
-.search .search-input-wrap .search-icon {
-  user-select: none;
-}
-.search .search-input-wrap .clear-icon {
-  display: none;
-}
-.search .search-input-wrap .dropdown {
-  position: static;
-}
-.search .search-input-wrap .dropdown-menu {
-  left: -5px;
-  max-height: 400px;
-  overflow: auto;
-}
-@media (min-width: 1200px) {
-  .search .search-input-wrap .dropdown-menu {
-    width: 320px;
-  }
-}
-.search .identicon {
-  flex-basis: 16px;
-  flex-shrink: 0;
-  margin-right: 4px;
 }
 .avatar,
 .avatar-container {

@@ -71,6 +71,8 @@
   - 1
 - - background_migration_ci_database
   - 1
+- - batched_background_migrations
+  - 1
 - - bulk_import
   - 1
 - - bulk_imports_entity

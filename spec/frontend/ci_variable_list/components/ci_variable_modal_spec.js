@@ -68,6 +68,7 @@ describe('Ci variable modal', () => {
     findModal()
       .findAllComponents(GlButton)
       .wrappers.find((button) => button.props('variant') === 'danger');
+  const findExpandedVariableCheckbox = () => wrapper.findByTestId('ci-variable-expanded-checkbox');
   const findProtectedVariableCheckbox = () =>
     wrapper.findByTestId('ci-variable-protected-checkbox');
   const findMaskedVariableCheckbox = () => wrapper.findByTestId('ci-variable-masked-checkbox');
@@ -75,6 +76,7 @@ describe('Ci variable modal', () => {
   const findEnvScopeLink = () => wrapper.findByTestId('environment-scope-link');
   const findEnvScopeInput = () =>
     wrapper.findByTestId('environment-scope').findComponent(GlFormInput);
+  const findRawVarTip = () => wrapper.findByTestId('raw-variable-tip');
   const findVariableTypeDropdown = () => wrapper.find('#ci-variable-type');
   const findEnvironmentScopeText = () => wrapper.findByText('Environment scope');
 
@@ -188,7 +190,7 @@ describe('Ci variable modal', () => {
     });
   });
 
-  describe('Reference warning when adding a variable', () => {
+  describe('when expanded', () => {
     describe('with a $ character', () => {
       beforeEach(() => {
         const [variable] = mockVariables;
@@ -205,6 +207,10 @@ describe('Ci variable modal', () => {
       it(`renders the variable reference warning`, () => {
         expect(findReferenceWarning().exists()).toBe(true);
       });
+
+      it(`does not render raw variable tip`, () => {
+        expect(findRawVarTip().exists()).toBe(false);
+      });
     });
 
     describe('without a $ character', () => {
@@ -218,6 +224,73 @@ describe('Ci variable modal', () => {
 
       it(`does not render the variable reference warning`, () => {
         expect(findReferenceWarning().exists()).toBe(false);
+      });
+
+      it(`does not render raw variable tip`, () => {
+        expect(findRawVarTip().exists()).toBe(false);
+      });
+    });
+
+    describe('setting raw value', () => {
+      const [variable] = mockVariables;
+
+      it('defaults to expanded and raw:false when adding a variable', () => {
+        createComponent({ props: { selectedVariable: variable } });
+        jest.spyOn(wrapper.vm, '$emit');
+
+        findModal().vm.$emit('shown');
+
+        expect(findExpandedVariableCheckbox().attributes('checked')).toBe('true');
+
+        findAddorUpdateButton().vm.$emit('click');
+
+        expect(wrapper.emitted('add-variable')).toEqual([
+          [
+            {
+              ...variable,
+              raw: false,
+            },
+          ],
+        ]);
+      });
+
+      it('sets correct raw value when editing', async () => {
+        createComponent({
+          props: {
+            selectedVariable: variable,
+            mode: EDIT_VARIABLE_ACTION,
+          },
+        });
+        jest.spyOn(wrapper.vm, '$emit');
+
+        findModal().vm.$emit('shown');
+        await findExpandedVariableCheckbox().vm.$emit('change');
+        await findAddorUpdateButton().vm.$emit('click');
+
+        expect(wrapper.emitted('update-variable')).toEqual([
+          [
+            {
+              ...variable,
+              raw: true,
+            },
+          ],
+        ]);
+      });
+    });
+  });
+
+  describe('when not expanded', () => {
+    describe('with a $ character', () => {
+      beforeEach(() => {
+        const selectedVariable = mockVariables[1];
+        createComponent({
+          mountFn: mountExtended,
+          props: { selectedVariable },
+        });
+      });
+
+      it(`renders raw variable tip`, () => {
+        expect(findRawVarTip().exists()).toBe(true);
       });
     });
   });

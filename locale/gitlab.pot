@@ -511,6 +511,12 @@ msgstr[1] ""
 msgid "%{chartTitle} no data series"
 msgstr ""
 
+msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
+msgstr ""
+
+msgid "%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable."
+msgstr ""
+
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
 msgstr ""
 
@@ -8517,6 +8523,9 @@ msgstr ""
 msgid "CiVariables|Environments"
 msgstr ""
 
+msgid "CiVariables|Expanded"
+msgstr ""
+
 msgid "CiVariables|Input variable key"
 msgstr ""
 
@@ -16390,6 +16399,9 @@ msgid "Expand settings section"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Expand variable reference"
 msgstr ""
 
 msgid "Expected documents: %{expected_documents}"
@@ -35598,6 +35610,9 @@ msgstr ""
 msgid "Runners|New registration token generated!"
 msgstr ""
 
+msgid "Runners|No description"
+msgstr ""
+
 msgid "Runners|No results found"
 msgstr ""
 
@@ -43975,6 +43990,9 @@ msgstr ""
 msgid "Unschedule job"
 msgstr ""
 
+msgid "Unselect \"Expand variable reference\" if you want to use the variable value as a raw string."
+msgstr ""
+
 msgid "Unstar"
 msgstr ""
 
@@ -45204,10 +45222,10 @@ msgstr ""
 msgid "ValueStream|The Default Value Stream cannot be deleted"
 msgstr ""
 
-msgid "Values that contain the %{codeStart}$%{codeEnd} character can be considered a variable reference and expanded. %{docsLinkStart}Learn more.%{docsLinkEnd}"
+msgid "Variable"
 msgstr ""
 
-msgid "Variable"
+msgid "Variable value will be evaluated as raw string."
 msgstr ""
 
 msgid "Variable will be masked in job logs."
@@ -45217,6 +45235,9 @@ msgid "Variables"
 msgstr ""
 
 msgid "Variables can be:"
+msgstr ""
+
+msgid "Variables can have several attributes."
 msgstr ""
 
 msgid "Variables store information, like passwords and secret keys, that you can use in job scripts. All projects on the instance can use these variables."

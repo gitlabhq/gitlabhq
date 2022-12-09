@@ -14,28 +14,22 @@ module JiraConnectInstallations
     def execute
       return update_error unless @installation.update(@update_params)
 
-      if instance_url_changed?
-        if new_instance_url_present?
-          hook_result = ProxyLifecycleEventService.execute(@installation, :installed, @installation.instance_url)
+      if @installation.instance_url?
+        hook_result = ProxyLifecycleEventService.execute(@installation, :installed, @installation.instance_url)
 
-          if hook_result.error?
-            @installation.update!(instance_url: @installation.instance_url_before_last_save)
+        if instance_url_changed? && hook_result.error?
+          @installation.update!(instance_url: @installation.instance_url_before_last_save)
 
-            return instance_installation_creation_error(hook_result.message)
-          end
+          return instance_installation_creation_error(hook_result.message)
         end
-
-        send_uninstalled_hook
       end
+
+      send_uninstalled_hook if instance_url_changed?
 
       ServiceResponse.new(status: :success)
     end
 
     private
-
-    def new_instance_url_present?
-      @installation.instance_url.present?
-    end
 
     def instance_url_changed?
       @installation.instance_url_before_last_save != @installation.instance_url

@@ -394,6 +394,21 @@ To mark a variable as protected:
 
 The variable is available for all subsequent pipelines.
 
+### Expand CI/CD variables
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 13.7.
+
+Expanded variables treat values with the `$` character as a reference to another variable. CI/CD variables are expanded
+by default.
+
+To treat variables with a `$` character as raw strings, disable variable expansion for the variable:
+
+1. In the project or group, go to **Settings > CI/CD**.
+1. Expand the **Variables** section.
+1. Next to the variable you want to do not want expanded, select **Edit**.
+1. Clear the **Expand variable** checkbox.
+1. Select **Update variable**.
+
 ### CI/CD variable security
 
 Malicious code pushed to your `.gitlab-ci.yml` file could compromise your variables

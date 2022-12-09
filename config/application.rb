@@ -318,6 +318,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/roadmap.css"
     config.assets.precompile << "page_bundles/requirements.css"
     config.assets.precompile << "page_bundles/runner_details.css"
+    config.assets.precompile << "page_bundles/search.css"
     config.assets.precompile << "page_bundles/security_dashboard.css"
     config.assets.precompile << "page_bundles/security_discover.css"
     config.assets.precompile << "page_bundles/settings.css"

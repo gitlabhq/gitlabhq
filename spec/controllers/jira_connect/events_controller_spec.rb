@@ -101,6 +101,14 @@ RSpec.describe JiraConnect::EventsController do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'uses the JiraConnectInstallations::UpdateService' do
+        expect_next_instance_of(JiraConnectInstallations::UpdateService, installation, anything) do |update_service|
+          expect(update_service).to receive(:execute).and_call_original
+        end
+
+        subject
+      end
+
       context 'when parameters include a new shared secret and base_url' do
         let(:shared_secret) { 'new_secret' }
         let(:base_url) { 'https://new_test.atlassian.net' }

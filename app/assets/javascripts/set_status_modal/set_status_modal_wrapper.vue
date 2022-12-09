@@ -6,8 +6,8 @@ import { BV_SHOW_MODAL, BV_HIDE_MODAL } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import { updateUserStatus } from '~/rest_api';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { isUserBusy, computedClearStatusAfterValue } from './utils';
-import { AVAILABILITY_STATUS } from './constants';
+import { isUserBusy } from './utils';
+import { NEVER_TIME_RANGE, AVAILABILITY_STATUS } from './constants';
 import SetStatusForm from './set_status_form.vue';
 
 Vue.use(GlToast);
@@ -53,16 +53,8 @@ export default {
       message: this.currentMessage,
       modalId: 'set-user-status-modal',
       availability: isUserBusy(this.currentAvailability),
-      clearStatusAfter: null,
+      clearStatusAfter: NEVER_TIME_RANGE,
     };
-  },
-  computed: {
-    shouldIncludeClearStatusAfterInApiRequest() {
-      return this.clearStatusAfter !== null;
-    },
-    clearStatusAfterApiRequestValue() {
-      return computedClearStatusAfterValue(this.clearStatusAfter);
-    },
   },
   mounted() {
     this.$root.$emit(BV_SHOW_MODAL, this.modalId);
@@ -78,21 +70,14 @@ export default {
       this.setStatus();
     },
     setStatus() {
-      const {
-        emoji,
-        message,
-        availability,
-        shouldIncludeClearStatusAfterInApiRequest,
-        clearStatusAfterApiRequestValue,
-      } = this;
+      const { emoji, message, availability, clearStatusAfter } = this;
 
       updateUserStatus({
         emoji,
         message,
         availability: availability ? AVAILABILITY_STATUS.BUSY : AVAILABILITY_STATUS.NOT_SET,
-        ...(shouldIncludeClearStatusAfterInApiRequest
-          ? { clearStatusAfter: clearStatusAfterApiRequestValue }
-          : {}),
+        clearStatusAfter:
+          clearStatusAfter.label === NEVER_TIME_RANGE.label ? null : clearStatusAfter.shortcut,
       })
         .then(this.onUpdateSuccess)
         .catch(this.onUpdateFail);

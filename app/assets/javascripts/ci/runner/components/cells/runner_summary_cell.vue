@@ -10,6 +10,7 @@ import RunnerJobStatusBadge from '../runner_job_status_badge.vue';
 
 import { formatJobCount } from '../../utils';
 import {
+  I18N_NO_DESCRIPTION,
   I18N_LOCKED_RUNNER_DESCRIPTION,
   I18N_VERSION_LABEL,
   I18N_LAST_CONTACT_LABEL,
@@ -46,6 +47,7 @@ export default {
     },
   },
   i18n: {
+    I18N_NO_DESCRIPTION,
     I18N_LOCKED_RUNNER_DESCRIPTION,
     I18N_VERSION_LABEL,
     I18N_LAST_CONTACT_LABEL,
@@ -77,9 +79,14 @@ export default {
         </gl-sprintf>
       </div>
       <div class="gl-text-secondary gl-mx-2" aria-hidden="true">·</div>
-      <tooltip-on-truncate class="gl-text-truncate gl-display-block" :title="runner.description">
+      <tooltip-on-truncate
+        v-if="runner.description"
+        class="gl-text-truncate gl-display-block"
+        :title="runner.description"
+      >
         {{ runner.description }}
       </tooltip-on-truncate>
+      <span v-else class="gl-text-gray-500">{{ $options.i18n.I18N_NO_DESCRIPTION }}</span>
     </div>
 
     <div>

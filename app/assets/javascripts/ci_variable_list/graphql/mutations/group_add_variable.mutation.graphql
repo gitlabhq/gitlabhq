@@ -16,6 +16,7 @@ mutation addGroupVariable($variable: CiVariable!, $endpoint: String!, $fullPath:
             environmentScope
             masked
             protected
+            raw
           }
         }
       }

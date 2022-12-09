@@ -43,6 +43,7 @@ export const defaultVariableState = {
   key: '',
   masked: false,
   protected: false,
+  raw: false,
   value: '',
   variableType: variableTypes.envType,
 };
@@ -69,7 +70,7 @@ export const AWS_SECRET_ACCESS_KEY = 'AWS_SECRET_ACCESS_KEY';
 export const AWS_TOKEN_CONSTANTS = [AWS_ACCESS_KEY_ID, AWS_DEFAULT_REGION, AWS_SECRET_ACCESS_KEY];
 
 export const CONTAINS_VARIABLE_REFERENCE_MESSAGE = __(
-  'Values that contain the %{codeStart}$%{codeEnd} character can be considered a variable reference and expanded. %{docsLinkStart}Learn more.%{docsLinkEnd}',
+  'Unselect "Expand variable reference" if you want to use the variable value as a raw string.',
 );
 
 export const ENVIRONMENT_SCOPE_LINK_TITLE = __('Learn more');
@@ -93,6 +94,10 @@ export const GRAPHQL_GROUP_TYPE = 'Group';
 export const ADD_MUTATION_ACTION = 'add';
 export const UPDATE_MUTATION_ACTION = 'update';
 export const DELETE_MUTATION_ACTION = 'delete';
+
+export const EXPANDED_VARIABLES_NOTE = __(
+  '%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable.',
+);
 
 export const environmentFetchErrorText = __(
   'There was an error fetching the environments information.',

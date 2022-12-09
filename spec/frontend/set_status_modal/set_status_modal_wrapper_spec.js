@@ -1,7 +1,6 @@
 import { GlModal, GlFormCheckbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { useFakeDate } from 'helpers/fake_date';
 import { initEmojiMock, clearEmojiMock } from 'helpers/emoji';
 import * as UserApi from '~/api/user_api';
 import EmojiPicker from '~/emoji/components/picker.vue';
@@ -57,6 +56,7 @@ describe('SetStatusModalWrapper', () => {
     wrapper.findByPlaceholderText(SetStatusForm.i18n.statusMessagePlaceholder);
   const findClearStatusButton = () => wrapper.find('.js-clear-user-status-button');
   const findAvailabilityCheckbox = () => wrapper.findComponent(GlFormCheckbox);
+  const findClearStatusAtMessage = () => wrapper.find('[data-testid="clear-status-at-message"]');
   const getEmojiPicker = () => wrapper.findComponent(EmojiPickerStub);
 
   const initModal = async ({ mockOnUpdateSuccess = true, mockOnUpdateFailure = true } = {}) => {
@@ -103,6 +103,10 @@ describe('SetStatusModalWrapper', () => {
       expect(wrapper.find('[data-testid="clear-status-at-dropdown"]').exists()).toBe(true);
     });
 
+    it('does not display the clear status at message', () => {
+      expect(findClearStatusAtMessage().exists()).toBe(false);
+    });
+
     it('renders emoji picker dropdown with custom positioning', () => {
       expect(getEmojiPicker().props()).toMatchObject({
         right: false,
@@ -134,16 +138,17 @@ describe('SetStatusModalWrapper', () => {
   });
 
   describe('with currentClearStatusAfter set', () => {
-    useFakeDate(2022, 11, 5);
-
     beforeEach(async () => {
       await initEmojiMock();
-      wrapper = createComponent({ currentClearStatusAfter: '2022-12-06 11:00:00 UTC' });
+      wrapper = createComponent({ currentClearStatusAfter: '2021-01-01 00:00:00 UTC' });
       return initModal();
     });
 
-    it('displays date and time that status will expire in dropdown toggle button', () => {
-      expect(wrapper.findByRole('button', { name: 'Dec 6, 2022 11:00am' }).exists()).toBe(true);
+    it('displays the clear status at message', () => {
+      const clearStatusAtMessage = findClearStatusAtMessage();
+
+      expect(clearStatusAtMessage.exists()).toBe(true);
+      expect(clearStatusAtMessage.text()).toBe('Your status resets on 2021-01-01 00:00:00 UTC.');
     });
   });
 
@@ -165,33 +170,33 @@ describe('SetStatusModalWrapper', () => {
       });
 
       it('clicking "setStatus" submits the user status', async () => {
+        findModal().vm.$emit('primary');
+        await nextTick();
+
         // set the availability status
         findAvailabilityCheckbox().vm.$emit('input', true);
 
         // set the currentClearStatusAfter to 30 minutes
-        await wrapper.find('[data-testid="thirtyMinutes"]').trigger('click');
+        wrapper.find('[data-testid="thirtyMinutes"]').trigger('click');
 
         findModal().vm.$emit('primary');
         await nextTick();
 
-        expect(UserApi.updateUserStatus).toHaveBeenCalledWith({
-          availability: AVAILABILITY_STATUS.BUSY,
-          clearStatusAfter: '30_minutes',
+        const commonParams = {
           emoji: defaultEmoji,
           message: defaultMessage,
+        };
+
+        expect(UserApi.updateUserStatus).toHaveBeenCalledTimes(2);
+        expect(UserApi.updateUserStatus).toHaveBeenNthCalledWith(1, {
+          availability: AVAILABILITY_STATUS.NOT_SET,
+          clearStatusAfter: null,
+          ...commonParams,
         });
-      });
-
-      describe('when `Clear status after` field has not been set', () => {
-        it('does not include `clearStatusAfter` in API request', async () => {
-          findModal().vm.$emit('primary');
-          await nextTick();
-
-          expect(UserApi.updateUserStatus).toHaveBeenCalledWith({
-            availability: AVAILABILITY_STATUS.NOT_SET,
-            emoji: defaultEmoji,
-            message: defaultMessage,
-          });
+        expect(UserApi.updateUserStatus).toHaveBeenNthCalledWith(2, {
+          availability: AVAILABILITY_STATUS.BUSY,
+          clearStatusAfter: '30_minutes',
+          ...commonParams,
         });
       });
 

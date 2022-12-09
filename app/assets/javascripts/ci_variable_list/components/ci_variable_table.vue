@@ -144,6 +144,9 @@ export default {
       if (item.masked) {
         options.push(s__('CiVariables|Masked'));
       }
+      if (!item.raw) {
+        options.push(s__('CiVariables|Expanded'));
+      }
       return options.join(', ');
     },
   },
@@ -227,7 +230,7 @@ export default {
         </div>
       </template>
       <template #cell(options)="{ item }">
-        <span>{{ item.options }}</span>
+        <span data-testid="ci-variable-table-row-options">{{ item.options }}</span>
       </template>
       <template #cell(environmentScope)="{ item }">
         <div

@@ -1,6 +1,8 @@
 import { nextTick } from 'vue';
 import { cloneDeep } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { resetHTMLFixture } from 'helpers/fixtures';
+import { useFakeDate } from 'helpers/fake_date';
 import UserProfileSetStatusWrapper from '~/set_status_modal/user_profile_set_status_wrapper.vue';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import { TIME_RANGES_WITH_NEVER, NEVER_TIME_RANGE } from '~/set_status_modal/constants';
@@ -49,7 +51,7 @@ describe('UserProfileSetStatusWrapper', () => {
       emoji: defaultProvide.fields.emoji.value,
       message: defaultProvide.fields.message.value,
       availability: true,
-      clearStatusAfter: null,
+      clearStatusAfter: NEVER_TIME_RANGE,
       currentClearStatusAfter: defaultProvide.fields.clearStatusAfter.value,
     });
   });
@@ -67,41 +69,27 @@ describe('UserProfileSetStatusWrapper', () => {
     );
   });
 
-  describe('when clear status after has previously been set', () => {
-    describe('when clear status after dropdown is not set', () => {
-      it('does not render hidden clear status after input', () => {
-        createComponent();
+  describe('when clear status after dropdown is set to `Never`', () => {
+    it('renders hidden clear status after input with value unset', () => {
+      createComponent();
 
-        expect(findInput(defaultProvide.fields.clearStatusAfter.name).exists()).toBe(false);
-      });
+      expect(
+        findInput(defaultProvide.fields.clearStatusAfter.name).attributes('value'),
+      ).toBeUndefined();
     });
+  });
 
-    describe('when clear status after dropdown is set to `Never`', () => {
-      it('renders hidden clear status after input with value unset', async () => {
-        createComponent();
+  describe('when clear status after dropdown has a value selected', () => {
+    it('renders hidden clear status after input with value set', async () => {
+      createComponent();
 
-        findSetStatusForm().vm.$emit('clear-status-after-click', NEVER_TIME_RANGE);
+      findSetStatusForm().vm.$emit('clear-status-after-click', TIME_RANGES_WITH_NEVER[1]);
 
-        await nextTick();
+      await nextTick();
 
-        expect(
-          findInput(defaultProvide.fields.clearStatusAfter.name).attributes('value'),
-        ).toBeUndefined();
-      });
-    });
-
-    describe('when clear status after dropdown is set to a time range', () => {
-      it('renders hidden clear status after input with value set', async () => {
-        createComponent();
-
-        findSetStatusForm().vm.$emit('clear-status-after-click', TIME_RANGES_WITH_NEVER[1]);
-
-        await nextTick();
-
-        expect(findInput(defaultProvide.fields.clearStatusAfter.name).attributes('value')).toBe(
-          TIME_RANGES_WITH_NEVER[1].shortcut,
-        );
-      });
+      expect(findInput(defaultProvide.fields.clearStatusAfter.name).attributes('value')).toBe(
+        TIME_RANGES_WITH_NEVER[1].shortcut,
+      );
     });
   });
 
@@ -130,6 +118,39 @@ describe('UserProfileSetStatusWrapper', () => {
       await nextTick();
 
       expect(findInput(defaultProvide.fields.message.name).attributes('value')).toBe(newMessage);
+    });
+  });
+
+  describe('when form is successfully submitted', () => {
+    // 2022-09-02 00:00:00 UTC
+    useFakeDate(2022, 8, 2);
+
+    const form = document.createElement('form');
+    form.classList.add('js-edit-user');
+
+    beforeEach(async () => {
+      document.body.appendChild(form);
+      createComponent();
+
+      const oneDay = TIME_RANGES_WITH_NEVER[4];
+
+      findSetStatusForm().vm.$emit('clear-status-after-click', oneDay);
+
+      await nextTick();
+
+      form.dispatchEvent(new Event('ajax:success'));
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+    });
+
+    it('updates clear status after dropdown to `Never`', () => {
+      expect(findSetStatusForm().props('clearStatusAfter')).toBe(NEVER_TIME_RANGE);
+    });
+
+    it('updates `currentClearStatusAfter` prop', () => {
+      expect(findSetStatusForm().props('currentClearStatusAfter')).toBe('2022-09-03 00:00:00 UTC');
     });
   });
 });

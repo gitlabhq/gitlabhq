@@ -31,7 +31,10 @@ class JiraConnect::EventsController < JiraConnect::ApplicationController
   end
 
   def update_installation
-    current_jira_installation.update(update_params)
+    JiraConnectInstallations::UpdateService.execute(
+      current_jira_installation,
+      update_params
+    ).success?
   end
 
   def create_params

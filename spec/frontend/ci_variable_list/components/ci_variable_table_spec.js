@@ -31,9 +31,11 @@ describe('Ci variable table', () => {
   const findAddButton = () => wrapper.findByLabelText('Add');
   const findEditButton = () => wrapper.findByLabelText('Edit');
   const findEmptyVariablesPlaceholder = () => wrapper.findByText('There are no variables yet.');
-  const findHiddenValues = () => wrapper.findAll('[data-testid="hiddenValue"]');
+  const findHiddenValues = () => wrapper.findAllByTestId('hiddenValue');
   const findLimitReachedAlerts = () => wrapper.findAllComponents(GlAlert);
-  const findRevealedValues = () => wrapper.findAll('[data-testid="revealedValue"]');
+  const findRevealedValues = () => wrapper.findAllByTestId('revealedValue');
+  const findOptionsValues = (rowIndex) =>
+    wrapper.findAllByTestId('ci-variable-table-row-options').at(rowIndex).text();
 
   const generateExceedsVariableLimitText = (entity, currentVariableCount, maxVariableLimit) => {
     return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, { entity, currentVariableCount, maxVariableLimit });
@@ -76,6 +78,11 @@ describe('Ci variable table', () => {
 
     it('displays the correct amount of variables', async () => {
       expect(wrapper.findAll('.js-ci-variable-row')).toHaveLength(defaultProps.variables.length);
+    });
+
+    it('displays the correct variable options', async () => {
+      expect(findOptionsValues(0)).toBe('Protected, Expanded');
+      expect(findOptionsValues(1)).toBe('Masked');
     });
 
     it('enables the Add Variable button', () => {

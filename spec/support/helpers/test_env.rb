@@ -415,8 +415,6 @@ module TestEnv
   end
 
   def component_timed_setup(component, install_dir:, version:, task:, fresh_install: true, task_args: [])
-    puts "==> Starting #{component} set up...\n"
-
     start = Time.now
 
     ensure_component_dir_name_is_correct!(component, install_dir)
@@ -425,6 +423,8 @@ module TestEnv
     return if File.exist?(install_dir) && ci?
 
     if component_needs_update?(install_dir, version)
+      puts "==> Starting #{component} set up...\n"
+
       # Cleanup the component entirely to ensure we start fresh
       FileUtils.rm_rf(install_dir) if fresh_install
 

@@ -7,7 +7,12 @@ import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge
 import RunnerSummaryField from '~/ci/runner/components/cells/runner_summary_field.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
-import { INSTANCE_TYPE, I18N_INSTANCE_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
+import {
+  INSTANCE_TYPE,
+  I18N_INSTANCE_TYPE,
+  PROJECT_TYPE,
+  I18N_NO_DESCRIPTION,
+} from '~/ci/runner/constants';
 
 import { allRunnersData } from '../../mock_data';
 
@@ -80,6 +85,14 @@ describe('RunnerTypeCell', () => {
 
   it('Displays the runner description', () => {
     expect(wrapper.text()).toContain(mockRunner.description);
+  });
+
+  it('Displays the no runner description', () => {
+    createComponent({
+      description: null,
+    });
+
+    expect(wrapper.text()).toContain(I18N_NO_DESCRIPTION);
   });
 
   it('Displays job execution status', () => {

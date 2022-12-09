@@ -8,6 +8,7 @@ import {
   GlFormInputGroup,
   GlDropdown,
   GlDropdownItem,
+  GlSprintf,
   GlFormGroup,
 } from '@gitlab/ui';
 import $ from 'jquery';
@@ -15,8 +16,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import GfmAutoComplete from 'ee_else_ce/gfm_auto_complete';
 import * as Emoji from '~/emoji';
 import { s__ } from '~/locale';
-import { formatDate, newDate, nSecondsAfter, isToday } from '~/lib/utils/datetime_utility';
-import { TIME_RANGES_WITH_NEVER, AVAILABILITY_STATUS, NEVER_TIME_RANGE } from './constants';
+import { TIME_RANGES_WITH_NEVER, AVAILABILITY_STATUS } from './constants';
 
 export default {
   components: {
@@ -27,6 +27,7 @@ export default {
     GlFormInputGroup,
     GlDropdown,
     GlDropdownItem,
+    GlSprintf,
     GlFormGroup,
     EmojiPicker: () => import('~/emoji/components/picker.vue'),
   },
@@ -55,7 +56,7 @@ export default {
     clearStatusAfter: {
       type: Object,
       required: false,
-      default: null,
+      default: () => ({}),
     },
     currentClearStatusAfter: {
       type: String,
@@ -78,21 +79,6 @@ export default {
     },
     noEmoji() {
       return this.emojiTag === '';
-    },
-    clearStatusAfterDropdownText() {
-      if (this.clearStatusAfter === null && this.currentClearStatusAfter.length) {
-        return this.formatClearStatusAfterDate(new Date(this.currentClearStatusAfter));
-      }
-
-      if (this.clearStatusAfter?.duration?.seconds) {
-        const clearStatusAfterDate = nSecondsAfter(
-          newDate(),
-          this.clearStatusAfter.duration.seconds,
-        );
-        return this.formatClearStatusAfterDate(clearStatusAfterDate);
-      }
-
-      return NEVER_TIME_RANGE.label;
     },
   },
   mounted() {
@@ -137,13 +123,6 @@ export default {
       this.$emit('emoji-click', '');
       this.$emit('message-input', '');
       this.clearEmoji();
-    },
-    formatClearStatusAfterDate(date) {
-      if (isToday(date)) {
-        return formatDate(date, 'h:MMtt');
-      }
-
-      return formatDate(date, 'mmm d, yyyy h:MMtt');
     },
   },
   TIME_RANGES_WITH_NEVER,
@@ -223,7 +202,7 @@ export default {
     <gl-form-group :label="$options.i18n.clearStatusAfterDropdownLabel" class="gl-mb-0">
       <gl-dropdown
         block
-        :text="clearStatusAfterDropdownText"
+        :text="clearStatusAfter.label"
         data-testid="clear-status-at-dropdown"
         toggle-class="gl-mb-0 gl-form-input-md"
       >
@@ -235,6 +214,14 @@ export default {
           >{{ after.label }}</gl-dropdown-item
         >
       </gl-dropdown>
+
+      <template v-if="currentClearStatusAfter.length" #description>
+        <span data-testid="clear-status-at-message">
+          <gl-sprintf :message="$options.i18n.clearStatusAfterMessage">
+            <template #date>{{ currentClearStatusAfter }}</template>
+          </gl-sprintf>
+        </span>
+      </template>
     </gl-form-group>
   </div>
 </template>

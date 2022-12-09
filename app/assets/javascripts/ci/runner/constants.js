@@ -86,6 +86,7 @@ export const I18N_DELETE_RUNNER = s__('Runners|Delete runner');
 export const I18N_DELETED_TOAST = s__('Runners|Runner %{name} was deleted');
 
 // List
+export const I18N_NO_DESCRIPTION = s__('Runners|No description');
 export const I18N_LOCKED_RUNNER_DESCRIPTION = s__(
   'Runners|Runner is locked and available for currently assigned projects only. Only administrators can change the assigned projects.',
 );

@@ -1,17 +1,16 @@
+@import 'mixins_and_variables_and_functions';
+
 $search-dropdown-max-height: 400px;
 $search-avatar-size: 16px;
 $search-sidebar-min-width: 240px;
 $search-sidebar-max-width: 300px;
-$search-input-field-x-min-width: 200px;
-$search-input-field-min-width: 320px;
-$search-input-field-max-width: 640px;
 $search-keyboard-shortcut: '/';
 
 $border-radius-medium: 3px;
 
 .search-results {
   .search-result-row {
-    border-bottom: 1px solid $border-color;
+    border-bottom: 1px solid var(--border-color, $border-color);
     padding-bottom: $gl-padding;
     margin-bottom: $gl-padding;
 
@@ -26,74 +25,6 @@ $border-radius-medium: 3px;
     min-width: $search-sidebar-min-width;
     max-width: $search-sidebar-max-width;
   }
-}
-
-.search form:hover,
-.file-finder-input:hover,
-.issuable-search-form:hover,
-.search-text-input:hover,
-.form-control:hover,
-:not[readonly] {
-  border-color: lighten($blue-300, 20%);
-  box-shadow: 0 0 4px lighten($dropdown-input-focus-shadow, 20%);
-}
-
-input[type='checkbox']:hover {
-  box-shadow: 0 0 2px 2px lighten($dropdown-input-focus-shadow, 20%),
-    0 0 0 1px lighten($dropdown-input-focus-shadow, 20%);
-}
-
-.header-content {
-  .header-search-new {
-    max-width: $search-input-field-max-width;
-  }
-
-  &.header-search-is-active {
-    .global-search-container {
-      flex-grow: 1;
-    }
-  }
-}
-
-.header-search {
-  min-width: $search-input-field-min-width;
-
-  // This is a temporary workaround!
-  // the button in GitLab UI Search components need to be updated to not be the small size
-  // see in Figma: https://www.figma.com/file/qEddyqCrI7kPSBjGmwkZzQ/Component-library?node-id=43905%3A45540
-  .gl-search-box-by-type-clear.btn-sm {
-    padding: 0.5rem !important;
-  }
-
-  @include media-breakpoint-between(md, lg) {
-    min-width: $search-input-field-x-min-width;
-  }
-
-  &.is-searching {
-    .in-search-scope-help {
-      position: absolute;
-      top: $gl-spacing-scale-2;
-      right: 2.125rem;
-      z-index: 2;
-    }
-  }
-
-  &.is-not-focused {
-    .gl-search-box-by-type-clear {
-      display: none;
-    }
-  }
-
-  .keyboard-shortcut-helper {
-    transform: translateY(calc(50% - 2px));
-    box-shadow: none;
-    border-color: transparent;
-  }
-}
-
-.header-search-dropdown-menu {
-  max-height: $dropdown-max-height;
-  top: 100%;
 }
 
 .search {
@@ -171,7 +102,7 @@ input[type='checkbox']:hover {
     .dropdown-header {
       // Necessary because deprecatedJQueryDropdown doesn't support a second style of headers
       font-weight: $gl-font-weight-bold;
-      color: $gl-text-color;
+      color: var(--gl-text-color, $gl-text-color);
       font-size: $gl-font-size;
       line-height: 16px;
     }
@@ -194,24 +125,24 @@ input[type='checkbox']:hover {
 
   &.search-active {
     form {
-      border-color: $blue-300;
+      border-color: var(--blue-300, $blue-300);
       box-shadow: none;
 
       .search-input-wrap {
         .search-icon,
         .clear-icon {
-          color: $gl-text-color-tertiary;
+          color: var(--gray-400, $gl-text-color-tertiary);
           transition: color ease-in-out $default-transition-duration;
         }
       }
 
       .search-input {
-        color: $gl-text-color;
+        color: var(--gl-text-color, $gl-text-color);
         transition: color ease-in-out $default-transition-duration;
       }
 
       .search-input::placeholder {
-        color: $gl-text-color-tertiary;
+        color: var(--gray-400, $gl-text-color-tertiary);
       }
     }
   }
@@ -230,7 +161,7 @@ input[type='checkbox']:hover {
   .inline-search-icon {
     position: relative;
     margin-right: 4px;
-    color: $gl-text-color-secondary;
+    color: var(--gray-500, $gl-text-color-secondary);
   }
 
   .identicon,
@@ -244,7 +175,7 @@ input[type='checkbox']:hover {
     width: $search-avatar-size;
     height: $search-avatar-size;
     border-radius: 50%;
-    border: 1px solid $gray-normal;
+    border: 1px solid var(--gray-50, $gray-normal);
   }
 }
 
@@ -265,7 +196,7 @@ input[type='checkbox']:hover {
     position: absolute;
     left: 10px;
     top: 9px;
-    color: $gray-darkest;
+    color: var(--gray-700, $gray-darkest);
     pointer-events: none;
   }
 

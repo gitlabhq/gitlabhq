@@ -21,6 +21,7 @@ mutation updateProjectVariable(
             environmentScope
             masked
             protected
+            raw
           }
         }
       }

@@ -1309,7 +1309,7 @@ module API
       put "status", feature_category: :users do
         forbidden! unless can?(current_user, :update_user_status, current_user)
 
-        if ::Users::SetStatusService.new(current_user, declared_params(include_missing: false)).execute
+        if ::Users::SetStatusService.new(current_user, declared_params).execute
           present current_user.status, with: Entities::UserStatus
         else
           render_validation_error!(current_user.status)

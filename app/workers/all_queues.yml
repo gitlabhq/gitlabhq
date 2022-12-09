@@ -66,6 +66,24 @@
   :weight: 3
   :idempotent: false
   :tags: []
+- :name: batched_background_migrations:database_batched_background_migration_ci_execution
+  :worker_name: Database::BatchedBackgroundMigration::CiExecutionWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: batched_background_migrations:database_batched_background_migration_main_execution
+  :worker_name: Database::BatchedBackgroundMigration::MainExecutionWorker
+  :feature_category: :database
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: chaos:chaos_cpu_spin
   :worker_name: Chaos::CpuSpinWorker
   :feature_category: :not_owned
