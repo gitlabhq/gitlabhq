@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::ContainerRegistry::Migration, :aggregate_failures do
+RSpec.describe API::Internal::ContainerRegistry::Migration, :aggregate_failures, feature_category: :database do
   let_it_be_with_reload(:repository) { create(:container_repository) }
 
   let(:secret_token) { 'secret_token' }

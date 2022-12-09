@@ -321,10 +321,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:namespace) { project.namespace }
       let(:feature_flag_name) { :route_hll_to_snowplow }
       let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
-      let(:context) do
-        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                  event: 'action_active_users_project_repo').to_context]
-      end
+      let(:property) { 'project_action' }
     end
   end
 
@@ -351,10 +348,7 @@ RSpec.describe EventCreateService, :clean_gitlab_redis_cache, :clean_gitlab_redi
       let(:namespace) { project.namespace }
       let(:feature_flag_name) { :route_hll_to_snowplow }
       let(:label) { 'usage_activity_by_stage_monthly.create.action_monthly_active_users_project_repo' }
-      let(:context) do
-        [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
-                                                  event: 'action_active_users_project_repo').to_context]
-      end
+      let(:property) { 'project_action' }
     end
   end
 

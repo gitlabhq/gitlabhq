@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::BulkImports do
+RSpec.describe API::BulkImports, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:import_1) { create(:bulk_import, user: user) }
   let_it_be(:import_2) { create(:bulk_import, user: user) }

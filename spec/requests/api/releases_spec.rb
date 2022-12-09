@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Releases do
+RSpec.describe API::Releases, feature_category: :release_orchestration do
   let(:project) { create(:project, :repository, :private) }
   let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }

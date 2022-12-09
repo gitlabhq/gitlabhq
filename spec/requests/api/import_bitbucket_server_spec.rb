@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ImportBitbucketServer do
+RSpec.describe API::ImportBitbucketServer, feature_category: :importers do
   let(:base_uri) { "https://test:7990" }
   let(:user) { create(:user) }
   let(:token) { "asdasd12345" }

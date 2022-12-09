@@ -917,9 +917,6 @@ msgstr ""
 msgid "%{openedIssues} open, %{closedIssues} closed"
 msgstr ""
 
-msgid "%{over_limit_message} To get more members, an owner of the group can start a trial or upgrade to a paid tier."
-msgstr ""
-
 msgid "%{over_limit_message} To get more seats, %{link_start}upgrade to a paid tier%{link_end}."
 msgstr ""
 
@@ -10329,7 +10326,7 @@ msgstr ""
 msgid "Configure the %{link} integration."
 msgstr ""
 
-msgid "Configure the default first day of the week and time tracking units."
+msgid "Configure the default first day of the week, time tracking units, and default language."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -12914,6 +12911,12 @@ msgid "Default first day of the week"
 msgstr ""
 
 msgid "Default first day of the week in calendars and date pickers."
+msgstr ""
+
+msgid "Default language"
+msgstr ""
+
+msgid "Default language for users who are not logged in."
 msgstr ""
 
 msgid "Default projects limit"
@@ -17639,11 +17642,6 @@ msgstr ""
 msgid "From %{providerTitle}"
 msgstr ""
 
-msgid "From October 19, 2022, free private groups will be limited to %d member"
-msgid_plural "From October 19, 2022, free private groups will be limited to %d members"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "From issue creation until deploy to production"
 msgstr ""
 
@@ -18535,6 +18533,11 @@ msgstr ""
 
 msgid "GitLab will create a branch in your fork and start a merge request."
 msgstr ""
+
+msgid "GitLab will enforce this limit in the future. If you are over %{free_user_limit} user when enforcement begins, your namespace will be placed in a %{link_start}read-only%{link_end} state. To avoid being placed in a read-only state, reduce your namespace to %{free_user_limit} user or less or purchase a paid tier."
+msgid_plural "GitLab will enforce this limit in the future. If you are over %{free_user_limit} users when enforcement begins, your namespace will be placed in a %{link_start}read-only%{link_end} state. To avoid being placed in a read-only state, reduce your namespace to %{free_user_limit} users or less or purchase a paid tier."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "GitLab.com (SaaS)"
 msgstr ""
@@ -47883,11 +47886,6 @@ msgid_plural "Your free group is now limited to %d members"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Your group, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_user_limit} member. From October 19, 2022, the %{free_user_limit} most recently active member will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access to the group. You can go to the Usage Quotas page to manage which %{free_user_limit} member will remain in your group."
-msgid_plural "Your group, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_user_limit} members. From October 19, 2022, the %{free_user_limit} most recently active members will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access to the group. You can go to the Usage Quotas page to manage which %{free_user_limit} members will remain in your group."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Your groups"
 msgstr ""
 
@@ -47925,6 +47923,9 @@ msgid "Your name"
 msgstr ""
 
 msgid "Your namespace %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."
+msgstr ""
+
+msgid "Your namespace %{namespace_name} is over the %{free_user_limit} user limit"
 msgstr ""
 
 msgid "Your namespace is over the user and storage limits and has been placed in a read-only state."

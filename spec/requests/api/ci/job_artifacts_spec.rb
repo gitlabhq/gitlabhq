@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::JobArtifacts do
+RSpec.describe API::Ci::JobArtifacts, feature_category: :build_artifacts do
   include HttpBasicAuthHelpers
   include DependencyProxyHelpers
 

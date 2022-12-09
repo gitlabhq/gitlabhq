@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'rake_helper'
 
-RSpec.describe API::UsageDataQueries do
+RSpec.describe API::UsageDataQueries, feature_category: :service_ping do
   include UsageDataHelpers
 
   let_it_be(:admin) { create(:user, admin: true) }

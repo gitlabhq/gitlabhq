@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Lfs do
+RSpec.describe API::Internal::Lfs, feature_category: :source_code_management do
   include GitlabShellHelpers
   include APIInternalBaseHelpers
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProtectedBranches do
+RSpec.describe API::ProtectedBranches, feature_category: :source_code_management do
   let_it_be_with_reload(:project) { create(:project, :repository) }
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:guest) { create(:user) }

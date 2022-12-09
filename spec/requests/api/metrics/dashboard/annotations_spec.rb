@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Metrics::Dashboard::Annotations do
+RSpec.describe API::Metrics::Dashboard::Annotations, feature_category: :metrics do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :private, :repository, namespace: user.namespace) }
   let_it_be(:environment) { create(:environment, project: project) }

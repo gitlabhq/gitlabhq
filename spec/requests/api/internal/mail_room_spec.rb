@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::MailRoom do
+RSpec.describe API::Internal::MailRoom, feature_category: :service_desk do
   let(:base_configs) do
     {
       enabled: true,

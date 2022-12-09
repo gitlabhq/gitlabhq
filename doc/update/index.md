@@ -526,6 +526,16 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
     sidekiq['routing_rules'] = [['*', 'default']]
     ```
 
+### 15.4.1
+
+A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+  - 15.2.5 --> 15.3.5
+  - 15.3.0 - 15.3.4 --> 15.3.5
+  - 15.4.1 --> 15.4.3
+
 ### 15.4.0
 
 - GitLab 15.4.0 includes a [batched background migration](#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
@@ -551,10 +561,47 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
   migration might take multiple hours or days to complete on larger GitLab instances. Please make sure the migration
   has completed successfully before upgrading to 15.7.0 or later.
 
+### 15.3.4
+
+A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+  - 15.2.5 --> 15.3.5
+  - 15.3.0 - 15.3.4 --> 15.3.5
+  - 15.4.1 --> 15.4.3
+
 ### 15.3.3
 
 - In GitLab 15.3.3, [SAML Group Links](../api/groups.md#saml-group-links) API `access_level` attribute type changed to `integer`. See
 [the API documentation](../api/members.md).
+- A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+    - 15.2.5 --> 15.3.5
+    - 15.3.0 - 15.3.4 --> 15.3.5
+    - 15.4.1 --> 15.4.3
+
+### 15.3.2
+
+A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+  - 15.2.5 --> 15.3.5
+  - 15.3.0 - 15.3.4 --> 15.3.5
+  - 15.4.1 --> 15.4.3
+
+### 15.3.1
+
+A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+  - 15.2.5 --> 15.3.5
+  - 15.3.0 - 15.3.4 --> 15.3.5
+  - 15.4.1 --> 15.4.3
 
 ### 15.3.0
 
@@ -562,6 +609,23 @@ and [Helm Chart deployments](https://docs.gitlab.com/charts/). They come with ap
 - LFS transfers can [redirect to the primary from secondary site mid-session](https://gitlab.com/gitlab-org/gitlab/-/issues/371571) causing failed pull and clone requests when [Geo proxying](../administration/geo/secondary_proxy/index.md) is enabled. Geo proxying is enabled by default in GitLab 15.1 and later. See [Geo: LFS transfer redirect to primary from secondary site mid-session issue in GitLab 15.1.0 to 15.3.2](#geo-lfs-transfers-redirect-to-primary-from-secondary-site-mid-session-in-gitlab-1510-to-1532) for more details.
 - New Git repositories created in Gitaly cluster [no longer use the `@hashed` storage path](#change-to-praefect-generated-replica-paths-in-gitlab-153). Server
   hooks for new repositories must be copied into a different location.
+- A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+  - Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+  - Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+    - 15.2.5 --> 15.3.5
+    - 15.3.0 - 15.3.4 --> 15.3.5
+    - 15.4.1 --> 15.4.3
+
+### 15.2.5
+
+A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) prevents some premium features of GitLab from working correctly if you add a new license. Workarounds for this issue:
+
+- Restart all Rails, Sidekiq and Gitaly nodes after applying a new license. This clears the relevant license caches and allows all premium features to operate correctly.
+- Upgrade to a version that is not impacted by this issue. The following upgrade paths are available for impacted versions:
+  - 15.2.5 --> 15.3.5
+  - 15.3.0 - 15.3.4 --> 15.3.5
+  - 15.4.1 --> 15.4.3
 
 ### 15.2.0
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectContainerRepositories do
+RSpec.describe API::ProjectContainerRepositories, feature_category: :package_registry do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project, :private) }

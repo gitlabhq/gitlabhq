@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::ComposerPackages do
+RSpec.describe API::ComposerPackages, feature_category: :package_registry do
   include HttpBasicAuthHelpers
 
   let_it_be(:user) { create(:user) }

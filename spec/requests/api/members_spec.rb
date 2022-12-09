@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Members do
+RSpec.describe API::Members, feature_category: :subgroups do
   let_it_be(:maintainer) { create(:user, username: 'maintainer_user') }
   let_it_be(:maintainer2) { create(:user, username: 'user-with-maintainer-role') }
   let_it_be(:developer) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting do
+RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, feature_category: :not_owned do
   let(:user) { create(:user) }
 
   let_it_be(:admin) { create(:admin) }

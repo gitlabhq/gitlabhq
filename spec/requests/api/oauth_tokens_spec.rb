@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'OAuth tokens' do
+RSpec.describe 'OAuth tokens', feature_category: :authentication_and_authorization do
   include HttpBasicAuthHelpers
 
   context 'Resource Owner Password Credentials' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::MavenPackages do
+RSpec.describe API::MavenPackages, feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
   include WorkhorseHelpers
 

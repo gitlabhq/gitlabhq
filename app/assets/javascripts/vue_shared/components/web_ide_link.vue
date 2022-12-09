@@ -7,10 +7,10 @@ import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
-const KEY_EDIT = 'edit';
-const KEY_WEB_IDE = 'webide';
-const KEY_GITPOD = 'gitpod';
-const KEY_PIPELINE_EDITOR = 'pipeline_editor';
+export const KEY_EDIT = 'edit';
+export const KEY_WEB_IDE = 'webide';
+export const KEY_GITPOD = 'gitpod';
+export const KEY_PIPELINE_EDITOR = 'pipeline_editor';
 
 export const i18n = {
   modal: {
@@ -26,6 +26,9 @@ export const i18n = {
     'WebIDE|Quickly and easily edit multiple files in your project. Press . to open',
   ),
 };
+
+export const PREFERRED_EDITOR_KEY = 'gl-web-ide-button-selected';
+export const PREFERRED_EDITOR_RESET_KEY = 'gl-web-ide-button-selected-reset';
 
 export default {
   components: {
@@ -305,6 +308,9 @@ export default {
       return this.glFeatures.vscodeWebIde && !this.showEditButton;
     },
   },
+  mounted() {
+    this.resetPreferredEditor();
+  },
   methods: {
     select(key) {
       this.selection = key;
@@ -312,8 +318,23 @@ export default {
     showModal(dataKey) {
       this[dataKey] = true;
     },
+    resetPreferredEditor() {
+      if (!this.glFeatures.vscodeWebIde || this.showEditButton) {
+        return;
+      }
+
+      if (localStorage.getItem(PREFERRED_EDITOR_RESET_KEY) === 'true') {
+        return;
+      }
+
+      localStorage.setItem(PREFERRED_EDITOR_KEY, KEY_WEB_IDE);
+      localStorage.setItem(PREFERRED_EDITOR_RESET_KEY, true);
+
+      this.select(KEY_WEB_IDE);
+    },
   },
   webIdeButtonId: 'web-ide-link',
+  PREFERRED_EDITOR_KEY,
 };
 </script>
 
@@ -332,7 +353,7 @@ export default {
           @actionClicked="dismiss"
         />
         <local-storage-sync
-          storage-key="gl-web-ide-button-selected"
+          :storage-key="$options.PREFERRED_EDITOR_KEY"
           :value="selection"
           as-string
           @input="select"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Terraform::Modules::V1::Packages do
+RSpec.describe API::Terraform::Modules::V1::Packages, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
   include WorkhorseHelpers
   using RSpec::Parameterized::TableSyntax

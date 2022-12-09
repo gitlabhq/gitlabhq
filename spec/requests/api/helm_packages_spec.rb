@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::HelmPackages do
+RSpec.describe API::HelmPackages, feature_category: :package_registry do
   include_context 'helm api setup'
 
   using RSpec::Parameterized::TableSyntax

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Suggestions do
+RSpec.describe API::Suggestions, feature_category: :code_review do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

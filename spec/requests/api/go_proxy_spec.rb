@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GoProxy do
+RSpec.describe API::GoProxy, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers
 

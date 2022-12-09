@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Tags do
+RSpec.describe API::Tags, feature_category: :source_code_management do
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| project.add_guest(u) } }
   let(:project) { create(:project, :repository, creator: user, path: 'my.project') }

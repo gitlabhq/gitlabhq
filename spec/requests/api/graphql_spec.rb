@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'GraphQL' do
+RSpec.describe 'GraphQL', feature_category: :not_owned do
   include GraphqlHelpers
   include AfterNextHelpers
 

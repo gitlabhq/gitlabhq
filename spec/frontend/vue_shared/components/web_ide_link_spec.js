@@ -3,12 +3,18 @@ import { nextTick } from 'vue';
 
 import ActionsButton from '~/vue_shared/components/actions_button.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
-import WebIdeLink, { i18n } from '~/vue_shared/components/web_ide_link.vue';
+import WebIdeLink, {
+  i18n,
+  PREFERRED_EDITOR_RESET_KEY,
+  PREFERRED_EDITOR_KEY,
+  KEY_WEB_IDE,
+} from '~/vue_shared/components/web_ide_link.vue';
 import ConfirmForkModal from '~/vue_shared/components/confirm_fork_modal.vue';
 import UserCalloutDismisser from '~/vue_shared/components/user_callout_dismisser.vue';
 
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 
 const TEST_EDIT_URL = '/gitlab-test/test/-/edit/main/';
 const TEST_WEB_IDE_URL = '/-/ide/project/gitlab-test/test/edit/main/-/';
@@ -80,6 +86,8 @@ const ACTION_PIPELINE_EDITOR = {
 };
 
 describe('Web IDE link component', () => {
+  useLocalStorageSpy();
+
   let wrapper;
 
   function createComponent(
@@ -119,6 +127,10 @@ describe('Web IDE link component', () => {
       },
     });
   }
+
+  beforeEach(() => {
+    localStorage.setItem(PREFERRED_EDITOR_RESET_KEY, 'true');
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -524,5 +536,59 @@ describe('Web IDE link component', () => {
         });
       },
     );
+  });
+
+  describe('when vscode_web_ide feature flag is enabled', () => {
+    describe('when is not showing edit button', () => {
+      describe(`when ${PREFERRED_EDITOR_RESET_KEY} is unset`, () => {
+        beforeEach(() => {
+          localStorage.setItem.mockReset();
+          localStorage.getItem.mockReturnValueOnce(null);
+          createComponent({ showEditButton: false }, { glFeatures: { vscodeWebIde: true } });
+        });
+
+        it(`sets ${PREFERRED_EDITOR_KEY} local storage key to ${KEY_WEB_IDE}`, () => {
+          expect(localStorage.getItem).toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
+          expect(localStorage.setItem).toHaveBeenCalledWith(PREFERRED_EDITOR_KEY, KEY_WEB_IDE);
+        });
+
+        it(`sets ${PREFERRED_EDITOR_RESET_KEY} local storage key to true`, () => {
+          expect(localStorage.setItem).toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY, true);
+        });
+
+        it(`selects ${KEY_WEB_IDE} as the preferred editor`, () => {
+          expect(findActionsButton().props().selectedKey).toBe(KEY_WEB_IDE);
+        });
+      });
+
+      describe(`when ${PREFERRED_EDITOR_RESET_KEY} is set to true`, () => {
+        beforeEach(() => {
+          localStorage.setItem.mockReset();
+          localStorage.getItem.mockReturnValueOnce('true');
+          createComponent({ showEditButton: false }, { glFeatures: { vscodeWebIde: true } });
+        });
+
+        it(`does not update the persisted preferred editor`, () => {
+          expect(localStorage.getItem).toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
+          expect(localStorage.setItem).not.toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
+        });
+      });
+    });
+
+    describe('when is showing the edit button', () => {
+      it(`does not try to reset the ${PREFERRED_EDITOR_KEY}`, () => {
+        createComponent({ showEditButton: true }, { glFeatures: { vscodeWebIde: true } });
+
+        expect(localStorage.getItem).not.toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
+      });
+    });
+  });
+
+  describe('when vscode_web_ide feature flag is disabled', () => {
+    it(`does not try to reset the ${PREFERRED_EDITOR_KEY}`, () => {
+      createComponent({}, { glFeatures: { vscodeWebIde: false } });
+
+      expect(localStorage.getItem).not.toHaveBeenCalledWith(PREFERRED_EDITOR_RESET_KEY);
+    });
   });
 });

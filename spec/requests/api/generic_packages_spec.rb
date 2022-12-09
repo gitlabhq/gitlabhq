@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::GenericPackages do
+RSpec.describe API::GenericPackages, feature_category: :package_registry do
   include HttpBasicAuthHelpers
   using RSpec::Parameterized::TableSyntax
 

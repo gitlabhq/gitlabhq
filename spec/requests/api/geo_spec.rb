@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Geo do
+RSpec.describe API::Geo, feature_category: :geo_replication do
   include WorkhorseHelpers
 
   describe 'GET /geo/proxy' do

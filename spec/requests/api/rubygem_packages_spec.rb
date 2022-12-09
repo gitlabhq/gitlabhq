@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::RubygemPackages do
+RSpec.describe API::RubygemPackages, feature_category: :package_registry do
   include PackagesManagerApiSpecHelpers
   include WorkhorseHelpers
   using RSpec::Parameterized::TableSyntax

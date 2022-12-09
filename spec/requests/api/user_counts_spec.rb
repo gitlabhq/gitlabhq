@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::UserCounts do
+RSpec.describe API::UserCounts, feature_category: :service_ping do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:issue) { create(:issue, project: project, author: user, assignees: [user]) }

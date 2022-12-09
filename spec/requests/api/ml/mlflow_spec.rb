@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-RSpec.describe API::Ml::Mlflow do
+RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
   include SessionHelpers
   include ApiHelpers
   include HttpBasicAuthHelpers

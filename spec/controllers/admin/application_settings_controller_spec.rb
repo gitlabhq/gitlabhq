@@ -162,6 +162,13 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       expect(ApplicationSetting.current.receive_max_input_size).to eq(1024)
     end
 
+    it 'updates the default_preferred_language for string value' do
+      put :update, params: { application_setting: { default_preferred_language: 'zh_CN' } }
+
+      expect(response).to redirect_to(general_admin_application_settings_path)
+      expect(ApplicationSetting.current.default_preferred_language).to eq('zh_CN')
+    end
+
     it 'updates the default_project_creation for string value' do
       put :update, params: { application_setting: { default_project_creation: ::Gitlab::Access::MAINTAINER_PROJECT_ACCESS } }
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_category: :runner do
   include StubGitlabCalls
   include RedisHelpers
   include WorkhorseHelpers

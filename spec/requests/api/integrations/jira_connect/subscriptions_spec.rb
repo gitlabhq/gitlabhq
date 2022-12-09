@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Integrations::JiraConnect::Subscriptions do
+RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: :integrations do
   describe 'POST /integrations/jira_connect/subscriptions' do
     subject(:post_subscriptions) { post api('/integrations/jira_connect/subscriptions') }
 

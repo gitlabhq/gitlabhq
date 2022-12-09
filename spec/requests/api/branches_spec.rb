@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Branches do
+RSpec.describe API::Branches, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
   let(:project) { create(:project, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.shared_examples 'languages and percentages JSON response' do
+RSpec.shared_examples 'languages and percentages JSON response', feature_category: :projects do
   let(:expected_languages) { project.repository.languages.to_h { |language| language.values_at(:label, :value) } }
 
   before do

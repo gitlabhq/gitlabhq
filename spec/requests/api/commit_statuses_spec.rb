@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::CommitStatuses do
+RSpec.describe API::CommitStatuses, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:commit) { project.repository.commit }
   let_it_be(:guest) { create_user(:guest) }

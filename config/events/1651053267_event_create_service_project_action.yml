@@ -1,7 +1,7 @@
 ---
 description: Perform Git operation (read/write/push)
 category: EventCreateService
-action: action_active_users_project_repo
+action: project_action
 label_description:
 property_description:
 value_description:
@@ -16,7 +16,7 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83795
 distributions:
 - ce
 - ee
-tiers: 
+tiers:
 - free
 - premium
 - ultimate

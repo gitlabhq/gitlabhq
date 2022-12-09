@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::IssueLinks do
+RSpec.describe API::IssueLinks, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }

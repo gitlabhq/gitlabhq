@@ -80,7 +80,7 @@
     = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
-      = _('Configure the default first day of the week and time tracking units.')
+      = _('Configure the default first day of the week, time tracking units, and default language.')
   .settings-content
     = render 'localization'
 

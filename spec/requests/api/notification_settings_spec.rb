@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NotificationSettings do
+RSpec.describe API::NotificationSettings, feature_category: :team_planning do
   let(:user) { create(:user) }
   let!(:group) { create(:group) }
   let!(:project) { create(:project, :public, creator_id: user.id, namespace: group) }

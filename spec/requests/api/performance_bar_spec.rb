@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Performance Bar for API requests', :request_store, :clean_gitlab_redis_cache do
+RSpec.describe 'Performance Bar for API requests', :request_store, :clean_gitlab_redis_cache,
+feature_category: :metrics do
   context 'with user that has access to the performance bar' do
     let_it_be(:admin) { create(:admin) }
 

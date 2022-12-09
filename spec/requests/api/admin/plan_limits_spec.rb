@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Admin::PlanLimits, 'PlanLimits' do
+RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owned do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:plan) { create(:plan, name: 'default') }

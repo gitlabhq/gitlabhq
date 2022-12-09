@@ -100,8 +100,16 @@ module PreferencesHelper
 
   def language_choices
     options_for_select(
-      selectable_locales_with_translation_level.sort,
+      selectable_locales_with_translation_level(Gitlab::I18n::MINIMUM_TRANSLATION_LEVEL).sort,
       current_user.preferred_language
+    )
+  end
+
+  def default_preferred_language_choices
+    options_for_select(
+      selectable_locales_with_translation_level(
+        PreferredLanguageSwitcherHelper::SWITCHER_MINIMUM_TRANSLATION_LEVEL).sort,
+      Gitlab::CurrentSettings.default_preferred_language
     )
   end
 
@@ -136,8 +144,8 @@ module PreferencesHelper
     first_day_of_week_choices.rassoc(Gitlab::CurrentSettings.first_day_of_week).first
   end
 
-  def selectable_locales_with_translation_level
-    Gitlab::I18n.selectable_locales.map do |code, language|
+  def selectable_locales_with_translation_level(minimum_level)
+    Gitlab::I18n.selectable_locales(minimum_level).map do |code, language|
       [
         s_("i18n|%{language} (%{percent_translated}%% translated)") % {
           language: language,

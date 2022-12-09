@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues do
+RSpec.describe API::Admin::Sidekiq, :clean_gitlab_redis_queues, feature_category: :not_owned do
   let_it_be(:admin) { create(:admin) }
 
   describe 'DELETE /admin/sidekiq/queues/:queue_name' do

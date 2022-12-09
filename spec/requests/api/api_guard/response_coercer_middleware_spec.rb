@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::APIGuard::ResponseCoercerMiddleware do
+RSpec.describe API::APIGuard::ResponseCoercerMiddleware, feature_category: :not_owned do
   using RSpec::Parameterized::TableSyntax
 
   it 'is loaded' do

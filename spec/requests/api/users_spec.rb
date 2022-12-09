@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Users do
+RSpec.describe API::Users, feature_category: :users do
   include WorkhorseHelpers
 
   let_it_be(:admin) { create(:admin) }

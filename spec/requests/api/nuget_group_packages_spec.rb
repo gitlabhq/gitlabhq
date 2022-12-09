@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::NugetGroupPackages do
+RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
   include_context 'nuget api setup'
 
   using RSpec::Parameterized::TableSyntax

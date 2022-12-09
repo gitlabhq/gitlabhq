@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::AwardEmoji do
+RSpec.describe API::AwardEmoji, feature_category: :not_owned do
   let_it_be_with_reload(:project) { create(:project, :private) }
   let_it_be(:user)        { create(:user) }
   let_it_be(:issue)       { create(:issue, project: project) }

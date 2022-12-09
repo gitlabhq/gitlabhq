@@ -237,7 +237,8 @@ class EventCreateService
         namespace: namespace,
         user: current_user,
         project: project,
-        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'action_active_users_project_repo').to_context]
+        property: 'project_action',
+        context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: 'project_action').to_context]
       )
     end
 

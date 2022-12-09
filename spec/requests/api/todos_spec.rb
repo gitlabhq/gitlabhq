@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Todos do
+RSpec.describe API::Todos, feature_category: :source_code_management do
   include DesignManagementTestHelpers
 
   let_it_be(:group) { create(:group) }

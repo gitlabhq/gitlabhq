@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectPackages do
+RSpec.describe API::ProjectPackages, feature_category: :package_registry do
   let_it_be(:project) { create(:project, :public) }
 
   let(:user) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::MergeRequestApprovals do
+RSpec.describe API::MergeRequestApprovals, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:bot) { create(:user, :project_bot) }

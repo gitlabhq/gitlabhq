@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Applications, :api do
+RSpec.describe API::Applications, :api, feature_category: :authentication_and_authorization do
   let(:admin_user) { create(:user, admin: true) }
   let(:user) { create(:user, admin: false) }
   let(:scopes) { 'api' }

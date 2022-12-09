@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::AccessRequests do
+RSpec.describe API::AccessRequests, feature_category: :authentication_and_authorization do
   let_it_be(:maintainer) { create(:user) }
   let_it_be(:developer) { create(:user) }
   let_it_be(:access_requester) { create(:user) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Deployments, feature_category: :environment_management do
+RSpec.describe API::Deployments, feature_category: :continuous_delivery do
   let_it_be(:user)        { create(:user) }
   let_it_be(:non_member)  { create(:user) }
 

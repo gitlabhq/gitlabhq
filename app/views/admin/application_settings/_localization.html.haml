@@ -15,5 +15,12 @@
       - time_tracking_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: time_tracking_help_link }
       = f.gitlab_ui_checkbox_component :time_tracking_limit_to_hours, _('Limit display of time tracking units to hours.'), help_text: _('Display time tracking in issues in total hours only. %{link_start}What is time tracking?%{link_end}').html_safe % { link_start: time_tracking_help_link_start, link_end: '</a>'.html_safe }
 
+    .form-group
+      = f.label :default_preferred_language, class: 'label-bold' do
+        = _('Default language')
+      = f.select :default_preferred_language, default_preferred_language_choices, {}, class: 'gl-form-select custom-select'
+      .form-text.text-muted
+        = s_('Default language for users who are not logged in.')
+
   = f.submit _('Save changes'), pajamas_button: true
 

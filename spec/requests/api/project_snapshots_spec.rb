@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectSnapshots do
+RSpec.describe API::ProjectSnapshots, feature_category: :source_code_management do
   include WorkhorseHelpers
 
   let(:project) { create(:project) }

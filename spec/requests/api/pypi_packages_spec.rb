@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe API::PypiPackages do
+RSpec.describe API::PypiPackages, feature_category: :package_registry do
   include WorkhorseHelpers
   include PackagesManagerApiSpecHelpers
   include HttpBasicAuthHelpers

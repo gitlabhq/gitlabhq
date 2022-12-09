@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmInstancePackages do
+RSpec.describe API::NpmInstancePackages, feature_category: :package_registry do
   # We need to create a subgroup with the same name as the hosting group.
   # It has to be created first to exhibit this bug: https://gitlab.com/gitlab-org/gitlab/-/issues/321958
   let_it_be(:another_namespace) { create(:group, :public) }

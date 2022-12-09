@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ContainerRegistryEvent do
+RSpec.describe API::ContainerRegistryEvent, feature_category: :container_registry do
   let(:secret_token) { 'secret_token' }
   let(:events) { [{ action: 'push' }] }
   let(:registry_headers) { { 'Content-Type' => ::API::ContainerRegistryEvent::DOCKER_DISTRIBUTION_EVENTS_V1_JSON } }

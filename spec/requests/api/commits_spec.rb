@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-RSpec.describe API::Commits do
+RSpec.describe API::Commits, feature_category: :source_code_management do
   include ProjectForksHelper
   include SessionHelpers
 

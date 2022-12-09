@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Files do
+RSpec.describe API::Files, feature_category: :source_code_management do
   include RepoHelpers
 
   let_it_be(:group) { create(:group, :public) }

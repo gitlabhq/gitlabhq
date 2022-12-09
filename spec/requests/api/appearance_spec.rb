@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Appearance, 'Appearance' do
+RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:admin) }
 

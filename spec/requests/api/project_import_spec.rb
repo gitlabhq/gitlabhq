@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectImport, :aggregate_failures do
+RSpec.describe API::ProjectImport, :aggregate_failures, feature_category: :importers do
   include WorkhorseHelpers
   include AfterNextHelpers
 

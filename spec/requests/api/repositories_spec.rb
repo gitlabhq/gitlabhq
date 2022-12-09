@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'mime/types'
 
-RSpec.describe API::Repositories do
+RSpec.describe API::Repositories, feature_category: :source_code_management do
   include RepoHelpers
   include WorkhorseHelpers
   include ProjectForksHelper

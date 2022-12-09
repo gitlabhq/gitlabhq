@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Internal::Base do
+RSpec.describe API::Internal::Base, feature_category: :authentication_and_authorization do
   include GitlabShellHelpers
   include APIInternalBaseHelpers
 

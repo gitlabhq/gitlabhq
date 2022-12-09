@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectStatistics do
+RSpec.describe API::ProjectStatistics, feature_category: :source_code_management do
   let_it_be(:reporter) { create(:user) }
   let_it_be(:public_project) { create(:project, :public) }
 

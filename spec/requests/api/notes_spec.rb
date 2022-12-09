@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Notes do
+RSpec.describe API::Notes, feature_category: :team_planning do
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :public) }
   let(:private_user) { create(:user) }

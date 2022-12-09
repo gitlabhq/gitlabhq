@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe API::MergeRequests do
+RSpec.describe API::MergeRequests, feature_category: :source_code_management do
   include ProjectForksHelper
 
   let_it_be(:base_time) { Time.now }

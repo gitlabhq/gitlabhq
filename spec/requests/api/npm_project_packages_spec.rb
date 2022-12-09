@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::NpmProjectPackages do
+RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
   include_context 'npm api setup'
 
   shared_examples 'accept get request on private project with access to package registry for everyone' do
