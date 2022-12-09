@@ -13,4 +13,10 @@ export const SECURITY_PATCH_FIXTURE = `<div id="js-security-patch-upgrade-alert"
 
 export const SECURITY_PATCH_FINDER = 'h2';
 
-export const SECURITY_BATCH_TEXT = 'Critical security upgrade available';
+export const SECURITY_PATCH_TEXT = 'Critical security upgrade available';
+
+export const SECURITY_MODAL_FIXTURE = `<div id="js-security-patch-upgrade-alert-modal" data-current-version="15.1" data-version='{ "details": "test details", "latest-stable-versions": "[]" }'></div>`;
+
+export const SECURITY_MODAL_FINDER = '[data-testid="alert-modal-title"]';
+
+export const SECURITY_MODAL_TEXT = 'Important notice - Critical security release';

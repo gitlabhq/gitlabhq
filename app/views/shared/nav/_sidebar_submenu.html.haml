@@ -1,5 +1,5 @@
 %ul.sidebar-sub-level-items{ class: ('is-fly-out-only' unless sidebar_menu.has_renderable_items?) }
-  = nav_link(**sidebar_menu.all_active_routes, html_options: { class: 'fly-out-top-item' } ) do
+  = nav_link(**sidebar_menu.all_active_routes, html_options: { class: 'fly-out-top-item' }) do
     %span.fly-out-top-item-container
       %strong.fly-out-top-item-name
         = sidebar_menu.title

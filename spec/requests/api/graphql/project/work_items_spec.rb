@@ -93,6 +93,11 @@ RSpec.describe 'getting a work item list for a project' do
               }
               ... on WorkItemWidgetHierarchy {
                 parent { id }
+                children {
+                  nodes {
+                    id
+                  }
+                }
               }
               ... on WorkItemWidgetLabels {
                 labels { nodes { id } }

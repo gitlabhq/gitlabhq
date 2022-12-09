@@ -98,7 +98,7 @@ module Gitlab
 
         create_labels
 
-        issue_type_id = WorkItems::Type.default_issue_type.id
+        issue_type_id = ::WorkItems::Type.default_issue_type.id
 
         client.issues(repo).each do |issue|
           import_issue(issue, issue_type_id)

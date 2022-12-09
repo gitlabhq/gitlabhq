@@ -15,6 +15,7 @@ module WorkItems
     validate :validate_child_type
     validate :validate_parent_type
     validate :validate_hierarchy_restrictions
+    validate :validate_cyclic_reference
     validate :validate_same_project
     validate :validate_max_children
     validate :validate_confidentiality
@@ -98,6 +99,31 @@ module WorkItems
 
       if restriction.nil?
         errors.add :work_item, _('is not allowed to add this type of parent')
+        return
+      end
+
+      validate_depth(restriction.maximum_depth)
+    end
+
+    def validate_depth(depth)
+      return unless depth
+      return if work_item.work_item_type_id != work_item_parent.work_item_type_id
+
+      if work_item_parent.same_type_base_and_ancestors.count + work_item.same_type_descendants_depth > depth
+        errors.add :work_item, _('reached maximum depth')
+      end
+    end
+
+    def validate_cyclic_reference
+      return unless db_restrictions_enabled?
+      return unless work_item_parent&.id && work_item&.id
+
+      if work_item.id == work_item_parent.id
+        errors.add :work_item, _('is not allowed to point to itself')
+      end
+
+      if work_item_parent.ancestors.detect { |ancestor| work_item.id == ancestor.id }
+        errors.add :work_item, _('is already present in ancestors')
       end
     end
   end

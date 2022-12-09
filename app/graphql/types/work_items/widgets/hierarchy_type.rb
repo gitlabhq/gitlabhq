@@ -39,7 +39,10 @@ module Types
         alias_method :has_children, :has_children?
 
         def children
-          object.children.inc_relations_for_permission_check
+          relation = object.children
+          relation = relation.inc_relations_for_permission_check unless object.children.loaded?
+
+          relation
         end
       end
       # rubocop:enable Graphql/AuthorizeTypes

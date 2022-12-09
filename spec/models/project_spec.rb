@@ -8482,6 +8482,41 @@ RSpec.describe Project, factory_default: :keep do
     it_behaves_like 'cascading settings', :only_allow_merge_if_all_discussions_are_resolved
   end
 
+  describe '#archived' do
+    it { expect(subject.archived).to be_falsey }
+    it { expect(described_class.new(archived: true).archived).to be_truthy }
+  end
+
+  describe '#resolve_outdated_diff_discussions' do
+    it { expect(subject.resolve_outdated_diff_discussions).to be_falsey }
+
+    context 'when set explicitly' do
+      subject { described_class.new(resolve_outdated_diff_discussions: true) }
+
+      it { expect(subject.resolve_outdated_diff_discussions).to be_truthy }
+    end
+  end
+
+  describe '#only_allow_merge_if_all_discussions_are_resolved' do
+    it { expect(subject.only_allow_merge_if_all_discussions_are_resolved).to be_falsey }
+
+    context 'when set explicitly' do
+      subject { described_class.new(only_allow_merge_if_all_discussions_are_resolved: true) }
+
+      it { expect(subject.only_allow_merge_if_all_discussions_are_resolved).to be_truthy }
+    end
+  end
+
+  describe '#remove_source_branch_after_merge' do
+    it { expect(subject.remove_source_branch_after_merge).to be_truthy }
+
+    context 'when set explicitly' do
+      subject { described_class.new(remove_source_branch_after_merge: false) }
+
+      it { expect(subject.remove_source_branch_after_merge).to be_falsey }
+    end
+  end
+
   private
 
   def finish_job(export_job)

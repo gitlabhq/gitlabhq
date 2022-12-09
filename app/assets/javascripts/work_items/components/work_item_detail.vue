@@ -460,19 +460,17 @@ export default {
         :work-item-type="workItemType"
         @error="updateError = $event"
       />
-      <template v-if="workItemsMvcEnabled">
-        <work-item-milestone
-          v-if="workItemMilestone"
-          :work-item-id="workItem.id"
-          :work-item-milestone="workItemMilestone.milestone"
-          :work-item-type="workItemType"
-          :fetch-by-iid="fetchByIid"
-          :query-variables="queryVariables"
-          :can-update="canUpdate"
-          :full-path="fullPath"
-          @error="updateError = $event"
-        />
-      </template>
+      <work-item-milestone
+        v-if="workItemMilestone"
+        :work-item-id="workItem.id"
+        :work-item-milestone="workItemMilestone.milestone"
+        :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        :can-update="canUpdate"
+        :full-path="fullPath"
+        @error="updateError = $event"
+      />
       <work-item-weight
         v-if="workItemWeight"
         class="gl-mb-5"

@@ -2,6 +2,6 @@
   = s_('Notify|Issue was moved to another project.')
 - if @can_access_project
   %p
-    = sprintf(s_('Notify|New issue: %{project_issue_url}'), { project_issue_url: link_to(@new_issue.title, project_issue_url(@new_project, @new_issue)) } ).html_safe
+    = sprintf(s_('Notify|New issue: %{project_issue_url}'), { project_issue_url: link_to(@new_issue.title, project_issue_url(@new_project, @new_issue)) }).html_safe
 - else
   = s_("Notify|You don't have access to the project.")

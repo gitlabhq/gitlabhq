@@ -571,7 +571,7 @@ module Gitlab
       end
 
       def encode_repeated(array)
-        Google::Protobuf::RepeatedField.new(:bytes, array.map { |s| encode_binary(s) } )
+        Google::Protobuf::RepeatedField.new(:bytes, array.map { |s| encode_binary(s) })
       end
 
       def call_find_commit(revision)

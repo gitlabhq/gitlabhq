@@ -767,6 +767,28 @@ in your merge request fails.
 
 ### Text for links
 
+Follow these guidelines for link text.
+
+#### Standard text
+
+As much as possible, use text that follows one of these patterns:
+
+- `For more information, see [LINK TEXT](LINK)`.
+- `To [DO THIS THING], see [LINK TEXT](LINK)`
+
+For example:
+
+- `For more information, see [merge requests](../../../user/project/merge_requests/index.md).`
+- `To create a review app, see [review apps](../../../ci/review_apps/index.md).`
+
+You can expand on this text by using phrases like
+`For more information about this feature, see...`
+
+Do not to use alternate phrases, like `Learn more about...` or
+`To read more...`.
+
+#### Descriptive text rather than `here`
+
 Use descriptive text for links, rather than words like `here` or `this page.`
 
 For example, instead of:
@@ -777,6 +799,14 @@ For example, instead of:
 Use:
 
 - `For more information, see [merge requests](LINK)`.
+
+#### Links to issues
+
+When linking to an issue, include the issue number in the link. For example:
+
+- `For more information, see [issue 12345](LINK).`
+
+Do not use the pound sign (`issue #12345`).
 
 ### Links to external documentation
 

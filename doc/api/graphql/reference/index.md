@@ -10895,6 +10895,20 @@ CI/CD config variables.
 | <a id="ciconfigvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 | <a id="ciconfigvariablevalueoptions"></a>`valueOptions` | [`[String!]`](#string) | Value options for the variable. |
 
+### `CiFreezePeriod`
+
+Represents a deployment freeze window of a project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="cifreezeperiodendcron"></a>`endCron` | [`String!`](#string) | End of the freeze period in cron format. |
+| <a id="cifreezeperiodendtime"></a>`endTime` | [`Time`](#time) | Timestamp (UTC) of when the current/next active period ends. |
+| <a id="cifreezeperiodstartcron"></a>`startCron` | [`String!`](#string) | Start of the freeze period in cron format. |
+| <a id="cifreezeperiodstarttime"></a>`startTime` | [`Time`](#time) | Timestamp (UTC) of when the current/next active period starts. |
+| <a id="cifreezeperiodstatus"></a>`status` | [`CiFreezePeriodStatus!`](#cifreezeperiodstatus) | Freeze period status. |
+
 ### `CiGroup`
 
 #### Fields
@@ -12422,6 +12436,7 @@ Describes where code is deployed for a project.
 | <a id="environmentautodeleteat"></a>`autoDeleteAt` | [`Time`](#time) | When the environment is going to be deleted automatically. |
 | <a id="environmentautostopat"></a>`autoStopAt` | [`Time`](#time) | When the environment is going to be stopped automatically. |
 | <a id="environmentcreatedat"></a>`createdAt` | [`Time`](#time) | When the environment was created. |
+| <a id="environmentdeployfreezes"></a>`deployFreezes` | [`[CiFreezePeriod!]`](#cifreezeperiod) | Deployment freeze periods of the environment. |
 | <a id="environmentenvironmenttype"></a>`environmentType` | [`String`](#string) | Folder name of the environment. |
 | <a id="environmentexternalurl"></a>`externalUrl` | [`String`](#string) | External URL of the environment. |
 | <a id="environmentid"></a>`id` | [`ID!`](#id) | ID of the environment. |
@@ -21112,6 +21127,15 @@ Values for YAML processor result.
 | ----- | ----------- |
 | <a id="ciconfigstatusinvalid"></a>`INVALID` | Configuration file is not valid. |
 | <a id="ciconfigstatusvalid"></a>`VALID` | Configuration file is valid. |
+
+### `CiFreezePeriodStatus`
+
+Deploy freeze period status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cifreezeperiodstatusactive"></a>`ACTIVE` | Freeze period is active. |
+| <a id="cifreezeperiodstatusinactive"></a>`INACTIVE` | Freeze period is inactive. |
 
 ### `CiJobKind`
 

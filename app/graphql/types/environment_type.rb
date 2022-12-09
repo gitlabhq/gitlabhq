@@ -73,6 +73,11 @@ module Types
           description: 'Last deployment of the environment.',
           resolver: Resolvers::Environments::LastDeploymentResolver
 
+    field :deploy_freezes,
+          [Types::Ci::FreezePeriodType],
+          null: true,
+          description: 'Deployment freeze periods of the environment.'
+
     def tier
       object.tier.to_sym
     end

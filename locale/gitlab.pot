@@ -45306,10 +45306,19 @@ msgstr ""
 msgid "Version %{versionNumber} (latest)"
 msgstr ""
 
+msgid "VersionCheck|%{details}"
+msgstr ""
+
 msgid "VersionCheck|Critical security upgrade available"
 msgstr ""
 
+msgid "VersionCheck|Important notice - Critical security release"
+msgstr ""
+
 msgid "VersionCheck|Learn more about this critical security release."
+msgstr ""
+
+msgid "VersionCheck|Remind me again in 3 days"
 msgstr ""
 
 msgid "VersionCheck|Up to date"
@@ -45322,6 +45331,12 @@ msgid "VersionCheck|Update available"
 msgstr ""
 
 msgid "VersionCheck|Upgrade now"
+msgstr ""
+
+msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation immediately."
+msgstr ""
+
+msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: %{latestStableVersions}."
 msgstr ""
 
 msgid "VersionCheck|You are currently on version %{currentVersion}. We strongly recommend upgrading your GitLab installation. %{link}"
@@ -49082,6 +49097,9 @@ msgstr ""
 msgid "is already linked to this vulnerability"
 msgstr ""
 
+msgid "is already present in ancestors"
+msgstr ""
+
 msgid "is an invalid IP address range"
 msgstr ""
 
@@ -49122,6 +49140,9 @@ msgid "is not allowed since the group is not top-level group."
 msgstr ""
 
 msgid "is not allowed to add this type of parent"
+msgstr ""
+
+msgid "is not allowed to point to itself"
 msgstr ""
 
 msgid "is not allowed. Please use your regular email address."
@@ -49834,6 +49855,9 @@ msgid "reCAPTCHA private key"
 msgstr ""
 
 msgid "reCAPTCHA site key"
+msgstr ""
+
+msgid "reached maximum depth"
 msgstr ""
 
 msgid "recent activity"

@@ -35,7 +35,7 @@ module Gitlab
 
         Timeout.timeout(TIMEOUT_LIMIT) do
           stderr_r, stderr_w = IO.pipe
-          stdout, wait_threads = Open3.pipeline_r(*command, pgroup: true, err: stderr_w )
+          stdout, wait_threads = Open3.pipeline_r(*command, pgroup: true, err: stderr_w)
 
           # When validation is performed on a small archive (e.g. 100 bytes)
           # `wait_thr` finishes before we can get process group id. Do not

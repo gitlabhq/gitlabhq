@@ -25,6 +25,7 @@ default:
   timeout: 90m
 
 workflow:
+  name: '$PIPELINE_NAME'
   rules:
     # If `$FORCE_GITLAB_CI` is set, create a pipeline.
     - if: '$FORCE_GITLAB_CI'
@@ -39,18 +40,23 @@ workflow:
     - if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
         RUBY_VERSION: "3.0"
+        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For merge requests running exclusively in Ruby 3.0
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
         RUBY_VERSION: "3.0"
+        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For (detached) merge request pipelines.
     - if: '$CI_MERGE_REQUEST_IID'
+      variables:
+        PIPELINE_NAME: '$CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
     # For the scheduled pipelines, we set specific variables.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
         CRYSTALBALL: "true"
         CREATE_INCIDENT_FOR_PIPELINE_FAILURE: "true"
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "master-broken"
+        PIPELINE_NAME: 'Scheduled $CI_COMMIT_BRANCH pipeline'
     # Run pipelines for ruby3 branch
     - if: '$CI_COMMIT_BRANCH == "ruby3" && $CI_PIPELINE_SOURCE == "schedule"'
       variables:
@@ -58,6 +64,7 @@ workflow:
         NOTIFY_PIPELINE_FAILURE_CHANNEL: "f_ruby3"
         OMNIBUS_GITLAB_RUBY3_BUILD: "true"
         OMNIBUS_GITLAB_CACHE_EDITION: "GITLAB_RUBY3"
+        PIPELINE_NAME: 'Scheduled ruby 3 pipeline'
     # This work around https://gitlab.com/gitlab-org/gitlab/-/issues/332411 whichs prevents usage of dependency proxy
     # when pipeline is triggered by a project access token.
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $GITLAB_USER_LOGIN =~ /project_\d+_bot\d*/'

@@ -89,6 +89,55 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         end
       end
 
+      context 'with nested ancestors' do
+        let_it_be(:type1) { create(:work_item_type, namespace: project.namespace) }
+        let_it_be(:type2) { create(:work_item_type, namespace: project.namespace) }
+        let_it_be(:item1) { create(:work_item, work_item_type: type1, project: project) }
+        let_it_be(:item2) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:item3) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:item4) { create(:work_item, work_item_type: type2, project: project) }
+        let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
+        let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type1) }
+
+        let_it_be(:hierarchy_restriction3) do
+          create(:hierarchy_restriction, parent_type: type2, child_type: type2, maximum_depth: 2)
+        end
+
+        let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2) }
+        let_it_be(:link2) { create(:parent_link, work_item_parent: item3, work_item: item4) }
+
+        describe '#validate_depth' do
+          it 'is valid if depth is in limit' do
+            link = build(:parent_link, work_item_parent: item1, work_item: item3)
+
+            expect(link).to be_valid
+          end
+
+          it 'is not valid when maximum depth is reached' do
+            link = build(:parent_link, work_item_parent: item2, work_item: item3)
+
+            expect(link).not_to be_valid
+            expect(link.errors[:work_item]).to include('reached maximum depth')
+          end
+        end
+
+        describe '#validate_cyclic_reference' do
+          it 'is not valid if parent and child are same' do
+            link1.work_item_parent = item2
+
+            expect(link1).not_to be_valid
+            expect(link1.errors[:work_item]).to include('is not allowed to point to itself')
+          end
+
+          it 'is not valid if child is already in ancestors' do
+            link = build(:parent_link, work_item_parent: item4, work_item: item3)
+
+            expect(link).not_to be_valid
+            expect(link.errors[:work_item]).to include('is already present in ancestors')
+          end
+        end
+      end
+
       it 'is not valid if parent is in other project' do
         link = build(:parent_link, work_item_parent: task1, work_item: build(:work_item))
 

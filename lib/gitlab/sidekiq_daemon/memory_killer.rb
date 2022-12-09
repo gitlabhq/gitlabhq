@@ -78,7 +78,7 @@ module Gitlab
           rescue StandardError => e
             log_exception(e, __method__)
           rescue Exception => e # rubocop:disable Lint/RescueException
-            log_exception(e, __method__ )
+            log_exception(e, __method__)
             raise e
           end
         end
@@ -188,7 +188,7 @@ module Gitlab
 
       def increment_worker_counters(running_jobs, deadline_exceeded)
         running_jobs.each do |job|
-          @metrics[:sidekiq_memory_killer_running_jobs].increment( { worker_class: job[:worker_class], deadline_exceeded: deadline_exceeded } )
+          @metrics[:sidekiq_memory_killer_running_jobs].increment({ worker_class: job[:worker_class], deadline_exceeded: deadline_exceeded })
         end
       end
 

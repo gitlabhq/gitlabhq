@@ -61,7 +61,7 @@ All Work Item types share the same pool of predefined widgets and are customized
 | description | |
 | hierarchy | |
 | [iteration](https://gitlab.com/gitlab-org/gitlab/-/issues/367456) | |
-| [milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) | work_items_mvc |
+| [milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/367463) | |
 | labels | |
 | start and due date | |
 | status\* | |

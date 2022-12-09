@@ -2010,4 +2010,23 @@ RSpec.describe Environment, :use_clean_rails_memory_store_caching do
       end
     end
   end
+
+  describe '#deploy_freezes' do
+    let(:environment) { create(:environment, project: project, name: 'staging') }
+    let(:freeze_period) { create(:ci_freeze_period, project: project) }
+
+    subject { environment.deploy_freezes }
+
+    it 'returns the freeze periods of the associated project' do
+      expect(subject).to contain_exactly(freeze_period)
+    end
+
+    it 'caches the freeze periods' do
+      expect(Gitlab::SafeRequestStore).to receive(:fetch)
+        .at_least(:once)
+        .and_return([freeze_period])
+
+      subject
+    end
+  end
 end

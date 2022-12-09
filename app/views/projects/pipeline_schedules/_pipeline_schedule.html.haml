@@ -6,7 +6,7 @@
     %td.branch-name-cell.gl-text-truncate{ role: 'cell', data: { label: s_("PipelineSchedules|Target") } }
       %div
         - if pipeline_schedule.for_tag?
-          = sprite_icon('tag', size: 12, css_class: 'gl-vertical-align-middle!' )
+          = sprite_icon('tag', size: 12, css_class: 'gl-vertical-align-middle!')
         - else
           = sprite_icon('fork', size: 12, css_class: 'gl-vertical-align-middle!')
         - if pipeline_schedule.ref.present?

@@ -103,7 +103,7 @@
         - supported_characters = %w(" ' ` &#40; [ { < * _).map { |char| "<code>#{char}</code>" }.join(', ')
         = f.gitlab_ui_checkbox_component :markdown_surround_selection,
           s_('Preferences|Surround text selection when typing quotes or brackets'),
-          help_text: sprintf(s_( "Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
+          help_text: sprintf(s_("Preferences|When you type in a description or comment box, selected text is surrounded by the corresponding character after typing one of the following characters: %{supported_characters}."), { supported_characters: supported_characters }).html_safe
       .form-group
         = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
           s_('Preferences|Automatically add new list items'),

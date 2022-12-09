@@ -89,23 +89,21 @@ class Project < ApplicationRecord
 
   cache_markdown_field :description, pipeline: :description
 
-  default_value_for :packages_enabled, true
-  default_value_for :archived, false
-  default_value_for :resolve_outdated_diff_discussions, false
-  default_value_for(:repository_storage) do
-    Repository.pick_storage_shard
-  end
+  attribute :packages_enabled, default: true
+  attribute :archived, default: false
+  attribute :resolve_outdated_diff_discussions, default: false
+  attribute :repository_storage, default: -> { Repository.pick_storage_shard }
+  attribute :shared_runners_enabled, default: -> { Gitlab::CurrentSettings.shared_runners_enabled }
+  attribute :only_allow_merge_if_all_discussions_are_resolved, default: false
+  attribute :remove_source_branch_after_merge, default: true
+  attribute :autoclose_referenced_issues, default: true
+  attribute :ci_config_path, default: -> { Gitlab::CurrentSettings.default_ci_config_path }
 
-  default_value_for(:shared_runners_enabled) { Gitlab::CurrentSettings.shared_runners_enabled }
   default_value_for :issues_enabled, gitlab_config_features.issues
   default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
   default_value_for :builds_enabled, gitlab_config_features.builds
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
-  default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
-  default_value_for :remove_source_branch_after_merge, true
-  default_value_for :autoclose_referenced_issues, true
-  default_value_for(:ci_config_path) { Gitlab::CurrentSettings.default_ci_config_path }
 
   add_authentication_token_field :runners_token,
                                  encrypted: -> { Feature.enabled?(:projects_tokens_optional_encryption) ? :optional : :required },

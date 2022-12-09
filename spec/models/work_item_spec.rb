@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItem do
+RSpec.describe WorkItem, feature_category: :portfolio_management do
   let_it_be(:reusable_project) { create(:project) }
 
   describe 'associations' do
@@ -173,6 +173,61 @@ RSpec.describe WorkItem do
           expect(child.errors[:base])
             .to include('A non-confidential work item cannot have a confidential parent.')
         end
+      end
+    end
+  end
+
+  context 'with hierarchy' do
+    let_it_be(:type1) { create(:work_item_type, namespace: reusable_project.namespace) }
+    let_it_be(:type2) { create(:work_item_type, namespace: reusable_project.namespace) }
+    let_it_be(:type3) { create(:work_item_type, namespace: reusable_project.namespace) }
+    let_it_be(:type4) { create(:work_item_type, namespace: reusable_project.namespace) }
+    let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
+    let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type2) }
+    let_it_be(:hierarchy_restriction3) { create(:hierarchy_restriction, parent_type: type2, child_type: type3) }
+    let_it_be(:hierarchy_restriction4) { create(:hierarchy_restriction, parent_type: type3, child_type: type3) }
+    let_it_be(:hierarchy_restriction5) { create(:hierarchy_restriction, parent_type: type3, child_type: type4) }
+    let_it_be(:item1) { create(:work_item, work_item_type: type1, project: reusable_project) }
+    let_it_be(:item2_1) { create(:work_item, work_item_type: type2, project: reusable_project) }
+    let_it_be(:item2_2) { create(:work_item, work_item_type: type2, project: reusable_project) }
+    let_it_be(:item3_1) { create(:work_item, work_item_type: type3, project: reusable_project) }
+    let_it_be(:item3_2) { create(:work_item, work_item_type: type3, project: reusable_project) }
+    let_it_be(:item4) { create(:work_item, work_item_type: type4, project: reusable_project) }
+    let_it_be(:ignored_ancestor) { create(:work_item, work_item_type: type1, project: reusable_project) }
+    let_it_be(:ignored_descendant) { create(:work_item, work_item_type: type4, project: reusable_project) }
+    let_it_be(:link1) { create(:parent_link, work_item_parent: item1, work_item: item2_1) }
+    let_it_be(:link2) { create(:parent_link, work_item_parent: item2_1, work_item: item2_2) }
+    let_it_be(:link3) { create(:parent_link, work_item_parent: item2_2, work_item: item3_1) }
+    let_it_be(:link4) { create(:parent_link, work_item_parent: item3_1, work_item: item3_2) }
+    let_it_be(:link5) { create(:parent_link, work_item_parent: item3_2, work_item: item4) }
+
+    describe '#ancestors' do
+      it 'returns all ancestors in ascending order' do
+        expect(item3_1.ancestors).to eq([item2_2, item2_1, item1])
+      end
+
+      it 'returns an empty array if there are no ancestors' do
+        expect(item1.ancestors).to be_empty
+      end
+    end
+
+    describe '#same_type_base_and_ancestors' do
+      it 'returns self and all ancestors of the same type in ascending order' do
+        expect(item3_2.same_type_base_and_ancestors).to eq([item3_2, item3_1])
+      end
+
+      it 'returns self if there are no ancestors of the same type' do
+        expect(item3_1.same_type_base_and_ancestors).to match_array([item3_1])
+      end
+    end
+
+    describe '#same_type_descendants_depth' do
+      it 'returns max descendants depth including self' do
+        expect(item3_1.same_type_descendants_depth).to eq(2)
+      end
+
+      it 'returns 1 if there are no descendants' do
+        expect(item1.same_type_descendants_depth).to eq(1)
       end
     end
   end

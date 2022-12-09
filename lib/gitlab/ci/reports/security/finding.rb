@@ -98,7 +98,7 @@ module Gitlab
           end
 
           def unsafe?(severity_levels, report_types)
-            severity.to_s.in?(severity_levels) && (report_types.blank? || report_type.to_s.in?(report_types) )
+            severity.to_s.in?(severity_levels) && (report_types.blank? || report_type.to_s.in?(report_types))
           end
 
           def eql?(other)

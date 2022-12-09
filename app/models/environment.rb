@@ -507,6 +507,12 @@ class Environment < ApplicationRecord
     environment_type.nil?
   end
 
+  def deploy_freezes
+    Gitlab::SafeRequestStore.fetch("project:#{project_id}:freeze_periods_for_environments") do
+      project.freeze_periods
+    end
+  end
+
   private
 
   # We deliberately avoid using AddressableUrlValidator to allow users to update their environments even if they have

@@ -91,7 +91,7 @@ module Gitlab
       end
 
       def environment
-        @environment ||= OS[@os.to_sym] || ( raise Gitlab::Ci::RunnerInstructions::ArgumentError, _('Invalid OS') )
+        @environment ||= OS[@os.to_sym] || (raise Gitlab::Ci::RunnerInstructions::ArgumentError, _('Invalid OS'))
       end
 
       def validate_params

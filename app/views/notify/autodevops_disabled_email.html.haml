@@ -11,7 +11,7 @@
     - link_style = "color: #1b69b6; text-decoration:none;"
     - pipeline_link = link_to("\##{@pipeline.iid}", pipeline_url(@pipeline), style: link_style).html_safe
     - project_link = link_to(@project.name, project_url(@project), style: link_style).html_safe
-    - supported_langs_link = link_to(s_('Notify|currently supported languages'), 'https://docs.gitlab.com/ee/topics/autodevops/#currently-supported-languages', style: link_style ).html_safe
+    - supported_langs_link = link_to(s_('Notify|currently supported languages'), 'https://docs.gitlab.com/ee/topics/autodevops/#currently-supported-languages', style: link_style).html_safe
     - settings_link = link_to(s_('Notify|CI/CD project settings'), project_settings_ci_cd_url(@project), style: link_style).html_safe
     = s_('Notify|The Auto DevOps pipeline failed for pipeline %{pipeline_link} and has been disabled for %{project_link}. In order to use the Auto DevOps pipeline with your project, please review the %{supported_langs_link}, adjust your project accordingly, and turn on the Auto DevOps pipeline within your %{settings_link}.').html_safe % { pipeline_link: pipeline_link, project_link: project_link, supported_langs_link: supported_langs_link, settings_link: settings_link }
 

@@ -2,7 +2,7 @@
 - default_ref = params[:ref] || @project.default_branch
 
 - if @error
-  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: true ) do |c|
+  = render Pajamas::AlertComponent.new(variant: :danger, dismissible: true) do |c|
     = c.body do
       = @error
 

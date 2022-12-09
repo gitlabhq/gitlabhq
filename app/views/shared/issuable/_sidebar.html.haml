@@ -101,7 +101,7 @@
           .sidebar-collapsed-icon{ data: { toggle: 'tooltip', placement: 'left', container: 'body', boundary: 'viewport' }, title: _('Move issue') }
             = sprite_icon('long-arrow')
           .dropdown.sidebar-move-issue-dropdown.hide-collapsed
-            = render Pajamas::ButtonComponent.new(block: true, button_options: { class: 'js-sidebar-dropdown-toggle js-move-issue', data: { toggle: 'dropdown', display: 'static', track_label: "right_sidebar", track_property: "move_issue", track_action: "click_button", track_value: "" } } ) do
+            = render Pajamas::ButtonComponent.new(block: true, button_options: { class: 'js-sidebar-dropdown-toggle js-move-issue', data: { toggle: 'dropdown', display: 'static', track_label: "right_sidebar", track_property: "move_issue", track_action: "click_button", track_value: "" } }) do
               = _('Move issue')
             .dropdown-menu.dropdown-menu-selectable.dropdown-extended-height
               = dropdown_title(_('Move issue'))

@@ -122,7 +122,7 @@ export default {
         confidential: this.parentConfidential,
       };
 
-      if (this.associateMilestone) {
+      if (this.parentMilestoneId) {
         workItemInput = {
           ...workItemInput,
           milestoneWidget: {
@@ -166,9 +166,6 @@ export default {
     },
     parentMilestoneId() {
       return this.parentMilestone?.id;
-    },
-    associateMilestone() {
-      return this.parentMilestoneId && this.workItemsMvcEnabled;
     },
     isSubmitButtonDisabled() {
       return this.isCreateForm ? this.search.length === 0 : this.workItemsToAdd.length === 0;

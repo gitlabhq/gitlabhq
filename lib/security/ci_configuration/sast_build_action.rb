@@ -68,7 +68,7 @@ module Security
       end
 
       def auto_devops_stages
-        auto_devops_template = YAML.safe_load( Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content )
+        auto_devops_template = YAML.safe_load(Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content)
         auto_devops_template['stages']
       end
 

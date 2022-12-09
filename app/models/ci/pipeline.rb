@@ -725,7 +725,7 @@ module Ci
 
     def freeze_period?
       strong_memoize(:freeze_period) do
-        Ci::FreezePeriodStatus.new(project: project).execute
+        project.freeze_periods.any?(&:active?)
       end
     end
 

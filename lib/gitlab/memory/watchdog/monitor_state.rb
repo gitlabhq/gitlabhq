@@ -7,7 +7,7 @@ module Gitlab
         class Result
           attr_reader :payload, :monitor_name
 
-          def initialize(strikes_exceeded:, threshold_violated:, monitor_name:, payload: )
+          def initialize(strikes_exceeded:, threshold_violated:, monitor_name:, payload:)
             @strikes_exceeded = strikes_exceeded
             @threshold_violated = threshold_violated
             @monitor_name = monitor_name.to_s.to_sym

@@ -575,7 +575,7 @@ describe('WorkItemDetail component', () => {
     `('$description', async ({ milestoneWidgetPresent, exists }) => {
       const response = workItemResponseFactory({ milestoneWidgetPresent });
       const handler = jest.fn().mockResolvedValue(response);
-      createComponent({ handler, workItemsMvcEnabled: true });
+      createComponent({ handler });
       await waitForPromises();
 
       expect(findWorkItemMilestone().exists()).toBe(exists);
