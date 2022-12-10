@@ -44242,9 +44242,6 @@ msgstr ""
 msgid "UsageQuota|%{linkTitle} help link"
 msgstr ""
 
-msgid "UsageQuota|%{percentageLeft} of purchased storage is available"
-msgstr ""
-
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
 
@@ -44416,9 +44413,6 @@ msgstr ""
 msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
 msgstr ""
 
-msgid "UsageQuota|This namespace contains locked projects"
-msgstr ""
-
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr ""
 
@@ -44464,7 +44458,7 @@ msgstr ""
 msgid "UsageQuota|User settings &gt; Usage quotas"
 msgstr ""
 
-msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked when you reached the %{actualRepositorySizeLimit} limit."
+msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked if the storage limit was reached."
 msgstr ""
 
 msgid "UsageQuota|Wiki"
@@ -44473,10 +44467,10 @@ msgstr ""
 msgid "UsageQuota|Wiki content."
 msgstr ""
 
-msgid "UsageQuota|You have consumed all of your additional storage. Purchase more to unlock your projects over the free %{actualRepositorySizeLimit} limit."
+msgid "UsageQuota|You have consumed all of your additional storage. Purchase more to unlock projects over the limit."
 msgstr ""
 
-msgid "UsageQuota|You have reached the free storage limit of %{actualRepositorySizeLimit} on %{projectsLockedText}. To unlock them, purchase additional storage."
+msgid "UsageQuota|You have reached the free storage limit on %{projectsLockedText}. To unlock them, purchase additional storage."
 msgstr ""
 
 msgid "UsageQuota|You used: %{usage} %{limit}"

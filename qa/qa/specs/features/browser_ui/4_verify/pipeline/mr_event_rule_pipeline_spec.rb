@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
-    context 'When job is configured to only run on merge_request_events' do
+    context 'when job is configured to only run on merge_request_events' do
       let(:mr_only_job_name) { 'mr_only_job' }
       let(:non_mr_only_job_name) { 'non_mr_only_job' }
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
@@ -31,10 +31,12 @@ module QA
                 file_path: '.gitlab-ci.yml',
                 content: <<~YAML
                   #{mr_only_job_name}:
+                    tags: ["#{executor}"]
                     script: echo 'OK'
                     rules:
                       - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
                   #{non_mr_only_job_name}:
+                    tags: ["#{executor}"]
                     script: echo 'OK'
                     rules:
                       - if: '$CI_PIPELINE_SOURCE != "merge_request_event"'
@@ -57,13 +59,17 @@ module QA
 
       before do
         Flow::Login.sign_in
-        merge_request.visit!
-        Page::MergeRequest::Show.perform(&:click_pipeline_link)
+        # TODO: We should remove (wait) revisiting logic when
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/385332 is resolved
+        Support::Waiter.wait_until do
+          merge_request.visit!
+          Page::MergeRequest::Show.perform(&:click_pipeline_link)
+          Page::Project::Pipeline::Show.perform(&:has_merge_request_badge_tag?)
+        end
       end
 
       after do
         runner.remove_via_api!
-        project.remove_via_api!
       end
 
       it 'only runs the job configured to run on merge requests', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347662' do

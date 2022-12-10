@@ -11,6 +11,10 @@ module QA
             element :pipeline_header, required: true
           end
 
+          view 'app/views/projects/pipelines/_info.html.haml' do
+            element :merge_request_badge_tag
+          end
+
           view 'app/assets/javascripts/pipelines/components/graph/graph_component.vue' do
             element :pipeline_graph, /class.*pipeline-graph.*/ # rubocop:disable QA/ElementWithPattern
           end
@@ -44,6 +48,10 @@ module QA
             within_element(:pipeline_header) do
               page.has_content?('running', wait: wait)
             end
+          end
+
+          def has_merge_request_badge_tag?
+            has_element?(:merge_request_badge_tag)
           end
 
           def has_build?(name, status: :success, wait: nil)

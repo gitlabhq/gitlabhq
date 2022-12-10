@@ -46,7 +46,7 @@
         - popover_content_text = _('Learn more about Auto DevOps')
         = gl_badge_tag s_('Pipelines|Auto DevOps'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-autodevops', href: "#", tabindex: "0", role: "button", data: { container: 'body', toggle: 'popover', placement: 'top', html: 'true', triggers: 'focus', title: "<div class='gl-font-weight-normal gl-line-height-normal'>#{popover_title_text}</div>", content: "<a href='#{popover_content_url}' target='_blank' rel='noopener noreferrer nofollow'>#{popover_content_text}</a>" } }
       - if @pipeline.detached_merge_request_pipeline?
-        = gl_badge_tag s_('Pipelines|merge request'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-mergerequest has-tooltip', title: s_("Pipelines|This pipeline ran on the contents of this merge request's source branch, not the target branch.") }
+        = gl_badge_tag s_('Pipelines|merge request'), { variant: :info, size: :sm }, { class: 'js-pipeline-url-mergerequest has-tooltip', data: { qa_selector: 'merge_request_badge_tag' }, title: s_("Pipelines|This pipeline ran on the contents of this merge request's source branch, not the target branch.") }
       - if @pipeline.stuck?
         = gl_badge_tag s_('Pipelines|stuck'), { variant: :warning, size: :sm }, { class: 'js-pipeline-url-stuck has-tooltip' }
 

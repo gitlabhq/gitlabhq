@@ -3,6 +3,8 @@
     .todo-item.gl-overflow-hidden.gl-overflow-x-auto.gl-align-self-center.gl-w-full{ data: { qa_selector: "todo_item_container" } }
       .todo-title.gl-pt-2.gl-pb-3.gl-px-2.gl-md-mb-1.gl-font-sm.gl-text-gray-500
 
+        = todo_target_state_pill(todo)
+
         %span
           = todo_parent_path(todo)
 
@@ -18,8 +20,6 @@
 
         %span.todo-target-title{ data: { qa_selector: "todo_target_title_content" }, :id => dom_id(todo) + "_describer" }
           = todo_target_title(todo)
-
-        = todo_target_state_pill(todo)
 
       .todo-body.gl-mb-2.gl-px-2.gl-display-flex.gl-align-items-flex-start.gl-lg-align-items-center
         .todo-avatar.gl-display-none.gl-sm-display-inline-block
