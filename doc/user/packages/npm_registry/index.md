@@ -332,7 +332,7 @@ This might be accompanied by another error:
 This is usually a permissions issue with either:
 
 - `'packages_storage_path'` default `/var/opt/gitlab/gitlab-rails/shared/packages/`.
-- The remote bucket if [object storage](../../../administration/packages/index.md#using-object-storage)
+- The remote bucket if [object storage](../../../administration/packages/index.md#use-object-storage)
   is used.
 
 In the latter case, ensure the bucket exists and GitLab has write access to it.

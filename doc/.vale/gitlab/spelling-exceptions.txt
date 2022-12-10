@@ -196,6 +196,7 @@ corpuses
 Coursier
 CPU
 CPUs
+CRAN
 cron
 crond
 cronjob
@@ -826,6 +827,7 @@ Salesforce
 sandboxing
 sanitization
 SBOMs
+SBT
 sbt
 scalers
 scatterplot

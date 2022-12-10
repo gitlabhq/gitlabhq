@@ -230,5 +230,13 @@ RSpec.describe Gitlab::Database::Migrations::Runner, :reestablished_active_recor
         end
       end
     end
+
+    describe '.batched_migrations_last_id' do
+      let(:runner_class) { Gitlab::Database::Migrations::BatchedMigrationLastId }
+
+      it 'matches the expected runner class' do
+        expect(described_class.batched_migrations_last_id(database)).to be_a(runner_class)
+      end
+    end
   end
 end

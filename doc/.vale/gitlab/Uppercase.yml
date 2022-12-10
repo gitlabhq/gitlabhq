@@ -39,6 +39,7 @@ exceptions:
   - CORE
   - CORS
   - CPU
+  - CRAN
   - CRIME
   - CRM
   - CRUD
@@ -188,6 +189,7 @@ exceptions:
   - SAST
   - SATA
   - SBOM
+  - SBT
   - SCIM
   - SCM
   - SCP

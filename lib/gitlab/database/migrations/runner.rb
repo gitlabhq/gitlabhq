@@ -29,16 +29,14 @@ module Gitlab
           def batched_background_migrations(for_database:, legacy_mode: false)
             runner = nil
 
-            result_dir = if legacy_mode
-                           BASE_RESULT_DIR.join('background_migrations')
-                         else
-                           BASE_RESULT_DIR.join(for_database.to_s, 'background_migrations')
-                         end
+            result_dir = background_migrations_dir(for_database, legacy_mode)
 
             # Only one loop iteration since we pass `only:` here
             Gitlab::Database::EachDatabase.each_database_connection(only: for_database) do |connection|
+              from_id = batched_migrations_last_id(for_database).read
+
               runner = Gitlab::Database::Migrations::TestBatchedBackgroundRunner
-                         .new(result_dir: result_dir, connection: connection)
+                         .new(result_dir: result_dir, connection: connection, from_id: from_id)
             end
 
             runner
@@ -66,6 +64,18 @@ module Gitlab
           end
           # rubocop:enable Database/MultipleDatabases
 
+          def batched_migrations_last_id(for_database)
+            runner = nil
+            base_dir = background_migrations_dir(for_database, false)
+
+            Gitlab::Database::EachDatabase.each_database_connection(only: for_database) do |connection|
+              runner = Gitlab::Database::Migrations::BatchedMigrationLastId
+                         .new(connection, base_dir)
+            end
+
+            runner
+          end
+
           private
 
           def migrations_for_up(database)
@@ -89,6 +99,12 @@ module Gitlab
             migration_context.migrations.select do |migration|
               existing_versions.include?(migration.version) && versions_this_branch.include?(migration.version)
             end
+          end
+
+          def background_migrations_dir(db, legacy_mode)
+            return BASE_RESULT_DIR.join('background_migrations') if legacy_mode
+
+            BASE_RESULT_DIR.join(db.to_s, 'background_migrations')
           end
         end
 

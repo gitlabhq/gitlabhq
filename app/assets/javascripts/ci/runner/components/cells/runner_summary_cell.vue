@@ -86,7 +86,7 @@ export default {
       >
         {{ runner.description }}
       </tooltip-on-truncate>
-      <span v-else class="gl-text-gray-500">{{ $options.i18n.I18N_NO_DESCRIPTION }}</span>
+      <span v-else class="gl-text-secondary">{{ $options.i18n.I18N_NO_DESCRIPTION }}</span>
     </div>
 
     <div>

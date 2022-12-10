@@ -35980,13 +35980,16 @@ msgstr ""
 msgid "SAML single sign-on for %{group_name}"
 msgstr ""
 
+msgid "SAML|Sign in to %{groupName}"
+msgstr ""
+
 msgid "SAML|Sign in to GitLab to connect your organization's account"
 msgstr ""
 
 msgid "SAML|The %{strongOpen}%{group_path}%{strongClose} group allows you to sign in using single sign-on."
 msgstr ""
 
-msgid "SAML|To access %{strongOpen}%{group_name}%{strongClose}, you must sign in using single sign-on through an external sign-in page."
+msgid "SAML|To access %{groupName}, you must sign in using single sign-on through an external sign-in page."
 msgstr ""
 
 msgid "SAML|To allow %{strongOpen}%{group_name}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
@@ -36184,10 +36187,16 @@ msgstr ""
 msgid "ScanResultPolicy|add an approver"
 msgstr ""
 
+msgid "ScanResultPolicy|from %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
+msgstr ""
+
 msgid "ScanResultPolicy|scanners"
 msgstr ""
 
 msgid "ScanResultPolicy|severity levels"
+msgstr ""
+
+msgid "ScanResultPolicy|vulnerabilities allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|vulnerability states"
@@ -37119,6 +37128,9 @@ msgid "SecurityOrchestration|branch"
 msgstr ""
 
 msgid "SecurityOrchestration|branches"
+msgstr ""
+
+msgid "SecurityOrchestration|group level branch"
 msgstr ""
 
 msgid "SecurityOrchestration|scanner finds"
@@ -38446,9 +38458,6 @@ msgid "Sign in as a user with the matching email address, add the email to this 
 msgstr ""
 
 msgid "Sign in preview"
-msgstr ""
-
-msgid "Sign in to %{group_name}"
 msgstr ""
 
 msgid "Sign in to GitLab"
@@ -40245,6 +40254,9 @@ msgid "SuperSonics|You can no longer sync your subscription details with GitLab.
 msgstr ""
 
 msgid "SuperSonics|You can start a free trial of GitLab Ultimate without any obligation or payment details."
+msgstr ""
+
+msgid "SuperSonics|You can sync your subscription data to ensure your details are up to date."
 msgstr ""
 
 msgid "SuperSonics|You do not have an active subscription"

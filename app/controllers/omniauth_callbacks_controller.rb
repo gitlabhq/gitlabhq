@@ -119,6 +119,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       identity_linker ||= auth_module::IdentityLinker.new(current_user, oauth, session)
       link_identity(identity_linker)
+      set_remember_me(current_user)
 
       if identity_linker.changed?
         redirect_identity_linked

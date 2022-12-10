@@ -482,7 +482,7 @@ To migrate existing local data to object storage see the following guides:
 - [LFS objects](lfs/index.md#migrating-to-object-storage)
 - [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
 - [Merge request diffs](merge_request_diffs.md#using-object-storage)
-- [Packages](packages/index.md#migrating-local-packages-to-object-storage) (optional feature)
+- [Packages](packages/index.md#migrate-local-packages-to-object-storage) (optional feature)
 - [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
 - [Pages content](pages/index.md#migrate-pages-deployments-to-object-storage)
@@ -537,7 +537,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
 | [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
-| [Packages](packages/index.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
+| [Packages](packages/index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
 | [Terraform state files](terraform_state.md#using-object-storage) | **{check-circle}** Yes |
@@ -647,10 +647,6 @@ if this access is not in place include:
   ```
 
   See [the LFS documentation](lfs/index.md#error-viewing-a-pdf-file) for more details.
-
-Getting a `403 Forbidden` response is specifically called out on the
-[package repository documentation](packages/index.md#using-object-storage)
-as a side effect of how some build tools work.
 
 Additionally for a short time period users could share pre-signed, time-limited object storage URLs
 with others without authentication. Also bandwidth charges may be incurred

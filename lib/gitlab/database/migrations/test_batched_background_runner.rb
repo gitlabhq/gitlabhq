@@ -6,16 +6,17 @@ module Gitlab
       class TestBatchedBackgroundRunner < BaseBackgroundRunner
         include Gitlab::Database::DynamicModelHelpers
 
-        def initialize(result_dir:, connection:)
+        def initialize(result_dir:, connection:, from_id:)
           super(result_dir: result_dir, connection: connection)
           @connection = connection
+          @from_id = from_id
         end
 
         def jobs_by_migration_name
           Gitlab::Database::SharedModel.using_connection(connection) do
             Gitlab::Database::BackgroundMigration::BatchedMigration
               .executable
-              .created_after(3.hours.ago) # Simple way to exclude migrations already running before migration testing
+              .where('id > ?', from_id)
               .to_h do |migration|
               batching_strategy = migration.batch_class.new(connection: connection)
 
@@ -102,6 +103,10 @@ module Gitlab
             end
           end
         end
+
+        private
+
+        attr_reader :from_id
       end
     end
   end

@@ -55,6 +55,8 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
 
     let(:table_name) { "_test_column_copying" }
 
+    let(:from_id) { 0 }
+
     before do
       connection.execute(<<~SQL)
         CREATE TABLE #{table_name} (
@@ -76,7 +78,8 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
       end
 
       subject(:sample_migration) do
-        described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 1.minute)
+        described_class.new(result_dir: result_dir, connection: connection,
+                            from_id: from_id).run_jobs(for_duration: 1.minute)
       end
 
       it 'runs sampled jobs from the batched background migration' do
@@ -111,20 +114,26 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
                         job_interval: 5.minutes,
                         batch_size: 100)
 
-        described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 3.minutes)
+        described_class.new(result_dir: result_dir, connection: connection,
+                            from_id: from_id).run_jobs(for_duration: 3.minutes)
 
         expect(calls).not_to be_empty
       end
 
       context 'with multiple jobs to run' do
-        it 'runs all jobs created within the last 3 hours' do
+        let(:last_id) do
+          Gitlab::Database::SharedModel.using_connection(connection) do
+            Gitlab::Database::BackgroundMigration::BatchedMigration.maximum(:id)
+          end
+        end
+
+        it 'runs all pending jobs based on the last migration id' do
           old_migration = define_background_migration(migration_name)
           queue_migration(migration_name, table_name, :id,
                           job_interval: 5.minutes,
                           batch_size: 100)
 
-          travel 4.hours
-
+          last_id
           new_migration = define_background_migration('NewMigration') { travel 1.second }
           queue_migration('NewMigration', table_name, :id,
                           job_interval: 5.minutes,
@@ -138,14 +147,15 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
                           sub_batch_size: 5)
 
           expect_migration_runs(new_migration => 3, other_new_migration => 2, old_migration => 0) do
-            described_class.new(result_dir: result_dir, connection: connection).run_jobs(for_duration: 5.seconds)
+            described_class.new(result_dir: result_dir, connection: connection,
+                                from_id: last_id).run_jobs(for_duration: 5.seconds)
           end
         end
       end
     end
 
     context 'choosing uniform batches to run' do
-      subject { described_class.new(result_dir: result_dir, connection: connection) }
+      subject { described_class.new(result_dir: result_dir, connection: connection, from_id: from_id) }
 
       describe '#uniform_fractions' do
         it 'generates evenly distributed sequences of fractions' do
