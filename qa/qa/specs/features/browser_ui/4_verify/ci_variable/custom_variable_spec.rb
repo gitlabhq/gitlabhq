@@ -2,10 +2,7 @@
 
 module QA
   RSpec.describe 'Verify', :runner do
-    describe 'Pipeline with customizable variable', feature_flag: {
-      name: :run_pipeline_graphql,
-      scope: :project
-    } do
+    describe 'Pipeline with customizable variable' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
       let(:pipeline_job_name) { 'customizable-variable' }
       let(:variable_custom_value) { 'Custom Foo' }
@@ -48,74 +45,45 @@ module QA
         end
       end
 
-      shared_examples 'pipeline with custom variable' do
-        before do
-          Flow::Login.sign_in
+      before do
+        Flow::Login.sign_in
 
-          project.visit!
-          Page::Project::Menu.perform(&:click_ci_cd_pipelines)
-          Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
+        project.visit!
+        Page::Project::Menu.perform(&:click_ci_cd_pipelines)
+        Page::Project::Pipeline::Index.perform(&:click_run_pipeline_button)
 
-          # Sometimes the variables will not be prefilled because of reactive cache so we revisit the page again.
-          # TODO: Investigate alternatives to deal with cache implementation
-          # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/381233
-          page.refresh
-        end
-
-        after do
-          runner&.remove_via_api!
-        end
-
-        it 'manually creates a pipeline and uses the defined custom variable value' do
-          Page::Project::Pipeline::New.perform do |new|
-            new.configure_variable(value: variable_custom_value)
-            new.click_run_pipeline_button
-          end
-
-          Page::Project::Pipeline::Show.perform do |show|
-            Support::Waiter.wait_until { show.passed? }
-          end
-
-          job = Resource::Job.fabricate_via_api! do |job|
-            job.id = project.job_by_name(pipeline_job_name)[:id]
-            job.name = pipeline_job_name
-            job.project = project
-          end
-
-          job.visit!
-
-          Page::Project::Job::Show.perform do |show|
-            expect(show.output).to have_content(variable_custom_value)
-          end
-        end
+        # Sometimes the variables will not be prefilled because of reactive cache so we revisit the page again.
+        # TODO: Investigate alternatives to deal with cache implementation
+        # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/381233
+        page.refresh
       end
 
-      # TODO: Clean up tests when run_pipeline_graphql is enabled
-      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/372310
-      context(
-        'with feature flag disabled',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/361814'
-      ) do
-        before do
-          Runtime::Feature.disable(:run_pipeline_graphql, project: project)
-        end
-
-        it_behaves_like 'pipeline with custom variable'
+      after do
+        runner&.remove_via_api!
       end
 
-      context(
-        'with feature flag enabled',
-        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975'
-      ) do
-        before do
-          Runtime::Feature.enable(:run_pipeline_graphql, project: project)
+      it 'manually creates a pipeline and uses the defined custom variable value',
+        testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/378975' do
+        Page::Project::Pipeline::New.perform do |new|
+          new.configure_variable(value: variable_custom_value)
+          new.click_run_pipeline_button
         end
 
-        after do
-          Runtime::Feature.disable(:run_pipeline_graphql, project: project)
+        Page::Project::Pipeline::Show.perform do |show|
+          Support::Waiter.wait_until { show.passed? }
         end
 
-        it_behaves_like 'pipeline with custom variable'
+        job = Resource::Job.fabricate_via_api! do |job|
+          job.id = project.job_by_name(pipeline_job_name)[:id]
+          job.name = pipeline_job_name
+          job.project = project
+        end
+
+        job.visit!
+
+        Page::Project::Job::Show.perform do |show|
+          expect(show.output).to have_content(variable_custom_value)
+        end
       end
     end
   end

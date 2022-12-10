@@ -673,7 +673,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
       let(:project) { create(:project, :repository) }
 
       before do
-        stub_feature_flags(run_pipeline_graphql: false)
         visit new_project_pipeline_path(project)
       end
 

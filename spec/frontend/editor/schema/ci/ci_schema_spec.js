@@ -45,6 +45,7 @@ import ProjectPathIncludeNoSlashYaml from './yaml_tests/negative_tests/project_p
 import ProjectPathIncludeTailSlashYaml from './yaml_tests/negative_tests/project_path/include/tailing_slash.yml';
 import RulesNegativeYaml from './yaml_tests/negative_tests/rules.yml';
 import TriggerNegative from './yaml_tests/negative_tests/trigger.yml';
+import VariablesInvalidOptionsYaml from './yaml_tests/negative_tests/variables/invalid_options.yml';
 import VariablesInvalidSyntaxDescYaml from './yaml_tests/negative_tests/variables/invalid_syntax_desc.yml';
 import VariablesWrongSyntaxUsageExpand from './yaml_tests/negative_tests/variables/wrong_syntax_usage_expand.yml';
 import IdTokensNegativeYaml from './yaml_tests/negative_tests/id_tokens.yml';
@@ -113,6 +114,7 @@ describe('negative tests', () => {
       IncludeNegativeYaml,
       JobWhenNegativeYaml,
       RulesNegativeYaml,
+      VariablesInvalidOptionsYaml,
       VariablesInvalidSyntaxDescYaml,
       VariablesWrongSyntaxUsageExpand,
       ProjectPathIncludeEmptyYaml,

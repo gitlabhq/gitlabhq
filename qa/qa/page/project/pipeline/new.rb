@@ -5,15 +5,6 @@ module QA
     module Project
       module Pipeline
         class New < QA::Page::Base
-          # TODO: Replace legacy form with the new form when run_pipeline_graphql is enabled by default
-          # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/372310
-          view 'app/assets/javascripts/pipeline_new/components/legacy_pipeline_new_form.vue' do
-            element :run_pipeline_button, required: true
-            element :ci_variable_row_container
-            element :ci_variable_key_field
-            element :ci_variable_value_field
-          end
-
           view 'app/assets/javascripts/pipeline_new/components/pipeline_new_form.vue' do
             element :run_pipeline_button, required: true
             element :ci_variable_row_container

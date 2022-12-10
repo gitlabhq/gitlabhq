@@ -663,7 +663,19 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
     describe 'POST /:project/-/pipelines' do
       let(:project) { create(:project, :repository) }
 
-      shared_examples 'run pipeline form with gitlab-ci.yml' do
+      before do
+        visit new_project_pipeline_path(project)
+      end
+
+      context 'for valid commit', :js do
+        before do
+          click_button project.default_branch
+          wait_for_requests
+
+          find('p', text: 'master').click
+          wait_for_requests
+        end
+
         context 'with gitlab-ci.yml', :js do
           before do
             stub_ci_pipeline_to_return_yaml_file
@@ -697,9 +709,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
             end
           end
         end
-      end
 
-      shared_examples 'run pipeline form without gitlab-ci.yml' do
         context 'without gitlab-ci.yml' do
           before do
             click_on 'Run pipeline'
@@ -717,52 +727,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :projects do
             end
               .to change { Ci::Pipeline.count }.by(1)
           end
-        end
-      end
-
-      # Run Pipeline form with REST endpoints
-      # TODO: Clean up tests when run_pipeline_graphql is enabled
-      # Issue https://gitlab.com/gitlab-org/gitlab/-/issues/372310
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(run_pipeline_graphql: false)
-          visit new_project_pipeline_path(project)
-        end
-
-        context 'for valid commit', :js do
-          before do
-            click_button project.default_branch
-            wait_for_requests
-
-            find('p', text: 'master').click
-            wait_for_requests
-          end
-
-          it_behaves_like 'run pipeline form with gitlab-ci.yml'
-
-          it_behaves_like 'run pipeline form without gitlab-ci.yml'
-        end
-      end
-
-      # Run Pipeline form with GraphQL
-      context 'with feature flag enabled' do
-        before do
-          stub_feature_flags(run_pipeline_graphql: true)
-          visit new_project_pipeline_path(project)
-        end
-
-        context 'for valid commit', :js do
-          before do
-            click_button project.default_branch
-            wait_for_requests
-
-            find('p', text: 'master').click
-            wait_for_requests
-          end
-
-          it_behaves_like 'run pipeline form with gitlab-ci.yml'
-
-          it_behaves_like 'run pipeline form without gitlab-ci.yml'
         end
       end
     end
