@@ -276,50 +276,6 @@ dast:
 NOTE:
 Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
 
-## Debugging scans using logging
-
-Logging can be used to help you troubleshoot a scan.
-
-The CI/CD variable `DAST_BROWSER_LOG` configures the logging level for particular modules of the crawler. Each module represents a component of the browser-based crawler and is separated so that debug logs can be configured just for the area of the crawler that requires further inspection. For more details, see [Crawler modules](#crawler-modules).
-
-For example, the following job definition enables the browsing module and the authentication module to be logged in debug-mode:
-
-```yaml
-include:
-  - template: DAST.gitlab-ci.yml
-
-dast:
-  variables:
-    DAST_WEBSITE: "https://my.site.com"
-    DAST_BROWSER_SCAN: "true"
-    DAST_BROWSER_LOG: "brows:debug,auth:debug"
-```
-
-### Log message format
-
-Log messages have the format `[time] [log level] [log module] [message] [additional properties]`. For example, the following log entry has level `INFO`, is part of the `CRAWL` log module, and has the message `Crawled path`.
-
-```txt
-2021-04-21T00:34:04.000 INF CRAWL Crawled path nav_id=0cc7fd path="LoadURL [https://my.site.com:8090]"
-```
-
-### Crawler modules
-
-The modules that can be configured for logging are as follows:
-
-| Log module | Component overview |
-| ---------- | ----------- |
-| `AUTH`     | Used for creating an authenticated scan. |
-| `BROWS`    | Used for querying the state or page of the browser. |
-| `BPOOL`    | The set of browsers that are leased out for crawling. |
-| `CRAWL`    | Used for the core crawler algorithm. |
-| `DATAB`    | Used for persisting data to the internal database. |
-| `LEASE`    | Used to create browsers to add them to the browser pool. |
-| `MAIN`     | Used for the flow of the main event loop of the crawler. |
-| `NAVDB`    | Used for persistence mechanisms to store navigation entries. |
-| `REPT`     | Used for generating reports. |
-| `STAT`     | Used for general statistics while running the scan. |
-
 ### Artifacts
 
 Using the latest version of the DAST [template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml) these artifacts are exposed for download by default.

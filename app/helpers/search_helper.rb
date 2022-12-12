@@ -356,9 +356,8 @@ module SearchHelper
     return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
 
     SearchService
-      .new(current_user, { scope: 'users', search: term })
+      .new(current_user, { scope: 'users', per_page: limit, search: term })
       .search_objects
-      .limit(limit)
       .map do |user|
       {
         category: "Users",

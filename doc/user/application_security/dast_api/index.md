@@ -217,8 +217,9 @@ DAST API supports testing GraphQL endpoints multiple ways:
 - Test using a Postman Collection containing GraphQL queries.
 
 This section documents how to test using a GraphQL schema. The GraphQL schema support in
-DAST API is able to query the schema from endpoints that support introspection.
+DAST API is able to query the schema from endpoints that support [introspection](https://graphql.org/learn/introspection/).
 Introspection is enabled by default to allow tools like GraphiQL to work.
+For details on how to enable introspection, see your GraphQL framework documentation.
 
 #### DAST API scanning with a GraphQL endpoint URL
 

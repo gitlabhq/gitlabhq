@@ -8,6 +8,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
   let(:role) { :developer }
 
   before do
+    stub_feature_flags(branch_rules: false)
     project.add_role(user, role)
     sign_in(user)
   end
@@ -39,18 +40,17 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :p
     end
 
     context 'Branch rules', :js do
-      it 'renders branch rules settings' do
-        visit project_settings_repository_path(project)
-        expect(page).to have_content('Branch rules')
-      end
-
       context 'branch_rules feature flag disabled', :js do
         it 'does not render branch rules settings' do
-          stub_feature_flags(branch_rules: false)
           visit project_settings_repository_path(project)
-
           expect(page).not_to have_content('Branch rules')
         end
+      end
+
+      it 'renders branch rules settings' do
+        stub_feature_flags(branch_rules: true)
+        visit project_settings_repository_path(project)
+        expect(page).to have_content('Branch rules')
       end
     end
 

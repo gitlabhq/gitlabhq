@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchHelper do
+RSpec.describe SearchHelper, feature_category: :global_search do
   include MarkupHelper
   include BadgesHelper
 
@@ -65,7 +65,8 @@ RSpec.describe SearchHelper do
         let(:term) { 'jane' }
 
         it 'makes a call to SearchService' do
-          expect(SearchService).to receive(:new).with(current_user, { search: term, scope: 'users' }).and_call_original
+          params = { search: term, per_page: 5, scope: 'users' }
+          expect(SearchService).to receive(:new).with(current_user, params).and_call_original
 
           search_autocomplete_opts(term)
         end
@@ -84,6 +85,15 @@ RSpec.describe SearchHelper do
 
           it 'returns an empty array' do
             expect(search_autocomplete_opts(term)).to eq([])
+          end
+        end
+
+        context 'with limiting' do
+          let!(:users) { create_list(:user, 6, name: 'Jane Doe') }
+
+          it 'only returns the first 5 users' do
+            result = search_autocomplete_opts(term)
+            expect(result.size).to eq(5)
           end
         end
       end

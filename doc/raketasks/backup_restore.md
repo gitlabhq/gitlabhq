@@ -85,6 +85,9 @@ In the following cases, consider using file system data transfer or snapshots as
 - Your GitLab instance has a lot of forked projects and the regular backup task duplicates the Git data for all of them.
 - Your GitLab instance has a problem and using the regular backup and import Rake tasks isn't possible.
 
+WARNING:
+Gitaly Cluster [does not support snapshot backups](../administration/gitaly/index.md#snapshot-backup-and-recovery-limitations).
+
 When considering using file system data transfer or snapshots:
 
 - Don't use these methods to migrate from one operating system to another. The operating systems of the source and destination should be as similar as possible. For example,
