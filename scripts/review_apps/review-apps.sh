@@ -372,15 +372,24 @@ function verify_deploy() {
 function display_deployment_debug() {
   local namespace="${CI_ENVIRONMENT_SLUG}"
 
+  # Install dig to inspect DNS entries
+  apt update && apt install dnsutils
+
+  echoinfo "[debugging data] Check review-app webservice DNS entry:"
+  dig +short $(echo "${CI_ENVIRONMENT_URL}" | sed 's~http[s]*://~~g')
+
+  echoinfo "[debugging data] Check external IP for nginx-ingress-controller service (should be THE SAME AS the DNS entry IP above):"
+  kubectl -n "${namespace}" get svc "${namespace}-nginx-ingress-controller" -o jsonpath='{.status.loadBalancer.ingress[].ip}'
+
   echoinfo "[debugging data] k8s resources:"
-  kubectl get pods --namespace "${namespace}"
+  kubectl -n "${namespace}" get pods
 
   echoinfo "[debugging data] PostgreSQL logs:"
-  kubectl logs -l app=postgresql --all-containers --namespace "${namespace}"
+  kubectl -n "${namespace}" logs -l app=postgresql --all-containers
 
   echoinfo "[debugging data] DB migrations logs:"
-  kubectl logs -l app=migrations --all-containers --namespace "${namespace}"
+  kubectl -n "${namespace}" logs -l app=migrations --all-containers
 
   echoinfo "[debugging data] Webservice logs:"
-  kubectl logs -l app=webservice -c webservice --namespace "${namespace}"
+  kubectl -n "${namespace}" logs -l app=webservice -c webservice
 }

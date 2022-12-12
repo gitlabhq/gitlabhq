@@ -209,7 +209,7 @@ variables:
       - "production"
       - "staging"
       - "canary"
-    description: "The deployment target. Set to 'production' by default."
+    description: "The deployment target. Set to 'staging' by default."
 ```
 
 ### Run a pipeline by using a URL query string

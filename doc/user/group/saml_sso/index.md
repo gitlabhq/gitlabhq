@@ -53,7 +53,6 @@ GitLab.com uses the SAML NameID to identify users. The NameID element:
   also case-insensitive, which can result in users being unable to sign in.
 
 The relevant field name and recommended value for supported providers are in the [provider specific notes](#providers).
-appropriate corresponding field.
 
 WARNING:
 Once users have signed into GitLab using the SSO SAML setup, changing the `NameID` breaks the configuration and potentially locks users out of the GitLab group.
