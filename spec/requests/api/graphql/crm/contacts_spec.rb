@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting CRM contacts' do
+RSpec.describe 'getting CRM contacts', feature_category: :service_desk do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

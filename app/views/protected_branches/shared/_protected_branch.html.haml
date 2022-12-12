@@ -16,7 +16,7 @@
 
   = yield
 
-  = render_if_exists 'projects/protected_branches/ee/code_owner_approval_table', protected_branch: protected_branch
+  = render_if_exists 'protected_branches/ee/code_owner_approval_table', protected_branch: protected_branch
 
   - if can_admin_project
     %td

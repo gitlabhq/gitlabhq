@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting a list of work item types for a group' do
+RSpec.describe 'getting a list of work item types for a group', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }

@@ -61,8 +61,6 @@ module BulkImports
     def run
       return skip_tracker if entity.failed?
 
-      validate_scopes!
-
       raise(Pipeline::ExpiredError, 'Pipeline timeout') if job_timeout?
       raise(Pipeline::FailedError, "Export from source instance failed: #{export_status.error}") if export_failed?
       raise(Pipeline::ExpiredError, 'Empty export status on source instance') if empty_export_timeout?
@@ -74,23 +72,12 @@ module BulkImports
       pipeline_tracker.finish!
     rescue BulkImports::RetryPipelineError => e
       retry_tracker(e)
-    rescue StandardError, BulkImports::Error => e
+    rescue StandardError => e
       fail_tracker(e)
     end
 
     def source_version
       entity.bulk_import.source_version_info.to_s
-    end
-
-    def validate_scopes!
-      client.validate_import_scopes!
-    end
-
-    def client
-      @client ||= BulkImports::Clients::HTTP.new(
-        url: entity.bulk_import.configuration.url,
-        token: entity.bulk_import.configuration.access_token
-      )
     end
 
     def fail_tracker(exception)

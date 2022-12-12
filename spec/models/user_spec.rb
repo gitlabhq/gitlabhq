@@ -81,6 +81,9 @@ RSpec.describe User do
     it { is_expected.to delegate_method(:use_legacy_web_ide).to(:user_preference) }
     it { is_expected.to delegate_method(:use_legacy_web_ide=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:use_new_navigation).to(:user_preference) }
+    it { is_expected.to delegate_method(:use_new_navigation=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:job_title).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:job_title=).to(:user_detail).with_arguments(:args).allow_nil }
 

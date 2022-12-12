@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'get board lists' do
+RSpec.describe 'get board lists', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:user)           { create(:user) }

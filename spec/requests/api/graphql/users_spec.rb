@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Users' do
+RSpec.describe 'Users', feature_category: :user_management do
   include GraphqlHelpers
 
   let_it_be(:user0) { create(:user, created_at: 1.day.ago) }

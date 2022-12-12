@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting job information' do
+RSpec.describe 'getting job information', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:job) { create(:ci_build, :success, name: 'job1') }

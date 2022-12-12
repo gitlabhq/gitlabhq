@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting Issue counts by status' do
+RSpec.describe 'getting Issue counts by status', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository) }

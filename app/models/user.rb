@@ -360,6 +360,7 @@ class User < ApplicationRecord
             :diffs_deletion_color, :diffs_deletion_color=,
             :diffs_addition_color, :diffs_addition_color=,
             :use_legacy_web_ide, :use_legacy_web_ide=,
+            :use_new_navigation, :use_new_navigation=,
             to: :user_preference
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true

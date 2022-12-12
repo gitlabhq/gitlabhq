@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query current user todos' do
+RSpec.describe 'Query current user todos', feature_category: :source_code_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

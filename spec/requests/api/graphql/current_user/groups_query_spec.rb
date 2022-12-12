@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query current user groups' do
+RSpec.describe 'Query current user groups', feature_category: :subgroups do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

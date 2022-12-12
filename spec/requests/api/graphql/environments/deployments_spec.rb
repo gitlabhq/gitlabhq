@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Environments Deployments query' do
+RSpec.describe 'Environments Deployments query', feature_category: :continuous_delivery do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :private, :repository) }

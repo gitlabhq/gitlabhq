@@ -11552,6 +11552,7 @@ CREATE TABLE application_settings (
     encrypted_telesign_customer_xid_iv bytea,
     encrypted_telesign_api_key bytea,
     encrypted_telesign_api_key_iv bytea,
+    disable_personal_access_tokens boolean DEFAULT false NOT NULL,
     max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
@@ -22554,6 +22555,7 @@ CREATE TABLE user_preferences (
     diffs_addition_color text,
     markdown_automatic_lists boolean DEFAULT true NOT NULL,
     use_legacy_web_ide boolean DEFAULT false NOT NULL,
+    use_new_navigation boolean,
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_d07ccd35f7 CHECK ((char_length(diffs_addition_color) <= 7))
 );

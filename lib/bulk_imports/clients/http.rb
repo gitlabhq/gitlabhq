@@ -66,14 +66,6 @@ module BulkImports
         instance_version >= BulkImport.min_gl_version_for_project_migration
       end
 
-      def validate_import_scopes!
-        response = self.get("/personal_access_tokens/self")
-
-        return if response['scopes'].include?('api')
-
-        raise BulkImports::Error.scope_validation_failure
-      end
-
       private
 
       def validate_instance_version!

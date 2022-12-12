@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)' do
+RSpec.describe 'Query.project(fullPath).issue(iid).designCollection.version(sha)',
+feature_category: :design_management do
   include GraphqlHelpers
   include DesignManagementTestHelpers
 

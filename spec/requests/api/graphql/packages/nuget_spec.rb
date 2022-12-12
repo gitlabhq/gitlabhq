@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'nuget package details' do
+RSpec.describe 'nuget package details', feature_category: :package_registry do
   include GraphqlHelpers
   include_context 'package details setup'
 

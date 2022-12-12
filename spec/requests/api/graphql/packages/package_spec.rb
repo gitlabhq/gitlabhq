@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'package details' do
+RSpec.describe 'package details', feature_category: :package_registry do
   include GraphqlHelpers
 
   let_it_be_with_reload(:group) { create(:group) }

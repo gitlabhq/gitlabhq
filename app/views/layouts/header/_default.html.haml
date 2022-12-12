@@ -119,12 +119,12 @@
                 = render 'layouts/header/current_user_dropdown'
           - if has_impersonation_link
             %li.nav-item.impersonation.ml-0
-              = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _('Stop impersonation'), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } do
-                = sprite_icon('incognito', size: 18)
+              = render Pajamas::ButtonComponent.new(href: admin_impersonation_path, icon: 'incognito', button_options: { title: _('Stop impersonation'), class: 'impersonation-btn', aria: { label: _('Stop impersonation') }, data: { method: :delete, toggle: 'tooltip', placement: 'bottom', container: 'body', qa_selector: 'stop_impersonation_link' } })
           - if header_link?(:sign_in)
             - if Gitlab.com?
               %li.nav-item.gl-display-none.gl-sm-display-block
-                = link_to _('Sign up now'), new_user_registration_path, class: 'gl-button btn btn-default btn-sign-in'
+                = render Pajamas::ButtonComponent.new(href: new_user_registration_path) do
+                  = _('Sign up now')
               %li.nav-item.gl-display-none.gl-sm-display-block
                 = link_to _('Login'), new_session_path(:user, redirect_to_referer: 'yes')
               = render 'layouts/header/sign_in_register_button', class: 'gl-sm-display-none'

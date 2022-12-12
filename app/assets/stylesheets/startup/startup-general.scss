@@ -510,6 +510,15 @@ a.gl-badge.badge-warning:active {
   font-size: 0.875rem;
   border-radius: 0.25rem;
 }
+.gl-button.gl-button .gl-button-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  margin-top: -1px;
+  margin-bottom: -1px;
+}
 .gl-button.gl-button.btn-default {
   background-color: #fff;
 }
@@ -764,7 +773,7 @@ kbd {
   font-size: 0.75rem;
   line-height: 10px;
   color: var(--gray-700, #535158);
-  vertical-align: middle;
+  vertical-align: unset;
   background-color: var(--gray-10, #fbfafd);
   border-width: 1px;
   border-style: solid;

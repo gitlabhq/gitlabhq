@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project.pipelineSchedules' do
+RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

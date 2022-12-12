@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).release(tagName)' do
+RSpec.describe 'Query.project(fullPath).release(tagName)', feature_category: :release_orchestration do
   include GraphqlHelpers
   include Presentable
 

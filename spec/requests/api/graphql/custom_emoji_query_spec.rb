@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting custom emoji within namespace' do
+RSpec.describe 'getting custom emoji within namespace', feature_category: :not_owned do
   include GraphqlHelpers
 
   let_it_be(:current_user) { create(:user) }

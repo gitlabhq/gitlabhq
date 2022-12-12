@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # Based on spec/requests/api/groups_spec.rb
 # Should follow closely in order to ensure all situations are covered
-RSpec.describe 'getting group information' do
+RSpec.describe 'getting group information', feature_category: :subgroups do
   include GraphqlHelpers
   include UploadHelpers
 

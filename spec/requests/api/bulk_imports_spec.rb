@@ -44,8 +44,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   end
 
   describe 'POST /bulk_imports' do
-    let(:api_response) { { 'scopes' => %w[api read_repository] } }
-
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
         allow(instance)
@@ -55,9 +53,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         allow(instance)
           .to receive(:instance_enterprise)
           .and_return(false)
-        allow(instance)
-          .to receive(:get)
-          .and_return(api_response)
       end
     end
 

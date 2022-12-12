@@ -28,7 +28,7 @@
             %span.has-tooltip{ data: { container: 'body' }, title: s_('ProtectedBranch|Allow all users with push access to force push.'), 'aria-hidden': 'true' }
               = sprite_icon('question', size: 16, css_class: 'gl-text-gray-500')
 
-          = render_if_exists 'projects/protected_branches/ee/code_owner_approval_table_head'
+          = render_if_exists 'protected_branches/ee/code_owner_approval_table_head'
 
           - if can_admin_project
             %th

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'Query.project.pipeline' do
+RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository, :public) }

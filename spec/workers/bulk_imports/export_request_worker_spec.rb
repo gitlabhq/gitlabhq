@@ -2,50 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
+RSpec.describe BulkImports::ExportRequestWorker do
   let_it_be(:bulk_import) { create(:bulk_import) }
   let_it_be(:config) { create(:bulk_import_configuration, bulk_import: bulk_import) }
-  let_it_be(:entity) { create(:bulk_import_entity, bulk_import: bulk_import) }
-  let(:job_args) { [entity.id] }
-  let(:response_headers) { { 'Content-Type' => 'application/json' } }
-  let(:request_query) { { page: 1, per_page: 30, private_token: 'token' } }
-  let(:personal_access_tokens_response) do
-    {
-      scopes: %w[api read_repository]
-    }
-  end
+  let_it_be(:version_url) { 'https://gitlab.example/api/v4/version' }
 
-  let_it_be(:source_version) do
-    Gitlab::VersionInfo.new(::BulkImport::MIN_MAJOR_VERSION,
-                            ::BulkImport::MIN_MINOR_VERSION_FOR_PROJECT)
-  end
+  let(:response_double) { double(code: 200, success?: true, parsed_response: {}) }
+  let(:job_args) { [entity.id] }
 
   describe '#perform' do
     before do
-      stub_request(:get, 'https://gitlab.example/api/v4/version').with(query: request_query)
-        .to_return(status: 200, body: { 'version' => Gitlab::VERSION }.to_json, headers: response_headers)
-      stub_request(:get, 'https://gitlab.example/api/v4/personal_access_tokens/self').with(query: request_query)
-        .to_return(status: 200, body: personal_access_tokens_response.to_json, headers: response_headers)
-    end
-
-    context 'when scope validation fails' do
-      let(:personal_access_tokens_response) { { scopes: ['read_user'] } }
-
-      it 'creates a failure record' do
-        expect(BulkImports::Failure)
-          .to receive(:create)
-          .with(
-            a_hash_including(
-              bulk_import_entity_id: entity.id,
-              pipeline_class: 'ExportRequestWorker',
-              exception_class: 'BulkImports::Error',
-              exception_message: 'Migration aborted as the provided personal access token is no longer valid.',
-              correlation_id_value: anything
-            )
-          ).twice
-
-        perform_multiple(job_args)
-      end
+      allow(Gitlab::HTTP)
+        .to receive(:get)
+        .with(version_url, anything)
+        .and_return(double(code: 200, success?: true, parsed_response: { 'version' => Gitlab::VERSION }))
+      allow(Gitlab::HTTP).to receive(:post).and_return(response_double)
     end
 
     shared_examples 'requests relations export for api resource' do
@@ -190,22 +161,22 @@ RSpec.describe BulkImports::ExportRequestWorker, feature_category: :importers do
           end
         end
       end
+    end
 
-      context 'when entity is group' do
-        let(:entity) { create(:bulk_import_entity, :group_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
-        let(:expected) { "/groups/#{entity.source_xid}/export_relations" }
-        let(:full_path_url) { '/groups/foo%2Fbar/export_relations' }
+    context 'when entity is group' do
+      let(:entity) { create(:bulk_import_entity, :group_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
+      let(:expected) { "/groups/#{entity.source_xid}/export_relations" }
+      let(:full_path_url) { '/groups/foo%2Fbar/export_relations' }
 
-        it_behaves_like 'requests relations export for api resource'
-      end
+      it_behaves_like 'requests relations export for api resource'
+    end
 
-      context 'when entity is project' do
-        let(:entity) { create(:bulk_import_entity, :project_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
-        let(:expected) { "/projects/#{entity.source_xid}/export_relations" }
-        let(:full_path_url) { '/projects/foo%2Fbar/export_relations' }
+    context 'when entity is project' do
+      let(:entity) { create(:bulk_import_entity, :project_entity, source_full_path: 'foo/bar', bulk_import: bulk_import) }
+      let(:expected) { "/projects/#{entity.source_xid}/export_relations" }
+      let(:full_path_url) { '/projects/foo%2Fbar/export_relations' }
 
-        it_behaves_like 'requests relations export for api resource'
-      end
+      it_behaves_like 'requests relations export for api resource'
     end
   end
 end

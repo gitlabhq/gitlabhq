@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.project(fullPath).pipelines.job(id)' do
+RSpec.describe 'Query.project(fullPath).pipelines.job(id)', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   around do |example|

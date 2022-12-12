@@ -281,7 +281,7 @@ module Types
           end
 
     field :deployment,
-          Types::DeploymentDetailsType,
+          Types::DeploymentType,
           null: true,
           description: 'Details of the deployment of the project.',
           resolver: Resolvers::DeploymentResolver.single

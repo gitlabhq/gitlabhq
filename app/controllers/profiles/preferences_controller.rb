@@ -57,7 +57,8 @@ class Profiles::PreferencesController < Profiles::ApplicationController
       :render_whitespace_in_code,
       :markdown_surround_selection,
       :markdown_automatic_lists,
-      :use_legacy_web_ide
+      :use_legacy_web_ide,
+      :use_new_navigation
     ]
   end
 end

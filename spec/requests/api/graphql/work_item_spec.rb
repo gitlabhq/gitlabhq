@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.work_item(id)' do
+RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }

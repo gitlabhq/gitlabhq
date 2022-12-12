@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting pipeline information nested in a project' do
+RSpec.describe 'getting pipeline information nested in a project', feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository, :public) }

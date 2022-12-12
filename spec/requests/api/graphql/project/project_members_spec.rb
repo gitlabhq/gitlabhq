@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting project members information' do
+RSpec.describe 'getting project members information', feature_category: :projects do
   include GraphqlHelpers
 
   let_it_be(:parent_group) { create(:group, :public) }

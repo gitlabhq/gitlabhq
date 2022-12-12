@@ -1,6 +1,12 @@
 # frozen_string_literal: true
 
 class Projects::ProtectedBranchesController < Projects::ProtectedRefsController
+  def show
+    super
+
+    render 'protected_branches/show'
+  end
+
   protected
 
   def project_refs

@@ -4,7 +4,7 @@ kbd {
   @include gl-font-sm;
   line-height: 10px;
   color: var(--gray-700, $gray-700);
-  vertical-align: middle;
+  vertical-align: unset;
   background-color: var(--gray-10, $gray-10);
   border-width: 1px;
   border-style: solid;

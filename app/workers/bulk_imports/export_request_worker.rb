@@ -13,15 +13,13 @@ module BulkImports
     def perform(entity_id)
       entity = BulkImports::Entity.find(entity_id)
 
-      validate_scopes!(entity)
-
       entity.update!(source_xid: entity_source_xid(entity)) if entity.source_xid.nil?
 
       request_export(entity)
 
       BulkImports::EntityWorker.perform_async(entity_id)
-    rescue BulkImports::NetworkError, BulkImports::Error => e
-      if e.class != BulkImports::Error && e.retriable?(entity)
+    rescue BulkImports::NetworkError => e
+      if e.retriable?(entity)
         retry_request(e, entity)
       else
         log_exception(e,
@@ -44,16 +42,12 @@ module BulkImports
 
     private
 
-    def validate_scopes!(entity)
-      http_client(entity).validate_import_scopes!
-    end
-
     def request_export(entity)
       http_client(entity).post(entity.export_relations_url_path)
     end
 
     def http_client(entity)
-      @client ||= BulkImports::Clients::HTTP.new(
+      @client ||= Clients::HTTP.new(
         url: entity.bulk_import.configuration.url,
         token: entity.bulk_import.configuration.access_token
       )

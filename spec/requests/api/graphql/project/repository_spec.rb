@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting a repository in a project' do
+RSpec.describe 'getting a repository in a project', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository) }

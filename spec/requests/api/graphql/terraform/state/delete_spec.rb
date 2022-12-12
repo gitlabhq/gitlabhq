@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'delete a terraform state' do
+RSpec.describe 'delete a terraform state', feature_category: :infrastructure_as_code do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }

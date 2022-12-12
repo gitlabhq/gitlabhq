@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'helm package details' do
+RSpec.describe 'helm package details', feature_category: :package_registry do
   include GraphqlHelpers
   include_context 'package details setup'
 

@@ -75,11 +75,23 @@ info: To determine the technical writer assigned to the Stage/Group associated w
   - [Pagination performance guidelines](pagination_performance_guidelines.md)
 - [Efficient `IN` operator queries](efficient_in_operator_queries.md)
 - [Data layout and access patterns](layout_and_access_patterns.md)
+- [Check for background migrations before upgrading](../../update/background_migrations.md)
 
 ## Case studies
 
 - [Database case study: Filtering by label](filtering_by_label.md)
 - [Database case study: Namespaces storage statistics](namespaces_storage_statistics.md)
+
+## PostgreSQL information for GitLab administrators
+
+- [Configure GitLab using an external PostgreSQL service](../../administration/postgresql/external.md)
+- [Configuring PostgreSQL for scaling](../../administration/postgresql/index.md)
+- [Database Load Balancing](../../administration/postgresql/database_load_balancing.md)
+- [Moving GitLab databases to a different PostgreSQL instance](../../administration/postgresql/moving.md)
+- [Replication and failover with Omnibus GitLab](../../administration/postgresql/replication_and_failover.md)
+- [Standalone PostgreSQL using Omnibus GitLab](../../administration/postgresql/standalone.md)
+- [Troubleshooting PostgreSQL](../../administration/troubleshooting/postgresql.md)
+- [Working with the bundled PgBouncer service](../../administration/postgresql/pgbouncer.md)
 
 ## Miscellaneous
 

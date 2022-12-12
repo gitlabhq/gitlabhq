@@ -41,7 +41,7 @@ RSpec.describe Projects::Settings::CiCdController do
       end
 
       context 'with assignable project runners' do
-        let_it_be(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
+        let(:project_runner) { create(:ci_runner, :project, projects: [other_project]) }
 
         before do
           group.add_maintainer(user)
@@ -54,6 +54,16 @@ RSpec.describe Projects::Settings::CiCdController do
         end
       end
 
+      context 'with project runners' do
+        let(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+
+        it 'sets project runners' do
+          subject
+
+          expect(assigns(:project_runners)).to contain_exactly(project_runner)
+        end
+      end
+
       context 'with group runners' do
         let_it_be(:group) { create :group }
         let_it_be(:project) { create :project, group: group }
@@ -62,6 +72,7 @@ RSpec.describe Projects::Settings::CiCdController do
         it 'sets group runners' do
           subject
 
+          expect(assigns(:group_runners_count)).to be(1)
           expect(assigns(:group_runners)).to contain_exactly(group_runner)
         end
       end

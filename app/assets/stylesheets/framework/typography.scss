@@ -81,6 +81,7 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: keep-all;
+    @include gl-font-base;
   }
 
   h1 {
@@ -322,7 +323,6 @@
 
   pre {
     margin-bottom: 16px;
-    font-size: 13px;
     line-height: 1.6em;
     overflow-x: auto;
     border-radius: $border-radius-default;

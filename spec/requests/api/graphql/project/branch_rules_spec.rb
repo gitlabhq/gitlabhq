@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting list of branch rules for a project' do
+RSpec.describe 'getting list of branch rules for a project', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository, :public) }

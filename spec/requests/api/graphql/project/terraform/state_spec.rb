@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'query a single terraform state' do
+RSpec.describe 'query a single terraform state', feature_category: :infrastructure_as_code do
   include GraphqlHelpers
   include ::API::Helpers::RelatedResourcesHelpers
 

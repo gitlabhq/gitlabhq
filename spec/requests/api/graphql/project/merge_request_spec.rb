@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting merge request information nested in a project' do
+RSpec.describe 'getting merge request information nested in a project', feature_category: :code_review do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project, :repository, :public) }

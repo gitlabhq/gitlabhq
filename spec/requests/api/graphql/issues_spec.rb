@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting an issue list at root level' do
+RSpec.describe 'getting an issue list at root level', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }

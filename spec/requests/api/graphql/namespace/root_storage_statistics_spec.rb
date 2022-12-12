@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'rendering namespace statistics' do
+RSpec.describe 'rendering namespace statistics', feature_category: :metrics do
   include GraphqlHelpers
 
   let(:namespace) { user.namespace }

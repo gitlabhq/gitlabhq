@@ -4,6 +4,9 @@ module Gitlab
   module GithubImport
     module Importer
       class PullRequestReviewImporter
+        # review - An instance of `Gitlab::GithubImport::Representation::PullRequestReview`
+        # project - An instance of `Project`
+        # client - An instance of `Gitlab::GithubImport::Client`
         def initialize(review, project, client)
           @review = review
           @project = project
@@ -22,6 +25,10 @@ module Gitlab
           else
             add_complementary_review_note!(project.creator_id)
           end
+        rescue ::Octokit::NotFound => e
+          Logger.warn(message: e.message, 'error.class': e.class.name)
+
+          add_complementary_review_note!(project.creator_id)
         end
 
         private

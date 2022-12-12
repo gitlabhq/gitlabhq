@@ -8,7 +8,7 @@
       .form-group.row
         = f.label :name, s_('ProtectedBranch|Branch:'), class: 'col-sm-12'
         .col-sm-12
-          = render partial: "projects/protected_branches/shared/dropdown", locals: { f: f, toggle_classes: 'gl-w-full! gl-form-input-lg' }
+          = render partial: "protected_branches/shared/dropdown", locals: { f: f, toggle_classes: 'gl-w-full! gl-form-input-lg' }
           .form-text.text-muted
             - wildcards_url = help_page_url('user/project/protected_branches', anchor: 'configure-multiple-protected-branches-by-using-a-wildcard')
             - wildcards_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: wildcards_url }
@@ -30,6 +30,6 @@
             - force_push_docs_url = help_page_url('topics/git/git_rebase', anchor: 'force-push')
             - force_push_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: force_push_docs_url }
             = (s_("ProtectedBranch|Allow all users with push access to %{tag_start}force push%{tag_end}.") % { tag_start: force_push_link_start, tag_end: '</a>' }).html_safe
-      = render_if_exists 'projects/protected_branches/ee/code_owner_approval_form', f: f
+      = render_if_exists 'protected_branches/ee/code_owner_approval_form', f: f
     - c.footer do
       = f.submit s_('ProtectedBranch|Protect'), disabled: true, data: { qa_selector: 'protect_button' }, pajamas_button: true

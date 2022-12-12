@@ -208,6 +208,29 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
       end
     end
 
+    context 'when original author cannot be found on github' do
+      before do
+        allow(client_double).to receive(:user).and_raise(Octokit::NotFound)
+      end
+
+      let(:review) { create_review(type: 'APPROVED', note: '') }
+
+      it 'logs an error' do
+        expect(Gitlab::Import::Logger).to receive(:warn)
+
+        subject.execute
+      end
+
+      it 'creates a note for the review with the author username' do
+        expect { subject.execute }
+          .to change(Note, :count).by(1)
+        last_note = merge_request.notes.last
+        expect(last_note.note).to eq("*Created by: author*\n\n**Review:** Approved")
+        expect(last_note.author).to eq(project.creator)
+        expect(last_note.created_at).to eq(submitted_at)
+      end
+    end
+
     context 'when the submitted_at is not provided' do
       let(:review) { create_review(type: 'APPROVED', note: '', submitted_at: nil) }
 

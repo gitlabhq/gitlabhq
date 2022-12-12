@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting milestone listings nested in a project' do
+RSpec.describe 'getting milestone listings nested in a project', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:today) { Time.now.utc.to_date }

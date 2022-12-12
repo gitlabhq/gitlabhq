@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting group members information' do
+RSpec.describe 'getting group members information', feature_category: :subgroups do
   include GraphqlHelpers
 
   let_it_be(:parent_group) { create(:group, :public) }

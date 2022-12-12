@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.group(fullPath).ciVariables' do
+RSpec.describe 'Query.group(fullPath).ciVariables', feature_category: :pipeline_authoring do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

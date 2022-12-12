@@ -11926,6 +11926,7 @@ The deployment of an environment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="deploymentapprovalsummary"></a>`approvalSummary` | [`DeploymentApprovalSummary`](#deploymentapprovalsummary) | Approval summary of the deployment.This field can only be resolved for one deployment in any single request. |
 | <a id="deploymentcommit"></a>`commit` | [`Commit`](#commit) | Commit details of the deployment. |
 | <a id="deploymentcreatedat"></a>`createdAt` | [`Time`](#time) | When the deployment record was created. |
 | <a id="deploymentfinishedat"></a>`finishedAt` | [`Time`](#time) | When the deployment finished. |
@@ -11936,6 +11937,7 @@ The deployment of an environment.
 | <a id="deploymentsha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
 | <a id="deploymentstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |
 | <a id="deploymenttag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
+| <a id="deploymenttags"></a>`tags` | [`[DeploymentTag!]`](#deploymenttag) | Git tags that contain this deployment. This field can only be resolved for one deployment in any single request. |
 | <a id="deploymenttriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
 | <a id="deploymentupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
 | <a id="deploymentuserpermissions"></a>`userPermissions` | [`DeploymentPermissions!`](#deploymentpermissions) | Permissions for the current user on the resource. |
@@ -11966,30 +11968,6 @@ Approval summary of the deployment.
 | <a id="deploymentapprovalsummarystatus"></a>`status` | [`DeploymentApprovalSummaryStatus`](#deploymentapprovalsummarystatus) | Status of the approvals. |
 | <a id="deploymentapprovalsummarytotalpendingapprovalcount"></a>`totalPendingApprovalCount` | [`Int`](#int) | Total pending approval count. |
 | <a id="deploymentapprovalsummarytotalrequiredapprovals"></a>`totalRequiredApprovals` | [`Int`](#int) | Total number of required approvals. |
-
-### `DeploymentDetails`
-
-The details of the deployment.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="deploymentdetailsapprovalsummary"></a>`approvalSummary` | [`DeploymentApprovalSummary`](#deploymentapprovalsummary) | Approval summary of the deployment. |
-| <a id="deploymentdetailscommit"></a>`commit` | [`Commit`](#commit) | Commit details of the deployment. |
-| <a id="deploymentdetailscreatedat"></a>`createdAt` | [`Time`](#time) | When the deployment record was created. |
-| <a id="deploymentdetailsfinishedat"></a>`finishedAt` | [`Time`](#time) | When the deployment finished. |
-| <a id="deploymentdetailsid"></a>`id` | [`ID`](#id) | Global ID of the deployment. |
-| <a id="deploymentdetailsiid"></a>`iid` | [`ID`](#id) | Project-level internal ID of the deployment. |
-| <a id="deploymentdetailsjob"></a>`job` | [`CiJob`](#cijob) | Pipeline job of the deployment. |
-| <a id="deploymentdetailsref"></a>`ref` | [`String`](#string) | Git-Ref that the deployment ran on. |
-| <a id="deploymentdetailssha"></a>`sha` | [`String`](#string) | Git-SHA that the deployment ran on. |
-| <a id="deploymentdetailsstatus"></a>`status` | [`DeploymentStatus`](#deploymentstatus) | Status of the deployment. |
-| <a id="deploymentdetailstag"></a>`tag` | [`Boolean`](#boolean) | True or false if the deployment ran on a Git-tag. |
-| <a id="deploymentdetailstags"></a>`tags` | [`[DeploymentTag!]`](#deploymenttag) | Git tags that contain this deployment. |
-| <a id="deploymentdetailstriggerer"></a>`triggerer` | [`UserCore`](#usercore) | User who executed the deployment. |
-| <a id="deploymentdetailsupdatedat"></a>`updatedAt` | [`Time`](#time) | When the deployment record was updated. |
-| <a id="deploymentdetailsuserpermissions"></a>`userPermissions` | [`DeploymentPermissions!`](#deploymentpermissions) | Permissions for the current user on the resource. |
 
 ### `DeploymentPermissions`
 
@@ -17327,7 +17305,7 @@ four standard [pagination arguments](#connection-pagination-arguments):
 
 Details of the deployment of the project.
 
-Returns [`DeploymentDetails`](#deploymentdetails).
+Returns [`Deployment`](#deployment).
 
 ###### Arguments
 

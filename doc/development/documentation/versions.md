@@ -203,8 +203,8 @@ We cannot guarantee future feature work, and promises
 like these can raise legal issues. Instead, say that an issue exists.
 For example:
 
-- Support for improvements is proposed in `[issue [LINK](LINK-TO-ISSUE)`.
-- You cannot do this thing, but `[issue [LINK](LINK-TO-ISSUE)` proposes to change this behavior.
+- Support for improvements is proposed in `[issue <issue_number>](LINK-TO-ISSUE)`.
+- You cannot do this thing, but `[issue 12345](LINK-TO-ISSUE)` proposes to change this behavior.
 
 You can say that we plan to remove a feature.
 

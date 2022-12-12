@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting blobs in a project repository' do
+RSpec.describe 'getting blobs in a project repository', feature_category: :source_code_management do
   include GraphqlHelpers
 
   let(:project) { create(:project, :repository) }

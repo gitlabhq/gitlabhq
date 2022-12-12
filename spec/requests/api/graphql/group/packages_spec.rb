@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting a package list for a group' do
+RSpec.describe 'getting a package list for a group', feature_category: :package_registry do
   include GraphqlHelpers
 
   let_it_be(:resource) { create(:group, :private) }

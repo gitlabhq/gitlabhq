@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'getting the packages cleanup policy linked to a project' do
+RSpec.describe 'getting the packages cleanup policy linked to a project', feature_category: :package_registry do
   using RSpec::Parameterized::TableSyntax
   include GraphqlHelpers
 

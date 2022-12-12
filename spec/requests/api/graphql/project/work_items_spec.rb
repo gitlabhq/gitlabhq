@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'getting a work item list for a project' do
+RSpec.describe 'getting a work item list for a project', feature_category: :team_planning do
   include GraphqlHelpers
 
   let_it_be(:group) { create(:group) }

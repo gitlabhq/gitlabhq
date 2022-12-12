@@ -27707,6 +27707,21 @@ msgstr ""
 msgid "Normal text"
 msgstr ""
 
+msgid "NorthstarNavigation|Alpha"
+msgstr ""
+
+msgid "NorthstarNavigation|Could not update the new navigation preference. Please try again later."
+msgstr ""
+
+msgid "NorthstarNavigation|Navigation redesign"
+msgstr ""
+
+msgid "NorthstarNavigation|New navigation"
+msgstr ""
+
+msgid "NorthstarNavigation|Toggle new navigation"
+msgstr ""
+
 msgid "Not all browsers support U2F devices. Therefore, we require that you set up a two-factor authentication app first. That way you'll always be able to sign in - even when you're using an unsupported browser."
 msgstr ""
 
