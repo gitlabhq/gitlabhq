@@ -3,7 +3,7 @@
 class AbuseReportsController < ApplicationController
   before_action :set_user, only: [:new]
 
-  feature_category :users
+  feature_category :insider_threat
 
   def new
     @abuse_report = AbuseReport.new

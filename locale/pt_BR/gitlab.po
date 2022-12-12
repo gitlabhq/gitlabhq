@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2022-11-13 09:21\n"
+"PO-Revision-Date: 2022-12-11 07:03\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} até %{end}"
@@ -343,6 +343,11 @@ msgid_plural "%d more comments"
 msgstr[0] "mais %d comentário"
 msgstr[1] "mais %d comentários"
 
+msgid "%d package"
+msgid_plural "%d packages"
+msgstr[0] "%d pacote"
+msgstr[1] "%d pacotes"
+
 msgid "%d pending comment"
 msgid_plural "%d pending comments"
 msgstr[0] "%d comentário pendente"
@@ -504,6 +509,12 @@ msgstr[0] "%{bold_start}%{count}%{bold_end} solicitação de mesclagem aberta"
 msgstr[1] "%{bold_start}%{count}%{bold_end} solicitações de mesclagem abertas"
 
 msgid "%{chartTitle} no data series"
+msgstr ""
+
+msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
+msgstr ""
+
+msgid "%{code_open}Expanded:%{code_close} Variables with %{code_open}$%{code_close} will be treated as the start of a reference to another variable."
 msgstr ""
 
 msgid "%{code_open}Masked:%{code_close} Hidden in job logs. Must match masking requirements."
@@ -706,14 +717,14 @@ msgstr "%{group_name} usa contas gerenciadas por grupo. Você precisa criar uma 
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr "%{group_name}&%{epic_iid} &middot; criado %{epic_created} por %{author}"
 
-msgid "%{hook_type} was deleted"
-msgstr "%{hook_type} foi excluído"
-
-msgid "%{hook_type} was scheduled for deletion"
-msgstr "%{hook_type} foi agendado para exclusão"
-
 msgid "%{host} sign-in from new location"
 msgstr "%{host} entrou a partir de um novo local"
+
+msgid "%{human_readable_key} exceeds %{max_value_length} characters"
+msgstr ""
+
+msgid "%{human_readable_key} is less than %{min_value_length} characters"
+msgstr ""
 
 msgid "%{integrations_link_start}Integrations%{link_end} enable you to make third-party applications part of your GitLab workflow. If the available integrations don't meet your needs, consider using a %{webhooks_link_start}webhook%{link_end}."
 msgstr "%{integrations_link_start}Integrações%{link_end} permitem que aplicativos de terceiros façam parte do seu fluxo de trabalho do GitLab. Se as integrações disponíveis não atenderem às suas necessidades, considere usar um %{webhooks_link_start}webhook%{link_end}."
@@ -906,9 +917,6 @@ msgstr "%{openedEpics} abertos, %{closedEpics} fechados"
 msgid "%{openedIssues} open, %{closedIssues} closed"
 msgstr "%{openedIssues} aberta, %{closedIssues} fechada"
 
-msgid "%{over_limit_message} To get more members, an owner of the group can start a trial or upgrade to a paid tier."
-msgstr ""
-
 msgid "%{over_limit_message} To get more seats, %{link_start}upgrade to a paid tier%{link_end}."
 msgstr ""
 
@@ -959,8 +967,8 @@ msgstr "%{reportType} %{status}"
 msgid "%{reportType} detected %{totalStart}%{total}%{totalEnd} potential %{vulnMessage}"
 msgstr ""
 
-msgid "%{reportType} detected no %{totalStart}new%{totalEnd} vulnerabilities."
-msgstr "%{reportType} não detectou %{totalStart}novas%{totalEnd} vulnerabilidades."
+msgid "%{reportType} detected no new vulnerabilities."
+msgstr ""
 
 msgid "%{retryButtonStart}Try again%{retryButtonEnd} or %{newFileButtonStart}attach a new file%{newFileButtonEnd}."
 msgstr "%{retryButtonStart}Tente novamente%{retryButtonEnd} ou %{newFileButtonStart}anexe um novo arquivo%{newFileButtonEnd}."
@@ -1108,6 +1116,11 @@ msgstr "%{template_project_id} é desconhecido ou inválido"
 msgid "%{text} is available"
 msgstr "%{text} está disponível"
 
+msgid "%{thenLabelStart}Then%{thenLabelEnd} Require %{approvalsRequired} approval from %{approverType}%{approvers}"
+msgid_plural "%{thenLabelStart}Then%{thenLabelEnd} Require %{approvalsRequired} approvals from %{approverType}%{approvers}"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{timebox_type} does not support burnup charts"
 msgstr "%{timebox_type} não suporta o gráfico de burnup"
 
@@ -1146,6 +1159,9 @@ msgstr ""
 
 msgid "%{type} only supports %{name} name"
 msgstr ""
+
+msgid "%{url} (optional)"
+msgstr "%{url} (opcional)"
 
 msgid "%{userName} (cannot merge)"
 msgstr "%{userName} (não pode mesclar)"
@@ -1266,11 +1282,17 @@ msgstr "(+%{count}&nbsp;regras)"
 msgid "(Group Managed Account)"
 msgstr "(Conta gerenciada por grupo)"
 
+msgid "(Limited to %{quota} pipeline minutes per month)"
+msgstr ""
+
 msgid "(No changes)"
 msgstr "(Nenhuma alteração)"
 
 msgid "(UTC %{offset}) %{timezone}"
 msgstr "(UTC %{offset}) %{timezone}"
+
+msgid "(Unlimited pipeline minutes)"
+msgstr ""
 
 msgid "(check progress)"
 msgstr "(verificar progresso)"
@@ -2364,6 +2386,9 @@ msgstr "Adicionar system hook"
 msgid "Add text to the sign-in page. Markdown enabled."
 msgstr "Adicione texto à página de entrada. Markdown ativado."
 
+msgid "Add time entry"
+msgstr "Adicionar entrada de tempo"
+
 msgid "Add to board"
 msgstr "Adicionar ao painel"
 
@@ -2392,7 +2417,7 @@ msgid "Add variable"
 msgstr "Adicionar variável"
 
 msgid "Add vulnerability finding"
-msgstr ""
+msgstr "Adicionar descoberta de vulnerabilidades"
 
 msgid "Add webhook"
 msgstr "Adicionar webhook"
@@ -2450,6 +2475,9 @@ msgstr "Adicionado nesta versão"
 
 msgid "Adding new applications is disabled in your GitLab instance. Please contact your GitLab administrator to get the permission"
 msgstr "A adição de novos aplicativos está desativada na sua instância do GitLab. Entre em contato com seu administrador do GitLab para obter a permissão"
+
+msgid "Additional diagram formats"
+msgstr ""
 
 msgid "Additional minutes"
 msgstr "Minutos adicionais"
@@ -2645,6 +2673,9 @@ msgstr "Erro ao parar tarefas"
 
 msgid "AdminArea|Total users"
 msgstr "Usuários totais"
+
+msgid "AdminArea|Updated %{last_update_time}"
+msgstr ""
 
 msgid "AdminArea|Users"
 msgstr "Usuários"
@@ -2946,8 +2977,8 @@ msgstr "Pesquisa com o Elasticsearch ativado"
 msgid "AdminSettings|Select a CI/CD template"
 msgstr "Selecione um modelo CI/CD"
 
-msgid "AdminSettings|Select a group to use as the source for instance-level project templates."
-msgstr "Selecione um grupo para usar como fonte para modelos de projeto em nível de instância."
+msgid "AdminSettings|Select a group to use as a source of custom templates for new projects. %{link_start}Learn more%{link_end}."
+msgstr ""
 
 msgid "AdminSettings|Select to disable public access for Pages sites, which requires users to sign in for access to the Pages sites in your instance. %{link_start}Learn more.%{link_end}"
 msgstr "Selecione para desativar o acesso público aos sites Pages, o que exige que os usuários façam login para acessar os sites Pages em sua instância. %{link_start}Saiba mais.%{link_end}"
@@ -3008,9 +3039,6 @@ msgstr ""
 
 msgid "AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire."
 msgstr "Os artefatos mais recentes de todas as tarefas dos pipelines mais recentes em cada projeto são armazenados e não expiram."
-
-msgid "AdminSettings|The projects in this group can be selected as templates for new projects created on the instance. %{link_start}Learn more.%{link_end} "
-msgstr "Os projetos neste grupo podem ser selecionados como modelos para novos projetos criados na instância. %{link_start}Saiba mais.%{link_end} "
 
 msgid "AdminSettings|The template for the required pipeline configuration can be one of the GitLab-provided templates, or a custom template added to an instance template repository. %{link_start}How do I create an instance template repository?%{link_end}"
 msgstr "O modelo para a configuração de pipeline necessária pode ser um dos modelos fornecidos pelo GitLab ou um modelo personalizado adicionado a um repositório de modelos de instância. %{link_start}Como faço para criar um repositório de modelo de instância?%{link_end}"
@@ -4538,6 +4566,9 @@ msgstr "Ocorreu um erro. Por favor, entre novamente."
 msgid "An error occurred. Please try again."
 msgstr "Ocorreu um erro. Tente novamente."
 
+msgid "An error occurred. Unable to reopen this merge request."
+msgstr ""
+
 msgid "An example project for managing Kubernetes clusters integrated with GitLab"
 msgstr "Um projeto de exemplo para gerenciar clusters Kubernetes integrados ao GitLab"
 
@@ -4654,9 +4685,6 @@ msgstr "Qualquer marco"
 
 msgid "Any namespace"
 msgstr "Qualquer espaço de nome"
-
-msgid "Anyone can register for an account."
-msgstr ""
 
 msgid "App ID"
 msgstr "App ID"
@@ -5196,6 +5224,9 @@ msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Are you sure you want to leave the Web IDE? All unsaved changes will be lost."
+msgstr ""
+
 msgid "Are you sure you want to lock %{path}?"
 msgstr "Tem certeza de que deseja bloquear %{path}?"
 
@@ -5604,6 +5635,9 @@ msgstr "Excluir %{link}"
 msgid "AuditStreams|Destination URL"
 msgstr "URL de destino"
 
+msgid "AuditStreams|Destination has filters applied. %{linkStart}What are filters?%{linkEnd}"
+msgstr ""
+
 msgid "AuditStreams|Destinations receive all audit event data"
 msgstr "Destinatário recebeu todos os dados do eventos de auditoria"
 
@@ -5626,13 +5660,13 @@ msgid "AuditStreams|Setup streaming for audit events"
 msgstr "Configurar streaming para eventos de auditoria"
 
 msgid "AuditStreams|Stream added successfully"
-msgstr ""
+msgstr "Stream adicionado com sucesso"
 
 msgid "AuditStreams|Stream deleted successfully"
-msgstr ""
+msgstr "Stream excluído com sucesso"
 
 msgid "AuditStreams|Stream updated successfully"
-msgstr ""
+msgstr "Stream atualizado com sucesso"
 
 msgid "AuditStreams|Streams"
 msgstr ""
@@ -5648,6 +5682,9 @@ msgstr "Valor"
 
 msgid "AuditStreams|Verification token"
 msgstr "Token de verificação"
+
+msgid "AuditStreams|filtered"
+msgstr ""
 
 msgid "Aug"
 msgstr "Ago"
@@ -5879,9 +5916,6 @@ msgstr "Executores de grupo disponíveis: %{runners}"
 
 msgid "Available on-demand"
 msgstr "Disponível por demanda"
-
-msgid "Available shared runners:"
-msgstr "Executores compartilhados disponíveis:"
 
 msgid "Available specific runners"
 msgstr "Executores específicos disponíveis"
@@ -6902,6 +6936,15 @@ msgstr ""
 msgid "BranchRules|%{linkStart}Wildcards%{linkEnd} such as *-stable or production/* are supported."
 msgstr ""
 
+msgid "BranchRules|%{total} approval %{subject}"
+msgstr ""
+
+msgid "BranchRules|%{total} matching %{subject}"
+msgstr ""
+
+msgid "BranchRules|%{total} status %{subject}"
+msgstr ""
+
 msgid "BranchRules|All branches"
 msgstr "Todas as ramificações"
 
@@ -7002,10 +7045,10 @@ msgid "BranchRules|Roles"
 msgstr "Cargos"
 
 msgid "BranchRules|Status checks"
-msgstr ""
+msgstr "Verificações de status"
 
 msgid "BranchRules|Status checks (%{total})"
-msgstr ""
+msgstr "Verificações de status (%{total})"
 
 msgid "BranchRules|Target Branch"
 msgstr ""
@@ -7016,9 +7059,6 @@ msgstr "Usuários"
 msgid "BranchRules|default"
 msgstr "padrão"
 
-msgid "BranchRules|protected"
-msgstr ""
-
 msgid "Branches"
 msgstr "Ramificações"
 
@@ -7027,6 +7067,9 @@ msgstr "Ramificações: %{source_branch} para %{target_branch}"
 
 msgid "Branches: %{source_branch} → %{target_branch}"
 msgstr "Ramificações: %{source_branch} → %{target_branch}"
+
+msgid "Branches|A branch won't be deleted if it is protected or associated with an open merge request."
+msgstr ""
 
 msgid "Branches|Active"
 msgstr "Ativos"
@@ -7049,8 +7092,11 @@ msgstr "Não foi possível encontrar o commit HEAD para essa ramificação"
 msgid "Branches|Compare"
 msgstr "Comparar"
 
-msgid "Branches|Delete all branches that are merged into '%{default_branch}'"
-msgstr "Apagar todos as ramificações que foram mesclados em '%{default_branch}'"
+msgid "Branches|Delete all branches that are merged into '%{defaultBranch}'"
+msgstr ""
+
+msgid "Branches|Delete all merged branches?"
+msgstr ""
 
 msgid "Branches|Delete branch"
 msgstr "Apagar ramificação"
@@ -7069,9 +7115,6 @@ msgstr "Excluir ramificação protegida. Você tem CERTEZA ABSOLUTA disso?"
 
 msgid "Branches|Deleting the %{strongStart}%{branchName}%{strongEnd} branch cannot be undone. Are you sure?"
 msgstr "Excluir a ramificação %{strongStart}%{branchName}%{strongEnd} não pode ser desfeito. Você tem certeza?"
-
-msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
-msgstr "Apagar ramificações mescladas não pode ser desfeita. Você tem certeza?"
 
 msgid "Branches|Filter by branch name"
 msgstr "Filtrar por nome de ramificação"
@@ -7093,6 +7136,9 @@ msgstr "Visão Geral"
 
 msgid "Branches|Please type the following to confirm:"
 msgstr "Por favor, digite o seguinte para confirmar"
+
+msgid "Branches|Plese type the following to confirm: %{codeStart}delete%{codeEnd}."
+msgstr ""
 
 msgid "Branches|Show active branches"
 msgstr "Mostrar branches ativas"
@@ -7127,6 +7173,12 @@ msgstr "A ramificação padrão não pode ser apagada"
 msgid "Branches|This branch hasn't been merged into %{defaultBranchName}. To avoid data loss, consider merging this branch before deleting it."
 msgstr ""
 
+msgid "Branches|This bulk action is %{strongStart}permanent and cannot be undone or recovered%{strongEnd}."
+msgstr ""
+
+msgid "Branches|This may include merged branches that are not visible on the current screen."
+msgstr ""
+
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
 msgstr "Para descartar as alterações locais e sobrescrever o branch com a versão upstream, exclua-o aqui e escolhe 'Atualize agora' acima."
 
@@ -7138,6 +7190,9 @@ msgstr "Sim, apagar o branch"
 
 msgid "Branches|Yes, delete protected branch"
 msgstr "Sim, apagar o branch protegido"
+
+msgid "Branches|You are about to %{strongStart}delete all branches%{strongEnd} that were merged into %{codeStart}%{defaultBranch}%{codeEnd}."
+msgstr ""
 
 msgid "Branches|You're about to permanently delete the branch %{branchName}."
 msgstr ""
@@ -7192,6 +7247,9 @@ msgstr ""
 
 msgid "BuildArtifacts|Loading artifacts"
 msgstr "Carregando artefatos"
+
+msgid "Building your merge request. Wait a few moments, then refresh this page."
+msgstr ""
 
 msgid "Built-in"
 msgstr "Embutido"
@@ -7999,6 +8057,9 @@ msgstr "Pipeline #%{pipeline_id} %{humanized_status} em %{duration}"
 msgid "ChatMessage|Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status}"
 msgstr ""
 
+msgid "ChatMessage|Pipeline name"
+msgstr ""
+
 msgid "ChatMessage|Tag"
 msgstr "Tag"
 
@@ -8046,6 +8107,9 @@ msgstr "Verifique suas imagens do Docker quanto a vulnerabilidades conhecidas."
 
 msgid "Check your Kubernetes cluster images for known vulnerabilities."
 msgstr "Verifique as imagens de cluster do Kubernetes em busca de vulnerabilidades conhecidas."
+
+msgid "Check your sign-up restrictions"
+msgstr ""
 
 msgid "Checking %{text} availability…"
 msgstr "Verificando disponibilidade de %{text}…"
@@ -8168,9 +8232,6 @@ msgstr "Falha ao carregar o formulário de cartão de crédito: %{message}"
 msgid "Checkout|Edit"
 msgstr "Editar"
 
-msgid "Checkout|Enter a number greater than 0"
-msgstr "Insira um número maior que 0"
-
 msgid "Checkout|Exp %{expirationMonth}/%{expirationYear}"
 msgstr "Expira em: %{expirationMonth}/%{expirationYear}"
 
@@ -8186,8 +8247,8 @@ msgstr "Falha ao carregar países. Por favor, tente novamente."
 msgid "Checkout|Failed to load states. Please try again."
 msgstr "Falha ao carregar estados. Por favor, tente novamente."
 
-msgid "Checkout|Failed to load the payment form. Please try again."
-msgstr "Falha ao carregar o formulário de pagamento. Por favor, tente novamente."
+msgid "Checkout|Failed to load the payment form. Refresh the page and try again."
+msgstr ""
 
 msgid "Checkout|Failed to register credit card. Please try again."
 msgstr "Falha ao registrar o cartão de crédito. Por favor, tente novamente."
@@ -8209,6 +8270,9 @@ msgstr "Deve ser %{minimumNumberOfUsers} (seus assentos em uso) ou mais."
 
 msgid "Checkout|Must be %{minimumNumberOfUsers} (your seats in use, plus all over limit members) or more. To buy fewer seats, remove members from the group."
 msgstr ""
+
+msgid "Checkout|Must be 1 or more. Cannot be a decimal."
+msgstr "Deve ser 1 ou mais. Não pode ser um decimal."
 
 msgid "Checkout|Name of company or organization using GitLab"
 msgstr "Nome da empresa ou organização usando GitLab"
@@ -8453,8 +8517,14 @@ msgstr "executando"
 msgid "CiVariables|Cannot use Masked Variable with current value"
 msgstr "Não é possível usar a variável mascarada com o valor atual"
 
+msgid "CiVariables|Clear inputs"
+msgstr ""
+
 msgid "CiVariables|Environments"
 msgstr "Ambientes"
+
+msgid "CiVariables|Expanded"
+msgstr "Expandido"
 
 msgid "CiVariables|Input variable key"
 msgstr "Digite o nome da variável"
@@ -8468,6 +8538,9 @@ msgstr "Chave"
 msgid "CiVariables|Masked"
 msgstr "Mascarada"
 
+msgid "CiVariables|Maximum number of variables reached."
+msgstr ""
+
 msgid "CiVariables|Options"
 msgstr "Opções"
 
@@ -8480,6 +8553,9 @@ msgstr "Remover variável"
 msgid "CiVariables|Remove variable row"
 msgstr "Remover a variável"
 
+msgid "CiVariables|Run job again"
+msgstr ""
+
 msgid "CiVariables|Scope"
 msgstr "Escopo"
 
@@ -8489,6 +8565,9 @@ msgstr "Especifique os valores das variáveis a serem usadas nessa execução. O
 msgid "CiVariables|State"
 msgstr "Estado"
 
+msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
+msgstr ""
+
 msgid "CiVariables|Type"
 msgstr "Tipo"
 
@@ -8497,6 +8576,12 @@ msgstr "Valor"
 
 msgid "CiVariables|Variables"
 msgstr "Variáveis"
+
+msgid "CiVariables|Variables store information, like passwords and secret keys, that you can use in job scripts. Each %{entity} can define a maximum of %{limit} variables."
+msgstr ""
+
+msgid "CiVariables|You have reached the maximum number of variables available. To add new variables, you must reduce the number of defined variables."
+msgstr ""
 
 msgid "CiVariable|* (All environments)"
 msgstr "* (Todos os ambientes)"
@@ -9188,6 +9273,9 @@ msgstr "Token revogado por %{userName}"
 
 msgid "ClusterAgents|Unknown user"
 msgstr "Usuário desconhecido"
+
+msgid "ClusterAgents|Use a Helm version compatible with your Kubernetes version (see %{linkStart}Helm version support policy%{linkEnd})."
+msgstr ""
 
 msgid "ClusterAgents|Valid access token"
 msgstr "Token de acesso válido"
@@ -10010,6 +10098,9 @@ msgstr "Configuração do pipeline compliance (opcional)"
 msgid "ComplianceFrameworks|Configuration not found"
 msgstr "Configuração não encontrada"
 
+msgid "ComplianceFrameworks|Default compliance framework successfully updated"
+msgstr ""
+
 msgid "ComplianceFrameworks|Delete compliance framework %{framework}"
 msgstr "Excluir framework de conformidade %{framework}"
 
@@ -10034,6 +10125,9 @@ msgstr ""
 msgid "ComplianceFrameworks|Error fetching compliance frameworks data. Please refresh the page or try a different framework"
 msgstr ""
 
+msgid "ComplianceFrameworks|Error setting the default compliance frameworks"
+msgstr ""
+
 msgid "ComplianceFrameworks|Frameworks that have been added will appear here."
 msgstr "Frameworks que foram adicionados aparecerão aqui."
 
@@ -10049,13 +10143,22 @@ msgstr "O nome é necessário"
 msgid "ComplianceFrameworks|No compliance frameworks are set up yet"
 msgstr "Nenhuma estrutura de conformidade está configurada ainda"
 
+msgid "ComplianceFrameworks|Remove default"
+msgstr ""
+
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}What is a compliance pipeline configuration?%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworks|Set default"
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
 msgstr ""
 
 msgid "ComplianceFrameworks|You are about to permanently delete the compliance framework %{framework} from all projects which currently have it applied, which may remove other functionality. This cannot be undone."
+msgstr ""
+
+msgid "ComplianceFrameworks|default"
 msgstr ""
 
 msgid "ComplianceFramework|Add a framework to %{linkStart}%{groupName}%{linkEnd} and it will appear here."
@@ -10223,7 +10326,7 @@ msgstr ""
 msgid "Configure the %{link} integration."
 msgstr "Configure a integração de %{link}."
 
-msgid "Configure the default first day of the week and time tracking units."
+msgid "Configure the default first day of the week, time tracking units, and default language."
 msgstr ""
 
 msgid "Configure the way a user creates a new account."
@@ -10343,6 +10446,9 @@ msgstr "Conectando"
 msgid "Connecting to terminal sync service"
 msgstr "Conectando ao serviço de sincronização de terminal"
 
+msgid "Connecting to the remote environment..."
+msgstr "Conectando ao ambiente remoto..."
+
 msgid "Connecting..."
 msgstr "Conectando..."
 
@@ -10381,12 +10487,6 @@ msgstr "Imagens do registro de contêiner"
 
 msgid "Container registry is not enabled on this GitLab instance. Ask an administrator to enable it in order for Auto DevOps to work."
 msgstr "O registro de contêiner não está ativado nesta instância do GitLab. Peça a um administrador para ativá-lo para que o Auto DevOps funcione."
-
-msgid "Container repositories"
-msgstr "Repositórios do container"
-
-msgid "Container repository"
-msgstr "Repositório do container"
 
 msgid "ContainerRegistry| Please visit the %{linkStart}administration settings%{linkEnd} to enable this feature."
 msgstr "Visite as %{linkStart}configurações de administração%{linkEnd} para ativar este recurso."
@@ -10652,9 +10752,6 @@ msgstr ""
 msgid "ContainerRegistry|Tags successfully marked for deletion."
 msgstr ""
 
-msgid "ContainerRegistry|Tags temporarily cannot be marked for deletion. Please try again in a few minutes. %{docLinkStart}More details%{docLinkEnd}."
-msgstr ""
-
 msgid "ContainerRegistry|Tags that match these rules are %{strongStart}kept%{strongEnd}, even if they match a removal rule below. The %{secondStrongStart}latest%{secondStrongEnd} tag is always kept."
 msgstr "Tags que correspondem a estas regras são %{strongStart}mantidas%{strongEnd}, mesmo que elas correspondam a regra de exclusão abaixo. A %{secondStrongStart}última%{secondStrongEnd} é sempre mantida."
 
@@ -10837,9 +10934,6 @@ msgstr "Controle e-mails vinculados à sua conta"
 
 msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
 msgstr "Controle como a variável CI_JOB_TOKEN CI/CD é usada para acesso à API entre projetos."
-
-msgid "Control how the GitLab Package Registry functions."
-msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
 msgstr ""
@@ -11153,6 +11247,9 @@ msgstr ""
 msgid "Couldn't assign policy to project or group"
 msgstr "Não foi possível atribuir política ao projeto ou grupo"
 
+msgid "Couldn't find event type filters where audit event type(s): %{missing_filters}"
+msgstr ""
+
 msgid "Country"
 msgstr "País"
 
@@ -11285,9 +11382,6 @@ msgstr "Criar issue"
 msgid "Create issue to resolve all threads"
 msgstr "Crie uma issue para resolver todos os tópicos"
 
-msgid "Create iteration"
-msgstr "Criar interação"
-
 msgid "Create label"
 msgstr "Criar etiqueta"
 
@@ -11366,6 +11460,9 @@ msgstr "Criar snippet"
 msgid "Create tag %{tagName}"
 msgstr "Criar tag %{tagName}"
 
+msgid "Create testing scenarios by defining project conditions in your development platform."
+msgstr ""
+
 msgid "Create topic"
 msgstr "Criar tópico"
 
@@ -11401,6 +11498,42 @@ msgstr "Você não tem permissão para criar grupos."
 
 msgid "CreateTag|Tag"
 msgstr "Tag"
+
+msgid "CreateTimelogForm|Add time entry"
+msgstr "Adicionar entrada de hora"
+
+msgid "CreateTimelogForm|An error occurred while saving the time entry."
+msgstr ""
+
+msgid "CreateTimelogForm|Cancel"
+msgstr "Cancelar"
+
+msgid "CreateTimelogForm|Example: 1h 30m"
+msgstr "Exemplo: 1h 30m"
+
+msgid "CreateTimelogForm|How do I track and estimate time?"
+msgstr ""
+
+msgid "CreateTimelogForm|Save"
+msgstr "Salvar"
+
+msgid "CreateTimelogForm|Spent at"
+msgstr "Gasto em"
+
+msgid "CreateTimelogForm|Summary"
+msgstr "Resumo"
+
+msgid "CreateTimelogForm|Time spent"
+msgstr "Tempo gasto"
+
+msgid "CreateTimelogForm|Track time spent on this %{issuableTypeNameStart}%{issuableTypeNameEnd}. %{timeTrackingDocsLinkStart}%{timeTrackingDocsLinkEnd}"
+msgstr ""
+
+msgid "CreateTimelogForm|issue"
+msgstr "issue"
+
+msgid "CreateTimelogForm|merge request"
+msgstr "solicitação de mesclagem"
 
 msgid "CreateValueStreamForm|%{name} (default)"
 msgstr "%{name} (padrão)"
@@ -11626,6 +11759,9 @@ msgstr ""
 
 msgid "Credit card:"
 msgstr "Cartão de crédito:"
+
+msgid "Critical - S1"
+msgstr ""
 
 msgid "Critical vulnerabilities present"
 msgstr "Vulnerabilidades críticas presentes"
@@ -12037,11 +12173,17 @@ msgstr "%{startDate} - %{endDate}"
 msgid "DORA4Metrics|Average (last %{days}d)"
 msgstr ""
 
+msgid "DORA4Metrics|Change Failure Rate"
+msgstr "Taxa de falha de mudança"
+
 msgid "DORA4Metrics|Change failure rate"
 msgstr "Taxa de falha de mudança"
 
 msgid "DORA4Metrics|Change failure rate (percentage)"
 msgstr "Taxa de falha de mudança (porcentagem)"
+
+msgid "DORA4Metrics|Cycle time"
+msgstr ""
 
 msgid "DORA4Metrics|DORA metrics for %{groupName} group"
 msgstr ""
@@ -12055,8 +12197,20 @@ msgstr "Dias para um incidente aberto"
 msgid "DORA4Metrics|Days from merge to deploy"
 msgstr ""
 
+msgid "DORA4Metrics|Deployment Frequency"
+msgstr ""
+
 msgid "DORA4Metrics|Deployment frequency"
 msgstr "Frequência de implantação"
+
+msgid "DORA4Metrics|Deploys"
+msgstr ""
+
+msgid "DORA4Metrics|Lead Time for Changes"
+msgstr ""
+
+msgid "DORA4Metrics|Lead time"
+msgstr ""
 
 msgid "DORA4Metrics|Lead time for changes"
 msgstr "Tempo de espera para mudanças"
@@ -12074,6 +12228,9 @@ msgid "DORA4Metrics|Median time an incident was open in a production environment
 msgstr "Tempo médio em que um incidente foi aberto em um ambiente de produção durante o período de tempo determinado."
 
 msgid "DORA4Metrics|Month to date"
+msgstr ""
+
+msgid "DORA4Metrics|New issues"
 msgstr ""
 
 msgid "DORA4Metrics|No incidents during this period"
@@ -12108,6 +12265,9 @@ msgstr ""
 
 msgid "DORA4Metrics|The chart displays the median time between a merge request being merged and deployed to production environment(s) that are based on the %{linkStart}deployment_tier%{linkEnd} value."
 msgstr "O gráfico exibe a mediana de tempo entre uma solicitação de mesclagem sendo realizada e implantada no(s) ambient(s) de produção baseados no valor %{linkStart}deployment_tier%{linkEnd} ."
+
+msgid "DORA4Metrics|Time to Restore Service"
+msgstr ""
 
 msgid "DORA4Metrics|Time to restore service"
 msgstr "Tempo para restaurar o serviço"
@@ -12168,6 +12328,9 @@ msgstr "Nenhuma verificação anterior encontrada para este projeto"
 
 msgid "DastConfig|Not enabled"
 msgstr "Não ativado"
+
+msgid "DastProfiles|/graphql"
+msgstr ""
 
 msgid "DastProfiles|A passive scan monitors all HTTP messages (requests and responses) sent to the target. An active scan attacks the target to find potential vulnerabilities."
 msgstr "Uma verificação passiva monitora todas as mensagens HTTP (solicitações e respostas) enviadas para o destino. Uma varredura ativa ataca o alvo para encontrar potenciais vulnerabilidades."
@@ -12315,6 +12478,9 @@ msgstr "Mínimo = 1 segundo, Máximo = 3600 segundos"
 
 msgid "DastProfiles|Monitors all HTTP requests sent to the target to find potential vulnerabilities."
 msgstr "Monitora todas as solicitações HTTP enviadas ao destino para encontrar possíveis vulnerabilidades."
+
+msgid "DastProfiles|Must allow introspection queries to request the API schema. %{linkStart}How do I enable introspection%{linkEnd}?"
+msgstr ""
 
 msgid "DastProfiles|New scanner profile"
 msgstr "Novo perfil de verificação"
@@ -12687,6 +12853,9 @@ msgstr ""
 msgid "Days to merge"
 msgstr "Dias para mesclar"
 
+msgid "Deactivate"
+msgstr ""
+
 msgid "Deactivate dormant users after a period of inactivity"
 msgstr "Desativar usuários inativos após um período de inatividade"
 
@@ -12743,6 +12912,12 @@ msgstr "Primeiro dia da semana padrão"
 
 msgid "Default first day of the week in calendars and date pickers."
 msgstr "Primeiro dia da semana padrão em calendários e selecionadores de data."
+
+msgid "Default language"
+msgstr "Idioma padrão"
+
+msgid "Default language for users who are not logged in."
+msgstr "Idioma padrão para usuários que não estão entrados."
 
 msgid "Default projects limit"
 msgstr "Limite padrão de projetos"
@@ -13208,8 +13383,8 @@ msgstr "Quando ativado, as imagens com mais de 90 dias serão removidas do cache
 
 msgid "Depends on %d merge request being merged"
 msgid_plural "Depends on %d merge requests being merged"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Depende %d solicitação de mesclagem que está sendo mesclada"
+msgstr[1] "Depende %d solicitações de mesclagem sendo mesclada"
 
 msgid "Depends on %{strongStart}%{closedCount} closed%{strongEnd} merge request."
 msgid_plural "Depends on %{strongStart}%{closedCount} closed%{strongEnd} merge requests."
@@ -13536,6 +13711,9 @@ msgstr "Rejeitado %{time}"
 msgid "DeploymentApproval|Rejected by you %{time}"
 msgstr "Rejeitado por você %{time}"
 
+msgid "DeploymentTarget|Edge Computing (e.g. Cloudflare Workers)"
+msgstr ""
+
 msgid "DeploymentTarget|GitLab Pages"
 msgstr "GitLab Pages"
 
@@ -13571,6 +13749,9 @@ msgstr ""
 
 msgid "DeploymentTarget|Virtual machine (for example, EC2)"
 msgstr "Máquina virtual (EC2, por exemplo)"
+
+msgid "DeploymentTarget|Web Deployment Platform (Netlify, Vercel, Gatsby)"
+msgstr ""
 
 msgid "Deployments"
 msgstr "Implementações"
@@ -13676,8 +13857,14 @@ msgstr "Descrição analisada com %{link_start}GitLab Flavored Markdown%{link_en
 msgid "Description:"
 msgstr "Descrição:"
 
+msgid "Descriptions"
+msgstr "Descrições"
+
 msgid "Descriptive label"
 msgstr "Etiqueta descritiva"
+
+msgid "Design"
+msgstr "Design"
 
 msgid "Design Management files and data"
 msgstr "Projeto de gerenciamento de arquivos e dados"
@@ -13842,6 +14029,9 @@ msgstr ""
 
 msgid "DevOps adoption"
 msgstr "Adoção de DevOps"
+
+msgid "DevOps metrics comparison (Alpha)"
+msgstr ""
 
 msgid "Developer"
 msgstr "Desenvolvedor"
@@ -15156,6 +15346,9 @@ msgstr "Digite qualquer cor."
 msgid "Enter at least three characters to search"
 msgstr "Digite pelo menos três caracteres para pesquisar"
 
+msgid "Enter at least three characters to search."
+msgstr ""
+
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr "Digite o seu URL do servidor do Bitbucket e o token de acesso pessoal abaixo"
 
@@ -15519,9 +15712,6 @@ msgstr "Remover épico"
 msgid "Epics|Remove issue"
 msgstr "Remover issue"
 
-msgid "Epics|Show more"
-msgstr "Mostrar mais"
-
 msgid "Epics|Something went wrong while creating child epics."
 msgstr "Algo deu errado ao criar épicos filhos."
 
@@ -15614,6 +15804,9 @@ msgstr ""
 
 msgid "Error fetching refs"
 msgstr "Erro ao recuperar refs"
+
+msgid "Error fetching target projects. Please try again."
+msgstr ""
 
 msgid "Error fetching the dependency list. Please check your network connection and try again."
 msgstr "Erro ao recuperar lista de dependências. Por favor, verifique sua conexão de rede e tente novamente."
@@ -15930,6 +16123,15 @@ msgstr "Esta política não tem regras de escalação."
 msgid "EscalationPolicies|mins"
 msgstr "mins"
 
+msgid "EscalationStatus|Acknowledged"
+msgstr ""
+
+msgid "EscalationStatus|Resolved"
+msgstr ""
+
+msgid "EscalationStatus|Triggered"
+msgstr ""
+
 msgid "Estimate"
 msgstr "Estimativa"
 
@@ -16091,6 +16293,9 @@ msgstr "Todos podem contribuir"
 msgid "Everything on your to-do list is marked as done."
 msgstr "Tudo na sua lista de tarefas pendentes está marcado como concluído."
 
+msgid "Everything you need to create a GitLab Pages site using Bridgetown"
+msgstr ""
+
 msgid "Everything you need to create a GitLab Pages site using Gatsby"
 msgstr "Tudo o que você precisa para criar um site do GitLab Pages usando o Gatsby"
 
@@ -16121,8 +16326,20 @@ msgstr "Coleção de provas"
 msgid "Exactly one of %{attributes} is required"
 msgstr ""
 
+msgid "Example: (feature|hotfix)\\/*"
+msgstr ""
+
+msgid "Example: (jar|exe)$"
+msgstr ""
+
 msgid "Example: @sub\\.company\\.com$"
 msgstr "Exemplo: @sub\\.company\\.com$"
+
+msgid "Example: Fixes \\d+\\..*"
+msgstr ""
+
+msgid "Example: ssh\\:\\/\\/"
+msgstr ""
 
 msgid "Examples"
 msgstr "Exemplos"
@@ -16141,9 +16358,6 @@ msgstr "Excluindo commits de mesclar. Limitado a 6.000 commits."
 
 msgid "Execution time"
 msgstr "Tempo de execução"
-
-msgid "Executive Dashboard"
-msgstr "Painel executivo"
 
 msgid "Existing branch name, tag, or commit SHA"
 msgstr "Nome de ramificação, tag ou SHA do commit existente"
@@ -16199,13 +16413,16 @@ msgstr "Expandir seção de configurações"
 msgid "Expand sidebar"
 msgstr "Expandir barra lateral"
 
+msgid "Expand variable reference"
+msgstr "Expandir referência de variável"
+
 msgid "Expected documents: %{expected_documents}"
 msgstr ""
 
-msgid "Experiment Candidates"
+msgid "Experiment"
 msgstr ""
 
-msgid "ExperimentSubject|Must have exactly one of User, Namespace, or Project."
+msgid "Experiment candidates"
 msgstr ""
 
 msgid "Experiments"
@@ -16521,9 +16738,6 @@ msgstr ""
 msgid "Failed to get ref."
 msgstr "Falha ao obter a ref."
 
-msgid "Failed to install."
-msgstr "Falha ao instalar."
-
 msgid "Failed to load"
 msgstr "Falha ao carregar"
 
@@ -16679,9 +16893,6 @@ msgstr "Erro em atualizar o status da issue"
 
 msgid "Failed to update the Canary Ingress."
 msgstr ""
-
-msgid "Failed to upgrade."
-msgstr "Falha ao atualizar."
 
 msgid "Failed to upload object map file"
 msgstr "Falha ao enviar o arquivo de mapeamento de objeto"
@@ -16937,6 +17148,9 @@ msgstr "Fev"
 msgid "February"
 msgstr "Fevereiro"
 
+msgid "Feedback"
+msgstr ""
+
 msgid "Feedback and Updates"
 msgstr ""
 
@@ -17156,15 +17370,6 @@ msgstr ""
 msgid "FloC|Participate in FLoC"
 msgstr "Participar do FLoC"
 
-msgid "FlowdockService|Enter your Flowdock token."
-msgstr "Insira seu token do Flowdock."
-
-msgid "FlowdockService|Send event notifications from GitLab to Flowdock flows."
-msgstr "Enviar notificações de eventos do GitLab para fluxos do Flowdock."
-
-msgid "FlowdockService|Send event notifications from GitLab to Flowdock flows. %{docs_link}"
-msgstr "Enviar notificações de eventos do GitLab para fluxos do Flowdock. %{docs_link}"
-
 msgid "Focus filter bar"
 msgstr ""
 
@@ -17200,6 +17405,9 @@ msgstr "Atividade de usuários seguidos"
 
 msgid "Followed users"
 msgstr "Usuários seguidos"
+
+msgid "Following tags don't exist"
+msgstr ""
 
 msgid "Font Color"
 msgstr "Cor da Fonte"
@@ -17345,11 +17553,20 @@ msgstr "Fork em andamento"
 msgid "Forks"
 msgstr "Forks"
 
+msgid "ForksDivergence|%{ahead} %{commit_word} ahead of"
+msgstr ""
+
+msgid "ForksDivergence|%{behind} %{commit_word} behind"
+msgstr ""
+
+msgid "ForksDivergence|%{messages} upstream repository"
+msgstr ""
+
+msgid "ForksDivergence|Up to date with upstream repository"
+msgstr ""
+
 msgid "Format: %{dateFormat}"
 msgstr "Formato: %{dateFormat}"
-
-msgid "Forward %{package_type} package requests to the %{registry_type} Registry if the packages are not found in the GitLab Package Registry"
-msgstr ""
 
 msgid "Found errors in your %{gitlab_ci_yml}:"
 msgstr "Erros encontrados em seu %{gitlab_ci_yml}:"
@@ -17428,11 +17645,6 @@ msgstr "De %{code_open}%{source_title}%{code_close} em"
 msgid "From %{providerTitle}"
 msgstr "Do %{providerTitle}"
 
-msgid "From October 19, 2022, free private groups will be limited to %d member"
-msgid_plural "From October 19, 2022, free private groups will be limited to %d members"
-msgstr[0] "A partir de 19 de outubro de 2022, os grupos privados gratuitos serão limitados a %d membros"
-msgstr[1] "A partir de 19 de outubro de 2022, os grupos privados gratuitos serão limitados a %d membros"
-
 msgid "From issue creation until deploy to production"
 msgstr "Da abertura de tarefas até a implantação para a produção"
 
@@ -17474,6 +17686,9 @@ msgstr "Pipelines gerais"
 
 msgid "General settings"
 msgstr "Configurações gerais"
+
+msgid "Generate API key at %{site}"
+msgstr ""
 
 msgid "Generate a default set of labels"
 msgstr "Gerar etiquetas padrão"
@@ -18155,16 +18370,16 @@ msgid "GitAbuse|Excluded users"
 msgstr "Usuários excluídos"
 
 msgid "GitAbuse|Number of repositories"
-msgstr ""
+msgstr "Número de repositórios"
 
 msgid "GitAbuse|Number of repositories can't be blank. Set to 0 for no limit."
-msgstr ""
+msgstr "Número de repositórios não pode ficar em branco. Defina como 0 para nenhum limite."
 
 msgid "GitAbuse|Number of repositories must be a number."
-msgstr ""
+msgstr "O número de repositórios deve ser um número."
 
 msgid "GitAbuse|Number of repositories should be between %{minNumRepos}-%{maxNumRepos}."
-msgstr ""
+msgstr "O número de repositórios deve estar entre %{minNumRepos}-%{maxNumRepos}."
 
 msgid "GitAbuse|Reporting time period (seconds)"
 msgstr ""
@@ -18321,6 +18536,11 @@ msgstr "Versão do GitLab"
 
 msgid "GitLab will create a branch in your fork and start a merge request."
 msgstr ""
+
+msgid "GitLab will enforce this limit in the future. If you are over %{free_user_limit} user when enforcement begins, your namespace will be placed in a %{link_start}read-only%{link_end} state. To avoid being placed in a read-only state, reduce your namespace to %{free_user_limit} user or less or purchase a paid tier."
+msgid_plural "GitLab will enforce this limit in the future. If you are over %{free_user_limit} users when enforcement begins, your namespace will be placed in a %{link_start}read-only%{link_end} state. To avoid being placed in a read-only state, reduce your namespace to %{free_user_limit} users or less or purchase a paid tier."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "GitLab.com (SaaS)"
 msgstr "GitLab.com (SaaS)"
@@ -18571,6 +18791,9 @@ msgstr "Edições recentes"
 msgid "GlobalSearch|Recent merge requests"
 msgstr "Solicitações de mesclagem recentes"
 
+msgid "GlobalSearch|Result count is over limit."
+msgstr ""
+
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
 msgstr ""
 
@@ -18597,6 +18820,9 @@ msgstr "Digite para que novas sugestões apareçam abaixo."
 
 msgid "GlobalSearch|Use the shortcut key %{kbdOpen}/%{kbdClose} to start a search"
 msgstr "Use a tecla de atalho %{kbdOpen}/%{kbdClose} para iniciar uma pesquisa"
+
+msgid "GlobalSearch|Users"
+msgstr ""
 
 msgid "GlobalSearch|What are you searching for?"
 msgstr "O que você está procurando?"
@@ -18775,6 +19001,9 @@ msgstr "Ir para suas solicitações de mesclagem"
 msgid "Go to your projects"
 msgstr "Ir para seus projetos"
 
+msgid "Go to your review requests"
+msgstr ""
+
 msgid "Go to your snippets"
 msgstr "Ir para seus snippets"
 
@@ -18868,6 +19097,12 @@ msgstr "Conceder permissões de escrita a esta chave"
 msgid "Graph"
 msgstr "Gráfico"
 
+msgid "GraphQL"
+msgstr ""
+
+msgid "GraphQL endpoint path"
+msgstr ""
+
 msgid "GraphViewType|Job dependencies"
 msgstr "Dependências de tarefa"
 
@@ -18929,7 +19164,7 @@ msgid "Group applications"
 msgstr "Aplicativos de grupo"
 
 msgid "Group audit events"
-msgstr ""
+msgstr "Eventos de auditoria de grupo"
 
 msgid "Group avatar"
 msgstr "Avatar do grupo"
@@ -19057,8 +19292,8 @@ msgstr "Últimos 30 dias"
 msgid "GroupActivityMetrics|Members added"
 msgstr "Membros adicionados"
 
-msgid "GroupActivityMetrics|Merge Requests created"
-msgstr "GroupActivityMetrics|Solicitações de mesclagem criadas"
+msgid "GroupActivityMetrics|Merge requests created"
+msgstr ""
 
 msgid "GroupActivityMetrics|Recent activity"
 msgstr "Atividade recente"
@@ -19142,6 +19377,9 @@ msgid "GroupRoadmap|Within 3 years"
 msgstr "Dentro de 3 anos"
 
 msgid "GroupSAML|\"persistent\" recommended"
+msgstr ""
+
+msgid "GroupSAML|%{group_name} SAML authentication failed: %{message}"
 msgstr ""
 
 msgid "GroupSAML|%{strongOpen}Warning%{strongClose} - Enable %{linkStart}SSO enforcement%{linkEnd} to reduce security risks."
@@ -19248,6 +19486,9 @@ msgstr "Nome do Grupo SAML"
 
 msgid "GroupSAML|SAML Group Name: %{saml_group_name}"
 msgstr "Nome do Grupo SAML: %{saml_group_name}"
+
+msgid "GroupSAML|SAML Name ID and email address do not match your user account. Contact an administrator."
+msgstr ""
 
 msgid "GroupSAML|SAML Response Output"
 msgstr ""
@@ -19420,8 +19661,8 @@ msgstr "Projetos em %{group} não podem ser compartilhados com outros grupos"
 msgid "GroupSettings|Reporting"
 msgstr "Relatórios"
 
-msgid "GroupSettings|Select a subgroup to use as the source for custom project templates for this group."
-msgstr "Selecione um subgrupo para usar como fonte para modelos de projeto personalizados para este grupo."
+msgid "GroupSettings|Select a subgroup to use as a source of custom templates for new projects in this group. %{link_start}Learn more%{link_end}."
+msgstr ""
 
 msgid "GroupSettings|Select parent group"
 msgstr "Selecionar o grupo pai"
@@ -19440,9 +19681,6 @@ msgstr "Defina o nome inicial e as proteções para a ramificação padrão dos 
 
 msgid "GroupSettings|The Auto DevOps pipeline runs if no alternative CI configuration file is found."
 msgstr "O pipeline de Auto DevOps é executado se nenhum arquivo de configuração de CI for encontrado."
-
-msgid "GroupSettings|The projects in this subgroup can be selected as templates for new projects created in the group. %{link_start}Learn more.%{link_end}"
-msgstr "Os projetos neste subgrupo podem ser selecionados como modelos para novos projetos criados no grupo. %{link_start}Saiba mais.%{link_end}"
 
 msgid "GroupSettings|There was a problem updating Auto DevOps pipeline: %{error_messages}."
 msgstr "Houve um problema ao atualizar o pipeline de Auto DevOps: %{error_messages}."
@@ -19573,6 +19811,9 @@ msgstr "Conectar instância"
 msgid "GroupsNew|Contact an administrator to enable options for importing your group."
 msgstr "Contate um administrador para habilitar opções para importar seu grupo."
 
+msgid "GroupsNew|Create a token with %{code_start}api%{code_end} and %{code_start}read_repository%{code_end} scopes in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, set a short expiration date for the token. Keep in mind that large migrations take more time."
+msgstr ""
+
 msgid "GroupsNew|Create group"
 msgstr "Criar grupo"
 
@@ -19581,9 +19822,6 @@ msgstr "Criar novo grupo"
 
 msgid "GroupsNew|Create subgroup"
 msgstr "Criar subgrupo"
-
-msgid "GroupsNew|Create this in the %{pat_link_start}user settings%{pat_link_end} of the source GitLab instance. For %{short_living_link_start}security reasons%{short_living_link_end}, use a short expiration date when creating the token."
-msgstr "Crie isso nas configurações de usuário %{pat_link_start}%{pat_link_end} da instância do GitLab de origem. Por %{short_living_link_start}motivos de segurança%{short_living_link_end}, use uma data de expiração curta ao criar o token."
 
 msgid "GroupsNew|GitLab source URL"
 msgstr "URL da fonte do GitLab"
@@ -20058,11 +20296,17 @@ msgstr ""
 msgid "Hierarchy|You can start using these items now."
 msgstr ""
 
+msgid "High - S2"
+msgstr ""
+
 msgid "High or unknown vulnerabilities present"
 msgstr "Vulnerabilidades altas ou desconhecidas encontradas"
 
 msgid "Highest role:"
 msgstr "Função mais alta:"
+
+msgid "Highlight"
+msgstr ""
 
 msgid "HighlightBar|Alert events:"
 msgstr "Eventos de Alerta:"
@@ -20096,9 +20340,6 @@ msgstr "Página inicial"
 
 msgid "Hook execution failed. Ensure the group has a project with commits."
 msgstr "A execução do hook falhou. Certifique-se de que o grupo tenha um projeto com commits."
-
-msgid "Hook was successfully updated."
-msgstr "O Hook foi atualizado com sucesso."
 
 msgid "Horizontal rule"
 msgstr "Régua horizontal"
@@ -20268,6 +20509,9 @@ msgstr "Identificadores"
 msgid "Identities"
 msgstr "Identidades"
 
+msgid "IdentityVerification|%{linkStart}Enter a new phone number%{linkEnd}"
+msgstr ""
+
 msgid "IdentityVerification|A new code has been sent."
 msgstr "Um novo código foi enviado."
 
@@ -20291,6 +20535,9 @@ msgstr "Criar um projeto"
 
 msgid "IdentityVerification|Didn't receive a code?"
 msgstr "Não recebeu um código?"
+
+msgid "IdentityVerification|Didn't receive a code? %{linkStart}Send a new code%{linkEnd}"
+msgstr ""
 
 msgid "IdentityVerification|Enter a code."
 msgstr "Digitar um código."
@@ -20331,8 +20578,8 @@ msgstr ""
 msgid "IdentityVerification|Phone number"
 msgstr "Número de telefone"
 
-msgid "IdentityVerification|Phone number can't be blank."
-msgstr "O número de telefone não pode ficar em branco."
+msgid "IdentityVerification|Phone number is required."
+msgstr ""
 
 msgid "IdentityVerification|Phone number must be %{maxLength} digits or fewer."
 msgstr ""
@@ -20373,6 +20620,12 @@ msgstr "O código está incorreto. Digite-o novamente ou envie um novo código."
 msgid "IdentityVerification|Verification code"
 msgstr "Código de verificação"
 
+msgid "IdentityVerification|Verification code can't be blank."
+msgstr ""
+
+msgid "IdentityVerification|Verification code must be a number."
+msgstr ""
+
 msgid "IdentityVerification|Verification successful"
 msgstr "Verificação bem-sucedida"
 
@@ -20385,8 +20638,17 @@ msgstr "Verificar endereço de e-mail"
 msgid "IdentityVerification|Verify payment method"
 msgstr "Verificar forma de pagamento"
 
+msgid "IdentityVerification|Verify phone number"
+msgstr ""
+
 msgid "IdentityVerification|Verify your identity"
 msgstr "Verificar sua identidade"
+
+msgid "IdentityVerification|We sent a new code to +%{phoneNumber}"
+msgstr ""
+
+msgid "IdentityVerification|We've sent a verification code to +%{phoneNumber}"
+msgstr ""
 
 msgid "IdentityVerification|You can always verify your account at a later time to create a group."
 msgstr "Você sempre pode verificar sua conta posteriormente para criar um grupo."
@@ -20733,6 +20995,9 @@ msgstr "Não há um repositório de Git válido neste URL. Se seu repositório H
 msgid "Improve customer support with Service Desk"
 msgstr ""
 
+msgid "Improve quality with test cases"
+msgstr ""
+
 msgid "In case of pull mirroring, your user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr "No caso de espelhamento de pull, seu usuário será o autor de todos os eventos no feed de atividades que são o resultado de uma atualização, como novas ramificações sendo criadas ou novos commits sendo enviados para ramificações existentes."
 
@@ -21019,10 +21284,10 @@ msgid "InProductMarketing|Invite your colleagues today"
 msgstr "Convide seus colegas hoje mesmo"
 
 msgid "InProductMarketing|Invite your team in less than 60 seconds"
-msgstr ""
+msgstr "Convide sua equipe em menos de 60 segundos"
 
 msgid "InProductMarketing|Invite your team now"
-msgstr ""
+msgstr "Convide sua equipe agora"
 
 msgid "InProductMarketing|Invite your team today to build better code (and processes) together"
 msgstr ""
@@ -21300,10 +21565,16 @@ msgstr "Incidente"
 msgid "Incident Management Limits"
 msgstr ""
 
+msgid "Incident creation cancelled."
+msgstr ""
+
 msgid "Incident details"
 msgstr "Detalhes do incidente"
 
 msgid "Incident template (optional)."
+msgstr ""
+
+msgid "Incident title"
 msgstr ""
 
 msgid "IncidentManagement|%{hours} hours, %{minutes} minutes remaining"
@@ -21624,6 +21895,9 @@ msgstr ""
 msgid "Indicates whether this runner can pick jobs without tags"
 msgstr "Indica se este executor pode escolher tarefas sem tags"
 
+msgid "Info"
+msgstr ""
+
 msgid "Inform users without uploaded SSH keys that they can't push over SSH until one is added"
 msgstr "Informar aos usuários sem chaves SSH configuradas que eles não podem realizar pushes por SSH até que uma seja adicionada"
 
@@ -21896,6 +22170,9 @@ msgstr "Ativar verificação de SSL"
 msgid "Integrations|Enable comments"
 msgstr "Ativar comentários"
 
+msgid "Integrations|Enable slash commands and notifications for a Slack workspace."
+msgstr ""
+
 msgid "Integrations|Ensure your instance URL is correct and your instance is configured correctly. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -21928,6 +22205,9 @@ msgstr ""
 
 msgid "Integrations|GitLab administrators can set up integrations that all projects in a group inherit and use by default. These integrations apply to all projects that don't already use custom settings. You can override custom settings for a project if the settings are necessary at that level. Learn more about %{integrations_link_start}group-level integration management%{link_end}."
 msgstr "Os administradores do GitLab podem configurar integrações que todos os projetos herdam e usam por padrão. Essas integrações se aplicam a todos os projetos que ainda não usam configurações personalizadas. Você pode substituir configurações personalizadas para um projeto, se as configurações forem necessárias nesse nível. Saiba mais sobre o %{integrations_link_start}gerenciamento de integração em nível em grupo%{link_end}."
+
+msgid "Integrations|GitLab for Slack app"
+msgstr ""
 
 msgid "Integrations|Group-level integration management"
 msgstr "Gerenciamento de integração em nível de grupo"
@@ -22277,6 +22557,9 @@ msgstr "Convide seus colegas"
 msgid "InviteMembersBanner|We noticed that you haven't invited anyone to this group. Invite your colleagues so you can discuss issues, collaborate on merge requests, and share your knowledge."
 msgstr "Percebemos que você não convidou ninguém para este grupo. Convide seus colegas para que você possa discutir problemas, colaborar em solicitações de mesclagem e compartilhar seu conhecimento."
 
+msgid "InviteMembersModal| Inviting a group %{linkStart}adds its members to your group%{linkEnd}, including members who join after the invite. This might put your group over the free %{count} user limit."
+msgstr ""
+
 msgid "InviteMembersModal| To get more members, the owner of this namespace can %{trialLinkStart}start a trial%{trialLinkEnd} or %{upgradeLinkStart}upgrade%{upgradeLinkEnd} to a paid tier."
 msgstr ""
 
@@ -22325,8 +22608,8 @@ msgstr ""
 msgid "InviteMembersModal|Members were successfully added"
 msgstr "Membros foram adicionados com sucesso"
 
-msgid "InviteMembersModal|Please select members or type email addresses to invite"
-msgstr "Por favor, selecione membros ou digite endereços de e-mail para convidar"
+msgid "InviteMembersModal|Please add members to invite"
+msgstr ""
 
 msgid "InviteMembersModal|Review the invite errors and try again:"
 msgstr "Revise os erros de convite e tente novamente:"
@@ -22406,7 +22689,7 @@ msgid "InviteMember|Invite members"
 msgstr "Convidar membros"
 
 msgid "InviteMember|Invite your team"
-msgstr ""
+msgstr "Convide sua equipe"
 
 msgid "InviteMember|Invited users will be added with developer level permissions. %{linkStart}View the documentation%{linkEnd} to see how to change this later."
 msgstr "Os usuários convidados serão adicionados com permissões de nível de desenvolvedor. %{linkStart}Veja a documentação%{linkEnd} para ver como alterar isso mais tarde."
@@ -22792,9 +23075,6 @@ msgstr ""
 msgid "Issue|Title"
 msgstr "Título"
 
-msgid "It is not possible to %{action} files that are stored in LFS using the web interface"
-msgstr ""
-
 msgid "It looks like you have some draft commits in this branch."
 msgstr ""
 
@@ -22932,9 +23212,6 @@ msgstr "Erro ao carregar cadências de iteração."
 
 msgid "Iterations|Iteration cadences"
 msgstr "Cadências de iteração"
-
-msgid "Iterations|Iterations are a way to track issues over a period of time, allowing teams to also track velocity and volatility metrics."
-msgstr "Iterações|As iterações são uma maneira de acompanhar  issues durante um período de tempo, permitindo que as equipes também acompanhem as métricas de velocidade e volatilidade."
 
 msgid "Iterations|Iterations are scheduled to start on %{weekday}s."
 msgstr ""
@@ -23368,9 +23645,6 @@ msgstr "Nenhuma tarefa para mostrar"
 msgid "Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens."
 msgstr ""
 
-msgid "Jobs|Status"
-msgstr "Status"
-
 msgid "Jobs|There was a problem fetching the failed jobs."
 msgstr ""
 
@@ -23521,6 +23795,9 @@ msgstr "Essa tarefa travou porque o projeto não tem qualquer executor online at
 msgid "Job|This job is stuck because you don't have any active runners that can run this job."
 msgstr ""
 
+msgid "Job|Update CI/CD variables"
+msgstr ""
+
 msgid "Job|Waiting for resource"
 msgstr "Aguardando recurso"
 
@@ -23602,6 +23879,9 @@ msgstr "Chave"
 msgid "Key (PEM)"
 msgstr "Chave (PEM)"
 
+msgid "Key result"
+msgstr ""
+
 msgid "Key:"
 msgstr "Chave:"
 
@@ -23669,9 +23949,6 @@ msgid "Kubernetes clusters"
 msgstr "Clusters de Kubernetes"
 
 msgid "Kubernetes deployment not found"
-msgstr ""
-
-msgid "Kubernetes error: %{error_code}"
 msgstr ""
 
 msgid "LDAP"
@@ -23748,14 +24025,17 @@ msgstr "Etiquetas"
 msgid "Labels"
 msgstr "Etiquetas"
 
-msgid "Labels can be applied to %{features}. Group labels are available for any project within the group."
-msgstr "Etiquetas podem ser aplicadas à %{features}. Etiquetas de grupo estão disponíveis para qualquer projeto dentro do grupo."
-
 msgid "Labels can be applied to issues and merge requests to categorize them."
 msgstr "Etiquetas podem ser aplicadas a issues e solicitações de mesclagem para categorizá-los."
 
+msgid "Labels can be applied to issues and merge requests. Group labels are available for any project within the group."
+msgstr ""
+
 msgid "Labels can be applied to issues and merge requests. Star a label to make it a priority label."
 msgstr "As etiquetas podem ser aplicadas a issues e solicitações de mesclagem. Marque uma etiqueta com estrela para torná-la uma etiqueta de prioridade."
+
+msgid "Labels can be applied to issues, merge requests, and epics. Group labels are available for any project within the group."
+msgstr ""
 
 msgid "Labels with no issues in this iteration:"
 msgstr "Etiquetas sem issues nesta iteração:"
@@ -23842,6 +24122,9 @@ msgstr "Última edição por %{link_start}%{avatar} %{name}%{link_end}"
 
 msgid "Last event"
 msgstr ""
+
+msgid "Last login"
+msgstr "Último acesso"
 
 msgid "Last modified"
 msgstr "Última modificação"
@@ -23947,6 +24230,9 @@ msgstr "Saiba mais"
 
 msgid "Learn More."
 msgstr "Saiba mais."
+
+msgid "Learn about signing commits with SSH keys."
+msgstr ""
 
 msgid "Learn how to %{link_start}contribute to the built-in templates%{link_end}"
 msgstr "Aprenda como %{link_start}contribuir para os modelos embutidos%{link_end}"
@@ -24226,8 +24512,8 @@ msgstr ""
 
 msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only"
 msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Conformidade de licença detectou %d violação de licença e política apenas para a filial de origem"
+msgstr[1] "Conformidade de licença detectou %d licenças e violações de política apenas para a filial de origem"
 
 msgid "LicenseCompliance|License Compliance detected %d license and policy violation for the source branch only; approval required"
 msgid_plural "LicenseCompliance|License Compliance detected %d licenses and policy violations for the source branch only; approval required"
@@ -24623,11 +24909,11 @@ msgstr "Arquivos travados"
 msgid "Locked by %{fileLockUserName}"
 msgstr "Bloqueado por %{fileLockUserName}"
 
+msgid "Locked files"
+msgstr "Arquivos travados"
+
 msgid "Locked the discussion."
 msgstr "Bloqueou a discussão."
-
-msgid "Locks give the ability to lock specific file or folder."
-msgstr "Travas possibilitam travar um arquivo ou uma pasta específica."
 
 msgid "Locks the discussion."
 msgstr "Bloqueia a discussão."
@@ -24676,6 +24962,9 @@ msgstr ""
 
 msgid "Logs"
 msgstr "Registros"
+
+msgid "Low - S4"
+msgstr ""
 
 msgid "Low vulnerabilities present"
 msgstr ""
@@ -24781,6 +25070,9 @@ msgstr ""
 
 msgid "Manage %{workspace} labels"
 msgstr "Gerenciar etiquetas de %{workspace}"
+
+msgid "Manage Dashboards"
+msgstr "Gerenciar painéis"
 
 msgid "Manage Web IDE features."
 msgstr "Gerenciar recursos do IDE Web."
@@ -25280,6 +25572,9 @@ msgstr "Tempo médio para mesclar"
 msgid "Measured in bytes of code. Excludes generated and vendored code."
 msgstr "Medido em bytes de código. Exclui código gerado e fornecido."
 
+msgid "Medium - S3"
+msgstr ""
+
 msgid "Medium timeout"
 msgstr "Tempo limite médio"
 
@@ -25299,6 +25594,12 @@ msgid "MemberInviteEmail|%{member_name} invited you to join GitLab"
 msgstr "%{member_name} convidou você para participar do GitLab"
 
 msgid "MemberInviteEmail|Invitation to join the %{project_or_group} %{project_or_group_name}"
+msgstr ""
+
+msgid "MemberRole|can't be changed"
+msgstr "não pode ser alterado"
+
+msgid "MemberRole|must be top-level namespace"
 msgstr ""
 
 msgid "Members"
@@ -26428,6 +26729,9 @@ msgstr "Adicionar projetos"
 msgid "Modal|Close"
 msgstr "Fechar"
 
+msgid "Model candidate details"
+msgstr ""
+
 msgid "Modified"
 msgstr "Modificado"
 
@@ -26490,9 +26794,6 @@ msgstr "Mais informações"
 
 msgid "More information"
 msgstr "Mais informações"
-
-msgid "More information and share feedback"
-msgstr ""
 
 msgid "More information is available|here"
 msgstr "Mais informações disponíveis|aqui"
@@ -26703,6 +27004,9 @@ msgstr ""
 msgid "NamespaceStorage|Buy more storage"
 msgstr "Comprar mais armazenamento"
 
+msgid "NamespaceStorage|Uploads are not counted in namespace storage quotas."
+msgstr "Carregamentos não são contados em cotas de armazenamento de espaço de nome."
+
 msgid "NamespaceStorage|We recommend that you buy additional storage to ensure your service is not interrupted."
 msgstr "Recomendamos que você compre armazenamento adicional para garantir que seu serviço não seja interrompido."
 
@@ -26882,6 +27186,9 @@ msgstr "Nova ramificação"
 msgid "New branch unavailable"
 msgstr "Nova ramificação indisponível"
 
+msgid "New code quality findings"
+msgstr ""
+
 msgid "New confidential epic title "
 msgstr ""
 
@@ -26923,6 +27230,12 @@ msgstr ""
 
 msgid "New identity"
 msgstr "Nova identidade"
+
+msgid "New incident"
+msgstr ""
+
+msgid "New incident has been created"
+msgstr ""
 
 msgid "New issue"
 msgstr "Nova issue"
@@ -27197,9 +27510,6 @@ msgstr "Nenhuma issue encontrada"
 msgid "No iteration"
 msgstr "Sem iteração"
 
-msgid "No iterations to show"
-msgstr "Nenhuma iteração para mostrar"
-
 msgid "No job log"
 msgstr ""
 
@@ -27298,6 +27608,9 @@ msgstr "Nenhum resultado"
 
 msgid "No results found"
 msgstr "Nenhum resultado encontrado"
+
+msgid "No results found."
+msgstr "Nenhum resultado encontrado."
 
 msgid "No runner executable"
 msgstr ""
@@ -27957,8 +28270,23 @@ msgstr ""
 msgid "OK"
 msgstr "OK"
 
+msgid "OKR|Existing key result"
+msgstr ""
+
+msgid "OKR|Existing objective"
+msgstr ""
+
+msgid "OKR|New key result"
+msgstr ""
+
+msgid "OKR|New objective"
+msgstr ""
+
 msgid "Object does not exist on the server or you don't have permissions to access it"
 msgstr "O objeto não existe no servidor ou você não tem permissão para acessá-lo"
+
+msgid "Objective"
+msgstr ""
 
 msgid "Observability"
 msgstr ""
@@ -28340,6 +28668,9 @@ msgstr ""
 msgid "OnDemandScans|Timezone"
 msgstr "Fuso horário"
 
+msgid "OnDemandScans|Verify configuration"
+msgstr ""
+
 msgid "OnDemandScans|View results"
 msgstr "Ver resultados"
 
@@ -28415,9 +28746,6 @@ msgid "Only accessible by %{membersPageLinkStart}project members%{membersPageLin
 msgstr "Acessível apenas por %{membersPageLinkStart}membros do projeto%{membersPageLinkEnd}. A adesão deve ser explicitamente concedida a cada usuário."
 
 msgid "Only active projects show up in the search and on the dashboard."
-msgstr ""
-
-msgid "Only allow anyone to register for accounts on GitLab instances that you intend to be used by anyone. Allowing anyone to register makes GitLab instances more vulnerable."
 msgstr ""
 
 msgid "Only effective when remote storage is enabled. Set to 0 for no size limit."
@@ -28524,9 +28852,6 @@ msgstr "Abrir em nova janela"
 
 msgid "Opens new window"
 msgstr ""
-
-msgid "Operation failed. Check pod logs for %{pod_name} for more details."
-msgstr "A operação falhou. Verifique os registros do pod para %{pod_name} para mais detalhes."
 
 msgid "Operation not allowed"
 msgstr "Operação não permitida"
@@ -28813,6 +29138,9 @@ msgstr ""
 msgid "PackageRegistry|Conan Command"
 msgstr ""
 
+msgid "PackageRegistry|Configure package forwarding and package file size limits."
+msgstr ""
+
 msgid "PackageRegistry|Copy .pypirc content"
 msgstr ""
 
@@ -28902,6 +29230,9 @@ msgstr "Excluir ativos do pacote"
 msgid "PackageRegistry|Delete package version"
 msgstr "Excluir versão do pacote"
 
+msgid "PackageRegistry|Delete packages"
+msgstr ""
+
 msgid "PackageRegistry|Delete selected"
 msgstr ""
 
@@ -28916,6 +29247,12 @@ msgstr ""
 
 msgid "PackageRegistry|Duplicate packages"
 msgstr "Pacotes duplicados"
+
+msgid "PackageRegistry|Enforce %{packageType} setting for all subgroups"
+msgstr ""
+
+msgid "PackageRegistry|Enforce %{package_type} setting for all subgroups"
+msgstr ""
 
 msgid "PackageRegistry|Error publishing"
 msgstr "Erro ao publicar"
@@ -28939,6 +29276,18 @@ msgid "PackageRegistry|For more information on the NuGet registry, %{linkStart}s
 msgstr ""
 
 msgid "PackageRegistry|For more information on the PyPi registry, %{linkStart}see the documentation%{linkEnd}."
+msgstr ""
+
+msgid "PackageRegistry|Forward %{packageType} package requests"
+msgstr ""
+
+msgid "PackageRegistry|Forward %{package_type} package requests"
+msgstr ""
+
+msgid "PackageRegistry|Forward package requests"
+msgstr ""
+
+msgid "PackageRegistry|Forward package requests to a public registry if the packages are not found in the GitLab package registry."
 msgstr ""
 
 msgid "PackageRegistry|Generic"
@@ -29013,6 +29362,9 @@ msgstr "Comando NuGet"
 msgid "PackageRegistry|Number of duplicate assets to keep"
 msgstr "Número de ativos duplicados a serem mantidos"
 
+msgid "PackageRegistry|Other versions"
+msgstr ""
+
 msgid "PackageRegistry|Package Registry"
 msgstr "Registro de pacote"
 
@@ -29028,12 +29380,18 @@ msgstr ""
 msgid "PackageRegistry|Package formats"
 msgstr "Formatos de pacote"
 
+msgid "PackageRegistry|Package forwarding"
+msgstr ""
+
 msgid "PackageRegistry|Package has %{updatesCount} archived update"
 msgid_plural "PackageRegistry|Package has %{updatesCount} archived updates"
 msgstr[0] ""
 msgstr[1] ""
 
 msgid "PackageRegistry|Package updated by commit %{link} on branch %{branch}, built by pipeline %{pipeline}, and published to the registry %{datetime}"
+msgstr ""
+
+msgid "PackageRegistry|Packages deleted successfully"
 msgstr ""
 
 msgid "PackageRegistry|Permanently delete"
@@ -29090,6 +29448,9 @@ msgstr ""
 msgid "PackageRegistry|Show Yarn commands"
 msgstr ""
 
+msgid "PackageRegistry|Something went wrong while deleting packages."
+msgstr ""
+
 msgid "PackageRegistry|Something went wrong while deleting the package asset."
 msgstr ""
 
@@ -29138,9 +29499,6 @@ msgstr ""
 msgid "PackageRegistry|To widen your search, change or remove the filters above."
 msgstr "Para ampliar a sua pesquisa, altere ou remova os filtros acima."
 
-msgid "PackageRegistry|Type"
-msgstr ""
-
 msgid "PackageRegistry|Unable to fetch package version information."
 msgstr ""
 
@@ -29161,6 +29519,11 @@ msgid_plural "PackageRegistry|You are about to delete %d assets. This operation 
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "PackageRegistry|You are about to delete 1 package. This operation is irreversible."
+msgid_plural "PackageRegistry|You are about to delete %d packages. This operation is irreversible."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "PackageRegistry|You are about to delete version %{version} of %{name}. Are you sure?"
 msgstr ""
 
@@ -29175,6 +29538,9 @@ msgstr ""
 
 msgid "PackageRegistry|published by %{author}"
 msgstr "publicado por %{author}"
+
+msgid "Packages"
+msgstr "Pacotes"
 
 msgid "Packages and registries"
 msgstr "Pacotes e registros"
@@ -29245,6 +29611,9 @@ msgstr "Parâmetro"
 msgid "Parameter \"job_id\" cannot exceed length of %{job_id_max_size}"
 msgstr ""
 
+msgid "Parameters"
+msgstr "Parâmetros"
+
 msgid "Parent"
 msgstr ""
 
@@ -29307,6 +29676,15 @@ msgstr "Por favor, digite sua senha para confirmar"
 
 msgid "Passwords should be unique and not used for any other sites or services."
 msgstr "As senhas devem ser exclusivas e não devem ser usadas para nenhum outro site ou serviço."
+
+msgid "Password|Not satisfied"
+msgstr ""
+
+msgid "Password|Satisfied"
+msgstr ""
+
+msgid "Password|To be satisfied"
+msgstr ""
 
 msgid "Password|requires at least one lowercase letter"
 msgstr ""
@@ -29550,6 +29928,30 @@ msgstr ""
 
 msgid "Phone"
 msgstr "Telefone"
+
+msgid "PhoneVerification|Enter a valid code."
+msgstr "Digite um código válido."
+
+msgid "PhoneVerification|Something went wrong. Please try again."
+msgstr ""
+
+msgid "PhoneVerification|The code has expired. Request a new code and try again."
+msgstr ""
+
+msgid "PhoneVerification|There was a problem with the phone number you entered. Enter a different phone number and try again."
+msgstr ""
+
+msgid "PhoneVerification|There was a problem with the phone number you entered. Enter a valid phone number."
+msgstr ""
+
+msgid "PhoneVerification|Verification code can't be blank."
+msgstr ""
+
+msgid "PhoneVerification|You've reached the maximum number of tries. Request a new code and try again."
+msgstr ""
+
+msgid "PhoneVerification|You've reached the maximum number of tries. Wait %{interval} and try again."
+msgstr ""
 
 msgid "Pick a name"
 msgstr "Escolha um nome"
@@ -30466,6 +30868,9 @@ msgstr ""
 msgid "Please click the link in the confirmation email before continuing. It was sent to %{html_tag_strong_start}%{email}%{html_tag_strong_end}."
 msgstr ""
 
+msgid "Please complete the incident creation form."
+msgstr ""
+
 msgid "Please complete your profile with email address"
 msgstr "Por favor, complete seu perfil com endereço de e-mail"
 
@@ -30622,9 +31027,6 @@ msgstr ""
 msgid "Please type %{phrase_code} to proceed or close this modal to cancel."
 msgstr "Por favor, digite %{phrase_code} para continuar ou feche este modal para cancelar."
 
-msgid "Please use this form to report to the admin users who create spam issues, comments or behave inappropriately."
-msgstr "Por favor, use este formulário para denunciar aos administradores as contas que criam spam em issues, comentários ou se comportam de maneira inapropriada."
-
 msgid "Please wait a few moments while we load the file history for this line."
 msgstr "Por favor, aguarde alguns instantes enquanto carregamos o histórico do arquivo para esta linha."
 
@@ -30778,6 +31180,9 @@ msgstr "Escolha o conteúdo que você deseja ver por padrão em seu painel."
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
 msgstr "Escolha o conteúdo que você quer ver na página de visão geral de um projeto."
 
+msgid "Preferences|Choose which Web IDE version you want to use."
+msgstr "Escolha qual versão do IDE Web você deseja usar."
+
 msgid "Preferences|Color for added lines"
 msgstr "Cor para linhas adicionadas"
 
@@ -30862,6 +31267,9 @@ msgstr "Tema de realce de sintaxe"
 msgid "Preferences|Tab width"
 msgstr "Largura da guia"
 
+msgid "Preferences|The legacy Web IDE remains available while the new Web IDE is in Beta."
+msgstr "O Web IDE legado permanece disponível enquanto o novo IDE Web está em Beta."
+
 msgid "Preferences|This feature is experimental and translations are not yet complete."
 msgstr "Este recurso é experimental e as traduções ainda não estão completas."
 
@@ -30874,8 +31282,14 @@ msgstr "Esta configuração permite que você personalize o comportamento do lay
 msgid "Preferences|Time preferences"
 msgstr "Preferências de hora"
 
+msgid "Preferences|Use legacy Web IDE"
+msgstr "Usar IDE Web legado"
+
 msgid "Preferences|Use relative times"
 msgstr "Usar tempos relativos"
+
+msgid "Preferences|Web IDE"
+msgstr "IDE Web"
 
 msgid "Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below."
 msgstr "Quando você digita em uma descrição ou caixa de comentário, pressionar %{kbdOpen}Enter%{kbdClose} em uma lista adiciona um novo item abaixo."
@@ -30994,16 +31408,25 @@ msgstr ""
 msgid "Proceed"
 msgstr "Prosseguir"
 
+msgid "Product Analytics|Onboarding view"
+msgstr ""
+
 msgid "Product analytics"
 msgstr "Análise de produtos"
+
+msgid "ProductAnalytics|Add to Dashboard"
+msgstr ""
+
+msgid "ProductAnalytics|An error occured while loading the %{widgetTitle} widget."
+msgstr ""
 
 msgid "ProductAnalytics|Audience"
 msgstr ""
 
-msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
+msgid "ProductAnalytics|New Analytics Widget Title"
 msgstr ""
 
-msgid "ProductAnalytics|Widgets content"
+msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
 msgstr ""
 
 msgid "Productivity"
@@ -31365,6 +31788,12 @@ msgstr "Atualizar nome de usuário"
 
 msgid "Profiles|Upload new avatar"
 msgstr "Enviar novo avatar"
+
+msgid "Profiles|Usage type"
+msgstr ""
+
+msgid "Profiles|Usage type:"
+msgstr ""
 
 msgid "Profiles|Use a private email - %{email}"
 msgstr "Utilize um email privado - %{email}"
@@ -31892,7 +32321,7 @@ msgid "ProjectSettings|Additional settings that influence how and when merges ar
 msgstr "Configurações adicionais que influenciam como e onde as mesclagem são feitas."
 
 msgid "ProjectSettings|All merge requests and commits are made against this branch unless you specify a different one."
-msgstr "ProjectSettings|Todas as solicitações de mesclagem e commits são feitas nessa ramificação, a menos que você especifique uma diferente."
+msgstr "Todas as solicitações de mesclagem e commits são feitas nessa ramificação, a menos que você especifique uma diferente."
 
 msgid "ProjectSettings|All threads must be resolved"
 msgstr "Todos os tópicos devem ser resolvidos"
@@ -31900,11 +32329,17 @@ msgstr "Todos os tópicos devem ser resolvidos"
 msgid "ProjectSettings|Allow"
 msgstr "Permitir"
 
+msgid "ProjectSettings|Allow anyone to pull from Package Registry"
+msgstr ""
+
 msgid "ProjectSettings|Always show thumbs-up and thumbs-down award emoji buttons on issues, merge requests, and snippets."
 msgstr "Sempre mostrar os emojis de aprovação e desaprovação com polegar em issues, solicitações de mesclagem e snippets."
 
 msgid "ProjectSettings|Analytics"
 msgstr "Análises"
+
+msgid "ProjectSettings|Anyone can pull packages with a package manager API."
+msgstr ""
 
 msgid "ProjectSettings|Auto-close referenced issues on default branch"
 msgstr "Fechar automaticamente as issues referenciadas na ramificação padrão"
@@ -31986,9 +32421,6 @@ msgstr "Cada merge cria um commit de mesclagem."
 
 msgid "ProjectSettings|Every project can have its own space to store its Docker images"
 msgstr "Cada projeto pode ter seu próprio espaço de armazenar suas imagens Docker"
-
-msgid "ProjectSettings|Every project can have its own space to store its packages."
-msgstr "Cada projeto pode ter seu próprio espaço de armazenar seus pacotes."
 
 msgid "ProjectSettings|Every project can have its own space to store its packages. Note: The Package Registry is always visible when a project is public."
 msgstr "Cada projeto pode ter seu próprio espaço para armazenar seus pacotes. Nota: O registro do pacote está sempre visível quando um projeto é público."
@@ -32104,6 +32536,9 @@ msgstr "Mesclar só é permitido quando a ramificação de origem está atualiza
 msgid "ProjectSettings|Monitor"
 msgstr "Monitor"
 
+msgid "ProjectSettings|Monitor the health of your project and respond to incidents."
+msgstr ""
+
 msgid "ProjectSettings|No merge commits are created."
 msgstr "Nenhum commit de mesclagem foi criado."
 
@@ -32148,6 +32583,9 @@ msgstr "Visibilidade do projeto"
 
 msgid "ProjectSettings|Public"
 msgstr "Público"
+
+msgid "ProjectSettings|Publish, store, and view packages in a project."
+msgstr ""
 
 msgid "ProjectSettings|Releases"
 msgstr "Versões"
@@ -32278,8 +32716,8 @@ msgstr "Usuários podem solicitar acesso"
 msgid "ProjectSettings|View and edit files in this project."
 msgstr "Visualize e edite arquivos neste projeto."
 
-msgid "ProjectSettings|View and edit files in this project. Non-project members have only read access."
-msgstr "Veja e edite arquivos neste projeto. Não membros do projeto têm apenas acesso de leitura."
+msgid "ProjectSettings|View and edit files in this project. When set to **Everyone With Access** non-project members have only read access."
+msgstr ""
 
 msgid "ProjectSettings|View project analytics."
 msgstr "Ver análise de projeto."
@@ -32358,6 +32796,9 @@ msgstr "Netlify/HTML simples"
 
 msgid "ProjectTemplates|NodeJS Express"
 msgstr "NodeJS Express"
+
+msgid "ProjectTemplates|Pages/Bridgetown"
+msgstr ""
 
 msgid "ProjectTemplates|Pages/Gatsby"
 msgstr "Pages/Gatsby"
@@ -32881,9 +33322,6 @@ msgstr "Ramificação protegida"
 msgid "Protected Branches"
 msgstr "Ramificações protegidas"
 
-msgid "Protected Environment"
-msgstr "Ambiente protegido"
-
 msgid "Protected Paths: requests"
 msgstr ""
 
@@ -33215,7 +33653,7 @@ msgid "Push Rules updated successfully."
 msgstr "Regras de push atualizadas com sucesso."
 
 msgid "Push an existing Git repository"
-msgstr ""
+msgstr "Faça push de um repositório Git existente"
 
 msgid "Push an existing folder"
 msgstr "Faça push de uma pasta existente"
@@ -33555,6 +33993,9 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] "Atualizando em um segundo para mostrar o status atualizado..."
 msgstr[1] "Atualizando em %d segundos para mostrar o status atualizado..."
 
+msgid "Refreshing..."
+msgstr ""
+
 msgid "Regenerate export"
 msgstr "Regenerar exportação"
 
@@ -33750,6 +34191,9 @@ msgid "ReleaseAssetLinkType|Runbook"
 msgstr ""
 
 msgid "ReleaseAssetLinkType|Runbooks"
+msgstr ""
+
+msgid "Released"
 msgstr ""
 
 msgid "Released date"
@@ -34091,6 +34535,9 @@ msgstr "Reabrir este %{quick_action_target}"
 msgid "Reopened this %{quick_action_target}."
 msgstr "%{quick_action_target} foi reaberto."
 
+msgid "Reopening..."
+msgstr ""
+
 msgid "Reopens this %{quick_action_target}."
 msgstr "Reabre este %{quick_action_target}."
 
@@ -34145,11 +34592,8 @@ msgstr "Responder…"
 msgid "Report Finding not found"
 msgstr ""
 
-msgid "Report abuse"
-msgstr "Denunciar abuso"
-
-msgid "Report abuse to admin"
-msgstr "Denunciar abuso ao administrador"
+msgid "Report abuse to administrator"
+msgstr "Reportar abuso ao administrador"
 
 msgid "Report couldn't be prepared."
 msgstr ""
@@ -34487,6 +34931,9 @@ msgstr "Requisição"
 msgid "Request Access"
 msgstr "Solicitar acesso"
 
+msgid "Request Headers"
+msgstr ""
+
 msgid "Request a new one"
 msgstr ""
 
@@ -34734,6 +35181,9 @@ msgstr ""
 msgid "Restricted shift times are not available for hourly shifts"
 msgstr ""
 
+msgid "Results limit reached"
+msgstr ""
+
 msgid "Resume"
 msgstr "Continuar"
 
@@ -34808,7 +35258,7 @@ msgstr ""
 msgid "Review time"
 msgstr "Tempo de revisão"
 
-msgid "Review time is defined as the time it takes from first comment until merged."
+msgid "Review time is the amount of time since the first comment in a merge request."
 msgstr ""
 
 msgid "ReviewApp|Enable Review App"
@@ -34903,6 +35353,9 @@ msgstr "Executar manutenção"
 msgid "Run housekeeping tasks to automatically optimize Git repositories. Disabling this option will cause performance to degenerate over time."
 msgstr ""
 
+msgid "Run manual job again"
+msgstr ""
+
 msgid "Run manual or delayed jobs"
 msgstr ""
 
@@ -34963,7 +35416,7 @@ msgstr ""
 msgid "Runners|A new version is available"
 msgstr "Uma nova versão está disponível"
 
-msgid "Runners|A periodic background task deletes runners that haven't contacted GitLab in more than %{elapsedTime}. %{linkStart}Can I view how many runners were deleted?%{linkEnd}"
+msgid "Runners|A periodic background task deletes runners that haven't contacted GitLab in more than %{elapsedTime}. Only runners registered in this group are deleted. Runners in subgroups and projects are not. %{linkStart}Can I view how many runners were deleted?%{linkEnd}"
 msgstr ""
 
 msgid "Runners|Active"
@@ -34990,6 +35443,9 @@ msgstr ""
 msgid "Runners|An error has occurred fetching instructions"
 msgstr ""
 
+msgid "Runners|An error occurred while deleting. Some runners may not have been deleted."
+msgstr ""
+
 msgid "Runners|An upgrade is available for this runner"
 msgstr "Uma atualização está disponível para este executor"
 
@@ -35003,13 +35459,16 @@ msgid "Runners|Assigned Group"
 msgstr "Grupo Atribuído"
 
 msgid "Runners|Assigned Projects (%{projectCount})"
-msgstr ""
+msgstr "Projetos atribuídos (%{projectCount})"
 
 msgid "Runners|Associated with one or more projects"
 msgstr ""
 
 msgid "Runners|Available"
 msgstr "Disponível"
+
+msgid "Runners|Available shared runners: %{count}"
+msgstr "Executores compartilhados disponíveis: %{count}"
 
 msgid "Runners|Available to all projects"
 msgstr ""
@@ -35094,6 +35553,9 @@ msgstr ""
 msgid "Runners|Executor"
 msgstr "Executor"
 
+msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt CI/CD."
+msgstr ""
+
 msgid "Runners|Filter projects"
 msgstr "Filtrar projetos"
 
@@ -35111,6 +35573,9 @@ msgstr ""
 
 msgid "Runners|IP Address"
 msgstr "Endereço de IP"
+
+msgid "Runners|Idle"
+msgstr "Ocioso"
 
 msgid "Runners|Install a runner"
 msgstr "Instalar um executor"
@@ -35151,11 +35616,14 @@ msgstr "Nunca contatados:"
 msgid "Runners|Never expires"
 msgstr "Nunca expira"
 
-msgid "Runners|New group runners view"
-msgstr "Visualização dos novos executores no grupo"
+msgid "Runners|New group runners can be registered"
+msgstr "Novos executores do grupo podem ser registrados"
 
 msgid "Runners|New registration token generated!"
 msgstr "Novo token de registro gerado!"
+
+msgid "Runners|No description"
+msgstr "Sem descrição"
 
 msgid "Runners|No results found"
 msgstr "Nenhum resultado encontrado"
@@ -35249,6 +35717,9 @@ msgstr "Executor #%{runner_id}"
 msgid "Runners|Runner %{name} was deleted"
 msgstr ""
 
+msgid "Runners|Runner Registration"
+msgstr ""
+
 msgid "Runners|Runner assigned to project."
 msgstr "Executor atribuído ao projeto."
 
@@ -35315,6 +35786,9 @@ msgstr "Executores são os agentes que executam seus trabalhos de CI/CD. Siga as
 msgid "Runners|Runners are the agents that run your CI/CD jobs. To register new runners, please contact your administrator."
 msgstr ""
 
+msgid "Runners|Running"
+msgstr "Executando"
+
 msgid "Runners|Runs untagged jobs"
 msgstr ""
 
@@ -35349,7 +35823,7 @@ msgid "Runners|Stale"
 msgstr "Obsoleto"
 
 msgid "Runners|Stale:"
-msgstr ""
+msgstr "Obsoleto:"
 
 msgid "Runners|Status"
 msgstr ""
@@ -35362,12 +35836,6 @@ msgstr "Tags"
 
 msgid "Runners|Tags control which type of jobs a runner can handle. By tagging a runner, you make sure shared runners only handle the jobs they are equipped to run."
 msgstr "Tags controlam que tipo de tarefas um executor pode manipular. Ao marcar um executor, você garante que os executores compartilhados lidem apenas com as tarefas para os quais estão equipados."
-
-msgid "Runners|Take me there!"
-msgstr "Leve-me lá!"
-
-msgid "Runners|The new view gives you more space and better visibility into your fleet of runners."
-msgstr "A nova visualização oferece mais espaço e melhor visibilidade da sua frota de executores."
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
 msgstr "O projeto, grupo ou instância onde o executor foi registrado. Os executores de instâncias são sempre de propriedade do Administrador."
@@ -35482,6 +35950,9 @@ msgstr "específicos"
 msgid "Runner|Owner"
 msgstr "Proprietário"
 
+msgid "Runner|Runner %{runnerName} failed to delete"
+msgstr ""
+
 msgid "Running"
 msgstr "Executando"
 
@@ -35509,13 +35980,16 @@ msgstr ""
 msgid "SAML single sign-on for %{group_name}"
 msgstr ""
 
+msgid "SAML|Sign in to %{groupName}"
+msgstr "Entrar em %{groupName}"
+
 msgid "SAML|Sign in to GitLab to connect your organization's account"
 msgstr "Entrar no GitLab para conectar a conta da sua organização"
 
 msgid "SAML|The %{strongOpen}%{group_path}%{strongClose} group allows you to sign in using single sign-on."
 msgstr ""
 
-msgid "SAML|To access %{strongOpen}%{group_name}%{strongClose}, you must sign in using single sign-on through an external sign-in page."
+msgid "SAML|To access %{groupName}, you must sign in using single sign-on through an external sign-in page."
 msgstr ""
 
 msgid "SAML|To allow %{strongOpen}%{group_name}%{strongClose} to manage your GitLab account %{strongOpen}%{username}%{strongClose} (%{email}) after you sign in successfully using single sign-on, select %{strongOpen}Authorize%{strongClose}."
@@ -35557,6 +36031,9 @@ msgstr ""
 msgid "SSH key"
 msgstr ""
 
+msgid "SSH key fingerprint:"
+msgstr ""
+
 msgid "SSH keys"
 msgstr "Chaves SSH"
 
@@ -35571,6 +36048,15 @@ msgstr ""
 
 msgid "SSH public key"
 msgstr "Chave SSH pública"
+
+msgid "SSHKey|Authentication"
+msgstr "Autenticação"
+
+msgid "SSHKey|Authentication & Signing"
+msgstr ""
+
+msgid "SSHKey|Signing"
+msgstr ""
 
 msgid "SSL Verification:"
 msgstr "Verificação SSL:"
@@ -35638,6 +36124,12 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with site profile %{siteProfile} and scanner profile %{scannerProfile}"
 msgstr "%{thenLabelStart}Então%{thenLabelEnd} Exigir uma %{scan} verificação para executar com perfil do site %{siteProfile} e verificação de perfil %{scannerProfile}"
 
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with site profile %{siteProfile} and scanner profile %{scannerProfile} with tags %{tags}"
+msgstr ""
+
+msgid "ScanExecutionPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require a %{scan} scan to run with tags %{tags}"
+msgstr ""
+
 msgid "ScanExecutionPolicy|A pipeline is run"
 msgstr ""
 
@@ -35665,8 +36157,14 @@ msgstr ""
 msgid "ScanExecutionPolicy|Select site profile"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Select tags (if any)"
+msgstr "Selecionar tags (se houver)"
+
 msgid "ScanExecutionPolicy|Site profile"
 msgstr ""
+
+msgid "ScanExecutionPolicy|Tags"
+msgstr "Tags"
 
 msgid "ScanExecutionPolicy|agent"
 msgstr "agente"
@@ -35680,17 +36178,26 @@ msgstr ""
 msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
 msgstr "%{ifLabelStart}se%{ifLabelEnd} %{scanners} encontrar mais de %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilidades em uma solicitação de mesclagem aberta visando %{branches}"
 
+msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{selector}"
+msgstr "%{ifLabelStart}se%{ifLabelEnd} %{selector}"
+
 msgid "ScanResultPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require approval from %{approvalsRequired} of the following approvers:"
 msgstr "%{thenLabelStart}Então%{thenLabelEnd} Requer aprovação de %{approvalsRequired} dos seguintes aprovadores:"
 
 msgid "ScanResultPolicy|add an approver"
 msgstr "adicionar um aprovador"
 
+msgid "ScanResultPolicy|from %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
+msgstr ""
+
 msgid "ScanResultPolicy|scanners"
 msgstr "verificações"
 
 msgid "ScanResultPolicy|severity levels"
 msgstr "níveis de gravidade"
+
+msgid "ScanResultPolicy|vulnerabilities allowed"
+msgstr "vulnerabilidades permitidas"
 
 msgid "ScanResultPolicy|vulnerability states"
 msgstr "estados de vulnerabilidade"
@@ -35775,6 +36282,9 @@ msgstr "Pesquisar"
 
 msgid "Search GitLab"
 msgstr "Pesquisar no GitLab"
+
+msgid "Search Within"
+msgstr ""
 
 msgid "Search a group"
 msgstr "Pesquisar um grupo"
@@ -36293,6 +36803,9 @@ msgstr ""
 msgid "SecurityOrchestration|Choose a project"
 msgstr "Escolha um projeto"
 
+msgid "SecurityOrchestration|Choose approver type"
+msgstr "Escolha o tipo de aprovador"
+
 msgid "SecurityOrchestration|Create more robust vulnerability rules and apply them to all your projects."
 msgstr "Crie regras de vulnerabilidade mais robustas e aplique-as a todos os seus projetos."
 
@@ -36350,8 +36863,17 @@ msgstr "Falha ao carregar imagens."
 msgid "SecurityOrchestration|Failed to load vulnerability scanners."
 msgstr "Falha ao carregar as verificações de vulnerabilidade."
 
+msgid "SecurityOrchestration|For large groups, there may be a significant delay in applying policy changes to pre-existing merge requests. Policy changes typically apply almost immediately for newly created merge requests."
+msgstr ""
+
+msgid "SecurityOrchestration|Groups"
+msgstr "Grupos"
+
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the master branch, then require two approvals from any member of App security."
 msgstr ""
+
+msgid "SecurityOrchestration|Individual users"
+msgstr "Usuários individuais"
 
 msgid "SecurityOrchestration|Inherited"
 msgstr ""
@@ -36366,6 +36888,9 @@ msgid "SecurityOrchestration|Invalid policy type"
 msgstr ""
 
 msgid "SecurityOrchestration|Latest scan run against %{agent}"
+msgstr ""
+
+msgid "SecurityOrchestration|License Scan"
 msgstr ""
 
 msgid "SecurityOrchestration|New policy"
@@ -36403,6 +36928,9 @@ msgstr ""
 
 msgid "SecurityOrchestration|Policy cannot be enabled without branch information"
 msgstr ""
+
+msgid "SecurityOrchestration|Policy changes may take some time to be applied."
+msgstr "Mudanças de política podem levar algum tempo para serem aplicadas."
 
 msgid "SecurityOrchestration|Policy definition"
 msgstr ""
@@ -36476,6 +37004,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security Approvals"
 msgstr "Aprovações de segurança"
 
+msgid "SecurityOrchestration|Security Scan"
+msgstr "Verificação de segurança"
+
 msgid "SecurityOrchestration|Security policy project was linked successfully"
 msgstr ""
 
@@ -36485,11 +37016,20 @@ msgstr ""
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
 msgstr "Selecione um projeto para armazenar suas políticas de segurança. %{linkStart}Mais informações.%{linkEnd}"
 
+msgid "SecurityOrchestration|Select groups"
+msgstr "Selecionar grupos"
+
 msgid "SecurityOrchestration|Select policy"
 msgstr "Selecionar política"
 
+msgid "SecurityOrchestration|Select scan type"
+msgstr "Selecionar tipo de verificação"
+
 msgid "SecurityOrchestration|Select security project"
 msgstr "Selecionar projeto de segurança"
+
+msgid "SecurityOrchestration|Select users"
+msgstr "Selecionar usuários"
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"
 msgstr ""
@@ -36560,6 +37100,9 @@ msgstr ""
 msgid "SecurityOrchestration|Use a scan execution policy to create rules which enforce security scans for particular branches at a certain time. Supported types are SAST, DAST, Secret detection, Container scanning, and Dependency scanning."
 msgstr ""
 
+msgid "SecurityOrchestration|Use a scan result policy to create rules that check for security vulnerabilities and license compliance before merging a merge request."
+msgstr ""
+
 msgid "SecurityOrchestration|Use a scan result policy to create rules that ensure security issues are checked before merging a merge request."
 msgstr "Use uma política de resultados de verificação para criar regras que garantam que as issues de segurança sejam verificados antes de mesclar uma solicitação de mesclagem."
 
@@ -36586,6 +37129,9 @@ msgstr "ramificação"
 
 msgid "SecurityOrchestration|branches"
 msgstr "ramificações"
+
+msgid "SecurityOrchestration|group level branch"
+msgstr "ramificação em nível de grupo"
 
 msgid "SecurityOrchestration|scanner finds"
 msgstr ""
@@ -36623,6 +37169,9 @@ msgstr "%{firstProject} e %{secondProject}"
 msgid "SecurityReports|%{firstProject}, %{secondProject}, and %{rest}"
 msgstr "%{firstProject}, %{secondProject} e %{rest}"
 
+msgid "SecurityReports|Activity"
+msgstr "Atividade"
+
 msgid "SecurityReports|Add or remove projects to monitor in the security area. Projects included in this list will have their results displayed in the security dashboard and vulnerability report."
 msgstr "Adicionar ou remover projetos para monitorar na área de segurança. Projetos incluídos nessa lista terão seus resultados exibidos no painel de segurança e relatório de vulnerabilidade."
 
@@ -36632,8 +37181,23 @@ msgstr "Adicionar projetos"
 msgid "SecurityReports|All activity"
 msgstr "Todas as atividades"
 
+msgid "SecurityReports|All clusters"
+msgstr "Todos os clusters"
+
+msgid "SecurityReports|All images"
+msgstr "Todas as imagens"
+
+msgid "SecurityReports|All projects"
+msgstr "Todos os projetos"
+
 msgid "SecurityReports|All severities"
 msgstr "Todas as severidades"
+
+msgid "SecurityReports|All statuses"
+msgstr "Todos os status"
+
+msgid "SecurityReports|All tools"
+msgstr "Todas as ferramentas"
 
 msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
@@ -36778,6 +37342,9 @@ msgstr ""
 
 msgid "SecurityReports|No vulnerabilities found for this pipeline"
 msgstr ""
+
+msgid "SecurityReports|Not available"
+msgstr "Não disponível"
 
 msgid "SecurityReports|Oops, something doesn't seem right."
 msgstr ""
@@ -37004,6 +37571,9 @@ msgstr "Selecione uma estrutura de conformidade para aplicar a este projeto. %{l
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
 msgstr "Selecione um arquivo da barra lateral na esquerda para começar a editar. Depois, você poderá fazer commit das suas alterações."
 
+msgid "Select a group"
+msgstr "Selecionar grupo"
+
 msgid "Select a label"
 msgstr "Selecione uma etiqueta"
 
@@ -37108,6 +37678,9 @@ msgstr ""
 
 msgid "Select reviewer(s)"
 msgstr "Selecionar revisor(es)"
+
+msgid "Select severity (optional)"
+msgstr "Selecionar severidade (opcional)"
 
 msgid "Select source"
 msgstr "Selecionar fonte"
@@ -37597,6 +38170,9 @@ msgstr ""
 msgid "Shared Runners"
 msgstr "Executores compartilhados"
 
+msgid "Shared Runners:"
+msgstr ""
+
 msgid "Shared projects"
 msgstr "Projetos compartilhados"
 
@@ -37722,6 +38298,9 @@ msgstr "Mostrar a versão mais recente"
 
 msgid "Show list"
 msgstr ""
+
+msgid "Show more"
+msgstr "Mostrar mais"
 
 msgid "Show one file at a time"
 msgstr ""
@@ -37881,9 +38460,6 @@ msgstr ""
 msgid "Sign in preview"
 msgstr "Prévia de entrada"
 
-msgid "Sign in to %{group_name}"
-msgstr "Entre em %{group_name}"
-
 msgid "Sign in to GitLab"
 msgstr "Entrar no Gitlab"
 
@@ -38037,7 +38613,7 @@ msgstr "A integração com o Slack permite que você interaja com o GitLab por m
 msgid "Slack logo"
 msgstr "Logotipo do Slack"
 
-msgid "SlackIntegration|Are you sure you want to remove this project from the Slack application?"
+msgid "SlackIntegration|Are you sure you want to remove this project from the GitLab for Slack app?"
 msgstr ""
 
 msgid "SlackIntegration|Client ID"
@@ -38052,13 +38628,16 @@ msgstr "GitLab para Slack"
 msgid "SlackIntegration|GitLab for Slack was successfully installed."
 msgstr "GitLab for Slack foi instalado com sucesso."
 
-msgid "SlackIntegration|Install Slack app"
-msgstr "Instalar o aplicativo Slack"
+msgid "SlackIntegration|Install GitLab for Slack app"
+msgstr ""
+
+msgid "SlackIntegration|Notifications only work if you're on the latest version of the GitLab for Slack app"
+msgstr ""
 
 msgid "SlackIntegration|Project alias"
 msgstr "Alias do projeto"
 
-msgid "SlackIntegration|Reinstall Slack app"
+msgid "SlackIntegration|Reinstall GitLab for Slack app"
 msgstr ""
 
 msgid "SlackIntegration|Remove project"
@@ -38082,13 +38661,16 @@ msgstr "Nome da equipe"
 msgid "SlackIntegration|This integration allows users to perform common operations on this project by entering slash commands in Slack."
 msgstr "Esta integração permite que os usuários realizem operações comuns neste projeto digitando comandos de barra no Slack."
 
+msgid "SlackIntegration|Update to the latest version"
+msgstr ""
+
 msgid "SlackIntegration|Verification token"
 msgstr "Token de verificação"
 
 msgid "SlackIntegration|You can now close this window and go to your Slack workspace."
 msgstr "Agora você pode fechar esta janela e acessar seu workspace do Slack."
 
-msgid "SlackIntegration|You may need to reinstall the Slack application when we %{linkStart}make updates or change permissions%{linkEnd}."
+msgid "SlackIntegration|You may need to reinstall the GitLab for Slack app when we %{linkStart}make updates or change permissions%{linkEnd}."
 msgstr ""
 
 msgid "SlackService|1. %{slash_command_link_start}Add a slash command%{slash_command_link_end} in your Slack team using this information:"
@@ -38226,11 +38808,11 @@ msgstr ""
 msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr "Alguns domínios comuns não são permitidos. %{learn_more_link}"
 
-msgid "Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs."
+msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."
 msgstr ""
 
-msgid "Someone edited the issue at the same time you did. Please check out %{linkStart}the issue%{linkEnd} and make sure your changes will not unintentionally remove theirs."
-msgstr "Alguém editou a issue ao mesmo tempo que você. Por favor, verifique %{linkStart}a issue%{linkEnd} e tenha certeza de que suas alterações não irão intencionalmente remover as alterações da outra pessoa."
+msgid "Someone edited the file the same time you did. Please check out %{link_start}the file %{icon}%{link_end} and make sure your changes will not unintentionally remove theirs."
+msgstr ""
 
 msgid "Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again."
 msgstr "Alguém editou este %{issueType} ao mesmo tempo que você. A descrição foi atualizada e você precisará fazer as alterações novamente."
@@ -38271,6 +38853,9 @@ msgstr ""
 msgid "Something went wrong when reordering designs. Please try again"
 msgstr ""
 
+msgid "Something went wrong when sending the incident link to Slack."
+msgstr ""
+
 msgid "Something went wrong while adding timeline event."
 msgstr ""
 
@@ -38287,6 +38872,9 @@ msgid "Something went wrong while archiving a requirement."
 msgstr ""
 
 msgid "Something went wrong while closing the epic. Please try again later."
+msgstr ""
+
+msgid "Something went wrong while closing the incident form."
 msgstr ""
 
 msgid "Something went wrong while closing the merge request. Please try again later."
@@ -38357,6 +38945,9 @@ msgstr "Algo deu errado ao recuperar a lista de pacotes."
 
 msgid "Something went wrong while obtaining the Let's Encrypt certificate."
 msgstr "Ocorreu um erro ao obter o certificado Let's Encrypt."
+
+msgid "Something went wrong while opening the incident form."
+msgstr ""
 
 msgid "Something went wrong while promoting the issue to an epic. Please try again."
 msgstr ""
@@ -38751,6 +39342,9 @@ msgstr ""
 msgid "Spent at"
 msgstr "Gasto em"
 
+msgid "Spent at can't be a future date and time."
+msgstr "O gasto não pode ser uma data e hora futuras."
+
 msgid "Squash commit message"
 msgstr ""
 
@@ -38856,6 +39450,9 @@ msgstr ""
 msgid "Start merge train..."
 msgstr ""
 
+msgid "Start remote connection"
+msgstr "Iniciar conexão remota"
+
 msgid "Start search"
 msgstr "Iniciar pesquisa"
 
@@ -38918,6 +39515,9 @@ msgstr "Estatísticas"
 
 msgid "Status"
 msgstr "Status"
+
+msgid "Status (optional)"
+msgstr ""
 
 msgid "Status was retried."
 msgstr ""
@@ -38998,7 +39598,7 @@ msgid "StatusCheck|You are about to remove the %{name} status check."
 msgstr ""
 
 msgid "StatusCheck|status checks"
-msgstr ""
+msgstr "Verificações de status"
 
 msgid "StatusPage|AWS %{docsLink}"
 msgstr ""
@@ -39656,6 +40256,9 @@ msgstr ""
 msgid "SuperSonics|You can start a free trial of GitLab Ultimate without any obligation or payment details."
 msgstr ""
 
+msgid "SuperSonics|You can sync your subscription data to ensure your details are up to date."
+msgstr ""
+
 msgid "SuperSonics|You do not have an active subscription"
 msgstr "Você não tem uma assinatura ativa"
 
@@ -39745,9 +40348,6 @@ msgstr "Trocar ramificação"
 
 msgid "Switch branch/tag"
 msgstr "Trocar ramificação/tag"
-
-msgid "Switch editors"
-msgstr "Alternar editores"
 
 msgid "Switch to GitLab Next"
 msgstr "Mudar para GitLab Next"
@@ -40030,6 +40630,12 @@ msgstr ""
 
 msgid "TasksToBeDone|Set up CI/CD pipelines to build, test, deploy, and monitor code"
 msgstr "Configure pipelines de CI/CD para construir, testar, implantar e monitorar código"
+
+msgid "Tasks|%{complete_count} of %{total_count} %{checklist_item_noun} completed"
+msgstr ""
+
+msgid "Tasks|%{complete_count}/%{total_count} %{checklist_item_noun}"
+msgstr ""
 
 msgid "Team"
 msgstr "Equipe"
@@ -40611,6 +41217,9 @@ msgstr ""
 msgid "The following SSH key was deleted by an administrator, %{username}."
 msgstr ""
 
+msgid "The following files or directories can only be modified by the user who locked them."
+msgstr ""
+
 msgid "The following items will NOT be exported:"
 msgstr "Os seguintes itens NÃO serão exportados:"
 
@@ -40975,9 +41584,6 @@ msgstr "Não há registros de spam"
 msgid "There are no abuse reports!"
 msgstr ""
 
-msgid "There are no archived projects yet"
-msgstr "Ainda não há projetos arquivados"
-
 msgid "There are no archived requirements"
 msgstr "Não há requisitos arquivados"
 
@@ -41035,9 +41641,6 @@ msgstr ""
 msgid "There are no packages yet"
 msgstr "Não há pacotes ainda"
 
-msgid "There are no projects shared with this group yet"
-msgstr "Não há projetos compartilhados com esse grupo ainda"
-
 msgid "There are no secure files yet."
 msgstr "Ainda não há arquivos seguros."
 
@@ -41082,6 +41685,9 @@ msgstr ""
 
 msgid "There was a problem communicating with your device."
 msgstr "Houve um problema de comunicação com o seu dispositivo."
+
+msgid "There was a problem creating the incident. Please try again."
+msgstr ""
 
 msgid "There was a problem fetching CRM contacts."
 msgstr ""
@@ -41203,6 +41809,9 @@ msgstr ""
 msgid "There was an error fetching the environments information."
 msgstr ""
 
+msgid "There was an error fetching the job."
+msgstr ""
+
 msgid "There was an error fetching the jobs for your project."
 msgstr ""
 
@@ -41240,6 +41849,9 @@ msgid "There was an error resetting user pipeline minutes."
 msgstr "Houve um erro ao redefinir os minutos de pipeline do usuário."
 
 msgid "There was an error retrieving the Jira users."
+msgstr ""
+
+msgid "There was an error running the job. Please try again."
 msgstr ""
 
 msgid "There was an error saving your changes."
@@ -41333,9 +41945,6 @@ msgid "This %{viewer} could not be displayed because %{reason}. You can %{option
 msgstr ""
 
 msgid "This Cron pattern is invalid"
-msgstr ""
-
-msgid "This Experiment has no logged Candidates"
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared runners yet. Instance administrators can register shared runners in the admin area."
@@ -41527,6 +42136,9 @@ msgstr "Esse épico não existe ou você não tem permissão suficiente."
 msgid "This epic would exceed maximum number of related epics."
 msgstr ""
 
+msgid "This experiment has no logged candidates"
+msgstr ""
+
 msgid "This feature requires local storage to be enabled"
 msgstr "Esta funcionalidade requer que o armazenamento local esteja ativado"
 
@@ -41545,7 +42157,7 @@ msgstr "Este formulário está desativado na pré-visualização"
 msgid "This group"
 msgstr "Esse grupo"
 
-msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_adjourned_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
+msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_delayed_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
 msgstr ""
 
 msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."
@@ -42019,6 +42631,12 @@ msgstr "Tempo restante"
 msgid "Time spent"
 msgstr "Tempo gasto"
 
+msgid "Time spent can't be zero."
+msgstr "O tempo gasto não pode ser zero."
+
+msgid "Time spent must be formatted correctly. For example: 1h 30m."
+msgstr "O tempo gasto deve ser formatado corretamente. Por exemplo: 1h 30m."
+
 msgid "Time to Restore Service"
 msgstr "Tempo para restaurar o serviço"
 
@@ -42269,6 +42887,9 @@ msgstr "Título (obrigatório)"
 msgid "Title:"
 msgstr "Título:"
 
+msgid "Titles"
+msgstr "Títulos"
+
 msgid "Titles and Descriptions"
 msgstr "Títulos e descrições"
 
@@ -42300,9 +42921,6 @@ msgid "To activate your trial, we need additional details from you."
 msgstr "Para ativar sua avaliação, precisamos de detalhes adicionais de você."
 
 msgid "To add a custom suffix, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
-msgstr ""
-
-msgid "To add display name, set up a Service Desk email address. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "To add the entry manually, provide the following details to the application on your phone."
@@ -42419,6 +43037,9 @@ msgstr ""
 msgid "To reactivate your account, sign in to GitLab at %{gitlab_url}."
 msgstr ""
 
+msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, ask your namespace owner to reduce the number of users in your namespace to %{free_limit} users or less, or to upgrade to a paid tier which do not have user limits."
+msgstr ""
+
 msgid "To remove the %{link_start}read-only%{link_end} state and regain write access, you can reduce the number of users in your namespace to %{free_limit} users or less. You can also upgrade to a paid tier, which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
 msgstr ""
 
@@ -42512,6 +43133,9 @@ msgstr "Não foi possível mesclar"
 msgid "Todos|Design"
 msgstr "Design"
 
+msgid "Todos|Due %{due_date}"
+msgstr ""
+
 msgid "Todos|Epic"
 msgstr "Épico"
 
@@ -42545,6 +43169,9 @@ msgstr "É assim que você sempre sabe no que trabalhar a seguir."
 msgid "Todos|Mark all as done"
 msgstr "Marcar tudo como concluído"
 
+msgid "Todos|Member access requested"
+msgstr "Acesso de membro solicitado"
+
 msgid "Todos|Mentioned"
 msgstr "Mencionado"
 
@@ -42560,14 +43187,14 @@ msgstr "Nada a fazer. Toca aqui!"
 msgid "Todos|Pipelines"
 msgstr "Pipelines"
 
-msgid "Todos|Removed from Merge Train:"
+msgid "Todos|Removed from Merge Train"
 msgstr ""
 
 msgid "Todos|Review requested"
 msgstr "Revisão solicitada"
 
-msgid "Todos|The pipeline failed in"
-msgstr "O pipeline falhou em"
+msgid "Todos|The pipeline failed"
+msgstr "O pipeline falhou"
 
 msgid "Todos|Undo mark all as done"
 msgstr ""
@@ -42581,23 +43208,23 @@ msgstr ""
 msgid "Todos|Your To-Do List shows what to work on next"
 msgstr "Sua lista de tarefas mostra o que fazer a seguir"
 
-msgid "Todos|added a todo for"
+msgid "Todos|added a to-do item"
 msgstr ""
 
-msgid "Todos|mentioned %{who} on"
-msgstr "mencionados %{who} em"
+msgid "Todos|has requested access"
+msgstr "pediu acesso"
 
-msgid "Todos|requested a review of"
-msgstr "solicitou uma revisão de"
+msgid "Todos|mentioned %{who}"
+msgstr ""
 
-msgid "Todos|set %{who} as an approver for"
+msgid "Todos|requested a review"
+msgstr ""
+
+msgid "Todos|set %{who} as an approver"
 msgstr ""
 
 msgid "Todos|yourself"
 msgstr "você mesmo"
-
-msgid "Todo|at %{todo_parent_path}"
-msgstr ""
 
 msgid "Toggle GitLab Next"
 msgstr "Alternar para o GitLab Next"
@@ -42967,6 +43594,12 @@ msgstr ""
 msgid "Triggerer"
 msgstr "Gatilho"
 
+msgid "Trigger|Description"
+msgstr ""
+
+msgid "Trigger|Trigger description"
+msgstr ""
+
 msgid "Trigger|Trigger user has insufficient permissions to project"
 msgstr ""
 
@@ -43002,6 +43635,9 @@ msgstr ""
 
 msgid "Try out GitLab Pipelines"
 msgstr ""
+
+msgid "Try out the new Web IDE"
+msgstr "Experimente o novo IDE Web"
 
 msgid "Try the troubleshooting steps here."
 msgstr "Tente as etapas de solução de problemas aqui."
@@ -43180,6 +43816,12 @@ msgstr ""
 msgid "Unable to fetch branches list, please close the form and try again"
 msgstr ""
 
+msgid "Unable to fetch group. Reload the page to try again."
+msgstr ""
+
+msgid "Unable to fetch groups. Reload the page to try again."
+msgstr ""
+
 msgid "Unable to fetch upstream and downstream pipelines."
 msgstr ""
 
@@ -43303,6 +43945,9 @@ msgstr "Infelizmente, sua mensagem de e-mail para o GitLab não pôde ser proces
 msgid "Unhappy?"
 msgstr "Infeliz?"
 
+msgid "Units|d"
+msgstr ""
+
 msgid "Units|ms"
 msgstr "ms"
 
@@ -43383,6 +44028,9 @@ msgstr "Não resolvido"
 
 msgid "Unschedule job"
 msgstr "Desprogramar tarefa"
+
+msgid "Unselect \"Expand variable reference\" if you want to use the variable value as a raw string."
+msgstr ""
 
 msgid "Unstar"
 msgstr "Desmarcar como favorito"
@@ -43567,6 +44215,9 @@ msgstr "Enviando mudanças ao terminal"
 msgid "Uploading..."
 msgstr "Enviando..."
 
+msgid "Uploads"
+msgstr "Envios"
+
 msgid "Upstream"
 msgstr "Upstream"
 
@@ -43585,17 +44236,11 @@ msgstr ""
 msgid "UsageQuotas|This project-level storage statistic does not include savings for site-wide deduplication and is not used to calculate total namespace storage."
 msgstr ""
 
-msgid "UsageQuota|%{help_link_start}Shared runners%{help_link_end} are disabled, so there are no limits set on pipeline usage"
-msgstr "%{help_link_start}Executores compartilhados%{help_link_end} estão desativados, então não há limites definidos no uso de pipeline"
-
 msgid "UsageQuota|%{linkStart}Shared runners%{linkEnd} are disabled, so there are no limits set on pipeline usage"
 msgstr "%{linkStart}Executores compartilhados%{linkEnd} estão desativados, então não há limites definidos no uso de pipeline"
 
 msgid "UsageQuota|%{linkTitle} help link"
 msgstr "link de ajuda %{linkTitle}"
-
-msgid "UsageQuota|%{percentageLeft} of purchased storage is available"
-msgstr "%{percentageLeft} de armazenamento comprado está disponível"
 
 msgid "UsageQuota|%{storage_limit_link_start}A namespace storage limit%{link_end} will soon be enforced for the %{strong_start}%{namespace_name}%{strong_end} namespace. %{extra_message}"
 msgstr ""
@@ -43624,9 +44269,6 @@ msgstr "Uso de minutos de CI por projeto"
 msgid "UsageQuota|CI/CD minutes usage"
 msgstr "Uso de minutos de CI/CD"
 
-msgid "UsageQuota|CI/CD minutes usage since %{timeElapsed}"
-msgstr "Uso de minutos de CI/CD desde %{timeElapsed}"
-
 msgid "UsageQuota|CI/CD minutes usage since %{usageSince}"
 msgstr "Uso de minutos de CI/CD desde %{usageSince}"
 
@@ -43635,9 +44277,6 @@ msgstr "Pacotes de código e imagens de contêiner."
 
 msgid "UsageQuota|Container Registry"
 msgstr "Registro de contêiner"
-
-msgid "UsageQuota|Current period usage"
-msgstr "Uso do período atual"
 
 msgid "UsageQuota|Dependency proxy"
 msgstr "Proxy de dependência"
@@ -43765,23 +44404,14 @@ msgstr ""
 msgid "UsageQuota|The namespace is currently using %{strong_start}%{used_storage}%{strong_end} of namespace storage. View and manage your usage from %{strong_start}%{usage_quotas_nav_instruction}%{strong_end}. %{docs_link_start}Learn more%{link_end} about how to reduce your storage."
 msgstr ""
 
-msgid "UsageQuota|The table below shows current period usage"
-msgstr "A tabela abaixo mostra o uso do período atual"
-
-msgid "UsageQuota|The table below shows usage since %{timeElapsed}"
-msgstr "A tabela abaixo mostra o uso desde %{timeElapsed}"
+msgid "UsageQuota|The table below shows usage since %{usageSince}"
+msgstr ""
 
 msgid "UsageQuota|This is the total amount of storage used across your projects within this namespace."
 msgstr ""
 
 msgid "UsageQuota|This is the total amount of storage used by projects above the free %{actualRepositorySizeLimit} storage limit."
 msgstr "Esta é a quantidade total de armazenamento usada por projetos acima do limite de %{actualRepositorySizeLimit} armazenamento gratuito."
-
-msgid "UsageQuota|This namespace contains locked projects"
-msgstr "Este espaço de nome contém projetos bloqueados"
-
-msgid "UsageQuota|This namespace has no projects which use shared runners"
-msgstr "Este espaço de nome não possui projetos que usam executores compartilhados"
 
 msgid "UsageQuota|This namespace has no projects which used shared runners in the current period"
 msgstr "Este espaço de nome não tem projetos que usaram executores compartilhados no período atual"
@@ -43794,9 +44424,6 @@ msgstr "Total de armazenamento em excesso usado"
 
 msgid "UsageQuota|Total namespace storage used"
 msgstr "Total de armazenamento de espaço de nome usado"
-
-msgid "UsageQuota|Unlimited"
-msgstr "Ilimitado"
 
 msgid "UsageQuota|Uploads"
 msgstr "Envios"
@@ -43831,7 +44458,7 @@ msgstr "Link de ajuda de cotas de uso"
 msgid "UsageQuota|User settings &gt; Usage quotas"
 msgstr "Configurações do usuário &gt; Cotas de uso"
 
-msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked when you reached the %{actualRepositorySizeLimit} limit."
+msgid "UsageQuota|When you purchase additional storage, we automatically unlock projects that were locked if the storage limit was reached."
 msgstr ""
 
 msgid "UsageQuota|Wiki"
@@ -43840,17 +44467,17 @@ msgstr "Wiki"
 msgid "UsageQuota|Wiki content."
 msgstr "Conteúdo da wiki."
 
-msgid "UsageQuota|You have consumed all of your additional storage, please purchase more to unlock your projects over the free %{actualRepositorySizeLimit} limit."
-msgstr "Você consumiu todo o seu armazenamento adicional, compre mais para desbloquear seus projetos acima do limite gratuito de %{actualRepositorySizeLimit}."
+msgid "UsageQuota|You have consumed all of your additional storage. Purchase more to unlock projects over the limit."
+msgstr ""
 
-msgid "UsageQuota|You have reached the free storage limit of %{actualRepositorySizeLimit} on %{projectsLockedText}. To unlock them, please purchase additional storage."
-msgstr "Você atingiu o limite de armazenamento gratuito de %{actualRepositorySizeLimit} em %{projectsLockedText}. Para desbloqueá-los, compre armazenamento adicional."
+msgid "UsageQuota|You have reached the free storage limit on %{projectsLockedText}. To unlock them, purchase additional storage."
+msgstr ""
 
 msgid "UsageQuota|You used: %{usage} %{limit}"
 msgstr "Você usou: %{usage} %{limit}"
 
-msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, please purchase more storage."
-msgstr "O armazenamento adquirido está acabando. Para evitar projetos bloqueados, adquira mais armazenamento."
+msgid "UsageQuota|Your purchased storage is running low. To avoid locked projects, purchase more storage."
+msgstr ""
 
 msgid "UsageQuota|out of %{formattedLimit} of your namespace storage"
 msgstr "de %{formattedLimit} da sua memória de espaço de nome"
@@ -44021,6 +44648,9 @@ msgid "Use the public cloud instance URL (%{kroki_public_url}) or %{install_link
 msgstr ""
 
 msgid "Use the search bar on the top of this page"
+msgstr ""
+
+msgid "Use this form to report to the administrator users who create spam issues, comments or behave inappropriately."
 msgstr ""
 
 msgid "Use this token to validate received payloads."
@@ -44289,9 +44919,6 @@ msgstr "Projetos pessoais"
 msgid "UserProfile|Pronounced as: %{pronunciation}"
 msgstr "Pronunciado como: %{pronunciation}"
 
-msgid "UserProfile|Report abuse"
-msgstr "Denunciar abuso"
-
 msgid "UserProfile|Retry"
 msgstr "Tentar novamente"
 
@@ -44481,6 +45108,9 @@ msgstr ""
 msgid "Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines."
 msgstr ""
 
+msgid "VS Code in your browser. View code and make changes from the same UI as in your local IDE 🎉"
+msgstr "Visual Studio Code no seu navegador. Veja código e faça alterações na mesma interface do usuário como em seu IDE local 🎉"
+
 msgid "Valid From"
 msgstr ""
 
@@ -44553,6 +45183,9 @@ msgstr "Métricas DORA"
 msgid "ValueStreamAnalytics|Dashboard"
 msgstr "Painel"
 
+msgid "ValueStreamAnalytics|Edit Value Stream: %{name}"
+msgstr ""
+
 msgid "ValueStreamAnalytics|Go to docs"
 msgstr "Ir para docs"
 
@@ -44569,6 +45202,9 @@ msgid "ValueStreamAnalytics|Median time from issue created to issue closed."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Median time from the earliest commit of a linked issue's merge request to when that issue is closed."
+msgstr ""
+
+msgid "ValueStreamAnalytics|New Value Stream"
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"
@@ -44619,11 +45255,11 @@ msgstr "Parar"
 msgid "ValueStream|The Default Value Stream cannot be deleted"
 msgstr ""
 
-msgid "Values that contain the %{codeStart}$%{codeEnd} character can be considered a variable reference and expanded. %{docsLinkStart}Learn more.%{docsLinkEnd}"
-msgstr ""
-
 msgid "Variable"
 msgstr "Variável"
+
+msgid "Variable value will be evaluated as raw string."
+msgstr ""
 
 msgid "Variable will be masked in job logs."
 msgstr "A variável será mascarada nos registros de tarefa."
@@ -44634,8 +45270,8 @@ msgstr "Variáveis"
 msgid "Variables can be:"
 msgstr "As variáveis podem ser:"
 
-msgid "Variables store information, like passwords and secret keys, that you can use in job scripts."
-msgstr "As variáveis armazenam informações, como senhas e chaves secretas, que podem ser usadas em scripts de tarefa."
+msgid "Variables can have several attributes."
+msgstr ""
 
 msgid "Variables store information, like passwords and secret keys, that you can use in job scripts. All projects on the instance can use these variables."
 msgstr "As variáveis armazenam informações, como senhas e chaves secretas, que podem ser usadas em scripts de tarefa. Todos os projetos na instância podem usar essas variáveis."
@@ -44691,6 +45327,21 @@ msgstr "Versão %{versionNumber}"
 msgid "Version %{versionNumber} (latest)"
 msgstr "Versão %{versionNumber} (última)"
 
+msgid "VersionCheck|%{details}"
+msgstr ""
+
+msgid "VersionCheck|Critical security upgrade available"
+msgstr ""
+
+msgid "VersionCheck|Important notice - Critical security release"
+msgstr ""
+
+msgid "VersionCheck|Learn more about this critical security release."
+msgstr ""
+
+msgid "VersionCheck|Remind me again in 3 days"
+msgstr "Lembrar-me novamente em 3 dias"
+
 msgid "VersionCheck|Up to date"
 msgstr ""
 
@@ -44698,6 +45349,18 @@ msgid "VersionCheck|Update ASAP"
 msgstr ""
 
 msgid "VersionCheck|Update available"
+msgstr ""
+
+msgid "VersionCheck|Upgrade now"
+msgstr ""
+
+msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation immediately."
+msgstr ""
+
+msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly recommend upgrading your GitLab installation to one of the following versions immediately: %{latestStableVersions}."
+msgstr ""
+
+msgid "VersionCheck|You are currently on version %{currentVersion}. We strongly recommend upgrading your GitLab installation. %{link}"
 msgstr ""
 
 msgid "VersionCheck|Your GitLab Version"
@@ -44980,7 +45643,7 @@ msgid "VulnerabilityManagement|A verified true-positive vulnerability"
 msgstr ""
 
 msgid "VulnerabilityManagement|Add vulnerability finding"
-msgstr ""
+msgstr "Adicionar descoberta de vulnerabilidade"
 
 msgid "VulnerabilityManagement|An unverified non-confirmed finding"
 msgstr ""
@@ -45010,7 +45673,7 @@ msgid "VulnerabilityManagement|Identifier code and URL are required fields"
 msgstr ""
 
 msgid "VulnerabilityManagement|Manually add a vulnerability entry into the vulnerability report."
-msgstr ""
+msgstr "Adicione manualmente uma entrada de vulnerabilidade no relatório de vulnerabilidade."
 
 msgid "VulnerabilityManagement|Name is a required field"
 msgstr ""
@@ -45073,13 +45736,13 @@ msgid "VulnerabilityManagement|Submit vulnerability"
 msgstr "Enviar vulnerabilidade"
 
 msgid "VulnerabilityManagement|Summary, detailed description, steps to reproduce, etc."
-msgstr ""
+msgstr "Resumo, descrição detalhada, passos para reproduzir, etc."
 
 msgid "VulnerabilityManagement|Verified as fixed or mitigated"
 msgstr ""
 
 msgid "VulnerabilityManagement|Vulnerability name or type. Ex: Cross-site scripting"
-msgstr ""
+msgstr "Nome ou tipo de vulnerabilidade. Ex: script entre sites"
 
 msgid "VulnerabilityManagement|Will not fix or a false-positive"
 msgstr ""
@@ -45319,7 +45982,7 @@ msgid "Watch how"
 msgstr ""
 
 msgid "We also use email for avatar detection if no avatar is uploaded."
-msgstr ""
+msgstr "Também usamos e-mail para detecção de avatar se nenhum avatar for carregado."
 
 msgid "We are currently unable to fetch data for the pipeline header."
 msgstr ""
@@ -45359,6 +46022,9 @@ msgstr "Detectamos spam potencial no %{humanized_resource_name}. Por favor, reso
 
 msgid "We don't have enough data to show this stage."
 msgstr "Esse estágio não possui dados suficientes para exibição."
+
+msgid "We found your token in a public project and have automatically revoked it to protect your account."
+msgstr ""
 
 msgid "We have found the following errors:"
 msgstr ""
@@ -45435,9 +46101,6 @@ msgstr "Dispositivos WebAuthn (%{length})"
 msgid "WebAuthn only works with HTTPS-enabled websites. Contact your administrator for more details."
 msgstr "O WebAuthn só funciona com sites habilitados para HTTPS. Entre em contato com seu administrador para mais detalhes."
 
-msgid "WebIDE|Are you sure you want to switch editors? You will lose any unsaved changes."
-msgstr "Tem certeza de que deseja trocar de editor? Você perderá todas as alterações não salvas."
-
 msgid "WebIDE|Fork project"
 msgstr "Fork projeto"
 
@@ -45453,23 +46116,11 @@ msgstr "Edite rapidamente e facilmente vários arquivos em seu projeto."
 msgid "WebIDE|Quickly and easily edit multiple files in your project. Press . to open"
 msgstr "Edite de forma rápida e fácil vários arquivos em seu projeto. Imprensa . abrir"
 
-msgid "WebIDE|Ready for something new?"
-msgstr "Pronto para algo novo?"
-
-msgid "WebIDE|Something went wrong while updating the user preferences. Please see developer console for details."
-msgstr ""
-
-msgid "WebIDE|Switch to new Web IDE"
-msgstr "Mudar para o novo IDE Web"
-
 msgid "WebIDE|This project does not accept unsigned commits."
 msgstr ""
 
 msgid "WebIDE|This project does not accept unsigned commits. You can’t commit changes through the Web IDE."
 msgstr ""
-
-msgid "WebIDE|You are invited to experience the new Web IDE."
-msgstr "Você está convidado a experimentar o novo IDE Web."
 
 msgid "WebIDE|You can’t edit files directly in this project. Fork this project and submit a merge request with your changes."
 msgstr "Você não pode editar arquivos diretamente nesse projeto. Faça um fork nesse projeto e envie uma solicitação de mesclagem com suas alterações."
@@ -45500,6 +46151,18 @@ msgstr "Configurações de webhook"
 
 msgid "Webhook events will be displayed here."
 msgstr "Os eventos do webhook serão exibidos aqui."
+
+msgid "Webhook was created"
+msgstr "Webhook foi criado"
+
+msgid "Webhook was deleted"
+msgstr "Webhook foi excluído"
+
+msgid "Webhook was scheduled for deletion"
+msgstr "Webhook foi agendado para exclusão"
+
+msgid "Webhook was updated"
+msgstr "Webhook foi atualizado"
 
 msgid "Webhook:"
 msgstr "Webhook:"
@@ -45567,9 +46230,6 @@ msgstr ""
 msgid "Webhooks|Are you sure you want to delete this webhook?"
 msgstr ""
 
-msgid "Webhooks|Comments"
-msgstr "Comentários"
-
 msgid "Webhooks|Confidential comments"
 msgstr "Comentários confidenciais"
 
@@ -45618,14 +46278,11 @@ msgstr "Eventos de membro"
 msgid "Webhooks|Merge request events"
 msgstr "Eventos de solicitação de mesclagem"
 
+msgid "Webhooks|Must match part of URL"
+msgstr ""
+
 msgid "Webhooks|Pipeline events"
 msgstr "Eventos de pipeline"
-
-msgid "Webhooks|Push events"
-msgstr "Eventos de push"
-
-msgid "Webhooks|Push to the repository."
-msgstr "Push para o repositório."
 
 msgid "Webhooks|Regex such as %{REGEX_CODE} is supported."
 msgstr ""
@@ -45662,9 +46319,6 @@ msgstr ""
 
 msgid "Webhooks|Trigger"
 msgstr "Gatilho"
-
-msgid "Webhooks|URL"
-msgstr "URL"
 
 msgid "Webhooks|URL must be percent-encoded if it contains one or more special characters."
 msgstr "URL deve ser codificado por porcentagem se contiver um ou mais caracteres especiais."
@@ -46057,6 +46711,9 @@ msgstr "Será criado"
 msgid "Will be mapped to"
 msgstr ""
 
+msgid "Will be released"
+msgstr ""
+
 msgid "Will deploy to"
 msgstr "Será implantado para"
 
@@ -46065,9 +46722,6 @@ msgstr ""
 
 msgid "With requirements, you can set criteria to check your products against."
 msgstr "Com os requisitos, pode estabelecer critérios para comprovar sus produtos."
-
-msgid "With test cases, you can define conditions for your project to meet in determining quality"
-msgstr "Com casos de teste, você pode definir condições para seu projeto atender na determinação da qualidade"
 
 msgid "Withdraw Access Request"
 msgstr "Remover requisição de acesso"
@@ -46087,6 +46741,12 @@ msgstr "%{workItemType} excluído"
 msgid "WorkItem|Add"
 msgstr "Adicionar"
 
+msgid "WorkItem|Add %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|Add %{workItemType}s"
+msgstr "Adicionar %{workItemType}s"
+
 msgid "WorkItem|Add a title"
 msgstr "Adicionar um título"
 
@@ -46101,9 +46761,6 @@ msgstr "Adicionar data de vencimento"
 
 msgid "WorkItem|Add start date"
 msgstr "Adicionar data de início"
-
-msgid "WorkItem|Add task"
-msgstr "Adicionar tarefa"
 
 msgid "WorkItem|Add to iteration"
 msgstr ""
@@ -46125,6 +46782,9 @@ msgstr[1] "Responsáveis"
 msgid "WorkItem|Cancel"
 msgstr ""
 
+msgid "WorkItem|Child objectives and key results"
+msgstr ""
+
 msgid "WorkItem|Child removed"
 msgstr ""
 
@@ -46133,6 +46793,12 @@ msgstr "Fechado"
 
 msgid "WorkItem|Collapse tasks"
 msgstr "Recolher tarefas"
+
+msgid "WorkItem|Create %{workItemType}"
+msgstr "Criar %{workItemType}"
+
+msgid "WorkItem|Create objective"
+msgstr "Criar objetivo"
 
 msgid "WorkItem|Create task"
 msgstr "Criar tarefa"
@@ -46146,8 +46812,14 @@ msgstr "Datas"
 msgid "WorkItem|Delete %{workItemType}"
 msgstr "Excluir %{workItemType}"
 
+msgid "WorkItem|Discard changes"
+msgstr "Descartar alterações"
+
 msgid "WorkItem|Due date"
 msgstr "Data de vencimento"
+
+msgid "WorkItem|Existing task"
+msgstr "Tarefa existente"
 
 msgid "WorkItem|Expand tasks"
 msgstr "Expandir tarefas"
@@ -46155,20 +46827,23 @@ msgstr "Expandir tarefas"
 msgid "WorkItem|Incident"
 msgstr "Incidente"
 
-msgid "WorkItem|Introducing tasks"
-msgstr "Introdução de tarefas"
-
 msgid "WorkItem|Issue"
 msgstr "Issue"
 
 msgid "WorkItem|Iteration"
 msgstr "Iteração"
 
-msgid "WorkItem|Learn about tasks."
-msgstr "Saiba mais sobre tarefas."
+msgid "WorkItem|Key result"
+msgstr ""
 
 msgid "WorkItem|Milestone"
 msgstr "Marco"
+
+msgid "WorkItem|New objective"
+msgstr "Novo objetivo"
+
+msgid "WorkItem|New task"
+msgstr "Nova tarefa"
 
 msgid "WorkItem|No iteration"
 msgstr "Sem iteração"
@@ -46179,11 +46854,17 @@ msgstr "Nenhum resultado correspondente"
 msgid "WorkItem|No milestone"
 msgstr "Nenhum marco"
 
+msgid "WorkItem|No objectives or key results are currently assigned."
+msgstr "Nenhum objetivo ou resultado principal está atribuído atualmente."
+
 msgid "WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts."
 msgstr "Nenhuma tarefa está atribuída no momento. Use tarefas para dividir esse problema em partes menores."
 
 msgid "WorkItem|None"
 msgstr "Nenhum"
+
+msgid "WorkItem|Objective"
+msgstr "Objetivo"
 
 msgid "WorkItem|Only project members with at least the Reporter role, the author, and assignees can view or be notified about this task."
 msgstr "Apenas membros do projeto com pelo menos a função de Relator, o autor e os responsáveis podem visualizar ou serem notificados sobre esta tarefa."
@@ -46197,8 +46878,17 @@ msgstr "Remover"
 msgid "WorkItem|Requirements"
 msgstr "Requisitos"
 
+msgid "WorkItem|Save and overwrite"
+msgstr "Salvar e sobrescrever"
+
+msgid "WorkItem|Search existing %{workItemType}s"
+msgstr ""
+
 msgid "WorkItem|Select type"
 msgstr "Selecione o tipo"
+
+msgid "WorkItem|Someone edited the description at the same time you did. If you save it will overwrite their changes. Please confirm you'd like to save your edits."
+msgstr ""
 
 msgid "WorkItem|Something went wrong when creating %{workItemType}. Please try again."
 msgstr ""
@@ -46263,8 +46953,8 @@ msgstr "Ativar confidencialidade"
 msgid "WorkItem|Undo"
 msgstr "Desfazer"
 
-msgid "WorkItem|Use tasks to break down your work in an issue into smaller pieces. %{learnMoreLink}"
-msgstr "Use tarefas para dividir seu trabalho em uma issue em partes menores. %{learnMoreLink}"
+msgid "WorkItem|View current version"
+msgstr "Ver versão atual"
 
 msgid "WorkItem|Work Items"
 msgstr ""
@@ -46292,6 +46982,9 @@ msgstr "Escreva um comentário…"
 
 msgid "Write a description or drag your files here…"
 msgstr "Escreva uma descrição ou arraste seus arquivos para aqui…"
+
+msgid "Write a description..."
+msgstr "Escreva uma descrição..."
 
 msgid "Write a description…"
 msgstr "Escreva uma descrição…"
@@ -46460,10 +47153,10 @@ msgstr ""
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
-msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}."
 msgstr ""
 
-msgid "You can %{resolveLocallyStart}resolve it locally%{resolveLocallyEnd}."
+msgid "You can %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}."
 msgstr ""
 
 msgid "You can adjust rules on auto-banning %{link_start}here%{link_end}."
@@ -46488,7 +47181,7 @@ msgid "You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lin
 msgstr ""
 
 msgid "You can also upload existing files from your computer using the instructions below."
-msgstr ""
+msgstr "Você também enviar arquivos existentes do seu computador usando as instruções abaixo."
 
 msgid "You can also use group access tokens with Git to authenticate over HTTP(S). %{link_start}Learn more.%{link_end}"
 msgstr ""
@@ -46501,11 +47194,6 @@ msgstr ""
 
 msgid "You can always edit this later"
 msgstr "Você pode editar isto depois"
-
-msgid "You can begin moving members in %{namespace_name} now. A member loses access to the group when you turn off %{strong_start}In a seat%{strong_end}. If over %{free_user_limit} member has %{strong_start}In a seat%{strong_end} enabled after October 19, 2022, we'll select the %{free_user_limit} member who maintains access. We'll first count members that have Owner and Maintainer roles, then the most recently active members until we reach %{free_user_limit} member. The remaining members will get a status of Over limit and lose access to the group."
-msgid_plural "You can begin moving members in %{namespace_name} now. A member loses access to the group when you turn off %{strong_start}In a seat%{strong_end}. If over %{free_user_limit} members have %{strong_start}In a seat%{strong_end} enabled after October 19, 2022, we'll select the %{free_user_limit} members who maintain access. We'll first count members that have Owner and Maintainer roles, then the most recently active members until we reach %{free_user_limit} members. The remaining members will get a status of Over limit and lose access to the group."
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "You can check it in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
@@ -46573,9 +47261,6 @@ msgstr ""
 msgid "You can get started by cloning the repository or start adding files to it with one of the following options."
 msgstr ""
 
-msgid "You can group test cases using labels. To learn about the future direction of this feature, visit %{linkStart}Quality Management direction page%{linkEnd}."
-msgstr "Você pode agrupar casos de teste usando etiquetas. Para saber mais sobre a direção futura desse recurso, visite %{linkStart}direção de gerenciamento de qualidade página%{linkEnd}."
-
 msgid "You can invite a new member to %{project_name} or invite another group."
 msgstr "Você pode convidar um novo membro para %{project_name} ou convidar outro grupo."
 
@@ -46594,17 +47279,11 @@ msgstr ""
 msgid "You can now close this window."
 msgstr ""
 
-msgid "You can now export your security dashboard to a CSV report."
-msgstr ""
-
 msgid "You can now submit a merge request to get this change into the original branch."
 msgstr ""
 
 msgid "You can now submit a merge request to get this change into the original project."
 msgstr "Agora você pode enviar uma solicitação de mesclagem para fazer esta mudança no projeto original."
-
-msgid "You can only %{action} files when you are on a branch"
-msgstr ""
 
 msgid "You can only add up to %{max_contacts} contacts at one time"
 msgstr ""
@@ -46687,6 +47366,9 @@ msgstr "Você não pode editar arquivos diretamente nesse projeto. Faça um fork
 msgid "You could not create a new trigger."
 msgstr "Você não pôde criar um novo gatilho."
 
+msgid "You do not have access to any projects for creating incidents."
+msgstr ""
+
 msgid "You do not have any subscriptions yet"
 msgstr "Você ainda não tem nenhuma inscrição"
 
@@ -46739,6 +47421,9 @@ msgid "You don't have any recent searches"
 msgstr "Você não tem nenhuma pesquisa recente"
 
 msgid "You don't have permission to review this deployment. Contact the project or group owner for help."
+msgstr ""
+
+msgid "You don't have permission to view this epic"
 msgstr ""
 
 msgid "You don't have permissions to create this project"
@@ -46803,6 +47488,9 @@ msgstr ""
 msgid "You have insufficient permissions to create an on-call schedule for this project"
 msgstr ""
 
+msgid "You have insufficient permissions to manage alerts for this project"
+msgstr "Você não tem permissões suficientes para gerenciar alertas para este projeto"
+
 msgid "You have insufficient permissions to manage resource links for this incident"
 msgstr ""
 
@@ -46852,9 +47540,6 @@ msgid "You have set up 2FA for your account! If you lose access to your 2FA devi
 msgstr "Você configurou o 2FA para sua conta! Se você perder o acesso ao seu dispositivo 2FA, poderá usar seus códigos de recuperação para acessar sua conta. Como alternativa, se você enviar uma chave SSH, poderá %{anchorOpen}usar essa chave para gerar códigos de recuperação adicionais%{anchorClose}."
 
 msgid "You have successfully purchased %{product}. You'll receive a receipt by email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."
-msgstr ""
-
-msgid "You have successfully purchased a %{plan} plan subscription for %{seats}. You’ll receive a receipt via email. Your purchase may take a minute to sync, so refresh the page if you don't see it yet."
 msgstr ""
 
 msgid "You have unsaved changes"
@@ -47034,6 +47719,9 @@ msgstr "Você já ativou a autenticação de dois fatores usando autenticadores 
 msgid "You've rejected %{user}"
 msgstr ""
 
+msgid "You've successfully purchased the %{plan} plan subscription for %{seats} and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
+msgstr ""
+
 msgid "YouTube"
 msgstr "YouTube"
 
@@ -47052,7 +47740,7 @@ msgstr ""
 msgid "Your %{strong}%{plan_name}%{strong_close} subscription for %{strong}%{namespace_name}%{strong_close} will expire on %{strong}%{expires_on}%{strong_close}."
 msgstr ""
 
-msgid "Your CI/CD configuration syntax is invalid. View Lint tab for more details."
+msgid "Your CI/CD configuration syntax is invalid. Select the Validate tab for more details."
 msgstr ""
 
 msgid "Your CSV export has started. It will be emailed to %{email} when complete."
@@ -47086,6 +47774,9 @@ msgid "Your GitLab account request has been approved!"
 msgstr ""
 
 msgid "Your GitLab group"
+msgstr ""
+
+msgid "Your GitLab instance allows anyone to register for an account, which is a security risk on public-facing GitLab instances. You should deactivate new sign ups if public users aren't expected to register for an account."
 msgstr ""
 
 msgid "Your Groups"
@@ -47231,11 +47922,6 @@ msgid_plural "Your free group is now limited to %d members"
 msgstr[0] "Seu grupo gratuito agora está limitado a %d membro"
 msgstr[1] "Seu grupo gratuito agora está limitado a %d membros"
 
-msgid "Your group, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_user_limit} member. From October 19, 2022, the %{free_user_limit} most recently active member will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access to the group. You can go to the Usage Quotas page to manage which %{free_user_limit} member will remain in your group."
-msgid_plural "Your group, %{strong_start}%{namespace_name}%{strong_end} has more than %{free_user_limit} members. From October 19, 2022, the %{free_user_limit} most recently active members will remain active, and the remaining members will have the %{link_start}Over limit status%{link_end} and lose access to the group. You can go to the Usage Quotas page to manage which %{free_user_limit} members will remain in your group."
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Your groups"
 msgstr "Seus grupos"
 
@@ -47273,6 +47959,15 @@ msgid "Your name"
 msgstr "Seu nome"
 
 msgid "Your namespace %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."
+msgstr ""
+
+msgid "Your namespace %{namespace_name} is over the %{free_user_limit} user limit"
+msgstr ""
+
+msgid "Your namespace is over the user and storage limits and has been placed in a read-only state."
+msgstr ""
+
+msgid "Your namespace is over the user limit and has been placed in a read-only state."
 msgstr ""
 
 msgid "Your new %{accessTokenType}"
@@ -47432,6 +48127,9 @@ msgstr ""
 
 msgid "[Redacted]"
 msgstr "[Redacted]"
+
+msgid "[Supports GitLab-flavored markdown, including quick actions]"
+msgstr ""
 
 msgid "`end_time` should not exceed one month after `start_time`"
 msgstr ""
@@ -47610,6 +48308,9 @@ msgstr ""
 msgid "cannot be associated with both a Group and a Project"
 msgstr ""
 
+msgid "cannot be blank"
+msgstr "não pode estar em branco"
+
 msgid "cannot be changed"
 msgstr "não pode ser alterado"
 
@@ -47663,17 +48364,27 @@ msgid_plural "changes"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "check"
+msgid_plural "checks"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "checklist item"
+msgid_plural "checklist items"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "ciReport|%{criticalStart}critical%{criticalEnd}, %{highStart}high%{highEnd} and %{otherStart}others%{otherEnd}"
 msgstr ""
 
 msgid "ciReport|%{danger_start}%{degradedNum} degraded%{danger_end}, %{same_start}%{sameNum} same%{same_end}, and %{success_start}%{improvedNum} improved%{success_end}"
-msgstr ""
+msgstr "%{danger_start}%{degradedNum} piorou%{danger_end}, %{same_start}%{sameNum} igual%{same_end}e %{success_start}%{improvedNum} melhorou%{success_end}"
 
 msgid "ciReport|%{degradedNum} degraded"
 msgstr ""
 
 msgid "ciReport|%{improvedNum} improved"
-msgstr ""
+msgstr "%{improvedNum} melhorado"
 
 msgid "ciReport|%{linkStartTag}Learn more about API Fuzzing%{linkEndTag}"
 msgstr ""
@@ -47720,10 +48431,13 @@ msgstr ""
 msgid "ciReport|%{scanner} detected %{strong_start}%{number}%{strong_end} new potential %{vulnStr}"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected no %{boldStart}new%{boldEnd} potential vulnerabilities"
+msgid "ciReport|%{scanner} detected no new %{vulnStr}"
 msgstr ""
 
-msgid "ciReport|%{scanner} detected no %{strong_start}new%{strong_end} %{vulnStr}"
+msgid "ciReport|%{scanner} detected no new potential vulnerabilities"
+msgstr ""
+
+msgid "ciReport|%{scanner}: Loading resulted in an error"
 msgstr ""
 
 msgid "ciReport|: Loading resulted in an error"
@@ -47766,7 +48480,7 @@ msgid "ciReport|Browser performance test metrics results are being parsed"
 msgstr ""
 
 msgid "ciReport|Browser performance test metrics: "
-msgstr ""
+msgstr "Métricas de teste de desempenho do navegador: "
 
 msgid "ciReport|Browser performance test metrics: %{strong_start}%{changesFound}%{strong_end} change"
 msgid_plural "ciReport|Browser performance test metrics: %{strong_start}%{changesFound}%{strong_end} changes"
@@ -47882,7 +48596,7 @@ msgstr "Corrigido:"
 msgid "ciReport|Found %{issuesWithCount}"
 msgstr "Encontrado %{issuesWithCount}"
 
-msgid "ciReport|Full Report"
+msgid "ciReport|Full report"
 msgstr "Relatório completo"
 
 msgid "ciReport|Generic Report"
@@ -48060,6 +48774,11 @@ msgstr ""
 msgid "commented on %{link_to_project}"
 msgstr "comentou em %{link_to_project}"
 
+msgid "commit"
+msgid_plural "commits"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "commit %{commit_id}"
 msgstr "commit %{commit_id}"
 
@@ -48216,9 +48935,6 @@ msgstr "example.com"
 
 msgid "exceeds maximum length (100 usernames)"
 msgstr "excede o comprimento máximo (100 nomes de usuários)"
-
-msgid "exceeds the %{max_value_length} character limit"
-msgstr ""
 
 msgid "exceeds the limit of %{bytes} bytes"
 msgstr "excede o limite de %{bytes} bytes"
@@ -48402,6 +49118,9 @@ msgstr ""
 msgid "is already linked to this vulnerability"
 msgstr "já está vinculado a esta vulnerabilidade"
 
+msgid "is already present in ancestors"
+msgstr "já está presente nos antepassados"
+
 msgid "is an invalid IP address range"
 msgstr "é um intervalo de endereços IP inválido"
 
@@ -48440,6 +49159,12 @@ msgstr "não é permitido para este projeto."
 
 msgid "is not allowed since the group is not top-level group."
 msgstr ""
+
+msgid "is not allowed to add this type of parent"
+msgstr ""
+
+msgid "is not allowed to point to itself"
+msgstr "não é permitido apontar para si mesmo"
 
 msgid "is not allowed. Please use your regular email address."
 msgstr ""
@@ -48773,7 +49498,7 @@ msgid "mrWidget|Merge blocked: all threads must be resolved."
 msgstr "Mesclagem bloqueada: todos os tópicos devem ser resolvidos."
 
 msgid "mrWidget|Merge blocked: denied licenses must be removed."
-msgstr ""
+msgstr "Mesclar bloqueado: as licenças negadas devem ser removidas."
 
 msgid "mrWidget|Merge blocked: fast-forward merge is not possible. To merge this request, first rebase locally."
 msgstr ""
@@ -48934,6 +49659,9 @@ msgstr ""
 msgid "must be greater than start date"
 msgstr "deve ser maior que a data de início"
 
+msgid "must be in same hierarchy as custom role's namespace"
+msgstr ""
+
 msgid "must be inside the fork network"
 msgstr ""
 
@@ -48943,10 +49671,10 @@ msgstr ""
 msgid "must be set for a project namespace"
 msgstr ""
 
-msgid "must be top-level namespace"
-msgstr "deve ser um espaço de nome de nível superior"
-
 msgid "must be unique by status and elapsed time within a policy"
+msgstr ""
+
+msgid "must belong to same project of its requirement object."
 msgstr ""
 
 msgid "must belong to same project of the work item."
@@ -49150,6 +49878,9 @@ msgstr "Chave privada de reCAPTCHA"
 msgid "reCAPTCHA site key"
 msgstr "Chave de reCAPTCHA do site"
 
+msgid "reached maximum depth"
+msgstr "atingiu a profundidade máxima"
+
 msgid "recent activity"
 msgstr "atividade recente"
 
@@ -49204,6 +49935,11 @@ msgstr "repositório:"
 
 msgid "role's base access level does not match the access level of the membership"
 msgstr ""
+
+msgid "rule"
+msgid_plural "rules"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "running"
 msgstr "executando"
