@@ -17,7 +17,6 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
 
   let(:params) { basic_params }
   let(:ff_value) { true }
-  let(:threshold) { 5 }
   let(:project) { project_with_feature }
   let(:basic_params) { { namespace_id: project.namespace.to_param, project_id: project } }
 
@@ -48,11 +47,11 @@ RSpec.describe Projects::Ml::ExperimentsController, feature_category: :mlops do
     end
 
     it 'does not perform N+1 sql queries' do
-      control_count = ActiveRecord::QueryRecorder.new { list_experiments }
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { list_experiments }
 
       create_list(:ml_experiments, 2, project: project, user: user)
 
-      expect { list_experiments }.not_to exceed_all_query_limit(control_count).with_threshold(threshold)
+      expect { list_experiments }.not_to exceed_all_query_limit(control_count)
     end
 
     context 'when :ml_experiment_tracking is disabled for the project' do

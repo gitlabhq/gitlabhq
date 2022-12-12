@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class MemberRole < ApplicationRecord  # rubocop:disable Gitlab/NamespacedClass
+  include IgnorableColumns
+  ignore_column :download_code, remove_with: '15.9', remove_after: '2023-01-22'
+
   has_many :members
   belongs_to :namespace
 
