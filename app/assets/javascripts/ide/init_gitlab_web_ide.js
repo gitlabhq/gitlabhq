@@ -5,6 +5,7 @@ import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
 import { getBaseConfig } from './lib/gitlab_web_ide/get_base_config';
 import { setupRootElement } from './lib/gitlab_web_ide/setup_root_element';
+import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
 
 const buildRemoteIdeURL = (ideRemotePath, remoteHost, remotePathArg) => {
   const remotePath = cleanLeadingSeparator(remotePathArg);
@@ -31,6 +32,10 @@ export const initGitlabWebIDE = async (el) => {
     nonce,
     projectPath,
     ref,
+    links: {
+      feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
+      userPreferences: el.dataset.userPreferencesPath,
+    },
     async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
       const confirmed = await confirmAction(
         __('Are you sure you want to leave the Web IDE? All unsaved changes will be lost.'),

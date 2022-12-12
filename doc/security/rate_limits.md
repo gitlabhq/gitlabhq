@@ -141,6 +141,19 @@ This is to mitigate the risk of misuses, such as mass discovery of usernames in 
 
 The **rate limit** is 20 calls per minute per IP address.
 
+### Project Jobs API endpoint
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104912) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`. Disabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is not available. To make it available,
+ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `ci_enforce_rate_limits_jobs_api`.
+The feature is not ready for production use.
+
+There is a rate limit for the endpoint `project/:id/jobs`, which is enforced to reduce timeouts when retrieving jobs.
+
+The **rate limit** is 600 calls per minute per signed-in user.
+
 ## Troubleshooting
 
 ### Rack Attack is denylisting the load balancer

@@ -423,7 +423,7 @@ Check how the migration is performing while it's running. Multiple ways to do th
 
 #### High-level status of batched background migrations
 
-See how to [check the status of batched background migrations](../../update/index.md#checking-for-background-migrations-before-upgrading).
+See how to [check the status of batched background migrations](../../update/background_migrations.md).
 
 #### Query the database
 

@@ -208,6 +208,10 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
         expect(page).not_to have_link 'Create merge request'
       end
 
+      it 'shows ref switcher with correct text', :js do
+        expect(find('.ref-selector')).to have_text('master')
+      end
+
       context 'when click the compare tab' do
         before do
           wait_for_requests
@@ -220,14 +224,27 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
       end
     end
 
-    context 'feature branch' do
+    context 'feature branch', :js do
       let(:visit_commits_page) do
-        visit project_commits_path(project, 'feature')
+        visit project_commits_path(project)
+
+        find('.ref-selector').click
+        wait_for_requests
+
+        page.within('.ref-selector') do
+          fill_in 'Search by Git revision', with: 'feature'
+          wait_for_requests
+          find('li', text: 'feature', match: :prefer_exact).click
+        end
       end
 
       context 'when project does not have open merge requests' do
         before do
           visit_commits_page
+        end
+
+        it 'shows ref switcher with correct text' do
+          expect(find('.ref-selector')).to have_text('feature')
         end
 
         it 'renders project commits' do

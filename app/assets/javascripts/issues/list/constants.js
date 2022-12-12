@@ -200,9 +200,6 @@ export const filters = {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'in',
       },
-      [OPERATOR_NOT]: {
-        [NORMAL_FILTER]: 'not[in]',
-      },
     },
   },
   [TOKEN_TYPE_ASSIGNEE]: {

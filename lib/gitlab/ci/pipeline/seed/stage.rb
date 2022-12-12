@@ -10,54 +10,49 @@ module Gitlab
           delegate :size, to: :seeds
           delegate :dig, to: :seeds
 
-          def initialize(context, attributes, previous_stages)
-            @context = context
-            @pipeline = context.pipeline
-            @attributes = attributes
-            @previous_stages = previous_stages
+          attr_reader :attributes
 
-            @builds = attributes.fetch(:builds).map do |attributes|
-              Seed::Build.new(context, attributes, previous_stages + [self])
+          def initialize(context, stage_attributes, previous_stages)
+            pipeline = context.pipeline
+            @attributes = {
+              name: stage_attributes.fetch(:name),
+              position: stage_attributes.fetch(:index),
+              pipeline: pipeline,
+              project: pipeline.project,
+              partition_id: pipeline.partition_id
+            }
+
+            @stage = ::Ci::Stage.new(@attributes)
+
+            @builds = stage_attributes.fetch(:builds).map do |build_attributes|
+              Seed::Build.new(context, build_attributes, previous_stages + [self], @stage)
             end
-          end
-
-          def attributes
-            { name: @attributes.fetch(:name),
-              position: @attributes.fetch(:index),
-              pipeline: @pipeline,
-              project: @pipeline.project,
-              partition_id: @pipeline.partition_id }
           end
 
           def seeds
-            strong_memoize(:seeds) do
-              @builds.select(&:included?)
-            end
+            @builds.select(&:included?)
           end
+          strong_memoize_attr :seeds
 
           def errors
-            strong_memoize(:errors) do
-              @builds.flat_map(&:errors).compact
-            end
+            @builds.flat_map(&:errors).compact
           end
+          strong_memoize_attr :errors
 
           def seeds_names
-            strong_memoize(:seeds_names) do
-              seeds.map(&:name).to_set
-            end
+            seeds.map(&:name).to_set
           end
+          strong_memoize_attr :seeds_names
 
           def included?
             seeds.any?
           end
 
           def to_resource
-            strong_memoize(:stage) do
-              ::Ci::Stage.new(attributes).tap do |stage|
-                stage.statuses = seeds.map(&:to_resource)
-              end
-            end
+            @stage.statuses = seeds.map(&:to_resource)
+            @stage
           end
+          strong_memoize_attr :to_resource
         end
       end
     end

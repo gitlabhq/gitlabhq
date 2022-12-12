@@ -474,6 +474,14 @@ Naming/PredicateName:
 Naming/RescuedExceptionsVariableName:
   Enabled: false
 
+RSpec/AvoidTestProf:
+  Include:
+    - 'spec/migrations/**/*.rb'
+    - 'ee/spec/migrations/**/*.rb'
+    - 'spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/gitlab/background_migration/**/*.rb'
+    - 'ee/spec/lib/ee/gitlab/background_migration/**/*.rb'
+
 RSpec/FactoriesInMigrationSpecs:
   Enabled: true
   Include:

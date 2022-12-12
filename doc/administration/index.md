@@ -134,7 +134,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - Instances.
 - [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
 - [Incoming email](incoming_email.md): Configure incoming emails to allow
-  users to [reply by email](reply_by_email.md), create [issues by email](../user/project/issues/managing_issues.md#by-sending-an-email) and
+  users to [reply by email](reply_by_email.md), create [issues by email](../user/project/issues/create_issues.md#by-sending-an-email) and
   [merge requests by email](../user/project/merge_requests/creating_merge_requests.md#by-sending-an-email), and to enable [Service Desk](../user/project/service_desk.md).
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming

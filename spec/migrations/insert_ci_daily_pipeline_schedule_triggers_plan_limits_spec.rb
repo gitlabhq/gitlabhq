@@ -46,25 +46,25 @@ RSpec.describe InsertCiDailyPipelineScheduleTriggersPlanLimits do
   end
 
   context 'when on self hosted' do
-    let(:free_plan) { plans.create!(name: 'free') }
+    let(:default_plan) { plans.create!(name: 'default') }
 
     before do
       allow(Gitlab).to receive(:com?).and_return(false)
 
-      plan_limits.create!(plan_id: free_plan.id)
+      plan_limits.create!(plan_id: default_plan.id)
     end
 
     it 'does nothing' do
       reversible_migration do |migration|
         migration.before -> {
           expect(plan_limits.pluck(:plan_id, :ci_daily_pipeline_schedule_triggers)).to contain_exactly(
-            [free_plan.id, 0]
+            [default_plan.id, 0]
           )
         }
 
         migration.after -> {
           expect(plan_limits.pluck(:plan_id, :ci_daily_pipeline_schedule_triggers)).to contain_exactly(
-            [free_plan.id, 0]
+            [default_plan.id, 0]
           )
         }
       end

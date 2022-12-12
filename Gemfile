@@ -522,7 +522,7 @@ gem 'grape_logging', '~> 1.8'
 gem 'gitlab-net-dns', '~> 0.9.1'
 
 # Countries list
-gem 'countries', '~> 3.0'
+gem 'countries', '~> 4.0.0'
 
 gem 'retriable', '~> 3.1.2'
 

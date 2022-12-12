@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class IdeController < ApplicationController
+  include VSCodeCDNCSP
   include ClientsidePreviewCSP
   include StaticObjectExternalStorageCSP
   include Gitlab::Utils::StrongMemoize

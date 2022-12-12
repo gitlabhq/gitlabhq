@@ -924,6 +924,21 @@ sequence-generated column. To avoid accidental conflicts, specs should also
 avoid manually specifying any values in these kinds of columns. Instead, leave
 them unspecified, and look up the value after the row is created.
 
+##### TestProf in migration specs
+
+Because of what is described above, migration specs can't be run inside
+a database transaction. Our test suite uses
+[TestProf](https://github.com/test-prof/test-prof) to improve the runtime of the
+test suite, but `TestProf` uses database transactions to perform these optimizations.
+For this reason, we can't use `TestProf` methods in our migration specs.
+These are the methods that should not be used and should be replaced with
+default RSpec methods instead:
+
+- `let_it_be`: use `let` or `let!` instead.
+- `let_it_be_with_reload`: use `let` or `let!` instead.
+- `let_it_be_with_refind`: use `let` or `let!` instead.
+- `before_all`: use `before` or `before(:all)` instead.
+
 #### Redis
 
 GitLab stores two main categories of data in Redis: cached items, and Sidekiq

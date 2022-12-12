@@ -22,8 +22,6 @@ import {
   OPERATORS_IS,
   OPERATORS_IS_NOT,
   OPERATORS_IS_NOT_OR,
-  OPTIONS_NONE_ANY,
-  TOKEN_TITLE_SEARCH_WITHIN,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TITLE_CONFIDENTIAL,
@@ -33,6 +31,7 @@ import {
   TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_ORGANIZATION,
   TOKEN_TITLE_RELEASE,
+  TOKEN_TITLE_SEARCH_WITHIN,
   TOKEN_TITLE_TYPE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
@@ -43,8 +42,8 @@ import {
   TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_ORGANIZATION,
   TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_TYPE,
   TOKEN_TYPE_SEARCH_WITHIN,
+  TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
@@ -165,7 +164,7 @@ export default {
     eeIsOkrsEnabled: {
       type: Boolean,
       required: false,
-      default: () => false,
+      default: false,
     },
   },
   data() {
@@ -193,10 +192,7 @@ export default {
         return data[this.namespace]?.issues.nodes ?? [];
       },
       result({ data }) {
-        if (!data) {
-          return;
-        }
-        this.pageInfo = data[this.namespace]?.issues.pageInfo ?? {};
+        this.pageInfo = data?.[this.namespace]?.issues.pageInfo ?? {};
         this.exportCsvPathWithQuery = this.getExportCsvPathWithQuery();
       },
       error(error) {
@@ -327,7 +323,6 @@ export default {
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
           token: AuthorToken,
-          dataType: 'user',
           defaultAuthors: [],
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchAuthors: this.fetchUsers,
@@ -339,8 +334,6 @@ export default {
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
           token: AuthorToken,
-          dataType: 'user',
-          defaultAuthors: OPTIONS_NONE_ANY,
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
           fetchAuthors: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
@@ -360,7 +353,6 @@ export default {
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
           token: LabelToken,
-          defaultLabels: OPTIONS_NONE_ANY,
           fetchLabels: this.fetchLabels,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-label`,
         },
@@ -417,7 +409,6 @@ export default {
           token: CrmContactToken,
           fullPath: this.fullPath,
           isProject: this.isProject,
-          defaultContacts: OPTIONS_NONE_ANY,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-crm-contacts`,
           operators: OPERATORS_IS,
           unique: true,
@@ -432,7 +423,6 @@ export default {
           token: CrmOrganizationToken,
           fullPath: this.fullPath,
           isProject: this.isProject,
-          defaultOrganizations: OPTIONS_NONE_ANY,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-crm-organizations`,
           operators: OPERATORS_IS,
           unique: true,
@@ -505,18 +495,17 @@ export default {
     eventHub.$off('issuables:toggleBulkEdit', this.toggleBulkEditSidebar);
   },
   methods: {
-    fetchWithCache(path, cacheName, searchKey, search, wrapData = false) {
+    fetchWithCache(path, cacheName, searchKey, search) {
       if (this.cache[cacheName]) {
         const data = search
           ? fuzzaldrinPlus.filter(this.cache[cacheName], search, { key: searchKey })
           : this.cache[cacheName].slice(0, MAX_LIST_SIZE);
-        return wrapData ? Promise.resolve({ data }) : Promise.resolve(data);
+        return Promise.resolve(data);
       }
 
       return axios.get(path).then(({ data }) => {
         this.cache[cacheName] = data;
-        const result = data.slice(0, MAX_LIST_SIZE);
-        return wrapData ? { data: result } : result;
+        return data.slice(0, MAX_LIST_SIZE);
       });
     },
     fetchEmojis(search) {
@@ -580,8 +569,7 @@ export default {
         const bulkUpdateSidebar = await import('~/issuable');
         bulkUpdateSidebar.initBulkUpdateSidebar('issuable_');
 
-        const usersSelect = await import('~/users_select');
-        const UsersSelect = usersSelect.default;
+        const UsersSelect = (await import('~/users_select')).default;
         new UsersSelect(); // eslint-disable-line no-new
 
         this.hasInitBulkEdit = true;
@@ -594,8 +582,8 @@ export default {
         return;
       }
 
-      this.pageParams = getInitialPageParams(this.pageSize);
       this.state = state;
+      this.pageParams = getInitialPageParams(this.pageSize);
 
       this.$router.push({ query: this.urlParams });
     },
@@ -604,7 +592,6 @@ export default {
     },
     handleFilter(tokens) {
       this.setFilterTokens(tokens);
-
       this.pageParams = getInitialPageParams(this.pageSize);
 
       this.$router.push({ query: this.urlParams });
@@ -673,8 +660,8 @@ export default {
         return;
       }
 
-      this.pageParams = getInitialPageParams(this.pageSize);
       this.sortKey = sortKey;
+      this.pageParams = getInitialPageParams(this.pageSize);
 
       if (this.isSignedIn) {
         this.saveSortPreference(sortKey);

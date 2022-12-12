@@ -183,7 +183,7 @@ RSpec.describe 'Commits', feature_category: :source_code_management do
       set_cookie('new_repo', 'true')
       visit project_commits_path(project, branch_name)
 
-      expect(find('.js-project-refs-dropdown')).to have_content branch_name
+      expect(find('.ref-selector')).to have_content branch_name
     end
   end
 

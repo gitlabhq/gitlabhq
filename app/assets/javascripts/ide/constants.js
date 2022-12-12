@@ -118,3 +118,5 @@ export const DEFAULT_BRANCH = 'main';
 // Ping Usage Metrics Keys
 export const PING_USAGE_PREVIEW_KEY = 'web_ide_clientside_preview';
 export const PING_USAGE_PREVIEW_SUCCESS_KEY = 'web_ide_clientside_preview_success';
+
+export const GITLAB_WEB_IDE_FEEDBACK_ISSUE = 'https://gitlab.com/gitlab-org/gitlab/-/issues/377367';

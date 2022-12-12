@@ -20,20 +20,6 @@ RSpec.describe API::Integrations::JiraConnect::Subscriptions, feature_category: 
         post api('/integrations/jira_connect/subscriptions', user), params: { jwt: jwt, namespace_path: group.path }
       end
 
-      context 'with feature flag disabled' do
-        before do
-          stub_feature_flags(jira_connect_oauth: false)
-        end
-
-        let(:jwt) { '123' }
-
-        it 'returns 404' do
-          post_subscriptions
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-      end
-
       context 'with invalid JWT' do
         let(:jwt) { '123' }
 

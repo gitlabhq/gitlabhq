@@ -150,23 +150,23 @@ For more information on:
 
 ### Register GitLab in your SAML IdP
 
-1. Register the GitLab SP in your SAML 2.0 IdP, using the application name specified
-   in `issuer`.
+1. Register the GitLab SP in your SAML IdP, using the application name specified in `issuer`.
 
-To ease configuration, most IdP accept a metadata URL for the application to provide
-configuration information to the IdP. To build the metadata URL for GitLab, append
-`users/auth/saml/metadata` to the HTTPS URL of your GitLab installation, for instance:
+1. To provide configuration information to the IdP, build a metadata URL for the
+   application. To build the metadata URL for GitLab, append `users/auth/saml/metadata`
+   to the HTTPS URL of your GitLab installation. For example:
 
-```plaintext
-https://gitlab.example.com/users/auth/saml/metadata
-```
+   ```plaintext
+   https://gitlab.example.com/users/auth/saml/metadata
+   ```
 
-At a minimum the IdP *must* provide a claim containing the user's email address using `email` or `mail`.
-See [configuring assertions](#configure-assertions) for other available claims.
+   At a minimum the IdP **must** provide a claim containing the user's email address
+   using `email` or `mail`. For more information on other available claims, see
+   [configuring assertions](#configure-assertions).
 
-On the sign in page there should now be a SAML button below the regular sign in form.
-Select the icon to begin the authentication process. If everything goes well the user
-is returned to GitLab and signed in.
+1. On the sign in page there should now be a SAML icon below the regular sign in form.
+   Select the icon to begin the authentication process. If authentication is successful,
+   you are returned to GitLab and signed in.
 
 ### Configure SAML on your IdP
 

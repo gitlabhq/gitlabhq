@@ -1,6 +1,7 @@
 const IS_EE = require('./config/helpers/is_ee_env');
 const isESLint = require('./config/helpers/is_eslint');
 const IS_JH = require('./config/helpers/is_jh_env');
+const { TEST_HOST } = require('./spec/frontend/__helpers__/test_constants');
 
 module.exports = (path, options = {}) => {
   const {
@@ -156,6 +157,7 @@ module.exports = (path, options = {}) => {
     'dateformat',
     'lowlight',
     'vscode-languageserver-types',
+    'yaml',
     ...gfmParserDependencies,
   ];
 
@@ -186,11 +188,16 @@ module.exports = (path, options = {}) => {
       '^.+\\.(md|zip|png|yml|yaml)$': './spec/frontend/__helpers__/raw_transformer.js',
     },
     transformIgnorePatterns: [`node_modules/(?!(${transformIgnoreNodeModules.join('|')}))`],
-    timers: 'legacy',
+    fakeTimers: {
+      enableGlobally: true,
+      doNotFake: ['nextTick', 'setImmediate'],
+      legacyFakeTimers: true,
+    },
     testEnvironment: '<rootDir>/spec/frontend/environment.js',
     testEnvironmentOptions: {
       IS_EE,
       IS_JH,
+      url: TEST_HOST,
     },
     testRunner: 'jest-jasmine2',
   };

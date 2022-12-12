@@ -205,3 +205,18 @@
 .blob-content-holder {
   margin-top: $gl-padding;
 }
+
+
+.web-ide-promo-popover {
+  box-shadow: 0 0 18px -1.9px rgba(119, 89, 194, 0.16),
+    0 0 12.9px -1.7px rgba(119, 89, 194, 0.16), 0 0 9.2px -1.4px rgba(119, 89, 194, 0.16),
+    0 0 6.4px -1.1px rgba(119, 89, 194, 0.16), 0 0 4.5px -0.8px rgba(119, 89, 194, 0.16),
+    0 0 3px -0.6px rgba(119, 89, 194, 0.16), 0 0 1.8px -0.3px rgba(119, 89, 194, 0.16),
+    0 0 0.6px rgba(119, 89, 194, 0.16);
+  z-index: 999;
+}
+
+.web-ide-promo-popover-illustration {
+  width: calc(100% + 24px);
+  margin: -28px -12px 0;
+}

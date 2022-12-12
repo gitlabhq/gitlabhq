@@ -17,14 +17,14 @@ When a project is shared with a group:
 
 - All group members, including members of subgroups or projects that belong to the group,
 are assigned the same role in the project.
-This role is displayed in the Max role column of the Project members list.
+Each member's role is displayed in **Project information > Members > Max role**.
 - The group is listed in the **Groups** tab.
 - The project is listed on the group dashboard.
 
-Be aware of the restrictions that apply when sharing projects with:
+Be aware of the restrictions that apply when you share projects with:
 
 - [Groups with a more restrictive visibility level](#share-projects-with-groups-with-a-more-restrictive-visibility-level).
-- [Group lock](#share-project-with-group-lock).
+- [Restricted sharing](#prevent-project-sharing).
 
 ## Share projects with groups with a more restrictive visibility level
 
@@ -41,7 +41,7 @@ For example, you can share:
 
 This restriction applies to subgroups as well. For example, `group/subgroup01/project`:
 
-- Can not be shared with `group`.
+- Can't be shared with `group`.
 - Can be shared with `group/subgroup02` or `group/subgroup01/subgroup03`.
 
 When you share a project with a group that has a more restrictive visibility level than the project:
@@ -51,7 +51,7 @@ When you share a project with a group that has a more restrictive visibility lev
 - Project members who are direct or indirect members of the group can see
 group members listed in addition to members of the project.
 
-## Share a project with a group of users
+## Share a project with a group
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/247208) in GitLab 13.11 from a form to a modal
     window [with a flag](../../feature_flags.md). Disabled by default.
@@ -76,10 +76,10 @@ To share a project with a group:
 1. Optional. Select an **Access expiration date**.
 1. Select **Invite**.
 
-## Share project with group lock
+## Prevent project sharing
 
-It is possible to prevent projects in a group from
+You can prevent members of a group from
 [sharing a project with another group](../members/share_project_with_groups.md).
-This allows for tighter control over project access.
+This restriction allows for tighter control over project access.
 
-Learn more about [Share with group lock](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).
+For more information, see [Prevent a project from being shared with groups](../../group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups).

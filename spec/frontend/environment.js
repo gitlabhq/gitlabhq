@@ -1,7 +1,7 @@
 /* eslint-disable import/no-commonjs, max-classes-per-file */
 
 const path = require('path');
-const JSDOMEnvironment = require('jest-environment-jsdom');
+const { TestEnvironment } = require('jest-environment-jsdom');
 const { ErrorWithStack } = require('jest-util');
 const {
   setGlobalDateToFakeDate,
@@ -11,10 +11,10 @@ const { TEST_HOST } = require('./__helpers__/test_constants');
 
 const ROOT_PATH = path.resolve(__dirname, '../..');
 
-class CustomEnvironment extends JSDOMEnvironment {
-  constructor(config, context) {
+class CustomEnvironment extends TestEnvironment {
+  constructor({ globalConfig, projectConfig }, context) {
     // Setup testURL so that window.location is setup properly
-    super({ ...config, testURL: TEST_HOST }, context);
+    super({ globalConfig, projectConfig: { ...projectConfig, testURL: TEST_HOST } }, context);
 
     // Fake the `Date` for `jsdom` which fixes things like document.cookie
     // https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39496#note_503084332
@@ -39,8 +39,7 @@ class CustomEnvironment extends JSDOMEnvironment {
       },
     });
 
-    const { testEnvironmentOptions } = config;
-    const { IS_EE } = testEnvironmentOptions;
+    const { IS_EE } = projectConfig.testEnvironmentOptions;
     this.global.gon = {
       ee: IS_EE,
     };

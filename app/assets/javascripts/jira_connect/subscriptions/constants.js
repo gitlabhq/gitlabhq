@@ -38,7 +38,7 @@ export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira/development_
   anchor: 'use-the-integration',
 });
 export const OAUTH_SELF_MANAGED_DOC_LINK = helpPagePath('integration/jira/connect-app', {
-  anchor: 'install-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances',
+  anchor: 'connect-the-gitlabcom-for-jira-cloud-app-for-self-managed-instances',
 });
 
 export const GITLAB_COM_BASE_PATH = 'https://gitlab.com';

@@ -54,7 +54,8 @@ module Gitlab
           phone_verification_send_code: { threshold: 10, interval: 1.hour },
           phone_verification_verify_code: { threshold: 10, interval: 10.minutes },
           namespace_exists: { threshold: 20, interval: 1.minute },
-          fetch_google_ip_list: { threshold: 10, interval: 1.minute }
+          fetch_google_ip_list: { threshold: 10, interval: 1.minute },
+          jobs_index: { threshold: 600, interval: 1.minute }
         }.freeze
       end
 

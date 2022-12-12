@@ -1,7 +1,0 @@
-name: usage_data_diff_searches
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86603
-rollout_issue_url:
-milestone: '15.0'
-type: development
-group: group::code review
-default_enabled: true

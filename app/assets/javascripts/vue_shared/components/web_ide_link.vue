@@ -139,6 +139,11 @@ export default {
       required: false,
       default: '',
     },
+    webIdePromoPopoverImg: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -379,19 +384,37 @@ export default {
           v-if="displayVscodeWebIdeCallout"
           :target="$options.webIdeButtonId"
           :show="shouldShowCallout"
+          :css-classes="['web-ide-promo-popover']"
           show-close-button
           triggers="manual"
           @close-button-clicked="dismiss"
         >
-          <template #title>
-            {{ __('Try out the new Web IDE') }}
-          </template>
-
-          {{
-            __(
-              'VS Code in your browser. View code and make changes from the same UI as in your local IDE 🎉',
-            )
-          }}
+          <img
+            :src="webIdePromoPopoverImg"
+            class="web-ide-promo-popover-illustration"
+            width="280"
+            height="140"
+          />
+          <div class="gl-mx-2">
+            <h5 class="gl-mt-3 gl-mb-3">{{ __('The new Web IDE') }}</h5>
+            <p>
+              {{
+                __(
+                  'VS Code in your browser. View code and make changes from the same UI as in your local IDE.',
+                )
+              }}
+            </p>
+            <gl-link
+              class="gl-button btn btn-confirm block gl-mb-4 gl-mt-5"
+              variant="confirm"
+              category="primary"
+              target="_blank"
+              :href="webIdeUrl"
+              block
+            >
+              {{ __('Try it out now') }}
+            </gl-link>
+          </div>
         </gl-popover>
       </div>
     </template>

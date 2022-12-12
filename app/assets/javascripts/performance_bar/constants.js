@@ -6,6 +6,12 @@ export const sortOrders = {
 };
 
 export const sortOrderOptions = {
-  [sortOrders.DURATION]: s__('PerformanceBar|Sort by duration'),
-  [sortOrders.CHRONOLOGICAL]: s__('PerformanceBar|Sort chronologically'),
+  [sortOrders.DURATION]: {
+    value: sortOrders.DURATION,
+    text: s__('PerformanceBar|Sort by duration'),
+  },
+  [sortOrders.CHRONOLOGICAL]: {
+    value: sortOrders.CHRONOLOGICAL,
+    text: s__('PerformanceBar|Sort chronologically'),
+  },
 };

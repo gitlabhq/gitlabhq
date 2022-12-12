@@ -40,7 +40,7 @@ To create an issue description template:
    where `mytemplate` is the name of your issue template.
 1. Commit to your default branch.
 
-To check if this has worked correctly, [create a new issue](issues/managing_issues.md#create-an-issue)
+To check if this has worked correctly, [create a new issue](issues/create_issues.md)
 and see if you can find your description template in the **Choose a template** dropdown list.
 
 ## Create a merge request template
@@ -81,7 +81,7 @@ To discard any changes to the description you've made after selecting the templa
 
 NOTE:
 You can create shortcut links to create an issue using a designated template.
-For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/managing_issues.md#using-a-url-with-prefilled-values).
+For example: `https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal`. Read more about [creating issues using a URL with prefilled values](issues/create_issues.md#using-a-url-with-prefilled-values).
 
 ### Supported variables in merge request templates
 

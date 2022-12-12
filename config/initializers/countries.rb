@@ -8,7 +8,7 @@ end
 # This overrides the display name for Ukraine to 'Ukraine (except the Crimea, Donetsk, and Luhansk regions)'
 # See: https://gitlab.com/gitlab-org/gitlab/-/issues/374946
 # To be removed after https://gitlab.com/gitlab-org/gitlab/issues/14784 is implemented
-# Data fetched is based on https://github.com/hexorx/countries/blob/master/lib/countries/data/countries/UA.yaml
+# Data fetched is based on https://github.com/countries/countries/blob/master/lib/countries/data/countries/UA.yaml
 ISO3166::Data.register(
   continent: "Europe",
   address_format: "|-

@@ -21,6 +21,18 @@ RSpec.describe IdeController, feature_category: :web_ide do
   let(:user) { creator }
   let(:branch) { '' }
 
+  def find_csp_frame_src
+    csp = response.headers['Content-Security-Policy']
+
+    # Transform "frame-src foo bar; connect-src foo bar; script-src ..."
+    # into array of connect-src values
+    csp.split(';')
+      .map(&:strip)
+      .find { |entry| entry.starts_with?('frame-src') }
+      .split(' ')
+      .drop(1)
+  end
+
   before do
     sign_in(user)
   end
@@ -262,6 +274,33 @@ RSpec.describe IdeController, feature_category: :web_ide do
               expect(response).not_to render_template(top_nav_partial)
             end
           end
+        end
+      end
+    end
+
+    describe 'frame-src content security policy' do
+      let(:route) { '/-/ide' }
+
+      before do
+        subject
+      end
+
+      it 'adds https://*.vscode-cdn.net in frame-src CSP policy' do
+        expect(find_csp_frame_src).to include("https://*.vscode-cdn.net/")
+      end
+    end
+
+    describe 'when vscode_web_ide feature flag is disabled' do
+      describe 'frame-src content security policy' do
+        let(:route) { '/-/ide' }
+
+        before do
+          stub_feature_flags(vscode_web_ide: false)
+          subject
+        end
+
+        it 'does not add https://*.vscode-cdn.net in frame-src CSP policy' do
+          expect(find_csp_frame_src).not_to include("https://*.vscode-cdn.net/")
         end
       end
     end

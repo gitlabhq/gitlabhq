@@ -63,12 +63,16 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       end
 
       it "updates the content security policy with the correct connect sources" do
-        expect(find_csp_connect_src).to include(
+        expect(find_csp_source('connect-src')).to include(
           "ws://#{remote_host}",
           "wss://#{remote_host}",
           "http://#{remote_host}",
           "https://#{remote_host}"
         )
+      end
+
+      it "updates the content security policy with the correct frame sources" do
+        expect(find_csp_source('frame-src')).to include("https://*.vscode-cdn.net/")
       end
     end
 
@@ -80,7 +84,7 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       end
 
       it "updates the content security policy with the correct remote_host" do
-        expect(find_csp_connect_src).to include(
+        expect(find_csp_source('connect-src')).to include(
           "ws://#{remote_host}",
           "wss://#{remote_host}",
           "http://#{remote_host}",
@@ -97,6 +101,12 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       let(:ff_vscode_web_ide) { false }
 
       it_behaves_like '404 response'
+
+      it 'does not the content security policy with the correct frame sources' do
+        post_to_remote_ide
+
+        expect(find_csp_source('frame-src')).not_to include("https://*.vscode-cdn.net/")
+      end
     end
 
     context "when the remote host is invalid" do
@@ -118,14 +128,14 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
     }
   end
 
-  def find_csp_connect_src
+  def find_csp_source(key)
     csp = response.headers['Content-Security-Policy']
 
     # Transform "default-src foo bar; connect-src foo bar; script-src ..."
-    # into array of connect-src values
+    # into array of values for a single directive based on the given key
     csp.split(';')
       .map(&:strip)
-      .find { |entry| entry.starts_with?('connect-src') }
+      .find { |entry| entry.starts_with?(key) }
       .split(' ')
       .drop(1)
   end

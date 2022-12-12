@@ -10,7 +10,7 @@
     .nav-block
       .tree-ref-container
         .tree-ref-holder
-          = render 'shared/ref_switcher', destination: 'commits'
+          #js-project-commits-ref-switcher{ data: { "project-id" => @project.id, "ref" => @ref, "commits_path": project_commits_path(@project) } }
 
         %ul.breadcrumb.repo-breadcrumb
           = commits_breadcrumbs

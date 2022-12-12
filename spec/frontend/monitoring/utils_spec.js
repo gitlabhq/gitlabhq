@@ -435,6 +435,7 @@ describe('monitoring/utils', () => {
 
   describe('setCustomVariablesFromUrl', () => {
     beforeEach(() => {
+      window.history.pushState = jest.fn();
       jest.spyOn(urlUtils, 'updateHistory');
     });
 

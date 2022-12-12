@@ -37,12 +37,12 @@ describe('RunnerTypeBadge', () => {
   };
 
   beforeEach(() => {
-    jest.useFakeTimers('modern');
+    jest.useFakeTimers({ legacyFakeTimers: false });
     jest.setSystemTime(new Date('2021-01-01T00:00:00Z'));
   });
 
   afterEach(() => {
-    jest.useFakeTimers('legacy');
+    jest.useFakeTimers({ legacyFakeTimers: true });
 
     wrapper.destroy();
   });

@@ -24,6 +24,8 @@ module.exports = {
       '^jh_else_ce_test_helpers(/.*)$': '<rootDir>/jh/spec/frontend_integration/test_helpers$1',
     },
   }),
-  timers: 'real',
+  fakeTimers: {
+    enableGlobally: false,
+  },
   testTimeout: process.env.CI ? 20000 : 7000,
 };

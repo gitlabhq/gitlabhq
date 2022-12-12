@@ -448,13 +448,15 @@ describe('GroupRunnersApp', () => {
     it('navigates to the next page', async () => {
       await findRunnerPaginationNext().trigger('click');
 
-      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith({
-        groupFullPath: mockGroupFullPath,
-        membership: MEMBERSHIP_DESCENDANTS,
-        sort: CREATED_DESC,
-        first: RUNNER_PAGE_SIZE,
-        after: pageInfo.endCursor,
-      });
+      expect(mockGroupRunnersHandler).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          groupFullPath: mockGroupFullPath,
+          membership: MEMBERSHIP_DESCENDANTS,
+          sort: CREATED_DESC,
+          first: RUNNER_PAGE_SIZE,
+          after: pageInfo.endCursor,
+        }),
+      );
     });
   });
 

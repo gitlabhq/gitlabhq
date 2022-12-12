@@ -2755,6 +2755,9 @@ msgstr ""
 msgid "AdminSettings|Auto DevOps domain"
 msgstr ""
 
+msgid "AdminSettings|By default, set a limit to 0 to have no limit."
+msgstr ""
+
 msgid "AdminSettings|CI/CD limits"
 msgstr ""
 
@@ -2998,9 +3001,6 @@ msgstr ""
 msgid "AdminSettings|Set a CI/CD template as the required pipeline configuration for all projects in the instance. Project CI/CD configuration merges into the required pipeline configuration when the pipeline runs. %{link_start}What is a required pipeline configuration?%{link_end}"
 msgstr ""
 
-msgid "AdminSettings|Set limit to 0 to disable it."
-msgstr ""
-
 msgid "AdminSettings|Set the expiration time of authentication tokens of newly registered group runners."
 msgstr ""
 
@@ -3044,6 +3044,9 @@ msgid "AdminSettings|The template for the required pipeline configuration can be
 msgstr ""
 
 msgid "AdminSettings|There are Advanced Search migrations pending that require indexing to pause. Indexing must remain paused until GitLab completes the migrations."
+msgstr ""
+
+msgid "AdminSettings|This limit cannot be disabled. Set to 0 to block all DAG dependencies."
 msgstr ""
 
 msgid "AdminSettings|To enable Registration Features, first enable Service Ping."
@@ -23423,6 +23426,9 @@ msgstr ""
 msgid "JiraService|Change GitLab version"
 msgstr ""
 
+msgid "JiraService|Continue setup in GitLab"
+msgstr ""
+
 msgid "JiraService|Define the type of Jira issue to create from a vulnerability."
 msgstr ""
 
@@ -23469,6 +23475,9 @@ msgid "JiraService|IDs must be a list of numbers that can be split with , or ;"
 msgstr ""
 
 msgid "JiraService|If different from Web URL."
+msgstr ""
+
+msgid "JiraService|In order to complete the set up, you’ll need to complete a few steps in GitLab."
 msgstr ""
 
 msgid "JiraService|Issues created from vulnerabilities in this project will be Jira issues, even if GitLab issues are enabled."
@@ -41383,6 +41392,9 @@ msgstr ""
 msgid "The name of the Jenkins project. Copy the name from the end of the URL to the project."
 msgstr ""
 
+msgid "The new Web IDE"
+msgstr ""
+
 msgid "The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job"
 msgstr ""
 
@@ -43633,13 +43645,13 @@ msgstr ""
 msgid "Try grouping with different labels"
 msgstr ""
 
+msgid "Try it out now"
+msgstr ""
+
 msgid "Try logging in using your username or email. If you have forgotten your password, try recovering it"
 msgstr ""
 
 msgid "Try out GitLab Pipelines"
-msgstr ""
-
-msgid "Try out the new Web IDE"
 msgstr ""
 
 msgid "Try the troubleshooting steps here."
@@ -45111,7 +45123,7 @@ msgstr ""
 msgid "Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines."
 msgstr ""
 
-msgid "VS Code in your browser. View code and make changes from the same UI as in your local IDE 🎉"
+msgid "VS Code in your browser. View code and make changes from the same UI as in your local IDE."
 msgstr ""
 
 msgid "Valid From"

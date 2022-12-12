@@ -165,7 +165,7 @@ RSpec.describe "Projects > Settings > Pipelines settings", feature_category: :pr
         let(:page_token) { find('#registration_token').text }
 
         before do
-          click_button 'Reset registration token'
+          click_link 'Reset registration token'
         end
 
         it 'changes registration token' do

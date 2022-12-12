@@ -581,7 +581,8 @@ limit value. For example, for a maximum frequency of:
 - Once per 10 minutes, the limit must be `144`.
 - Once per 60 minutes, the limit must be `24`
 
-There is no limit for self-managed instances by default.
+The minimum value is `24`, or one pipeline per 60 minutes.
+There is no maximum value.
 
 To set this limit to `1440` on a self-managed installation, run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):

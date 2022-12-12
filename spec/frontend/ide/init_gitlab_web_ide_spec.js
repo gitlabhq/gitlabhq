@@ -1,4 +1,5 @@
 import { start } from '@gitlab/web-ide';
+import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from '~/ide/constants';
 import { initGitlabWebIDE } from '~/ide/init_gitlab_web_ide';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
@@ -14,6 +15,7 @@ const TEST_NONCE = 'test123nonce';
 const TEST_PROJECT_PATH = 'group1/project1';
 const TEST_BRANCH_NAME = '12345-foo-patch';
 const TEST_GITLAB_URL = 'https://test-gitlab/';
+const TEST_USER_PREFERENCES_PATH = '/user/preferences';
 const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/webpack/assets/gitlab-web-ide/public/path';
 const TEST_IDE_REMOTE_PATH = '/-/ide/remote/:remote_host/:remote_path';
 const TEST_START_REMOTE_PARAMS = {
@@ -35,6 +37,7 @@ describe('ide/init_gitlab_web_ide', () => {
     el.dataset.cspNonce = TEST_NONCE;
     el.dataset.branchName = TEST_BRANCH_NAME;
     el.dataset.ideRemotePath = TEST_IDE_REMOTE_PATH;
+    el.dataset.userPreferencesPath = TEST_USER_PREFERENCES_PATH;
 
     document.body.append(el);
   };
@@ -74,6 +77,10 @@ describe('ide/init_gitlab_web_ide', () => {
       ref: TEST_BRANCH_NAME,
       gitlabUrl: TEST_GITLAB_URL,
       nonce: TEST_NONCE,
+      links: {
+        userPreferences: TEST_USER_PREFERENCES_PATH,
+        feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
+      },
       handleStartRemote: expect.any(Function),
     });
   });

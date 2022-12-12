@@ -131,6 +131,10 @@
   - 1
 - - delete_user
   - 1
+- - dependencies_destroy_export
+  - 1
+- - dependencies_export
+  - 1
 - - dependency_proxy
   - 1
 - - dependency_proxy_blob

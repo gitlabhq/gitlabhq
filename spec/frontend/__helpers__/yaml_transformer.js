@@ -6,6 +6,6 @@ module.exports = {
   process: (sourceContent) => {
     const jsonContent = JsYaml.load(sourceContent);
     const json = JSON.stringify(jsonContent);
-    return `module.exports = ${json}`;
+    return { code: `module.exports = ${json}` };
   },
 };

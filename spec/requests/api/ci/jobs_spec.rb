@@ -487,6 +487,46 @@ RSpec.describe API::Ci::Jobs, feature_category: :continuous_integration do
     end
   end
 
+  describe 'GET /projects/:id/jobs rate limited' do
+    let(:query) { {} }
+
+    context 'with the ci_enforce_rate_limits_jobs_api feature flag on' do
+      before do
+        stub_feature_flags(ci_enforce_rate_limits_jobs_api: true)
+
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold]
+          allow(strategy).to receive(:increment).and_return(threshold + 1)
+        end
+
+        get api("/projects/#{project.id}/jobs", api_user), params: query
+      end
+
+      it 'enforces rate limits for the endpoint' do
+        expect(response).to have_gitlab_http_status :too_many_requests
+        expect(json_response['message']['error']).to eq('This endpoint has been requested too many times. Try again later.')
+      end
+    end
+
+    context 'with the ci_enforce_rate_limits_jobs_api feature flag off' do
+      before do
+        stub_feature_flags(ci_enforce_rate_limits_jobs_api: false)
+
+        allow_next_instance_of(Gitlab::ApplicationRateLimiter::BaseStrategy) do |strategy|
+          threshold = Gitlab::ApplicationRateLimiter.rate_limits[:jobs_index][:threshold]
+          allow(strategy).to receive(:increment).and_return(threshold + 1)
+        end
+
+        get api("/projects/#{project.id}/jobs", api_user), params: query
+      end
+
+      it 'makes a successful request' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_limited_pagination_headers
+      end
+    end
+  end
+
   describe 'GET /projects/:id/jobs/:job_id' do
     before do |example|
       unless example.metadata[:skip_before_request]

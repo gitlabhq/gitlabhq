@@ -6,224 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Manage issues **(FREE)**
 
-[GitLab Issues](index.md) are the fundamental medium for collaborating on ideas and
-planning work in GitLab.
-
-## Create an issue
-
-When you create an issue, you are prompted to enter the fields of the issue.
-If you know the values you want to assign to an issue, you can use
-[quick actions](../quick_actions.md) to enter them.
-
-You can create an issue in many ways in GitLab:
-
-- [From a project](#from-a-project)
-- [From a group](#from-a-group)
-- [From another issue or incident](#from-another-issue-or-incident)
-- [From an issue board](#from-an-issue-board)
-- [By sending an email](#by-sending-an-email)
-- [Using a URL with prefilled values](#using-a-url-with-prefilled-values)
-- [Using Service Desk](#using-service-desk)
-
-### From a project
-
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
-To create an issue:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. Either:
-
-   - On the left sidebar, select **Issues**, and then, in the top right corner, select **New issue**.
-   - On the top bar, select the plus sign (**{plus-square}**) and then, under **This project**,
-     select **New issue**.
-
-1. Complete the [fields](#fields-in-the-new-issue-form).
-1. Select **Create issue**.
-
-The newly created issue opens.
-
-### From a group
-
-Issues belong to projects, but when you're in a group, you can access and create issues that belong
-to the projects in the group.
-
-Prerequisites:
-
-- You must have at least the Guest role for the project in the group.
-
-To create an issue from a group:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. On the left sidebar, select **Issues**.
-1. In the top right corner, select **Select project to create issue**.
-1. Select the project you'd like to create an issue for. The button now reflects the selected
-   project.
-1. Select **New issue in `<project name>`**.
-1. Complete the [fields](#fields-in-the-new-issue-form).
-1. Select **Create issue**.
-
-The newly created issue opens.
-
-The project you selected most recently becomes the default for your next visit.
-This can save you a lot of time, if you mostly create issues for the same project.
-
-### From another issue or incident
-
-> - New issue becoming linked to the issue of origin [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/68226) in GitLab 14.3.
-> - **Relate to…** checkbox [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
-
-You can create a new issue from an existing one. The two issues can then be marked as related.
-
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
-To create an issue from another issue:
-
-1. In an existing issue, select the vertical ellipsis (**{ellipsis_v}**).
-1. Select **New related issue**.
-1. Complete the [fields](#fields-in-the-new-issue-form).
-   The new issue form has a **Relate to issue #123** checkbox, where `123` is the ID of the
-   issue of origin. If you keep this checkbox checked, the two issues become
-   [linked](related_issues.md).
-1. Select **Create issue**.
-
-The newly created issue opens.
-
-### From an issue board
-
-You can create a new issue from an [issue board](../issue_board.md).
-
-Prerequisites:
-
-- You must have at least the Guest role for the project.
-
-To create an issue from a project issue board:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. Select **Issues > Boards**.
-1. At the top of a board list, select **New issue** (**{plus-square}**).
-1. Enter the issue's title.
-1. Select **Create issue**.
-
-To create an issue from a group issue board:
-
-1. On the top bar, select **Main menu > Groups** and find your group.
-1. Select **Issues > Boards**.
-1. At the top of a board list, select **New issue** (**{plus-square}**).
-1. Enter the issue's title.
-1. Under **Projects**, select the project in the group that the issue should belong to.
-1. Select **Create issue**.
-
-The issue is created and shows up in the board list. It shares the list's characteristic, so, for
-example, if the list is scoped to a label `Frontend`, the new issue also has this label.
-
-### By sending an email
-
-> - Generated email address format changed in GitLab 11.7.
-> - The older format is still supported, so existing aliases and contacts still work.
-
-You can send an email to create an issue in a project on the project's
-**Issues List** page.
-
-Prerequisites:
-
-- Your GitLab instance must have [incoming email](../../../administration/incoming_email.md)
-  configured.
-- There must be at least one issue in the issue list.
-- You must have at least the Guest role for the project.
-
-To email an issue to a project:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. Select **Issues**.
-1. At the bottom of the page, select **Email a new issue to this project**.
-1. To copy the email address, select **Copy** (**{copy-to-clipboard}**).
-1. From your email client, send an email to this address.
-   The subject is used as the title of the new issue, and the email body becomes the description.
-   You can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md).
-
-A new issue is created, with your user as the author.
-You can save this address as a contact in your email client to use it again.
-
-WARNING:
-The email address you see is a private email address, generated just for you.
-**Keep it to yourself**, because anyone who knows it can create issues or merge requests as if they
-were you.
-
-To regenerate the email address:
-
-1. On the issues list, select **Email a new issue to this project**.
-1. Select **reset this token**.
-
-### Using a URL with prefilled values
-
-> - Ability to use both `issuable_template` and `issue[description]` in the same URL [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/80554) in GitLab 14.9.
-> - Ability to specify `add_related_issue` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/198494) in GitLab 14.9.
-
-To link directly to the new issue page with prefilled fields, use query
-string parameters in a URL. You can embed a URL in an external
-HTML page to create issues with certain fields prefilled.
-
-| Field                | URL parameter         | Notes                                                                                                                           |
-| -------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Title                | `issue[title]`        | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
-| Issue type           | `issue[issue_type]`   | Either `incident` or `issue`.                                                                                                   |
-| Description template | `issuable_template`   | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding).                                                          |
-| Description          | `issue[description]`  | Must be [URL-encoded](../../../api/index.md#namespaced-path-encoding). If used in combination with `issuable_template` or a [default issue template](../description_templates.md#set-a-default-template-for-merge-requests-and-issues), the `issue[description]` value is appended to the template. |
-| Confidential         | `issue[confidential]` | If `true`, the issue is marked as confidential.                                                                                 |
-| Relate to…           | `add_related_issue`   | A numeric issue ID. If present, the issue form shows a [**Relate to…** checkbox](#from-another-issue-or-incident) to optionally link the new issue to the specified existing issue. |
-
-Adapt these examples to form your new issue URL with prefilled fields.
-To create an issue in the GitLab project:
-
-- With a prefilled title and description:
-
-  ```plaintext
-  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Whoa%2C%20we%27re%20half-way%20there&issue[description]=Whoa%2C%20livin%27%20in%20a%20URL
-  ```
-
-- With a prefilled title and description template:
-
-  ```plaintext
-  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Validate%20new%20concept&issuable_template=Feature%20Proposal%20-%20basic
-  ```
-
-- With a prefilled title, description, and marked as confidential:
-
-  ```plaintext
-  https://gitlab.com/gitlab-org/gitlab/-/issues/new?issue[title]=Validate%20new%20concept&issue[description]=Research%20idea&issue[confidential]=true
-  ```
-
-### Using Service Desk
-
-To offer email support, enable [Service Desk](../service_desk.md) for your project.
-
-Now, when your customer sends a new email, a new issue can be created in
-the appropriate project and followed up from there.
-
-### Fields in the new issue form
-
-> - Adding the new issue to an epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/13847) in GitLab 13.1.
-> - Iteration field [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233517) in GitLab 15.6.
-
-When you're creating a new issue, you can complete the following fields:
-
-- Title
-- Type: either issue (default) or incident
-- [Description template](../description_templates.md): overwrites anything in the Description text box
-- Description: you can use [Markdown](../../markdown.md) and [quick actions](../quick_actions.md)
-- Checkbox to make the issue [confidential](confidential_issues.md)
-- [Assignees](#assignee)
-- [Weight](issue_weight.md)
-- [Epic](../../group/epics/index.md)
-- [Due date](due_dates.md)
-- [Milestone](../milestones/index.md)
-- [Labels](../labels.md)
-- [Iteration](../../group/iterations/index.md)
+After you create an issue, you can start working with it.
 
 ## Edit an issue
 
@@ -239,27 +22,7 @@ To edit an issue:
 1. Edit the available fields.
 1. Select **Save changes**.
 
-### Reorder list items in the issue description
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
-
-When you view an issue that has a list in the description, you can also reorder the list items.
-
-Prerequisites:
-
-- You must have at least the Reporter role for the project, be the author of the issue, or be
-  assigned to the issue.
-- The issue's description must have an [ordered, unordered](../../markdown.md#lists), or
-  [task](../../markdown.md#task-lists) list.
-
-To reorder list items, when viewing an issue:
-
-1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
-1. Select and hold the drag icon.
-1. Drag the row to the new position in the list.
-1. Release the drag icon.
-
-### Bulk edit issues from a project
+## Bulk edit issues from a project
 
 > - Assigning epic [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/210470) in GitLab 13.2.
 > - Editing health status [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/218395) in GitLab 13.2.
@@ -283,7 +46,7 @@ To edit multiple issues at the same time:
 When bulk editing issues in a project, you can edit the following attributes:
 
 - Status (open or closed)
-- [Assignees](#assignee)
+- [Assignees](managing_issues.md#assignee)
 - [Epic](../../group/epics/index.md)
 - [Milestone](../milestones/index.md)
 - [Labels](../labels.md)
@@ -395,6 +158,26 @@ To do it:
    ```
 
 1. To exit the Rails console, enter `quit`.
+
+## Reorder list items in the issue description
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15260) in GitLab 15.0.
+
+When you view an issue that has a list in the description, you can also reorder the list items.
+
+Prerequisites:
+
+- You must have at least the Reporter role for the project, be the author of the issue, or be
+  assigned to the issue.
+- The issue's description must have an [ordered, unordered](../../markdown.md#lists), or
+  [task](../../markdown.md#task-lists) list.
+
+To reorder list items, when viewing an issue:
+
+1. Hover over the list item row to make the drag icon (**{drag-vertical}**) visible.
+1. Select and hold the drag icon.
+1. Drag the row to the new position in the list.
+1. Release the drag icon.
 
 ## Close an issue
 
