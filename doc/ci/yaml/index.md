@@ -2340,12 +2340,12 @@ In this example:
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14311) in GitLab 12.7.
 
 Use `needs:project` to download artifacts from up to five jobs in other pipelines.
-The artifacts are downloaded from the latest successful pipeline for the specified ref.
+The artifacts are downloaded from the latest successful specified job for the specified ref.
 To specify multiple jobs, add each as separate array items under the `needs` keyword.
 
-If there is a pipeline running for the specified ref, a job with `needs:project`
-does not wait for the pipeline to complete. Instead, the job downloads the artifact
-from the latest pipeline that completed successfully.
+If there is a pipeline running for the ref, a job with `needs:project`
+does not wait for the pipeline to complete. Instead, the artifacts are downloaded
+from the latest successful run of the specified job.
 
 `needs:project` must be used with `job`, `ref`, and `artifacts`.
 

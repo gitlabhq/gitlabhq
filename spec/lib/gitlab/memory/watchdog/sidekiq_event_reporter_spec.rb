@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Memory::Watchdog::SidekiqEventReporter, feature_category:
     let(:queue) { 'default' }
     let(:jid) { SecureRandom.hex }
     let(:running_jobs) { { jid => { worker_class: DummyWorker } } }
+    let(:sidekiq_daemon_monitor) { instance_double(Gitlab::SidekiqDaemon::Monitor) }
     let(:worker) do
       Class.new do
         def self.name
@@ -33,14 +34,15 @@ RSpec.describe Gitlab::Memory::Watchdog::SidekiqEventReporter, feature_category:
     end
 
     before do
-      stub_const("DummyWorker", worker)
+      stub_const('DummyWorker', worker)
+      allow(Gitlab::SidekiqDaemon::Monitor).to receive(:instance).and_return(sidekiq_daemon_monitor)
       allow(::Gitlab::Metrics).to receive(:counter)
         .with(:sidekiq_watchdog_running_jobs_total, anything)
         .and_return(sidekiq_watchdog_running_jobs_counter)
       allow(sidekiq_watchdog_running_jobs_counter).to receive(:increment)
       allow(logger).to receive(:warn)
 
-      allow(Gitlab::SidekiqDaemon::Monitor.instance).to receive(:with_running_jobs).and_yield(running_jobs)
+      allow(sidekiq_daemon_monitor).to receive(:jobs).and_return(running_jobs)
     end
 
     it 'delegates #strikes_exceeded with correct arguments' do
@@ -49,7 +51,7 @@ RSpec.describe Gitlab::Memory::Watchdog::SidekiqEventReporter, feature_category:
          :monitor_name,
          {
            message: 'dummy_text',
-           running_jobs: running_jobs
+           running_jobs: [jid: jid, worker_class: 'DummyWorker']
          }
        )
     end

@@ -24,6 +24,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findToggleButton = () => wrapper.findByTestId('toggle-button');
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
+  const findDynamicScroller = () => wrapper.findByTestId('dynamic-content-scroller');
 
   const createComponent = ({ propsData, slots } = {}) => {
     wrapper = shallowMountExtended(Widget, {
@@ -409,6 +410,32 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
 
     it('should not call create a telemetry hub', () => {
       expect(wrapper.vm.telemetryHub).toBe(null);
+    });
+  });
+
+  describe('dynamic content', () => {
+    const content = [
+      {
+        id: 'row-id',
+        header: ['This is a header', 'This is a subheader'],
+        text: 'Main text for the row',
+        subtext: 'Optional: Smaller sub-text to be displayed below the main text',
+      },
+    ];
+
+    beforeEach(() => {
+      createComponent({
+        propsData: {
+          isCollapsible: true,
+          content,
+        },
+      });
+    });
+
+    it('uses a dynamic scroller to show the items', async () => {
+      findToggleButton().vm.$emit('click');
+      await waitForPromises();
+      expect(findDynamicScroller().props('items')).toEqual(content);
     });
   });
 });

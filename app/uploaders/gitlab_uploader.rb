@@ -115,6 +115,15 @@ class GitlabUploader < CarrierWave::Uploader::Base
     end
   end
 
+  def multi_read(offsets)
+    open do |stream|
+      offsets.map do |start_offset, end_offset|
+        stream.seek(start_offset)
+        stream.read(end_offset - start_offset + 1)
+      end
+    end
+  end
+
   # Used to replace an existing upload with another +file+ without modifying stored metadata
   # Use this method only to repair/replace an existing upload, or to upload to a Geo secondary node
   #

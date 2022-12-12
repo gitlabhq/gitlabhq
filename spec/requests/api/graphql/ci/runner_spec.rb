@@ -74,39 +74,39 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
       runner_data = graphql_data_at(:runner)
       expect(runner_data).not_to be_nil
 
-      expect(runner_data).to match a_hash_including(
-        'id' => runner.to_global_id.to_s,
-        'description' => runner.description,
-        'createdAt' => runner.created_at&.iso8601,
-        'contactedAt' => runner.contacted_at&.iso8601,
-        'version' => runner.version,
-        'shortSha' => runner.short_sha,
-        'revision' => runner.revision,
-        'locked' => false,
-        'active' => runner.active,
-        'paused' => !runner.active,
-        'status' => runner.status('14.5').to_s.upcase,
-        'jobExecutionStatus' => runner.builds.running.any? ? 'RUNNING' : 'IDLE',
-        'maximumTimeout' => runner.maximum_timeout,
-        'accessLevel' => runner.access_level.to_s.upcase,
-        'runUntagged' => runner.run_untagged,
-        'ipAddress' => runner.ip_address,
-        'runnerType' => runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
-        'executorName' => runner.executor_type&.dasherize,
-        'architectureName' => runner.architecture,
-        'platformName' => runner.platform,
-        'maintenanceNote' => runner.maintenance_note,
-        'maintenanceNoteHtml' =>
+      expect(runner_data).to match a_graphql_entity_for(
+        runner,
+        description: runner.description,
+        created_at: runner.created_at&.iso8601,
+        contacted_at: runner.contacted_at&.iso8601,
+        version: runner.version,
+        short_sha: runner.short_sha,
+        revision: runner.revision,
+        locked: false,
+        active: runner.active,
+        paused: !runner.active,
+        status: runner.status('14.5').to_s.upcase,
+        job_execution_status: runner.builds.running.any? ? 'RUNNING' : 'IDLE',
+        maximum_timeout: runner.maximum_timeout,
+        access_level: runner.access_level.to_s.upcase,
+        run_untagged: runner.run_untagged,
+        ip_address: runner.ip_address,
+        runner_type: runner.instance_type? ? 'INSTANCE_TYPE' : 'PROJECT_TYPE',
+        executor_name: runner.executor_type&.dasherize,
+        architecture_name: runner.architecture,
+        platform_name: runner.platform,
+        maintenance_note: runner.maintenance_note,
+        maintenance_note_html:
           runner.maintainer_note.present? ? a_string_including('<strong>Test maintenance note</strong>') : '',
-        'jobCount' => runner.builds.count,
-        'jobs' => a_hash_including(
+        job_count: runner.builds.count,
+        jobs: a_hash_including(
           "count" => runner.builds.count,
           "nodes" => an_instance_of(Array),
           "pageInfo" => anything
         ),
-        'projectCount' => nil,
-        'adminUrl' => "http://localhost/admin/runners/#{runner.id}",
-        'userPermissions' => {
+        project_count: nil,
+        admin_url: "http://localhost/admin/runners/#{runner.id}",
+        user_permissions: {
           'readRunner' => true,
           'updateRunner' => true,
           'deleteRunner' => true,
@@ -134,11 +134,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
       runner_data = graphql_data_at(:runner)
       expect(runner_data).not_to be_nil
 
-      expect(runner_data).to match a_hash_including(
-        'id' => runner.to_global_id.to_s,
-        'adminUrl' => nil
-      )
-      expect(runner_data['tagList']).to match_array runner.tag_list
+      expect(runner_data).to match a_graphql_entity_for(runner, :tag_list, admin_url: nil)
     end
   end
 
@@ -231,10 +227,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
 
           runner_data = graphql_data_at(:runner)
 
-          expect(runner_data).to match a_hash_including(
-            'id' => project_runner.to_global_id.to_s,
-            'locked' => is_locked
-          )
+          expect(runner_data).to match a_graphql_entity_for(project_runner, locked: is_locked)
         end
       end
     end
@@ -258,18 +251,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
         post_graphql(query, current_user: user)
 
         expect(graphql_data).to match a_hash_including(
-          'runner1' => {
-            'id' => runner1.to_global_id.to_s,
-            'ownerProject' => {
-              'id' => project2.to_global_id.to_s
-            }
-          },
-          'runner2' => {
-            'id' => runner2.to_global_id.to_s,
-            'ownerProject' => {
-              'id' => project1.to_global_id.to_s
-            }
-          }
+          'runner1' => a_graphql_entity_for(runner1, owner_project: a_graphql_entity_for(project2)),
+          'runner2' => a_graphql_entity_for(runner2, owner_project: a_graphql_entity_for(project1))
         )
       end
     end
@@ -299,8 +282,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
     it 'retrieves groups field with expected value' do
       post_graphql(query, current_user: user)
 
-      runner_data = graphql_data_at(:runner, :groups)
-      expect(runner_data).to eq 'nodes' => [{ 'id' => group.to_global_id.to_s }]
+      runner_data = graphql_data_at(:runner, :groups, :nodes)
+      expect(runner_data).to contain_exactly(a_graphql_entity_for(group))
     end
   end
 
@@ -424,13 +407,13 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
           'jobCount' => 1,
           'jobs' => a_hash_including(
             "count" => 1,
-            "nodes" => [{ "id" => job.to_global_id.to_s, "status" => job.status.upcase }]
+            "nodes" => [a_graphql_entity_for(job, status: job.status.upcase)]
           ),
           'projectCount' => 2,
           'projects' => {
             'nodes' => [
-              { 'id' => project1.to_global_id.to_s },
-              { 'id' => project2.to_global_id.to_s }
+              a_graphql_entity_for(project1),
+              a_graphql_entity_for(project2)
             ]
           })
         expect(runner2_data).to match a_hash_including(
@@ -557,27 +540,25 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner do
       expect(graphql_data.count).to eq 6
       expect(graphql_data).to match(
         a_hash_including(
-          'instance_runner1' => a_hash_including('id' => active_instance_runner.to_global_id.to_s),
-          'instance_runner2' => a_hash_including('id' => inactive_instance_runner.to_global_id.to_s),
-          'group_runner1' => a_hash_including(
-            'id' => active_group_runner.to_global_id.to_s,
-            'groups' => { 'nodes' => [a_hash_including('id' => group.to_global_id.to_s)] }
+          'instance_runner1' => a_graphql_entity_for(active_instance_runner),
+          'instance_runner2' => a_graphql_entity_for(inactive_instance_runner),
+          'group_runner1' => a_graphql_entity_for(
+            active_group_runner,
+            groups: { 'nodes' => contain_exactly(a_graphql_entity_for(group)) }
           ),
-          'group_runner2' => a_hash_including(
-            'id' => active_group_runner2.to_global_id.to_s,
-            'groups' => { 'nodes' => [a_hash_including('id' => active_group_runner2.groups[0].to_global_id.to_s)] }
+          'group_runner2' => a_graphql_entity_for(
+            active_group_runner2,
+            groups: { 'nodes' => active_group_runner2.groups.map { |g| a_graphql_entity_for(g) } }
           ),
-          'project_runner1' => a_hash_including(
-            'id' => active_project_runner.to_global_id.to_s,
-            'projects' => { 'nodes' => [a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)] },
-            'ownerProject' => a_hash_including('id' => active_project_runner.projects[0].to_global_id.to_s)
+          'project_runner1' => a_graphql_entity_for(
+            active_project_runner,
+            projects: { 'nodes' => active_project_runner.projects.map { |p| a_graphql_entity_for(p) } },
+            owner_project: a_graphql_entity_for(active_project_runner.projects[0])
           ),
-          'project_runner2' => a_hash_including(
-            'id' => active_project_runner2.to_global_id.to_s,
-            'projects' => {
-              'nodes' => [a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)]
-            },
-            'ownerProject' => a_hash_including('id' => active_project_runner2.projects[0].to_global_id.to_s)
+          'project_runner2' => a_graphql_entity_for(
+            active_project_runner2,
+            projects: { 'nodes' => active_project_runner2.projects.map { |p| a_graphql_entity_for(p) } },
+            owner_project: a_graphql_entity_for(active_project_runner2.projects[0])
           )
         ))
     end

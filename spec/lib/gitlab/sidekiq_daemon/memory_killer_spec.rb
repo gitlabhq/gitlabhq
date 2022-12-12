@@ -4,11 +4,23 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
   let(:memory_killer) { described_class.new }
+  let(:sidekiq_daemon_monitor) { instance_double(Gitlab::SidekiqDaemon::Monitor) }
+  let(:running_jobs) { {} }
   let(:pid) { 12345 }
+  let(:worker) do
+    Class.new do
+      def self.name
+        'DummyWorker'
+      end
+    end
+  end
 
   before do
+    stub_const('DummyWorker', worker)
     allow(Sidekiq.logger).to receive(:info)
     allow(Sidekiq.logger).to receive(:warn)
+    allow(Gitlab::SidekiqDaemon::Monitor).to receive(:instance).and_return(sidekiq_daemon_monitor)
+    allow(sidekiq_daemon_monitor).to receive(:jobs).and_return(running_jobs)
     allow(memory_killer).to receive(:pid).and_return(pid)
 
     # make sleep no-op
@@ -306,31 +318,37 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
       stub_const("#{described_class}::CHECK_INTERVAL_SECONDS", check_interval_seconds)
     end
 
-    it 'send signal and return when all jobs finished' do
-      expect(Process).to receive(:kill).with(signal, pid).ordered
-      expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
+    context 'when all jobs are finished' do
+      let(:running_jobs) { {} }
 
-      expect(memory_killer).to receive(:enabled?).and_return(true)
-      expect(memory_killer).to receive(:any_jobs?).and_return(false)
+      it 'send signal and return when all jobs finished' do
+        expect(Process).to receive(:kill).with(signal, pid).ordered
+        expect(Gitlab::Metrics::System).to receive(:monotonic_time).and_call_original
 
-      expect(memory_killer).not_to receive(:sleep)
+        expect(memory_killer).to receive(:enabled?).and_return(true)
 
-      subject
+        expect(memory_killer).not_to receive(:sleep)
+
+        subject
+      end
     end
 
-    it 'send signal and wait till deadline if any job not finished' do
-      expect(Process).to receive(:kill)
-        .with(signal, pid)
-        .ordered
+    context 'when there are still running jobs' do
+      let(:running_jobs) { { 'jid1' => { worker_class: DummyWorker } } }
 
-      expect(Gitlab::Metrics::System).to receive(:monotonic_time)
-        .and_call_original
-        .at_least(:once)
+      it 'send signal and wait till deadline if any job not finished' do
+        expect(Process).to receive(:kill)
+          .with(signal, pid)
+          .ordered
 
-      expect(memory_killer).to receive(:enabled?).and_return(true).at_least(:once)
-      expect(memory_killer).to receive(:any_jobs?).and_return(true).at_least(:once)
+        expect(Gitlab::Metrics::System).to receive(:monotonic_time)
+          .and_call_original
+          .at_least(:once)
 
-      subject
+        expect(memory_killer).to receive(:enabled?).and_return(true).at_least(:once)
+
+        subject
+      end
     end
   end
 
@@ -377,21 +395,11 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
     let(:jid) { 1 }
     let(:reason) { 'rss out of range reason description' }
     let(:queue) { 'default' }
-    let(:running_jobs) { [{ jid: jid, worker_class: 'DummyWorker' }] }
-    let(:metrics) { memory_killer.instance_variable_get(:@metrics) }
-    let(:worker) do
-      Class.new do
-        def self.name
-          'DummyWorker'
-        end
 
-        include ApplicationWorker
-      end
-    end
+    let(:metrics) { memory_killer.instance_variable_get(:@metrics) }
+    let(:running_jobs) { { jid => { worker_class: DummyWorker } } }
 
     before do
-      stub_const("DummyWorker", worker)
-
       allow(memory_killer).to receive(:get_rss_kb).and_return(*current_rss)
       allow(memory_killer).to receive(:get_soft_limit_rss_kb).and_return(soft_limit_rss)
       allow(memory_killer).to receive(:get_hard_limit_rss_kb).and_return(hard_limit_rss)
@@ -413,15 +421,13 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
           hard_limit_rss: hard_limit_rss,
           soft_limit_rss: soft_limit_rss,
           reason: reason,
-          running_jobs: running_jobs,
+          running_jobs: [jid: jid, worker_class: 'DummyWorker'],
           memory_total_kb: memory_total)
 
       expect(metrics[:sidekiq_memory_killer_running_jobs]).to receive(:increment)
         .with({ worker_class: "DummyWorker", deadline_exceeded: true })
 
-      Gitlab::SidekiqDaemon::Monitor.instance.within_job(DummyWorker, jid, queue) do
-        subject
-      end
+      subject
     end
   end
 
@@ -464,21 +470,24 @@ RSpec.describe Gitlab::SidekiqDaemon::MemoryKiller do
   end
 
   describe '#rss_increase_by_jobs' do
-    let(:running_jobs) { { id1: 'job1', id2: 'job2' } }
+    let(:running_jobs) { { 'job1' => { worker_class: "Job1" }, 'job2' => { worker_class: "Job2" } } }
 
     subject { memory_killer.send(:rss_increase_by_jobs) }
 
+    before do
+      allow(memory_killer).to receive(:rss_increase_by_job).and_return(11, 22)
+    end
+
     it 'adds up individual rss_increase_by_job' do
-      allow(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs_mutex, :synchronize).and_yield
-      expect(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs).and_return(running_jobs)
-      expect(memory_killer).to receive(:rss_increase_by_job).and_return(11, 22)
       expect(subject).to eq(33)
     end
 
-    it 'return 0 if no job' do
-      allow(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs_mutex, :synchronize).and_yield
-      expect(Gitlab::SidekiqDaemon::Monitor).to receive_message_chain(:instance, :jobs).and_return({})
-      expect(subject).to eq(0)
+    context 'when there is no running job' do
+      let(:running_jobs) { {} }
+
+      it 'return 0 if no job' do
+        expect(subject).to eq(0)
+      end
     end
   end
 

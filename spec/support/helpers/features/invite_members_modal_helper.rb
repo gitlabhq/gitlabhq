@@ -14,7 +14,7 @@ module Spec
               submit_invites
             end
 
-            wait_for_all_requests
+            wait_for_requests
 
             page.refresh if refresh
           end
@@ -30,6 +30,8 @@ module Spec
               find('.dropdown-item', text: 'Invite "new_email@gitlab.com" by email').click
 
               submit_invites
+
+              wait_for_requests
             end
           end
 

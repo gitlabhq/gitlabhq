@@ -152,6 +152,34 @@ For non-200 HTTP responses, use the provided helpers in `lib/api/helpers.rb` to 
 
 For `DELETE` requests, you should also generally use the `destroy_conditionally!` helper which by default returns a `204 No Content` response on success, or a `412 Precondition Failed` response if the given `If-Unmodified-Since` header is out of range. This helper calls `#destroy` on the passed resource, but you can also implement a custom deletion method by passing a block.
 
+## Choosing HTTP verbs
+
+When defining a new [API route](https://github.com/ruby-grape/grape#routes), use
+the correct [HTTP request method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods).
+
+### Deciding between `PATCH` and `PUT`
+
+In a Rails application, both the `PATCH` and `PUT` request methods are routed to
+the `update` method in controllers. With Grape, the framework we use to write
+the GitLab API, you must explicitly set the `PATCH` or `PUT` HTTP verb for an
+endpoint that does updates.
+
+If the endpoint updates *all* attributes of a given resource, use the
+[`PUT`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT) request
+method. If the endpoint updates *some* attributes of a given resource, use the
+[`PATCH`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH)
+request method.
+
+Here is a good example for `PATCH`: [`PATCH /projects/:id/protected_branches/:name`](../api/protected_branches.md#update-a-protected-branch)
+Here is a good example for `PUT`: [`PUT /projects/:id/merge_requests/:merge_request_iid/approve`](../api/merge_request_approvals.md#approve-merge-request)
+
+Often, a good `PUT` endpoint only has ids and a verb (in the example above, "approve").
+Or, they only have a single value and represent a key/value pair.
+
+The [Rails blog](https://rubyonrails.org/2012/2/26/edge-rails-patch-is-the-new-primary-http-method-for-updates)
+has a detailed explanation of why `PATCH` is usually the most apt verb for web
+API endpoints that perform an update.
+
 ## Using API path helpers in GitLab Rails codebase
 
 Because we support [installing GitLab under a relative URL](../install/relative_url.md), one must take this

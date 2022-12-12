@@ -6,9 +6,15 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
   let(:monitor) { described_class.new }
 
   describe '#within_job' do
-    it 'tracks thread' do
+    it 'tracks thread, jid and worker_class' do
       blk = proc do
-        expect(monitor.jobs.dig('jid', :thread)).not_to be_nil
+        monitor.jobs do |jobs|
+          jobs.each do |jid, job|
+            expect(job[:thread]).not_to be_nil
+            expect(jid).to eq('jid')
+            expect(job[:worker_class]).to eq('worker_class')
+          end
+        end
 
         "OK"
       end
@@ -37,13 +43,13 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
     end
   end
 
-  describe '#with_running_jobs' do
-    it 'yields with correct jobs' do
+  describe '#jobs' do
+    it 'returns running jobs hash' do
       jid = SecureRandom.hex
       running_jobs = { jid => hash_including(worker_class: 'worker_class') }
 
       monitor.within_job('worker_class', jid, 'queue') do
-        expect { |b| monitor.with_running_jobs(&b) }.to yield_with_args(running_jobs)
+        expect(monitor.jobs).to match(running_jobs)
       end
     end
   end
@@ -231,7 +237,7 @@ RSpec.describe Gitlab::SidekiqDaemon::Monitor do
         let(:thread) { Thread.new { sleep 1000 } }
 
         before do
-          monitor.jobs[jid] = { worker_class: 'worker_class', thread: thread, started_at: Time.now.to_i }
+          allow(monitor).to receive(:find_thread_unsafe).with(jid).and_return(thread)
         end
 
         after do

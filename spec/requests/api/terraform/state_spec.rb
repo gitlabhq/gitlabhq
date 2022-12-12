@@ -298,6 +298,48 @@ RSpec.describe API::Terraform::State, :snowplow, feature_category: :infrastructu
         expect(state.reload_latest_version.build).to eq(job)
       end
     end
+
+    describe 'response depending on the max allowed state size' do
+      let(:current_user) { maintainer }
+
+      before do
+        stub_application_setting(max_terraform_state_size_bytes: max_allowed_state_size)
+
+        request
+      end
+
+      context 'when the max allowed state size is unlimited (set as 0)' do
+        let(:max_allowed_state_size) { 0 }
+
+        it 'returns a success response' do
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the max allowed state size is greater than the request state size' do
+        let(:max_allowed_state_size) { params.to_json.size + 1 }
+
+        it 'returns a success response' do
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the max allowed state size is equal to the request state size' do
+        let(:max_allowed_state_size) { params.to_json.size }
+
+        it 'returns a success response' do
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when the max allowed state size is less than the request state size' do
+        let(:max_allowed_state_size) { params.to_json.size - 1 }
+
+        it "returns a 'payload too large' response" do
+          expect(response).to have_gitlab_http_status(:payload_too_large)
+        end
+      end
+    end
   end
 
   describe 'DELETE /projects/:id/terraform/state/:name' do

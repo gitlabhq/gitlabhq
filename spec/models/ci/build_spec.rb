@@ -2528,20 +2528,24 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
   end
 
   describe '#ref_slug' do
-    {
-      'master' => 'master',
-      '1-foo' => '1-foo',
-      'fix/1-foo' => 'fix-1-foo',
-      'fix-1-foo' => 'fix-1-foo',
-      'a' * 63 => 'a' * 63,
-      'a' * 64 => 'a' * 63,
-      'FOO' => 'foo',
-      '-' + 'a' * 61 + '-' => 'a' * 61,
-      '-' + 'a' * 62 + '-' => 'a' * 62,
-      '-' + 'a' * 63 + '-' => 'a' * 62,
-      'a' * 62 + ' ' => 'a' * 62
-    }.each do |ref, slug|
-      it "transforms #{ref} to #{slug}" do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ref, :slug) do
+      'master'             | 'master'
+      '1-foo'              | '1-foo'
+      'fix/1-foo'          | 'fix-1-foo'
+      'fix-1-foo'          | 'fix-1-foo'
+      'a' * 63             | 'a' * 63
+      'a' * 64             | 'a' * 63
+      'FOO'                | 'foo'
+      '-' + 'a' * 61 + '-' | 'a' * 61
+      '-' + 'a' * 62 + '-' | 'a' * 62
+      '-' + 'a' * 63 + '-' | 'a' * 62
+      'a' * 62 + ' '       | 'a' * 62
+    end
+
+    with_them do
+      it "transforms ref to slug" do
         build.ref = ref
 
         expect(build.ref_slug).to eq(slug)

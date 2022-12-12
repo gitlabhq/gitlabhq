@@ -700,8 +700,8 @@ On each node perform the following:
    puma['listen'] = '0.0.0.0'
    sidekiq['listen_address'] = "0.0.0.0"
 
-   # Configure Sidekiq with 2 workers and 10 max concurrency
-   sidekiq['max_concurrency'] = 10
+   # Configure Sidekiq with 2 workers and 20 max concurrency
+   sidekiq['max_concurrency'] = 20
    sidekiq['queue_groups'] = ['*'] * 2
 
    # Add the monitoring node's IP address to the monitoring whitelist and allow it to

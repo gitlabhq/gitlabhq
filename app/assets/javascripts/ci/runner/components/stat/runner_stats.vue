@@ -1,5 +1,4 @@
 <script>
-import RunnerSingleStat from '~/ci/runner/components/stat/runner_single_stat.vue';
 import {
   I18N_STATUS_ONLINE,
   I18N_STATUS_OFFLINE,
@@ -8,9 +7,19 @@ import {
   STATUS_OFFLINE,
   STATUS_STALE,
 } from '../../constants';
+import RunnerSingleStat from './runner_single_stat.vue';
+import RunnerCount from './runner_count.vue';
+
+/**
+ * Shows general stats about the runners.
+ *
+ * First it checks if there are any runners in this context, and if so,
+ * shows more details for different status.
+ */
 
 export default {
   components: {
+    RunnerCount,
     RunnerSingleStat,
     RunnerUpgradeStatusStats: () =>
       import('ee_component/ci/runner/components/stat/runner_upgrade_status_stats.vue'),
@@ -71,19 +80,21 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-wrap gl-py-6">
-    <runner-single-stat
-      v-for="stat in stats"
-      :key="stat.key"
-      :scope="scope"
-      v-bind="stat.props"
-      class="gl-px-5"
-    />
+  <runner-count #default="{ count }" :scope="scope" :variables="variables">
+    <div v-if="count" class="gl-display-flex gl-flex-wrap gl-py-6">
+      <runner-single-stat
+        v-for="stat in stats"
+        :key="stat.key"
+        :scope="scope"
+        v-bind="stat.props"
+        class="gl-px-5"
+      />
 
-    <runner-upgrade-status-stats
-      class="gl-display-contents"
-      :scope="scope"
-      :variables="variables"
-    />
-  </div>
+      <runner-upgrade-status-stats
+        class="gl-display-contents"
+        :scope="scope"
+        :variables="variables"
+      />
+    </div>
+  </runner-count>
 </template>

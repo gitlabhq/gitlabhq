@@ -10,6 +10,7 @@ module Gitlab
 
         def initialize(logger: Gitlab::AppLogger)
           @logger = logger
+          init_prometheus_metrics
         end
 
         def started(labels = {})
@@ -21,13 +22,13 @@ module Gitlab
         end
 
         def threshold_violated(monitor_name)
-          counter_violations.increment(reason: monitor_name)
+          @counter_violations.increment(reason: monitor_name)
         end
 
         def strikes_exceeded(monitor_name, labels = {})
           logger.warn(log_labels(labels))
 
-          counter_violations_handled.increment(reason: monitor_name)
+          @counter_violations_handled.increment(reason: monitor_name)
         end
 
         private
@@ -48,24 +49,18 @@ module Gitlab
           ::Prometheus::PidProvider.worker_id
         end
 
-        def counter_violations
-          strong_memoize("counter_violations") do
-            ::Gitlab::Metrics.counter(
-              :gitlab_memwd_violations_total,
-              'Total number of times a Ruby process violated a memory threshold',
-              { pid: worker_id }
-            )
-          end
-        end
-
-        def counter_violations_handled
-          strong_memoize("counter_violations_handled") do
-            ::Gitlab::Metrics.counter(
-              :gitlab_memwd_violations_handled_total,
-              'Total number of times Ruby process memory violations were handled',
-              { pid: worker_id }
-            )
-          end
+        def init_prometheus_metrics
+          default_labels = { pid: worker_id }
+          @counter_violations = Gitlab::Metrics.counter(
+            :gitlab_memwd_violations_total,
+            'Total number of times a Ruby process violated a memory threshold',
+            default_labels
+          )
+          @counter_violations_handled = Gitlab::Metrics.counter(
+            :gitlab_memwd_violations_handled_total,
+            'Total number of times Ruby process memory violations were handled',
+            default_labels
+          )
         end
       end
     end

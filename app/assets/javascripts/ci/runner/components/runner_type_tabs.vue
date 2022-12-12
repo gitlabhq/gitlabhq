@@ -59,21 +59,20 @@ export default {
       return [
         {
           title: I18N_ALL_TYPES,
-          runnerType: null,
         },
         ...tabs,
       ];
     },
   },
   methods: {
-    onTabSelected({ runnerType }) {
+    onTabSelected(runnerType) {
       this.$emit('input', {
         ...this.value,
         runnerType,
         pagination: { page: 1 },
       });
     },
-    isTabActive({ runnerType }) {
+    isTabActive(runnerType = null) {
       return runnerType === this.value.runnerType;
     },
     tabBadgeCountVariables(runnerType) {
@@ -102,8 +101,8 @@ export default {
     <gl-tab
       v-for="tab in tabs"
       :key="`${tab.runnerType}`"
-      :active="isTabActive(tab)"
-      @click="onTabSelected(tab)"
+      :active="isTabActive(tab.runnerType)"
+      @click="onTabSelected(tab.runnerType)"
     >
       <template #title>
         {{ tab.title }}

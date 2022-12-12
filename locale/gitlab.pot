@@ -31420,6 +31420,9 @@ msgstr ""
 msgid "ProductAnalytics|An error occured while loading the %{widgetTitle} widget."
 msgstr ""
 
+msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
+msgstr ""
+
 msgid "ProductAnalytics|Audience"
 msgstr ""
 

@@ -289,9 +289,46 @@ To disable a feature flag that has been enabled for a specific project you can r
 /chatops run feature set --project=gitlab-org/gitlab some_feature false
 ```
 
-You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](index.md#selectively-disable-by-actor) the feature flags.
+You cannot selectively disable feature flags for a specific project/group/user without applying a [specific method of implementing](controls.md#selectively-disable-by-actor) the feature flags.
 
 If a feature flag is disabled via ChatOps, that will take precedence over the `default_enabled` value in the YAML. In other words, you could have a feature enabled for on-premise installations but not for GitLab.com.
+
+#### Selectively disable by actor
+
+By default you cannot selectively disable a feature flag by actor.
+
+```shell
+# This will not work how you would expect.
+/chatops run feature set some_feature true
+/chatops run feature set --project=gitlab-org/gitlab some_feature false
+```
+
+However, if you add two feature flags, you can write your conditional statement in such a way that the equivalent selective disable is possible.
+
+```ruby
+Feature.enabled?(:a_feature, project) && Feature.disabled?(:a_feature_override, project)
+```
+
+```shell
+# This will enable a feature flag globally, except for gitlab-org/gitlab
+/chatops run feature set a_feature true
+/chatops run feature set --project=gitlab-org/gitlab a_feature_override true
+```
+
+#### Percentage-based actor selection
+
+When using the percentage rollout of actors on multiple feature flags, the actors for each feature flag are selected separately.
+
+For example, the following feature flags are enabled for a certain percentage of actors:
+
+```plaintext
+/chatops run feature set feature-set-1 25 --actors
+/chatops run feature set feature-set-2 25 --actors
+```
+
+If a project A has `:feature-set-1` enabled, there is no guarantee that project A also has `:feature-set-2` enabled.
+
+For more detail, see [This is how percentages work in Flipper](https://www.hackwithpassion.com/this-is-how-percentages-work-in-flipper/).
 
 ### Feature flag change logging
 

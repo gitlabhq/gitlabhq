@@ -79,10 +79,15 @@ export default {
 </script>
 <template>
   <div
-    class="gl-w-full gl-display-flex mr-widget-content-row gl-align-items-baseline"
+    class="gl-w-full gl-display-flex gl-align-items-baseline"
     :class="{ 'gl-border-t gl-py-3 gl-pl-7': level === 2 }"
   >
-    <status-icon v-if="statusIconName" :level="2" :name="widgetName" :icon-name="statusIconName" />
+    <status-icon
+      v-if="statusIconName && !header"
+      :level="2"
+      :name="widgetName"
+      :icon-name="statusIconName"
+    />
     <div class="gl-w-full">
       <div class="gl-display-flex">
         <slot name="header">
@@ -128,6 +133,12 @@ export default {
         </div>
       </div>
       <div class="gl-display-flex gl-align-items-baseline gl-w-full">
+        <status-icon
+          v-if="statusIconName && header"
+          :level="2"
+          :name="widgetName"
+          :icon-name="statusIconName"
+        />
         <slot name="body"></slot>
       </div>
     </div>

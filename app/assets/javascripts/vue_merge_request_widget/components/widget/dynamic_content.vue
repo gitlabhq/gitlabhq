@@ -82,10 +82,8 @@ export default {
           v-if="data.children && data.children.length > 0 && level === 2"
           class="gl-m-0 gl-p-0 gl-list-style-none"
         >
-          <li>
+          <li v-for="(childData, index) in data.children" :key="childData.id || index">
             <dynamic-content
-              v-for="(childData, index) in data.children"
-              :key="childData.id || index"
               :data="childData"
               :widget-name="widgetName"
               :level="3"

@@ -77,7 +77,9 @@ jest.mock('~/lib/utils/url_utility', () => ({
 Vue.use(VueApollo);
 Vue.use(GlToast);
 
-const COUNT_QUERIES = 7; // 4 tabs + 3 status queries
+const STATUS_COUNT_QUERIES = 3;
+const TAB_COUNT_QUERIES = 4;
+const COUNT_QUERIES = TAB_COUNT_QUERIES + STATUS_COUNT_QUERIES;
 
 describe('AdminRunnersApp', () => {
   let wrapper;
@@ -167,6 +169,29 @@ describe('AdminRunnersApp', () => {
       expect(findRunnerStats().text()).toContain(`${I18N_STATUS_ONLINE} ${mockRunnersCount}`);
       expect(findRunnerStats().text()).toContain(`${I18N_STATUS_OFFLINE} ${mockRunnersCount}`);
       expect(findRunnerStats().text()).toContain(`${I18N_STATUS_STALE} ${mockRunnersCount}`);
+    });
+  });
+
+  describe('does not show total runner counts when total is 0', () => {
+    beforeEach(async () => {
+      mockRunnersCountHandler.mockResolvedValue({
+        data: {
+          runners: {
+            count: 0,
+            ...runnersCountData.runners,
+          },
+        },
+      });
+
+      await createComponent({ mountFn: mountExtended });
+    });
+
+    it('fetches only tab counts', () => {
+      expect(mockRunnersCountHandler).toHaveBeenCalledTimes(TAB_COUNT_QUERIES);
+    });
+
+    it('does not shows counters', () => {
+      expect(findRunnerStats().text()).toBe('');
     });
   });
 

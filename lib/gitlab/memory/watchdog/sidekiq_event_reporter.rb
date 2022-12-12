@@ -10,6 +10,7 @@ module Gitlab
 
         def initialize(logger: ::Sidekiq.logger)
           @event_reporter = EventReporter.new(logger: logger)
+          @sidekiq_daemon_monitor = Gitlab::SidekiqDaemon::Monitor.instance
           init_prometheus_metrics
         end
 
@@ -26,16 +27,12 @@ module Gitlab
         attr_reader :event_reporter
 
         def fetch_running_jobs
-          running_jobs = []
-          Gitlab::SidekiqDaemon::Monitor.instance.with_running_jobs do |jobs|
-            running_jobs = jobs.map do |jid, job|
-              {
-                jid: jid,
-                worker_class: job[:worker_class].name
-              }
-            end
+          @sidekiq_daemon_monitor.jobs.map do |jid, job|
+            {
+              jid: jid,
+              worker_class: job[:worker_class].name
+            }
           end
-          running_jobs
         end
 
         def increment_worker_counters(running_jobs)

@@ -207,12 +207,12 @@ From GitLab 13.6, users can [specify any runner configuration in the GitLab Runn
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### GitLab Runner registration token in Runner Operator
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -222,56 +222,57 @@ The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operato
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
-### `POST /api/v4/runners` method to register runners
+### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
-This endpoint and method [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
-with a GitLab instance at the instance, group, or project level through the API. We plan to remove this endpoint
-and method in GitLab 16.0.
+The support for registration tokens and certain runner configuration arguments in the `POST` method operation on the `/api/v4/runners` endpoint is deprecated.
+This endpoint [registers](https://docs.gitlab.com/ee/api/runners.html#register-a-new-runner) a runner
+with a GitLab instance at the instance, group, or project level through the API. We plan to remove the support for
+registration tokens and certain configuration arguments in this endpoint in GitLab 17.0.
 
 In GitLab 15.8, we plan to implement a new method to bind runners to a GitLab instance,
 as part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/).
 This new architecture introduces a new method for registering runners and will eliminate the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-From GitLab 16.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
+From GitLab 17.0 and later, the runner registration methods implemented by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
-### `gitlab-runner register` command
+### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
 Review the details carefully before upgrading.
 
-The command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
+The support for registration tokens and certain configuration arguments in the command to [register](https://docs.gitlab.com/runner/register/) a runner, `gitlab-runner register` is deprecated.
 GitLab plans to introduce a new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/) in GitLab 15.8,
 which introduces a new method for registering runners and eliminates the legacy
 [runner registration token](https://docs.gitlab.com/ee/security/token_overview.html#runner-registration-tokens).
-The new method will involve passing a [runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
-to a new `gitlab-runner deploy` command.
+The new method will involve creating the runner in the GitLab UI and passing the
+[runner authentication token](https://docs.gitlab.com/ee/security/token_overview.html#runner-authentication-tokens-also-called-runner-tokens)
+to the `gitlab-runner register` command.
 
 </div>
 
-<div class="deprecation removal-160 breaking-change">
+<div class="deprecation removal-170 breaking-change">
 
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -281,9 +282,9 @@ The [`runnerRegistrationToken`](https://docs.gitlab.com/runner/install/kubernete
 
 As part of the new [GitLab Runner token architecture](https://docs.gitlab.com/ee/architecture/blueprints/runner_tokens/), in GitLab 15.8 we plan to introduce:
 
-- A new method to bind runners to a GitLab instance.
+- A new method to bind runners to a GitLab instance leveraging `runnerToken`.
 - A unique system ID saved to the `config.toml`, which will ensure traceability between jobs and runners.
-From GitLab 16.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
+From GitLab 17.0 and later, the methods to register runners introduced by the new GitLab Runner token architecture will be the only supported methods.
 
 </div>
 

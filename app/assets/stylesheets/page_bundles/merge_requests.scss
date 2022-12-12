@@ -1097,10 +1097,6 @@ $tabs-holder-z-index: 250;
   }
 }
 
-.mr-widget-content-row:first-child {
-  border-top: 0;
-}
-
 .mr-widget-status-icon-level-1::before {
   @include gl-content-empty;
   @include gl-absolute;

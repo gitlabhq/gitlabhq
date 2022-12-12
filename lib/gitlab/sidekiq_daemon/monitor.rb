@@ -15,9 +15,6 @@ module Gitlab
       # that should not be caught by application
       CancelledError = Class.new(Exception) # rubocop:disable Lint/InheritException
 
-      attr_reader :jobs
-      attr_reader :jobs_mutex
-
       def initialize
         super
 
@@ -31,8 +28,8 @@ module Gitlab
       end
 
       def within_job(worker_class, jid, queue)
-        jobs_mutex.synchronize do
-          jobs[jid] = { worker_class: worker_class, thread: Thread.current, started_at: Gitlab::Metrics::System.monotonic_time }
+        @jobs_mutex.synchronize do
+          @jobs[jid] = { worker_class: worker_class, thread: Thread.current, started_at: Gitlab::Metrics::System.monotonic_time }
         end
 
         if cancelled?(jid)
@@ -48,8 +45,8 @@ module Gitlab
 
         yield
       ensure
-        jobs_mutex.synchronize do
-          jobs.delete(jid)
+        @jobs_mutex.synchronize do
+          @jobs.delete(jid)
         end
       end
 
@@ -65,9 +62,9 @@ module Gitlab
         end
       end
 
-      def with_running_jobs
+      def jobs
         @jobs_mutex.synchronize do
-          yield @jobs.dup
+          @jobs.dup
         end
       end
 
@@ -172,14 +169,14 @@ module Gitlab
       # This is why it passes thread in block,
       # to ensure that we do process this thread
       def find_thread_unsafe(jid)
-        jobs.dig(jid, :thread)
+        @jobs.dig(jid, :thread)
       end
 
       def find_thread_with_lock(jid)
         # don't try to lock if we cannot find the thread
         return unless find_thread_unsafe(jid)
 
-        jobs_mutex.synchronize do
+        @jobs_mutex.synchronize do
           find_thread_unsafe(jid).tap do |thread|
             yield(thread) if thread
           end

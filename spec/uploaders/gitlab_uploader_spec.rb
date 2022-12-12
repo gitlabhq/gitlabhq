@@ -6,7 +6,7 @@ require 'carrierwave/storage/fog'
 RSpec.describe GitlabUploader do
   let(:uploader_class) { Class.new(described_class) }
 
-  subject { uploader_class.new(double) }
+  subject(:uploader) { uploader_class.new(double) }
 
   describe '#file_storage?' do
     context 'when file storage is used' do
@@ -159,6 +159,19 @@ RSpec.describe GitlabUploader do
         expect(subject.url_or_file_path(options)).to eq("file:///tmp/file")
       end
     end
+  end
+
+  describe '#multi_read' do
+    let(:file) { fixture_file_upload('spec/fixtures/trace/sample_trace', 'text/plain') }
+    let(:byte_offsets) { [[4, 10], [17, 29]] }
+
+    subject { uploader.multi_read(byte_offsets) }
+
+    before do
+      uploader.store!(file)
+    end
+
+    it { is_expected.to eq(%w[Running gitlab-runner]) }
   end
 
   describe '.version' do

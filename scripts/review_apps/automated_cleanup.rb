@@ -174,7 +174,7 @@ module ReviewApps
 
     private
 
-    attr_reader :api_endpoint, :dry_run, :environments_not_found_count, :gitlab_token, :project_path
+    attr_reader :api_endpoint, :dry_run, :gitlab_token, :project_path
 
     def fetch_environment(environment)
       gitlab.environment(project_path, environment.id)
@@ -190,9 +190,9 @@ module ReviewApps
 
     rescue Gitlab::Error::NotFound
       puts "Review app '#{environment.name}' / '#{environment.slug}' (##{environment.id}) was not found: ignoring it"
-      environments_not_found_count += 1
+      @environments_not_found_count += 1
 
-      if environments_not_found_count >= ENVIRONMENTS_NOT_FOUND_THRESHOLD
+      if @environments_not_found_count >= ENVIRONMENTS_NOT_FOUND_THRESHOLD
         raise "At least #{ENVIRONMENTS_NOT_FOUND_THRESHOLD} environments were missing when we tried to delete them. Please investigate"
       end
     rescue Gitlab::Error::Forbidden

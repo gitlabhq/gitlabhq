@@ -31,23 +31,6 @@ RSpec.describe API::Ci::SecureFiles, feature_category: :pipeline_authoring do
   end
 
   describe 'GET /projects/:id/secure_files' do
-    context 'feature flag' do
-      it 'returns a 503 when the feature flag is disabled' do
-        stub_feature_flags(ci_secure_files: false)
-
-        get api("/projects/#{project.id}/secure_files", maintainer)
-
-        expect(response).to have_gitlab_http_status(:service_unavailable)
-      end
-
-      it 'returns a 200 when the feature flag is enabled' do
-        get api("/projects/#{project.id}/secure_files", maintainer)
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to be_a(Array)
-      end
-    end
-
     context 'ci_secure_files_read_only feature flag' do
       context 'when the flag is enabled' do
         before do

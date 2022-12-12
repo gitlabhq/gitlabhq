@@ -90,7 +90,8 @@ module API
             ]
             failure [
               { code: 403, message: 'Forbidden' },
-              { code: 422, message: 'Validation failure' }
+              { code: 422, message: 'Validation failure' },
+              { code: 413, message: 'Request Entity Too Large' }
             ]
             tags %w[terraform_state]
           end
@@ -100,6 +101,9 @@ module API
 
             data = request.body.read
             no_content! if data.empty?
+
+            max_state_size = Gitlab::CurrentSettings.max_terraform_state_size_bytes
+            file_too_large! if max_state_size > 0 && data.size > max_state_size
 
             remote_state_handler.handle_with_lock do |state|
               state.update_file!(CarrierWaveStringFile.new(data), version: params[:serial], build: current_authenticated_job)
