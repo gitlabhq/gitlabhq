@@ -10614,6 +10614,29 @@ CREATE SEQUENCE abuse_reports_id_seq
 
 ALTER SEQUENCE abuse_reports_id_seq OWNED BY abuse_reports.id;
 
+CREATE TABLE achievements (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text NOT NULL,
+    avatar text,
+    description text,
+    revokeable boolean DEFAULT false NOT NULL,
+    CONSTRAINT check_5171b03f22 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_a7a7b84a80 CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_e174e93a9e CHECK ((char_length(avatar) <= 255))
+);
+
+CREATE SEQUENCE achievements_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE achievements_id_seq OWNED BY achievements.id;
+
 CREATE TABLE agent_activity_events (
     id bigint NOT NULL,
     agent_id bigint NOT NULL,
@@ -23585,6 +23608,8 @@ ALTER SEQUENCE zoom_meetings_id_seq OWNED BY zoom_meetings.id;
 
 ALTER TABLE ONLY abuse_reports ALTER COLUMN id SET DEFAULT nextval('abuse_reports_id_seq'::regclass);
 
+ALTER TABLE ONLY achievements ALTER COLUMN id SET DEFAULT nextval('achievements_id_seq'::regclass);
+
 ALTER TABLE ONLY agent_activity_events ALTER COLUMN id SET DEFAULT nextval('agent_activity_events_id_seq'::regclass);
 
 ALTER TABLE ONLY agent_group_authorizations ALTER COLUMN id SET DEFAULT nextval('agent_group_authorizations_id_seq'::regclass);
@@ -25223,6 +25248,9 @@ ALTER TABLE ONLY gitlab_partitions_static.product_analytics_events_experimental_
 
 ALTER TABLE ONLY abuse_reports
     ADD CONSTRAINT abuse_reports_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY achievements
+    ADD CONSTRAINT achievements_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT agent_activity_events_pkey PRIMARY KEY (id);
@@ -28232,6 +28260,8 @@ CREATE UNIQUE INDEX idx_vulnerability_issue_links_on_vulnerability_id_and_link_t
 CREATE UNIQUE INDEX idx_work_item_types_on_namespace_id_and_name_null_namespace ON work_item_types USING btree (btrim(lower(name)), ((namespace_id IS NULL))) WHERE (namespace_id IS NULL);
 
 CREATE INDEX index_abuse_reports_on_user_id ON abuse_reports USING btree (user_id);
+
+CREATE UNIQUE INDEX "index_achievements_on_namespace_id_LOWER_name" ON achievements USING btree (namespace_id, lower(name));
 
 CREATE INDEX index_agent_activity_events_on_agent_id_and_recorded_at_and_id ON agent_activity_events USING btree (agent_id, recorded_at, id);
 
@@ -34752,6 +34782,9 @@ ALTER TABLE ONLY ci_runner_namespaces
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_rails_87b2247ce5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY achievements
+    ADD CONSTRAINT fk_rails_87e990f752 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY protected_environment_deploy_access_levels
     ADD CONSTRAINT fk_rails_898a13b650 FOREIGN KEY (protected_environment_id) REFERENCES protected_environments(id) ON DELETE CASCADE;

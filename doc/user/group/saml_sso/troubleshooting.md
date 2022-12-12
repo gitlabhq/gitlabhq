@@ -96,7 +96,14 @@ In these cases, use one of the [SAML debugging tools](#saml-debugging-tools), or
 a group owner can get a copy of the SAML response from when they select
 the "Verify SAML Configuration" button on the group SSO Settings page.
 
-Use a base64 decoder to see a human-readable version of the SAML response.
+Use a base64 decoder to see a human-readable version of the SAML response. To avoid pasting the SAML response online to decode it, you can use your
+browser's console in the developers tools:
+
+```javascript
+atob(decodeURI("<paste_SAML_response_here>"))
+```
+
+You should get the SAML response in XML format as output.
 
 ## Configuration errors
 

@@ -1,4 +1,5 @@
 abuse_reports: :gitlab_main
+achievements: :gitlab_main
 agent_activity_events: :gitlab_main
 agent_group_authorizations: :gitlab_main
 agent_project_authorizations: :gitlab_main

@@ -63,6 +63,8 @@ Example response:
 
 ### Import a public project through the API using a group access token
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362683) in GitLab 15.7, projects are not imported into a [bot user's](../user/group/settings/group_access_tokens.md#bot-users-for-groups) namespace in any circumstances. Projects imported into a bot user's namespace could not be deleted by users with valid tokens, which represented a security risk.
+
 When you import a project from GitHub to GitLab through the API using a group access
 token:
 
