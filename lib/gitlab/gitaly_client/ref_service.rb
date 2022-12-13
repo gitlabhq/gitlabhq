@@ -56,18 +56,6 @@ module Gitlab
         Gitlab::Git.branch_name(response.name)
       end
 
-      def branch_names
-        request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
-        response = gitaly_client_call(@storage, :ref_service, :find_all_branch_names, request, timeout: GitalyClient.fast_timeout)
-        consume_refs_response(response) { |name| Gitlab::Git.branch_name(name) }
-      end
-
-      def tag_names
-        request = Gitaly::FindAllTagNamesRequest.new(repository: @gitaly_repo)
-        response = gitaly_client_call(@storage, :ref_service, :find_all_tag_names, request, timeout: GitalyClient.fast_timeout)
-        consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
-      end
-
       def local_branches(sort_by: nil, pagination_params: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo, pagination_params: pagination_params)
         request.sort_by = sort_local_branches_by_param(sort_by) if sort_by

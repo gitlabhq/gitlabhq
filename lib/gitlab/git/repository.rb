@@ -116,15 +116,9 @@ module Gitlab
       # Returns an Array of branch names
       # sorted by name ASC
       def branch_names
-        if Feature.enabled?(:list_refs_for_find_all_tags_branches, self)
-          refs = list_refs([Gitlab::Git::BRANCH_REF_PREFIX])
+        refs = list_refs([Gitlab::Git::BRANCH_REF_PREFIX])
 
-          refs.map { |ref| Gitlab::Git.branch_name(ref.name) }
-        else
-          wrapped_gitaly_errors do
-            gitaly_ref_client.branch_names
-          end
-        end
+        refs.map { |ref| Gitlab::Git.branch_name(ref.name) }
       end
 
       # Returns an Array of Branches
@@ -215,15 +209,9 @@ module Gitlab
 
       # Returns an Array of tag names
       def tag_names
-        if Feature.enabled?(:list_refs_for_find_all_tags_branches, self)
-          refs = list_refs([Gitlab::Git::TAG_REF_PREFIX])
+        refs = list_refs([Gitlab::Git::TAG_REF_PREFIX])
 
-          refs.map { |ref| Gitlab::Git.tag_name(ref.name) }
-        else
-          wrapped_gitaly_errors do
-            gitaly_ref_client.tag_names
-          end
-        end
+        refs.map { |ref| Gitlab::Git.tag_name(ref.name) }
       end
 
       # Returns an Array of Tags

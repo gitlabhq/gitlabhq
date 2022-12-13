@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :editor do
+  RSpec.describe 'Create', feature_flag: { name: 'vscode_web_ide', scope: :project }, product_group: :editor do
     describe 'Upload a file in Web IDE' do
       let(:file_path) { File.absolute_path(File.join('qa', 'fixtures', 'web_ide', file_name)) }
 
@@ -13,10 +13,15 @@ module QA
       end
 
       before do
+        Runtime::Feature.disable(:vscode_web_ide, project: project)
         Flow::Login.sign_in
 
         project.visit!
         Page::Project::Show.perform(&:open_web_ide!)
+      end
+
+      after do
+        Runtime::Feature.enable(:vscode_web_ide, project: project)
       end
 
       context 'when a file with the same name already exists' do
@@ -24,6 +29,7 @@ module QA
 
         it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347850' do
           Page::Project::WebIDE::Edit.perform do |ide|
+            ide.wait_until_ide_loads
             ide.upload_file(file_path)
           end
 
@@ -36,6 +42,7 @@ module QA
 
         it 'shows the Edit tab with the text', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347852' do
           Page::Project::WebIDE::Edit.perform do |ide|
+            ide.wait_until_ide_loads
             ide.upload_file(file_path)
 
             expect(ide).to have_file(file_name)

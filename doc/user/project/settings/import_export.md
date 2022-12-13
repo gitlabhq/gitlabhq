@@ -208,8 +208,8 @@ is NDJSON.
 ### 13.0+
 
 Starting with GitLab 13.0, GitLab can import bundles that were exported from a different GitLab deployment.
-This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
-releases, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).
+**This ability is limited to two previous GitLab [minor](../../../policy/maintenance.md#versioning)
+releases**, which is similar to our process for [Security Releases](../../../policy/maintenance.md#security-releases).
 
 For example:
 

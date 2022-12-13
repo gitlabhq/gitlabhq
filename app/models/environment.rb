@@ -48,9 +48,9 @@ class Environment < ApplicationRecord
   has_one :latest_opened_most_severe_alert, -> { order_severity_with_open_prometheus_alert }, class_name: 'AlertManagement::Alert', inverse_of: :environment
 
   before_validation :generate_slug, if: ->(env) { env.slug.blank? }
+  before_validation :ensure_environment_tier
 
   before_save :set_environment_type
-  before_save :ensure_environment_tier
   after_save :clear_reactive_cache!
 
   validates :name,
@@ -71,6 +71,10 @@ class Environment < ApplicationRecord
             length: { maximum: 255 },
             allow_nil: true
 
+  # Currently, the tier presence is validaed for newly created environments.
+  # After the `BackfillEnvironmentTiers` background migration has been completed, we should remove `on: :create`.
+  # See https://gitlab.com/gitlab-org/gitlab/-/issues/385253.
+  validates :tier, presence: true, on: :create
   validate :safe_external_url
   validate :merge_request_not_changed
 

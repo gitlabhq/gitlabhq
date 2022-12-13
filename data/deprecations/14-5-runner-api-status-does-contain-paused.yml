@@ -2,7 +2,7 @@
   announcement_milestone: "14.5"  # The milestone when this feature was first announced as deprecated.
   announcement_date: "2021-11-22"
   removal_milestone: "16.0"  # the milestone when this feature is planned to be removed
-  removal_date: "2023-04-22"  # the date of the milestone release when this feature is planned to be removed
+  removal_date: "2023-05-22"  # the date of the milestone release when this feature is planned to be removed
   breaking_change: true
   body: |  # Do not modify this line, instead modify the lines below.
     The GitLab Runner GraphQL API endpoints will not return `paused` or `active` as a status in GitLab 16.0.

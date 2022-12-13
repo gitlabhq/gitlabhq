@@ -109,6 +109,14 @@ module QA
             element :file_to_commit_content
           end
 
+          # Used for stablility, due to feature_caching of vscode_web_ide
+          def wait_until_ide_loads
+            Support::Waiter.wait_until(sleep_interval: 2, max_duration: 60, reload_page: page,
+                                       retry_on_exception: true) do
+              has_element?(:commit_mode_tab)
+            end
+          end
+
           def has_file?(file_name)
             within_element(:file_list_container) do
               has_element?(:file_name_content, file_name: file_name)

@@ -54,7 +54,7 @@ sole discretion of GitLab Inc.
 
 ### DAST API variables
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2022-05-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1122,7 +1122,7 @@ To align with this change, API calls to list external status checks will also re
 
 ### GraphQL API Runner will not accept `status` filter values of `active` or `paused`
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1302,7 +1302,7 @@ The `instanceStatisticsMeasurements` GraphQL node has been renamed to `usageTren
 
 ### REST and GraphQL API Runner usage of `active` replaced by `paused`
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1627,7 +1627,7 @@ The new security approvals feature is similar to vulnerability check. For exampl
 
 ### `CI_BUILD_*` predefined variables
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -2091,7 +2091,7 @@ Administrators who need to add runners for multiple projects can register a runn
 
 ### GraphQL API Runner status will not return `paused`
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-04-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

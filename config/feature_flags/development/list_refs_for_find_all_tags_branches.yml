@@ -1,8 +1,0 @@
----
-name: list_refs_for_find_all_tags_branches
-introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102002"
-rollout_issue_url: "https://gitlab.com/gitlab-org/gitlab/-/issues/383617"
-milestone: '15.7'
-type: development
-group: group::gitaly
-default_enabled: false

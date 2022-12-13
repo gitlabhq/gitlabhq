@@ -71,28 +71,6 @@ RSpec.describe Gitlab::GitalyClient::RefService do
     end
   end
 
-  describe '#branch_names' do
-    it 'sends a find_all_branch_names message' do
-      expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:find_all_branch_names)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return([])
-
-      client.branch_names
-    end
-  end
-
-  describe '#tag_names' do
-    it 'sends a find_all_tag_names message' do
-      expect_any_instance_of(Gitaly::RefService::Stub)
-        .to receive(:find_all_tag_names)
-        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
-        .and_return([])
-
-      client.tag_names
-    end
-  end
-
   describe '#find_branch' do
     it 'sends a find_branch message' do
       expect_any_instance_of(Gitaly::RefService::Stub)
