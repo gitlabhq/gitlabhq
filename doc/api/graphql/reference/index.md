@@ -21975,6 +21975,7 @@ Iteration ID wildcard values.
 | <a id="jobartifactfiletypenetwork_referee"></a>`NETWORK_REFEREE` | NETWORK REFEREE job artifact file type. |
 | <a id="jobartifactfiletypeperformance"></a>`PERFORMANCE` | PERFORMANCE job artifact file type. |
 | <a id="jobartifactfiletyperequirements"></a>`REQUIREMENTS` | REQUIREMENTS job artifact file type. |
+| <a id="jobartifactfiletyperequirements_v2"></a>`REQUIREMENTS_V2` | REQUIREMENTS V2 job artifact file type. |
 | <a id="jobartifactfiletypesast"></a>`SAST` | SAST job artifact file type. |
 | <a id="jobartifactfiletypesecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION job artifact file type. |
 | <a id="jobartifactfiletypeterraform"></a>`TERRAFORM` | TERRAFORM job artifact file type. |

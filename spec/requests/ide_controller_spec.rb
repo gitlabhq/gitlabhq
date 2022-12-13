@@ -34,6 +34,7 @@ RSpec.describe IdeController, feature_category: :web_ide do
   end
 
   before do
+    stub_feature_flags(vscode_web_ide: true)
     sign_in(user)
   end
 

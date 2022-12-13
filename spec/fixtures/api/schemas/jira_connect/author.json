@@ -1,12 +1,27 @@
 {
   "type": "object",
   "properties": {
-    "name": { "type": "string" },
-    "email": { "type": "string" },
-    "username": { "type": "string" },
-    "url": { "type": "uri" },
-    "avatar": { "type": "uri" }
+    "name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "username": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "avatar": {
+      "type": "string",
+      "format": "uri"
+    }
   },
-  "required": [ "name", "email" ],
+  "required": [
+    "name",
+    "email"
+  ],
   "additionalProperties": false
 }

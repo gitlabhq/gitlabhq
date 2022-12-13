@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', feature_category: :runner do
+RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', feature_category: :runner_fleet do
   subject(:execute) { described_class.new(runner: runner, current_user: user, project_ids: project_ids).execute }
 
   let_it_be(:owner_project) { create(:project) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Ci::Runner::BulkDelete, feature_category: :runner do
+RSpec.describe Mutations::Ci::Runner::BulkDelete, feature_category: :runner_fleet do
   include GraphqlHelpers
 
   let_it_be(:admin_user) { create(:user, :admin) }

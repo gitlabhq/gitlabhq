@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :runner do
+RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_category: :runner_fleet do
   describe '/api/v4/runners' do
     describe 'POST /api/v4/runners' do
       context 'when no token is provided' do

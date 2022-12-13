@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Groups::RunnersController, feature_category: :runner do
+RSpec.describe Groups::RunnersController, feature_category: :runner_fleet do
   let_it_be(:user)   { create(:user) }
   let_it_be(:group)  { create(:group) }
   let_it_be(:project) { create(:project, group: group) }

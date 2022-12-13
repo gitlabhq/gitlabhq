@@ -279,6 +279,7 @@ module API
         mount ::API::Repositories
         mount ::API::ResourceAccessTokens
         mount ::API::ResourceMilestoneEvents
+        mount ::API::RpmProjectPackages
         mount ::API::RubygemPackages
         mount ::API::Snippets
         mount ::API::SnippetRepositoryStorageMoves
@@ -323,7 +324,6 @@ module API
       mount ::API::ProtectedTags
       mount ::API::ResourceLabelEvents
       mount ::API::ResourceStateEvents
-      mount ::API::RpmProjectPackages
       mount ::API::Search
       mount ::API::Settings
       mount ::API::SidekiqMetrics

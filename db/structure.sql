@@ -11554,6 +11554,7 @@ CREATE TABLE application_settings (
     encrypted_telesign_api_key_iv bytea,
     disable_personal_access_tokens boolean DEFAULT false NOT NULL,
     max_terraform_state_size_bytes integer DEFAULT 0 NOT NULL,
+    bulk_import_enabled boolean DEFAULT false NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_container_registry_pre_import_tags_rate_positive CHECK ((container_registry_pre_import_tags_rate >= (0)::numeric)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
@@ -19512,7 +19513,8 @@ CREATE TABLE plan_limits (
     project_ci_variables integer DEFAULT 200 NOT NULL,
     group_ci_variables integer DEFAULT 200 NOT NULL,
     ci_max_artifact_size_cyclonedx integer DEFAULT 1 NOT NULL,
-    rpm_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL
+    rpm_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
+    ci_max_artifact_size_requirements_v2 integer DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq
@@ -29598,7 +29600,7 @@ CREATE INDEX index_issuable_slas_on_due_at_id_label_applied_issuable_closed ON i
 
 CREATE UNIQUE INDEX index_issuable_slas_on_issue_id ON issuable_slas USING btree (issue_id);
 
-CREATE INDEX index_issue_assignees_on_user_id ON issue_assignees USING btree (user_id);
+CREATE INDEX index_issue_assignees_on_user_id_and_issue_id ON issue_assignees USING btree (user_id, issue_id);
 
 CREATE UNIQUE INDEX index_issue_crm_contacts_on_issue_id_and_contact_id ON issue_customer_relations_contacts USING btree (issue_id, contact_id);
 

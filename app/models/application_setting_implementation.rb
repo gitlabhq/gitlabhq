@@ -243,7 +243,8 @@ module ApplicationSettingImplementation
         search_rate_limit_unauthenticated: 10,
         users_get_by_id_limit: 300,
         users_get_by_id_limit_allowlist: [],
-        can_create_group: true
+        can_create_group: true,
+        bulk_import_enabled: false
       }
     end
 

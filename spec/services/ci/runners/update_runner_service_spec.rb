@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :runner do
+RSpec.describe Ci::Runners::UpdateRunnerService, '#execute', feature_category: :runner_fleet do
   subject(:execute) { described_class.new(runner).execute(params) }
 
   let(:runner) { create(:ci_runner) }

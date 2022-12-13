@@ -51,7 +51,8 @@ module Ci
       cobertura: 'cobertura-coverage.xml',
       terraform: 'tfplan.json',
       cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
-      requirements: 'requirements.json',
+      requirements: 'requirements.json', # Will be DEPRECATED soon: https://gitlab.com/groups/gitlab-org/-/epics/9203
+      requirements_v2: 'requirements_v2.json',
       coverage_fuzzing: 'gl-coverage-fuzzing.json',
       api_fuzzing: 'gl-api-fuzzing-report.json',
       cyclonedx: 'gl-sbom.cdx.json'
@@ -94,6 +95,7 @@ module Ci
       load_performance: :raw,
       terraform: :raw,
       requirements: :raw,
+      requirements_v2: :raw,
       coverage_fuzzing: :raw,
       api_fuzzing: :raw
     }.freeze
@@ -118,6 +120,7 @@ module Ci
       sast
       secret_detection
       requirements
+      requirements_v2
       cluster_image_scanning
       cyclonedx
     ].freeze
@@ -208,7 +211,8 @@ module Ci
       load_performance: 25, ## EE-specific
       api_fuzzing: 26, ## EE-specific
       cluster_image_scanning: 27, ## EE-specific
-      cyclonedx: 28 ## EE-specific
+      cyclonedx: 28, ## EE-specific
+      requirements_v2: 29 ## EE-specific
     }
 
     # `file_location` indicates where actual files are stored.

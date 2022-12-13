@@ -6,13 +6,23 @@
     "content"
   ],
   "properties": {
-    "offset": { "type": "integer" },
+    "offset": {
+      "type": "integer"
+    },
     "content": {
       "type": "array",
-      "items": { "$ref": "./build_trace_line_content.json" }
+      "items": {
+        "$ref": "./build_trace_line_content.json"
+      }
     },
-    "section": "string",
-    "section_header": "boolean",
-    "section_duration": "string"
+    "section": {
+      "type": "string"
+    },
+    "section_header": {
+      "type": "boolean"
+    },
+    "section_duration": {
+      "type": "string"
+    }
   }
 }

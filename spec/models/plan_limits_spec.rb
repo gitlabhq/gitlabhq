@@ -200,6 +200,7 @@ RSpec.describe PlanLimits do
         ci_max_artifact_size_cluster_applications
         ci_max_artifact_size_secret_detection
         ci_max_artifact_size_requirements
+        ci_max_artifact_size_requirements_v2
         ci_max_artifact_size_coverage_fuzzing
         ci_max_artifact_size_api_fuzzing
       ]

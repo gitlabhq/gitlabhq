@@ -54,7 +54,7 @@
                 = sprite_icon('issues')
                 - issues_count = assigned_issuables_count(:issues)
                 = gl_badge_tag({ size: :sm, variant: :success }, { class: "gl-ml-n2 #{'gl-display-none' if issues_count == 0}", "aria-label": n_("%d assigned issue", "%d assigned issues", issues_count) % issues_count }) do
-                  = number_with_delimiter(issues_count)
+                  = assigned_open_issues_count_text
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter dropdown" }) do
               - top_level_link = assigned_mrs_dashboard_path

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Ci::Runners, feature_category: :runner do
+RSpec.describe API::Ci::Runners, feature_category: :runner_fleet do
   subject { post api("#{prefix}/runners/reset_registration_token", user) }
 
   shared_examples 'bad request' do |result|

@@ -19,7 +19,9 @@
     "username": {
       "type": "string"
     },
-    "expires_at": { "type": "string" },
+    "expires_at": {
+      "type": "string"
+    },
     "scopes": {
       "type": "array",
       "items": {

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::RunnersController, feature_category: :runner do
+RSpec.describe Admin::RunnersController, feature_category: :runner_fleet do
   let_it_be(:runner) { create(:ci_runner) }
   let_it_be(:user) { create(:admin) }
 

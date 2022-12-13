@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::Ci::RunnerStatusResolver do
+RSpec.describe Resolvers::Ci::RunnerStatusResolver, feature_category: :runner_fleet do
   include GraphqlHelpers
 
   describe '#resolve' do

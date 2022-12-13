@@ -216,6 +216,10 @@ RSpec.describe ApplicationSetting do
     it { is_expected.to allow_value(http).for(:jira_connect_proxy_url) }
     it { is_expected.to allow_value(https).for(:jira_connect_proxy_url) }
 
+    it { is_expected.to allow_value(true).for(:bulk_import_enabled) }
+    it { is_expected.to allow_value(false).for(:bulk_import_enabled) }
+    it { is_expected.not_to allow_value(nil).for(:bulk_import_enabled) }
+
     context 'when deactivate_dormant_users is enabled' do
       before do
         stub_application_setting(deactivate_dormant_users: true)

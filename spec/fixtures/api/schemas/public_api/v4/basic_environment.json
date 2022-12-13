@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "slug",
+    "external_url",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "slug": {
+      "type": "string"
+    },
+    "external_url": {
+      "$ref": "../../types/nullable_string.json"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "additionalProperties": false
+}

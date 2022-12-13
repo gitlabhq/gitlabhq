@@ -127,6 +127,8 @@ metadata:
     description: Operations related to releases
   - name: resource_milestone_events
     description: Operations about resource milestone events
+  - name: rpm_packages
+    description: Operations related to RPM packages
   - name: rubygem_packages
     description: Operations related to RubyGems
   - name: suggestions

@@ -288,6 +288,7 @@ module ApplicationSettingsHelper
       :max_import_size,
       :max_pages_size,
       :max_pages_custom_domains_per_project,
+      :max_terraform_state_size_bytes,
       :max_yaml_size_bytes,
       :max_yaml_depth,
       :metrics_method_call_threshold,
@@ -446,7 +447,8 @@ module ApplicationSettingsHelper
       :project_runner_token_expiration_interval,
       :pipeline_limit_per_project_user_sha,
       :invitation_flow_enforcement,
-      :can_create_group
+      :can_create_group,
+      :bulk_import_enabled
     ].tap do |settings|
       next if Gitlab.com?
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe RunnerSetupController, feature_category: :runner do
+RSpec.describe RunnerSetupController, feature_category: :runner_fleet do
   let(:user) { create(:user) }
 
   before do

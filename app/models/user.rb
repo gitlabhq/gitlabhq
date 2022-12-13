@@ -46,6 +46,8 @@ class User < ApplicationRecord
   MAX_USERNAME_LENGTH = 255
   MIN_USERNAME_LENGTH = 2
 
+  MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT = 100
+
   SECONDARY_EMAIL_ATTRIBUTES = [
     :commit_email,
     :notification_email,

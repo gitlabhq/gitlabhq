@@ -57,7 +57,7 @@ RSpec.describe IncidentManagement::LinkAlerts::CreateService, feature_category: 
         expect { execute }
           .to change { incident.reload.alert_management_alerts.to_a }
           .from([linked_alert])
-          .to([linked_alert, alert1, alert2])
+          .to match_array([linked_alert, alert1, alert2])
       end
 
       context 'when linking an already linked alert' do
@@ -75,7 +75,7 @@ RSpec.describe IncidentManagement::LinkAlerts::CreateService, feature_category: 
           expect { execute }
             .to change { incident.reload.alert_management_alerts.to_a }
             .from([linked_alert])
-            .to([linked_alert, external_alert])
+            .to match_array([linked_alert, external_alert])
         end
       end
     end
@@ -90,7 +90,7 @@ RSpec.describe IncidentManagement::LinkAlerts::CreateService, feature_category: 
           expect { execute }
             .to change { incident.reload.alert_management_alerts.to_a }
             .from([linked_alert])
-            .to([linked_alert, alert1])
+            .to match_array([linked_alert, alert1])
         end
       end
     end

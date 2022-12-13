@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Query.runner(id)', feature_category: :runner do
+RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user, :admin) }

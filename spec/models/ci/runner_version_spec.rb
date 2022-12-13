@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RunnerVersion, feature_category: :runner do
+RSpec.describe Ci::RunnerVersion, feature_category: :runner_fleet do
   let_it_be(:runner_version_recommended) do
     create(:ci_runner_version, version: 'abc234', status: :recommended)
   end

@@ -207,11 +207,28 @@ module IssuablesHelper
   def assigned_issuables_count(issuable_type)
     case issuable_type
     when :issues
-      current_user.assigned_open_issues_count
+      if Feature.enabled?(:limit_assigned_issues_count)
+        ::Users::AssignedIssuesCountService.new(
+          current_user: current_user,
+          max_limit: User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT
+        ).count
+      else
+        current_user.assigned_open_issues_count
+      end
     when :merge_requests
       current_user.assigned_open_merge_requests_count
     else
       raise ArgumentError, "invalid issuable `#{issuable_type}`"
+    end
+  end
+
+  def assigned_open_issues_count_text
+    count = assigned_issuables_count(:issues)
+
+    if Feature.enabled?(:limit_assigned_issues_count) && count > User::MAX_LIMIT_FOR_ASSIGNEED_ISSUES_COUNT - 1
+      "#{count - 1}+"
+    else
+      count.to_s
     end
   end
 

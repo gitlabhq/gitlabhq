@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Runners::ReconcileExistingRunnerVersionsCronWorker, feature_category: :runner do
+RSpec.describe Ci::Runners::ReconcileExistingRunnerVersionsCronWorker, feature_category: :runner_fleet do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

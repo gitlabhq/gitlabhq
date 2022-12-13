@@ -36,9 +36,13 @@
 
     = render_if_exists 'admin/application_settings/ldap_access_setting', form: f
 
-    .form-group
+    .form-group{ data: { testid: 'project-export' } }
       = f.label :project_export, s_('AdminSettings|Project export'), class: 'label-bold'
       = f.gitlab_ui_checkbox_component :project_export_enabled, s_('AdminSettings|Enabled')
+
+    .form-group{ data: { testid: 'bulk-import' } }
+      = f.label :bulk_import, s_('AdminSettings|Enable migrating GitLab groups and projects by direct transfer'), class: 'gl-font-weight-bold'
+      = f.gitlab_ui_checkbox_component :bulk_import_enabled, s_('AdminSettings|Enabled')
 
     .form-group
       %label.label-bold= _('Enabled Git access protocols')

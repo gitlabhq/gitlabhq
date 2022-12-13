@@ -25,7 +25,16 @@ module API
     end
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       namespace ':id/packages/rpm' do
-        desc 'Download repository metadata files'
+        desc 'Download repository metadata files' do
+          detail 'This feature was introduced in GitLab 15.7'
+          success code: 200
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[rpm_packages]
+        end
         params do
           requires :file_name, type: String, desc: 'Repository metadata file name'
         end
@@ -40,7 +49,15 @@ module API
           present_carrierwave_file!(repository_file.file)
         end
 
-        desc 'Download RPM package files'
+        desc 'Download RPM package files' do
+          detail 'This feature was introduced in GitLab 15.7'
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[rpm_packages]
+        end
         params do
           requires :package_file_id, type: Integer, desc: 'RPM package file id'
           requires :file_name, type: String, desc: 'RPM package file name'
@@ -56,7 +73,16 @@ module API
           not_found!
         end
 
-        desc 'Upload a RPM package'
+        desc 'Upload a RPM package' do
+          detail 'This feature was introduced in GitLab 15.7'
+          failure [
+            { code: 400, message: 'Bad Request' },
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[rpm_packages]
+        end
         post do
           authorize_create_package!(authorized_user_project)
 
@@ -80,7 +106,15 @@ module API
           not_found!
         end
 
-        desc 'Authorize package upload from workhorse'
+        desc 'Authorize package upload from workhorse' do
+          detail 'This feature was introduced in GitLab 15.7'
+          failure [
+            { code: 401, message: 'Unauthorized' },
+            { code: 403, message: 'Forbidden' },
+            { code: 404, message: 'Not Found' }
+          ]
+          tags %w[rpm_packages]
+        end
         post 'authorize' do
           not_found!
         end

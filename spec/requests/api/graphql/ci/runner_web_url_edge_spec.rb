@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe 'RunnerWebUrlEdge', feature_category: :runner do
+RSpec.describe 'RunnerWebUrlEdge', feature_category: :runner_fleet do
   include GraphqlHelpers
 
   describe 'inside a Query.group' do

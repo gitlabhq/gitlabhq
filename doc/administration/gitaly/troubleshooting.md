@@ -478,6 +478,20 @@ in sync so the token check succeeds.
 This check helps identify the root cause of `permission denied`
 [errors being logged by Praefect](#permission-denied-errors-appearing-in-gitaly-or-praefect-logs-when-accessing-repositories).
 
+For offline environments where access to public [`pool.ntp.org`](https://pool.ntp.org) servers is not possible, the Praefect `check` sub-command fails this
+check with an error message similar to:
+
+```plaintext
+checking with NTP service at  and allowed clock drift 60000ms [correlation_id: <XXX>]
+Failed (fatal) error: gitaly node at tcp://[gitlab.example-instance.com]:8075: rpc error: code = DeadlineExceeded desc = context deadline exceeded
+```
+
+To resolve this issue, set an environment variable on all Praefect servers to point to an accessible internal NTP server. For example:
+
+```shell
+export NTP_HOST=ntp.example.com
+```
+
 ### Praefect errors in logs
 
 If you receive an error, check `/var/log/gitlab/gitlab-rails/production.log`.

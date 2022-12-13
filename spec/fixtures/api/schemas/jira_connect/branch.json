@@ -1,19 +1,38 @@
 {
   "type": "object",
   "properties": {
-    "id": { "type": "string" },
-    "issueKeys": { "type": "array" },
-    "name": { "type": "string" },
+    "id": {
+      "type": "string"
+    },
+    "issueKeys": {
+      "type": "array"
+    },
+    "name": {
+      "type": "string"
+    },
     "lastCommit": {
       "$ref": "./commit.json"
     },
-    "url": { "type": "uri" },
-    "createPullRequestUrl": { "type": "uri" },
-    "updateSequenceId": { "type": "integer" }
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "createPullRequestUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "updateSequenceId": {
+      "type": "integer"
+    }
   },
   "required": [
-    "id", "issueKeys", "name", "lastCommit",
-    "url", "createPullRequestUrl", "updateSequenceId"
+    "id",
+    "issueKeys",
+    "name",
+    "lastCommit",
+    "url",
+    "createPullRequestUrl",
+    "updateSequenceId"
   ],
   "additionalProperties": false
 }

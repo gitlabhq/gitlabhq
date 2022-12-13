@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute', feature_category: :runner do
+RSpec.describe ::Ci::Runners::ReconcileExistingRunnerVersionsService, '#execute', feature_category: :runner_fleet do
   include RunnerReleasesHelper
 
   subject(:execute) { described_class.new.execute }

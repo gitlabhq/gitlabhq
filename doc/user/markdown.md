@@ -211,7 +211,7 @@ You can use it to point out a :bug: or warn about :speak_no_evil: patches. And i
 
 If you're new to this, don't be :fearful:. You can join the emoji :family:. Just look up one of the supported codes.
 
-Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.webfx.com/tools/emoji-cheat-sheet/) for a list of all supported emoji codes. :thumbsup:
 ```
 
 Sometimes you want to <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/monkey.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> around a bit and add some <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/star2.png" width="20px" height="20px" style="display:inline;margin:0;border: 0"> to your <img src="https://gitlab.com/gitlab-org/gitlab-foss/raw/master/public/-/emojis/2/speech_balloon.png" width="20px" height="20px" style="display:inline;margin:0;border: 0">. Well we have a gift for you:
