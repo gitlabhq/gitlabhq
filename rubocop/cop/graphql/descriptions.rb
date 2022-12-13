@@ -3,6 +3,11 @@
 # This cop checks for missing GraphQL descriptions and enforces the description style guide:
 # https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#description-style-guide
 #
+# @safety
+#   This cop is unsafe because not all cases of "this" can be substituted with
+#   "the". This will require a technical writer to assist with the alternative,
+#   proper grammar that can be used for that particular GraphQL descriptions.
+#
 # @examples
 #
 #   # bad
@@ -94,6 +99,7 @@ module RuboCop
             next unless description
 
             corrector.insert_after(before_end_quote(description), '.') if no_period?(description)
+            corrector.replace(locate_this(description), 'the') if contains_demonstrative_this?(description)
           end
         end
 
@@ -133,6 +139,14 @@ module RuboCop
           heredoc_source = string.location.heredoc_body.source
           adjust = heredoc_source.index(/\s+\Z/) - heredoc_source.length
           string.location.heredoc_body.adjust(end_pos: adjust)
+        end
+
+        # Returns a `Parser::Source::Range` of the first `this` encountered
+        def locate_this(string)
+          target = 'this'
+          range = string.heredoc? ? string.location.heredoc_body : string.location.expression
+          index = range.source.index(target)
+          range.adjust(begin_pos: index, end_pos: (index + target.length) - range.length)
         end
       end
     end

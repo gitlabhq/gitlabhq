@@ -99,6 +99,33 @@ RSpec.describe Ci::JobsFinder, '#execute' do
     end
   end
 
+  context 'when artifacts are present for some jobs' do
+    let_it_be(:job_with_artifacts) { create(:ci_build, :success, pipeline: pipeline, name: 'test') }
+    let_it_be(:artifact) { create(:ci_job_artifact, job: job_with_artifacts) }
+
+    subject { described_class.new(current_user: user, project: project, params: params).execute }
+
+    before do
+      project.add_maintainer(user)
+    end
+
+    context 'when with_artifacts is true' do
+      let(:params) { { with_artifacts: true } }
+
+      it 'returns only jobs with artifacts' do
+        expect(subject).to match_array([job_with_artifacts])
+      end
+    end
+
+    context 'when with_artifacts is false' do
+      let(:params) { { with_artifacts: false } }
+
+      it 'returns all jobs' do
+        expect(subject).to match_array([successful_job, job_with_artifacts])
+      end
+    end
+  end
+
   context 'when pipeline is present' do
     before_all do
       project.add_maintainer(user)

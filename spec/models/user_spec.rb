@@ -1589,10 +1589,6 @@ RSpec.describe User do
     let(:expired_confirmation_sent_at) { Date.today - described_class.confirm_within - 7.days }
     let(:extant_confirmation_sent_at) { Date.today }
 
-    before do
-      allow_any_instance_of(ApplicationSetting).to receive(:send_user_confirmation_email).and_return(true)
-    end
-
     let(:user) do
       create(:user, :unconfirmed, unconfirmed_email: 'test@gitlab.com').tap do |user|
         user.update!(confirmation_sent_at: confirmation_sent_at)

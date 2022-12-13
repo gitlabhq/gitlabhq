@@ -4852,9 +4852,6 @@ msgstr ""
 msgid "ApplicationSettings|Send a confirmation email during sign up. New users must confirm their email address before they can log in."
 msgstr ""
 
-msgid "ApplicationSettings|Send confirmation email on sign-up"
-msgstr ""
-
 msgid "ApplicationSettings|Sign-up enabled"
 msgstr ""
 
@@ -8804,10 +8801,16 @@ msgstr ""
 msgid "Closed this %{quick_action_target}."
 msgstr ""
 
+msgid "Closed this issue. Marked as related to, and a duplicate of, %{duplicate_param}."
+msgstr ""
+
 msgid "Closed: %{closed}"
 msgstr ""
 
 msgid "Closes this %{quick_action_target}."
+msgstr ""
+
+msgid "Closes this issue. Marks as related to, and a duplicate of, %{duplicate_reference}."
 msgstr ""
 
 msgid "Cloud Run"
@@ -25263,9 +25266,6 @@ msgstr ""
 msgid "Marked this %{noun} as ready."
 msgstr ""
 
-msgid "Marked this issue as a duplicate of %{duplicate_param}."
-msgstr ""
-
 msgid "Marked this issue as related to %{issue_ref}."
 msgstr ""
 
@@ -25276,9 +25276,6 @@ msgid "Marks"
 msgstr ""
 
 msgid "Marks this %{noun} as ready."
-msgstr ""
-
-msgid "Marks this issue as a duplicate of %{duplicate_reference}."
 msgstr ""
 
 msgid "Marks this issue as related to %{issue_ref}."

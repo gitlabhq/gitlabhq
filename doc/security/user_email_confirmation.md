@@ -13,7 +13,7 @@ they confirm their email address.
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Settings > General** (`/admin/application_settings/general`).
-1. Expand the **Sign-up restrictions** section and look for the **Send confirmation email on sign-up** option.
+1. Expand the **Sign-up restrictions** section and look for the **Email confirmation settings** options.
 
 ## Confirmation token expiry
 

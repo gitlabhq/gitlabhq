@@ -79,10 +79,19 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         end
       TYPE
 
-      expect_no_corrections
+      expect_correction(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            field :a_thing,
+              GraphQL::Types::String,
+              null: false,
+              description: 'Description of the thing.'
+          end
+        end
+      TYPE
     end
 
-    it 'does not add an offense when a word contains the substring "this"' do
+    it 'does not add an offense when a word does not contain the substring "this"' do
       expect_no_offenses(<<~TYPE)
         module Types
           class FakeType < BaseObject
@@ -194,10 +203,19 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         end
       TYPE
 
-      expect_no_corrections
+      expect_correction(<<~TYPE)
+        module Types
+          class FakeType < BaseObject
+            argument :a_thing,
+              GraphQL::Types::String,
+              null: false,
+              description: 'Description of the thing.'
+          end
+        end
+      TYPE
     end
 
-    it 'does not add an offense when a word contains the substring "this"' do
+    it 'does not add an offense when a word does not contain the substring "this"' do
       expect_no_offenses(<<~TYPE)
         module Types
           class FakeType < BaseObject
@@ -285,10 +303,16 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
         end
       TYPE
 
-      expect_no_corrections
+      expect_correction(<<~TYPE.strip)
+        module Types
+          class FakeEnum < BaseEnum
+            value 'FOO', value: 'foo', description: 'Description of the issue.'
+          end
+        end
+      TYPE
     end
 
-    it 'does not add an offense when a word contains the substring "this"' do
+    it 'does not add an offense when a word does not contain the substring "this"' do
       expect_no_offenses(<<~TYPE.strip)
         module Types
           class FakeEnum < BaseEnum
@@ -399,6 +423,90 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               DESC
           end
         end
+      TYPE
+    end
+  end
+
+  describe 'autocorrecting "this" to "the"' do
+    it 'autocorrects if "this" is found' do
+      expect_offense(<<~TYPE)
+          module Types
+            class FakeType < BaseObject
+              field :a_thing,
+              ^^^^^^^^^^^^^^^ #{described_class::MSG_CONTAINS_THIS}
+                GraphQL::Types::String,
+                null: false,
+                description: 'Description of this thing.'
+            end
+          end
+      TYPE
+
+      expect_correction(<<~TYPE)
+          module Types
+            class FakeType < BaseObject
+              field :a_thing,
+                GraphQL::Types::String,
+                null: false,
+                description: 'Description of the thing.'
+            end
+          end
+      TYPE
+    end
+
+    it 'does not autocorrect if "this" is not found' do
+      expect_no_offenses(<<~TYPE)
+          module Types
+            class FakeType < BaseObject
+              field :a_thing,
+                GraphQL::Types::String,
+                null: false,
+                description: 'Description of the thing.'
+            end
+          end
+      TYPE
+    end
+
+    it 'autocorrects a heredoc if "this" is found' do
+      expect_offense(<<~TYPE)
+          module Types
+            class FakeType < BaseObject
+              field :a_thing,
+              ^^^^^^^^^^^^^^^ #{described_class::MSG_CONTAINS_THIS}
+                GraphQL::Types::String,
+                null: false,
+                description: <<~DESC
+                  Description of this thing.
+                DESC
+            end
+          end
+      TYPE
+
+      expect_correction(<<~TYPE)
+          module Types
+            class FakeType < BaseObject
+              field :a_thing,
+                GraphQL::Types::String,
+                null: false,
+                description: <<~DESC
+                  Description of the thing.
+                DESC
+            end
+          end
+      TYPE
+    end
+
+    it 'does not autocorrect a heredoc if "this" is not found' do
+      expect_no_offenses(<<~TYPE)
+          module Types
+            class FakeType < BaseObject
+              field :a_thing,
+                GraphQL::Types::String,
+                null: false,
+                description: <<~DESC
+                  Description of the thing.
+                DESC
+            end
+          end
       TYPE
     end
   end

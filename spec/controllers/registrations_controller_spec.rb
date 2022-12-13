@@ -75,9 +75,9 @@ RSpec.describe RegistrationsController do
         end
 
         context 'email confirmation' do
-          context 'when `send_user_confirmation_email` is true' do
+          context 'when `email_confirmation_setting` is set to `hard`' do
             before do
-              stub_application_setting(send_user_confirmation_email: true)
+              stub_application_setting_enum('email_confirmation_setting', 'hard')
             end
 
             it 'does not send a confirmation email' do
@@ -122,9 +122,9 @@ RSpec.describe RegistrationsController do
         end
 
         context 'email confirmation' do
-          context 'when `send_user_confirmation_email` is true' do
+          context 'when `email_confirmation_setting` is set to `hard`' do
             before do
-              stub_application_setting(send_user_confirmation_email: true)
+              stub_application_setting_enum('email_confirmation_setting', 'hard')
               stub_feature_flags(identity_verification: false)
             end
 
@@ -142,18 +142,18 @@ RSpec.describe RegistrationsController do
         stub_feature_flags(identity_verification: false)
       end
 
-      context 'when send_user_confirmation_email is false' do
+      context 'when `email_confirmation_setting` is set to `off`' do
         it 'signs the user in' do
-          stub_application_setting(send_user_confirmation_email: false)
+          stub_application_setting_enum('email_confirmation_setting', 'off')
 
           expect { subject }.not_to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
           expect(controller.current_user).not_to be_nil
         end
       end
 
-      context 'when send_user_confirmation_email is true' do
+      context 'when `email_confirmation_setting` is set to `hard`' do
         before do
-          stub_application_setting(send_user_confirmation_email: true)
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
         end
 
         context 'when soft email confirmation is not enabled' do

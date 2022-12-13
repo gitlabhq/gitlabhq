@@ -10,7 +10,6 @@ describe('utils', () => {
           booleanAttributes: [
             'signupEnabled',
             'requireAdminApprovalAfterUserSignup',
-            'sendUserConfirmationEmail',
             'domainDenylistEnabled',
             'denylistTypeRawSelected',
             'emailRestrictionsEnabled',

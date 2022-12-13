@@ -1,0 +1,26 @@
+---
+key_path: counts.i_code_review_merge_request_widget_security_reports_count_expand
+description: Total number of times the Security Reports widget extension was expanded (in any state)
+product_section: dev
+product_stage: create
+product_group: code_review
+product_category: code_review
+value_type: number
+status: active
+milestone: "15.7"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104578
+time_frame: all
+data_source: redis
+data_category: optional
+instrumentation_class: MergeRequestWidgetExtensionMetric
+performance_indicator_type: []
+options:
+  event: expand
+  widget: security_reports
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

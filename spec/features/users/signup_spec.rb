@@ -197,7 +197,7 @@ RSpec.describe 'Signup', feature_category: :users do
     context 'with no errors' do
       context 'when sending confirmation email' do
         before do
-          stub_application_setting(send_user_confirmation_email: true)
+          stub_application_setting_enum('email_confirmation_setting', 'hard')
         end
 
         context 'when soft email confirmation is not enabled' do
@@ -239,7 +239,7 @@ RSpec.describe 'Signup', feature_category: :users do
 
       context "when not sending confirmation email" do
         before do
-          stub_application_setting(send_user_confirmation_email: false)
+          stub_application_setting_enum('email_confirmation_setting', 'off')
         end
 
         it 'creates the user account and goes to dashboard' do

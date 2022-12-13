@@ -155,11 +155,10 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
     let(:new_user) { build_stubbed(:user) }
     let(:invite_email) { new_user.email }
     let(:group_invite) { create(:group_member, :invited, group: group, invite_email: invite_email, created_by: owner) }
-    let(:send_email_confirmation) { true }
     let(:extra_params) { { invite_type: Emails::Members::INITIAL_INVITE } }
 
     before do
-      stub_application_setting(send_user_confirmation_email: send_email_confirmation)
+      stub_application_setting_enum('email_confirmation_setting', 'hard')
     end
 
     context 'when registering using invitation email' do
@@ -181,7 +180,9 @@ RSpec.describe 'Group or Project invitations', :aggregate_failures, feature_cate
       end
 
       context 'email confirmation disabled' do
-        let(:send_email_confirmation) { false }
+        before do
+          stub_application_setting_enum('email_confirmation_setting', 'off')
+        end
 
         context 'the user signs up for an account with the invitation email address' do
           it 'redirects to the most recent membership activity page with all the projects/groups invitations automatically accepted' do

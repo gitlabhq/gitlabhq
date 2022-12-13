@@ -103,7 +103,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     let(:alert_message) { "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select Resend confirmation email" }
 
     before do
-      stub_application_setting(send_user_confirmation_email: true)
+      stub_application_setting_enum('email_confirmation_setting', 'hard')
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period
       stub_feature_flags(identity_verification: false)
     end
@@ -953,7 +953,7 @@ RSpec.describe 'Login', :clean_gitlab_redis_sessions, feature_category: :system_
     let(:alert_message) { "To continue, you need to select the link in the confirmation email we sent to verify your email address. If you didn't get our email, select Resend confirmation email" }
 
     before do
-      stub_application_setting(send_user_confirmation_email: true)
+      stub_application_setting_enum('email_confirmation_setting', 'hard')
       stub_feature_flags(soft_email_confirmation: true)
       stub_feature_flags(identity_verification: false)
       allow(User).to receive(:allow_unconfirmed_access_for).and_return grace_period

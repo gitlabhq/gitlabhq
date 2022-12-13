@@ -14,10 +14,18 @@ module Resolvers
               required: false,
               description: 'Filter jobs by status.'
 
+    argument :with_artifacts, ::GraphQL::Types::Boolean,
+              required: false,
+              description: 'Filter by artifacts presence.'
+
     alias_method :project, :object
 
-    def resolve_with_lookahead(statuses: nil)
-      jobs = ::Ci::JobsFinder.new(current_user: current_user, project: project, params: { scope: statuses }).execute
+    def resolve_with_lookahead(statuses: nil, with_artifacts: nil)
+      jobs = ::Ci::JobsFinder.new(
+        current_user: current_user, project: project, params: {
+          scope: statuses, with_artifacts: with_artifacts
+        }
+      ).execute
 
       apply_lookahead(jobs)
     end

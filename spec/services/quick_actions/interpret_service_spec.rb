@@ -567,7 +567,13 @@ RSpec.describe QuickActions::InterpretService do
       it 'returns the duplicate message' do
         _, _, message = service.execute(content, issuable)
 
-        expect(message).to eq("Marked this issue as a duplicate of #{issue_duplicate.to_reference(project)}.")
+        expect(message).to eq("Closed this issue. Marked as related to, and a duplicate of, #{issue_duplicate.to_reference(project)}.")
+      end
+
+      it 'includes duplicate reference' do
+        _, explanations = service.explain(content, issuable)
+
+        expect(explanations).to eq(["Closes this issue. Marks as related to, and a duplicate of, #{issue_duplicate.to_reference(project)}."])
       end
     end
 

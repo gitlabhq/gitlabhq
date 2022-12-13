@@ -1,6 +1,7 @@
 ---
 # Cop supports --autocorrect.
 Graphql/Descriptions:
+  Safe: false
   Details: grace period
   Exclude:
     - 'app/graphql/mutations/boards/lists/base_update.rb'

@@ -20,6 +20,17 @@ module StubConfiguration
     allow_any_instance_of(ApplicationSetting).to receive(:cached_html_up_to_date?).and_return(false)
   end
 
+  # For enums with `_prefix: true`, this allows us to stub the application setting properly
+  def stub_application_setting_enum(setting, value)
+    stub_application_setting(setting.to_sym => value)
+
+    ApplicationSetting.send(setting.pluralize.to_sym).each_key do |key|
+      stub_application_setting("#{setting}_#{key}".to_sym => key == value)
+    end
+
+    Gitlab::CurrentSettings.send(setting)
+  end
+
   def stub_not_protect_default_branch
     stub_application_setting(
       default_branch_protection: Gitlab::Access::PROTECTION_NONE)
