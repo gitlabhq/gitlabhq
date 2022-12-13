@@ -55,6 +55,15 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       end
 
       it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
+
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:namespace) { project.namespace.reload }
+        let(:category) { described_class.to_s }
+        let(:user) { current_user }
+        let(:action) { 'incident_management_timeline_event_created' }
+        let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+      end
     end
 
     subject(:execute) { service.execute }
@@ -275,6 +284,15 @@ RSpec.describe IncidentManagement::TimelineEvents::CreateService do
       end
 
       it_behaves_like 'an incident management tracked event', :incident_management_timeline_event_created
+
+      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+        let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+        let(:namespace) { project.namespace.reload }
+        let(:category) { described_class.to_s }
+        let(:user) { current_user }
+        let(:action) { 'incident_management_timeline_event_created' }
+        let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+      end
 
       it 'successfully creates a database record', :aggregate_failures do
         expect { execute }.to change { ::IncidentManagement::TimelineEvent.count }.by(1)

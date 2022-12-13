@@ -166,8 +166,9 @@ class TodoService
 
   # When user marks a target as todo
   def mark_todo(target, current_user)
-    attributes = attributes_for_todo(target.project, target, current_user, Todo::MARKED)
-    create_todos(current_user, attributes)
+    project = target.project
+    attributes = attributes_for_todo(project, target, current_user, Todo::MARKED)
+    create_todos(current_user, attributes, project&.namespace, project)
   end
 
   def todo_exist?(issuable, current_user)
@@ -214,8 +215,9 @@ class TodoService
   end
 
   def create_request_review_todo(target, author, reviewers)
-    attributes = attributes_for_todo(target.project, target, author, Todo::REVIEW_REQUESTED)
-    create_todos(reviewers, attributes)
+    project = target.project
+    attributes = attributes_for_todo(project, target, author, Todo::REVIEW_REQUESTED)
+    create_todos(reviewers, attributes, project.namespace, project)
   end
 
   def create_member_access_request(member)
@@ -225,12 +227,20 @@ class TodoService
     approvers = source.access_request_approvers_to_be_notified.map(&:user)
     return true if approvers.empty?
 
-    create_todos(approvers, attributes)
+    if source.instance_of? Project
+      project = source
+      namespace = project.namespace
+    else
+      project = nil
+      namespace = source
+    end
+
+    create_todos(approvers, attributes, namespace, project)
   end
 
   private
 
-  def create_todos(users, attributes)
+  def create_todos(users, attributes, namespace, project)
     users = Array(users)
 
     return if users.empty?
@@ -256,7 +266,7 @@ class TodoService
 
     todos = users.map do |user|
       issue_type = attributes.delete(:issue_type)
-      track_todo_creation(user, issue_type)
+      track_todo_creation(user, issue_type, namespace, project)
 
       Todo.create(attributes.merge(user_id: user.id))
     end
@@ -296,9 +306,10 @@ class TodoService
 
   def create_assignment_todo(target, author, old_assignees = [])
     if target.assignees.any?
+      project = target.project
       assignees = target.assignees - old_assignees
-      attributes = attributes_for_todo(target.project, target, author, Todo::ASSIGNED)
-      create_todos(assignees, attributes)
+      attributes = attributes_for_todo(project, target, author, Todo::ASSIGNED)
+      create_todos(assignees, attributes, project.namespace, project)
     end
   end
 
@@ -313,22 +324,24 @@ class TodoService
     # Create Todos for directly addressed users
     directly_addressed_users = filter_directly_addressed_users(parent, note || target, author, skip_users)
     attributes = attributes_for_todo(parent, target, author, Todo::DIRECTLY_ADDRESSED, note)
-    create_todos(directly_addressed_users, attributes)
+    create_todos(directly_addressed_users, attributes, parent&.namespace, parent)
 
     # Create Todos for mentioned users
     mentioned_users = filter_mentioned_users(parent, note || target, author, skip_users + directly_addressed_users)
     attributes = attributes_for_todo(parent, target, author, Todo::MENTIONED, note)
-    create_todos(mentioned_users, attributes)
+    create_todos(mentioned_users, attributes, parent&.namespace, parent)
   end
 
   def create_build_failed_todo(merge_request, todo_author)
-    attributes = attributes_for_todo(merge_request.project, merge_request, todo_author, Todo::BUILD_FAILED)
-    create_todos(todo_author, attributes)
+    project = merge_request.project
+    attributes = attributes_for_todo(project, merge_request, todo_author, Todo::BUILD_FAILED)
+    create_todos(todo_author, attributes, project.namespace, project)
   end
 
   def create_unmergeable_todo(merge_request, todo_author)
-    attributes = attributes_for_todo(merge_request.project, merge_request, todo_author, Todo::UNMERGEABLE)
-    create_todos(todo_author, attributes)
+    project = merge_request.project
+    attributes = attributes_for_todo(project, merge_request, todo_author, Todo::UNMERGEABLE)
+    create_todos(todo_author, attributes, project.namespace, project)
   end
 
   def attributes_for_target(target)
@@ -392,10 +405,23 @@ class TodoService
     PendingTodosFinder.new(users, criteria).execute
   end
 
-  def track_todo_creation(user, issue_type)
+  def track_todo_creation(user, issue_type, namespace, project)
     return unless issue_type == 'incident'
 
-    track_usage_event(:incident_management_incident_todo, user.id)
+    event = "incident_management_incident_todo"
+    track_usage_event(event, user.id)
+
+    return unless Feature.enabled?(:route_hll_to_snowplow_phase2, namespace)
+
+    Gitlab::Tracking.event(
+      self.class.to_s,
+      event,
+      project: project,
+      namespace: namespace,
+      user: user,
+      label: 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly',
+      context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event).to_context]
+    )
   end
 
   def attributes_for_access_request_todos(source, author, action, note = nil)

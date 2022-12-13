@@ -102,6 +102,14 @@ RSpec.describe Notes::CreateService do
         it_behaves_like 'an incident management tracked event', :incident_management_incident_comment do
           let(:current_user) { user }
         end
+
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+          let(:namespace) { issue.namespace }
+          let(:category) { described_class.to_s }
+          let(:action) { 'incident_management_incident_comment' }
+          let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+        end
       end
 
       describe 'event tracking', :snowplow do

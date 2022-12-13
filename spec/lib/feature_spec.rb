@@ -162,6 +162,13 @@ RSpec.describe Feature, stub_feature_flags: false do
       stub_feature_flag_definition(:enabled_feature_flag, default_enabled: true)
     end
 
+    context 'when using redis cache', :use_clean_rails_redis_caching do
+      it 'does not make recursive feature-flag calls' do
+        expect(described_class).to receive(:enabled?).once.and_call_original
+        described_class.enabled?(:disabled_feature_flag)
+      end
+    end
+
     context 'when self-recursive' do
       before do
         allow(Feature).to receive(:with_feature).and_wrap_original do |original, name, &block|

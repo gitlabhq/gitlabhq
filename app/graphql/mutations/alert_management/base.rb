@@ -39,6 +39,24 @@ module Mutations
 
         ::AlertManagement::AlertsFinder.new(current_user, project, args).execute.first
       end
+
+      def track_alert_events(event, alert)
+        project = alert.project
+        namespace = project.namespace
+        track_usage_event(event, current_user.id)
+
+        return unless Feature.enabled?(:route_hll_to_snowplow_phase2, namespace)
+
+        Gitlab::Tracking.event(
+          self.class.to_s,
+          event,
+          project: project,
+          namespace: namespace,
+          user: current_user,
+          label: 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly',
+          context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event).to_context]
+        )
+      end
     end
   end
 end

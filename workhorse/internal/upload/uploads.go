@@ -51,7 +51,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p)
 	if err != nil {
 		switch err {
-		case ErrInjectedClientParam:
+		case ErrInjectedClientParam, http.ErrMissingBoundary:
 			helper.CaptureAndFail(w, r, err, "Bad Request", http.StatusBadRequest)
 		case ErrTooManyFilesUploaded:
 			helper.CaptureAndFail(w, r, err, err.Error(), http.StatusBadRequest)

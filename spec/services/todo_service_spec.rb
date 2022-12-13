@@ -209,6 +209,15 @@ RSpec.describe TodoService do
         it_behaves_like 'an incident management tracked event', :incident_management_incident_todo do
           let(:current_user) { john_doe }
         end
+
+        it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+          let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+          let(:namespace) { project.namespace }
+          let(:category) { described_class.to_s }
+          let(:action) { 'incident_management_incident_todo' }
+          let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
+          let(:user) { john_doe }
+        end
       end
     end
 
@@ -1251,6 +1260,19 @@ RSpec.describe TodoService do
   end
 
   describe '#create_member_access_request' do
+    context 'snowplow event tracking' do
+      it 'does not track snowplow event when todos are for access request for project', :snowplow do
+        user = create(:user)
+        project = create(:project)
+        requester = create(:project_member, project: project, user: assignee)
+        project.add_owner(user)
+
+        expect_no_snowplow_event
+
+        service.create_member_access_request(requester)
+      end
+    end
+
     context 'when the group has more than 10 owners' do
       it 'creates todos for 10 recently active group owners' do
         group = create(:group, :public)

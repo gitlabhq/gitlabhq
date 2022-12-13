@@ -67,11 +67,8 @@ func rewriteFormFilesFromMultipart(r *http.Request, writer *multipart.Writer, fi
 	// Create multipart reader
 	reader, err := r.MultipartReader()
 	if err != nil {
-		if err == http.ErrNotMultipart {
-			// We want to be able to recognize http.ErrNotMultipart elsewhere so no fmt.Errorf
-			return http.ErrNotMultipart
-		}
-		return fmt.Errorf("get multipart reader: %v", err)
+		// We want to be able to recognize these errors elsewhere so no fmt.Errorf
+		return err
 	}
 
 	multipartUploadRequests.WithLabelValues(filter.Name()).Inc()

@@ -1082,7 +1082,7 @@ GEM
       coderay
       parser
       unparser
-    prometheus-client-mmap (0.16.2)
+    prometheus-client-mmap (0.17.0)
     pry (0.13.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -1768,7 +1768,7 @@ DEPENDENCIES
   pg_query (~> 2.2)
   png_quantizator (~> 0.2.1)
   premailer-rails (~> 1.10.3)
-  prometheus-client-mmap (~> 0.16)
+  prometheus-client-mmap (~> 0.17)
   pry-byebug
   pry-rails (~> 0.3.9)
   pry-shell (~> 0.5.1)

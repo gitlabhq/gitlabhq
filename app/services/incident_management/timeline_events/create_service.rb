@@ -106,7 +106,7 @@ module IncidentManagement
 
           create_timeline_event_tag_links(timeline_event, params[:timeline_event_tag_names])
 
-          track_usage_event(:incident_management_timeline_event_created, user.id)
+          track_timeline_event("incident_management_timeline_event_created", project)
 
           success(timeline_event)
         else

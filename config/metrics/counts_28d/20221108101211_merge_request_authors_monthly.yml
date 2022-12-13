@@ -6,9 +6,11 @@ product_stage: create
 product_group: code_review
 product_category: code_review
 value_type: number
-status: active
+status: removed
 milestone: "15.6"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103334
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106449
+milestone_removed: "15.7"
 time_frame: 28d
 data_source: database
 data_category: optional

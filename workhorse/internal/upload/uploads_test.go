@@ -352,6 +352,18 @@ func TestInvalidFileNames(t *testing.T) {
 	}
 }
 
+func TestBadMultipartHeader(t *testing.T) {
+	httpRequest, err := http.NewRequest("POST", "/example", bytes.NewReader(nil))
+	require.NoError(t, err)
+
+	// Invalid header: missing boundary
+	httpRequest.Header.Set("Content-Type", "multipart/form-data")
+
+	response := httptest.NewRecorder()
+	testInterceptMultipartFiles(t, response, httpRequest, nilHandler, &SavedFileTracker{Request: httpRequest})
+	require.Equal(t, 400, response.Code)
+}
+
 func TestContentDispositionRewrite(t *testing.T) {
 	testhelper.ConfigureSecret()
 

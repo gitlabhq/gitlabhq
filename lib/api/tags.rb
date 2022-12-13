@@ -129,6 +129,24 @@ module API
           end
         end
       end
+
+      desc "Get a tag's signature" do
+        success code: 200, model: Entities::TagSignature
+        tags %w[tags]
+        failure [
+          { code: 404, message: 'Not found' }
+        ]
+      end
+      params do
+        requires :tag_name, type: String, desc: 'The name of the tag'
+      end
+      get ':id/repository/tags/:tag_name/signature', requirements: TAG_ENDPOINT_REQUIREMENTS, feature_category: :source_code_management do
+        tag = user_project.repository.find_tag(params[:tag_name])
+        not_found! 'Tag' unless tag
+        not_found! 'Signature' unless tag.has_signature?
+
+        present tag, with: Entities::TagSignature
+      end
     end
   end
 end

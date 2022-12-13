@@ -109,7 +109,8 @@ RSpec.describe Packages::Debian::ProcessPackageFileService do
     end
 
     context 'with already processed package file' do
-      let!(:package_file) { create(:debian_package_file) }
+      let_it_be(:package_file) { create(:debian_package_file) }
+
       let(:component_name) { 'main' }
 
       it 'raise ArgumentError', :aggregate_failures do

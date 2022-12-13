@@ -479,4 +479,60 @@ RSpec.describe API::Tags, feature_category: :source_code_management do
       end
     end
   end
+
+  describe 'GET /projects/:id/repository/tags/:tag_name/signature' do
+    let_it_be(:project) { create(:project, :repository, :public) }
+    let(:project_id) { project.id }
+    let(:route) { "/projects/#{project_id}/repository/tags/#{tag_name}/signature" }
+
+    context 'when tag does not exist' do
+      let(:tag_name) { 'unknown' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Tag Not Found' }
+      end
+    end
+
+    context 'unsigned tag' do
+      let(:tag_name) { 'v1.1.0' }
+
+      it_behaves_like '404 response' do
+        let(:request) { get api(route, current_user) }
+        let(:message) { '404 Signature Not Found' }
+      end
+    end
+
+    context 'x509 signed tag' do
+      let(:tag_name) { 'v1.1.1' }
+      let(:tag) { project.repository.find_tag(tag_name) }
+      let(:signature) { tag.signature }
+      let(:x509_certificate) { signature.x509_certificate }
+      let(:x509_issuer) { x509_certificate.x509_issuer }
+
+      it 'returns correct JSON' do
+        get api(route, current_user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq(
+          'signature_type' => 'X509',
+          'verification_status' => signature.verification_status.to_s,
+          'x509_certificate' => {
+            'id' => x509_certificate.id,
+            'subject' => x509_certificate.subject,
+            'subject_key_identifier' => x509_certificate.subject_key_identifier,
+            'email' => x509_certificate.email,
+            'serial_number' => x509_certificate.serial_number,
+            'certificate_status' => x509_certificate.certificate_status,
+            'x509_issuer' => {
+              'id' => x509_issuer.id,
+              'subject' => x509_issuer.subject,
+              'subject_key_identifier' => x509_issuer.subject_key_identifier,
+              'crl_url' => x509_issuer.crl_url
+            }
+          }
+        )
+      end
+    end
+  end
 end

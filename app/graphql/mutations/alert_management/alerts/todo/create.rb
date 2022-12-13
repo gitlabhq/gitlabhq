@@ -11,7 +11,7 @@ module Mutations
             alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])
             result = ::AlertManagement::Alerts::Todo::CreateService.new(alert, current_user).execute
 
-            track_usage_event(:incident_management_alert_todo, current_user.id)
+            track_alert_events('incident_management_alert_todo', alert)
 
             prepare_response(result)
           end

@@ -53,12 +53,12 @@ Global search only flags with an error any search that includes more than:
 To start a search, type your search query in the search bar on the top-right of the screen.
 You must type at least two characters.
 
-![basic search](img/basic_search_v15_1.png)
+![search navbar](img/search_navbar_v15_7.png)
 
 After the results are displayed, you can modify the search, select a different type of data to
 search, or choose a specific group or project.
 
-![basic search results](img/basic_search_results_v15_1.png)
+![search scope](img/search_scope_v15_7.png)
 
 ## Search in code
 

@@ -9,21 +9,22 @@ RSpec.describe Issues::CreateService do
   let_it_be_with_reload(:project) { create(:project, :public, group: group) }
   let_it_be(:user) { create(:user) }
 
+  let(:opts) { { title: 'title' } }
   let(:spam_params) { double }
+  let(:service) { described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params) }
 
   it_behaves_like 'rate limited service' do
     let(:key) { :issues_create }
     let(:key_scope) { %i[project current_user external_author] }
     let(:application_limit_key) { :issues_create_limit }
     let(:created_model) { Issue }
-    let(:service) { described_class.new(project: project, current_user: user, params: { title: 'title' }, spam_params: double) }
   end
 
   describe '#execute' do
     let_it_be(:assignee) { create(:user) }
     let_it_be(:milestone) { create(:milestone, project: project) }
 
-    let(:result) { described_class.new(project: project, current_user: user, params: opts, spam_params: spam_params).execute }
+    let(:result) { service.execute }
     let(:issue) { result[:issue] }
 
     before do
@@ -54,6 +55,7 @@ RSpec.describe Issues::CreateService do
 
       let(:opts) do
         { title: 'Awesome issue',
+          issue_type: :task,
           description: 'please fix',
           assignee_ids: [assignee.id],
           label_ids: labels.map(&:id),
@@ -118,8 +120,24 @@ RSpec.describe Issues::CreateService do
         expect(issue.labels).to match_array(labels)
         expect(issue.milestone).to eq(milestone)
         expect(issue.due_date).to eq(Date.tomorrow)
-        expect(issue.work_item_type.base_type).to eq('issue')
+        expect(issue.work_item_type.base_type).to eq('task')
         expect(issue.issue_customer_relations_contacts).to be_empty
+      end
+
+      context 'when the work item type is not allowed to create' do
+        before do
+          allow_next_instance_of(::Issues::BuildService) do |instance|
+            allow(instance).to receive(:create_issue_type_allowed?).twice.and_return(false)
+          end
+        end
+
+        it 'ignores the type and creates default issue' do
+          expect(result).to be_success
+          expect(issue).to be_persisted
+          expect(issue).to be_a(::Issue)
+          expect(issue.work_item_type.base_type).to eq('issue')
+          expect(issue.issue_type).to eq('issue')
+        end
       end
 
       it 'calls NewIssueWorker with correct arguments' do

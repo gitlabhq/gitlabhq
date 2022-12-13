@@ -22,7 +22,7 @@ module Groups
 
       # When running Observability UI in standalone mode (i.e. not backed by Observability Backend)
       # the group-id is not required. This is mostly used for local dev
-      base_url = ENV['STANDALONE_OBSERVABILITY_UI'] == 'true' ? observability_url : "#{observability_url}/#{group.id}"
+      base_url = ENV['STANDALONE_OBSERVABILITY_UI'] == 'true' ? observability_url : "#{observability_url}/-/#{group.id}"
 
       sanitized_path = if params[:observability_path] && sanitize(params[:observability_path]) != ''
                          CGI.unescapeHTML(sanitize(params[:observability_path]))

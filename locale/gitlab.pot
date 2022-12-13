@@ -43034,6 +43034,11 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
+msgid "To invite more users, you can reduce the number of users in your namespace to %{free_limit} user or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
+msgid_plural "To invite more users, you can reduce the number of users in your namespace to %{free_limit} users or less. You can also upgrade to a paid tier which do not have user limits. If you need additional time, you can start a free 30-day trial which includes unlimited users."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "To keep this project going, create a new issue"
 msgstr ""
 
@@ -47995,6 +48000,9 @@ msgid "Your message here"
 msgstr ""
 
 msgid "Your name"
+msgstr ""
+
+msgid "Your namespace %{namespace_name} has reached the %{free_limit} user limit"
 msgstr ""
 
 msgid "Your namespace %{namespace_name} is over the %{free_limit} user limit and has been placed in a read-only state."

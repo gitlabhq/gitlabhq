@@ -9,7 +9,7 @@ module Mutations
         alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])
         result = create_alert_issue(alert, current_user)
 
-        track_usage_event(:incident_management_incident_created, current_user.id)
+        track_alert_events('incident_management_incident_created', alert)
         track_usage_event(:incident_management_alert_create_incident, current_user.id)
 
         prepare_response(alert, result)

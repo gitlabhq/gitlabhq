@@ -607,53 +607,65 @@
     "secrets": {
       "type": "object",
       "markdownDescription": "Defines secrets to be injected as environment variables. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secrets).",
-      "additionalProperties": {
-        "type": "object",
-        "description": "Environment variable name",
-        "properties": {
-          "vault": {
-            "oneOf": [
-              {
-                "type": "string",
-                "description": "The secret to be fetched from Vault (e.g. 'production/db/password@ops' translates to secret 'ops/data/production/db', field `password`)"
-              },
-              {
-                "type": "object",
-                "properties": {
-                  "engine": {
-                    "type": "object",
-                    "properties": {
-                      "name": {
-                        "type": "string"
-                      },
-                      "path": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "name",
-                      "path"
-                    ]
-                  },
-                  "path": {
-                    "type": "string"
-                  },
-                  "field": {
-                    "type": "string"
-                  }
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "properties": {
+            "vault": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "markdownDescription": "The secret to be fetched from Vault (e.g. 'production/db/password@ops' translates to secret 'ops/data/production/db', field `password`). [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secretsvault)"
                 },
-                "required": [
-                  "engine",
-                  "path",
-                  "field"
-                ]
-              }
-            ]
-          }
-        },
-        "required": [
-          "vault"
-        ]
+                {
+                  "type": "object",
+                  "properties": {
+                    "engine": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string"
+                        },
+                        "path": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name",
+                        "path"
+                      ]
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "field": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "engine",
+                    "path",
+                    "field"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "file": {
+              "type": "boolean",
+              "default": true,
+              "markdownDescription": "Configures the secret to be stored as either a file or variable type CI/CD variable. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#secretsfile)"
+            },
+            "token": {
+              "type": "string",
+              "description": "Specifies the JWT variable that should be used to authenticate with Hashicorp Vault."
+            }
+          },
+          "required": [
+            "vault"
+          ],
+          "additionalProperties": false
+        }
       }
     },
     "before_script": {

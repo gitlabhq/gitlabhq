@@ -26,12 +26,6 @@ Contributions are welcome.
 For an introduction and basic steps, see
 [How to make GitLab API calls](https://www.youtube.com/watch?v=0LsMC3ZiXkA).
 
-## SCIM API **(PREMIUM SAAS)**
-
-GitLab provides a [SCIM API](scim.md) that both implements
-[the RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644) and provides the
-`/Users` endpoint. The base URL is `/api/scim/v2/groups/:group_path/Users/`.
-
 ## GraphQL API
 
 A GraphQL API is available in GitLab.

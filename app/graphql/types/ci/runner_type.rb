@@ -38,8 +38,8 @@ module Types
       field :executor_name, GraphQL::Types::String, null: true,
                                                     description: 'Executor last advertised by the runner.',
                                                     method: :executor_name
-      field :groups, ::Types::GroupType.connection_type, null: true,
-                                                         description: 'Groups the runner is associated with. For group runners only.'
+      field :groups, 'Types::GroupConnection', null: true,
+                                               description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
                                                       description: 'ID of the runner.'
       field :ip_address, GraphQL::Types::String, null: true,

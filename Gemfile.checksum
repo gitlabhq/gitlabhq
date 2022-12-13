@@ -428,7 +428,7 @@
 {"name":"premailer","version":"1.16.0","platform":"ruby","checksum":"03e4402c448e6bae13fb5f6301a8bde4f3508e1bff90ae7c0972c7be94694786"},
 {"name":"premailer-rails","version":"1.10.3","platform":"ruby","checksum":"7cdcb97027866f7a81c490c6d15ada7f39666b5f6375f0821b7e97e0483b112f"},
 {"name":"proc_to_ast","version":"0.1.0","platform":"ruby","checksum":"92a73fa66e2250a83f8589f818b0751bcf227c68f85916202df7af85082f8691"},
-{"name":"prometheus-client-mmap","version":"0.16.2","platform":"ruby","checksum":"36e7e96fdd603c2d1fed050ec71504797f3f8b2560123306ba72018ee3561165"},
+{"name":"prometheus-client-mmap","version":"0.17.0","platform":"ruby","checksum":"766d3706f7b26fed5a177843ab15b5b0dc108f9677d8bdbe0c4b5d9375c2af24"},
 {"name":"pry","version":"0.13.1","platform":"java","checksum":"9612d825e2c3bc160633b2a4fae21041126ee33f1ac8035c851417e561b2b46c"},
 {"name":"pry","version":"0.13.1","platform":"ruby","checksum":"1393918c415af46b6d09044d2b78dde92b29bc834fd85c369a950bab0826dc47"},
 {"name":"pry-byebug","version":"3.9.0","platform":"ruby","checksum":"3bba08f97fea15b89cc299f3b5136e3b85763cd18cf84960eac4fbfbeb2ede24"},

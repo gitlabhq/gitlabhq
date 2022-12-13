@@ -18772,6 +18772,7 @@ Represents a requirement.
 | <a id="requirementtitlehtml"></a>`titleHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `title`. |
 | <a id="requirementupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the requirement was last updated. |
 | <a id="requirementuserpermissions"></a>`userPermissions` | [`RequirementPermissions!`](#requirementpermissions) | Permissions for the current user on the resource. |
+| <a id="requirementworkitemiid"></a>`workItemIid` | [`ID!`](#id) | Work item IID of the requirement, will replace current IID as identifier soon. |
 
 #### Fields with arguments
 

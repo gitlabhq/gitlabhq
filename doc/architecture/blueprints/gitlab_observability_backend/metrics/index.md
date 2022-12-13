@@ -1,6 +1,6 @@
 ---
 status: proposed
-creation-date: 2022-11-09
+creation-date: "2022-11-09"
 authors: [ "@ankitbhatnagar" ]
 coach: "@mappelman"
 approvers: [ "@sebastienpahl", "@nicholasklick" ]

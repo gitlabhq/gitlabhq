@@ -20,7 +20,7 @@ module Mutations
           alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])
           result = set_assignees(alert, args[:assignee_usernames], args[:operation_mode])
 
-          track_usage_event(:incident_management_alert_assigned, current_user.id)
+          track_alert_events('incident_management_alert_assigned', alert)
 
           prepare_response(result)
         end

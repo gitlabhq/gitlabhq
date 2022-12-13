@@ -10,17 +10,17 @@ RSpec.describe Groups::ObservabilityHelper do
     context 'if observability_path is missing from params' do
       it 'returns the iframe src for action: dashboards' do
         allow(helper).to receive(:params).and_return({ action: 'dashboards' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/#{group.id}/")
+        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/")
       end
 
       it 'returns the iframe src for action: manage' do
         allow(helper).to receive(:params).and_return({ action: 'manage' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/#{group.id}/dashboards")
+        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/dashboards")
       end
 
       it 'returns the iframe src for action: explore' do
         allow(helper).to receive(:params).and_return({ action: 'explore' })
-        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/#{group.id}/explore")
+        expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/explore")
       end
     end
 
@@ -28,7 +28,7 @@ RSpec.describe Groups::ObservabilityHelper do
       context 'if observability_path is valid' do
         it 'returns the iframe src by injecting the observability path' do
           allow(helper).to receive(:params).and_return({ action: '/explore', observability_path: '/foo?bar=foobar' })
-          expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/#{group.id}/foo?bar=foobar")
+          expect(helper.observability_iframe_src(group)).to eq("#{observability_url}/-/#{group.id}/foo?bar=foobar")
         end
       end
 
@@ -40,7 +40,7 @@ RSpec.describe Groups::ObservabilityHelper do
                                                          "/test?groupId=<script>alert('attack!')</script>"
                                                        })
           expect(helper.observability_iframe_src(group)).to eq(
-            "#{observability_url}/#{group.id}/test?groupId=alert('attack!')"
+            "#{observability_url}/-/#{group.id}/test?groupId=alert('attack!')"
           )
         end
       end

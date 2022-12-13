@@ -43,7 +43,7 @@ module IncidentManagement
         if timeline_event_saved
           add_system_note(timeline_event)
 
-          track_usage_event(:incident_management_timeline_event_edited, user.id)
+          track_timeline_event('incident_management_timeline_event_edited', timeline_event.project)
           success(timeline_event)
         else
           error_in_save(timeline_event)

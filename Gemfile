@@ -353,7 +353,7 @@ gem 'snowplow-tracker', '~> 0.6.1'
 
 # Metrics
 gem 'webrick', '~> 1.6.1', require: false
-gem 'prometheus-client-mmap', '~> 0.16', require: 'prometheus/client'
+gem 'prometheus-client-mmap', '~> 0.17', require: 'prometheus/client'
 
 gem 'warning', '~> 1.3.0'
 
