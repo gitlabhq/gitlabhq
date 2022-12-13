@@ -49787,6 +49787,9 @@ msgstr ""
 msgid "must be greater than start date"
 msgstr ""
 
+msgid "must be in ISO 8601 format"
+msgstr ""
+
 msgid "must be in same hierarchy as custom role's namespace"
 msgstr ""
 

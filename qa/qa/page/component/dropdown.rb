@@ -93,6 +93,10 @@ module QA
           has_css?('ul.gl-dropdown-contents', wait: 1)
         end
 
+        def find_input_by_prefix_and_set(element_prefix, item_text)
+          find("input[id^=\"#{element_prefix}\"]").set(item_text)
+        end
+
         private
 
         # rubocop:disable Gitlab/PredicateMemoization

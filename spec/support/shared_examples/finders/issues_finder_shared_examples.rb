@@ -921,12 +921,15 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
       context 'filtering by item type' do
         let_it_be(:incident_item) { create(factory, issue_type: :incident, project: project1) }
+        let_it_be(:objective) { create(factory, issue_type: :objective, project: project1) }
+        let_it_be(:key_result) { create(factory, issue_type: :key_result, project: project1) }
 
         context 'no type given' do
           let(:params) { { issue_types: [] } }
 
           it 'returns all items' do
-            expect(items).to contain_exactly(incident_item, item1, item2, item3, item4, item5)
+            expect(items)
+              .to contain_exactly(incident_item, item1, item2, item3, item4, item5, objective, key_result)
           end
         end
 
@@ -935,6 +938,22 @@ RSpec.shared_examples 'issues or work items finder' do |factory, execute_context
 
           it 'returns incident items' do
             expect(items).to contain_exactly(incident_item)
+          end
+        end
+
+        context 'objective type' do
+          let(:params) { { issue_types: ['objective'] } }
+
+          it 'returns incident items' do
+            expect(items).to contain_exactly(objective)
+          end
+        end
+
+        context 'key_result type' do
+          let(:params) { { issue_types: ['key_result'] } }
+
+          it 'returns incident items' do
+            expect(items).to contain_exactly(key_result)
           end
         end
 

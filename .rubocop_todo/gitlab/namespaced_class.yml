@@ -701,6 +701,7 @@ Gitlab/NamespacedClass:
     - 'app/validators/gitlab/zoom_url_validator.rb'
     - 'app/validators/html_safety_validator.rb'
     - 'app/validators/ip_address_validator.rb'
+    - 'app/validators/iso8601_date_validator.rb'
     - 'app/validators/js_regex_validator.rb'
     - 'app/validators/json_schema_validator.rb'
     - 'app/validators/key_restriction_validator.rb'

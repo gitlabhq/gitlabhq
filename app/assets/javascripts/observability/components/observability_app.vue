@@ -87,6 +87,7 @@ export default {
       frameborder="0"
       height="100%"
       :src="iframeSrcWithParams"
+      sandbox="allow-same-origin allow-forms allow-scripts"
     ></iframe>
   </observability-skeleton>
 </template>

@@ -346,7 +346,7 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
 
   context 'deploy token creation' do
     shared_examples 'creating a deploy token' do |entity, unauthenticated_response, authorized_role|
-      let(:expires_time) { 1.year.from_now }
+      let(:expires_time) { 1.year.from_now.to_datetime }
       let(:params) do
         {
           name: 'Foo',
@@ -410,6 +410,14 @@ RSpec.describe API::DeployTokens, feature_category: :continuous_delivery do
         context 'with an invalid scope' do
           before do
             params[:scopes] = %w[read_repository all_access]
+          end
+
+          it { is_expected.to have_gitlab_http_status(:bad_request) }
+        end
+
+        context 'with an invalid expires_at date' do
+          before do
+            params[:expires_at] = 'foo'
           end
 
           it { is_expected.to have_gitlab_http_status(:bad_request) }

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 With the GitLab Package Registry, you can use GitLab as a private or public registry for a variety
-of [supported package managers](#supported-package-managers).
+of [supported package managers](reference.md#supported-package-managers).
 You can publish and share packages, which can be consumed as a dependency in downstream projects.
 
 ## Package workflows
@@ -122,49 +122,19 @@ your project's settings. For example, if you have a public project and set the r
 to **Only Project Members**, the Package Registry is then public. Disabling the Package
 Registry disables all Package Registry operations.
 
-| Project visibility | Action | [Role](../../permissions.md#roles) required |
-| ---- | ---- | ---- |
-| Public | View Package Registry | `n/a`, everyone on the internet can perform this action |
-| Public | Publish a package | Developer or higher |
-| Public | Pull a package | `n/a`, everyone on the internet can perform this action |
-| Internal | View Package Registry | Guest or higher |
-| Internal | Publish a package | Developer or higher |
-| Internal | Pull a package | Guest or higher(1) |
-| Private | View Package Registry | Reporter or higher |
-| Private | Publish a package | Developer or higher |
-| Private | Pull a package | Reporter or higher(1) |
+| Project visibility | Action                | [Role](../../permissions.md#roles) required             |
+|--------------------|-----------------------|---------------------------------------------------------|
+| Public             | View Package Registry | `n/a`, everyone on the internet can perform this action |
+| Public             | Publish a package     | Developer or higher                                     |
+| Public             | Pull a package        | `n/a`, everyone on the internet can perform this action |
+| Internal           | View Package Registry | Guest or higher                                         |
+| Internal           | Publish a package     | Developer or higher                                     |
+| Internal           | Pull a package        | Guest or higher(1)                                      |
+| Private            | View Package Registry | Reporter or higher                                      |
+| Private            | Publish a package     | Developer or higher                                     |
+| Private            | Pull a package        | Reporter or higher(1)                                   |
 
 1. [GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253) proposes adding a setting to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is.
-
-## Supported package managers
-
-WARNING:
-Not all package manager formats are ready for production use. To view each format's status, see the
-table's **Status** column.
-
-The Package Registry supports the following formats:
-
-| Package type                                     | GitLab version | Status                                                     |
-| ------------------------------------------------ | -------------- | ---------------------------------------------------------- |
-| [Maven](../maven_repository/index.md)            | 11.3+          | GA                                                         |
-| [npm](../npm_registry/index.md)                  | 11.7+          | GA                                                         |
-| [NuGet](../nuget_repository/index.md)            | 12.8+          | GA                                                         |
-| [PyPI](../pypi_repository/index.md)              | 12.10+         | GA                                                         |
-| [Generic packages](../generic_packages/index.md) | 13.5+          | GA                                                         |
-| [Composer](../composer_repository/index.md)      | 13.2+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817)  |
-| [Conan](../conan_repository/index.md)            | 12.6+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6816)  |
-| [Helm](../helm_repository/index.md)              | 14.1+          | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6366)  |
-| [Debian](../debian_repository/index.md)          | 14.2+          | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
-| [Go](../go_proxy/index.md)                       | 13.1+          | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
-| [Ruby gems](../rubygems_registry/index.md)       | 13.10+         | [Alpha](https://gitlab.com/groups/gitlab-org/-/epics/3200) |
-
-[Status](../../../policy/alpha-beta-support.md):
-
-- Alpha: behind a feature flag and not officially supported.
-- Beta: several known issues that may prevent expected use.
-- GA (Generally Available): ready for production use at any scale.
-
-You can also use the [API](../../../api/packages.md) to administer the Package Registry.
 
 ## Accepting contributions
 

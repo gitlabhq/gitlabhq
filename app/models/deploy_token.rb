@@ -37,6 +37,7 @@ class DeployToken < ApplicationRecord
       message: "can contain only letters, digits, '_', '-', '+', and '.'"
     }
 
+  validates :expires_at, iso8601_date: true, on: :create
   validates :deploy_token_type, presence: true
   enum deploy_token_type: {
     group_type: 1,

@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -30,7 +30,6 @@ describe('SourceBranchDropdown', () => {
   let wrapper;
 
   const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
   const assertListboxItems = () => {
     const listboxItems = findListbox().props('items');
@@ -112,7 +111,7 @@ describe('SourceBranchDropdown', () => {
           jest.clearAllMocks();
 
           const mockSearchTerm = 'mai';
-          await findSearchBox().vm.$emit('input', mockSearchTerm);
+          await findListbox().vm.$emit('search', mockSearchTerm);
 
           expect(mockGetProjectQuery).toHaveBeenCalledWith({
             branchNamesLimit: BRANCHES_PER_PAGE,

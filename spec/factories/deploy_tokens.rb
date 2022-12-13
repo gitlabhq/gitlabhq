@@ -10,7 +10,7 @@ FactoryBot.define do
     read_package_registry { false }
     write_package_registry { false }
     revoked { false }
-    expires_at { 5.days.from_now }
+    expires_at { 5.days.from_now.to_datetime }
     deploy_token_type { DeployToken.deploy_token_types[:project_type] }
 
     trait :revoked do

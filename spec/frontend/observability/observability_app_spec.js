@@ -81,6 +81,16 @@ describe('Observability root app', () => {
     });
   });
 
+  describe('iframe sandbox', () => {
+    it('should render an iframe with sandbox attributes', () => {
+      mountComponent();
+      const iframe = findIframe();
+
+      expect(iframe.exists()).toBe(true);
+      expect(iframe.attributes('sandbox')).toBe('allow-same-origin allow-forms allow-scripts');
+    });
+  });
+
   describe('on GOUI_ROUTE_UPDATE', () => {
     it('should not call replace method from vue router if message event does not have url', () => {
       mountComponent();
