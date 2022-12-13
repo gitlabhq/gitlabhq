@@ -2,12 +2,14 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
+import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import OkrActionsSplitButton from '~/work_items/components/work_item_links/okr_actions_split_button.vue';
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 } from '~/work_items/constants';
+import { childrenWorkItems } from '../../mock_data';
 
 describe('WorkItemTree', () => {
   let wrapper;
@@ -17,10 +19,16 @@ describe('WorkItemTree', () => {
   const findEmptyState = () => wrapper.findByTestId('tree-empty');
   const findToggleFormSplitButton = () => wrapper.findComponent(OkrActionsSplitButton);
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
+  const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
 
-  const createComponent = () => {
+  const createComponent = ({ children = childrenWorkItems } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
-      propsData: { workItemType: 'Objective', workItemId: 'gid://gitlab/WorkItem/515' },
+      propsData: {
+        workItemType: 'Objective',
+        workItemId: 'gid://gitlab/WorkItem/515',
+        children,
+        projectPath: 'test/project',
+      },
     });
   };
 
@@ -47,7 +55,12 @@ describe('WorkItemTree', () => {
   });
 
   it('displays empty state if there are no children', () => {
+    createComponent({ children: [] });
     expect(findEmptyState().exists()).toBe(true);
+  });
+
+  it('renders all hierarchy widget children', () => {
+    expect(findWorkItemLinkChildItems()).toHaveLength(4);
   });
 
   it('does not display form by default', () => {
@@ -71,4 +84,11 @@ describe('WorkItemTree', () => {
       expect(findForm().props('childrenType')).toBe(childType);
     },
   );
+
+  it('remove event on child triggers `removeChild` event', () => {
+    const firstChild = findWorkItemLinkChildItems().at(0);
+    firstChild.vm.$emit('removeChild', 'gid://gitlab/WorkItem/2');
+
+    expect(wrapper.emitted('removeChild')).toEqual([['gid://gitlab/WorkItem/2']]);
+  });
 });

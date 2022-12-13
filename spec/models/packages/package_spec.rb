@@ -717,18 +717,6 @@ RSpec.describe Packages::Package, type: :model do
 
       destroy!
     end
-
-    context 'when packages_size_counter_attribute is disabled' do
-      before do
-        stub_feature_flags(packages_size_counter_attribute: false)
-      end
-
-      it 'affects project statistics' do
-        expect { destroy! }
-          .to change { project_statistics.reload.packages_size }
-                .from(package_file.size).to(0)
-      end
-    end
   end
 
   describe '.by_name_and_file_name' do

@@ -1250,6 +1250,10 @@ curl --request POST --header "PRIVATE-TOKEN: <your-token>" \
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `environments_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `feature_flags_access_level`                                | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `infrastructure_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `monitor_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrator only)_ |
@@ -1330,6 +1334,10 @@ POST /projects/user/:user_id
 | `printing_merge_request_link_enabled`                       | boolean | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project-members. |
 | `releases_access_level`                                     | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `environments_access_level`                                 | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `feature_flags_access_level`                                | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `infrastructure_access_level`                               | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `monitor_access_level`                                      | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string  | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string  | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |
@@ -1434,6 +1442,10 @@ Supported attributes:
 | `printing_merge_request_link_enabled`                       | boolean        | **{dotted-circle}** No | Show link to create/view merge request when pushing from the command line. |
 | `public_builds`                                             | boolean        | **{dotted-circle}** No | If `true`, jobs can be viewed by non-project members. |
 | `releases_access_level`                                     | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `environments_access_level`                                 | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `feature_flags_access_level`                                | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `infrastructure_access_level`                               | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
+| `monitor_access_level`                                      | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `remove_source_branch_after_merge`                          | boolean        | **{dotted-circle}** No | Enable `Delete source branch` option by default for all new merge requests. |
 | `repository_access_level`                                   | string         | **{dotted-circle}** No | One of `disabled`, `private`, or `enabled`. |
 | `repository_storage`                                        | string         | **{dotted-circle}** No | Which storage shard the repository is on. _(administrators only)_ |

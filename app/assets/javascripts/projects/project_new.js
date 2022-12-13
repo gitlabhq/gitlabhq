@@ -12,6 +12,7 @@ import {
   slugify,
   convertUnicodeToAscii,
 } from '../lib/utils/text_utility';
+import { checkRules } from './project_name_rules';
 
 let hasUserDefinedProjectPath = false;
 let hasUserDefinedProjectName = false;
@@ -87,10 +88,23 @@ const validateGroupNamespaceDropdown = (e) => {
   }
 };
 
+const checkProjectName = (projectNameInput) => {
+  const msg = checkRules(projectNameInput.value);
+  const projectNameError = document.querySelector('#project_name_error');
+  if (!projectNameError) return;
+  if (msg) {
+    projectNameError.innerText = msg;
+    projectNameError.classList.remove('hidden');
+  } else {
+    projectNameError.classList.add('hidden');
+  }
+};
+
 const setProjectNamePathHandlers = ($projectNameInput, $projectPathInput) => {
   const specialRepo = document.querySelector('.js-user-readme-repo');
   const projectNameInputListener = () => {
     onProjectNameChange($projectNameInput, $projectPathInput);
+    checkProjectName($projectNameInput);
     hasUserDefinedProjectName = $projectNameInput.value.trim().length > 0;
     hasUserDefinedProjectPath = $projectPathInput.value.trim().length > 0;
   };

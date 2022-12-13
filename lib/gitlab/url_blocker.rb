@@ -22,8 +22,8 @@ module Gitlab
       # rubocop:disable Metrics/ParameterLists
       def validate!(
         url,
+        schemes:,
         ports: [],
-        schemes: [],
         allow_localhost: false,
         allow_local_network: true,
         allow_object_storage: false,
@@ -35,18 +35,10 @@ module Gitlab
 
         return [nil, nil] if url.nil?
 
+        raise ArgumentError, 'The schemes is a required argument' if schemes.blank?
+
         # Param url can be a string, URI or Addressable::URI
         uri = parse_url(url)
-
-        # TODO: This is a temporary log. It will be removed in
-        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104285
-        if schemes.blank?
-          Gitlab::AppJsonLogger.info(
-            message: 'Blank scheme used in Gitlab::UrlBlocker',
-            uri_scheme: uri.scheme,
-            caller: Gitlab::BacktraceCleaner.clean_backtrace(caller)
-          )
-        end
 
         validate_uri(
           uri: uri,

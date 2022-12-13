@@ -25,9 +25,13 @@ describe('RelatedItemsTree', () => {
         expect(wrapper.findAllComponents(GlDropdownSectionHeader).at(0).text()).toContain(
           'Objective',
         );
-        expect(wrapper.findAllComponents(GlDropdownSectionHeader).at(1).text()).toContain(
-          'Key result',
-        );
+
+        // TODO: Uncomment once following two issues addressed
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/381833
+        // https://gitlab.com/gitlab-org/gitlab/-/issues/385084
+        // expect(wrapper.findAllComponents(GlDropdownSectionHeader).at(1).text()).toContain(
+        //   'Key result',
+        // );
       });
     });
   });

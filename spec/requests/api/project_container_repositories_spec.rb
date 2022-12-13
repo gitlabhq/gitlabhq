@@ -147,20 +147,6 @@ RSpec.describe API::ProjectContainerRepositories, feature_category: :package_reg
 
             expect(response).to have_gitlab_http_status(:accepted)
           end
-
-          context 'with container_registry_delete_repository_with_cron_worker disabled' do
-            before do
-              stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
-            end
-
-            it 'schedules removal of repository' do
-              expect(DeleteContainerRepositoryWorker).to receive(:perform_async)
-                .with(maintainer.id, root_repository.id)
-              expect { subject }.to change { root_repository.reload.status }.from(nil).to('delete_scheduled')
-
-              expect(response).to have_gitlab_http_status(:accepted)
-            end
-          end
         end
       end
     end

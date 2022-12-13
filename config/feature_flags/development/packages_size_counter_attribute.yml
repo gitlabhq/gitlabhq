@@ -1,8 +1,0 @@
----
-name: packages_size_counter_attribute
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102978
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/381287
-milestone: '15.7'
-type: development
-group: group::package registry
-default_enabled: false

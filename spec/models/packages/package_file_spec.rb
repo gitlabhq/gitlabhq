@@ -107,18 +107,6 @@ RSpec.describe Packages::PackageFile, type: :model do
       subject { build(:package_file, :jar, package: package, size: 42) }
 
       it_behaves_like 'UpdateProjectStatistics', :packages_size
-
-      context 'when packages_size_counter_attribute is disabled' do
-        before do
-          stub_feature_flags(packages_size_counter_attribute: false)
-        end
-
-        it 'uses the legacy increment function' do
-          expect(package.project.statistics).to receive(:legacy_increment_statistic)
-          expect(package.project.statistics).not_to receive(:delayed_increment_counter)
-          subject.save!
-        end
-      end
     end
   end
 

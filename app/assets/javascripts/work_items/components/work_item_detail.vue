@@ -1,5 +1,6 @@
 <script>
 import { isEmpty } from 'lodash';
+import { produce } from 'immer';
 import {
   GlAlert,
   GlSkeletonLoader,
@@ -11,6 +12,7 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg';
+import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -269,6 +271,12 @@ export default {
             id: this.workItemId,
           };
     },
+    children() {
+      const widgetHierarchy = this.workItem.widgets.find(
+        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+      );
+      return widgetHierarchy.children.nodes;
+    },
   },
   methods: {
     isWidgetPresent(type) {
@@ -325,6 +333,74 @@ export default {
     setEmptyState() {
       this.error = this.$options.i18n.fetchError;
       document.title = s__('404|Not found');
+    },
+    addChild(child) {
+      const { defaultClient: client } = this.$apollo.provider.clients;
+      this.toggleChildFromCache(child, child.id, client);
+    },
+    toggleChildFromCache(workItem, childId, store) {
+      const sourceData = store.readQuery({
+        query: getWorkItemQuery(this.fetchByIid),
+        variables: this.queryVariables,
+      });
+
+      const newData = produce(sourceData, (draftState) => {
+        const widgetHierarchy = draftState.workItem.widgets.find(
+          (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+        );
+
+        const index = widgetHierarchy.children.nodes.findIndex((child) => child.id === childId);
+
+        if (index >= 0) {
+          widgetHierarchy.children.nodes.splice(index, 1);
+        } else {
+          widgetHierarchy.children.nodes.unshift(workItem);
+        }
+      });
+
+      store.writeQuery({
+        query: getWorkItemQuery(this.fetchByIid),
+        variables: this.queryVariables,
+        data: newData,
+      });
+    },
+    async updateWorkItem(workItem, childId, parentId) {
+      return this.$apollo.mutate({
+        mutation: updateWorkItemMutation,
+        variables: { input: { id: childId, hierarchyWidget: { parentId } } },
+        update: (store) => this.toggleChildFromCache(workItem, childId, store),
+      });
+    },
+    async undoChildRemoval(workItem, childId) {
+      try {
+        const { data } = await this.updateWorkItem(workItem, childId, this.workItem.id);
+
+        if (data.workItemUpdate.errors.length === 0) {
+          this.activeToast?.hide();
+        }
+      } catch (error) {
+        this.updateError = s__('WorkItem|Something went wrong while undoing child removal.');
+        Sentry.captureException(error);
+      } finally {
+        this.activeToast?.hide();
+      }
+    },
+    async removeChild(childId) {
+      try {
+        const { data } = await this.updateWorkItem(null, childId, null);
+
+        if (data.workItemUpdate.errors.length === 0) {
+          this.activeToast = this.$toast.show(s__('WorkItem|Child removed'), {
+            action: {
+              text: s__('WorkItem|Undo'),
+              onClick: this.undoChildRemoval.bind(this, data.workItemUpdate.workItem, childId),
+            },
+          });
+        }
+      } catch (error) {
+        this.updateError = s__('WorkItem|Something went wrong while removing child.');
+        Sentry.captureException(error);
+      }
     },
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
@@ -507,6 +583,11 @@ export default {
         v-if="workItemType === $options.WORK_ITEM_TYPE_VALUE_OBJECTIVE"
         :work-item-type="workItemType"
         :work-item-id="workItem.id"
+        :children="children"
+        :can-update="canUpdate"
+        :project-path="fullPath"
+        @addWorkItemChild="addChild"
+        @removeChild="removeChild"
       />
       <gl-empty-state
         v-if="error"

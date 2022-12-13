@@ -23,10 +23,6 @@ module Projects
       def destroy
         image.delete_scheduled!
 
-        unless Feature.enabled?(:container_registry_delete_repository_with_cron_worker)
-          DeleteContainerRepositoryWorker.perform_async(current_user.id, image.id) # rubocop:disable CodeReuse/Worker
-        end
-
         track_package_event(:delete_repository, :container)
 
         respond_to do |format|

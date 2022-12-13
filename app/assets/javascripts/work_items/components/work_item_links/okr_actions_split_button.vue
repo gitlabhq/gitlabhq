@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownDivider, GlDropdownSectionHeader, GlDropdownItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownSectionHeader, GlDropdownItem } from '@gitlab/ui';
 
 import { s__ } from '~/locale';
 
@@ -30,7 +30,6 @@ export default {
   objectiveActionItems,
   components: {
     GlDropdown,
-    GlDropdownDivider,
     GlDropdownSectionHeader,
     GlDropdownItem,
   },
@@ -53,6 +52,10 @@ export default {
       {{ item.title }}
     </gl-dropdown-item>
 
+    <!-- TODO: Uncomment once following two issues addressed -->
+    <!-- https://gitlab.com/gitlab-org/gitlab/-/issues/381833 -->
+    <!-- https://gitlab.com/gitlab-org/gitlab/-/issues/385084 -->
+    <!--
     <gl-dropdown-divider />
     <gl-dropdown-section-header>{{ __('Key result') }}</gl-dropdown-section-header>
     <gl-dropdown-item
@@ -62,5 +65,6 @@ export default {
     >
       {{ item.title }}
     </gl-dropdown-item>
+    -->
   </gl-dropdown>
 </template>

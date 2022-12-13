@@ -103,18 +103,6 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
         end
       end
 
-      context 'with container_registry_delete_repository_with_cron_worker disabled' do
-        before do
-          stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
-        end
-
-        it 'will not delete any container repository' do
-          expect(::Projects::ContainerRepository::CleanupTagsService).not_to receive(:new)
-
-          expect { perform_work }.to not_change { ContainerRepository.count }
-        end
-      end
-
       def expect_next_pending_destruction_container_repository
         original_method = ContainerRepository.method(:next_pending_destruction)
         expect(ContainerRepository).to receive(:next_pending_destruction).with(order_by: nil) do
@@ -154,13 +142,5 @@ RSpec.describe ContainerRegistry::DeleteContainerRepositoryWorker, :aggregate_fa
     subject { worker.remaining_work_count }
 
     it { is_expected.to eq(described_class::MAX_CAPACITY + 1) }
-
-    context 'with container_registry_delete_repository_with_cron_worker disabled' do
-      before do
-        stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
-      end
-
-      it { is_expected.to eq(0) }
-    end
   end
 end

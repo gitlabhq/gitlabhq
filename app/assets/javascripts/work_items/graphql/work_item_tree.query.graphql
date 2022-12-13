@@ -1,8 +1,10 @@
-query workItemLinksQuery($id: WorkItemID!) {
+query workItemTreeQuery($id: WorkItemID!) {
   workItem(id: $id) {
     id
     workItemType {
       id
+      name
+      iconName
     }
     title
     userPermissions {
@@ -31,6 +33,12 @@ query workItemLinksQuery($id: WorkItemID!) {
             state
             createdAt
             closedAt
+            widgets {
+              ... on WorkItemWidgetHierarchy {
+                type
+                hasChildren
+              }
+            }
           }
         }
       }

@@ -100,6 +100,9 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '$CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_IID && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
+.if-schedule-pipeline: &if-schedule-pipeline
+  if: '$CI_PIPELINE_SOURCE == "schedule"'
+
 .if-schedule-maintenance: &if-schedule-maintenance
   if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
@@ -2050,7 +2053,7 @@
   rules:
     - <<: *if-default-branch-or-tag
       allow_failure: true
-    - <<: *if-schedule-maintenance
+    - <<: *if-schedule-pipeline
       allow_failure: true
     - <<: *if-auto-deploy-branches
       allow_failure: true

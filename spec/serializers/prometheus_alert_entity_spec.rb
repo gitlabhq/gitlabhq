@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe PrometheusAlertEntity do
-  let(:user) { create(:user) }
-  let(:prometheus_alert) { create(:prometheus_alert) }
+  let(:user) { build_stubbed(:user) }
+  let(:prometheus_alert) { build_stubbed(:prometheus_alert) }
   let(:request) { double('prometheus_alert', current_user: user) }
   let(:entity) { described_class.new(prometheus_alert, request: request) }
 

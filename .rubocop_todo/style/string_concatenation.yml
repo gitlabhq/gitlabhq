@@ -2,23 +2,8 @@
 # Cop supports --autocorrect.
 Style/StringConcatenation:
   Exclude:
-    - 'app/components/pajamas/button_component.rb'
-    - 'app/controllers/concerns/creates_commit.rb'
-    - 'app/controllers/groups/dependency_proxy_for_containers_controller.rb'
-    - 'app/controllers/jira_connect/app_descriptor_controller.rb'
     - 'app/controllers/projects/labels_controller.rb'
     - 'app/controllers/projects/milestones_controller.rb'
-    - 'app/graphql/types/global_id_type.rb'
-    - 'app/helpers/application_helper.rb'
-    - 'app/helpers/blob_helper.rb'
-    - 'app/helpers/dropdowns_helper.rb'
-    - 'app/helpers/emails_helper.rb'
-    - 'app/helpers/events_helper.rb'
-    - 'app/helpers/numbers_helper.rb'
-    - 'app/helpers/submodule_helper.rb'
-    - 'app/helpers/todos_helper.rb'
-    - 'app/models/application_setting.rb'
-    - 'app/models/commit_range.rb'
     - 'app/models/concerns/counter_attribute.rb'
     - 'app/models/concerns/cross_database_modification.rb'
     - 'app/models/concerns/from_set_operator.rb'

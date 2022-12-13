@@ -234,11 +234,11 @@ module ApplicationHelper
   end
 
   def promo_url
-    'https://' + promo_host
+    "https://#{promo_host}"
   end
 
   def support_url
-    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || promo_url + '/getting-help/'
+    Gitlab::CurrentSettings.current_application_settings.help_page_support_url.presence || "#{promo_url}/getting-help/"
   end
 
   def instance_review_permitted?

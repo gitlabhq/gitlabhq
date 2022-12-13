@@ -38,6 +38,7 @@ fragment WorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetHierarchy {
     type
+    hasChildren
     parent {
       id
       iid
@@ -56,11 +57,19 @@ fragment WorkItemWidgets on WorkItemWidget {
         confidential
         workItemType {
           id
+          name
+          iconName
         }
         title
         state
         createdAt
         closedAt
+        widgets {
+          ... on WorkItemWidgetHierarchy {
+            type
+            hasChildren
+          }
+        }
       }
     }
   }

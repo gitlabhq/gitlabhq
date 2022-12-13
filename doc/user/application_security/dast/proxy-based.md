@@ -24,6 +24,40 @@ The analyzer uses the [OWASP Zed Attack Proxy](https://www.zaproxy.org/) (ZAP) t
   to attack your application and produce a more extensive security report. It can be very
   useful when combined with [Review Apps](../../../ci/review_apps/index.md).
 
+## Templates
+
+> - The DAST latest template was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325) in GitLab 13.8.
+> - All DAST templates were [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
+> - All DAST templates were [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
+
+GitLab DAST configuration is defined in CI/CD templates. Updates to the template are provided with
+GitLab upgrades, allowing you to benefit from any improvements and additions.
+
+Available templates:
+
+- [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml): Stable version of the DAST CI/CD template.
+- [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml): Latest version of the DAST template.
+
+WARNING:
+The latest version of the template may include breaking changes. Use the stable template unless you
+need a feature provided only in the latest template.
+
+For more information about template versioning, see the
+[CI/CD documentation](../../../development/cicd/templates.md#latest-version).
+
+## DAST versions
+
+By default, the DAST template uses the latest major version of the DAST Docker image. You can choose
+how DAST updates, using the `DAST_VERSION` variable:
+
+- Automatically update DAST with new features and fixes by pinning to a major
+  version (such as `1`).
+- Only update fixes by pinning to a minor version (such as `1.6`).
+- Prevent all updates by pinning to a specific version (such as `1.6.4`).
+
+Find the latest DAST versions on the [DAST releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases)
+page.
+
 ## DAST run options
 
 You can use DAST to examine your web application:
@@ -46,58 +80,32 @@ To enable DAST to run automatically, either:
 
 - Enable [Auto DAST](../../../topics/autodevops/stages.md#auto-dast) (provided
   by [Auto DevOps](../../../topics/autodevops/index.md)).
-- [Include the DAST template](#include-the-dast-template) in your existing
-  `.gitlab-ci.yml` file.
-- [Configure DAST using the UI](#configure-dast-using-the-ui).
+- [Edit the `.gitlab.ci.yml` file manually](#edit-the-gitlabciyml-file-manually).
+- [Use an automatically configured merge request](#configure-dast-using-the-ui).
 
-#### Include the DAST template
+#### Edit the `.gitlab.ci.yml` file manually
 
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62597) to DAST_VERSION: 2 in GitLab 14.0.
-> - This template was [updated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87183) to DAST_VERSION: 3 in GitLab 15.0.
-
-If you want to manually add DAST to your application, the DAST job is defined
-in a CI/CD template file. Updates to the template are provided with GitLab
-upgrades, allowing you to benefit from any improvements and additions.
+In this method you manually edit the existing `.gitlab-ci.yml` file. Use this method if your GitLab CI/CD configuration file is complex.
 
 To include the DAST template:
 
-1. Select the CI/CD template you want to use:
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **CI/CD > Editor**.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file.
 
-   - [`DAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.gitlab-ci.yml):
-     Stable version of the DAST CI/CD template.
-   - [`DAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml):
-     Latest version of the DAST template. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/254325)
-     in GitLab 13.8).
+   To use the DAST stable template:
 
-   WARNING:
-   The latest version of the template may include breaking changes. Use the
-   stable template unless you need a feature provided only in the latest template.
+   ```yaml
+   include:
+     - template: DAST.gitlab-ci.yml
+   ```
 
-   For more information about template versioning, see the
-   [CI/CD documentation](../../../development/cicd/templates.md#latest-version).
+   To use the DAST latest template:
 
-1. Add a `dast` stage to your GitLab CI stages configuration:
-
-    ```yaml
-    stages:
-      - dast
-    ```
-
-1. Add the template to GitLab, based on your version of GitLab:
-
-   - In GitLab 11.9 and later, [include](../../../ci/yaml/index.md#includetemplate)
-     the template by adding the following to your `.gitlab-ci.yml` file:
-
-     ```yaml
-     include:
-       - template: <template_file.yml>
-
-     variables:
-       DAST_WEBSITE: https://example.com
-     ```
-
-   - In GitLab 11.8 and earlier, add the contents of the template to your
-     `.gitlab_ci.yml` file.
+   ```yaml
+   include:
+     - template: DAST.latest.gitlab-ci.yml
+   ```
 
 1. Define the URL to be scanned by DAST by using one of these methods:
 
@@ -125,9 +133,13 @@ To include the DAST template:
      You can see an example of this in our
      [Auto DevOps CI YAML](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/Deploy.gitlab-ci.yml)
      file.
+1. Select the **Validate** tab, then select **Validate pipeline**.
+   The message **Simulation completed successfully** indicates the file is valid.
+1. Select the **Edit** tab.
+1. Optional. In **Commit message**, customize the commit message.
+1. Select **Commit changes**.
 
-The included template creates a `dast` job in your CI/CD pipeline and scans
-your project's running application for possible vulnerabilities.
+Pipelines now include a DAST job.
 
 The results are saved as a
 [DAST report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdast)
@@ -137,21 +149,12 @@ always take the latest DAST artifact available. Behind the scenes, the
 is used to run the tests on the specified URL and scan it for possible
 vulnerabilities.
 
-By default, the DAST template uses the latest major version of the DAST Docker
-image. Using the `DAST_VERSION` variable, you can choose how DAST updates:
-
-- Automatically update DAST with new features and fixes by pinning to a major
-  version (such as `1`).
-- Only update fixes by pinning to a minor version (such as `1.6`).
-- Prevent all updates by pinning to a specific version (such as `1.6.4`).
-
-Find the latest DAST versions on the [Releases](https://gitlab.com/gitlab-org/security-products/dast/-/releases)
-page.
-
 #### Configure DAST using the UI
 
-You can enable or configure DAST settings using the UI. The generated settings are formatted so they
-can be conveniently pasted into the `.gitlab-ci.yml` file.
+In this method you select options in the UI. Based on your selections, a code
+snippet is created that you paste into the `.gitlab-ci.yml` file.
+
+To configure DAST using the UI:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
 1. On the left sidebar, select **Security & Compliance > Configuration**.
@@ -168,10 +171,13 @@ can be conveniently pasted into the `.gitlab-ci.yml` file.
    1. To add the snippet to your project's `.gitlab-ci.yml` file, select
       **Copy code and open `.gitlab-ci.yml` file**. The Pipeline Editor opens.
       1. Paste the snippet into the `.gitlab-ci.yml` file.
-      1. Select the **Lint** tab to confirm the edited `.gitlab-ci.yml` file is valid.
-      1. Select the **Edit** tab, then select **Commit changes**.
+      1. Select the **Validate** tab, then select **Validate pipeline**.
+         The message **Simulation completed successfully** indicates the file is valid.
+      1. Select the **Edit** tab.
+      1. Optional. In **Commit message**, customize the commit message.
+      1. Select **Commit changes**.
 
-When the snippet is committed to the `.gitlab-ci.yml` file, pipelines include a DAST job.
+Pipelines now include a DAST job.
 
 ### API scan
 

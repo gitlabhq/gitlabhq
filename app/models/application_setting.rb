@@ -88,7 +88,7 @@ class ApplicationSetting < ApplicationRecord
 
   validates :grafana_url,
             system_hook_url: {
-              blocked_message: "is blocked: %{exception_message}. " + GRAFANA_URL_ERROR_MESSAGE
+              blocked_message: "is blocked: %{exception_message}. #{GRAFANA_URL_ERROR_MESSAGE}"
             },
             if: :grafana_url_absolute?
 

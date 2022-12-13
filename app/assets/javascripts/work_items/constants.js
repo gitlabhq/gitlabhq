@@ -116,7 +116,7 @@ export const WORK_ITEMS_TYPE_MAP = {
   },
   [WORK_ITEM_TYPE_ENUM_KEY_RESULT]: {
     icon: `issue-type-issue`,
-    name: s__('WorkItem|Key result'),
+    name: s__('WorkItem|Key Result'),
   },
 };
 
@@ -125,6 +125,14 @@ export const WORK_ITEMS_TREE_TEXT_MAP = {
     title: s__('WorkItem|Child objectives and key results'),
     empty: s__('WorkItem|No objectives or key results are currently assigned.'),
   },
+};
+
+export const WORK_ITEM_NAME_TO_ICON_MAP = {
+  Issue: 'issue-type-issue',
+  Task: 'issue-type-task',
+  Objective: 'issue-type-objective',
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  'Key Result': 'issue-type-key-result',
 };
 
 export const FORM_TYPES = {

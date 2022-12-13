@@ -21,6 +21,7 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
+import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import { i18n } from '~/work_items/constants';
 import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -38,6 +39,7 @@ import {
   workItemAssigneesSubscriptionResponse,
   workItemMilestoneSubscriptionResponse,
   projectWorkItemResponse,
+  objectiveType,
 } from '../mock_data';
 
 describe('WorkItemDetail component', () => {
@@ -78,6 +80,7 @@ describe('WorkItemDetail component', () => {
   const findParentButton = () => findParent().findComponent(GlButton);
   const findCloseButton = () => wrapper.find('[data-testid="work-item-close"]');
   const findWorkItemType = () => wrapper.find('[data-testid="work-item-type"]');
+  const findHierarchyTree = () => wrapper.findComponent(WorkItemTree);
 
   const createComponent = ({
     isModal = false,
@@ -636,6 +639,26 @@ describe('WorkItemDetail component', () => {
     expect(successByIidHandler).toHaveBeenCalledWith({
       fullPath: 'group/project',
       iid: '1',
+    });
+  });
+
+  describe('hierarchy widget', () => {
+    it('does not render children tree by default', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findHierarchyTree().exists()).toBe(false);
+    });
+
+    it('renders children tree when work item is an Objective', async () => {
+      const objectiveWorkItem = workItemResponseFactory({
+        workItemType: objectiveType,
+      });
+      const handler = jest.fn().mockResolvedValue(objectiveWorkItem);
+      createComponent({ handler });
+      await waitForPromises();
+
+      expect(findHierarchyTree().exists()).toBe(true);
     });
   });
 });

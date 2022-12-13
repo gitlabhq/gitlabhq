@@ -78,7 +78,7 @@ module CreatesCommit
               _("You can now submit a merge request to get this change into the original branch.")
             end
 
-          flash[:notice] += " " + mr_message
+          flash[:notice] += " #{mr_message}"
         end
     end
   end

@@ -412,7 +412,7 @@ export default {
           @click="openChild(child, $event)"
           @mouseover="prefetchWorkItem(child)"
           @mouseout="clearPrefetching"
-          @remove="removeChild"
+          @removeChild="removeChild"
         />
         <work-item-detail-modal
           ref="modal"

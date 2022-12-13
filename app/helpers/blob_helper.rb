@@ -113,7 +113,7 @@ module BlobHelper
   end
 
   def parent_dir_raw_path
-    blob_raw_path.rpartition("/").first + "/"
+    "#{blob_raw_path.rpartition('/').first}/"
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted

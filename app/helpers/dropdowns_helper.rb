@@ -86,7 +86,7 @@ module DropdownsHelper
       title_output = []
 
       if has_back
-        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back " + margin_class, aria: { label: "Go back" }, type: "button") do
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-back #{margin_class}", aria: { label: "Go back" }, type: "button") do
           sprite_icon('arrow-left')
         end
       end
@@ -94,7 +94,7 @@ module DropdownsHelper
       title_output << content_tag(:span, title, class: margin_class)
 
       if has_close
-        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close " + margin_class, aria: { label: "Close" }, type: "button") do
+        title_output << content_tag(:button, class: "dropdown-title-button dropdown-menu-close #{margin_class}", aria: { label: "Close" }, type: "button") do
           sprite_icon('close', size: 16, css_class: 'dropdown-menu-close-icon')
         end
       end

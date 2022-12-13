@@ -14,7 +14,6 @@ import VueApollo from 'vue-apollo';
 import MockAdapter from 'axios-mock-adapter';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { stripTypenames } from 'helpers/graphql_helpers';
 import waitForPromises from 'helpers/wait_for_promises';
 import { GRAPHQL_PAGE_SIZE } from '~/packages_and_registries/dependency_proxy/constants';
 import axios from '~/lib/utils/axios_utils';
@@ -190,7 +189,7 @@ describe('DependencyProxyApp', () => {
             it('shows list', () => {
               expect(findManifestList().props()).toMatchObject({
                 manifests: proxyManifests(),
-                pagination: stripTypenames(pagination()),
+                pagination: pagination(),
               });
             });
 

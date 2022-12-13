@@ -63,19 +63,5 @@ RSpec.describe ContainerRegistry::CleanupWorker, :aggregate_failures do
         perform
       end
     end
-
-    context 'with container_registry_delete_repository_with_cron_worker disabled' do
-      before do
-        stub_feature_flags(container_registry_delete_repository_with_cron_worker: false)
-      end
-
-      it 'does not run' do
-        expect(worker).not_to receive(:reset_stale_deletes)
-        expect(worker).not_to receive(:enqueue_delete_container_repository_jobs)
-        expect(worker).not_to receive(:log_counts)
-
-        subject
-      end
-    end
   end
 end

@@ -85,6 +85,7 @@ export const workItemQueryResponse = {
         {
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
+          hasChildren: true,
           parent: {
             id: 'gid://gitlab/Issue/1',
             iid: '5',
@@ -108,7 +109,15 @@ export const workItemQueryResponse = {
                 state: 'OPEN',
                 workItemType: {
                   id: '1',
+                  name: 'Task',
+                  iconName: 'issue-type-task',
                 },
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                  },
+                ],
               },
             ],
           },
@@ -150,6 +159,7 @@ export const updateWorkItemMutationResponse = {
         },
         widgets: [
           {
+            type: 'HIERARCHY',
             children: {
               nodes: [
                 {
@@ -161,10 +171,13 @@ export const updateWorkItemMutationResponse = {
                   state: 'OPEN',
                   workItemType: {
                     id: '1',
+                    name: 'Task',
+                    iconName: 'issue-type-task',
                   },
                 },
               ],
             },
+            __typename: 'WorkItemConnection',
           },
           {
             __typename: 'WorkItemWidgetAssignees',
@@ -219,6 +232,20 @@ export const descriptionHtmlWithCheckboxes = `
   </ul>
 `;
 
+const taskType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/5',
+  name: 'Task',
+  iconName: 'issue-type-task',
+};
+
+export const objectiveType = {
+  __typename: 'WorkItemType',
+  id: 'gid://gitlab/WorkItems::Type/2411',
+  name: 'Objective',
+  iconName: 'issue-type-objective',
+};
+
 export const workItemResponseFactory = ({
   canUpdate = false,
   canDelete = false,
@@ -236,6 +263,7 @@ export const workItemResponseFactory = ({
   lastEditedBy = null,
   withCheckboxes = false,
   parent = mockParent.parent,
+  workItemType = taskType,
 } = {}) => ({
   data: {
     workItem: {
@@ -253,12 +281,7 @@ export const workItemResponseFactory = ({
         id: '1',
         fullPath: 'test-project-path',
       },
-      workItemType: {
-        __typename: 'WorkItemType',
-        id: 'gid://gitlab/WorkItems::Type/5',
-        name: 'Task',
-        iconName: 'issue-type-task',
-      },
+      workItemType,
       userPermissions: {
         deleteWorkItem: canDelete,
         updateWorkItem: canUpdate,
@@ -338,6 +361,7 @@ export const workItemResponseFactory = ({
         {
           __typename: 'WorkItemWidgetHierarchy',
           type: 'HIERARCHY',
+          hasChildren: true,
           children: {
             nodes: [
               {
@@ -349,7 +373,15 @@ export const workItemResponseFactory = ({
                 state: 'OPEN',
                 workItemType: {
                   id: '1',
+                  name: 'Task',
+                  iconName: 'issue-type-task',
                 },
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                  },
+                ],
               },
             ],
           },
@@ -669,6 +701,8 @@ export const workItemHierarchyEmptyResponse = {
       id: 'gid://gitlab/WorkItem/1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Issue',
+        iconName: 'issue-type-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -692,6 +726,7 @@ export const workItemHierarchyEmptyResponse = {
         {
           type: 'HIERARCHY',
           parent: null,
+          hasChildren: false,
           children: {
             nodes: [],
             __typename: 'WorkItemConnection',
@@ -710,6 +745,8 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       id: 'gid://gitlab/WorkItem/1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Issue',
+        iconName: 'issue-type-issue',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -731,6 +768,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
         {
           type: 'HIERARCHY',
           parent: null,
+          hasChildren: true,
           children: {
             nodes: [
               {
@@ -738,6 +776,8 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 iid: '2',
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/5',
+                  name: 'Task',
+                  iconName: 'issue-type-task',
                   __typename: 'WorkItemType',
                 },
                 title: 'xyz',
@@ -745,6 +785,12 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: false,
+                  },
+                ],
                 __typename: 'WorkItem',
               },
             ],
@@ -763,6 +809,8 @@ export const workItemTask = {
   iid: '4',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
     __typename: 'WorkItemType',
   },
   title: 'bar',
@@ -778,6 +826,8 @@ export const confidentialWorkItemTask = {
   iid: '2',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
     __typename: 'WorkItemType',
   },
   title: 'xyz',
@@ -793,6 +843,8 @@ export const closedWorkItemTask = {
   iid: '3',
   workItemType: {
     id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
     __typename: 'WorkItemType',
   },
   title: 'abc',
@@ -803,6 +855,28 @@ export const closedWorkItemTask = {
   __typename: 'WorkItem',
 };
 
+export const childrenWorkItems = [
+  confidentialWorkItemTask,
+  closedWorkItemTask,
+  workItemTask,
+  {
+    id: 'gid://gitlab/WorkItem/5',
+    iid: '5',
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Task',
+      iconName: 'issue-type-task',
+      __typename: 'WorkItemType',
+    },
+    title: 'foobar',
+    state: 'OPEN',
+    confidential: false,
+    createdAt: '2022-08-03T12:41:54Z',
+    closedAt: null,
+    __typename: 'WorkItem',
+  },
+];
+
 export const workItemHierarchyResponse = {
   data: {
     workItem: {
@@ -810,6 +884,8 @@ export const workItemHierarchyResponse = {
       iid: '1',
       workItemType: {
         id: 'gid://gitlab/WorkItems::Type/6',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
         __typename: 'WorkItemType',
       },
       title: 'New title',
@@ -831,23 +907,97 @@ export const workItemHierarchyResponse = {
         {
           type: 'HIERARCHY',
           parent: null,
+          hasChildren: true,
+          children: {
+            nodes: childrenWorkItems,
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+
+export const workItemObjectiveWithChild = {
+  id: 'gid://gitlab/WorkItem/12',
+  iid: '12',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/2411',
+    name: 'Objective',
+    iconName: 'issue-type-objective',
+    __typename: 'WorkItemType',
+  },
+  title: 'Objective',
+  state: 'OPEN',
+  confidential: false,
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
+  __typename: 'WorkItem',
+};
+
+export const workItemHierarchyTreeResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/2',
+      iid: '2',
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/2411',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      userPermissions: {
+        deleteWorkItem: true,
+        updateWorkItem: true,
+      },
+      confidential: false,
+      project: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+      },
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          hasChildren: true,
           children: {
             nodes: [
-              confidentialWorkItemTask,
-              closedWorkItemTask,
-              workItemTask,
               {
-                id: 'gid://gitlab/WorkItem/5',
-                iid: '5',
+                id: 'gid://gitlab/WorkItem/13',
+                iid: '13',
                 workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/5',
+                  id: 'gid://gitlab/WorkItems::Type/2411',
+                  name: 'Objective',
+                  iconName: 'issue-type-objective',
                   __typename: 'WorkItemType',
                 },
-                title: 'foobar',
+                title: 'Objective 2',
                 state: 'OPEN',
                 confidential: false,
                 createdAt: '2022-08-03T12:41:54Z',
                 closedAt: null,
+                widgets: [
+                  {
+                    type: 'HIERARCHY',
+                    hasChildren: true,
+                    __typename: 'WorkItemWidgetHierarchy',
+                  },
+                ],
                 __typename: 'WorkItem',
               },
             ],
@@ -859,6 +1009,15 @@ export const workItemHierarchyResponse = {
       __typename: 'WorkItem',
     },
   },
+};
+
+export const workItemHierarchyTreeFailureResponse = {
+  data: {},
+  errors: [
+    {
+      message: 'Something went wrong',
+    },
+  ],
 };
 
 export const changeWorkItemParentMutationResponse = {
@@ -894,6 +1053,7 @@ export const changeWorkItemParentMutationResponse = {
             __typename: 'WorkItemWidgetHierarchy',
             type: 'HIERARCHY',
             parent: null,
+            hasChildren: false,
             children: {
               nodes: [],
             },

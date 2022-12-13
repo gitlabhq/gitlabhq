@@ -20302,6 +20302,12 @@ msgstr ""
 msgid "Hierarchy|Planning hierarchy"
 msgstr ""
 
+msgid "Hierarchy|Something went wrong while fetching children."
+msgstr ""
+
+msgid "Hierarchy|Something went wrong while removing a child item."
+msgstr ""
+
 msgid "Hierarchy|Take the work items survey"
 msgstr ""
 
@@ -23903,9 +23909,6 @@ msgstr ""
 msgid "Key (PEM)"
 msgstr ""
 
-msgid "Key result"
-msgstr ""
-
 msgid "Key:"
 msgstr ""
 
@@ -26948,6 +26951,9 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
+msgid "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces"
+msgstr ""
+
 msgid "Name can't be blank"
 msgstr ""
 
@@ -26955,6 +26961,9 @@ msgid "Name has already been taken"
 msgstr ""
 
 msgid "Name is already taken."
+msgstr ""
+
+msgid "Name must start with a letter, digit, emoji, or '_'"
 msgstr ""
 
 msgid "Name new label"
@@ -46877,7 +46886,7 @@ msgstr ""
 msgid "WorkItem|Iteration"
 msgstr ""
 
-msgid "WorkItem|Key result"
+msgid "WorkItem|Key Result"
 msgstr ""
 
 msgid "WorkItem|Milestone"
@@ -46962,6 +46971,12 @@ msgid "WorkItem|Something went wrong when trying to create a child. Please try a
 msgstr ""
 
 msgid "WorkItem|Something went wrong while fetching milestones. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while removing child."
+msgstr ""
+
+msgid "WorkItem|Something went wrong while undoing child removal."
 msgstr ""
 
 msgid "WorkItem|Something went wrong while updating the %{workItemType}. Please try again."

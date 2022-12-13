@@ -11,7 +11,7 @@ class ProjectStatistics < ApplicationRecord
   attribute :snippets_size, default: 0
 
   counter_attribute :build_artifacts_size
-  counter_attribute :packages_size, if: -> (statistics) { Feature.enabled?(:packages_size_counter_attribute, statistics.project) }
+  counter_attribute :packages_size
 
   counter_attribute_after_flush do |project_statistic|
     project_statistic.refresh_storage_size!
@@ -23,7 +23,6 @@ class ProjectStatistics < ApplicationRecord
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size, :container_registry_size].freeze
   INCREMENTABLE_COLUMNS = {
-    packages_size: %i[storage_size], # remove this along with packages_size_counter_attribute
     pipeline_artifacts_size: %i[storage_size],
     snippets_size: %i[storage_size]
   }.freeze

@@ -10,6 +10,7 @@
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
     = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { qa_selector: 'project_name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true }
+    #project_name_error.gl-field-error.hidden
   .form-group.project-path.col-sm-6.gl-pr-0
     = f.label :namespace_id, class: 'label-bold' do
       %span= _('Project URL')

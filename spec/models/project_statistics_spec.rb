@@ -507,14 +507,6 @@ RSpec.describe ProjectStatistics do
       let(:stat) { :packages_size }
 
       it_behaves_like 'a statistic that increases storage_size asynchronously'
-
-      context 'with packages_size_counter_attribute disabled' do
-        before do
-          stub_feature_flags(packages_size_counter_attribute: false)
-        end
-
-        it_behaves_like 'a statistic that increases storage_size'
-      end
     end
 
     context 'when the amount is 0' do

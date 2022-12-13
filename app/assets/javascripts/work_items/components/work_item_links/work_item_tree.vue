@@ -1,15 +1,26 @@
 <script>
 import { GlButton } from '@gitlab/ui';
-import { s__ } from '~/locale';
+import { isEmpty } from 'lodash';
+import { __ } from '~/locale';
+import { convertToGraphQLId } from '~/graphql_shared/utils';
+import { TYPE_WORK_ITEM } from '~/graphql_shared/constants';
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { parseBoolean } from '~/lib/utils/common_utils';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import {
   FORM_TYPES,
+  WIDGET_TYPE_HIERARCHY,
   WORK_ITEMS_TREE_TEXT_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 } from '../../constants';
+import workItemQuery from '../../graphql/work_item.query.graphql';
+import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import OkrActionsSplitButton from './okr_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
+import WorkItemLinkChild from './work_item_link_child.vue';
 
 export default {
   FORM_TYPES,
@@ -20,13 +31,29 @@ export default {
     GlButton,
     OkrActionsSplitButton,
     WorkItemLinksForm,
+    WorkItemLinkChild,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     workItemType: {
       type: String,
       required: true,
     },
     workItemId: {
+      type: String,
+      required: true,
+    },
+    children: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    canUpdate: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    projectPath: {
       type: String,
       required: true,
     },
@@ -38,6 +65,7 @@ export default {
       error: null,
       formType: null,
       childType: null,
+      prefetchedWorkItem: null,
     };
   },
   computed: {
@@ -45,8 +73,41 @@ export default {
       return this.isOpen ? 'chevron-lg-up' : 'chevron-lg-down';
     },
     toggleLabel() {
-      return this.isOpen ? s__('WorkItem|Collapse tasks') : s__('WorkItem|Expand tasks');
+      return this.isOpen ? __('Collapse') : __('Expand');
     },
+    fetchByIid() {
+      return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
+    },
+    childrenIds() {
+      return this.children.map((c) => c.id);
+    },
+    hasIndirectChildren() {
+      return this.children
+        .map(
+          (child) => child.widgets?.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY) || {},
+        )
+        .some((hierarchy) => hierarchy.hasChildren);
+    },
+    childUrlParams() {
+      const params = {};
+      if (this.fetchByIid) {
+        const iid = getParameterByName('work_item_iid');
+        if (iid) {
+          params.iid = iid;
+        }
+      } else {
+        const workItemId = getParameterByName('work_item_id');
+        if (workItemId) {
+          params.id = convertToGraphQLId(TYPE_WORK_ITEM, workItemId);
+        }
+      }
+      return params;
+    },
+  },
+  mounted() {
+    if (!isEmpty(this.childUrlParams)) {
+      this.addWorkItemQuery(this.childUrlParams);
+    }
   },
   methods: {
     toggle() {
@@ -63,6 +124,37 @@ export default {
     },
     hideAddForm() {
       this.isShownAddForm = false;
+    },
+    addWorkItemQuery({ id, iid }) {
+      const variables = this.fetchByIid
+        ? {
+            fullPath: this.projectPath,
+            iid,
+          }
+        : {
+            id,
+          };
+      this.$apollo.addSmartQuery('prefetchedWorkItem', {
+        query() {
+          return this.fetchByIid ? workItemByIidQuery : workItemQuery;
+        },
+        variables,
+        update(data) {
+          return this.fetchByIid ? data.workspace.workItems.nodes[0] : data.workItem;
+        },
+        context: {
+          isSingleRequest: true,
+        },
+      });
+    },
+    prefetchWorkItem({ id, iid }) {
+      this.prefetch = setTimeout(
+        () => this.addWorkItemQuery({ id, iid }),
+        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+      );
+    },
+    clearPrefetching() {
+      clearTimeout(this.prefetch);
     },
   },
 };
@@ -113,7 +205,7 @@ export default {
       :class="{ 'gl-p-5 gl-pb-3': !error }"
       data-testid="tree-body"
     >
-      <div v-if="!isShownAddForm && !error" data-testid="tree-empty">
+      <div v-if="!isShownAddForm && !error && children.length === 0" data-testid="tree-empty">
         <p class="gl-mb-3">
           {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
         </p>
@@ -125,7 +217,22 @@ export default {
         :issuable-gid="workItemId"
         :form-type="formType"
         :children-type="childType"
+        :children-ids="childrenIds"
+        @addWorkItemChild="$emit('addWorkItemChild', $event)"
         @cancel="hideAddForm"
+      />
+      <work-item-link-child
+        v-for="child in children"
+        :key="child.id"
+        :project-path="projectPath"
+        :can-update="canUpdate"
+        :issuable-gid="workItemId"
+        :child-item="child"
+        :work-item-type="workItemType"
+        :has-indirect-children="hasIndirectChildren"
+        @mouseover="prefetchWorkItem(child)"
+        @mouseout="clearPrefetching"
+        @removeChild="$emit('removeChild', $event)"
       />
     </div>
   </div>

@@ -1,12 +1,14 @@
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { TEST_HOST } from 'helpers/test_constants';
 import projectNew from '~/projects/project_new';
+import { checkRules } from '~/projects/project_name_rules';
 import { mockTracking, triggerEvent, unmockTracking } from 'helpers/tracking_helper';
 
 describe('New Project', () => {
   let $projectImportUrl;
   let $projectPath;
   let $projectName;
+  let $projectNameError;
 
   const mockKeyup = (el) => el.dispatchEvent(new KeyboardEvent('keyup'));
   const mockChange = (el) => el.dispatchEvent(new Event('change'));
@@ -29,6 +31,7 @@ describe('New Project', () => {
                 </div>
               </div>
               <input id="project_name" />
+              <div class="gl-field-error hidden" id="project_name_error" />
               <input id="project_path" />
             </div>
             <div class="js-user-readme-repo"></div>
@@ -41,6 +44,7 @@ describe('New Project', () => {
     $projectImportUrl = document.querySelector('#project_import_url');
     $projectPath = document.querySelector('#project_path');
     $projectName = document.querySelector('#project_name');
+    $projectNameError = document.querySelector('#project_name_error');
   });
 
   afterEach(() => {
@@ -81,6 +85,57 @@ describe('New Project', () => {
       triggerEvent($projectPath, 'blur');
 
       expect(trackingSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('tracks manual name input', () => {
+    beforeEach(() => {
+      projectNew.bindEvents();
+    });
+
+    afterEach(() => {
+      unmockTracking();
+    });
+
+    it('no error message by default', () => {
+      expect($projectNameError.classList.contains('hidden')).toBe(true);
+    });
+
+    it('show error message if name is validate', () => {
+      $projectName.value = '.validate!Name';
+      triggerEvent($projectName, 'change');
+
+      expect($projectNameError.innerText).toBe(
+        "Name must start with a letter, digit, emoji, or '_'",
+      );
+      expect($projectNameError.classList.contains('hidden')).toBe(false);
+    });
+  });
+
+  describe('project name rule', () => {
+    describe("Name must start with a letter, digit, emoji, or '_'", () => {
+      const errormsg = "Name must start with a letter, digit, emoji, or '_'";
+      it("'.foo' should error", () => {
+        const text = '.foo';
+        expect(checkRules(text)).toBe(errormsg);
+      });
+      it('_foo should passed', () => {
+        const text = '_foo';
+        expect(checkRules(text)).toBe('');
+      });
+    });
+
+    describe("Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces", () => {
+      const errormsg =
+        "Name can contain only letters, digits, emojis, '_', '.', '+', dashes, or spaces";
+      it("'foo(#^.^#)foo' should error", () => {
+        const text = 'foo(#^.^#)foo';
+        expect(checkRules(text)).toBe(errormsg);
+      });
+      it("'foo123😊_.+- ' should passed", () => {
+        const text = 'foo123😊_.+- ';
+        expect(checkRules(text)).toBe('');
+      });
     });
   });
 

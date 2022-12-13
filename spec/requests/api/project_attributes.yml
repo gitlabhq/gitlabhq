@@ -125,10 +125,6 @@ project_feature:
     - created_at
     - metrics_dashboard_access_level
     - package_registry_access_level
-    - monitor_access_level
-    - infrastructure_access_level
-    - feature_flags_access_level
-    - environments_access_level
     - project_id
     - updated_at
   computed_attributes:

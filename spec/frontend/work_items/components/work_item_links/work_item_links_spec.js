@@ -257,7 +257,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('calls correct mutation with correct variables', async () => {
-      firstChild.vm.$emit('remove', firstChild.vm.childItem.id);
+      firstChild.vm.$emit('removeChild', firstChild.vm.childItem.id);
 
       await waitForPromises();
 
@@ -272,7 +272,7 @@ describe('WorkItemLinks', () => {
     });
 
     it('shows toast when mutation succeeds', async () => {
-      firstChild.vm.$emit('remove', firstChild.vm.childItem.id);
+      firstChild.vm.$emit('removeChild', firstChild.vm.childItem.id);
 
       await waitForPromises();
 
@@ -284,7 +284,7 @@ describe('WorkItemLinks', () => {
     it('renders correct number of children after removal', async () => {
       expect(findWorkItemLinkChildItems()).toHaveLength(4);
 
-      firstChild.vm.$emit('remove', firstChild.vm.childItem.id);
+      firstChild.vm.$emit('removeChild', firstChild.vm.childItem.id);
       await waitForPromises();
 
       expect(findWorkItemLinkChildItems()).toHaveLength(3);

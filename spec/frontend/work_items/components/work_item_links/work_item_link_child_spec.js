@@ -1,32 +1,67 @@
 import { GlButton, GlIcon } from '@gitlab/ui';
+import Vue from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 
+import { createAlert } from '~/flash';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 
+import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemLinksMenu from '~/work_items/components/work_item_links/work_item_links_menu.vue';
+import WorkItemTreeChildren from '~/work_items/components/work_item_links/work_item_tree_children.vue';
+import {
+  WIDGET_TYPE_HIERARCHY,
+  TASK_TYPE_NAME,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+} from '~/work_items/constants';
 
-import { workItemTask, confidentialWorkItemTask, closedWorkItemTask } from '../../mock_data';
+import {
+  workItemTask,
+  workItemObjectiveWithChild,
+  confidentialWorkItemTask,
+  closedWorkItemTask,
+  workItemHierarchyTreeResponse,
+  workItemHierarchyTreeFailureResponse,
+} from '../../mock_data';
+
+jest.mock('~/flash');
 
 describe('WorkItemLinkChild', () => {
   const WORK_ITEM_ID = 'gid://gitlab/WorkItem/2';
   let wrapper;
+  let getWorkItemTreeQueryHandler;
+
+  Vue.use(VueApollo);
 
   const createComponent = ({
     projectPath = 'gitlab-org/gitlab-test',
     canUpdate = true,
     issuableGid = WORK_ITEM_ID,
     childItem = workItemTask,
+    workItemType = TASK_TYPE_NAME,
+    apolloProvider = null,
   } = {}) => {
+    getWorkItemTreeQueryHandler = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
+
     wrapper = shallowMountExtended(WorkItemLinkChild, {
+      apolloProvider:
+        apolloProvider || createMockApollo([[getWorkItemTreeQuery, getWorkItemTreeQueryHandler]]),
       propsData: {
         projectPath,
         canUpdate,
         issuableGid,
         childItem,
+        workItemType,
       },
     });
   };
+
+  beforeEach(() => {
+    createAlert.mockClear();
+  });
 
   afterEach(() => {
     wrapper.destroy();
@@ -121,7 +156,78 @@ describe('WorkItemLinkChild', () => {
     it('removeChild event on menu triggers `click-remove-child` event', () => {
       itemMenuEl.vm.$emit('removeChild');
 
-      expect(wrapper.emitted('remove')).toEqual([[workItemTask.id]]);
+      expect(wrapper.emitted('removeChild')).toEqual([[workItemTask.id]]);
+    });
+  });
+
+  describe('nested children', () => {
+    const findExpandButton = () => wrapper.findByTestId('expand-child');
+    const findTreeChildren = () => wrapper.findComponent(WorkItemTreeChildren);
+
+    beforeEach(() => {
+      getWorkItemTreeQueryHandler.mockClear();
+      createComponent({
+        childItem: workItemObjectiveWithChild,
+        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+      });
+    });
+
+    it('displays expand button when item has children, children are not displayed by default', () => {
+      expect(findExpandButton().exists()).toBe(true);
+      expect(findTreeChildren().exists()).toBe(false);
+    });
+
+    it('fetches and displays children of item when clicking on expand button', async () => {
+      await findExpandButton().vm.$emit('click');
+
+      expect(findExpandButton().props('loading')).toBe(true);
+      await waitForPromises();
+
+      expect(getWorkItemTreeQueryHandler).toHaveBeenCalled();
+      expect(findTreeChildren().exists()).toBe(true);
+
+      const widgetHierarchy = workItemHierarchyTreeResponse.data.workItem.widgets.find(
+        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
+      );
+      expect(findTreeChildren().props('children')).toEqual(widgetHierarchy.children.nodes);
+    });
+
+    it('does not fetch children if already fetched once while clicking expand button', async () => {
+      findExpandButton().vm.$emit('click'); // Expand for the first time
+      await waitForPromises();
+
+      expect(findTreeChildren().exists()).toBe(true);
+
+      await findExpandButton().vm.$emit('click'); // Collapse
+      findExpandButton().vm.$emit('click'); // Expand again
+      await waitForPromises();
+
+      expect(getWorkItemTreeQueryHandler).toHaveBeenCalledTimes(1); // ensure children were fetched only once.
+      expect(findTreeChildren().exists()).toBe(true);
+    });
+
+    it('calls createAlert when children fetch request fails on clicking expand button', async () => {
+      const getWorkItemTreeQueryFailureHandler = jest
+        .fn()
+        .mockRejectedValue(workItemHierarchyTreeFailureResponse);
+      const apolloProvider = createMockApollo([
+        [getWorkItemTreeQuery, getWorkItemTreeQueryFailureHandler],
+      ]);
+
+      createComponent({
+        childItem: workItemObjectiveWithChild,
+        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+        apolloProvider,
+      });
+
+      findExpandButton().vm.$emit('click');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.any(Object),
+        message: 'Something went wrong while fetching children.',
+      });
     });
   });
 });

@@ -92,7 +92,7 @@ module EventsHelper
 
     content_tag :li, class: active do
       link_to request.path, link_opts do
-        content_tag(:span, ' ' + text)
+        content_tag(:span, " #{text}")
       end
     end
   end

@@ -79,7 +79,7 @@ module TodosHelper
                     IntegrationsHelper.integration_todo_target_type(todo.target_type)
                   end
 
-    target_type + ' ' + todo_target_name(todo)
+    "#{target_type} #{todo_target_name(todo)}"
   end
 
   def todo_target_path(todo)

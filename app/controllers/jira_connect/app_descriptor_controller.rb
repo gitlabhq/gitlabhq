@@ -76,7 +76,7 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
       jiraDevelopmentTool: {
         actions: {
           createBranch: {
-            templateUrl: new_jira_connect_branch_url + '?issue_key={issue.key}&issue_summary={issue.summary}'
+            templateUrl: "#{new_jira_connect_branch_url}?issue_key={issue.key}&issue_summary={issue.summary}"
           }
         },
         key: 'gitlab-development-tool',
