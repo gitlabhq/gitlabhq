@@ -29,7 +29,7 @@ module QA
         praefect_manager.wait_for_project_synced_across_all_storages(project.id)
 
         # testing for gitaly2 'out of sync'
-        praefect_manager.stop_secondary_node
+        praefect_manager.stop_node(praefect_manager.secondary_node)
 
         number_of_changes = 3
         1.upto(number_of_changes) do |i|
@@ -47,7 +47,7 @@ module QA
         end
 
         # testing for gitaly3 'in sync' but marked unhealthy
-        praefect_manager.stop_tertiary_node
+        praefect_manager.stop_node(praefect_manager.tertiary_node)
 
         project_data_loss = praefect_manager.praefect_dataloss_information(project.id)
         aggregate_failures "validate dataloss identified" do
@@ -74,7 +74,7 @@ module QA
         end
 
         praefect_manager.wait_for_replication_to_node(project.id, praefect_manager.primary_node)
-        praefect_manager.stop_primary_node
+        praefect_manager.stop_node(praefect_manager.primary_node)
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'accept-dataloss-2'
@@ -86,7 +86,7 @@ module QA
         end
 
         praefect_manager.wait_for_replication_to_node(project.id, praefect_manager.secondary_node)
-        praefect_manager.stop_secondary_node
+        praefect_manager.stop_node(praefect_manager.secondary_node)
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
           commit.commit_message = 'accept-dataloss-3'

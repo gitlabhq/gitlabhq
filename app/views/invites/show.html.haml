@@ -17,8 +17,10 @@
       = html_escape(_("You have been invited by %{link_to_inviter} to join %{source_name} %{strong_open}%{link_to_source}%{strong_close} as %{role}")) % { link_to_inviter: link_to_inviter, source_name: @invite_details[:title], strong_open: '<strong>'.html_safe, link_to_source: link_to_source, strong_close: '</strong>'.html_safe, role: @member.human_access }
 
     .actions
-      = link_to _("Accept invitation"), accept_invite_url(@token), method: :post, class: "btn gl-button btn-confirm"
-      = link_to _("Decline"), decline_invite_url(@token), method: :post, class: "btn gl-button btn-danger gl-ml-3"
+      = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: accept_invite_url(@token)) do
+        = _("Accept invitation")
+      = render Pajamas::ButtonComponent.new(variant: :danger, method: :post, href: decline_invite_url(@token), button_options: { class: 'gl-ml-3' }) do
+        = _("Decline")
 
 - else
   %p

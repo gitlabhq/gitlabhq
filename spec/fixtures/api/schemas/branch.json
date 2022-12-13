@@ -1,12 +1,17 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "name",
     "url"
   ],
-  "properties" : {
-    "name": { "type": "string" },
-    "url": { "type": "uri" }
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    }
   },
   "additionalProperties": false
 }

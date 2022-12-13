@@ -1,5 +1,5 @@
 import timezoneMock from 'timezone-mock';
-import { GlIcon, GlDropdown } from '@gitlab/ui';
+import { GlIcon, GlDropdown, GlBadge } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { timelineItemI18n } from '~/issues/show/components/incidents/constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -27,25 +27,24 @@ describe('IncidentTimelineEventList', () => {
 
   const findCommentIcon = () => wrapper.findComponent(GlIcon);
   const findEventTime = () => wrapper.findByTestId('event-time');
+  const findEventTag = () => wrapper.findComponent(GlBadge);
   const findDropdown = () => wrapper.findComponent(GlDropdown);
   const findDeleteButton = () => wrapper.findByText(timelineItemI18n.delete);
 
   describe('template', () => {
-    it('shows comment icon', () => {
+    beforeEach(() => {
       mountComponent();
+    });
 
+    it('shows comment icon', () => {
       expect(findCommentIcon().exists()).toBe(true);
     });
 
     it('sets correct props for icon', () => {
-      mountComponent();
-
       expect(findCommentIcon().props('name')).toBe(mockEvents[0].action);
     });
 
     it('displays the correct time', () => {
-      mountComponent();
-
       expect(findEventTime().text()).toBe('15:59 UTC');
     });
 
@@ -58,8 +57,6 @@ describe('IncidentTimelineEventList', () => {
       describe(timezone, () => {
         beforeEach(() => {
           timezoneMock.register(timezone);
-
-          mountComponent();
         });
 
         afterEach(() => {
@@ -72,10 +69,20 @@ describe('IncidentTimelineEventList', () => {
       });
     });
 
+    describe('timeline event tag', () => {
+      it('does not show when tag is not provided', () => {
+        expect(findEventTag().exists()).toBe(false);
+      });
+
+      it('shows when tag is provided', () => {
+        mountComponent({ propsData: { eventTag: 'Start time' } });
+
+        expect(findEventTag().exists()).toBe(true);
+      });
+    });
+
     describe('action dropdown', () => {
       it('does not show the action dropdown by default', () => {
-        mountComponent();
-
         expect(findDropdown().exists()).toBe(false);
         expect(findDeleteButton().exists()).toBe(false);
       });

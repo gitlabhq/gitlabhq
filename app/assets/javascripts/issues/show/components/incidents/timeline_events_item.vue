@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem, GlIcon, GlSprintf, GlBadge } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { timelineItemI18n } from './constants';
@@ -13,6 +13,7 @@ export default {
     GlDropdownItem,
     GlIcon,
     GlSprintf,
+    GlBadge,
   },
   directives: {
     SafeHtml,
@@ -30,6 +31,11 @@ export default {
     noteHtml: {
       type: String,
       required: true,
+    },
+    eventTag: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -50,11 +56,16 @@ export default {
       <gl-icon :name="getEventIcon(action)" class="note-icon" />
     </div>
     <div class="timeline-event-note timeline-event-border" data-testid="event-text-container">
-      <strong class="gl-font-lg" data-testid="event-time">
-        <gl-sprintf :message="$options.i18n.timeUTC">
-          <template #time>{{ time }}</template>
-        </gl-sprintf>
-      </strong>
+      <div class="gl-display-flex gl-align-items-center gl-mb-3">
+        <strong class="gl-font-lg" data-testid="event-time">
+          <gl-sprintf :message="$options.i18n.timeUTC">
+            <template #time>{{ time }}</template>
+          </gl-sprintf>
+        </strong>
+        <gl-badge v-if="eventTag" variant="muted" icon="tag" class="gl-ml-3">
+          {{ eventTag }}
+        </gl-badge>
+      </div>
       <div v-safe-html="noteHtml" class="md"></div>
     </div>
     <gl-dropdown

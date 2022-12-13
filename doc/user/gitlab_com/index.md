@@ -445,11 +445,18 @@ If more than the maximum number of allowed connections occur concurrently, they
 are dropped and users get
 [an `ssh_exchange_identification` error](../../topics/git/troubleshooting_git.md#ssh_exchange_identification-error).
 
-### Import/export
+### Group and project import by uploading export files
 
-To help avoid abuse, project and group imports, exports, and export downloads
-are rate limited. See [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits) and [Group import/export rate limits](../../user/group/settings/import_export.md#rate-limits)
-for details.
+To help avoid abuse, the following are rate limited:
+
+- Project and group imports.
+- Group and project exports that use files.
+- Export downloads.
+
+For more information, see:
+
+- [Project import/export rate limits](../../user/project/settings/import_export.md#rate-limits).
+- [Group import/export rate limits](../../user/group/import/index.md#rate-limits).
 
 ### Non-configurable limits
 

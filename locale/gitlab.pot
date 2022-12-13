@@ -8226,6 +8226,9 @@ msgstr ""
 msgid "Checkout|Country"
 msgstr ""
 
+msgid "Checkout|Coupon code (optional)"
+msgstr ""
+
 msgid "Checkout|Create a new group"
 msgstr ""
 
@@ -12212,6 +12215,9 @@ msgstr ""
 msgid "DORA4Metrics|Deploys"
 msgstr ""
 
+msgid "DORA4Metrics|Failed to load charts"
+msgstr ""
+
 msgid "DORA4Metrics|Lead Time for Changes"
 msgstr ""
 
@@ -12249,6 +12255,9 @@ msgid "DORA4Metrics|Number of deployments"
 msgstr ""
 
 msgid "DORA4Metrics|Number of incidents divided by the number of deployments to a production environment in the given time period."
+msgstr ""
+
+msgid "DORA4Metrics|Past 6 Months"
 msgstr ""
 
 msgid "DORA4Metrics|Percentage of failed deployments"

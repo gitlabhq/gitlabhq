@@ -45,3 +45,5 @@ module QA
     end
   end
 end
+
+QA::Support::Run.prepend_mod_with("Support::Run", namespace: QA)

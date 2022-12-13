@@ -7,11 +7,15 @@ class IssueEntity < IssuableEntity
     item.try(:upcase)
   end
 
+  format_with(:iso8601) do |item|
+    item.try(:iso8601)
+  end
+
   expose :state
   expose :milestone_id
   expose :updated_by_id
-  expose :created_at
-  expose :updated_at
+  expose :created_at, format_with: :iso8601
+  expose :updated_at, format_with: :iso8601
   expose :milestone, using: API::Entities::Milestone
   expose :labels, using: LabelEntity
   expose :lock_version

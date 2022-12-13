@@ -101,12 +101,6 @@ RSpec.describe WebIde::RemoteIdeController, feature_category: :remote_developmen
       let(:ff_vscode_web_ide) { false }
 
       it_behaves_like '404 response'
-
-      it 'does not the content security policy with the correct frame sources' do
-        post_to_remote_ide
-
-        expect(find_csp_source('frame-src')).not_to include("https://*.vscode-cdn.net/")
-      end
     end
 
     context "when the remote host is invalid" do

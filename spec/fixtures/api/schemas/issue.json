@@ -1,43 +1,104 @@
 {
   "type": "object",
-  "required" : [
+  "required": [
     "iid",
     "title",
     "confidential"
   ],
-  "properties" : {
-    "id": { "type": "integer" },
-    "iid": { "type": "integer" },
-    "project_id": { "type": ["integer", "null"] },
-    "title": { "type": "string" },
-    "confidential": { "type": "boolean" },
-    "due_date": { "type": ["string", "null"] },
-    "relative_position": { "type": ["integer", "null"] },
-    "time_estimate": { "type": "integer" },
-    "type": { "type": "string", "enum": ["ISSUE", "INCIDENT", "TEST_CASE", "REQUIREMENT"] },
-    "issue_sidebar_endpoint": { "type": "string" },
-    "toggle_subscription_endpoint": { "type": "string" },
-    "assignable_labels_endpoint": { "type": "string" },
-    "reference_path": { "type": "string" },
-    "real_path": { "type": "string" },
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "iid": {
+      "type": "integer"
+    },
+    "project_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "confidential": {
+      "type": "boolean"
+    },
+    "due_date": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "relative_position": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "time_estimate": {
+      "type": "integer"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "ISSUE",
+        "INCIDENT",
+        "TEST_CASE",
+        "REQUIREMENT"
+      ]
+    },
+    "issue_sidebar_endpoint": {
+      "type": "string"
+    },
+    "toggle_subscription_endpoint": {
+      "type": "string"
+    },
+    "assignable_labels_endpoint": {
+      "type": "string"
+    },
+    "reference_path": {
+      "type": "string"
+    },
+    "real_path": {
+      "type": "string"
+    },
     "project": {
-      "id": { "type": "integer" },
-      "path": { "type": "string" }
+      "id": {
+        "type": "integer"
+      },
+      "path": {
+        "type": "string"
+      }
     },
     "labels": {
       "type": "array",
-      "items": { "$ref": "entities/label.json" }
+      "items": {
+        "$ref": "entities/label.json"
+      }
     },
     "assignee": {
-      "id": { "type": "integer" },
-      "name": { "type": "string" },
-      "username": { "type": "string" },
-      "avatar_url": { "type": "uri" }
+      "id": {
+        "type": "integer"
+      },
+      "name": {
+        "type": "string"
+      },
+      "username": {
+        "type": "string"
+      },
+      "avatar_url": {
+        "type": "string",
+        "format": "uri"
+      }
     },
     "assignees": {
       "type": "array",
       "items": {
-        "type": ["object", "null"],
+        "type": [
+          "object",
+          "null"
+        ],
         "required": [
           "id",
           "name",
@@ -45,13 +106,27 @@
           "avatar_url"
         ],
         "properties": {
-          "id": { "type": "integer" },
-          "name": { "type": "string" },
-          "username": { "type": "string" },
-          "avatar_url": { "type": "uri" }
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri"
+          }
         }
       }
     },
-    "subscribed": { "type": ["boolean", "null"] }
+    "subscribed": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    }
   }
 }

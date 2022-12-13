@@ -1486,8 +1486,8 @@ github.com/yvasiyarov/go-metrics v0.0.0-20140926110328-57bccd1ccd43/go.mod h1:aX
 github.com/yvasiyarov/gorelic v0.0.0-20141212073537-a9bba5b9ab50/go.mod h1:NUSPSUX/bi6SeDMUh6brw0nXpxHnc96TguQh0+r/ssA=
 github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go.mod h1:GlGEuHIJweS1mbCqG+7vt2nvWLzLLnRHbXz5JKd/Qbg=
 github.com/zenazn/goji v0.9.0/go.mod h1:7S9M489iMyHBNxwZnk9/EHS098H4/F6TATF2mIxtB1Q=
-gitlab.com/gitlab-org/gitaly/v15 v15.6.1 h1:Rb1vmtNAitbZ85Cog49vUfcDrU5jWB8BG09lXZmC2sM=
-gitlab.com/gitlab-org/gitaly/v15 v15.6.1/go.mod h1:RKa+3ADKfTonDb1pe8AtppdNHNeOM+ChtMmB7T0QWhY=
+gitlab.com/gitlab-org/gitaly/v15 v15.6.2 h1:ivbMoXWgkDSJebuIFtPYGAIQ9/2P5ShxJoHt0cflwfo=
+gitlab.com/gitlab-org/gitaly/v15 v15.6.2/go.mod h1:RKa+3ADKfTonDb1pe8AtppdNHNeOM+ChtMmB7T0QWhY=
 gitlab.com/gitlab-org/golang-archive-zip v0.1.1 h1:35k9giivbxwF03+8A05Cm8YoxoakU8FBCj5gysjCTCE=
 gitlab.com/gitlab-org/golang-archive-zip v0.1.1/go.mod h1:ZDtqpWPGPB9qBuZnZDrKQjIdJtkN7ZAoVwhT6H2o2kE=
 gitlab.com/gitlab-org/labkit v1.16.1 h1:J+HmNVR5bvPfrv9/fgKICFis2nmEugRXHMeRPvsVZUg=

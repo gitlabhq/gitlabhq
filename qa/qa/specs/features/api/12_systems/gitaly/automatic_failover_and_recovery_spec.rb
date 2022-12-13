@@ -25,8 +25,8 @@ module QA
 
       it 'automatically fails over', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347830' do
         # stop other nodes, so we can control which node the commit is sent to
-        praefect_manager.stop_secondary_node
-        praefect_manager.stop_tertiary_node
+        praefect_manager.stop_node(praefect_manager.secondary_node)
+        praefect_manager.stop_node(praefect_manager.tertiary_node)
 
         Resource::Repository::ProjectPush.fabricate! do |push|
           push.project = project
@@ -40,8 +40,8 @@ module QA
 
         # Stop the primary node to trigger failover, and then wait
         # for Gitaly to be ready for writes again
-        praefect_manager.stop_primary_node
-        praefect_manager.wait_for_primary_node_health_check_failure
+        praefect_manager.stop_node(praefect_manager.primary_node)
+        praefect_manager.wait_for_health_check_failure(praefect_manager.primary_node)
 
         Resource::Repository::Commit.fabricate_via_api! do |commit|
           commit.project = project
@@ -65,8 +65,8 @@ module QA
       context 'when recovering from dataloss after failover' do
         it 'automatically reconciles', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347831' do
           # Start the old primary node again
-          praefect_manager.start_primary_node
-          praefect_manager.wait_for_primary_node_health_check
+          praefect_manager.start_node(praefect_manager.primary_node)
+          praefect_manager.wait_for_gitaly_health_check(praefect_manager.primary_node)
 
           # Confirm automatic reconciliation
           expect(praefect_manager.replicated?(project.id)).to be true

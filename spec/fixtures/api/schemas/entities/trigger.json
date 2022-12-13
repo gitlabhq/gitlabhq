@@ -10,14 +10,21 @@
   ],
   "properties": {
     "description": {
-      "type": ["string", "null"]
+      "type": [
+        "string",
+        "null"
+      ]
     },
     "owner": {
       "type": "object",
       "$ref": "user.json"
     },
     "last_used": {
-      "type": ["datetime", "null"]
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
     },
     "token": {
       "type": "string"

@@ -290,20 +290,5 @@ RSpec.describe IdeController, feature_category: :web_ide do
         expect(find_csp_frame_src).to include("https://*.vscode-cdn.net/")
       end
     end
-
-    describe 'when vscode_web_ide feature flag is disabled' do
-      describe 'frame-src content security policy' do
-        let(:route) { '/-/ide' }
-
-        before do
-          stub_feature_flags(vscode_web_ide: false)
-          subject
-        end
-
-        it 'does not add https://*.vscode-cdn.net in frame-src CSP policy' do
-          expect(find_csp_frame_src).not_to include("https://*.vscode-cdn.net/")
-        end
-      end
-    end
   end
 end

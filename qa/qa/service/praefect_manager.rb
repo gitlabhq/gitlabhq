@@ -9,6 +9,8 @@ module QA
 
       attr_accessor :gitlab
 
+      attr_reader :primary_node, :secondary_node, :tertiary_node, :postgres
+
       PrometheusQueryError = Class.new(StandardError)
 
       def initialize
@@ -21,7 +23,9 @@ module QA
         @virtual_storage = 'default'
       end
 
-      attr_reader :primary_node, :secondary_node, :tertiary_node, :postgres
+      def gitaly_nodes
+        [primary_node, secondary_node, tertiary_node]
+      end
 
       # Executes the praefect `dataloss` command.
       #
@@ -50,40 +54,20 @@ module QA
         end
       end
 
-      def stop_primary_node
-        stop_node(@primary_node)
-        wait_until_node_is_removed_from_healthy_storages(@primary_node)
-      end
-
-      def start_primary_node
-        start_node(@primary_node)
-      end
-
       def start_praefect
         start_node(@praefect)
-        wait_for_praefect
+        QA::Runtime::Logger.info("Waiting for health check on praefect")
+        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
+          wait_until_shell_command("docker exec #{@praefect} gitlab-ctl status praefect") do |line|
+            break true if line.include?('run: praefect: ')
+
+            QA::Runtime::Logger.debug(line.chomp)
+          end
+        end
       end
 
       def stop_praefect
         stop_node(@praefect)
-      end
-
-      def stop_secondary_node
-        stop_node(@secondary_node)
-        wait_until_node_is_removed_from_healthy_storages(@secondary_node)
-      end
-
-      def start_secondary_node
-        start_node(@secondary_node)
-      end
-
-      def stop_tertiary_node
-        stop_node(@tertiary_node)
-        wait_until_node_is_removed_from_healthy_storages(@tertiary_node)
-      end
-
-      def start_tertiary_node
-        start_node(@tertiary_node)
       end
 
       def start_node(name)
@@ -111,6 +95,8 @@ module QA
         return if node_state(name) == 'paused'
 
         shell "docker pause #{name}"
+
+        wait_until_node_is_removed_from_healthy_storages(name) if gitaly_nodes.include?(name)
       end
 
       def node_state(name)
@@ -126,9 +112,9 @@ module QA
         QA::Runtime::Logger.info("Clearing the replication queue")
         shell sql_to_docker_exec_cmd(
           <<~SQL
-            delete from replication_queue_job_lock;
-            delete from replication_queue_lock;
-            delete from replication_queue;
+                  delete from replication_queue_job_lock;
+                  delete from replication_queue_lock;
+                  delete from replication_queue;
           SQL
         )
       end
@@ -137,29 +123,13 @@ module QA
         QA::Runtime::Logger.info("Setting jobs in replication queue to `in_progress` and acquiring locks")
         shell sql_to_docker_exec_cmd(
           <<~SQL
-            update replication_queue set state = 'in_progress';
-            insert into replication_queue_job_lock (job_id, lock_id, triggered_at)
-              select id, rq.lock_id, created_at from replication_queue rq
-                left join replication_queue_job_lock rqjl on rq.id = rqjl.job_id
-                where state = 'in_progress' and rqjl.job_id is null;
-            update replication_queue_lock set acquired = 't';
+                  update replication_queue set state = 'in_progress';
+                  insert into replication_queue_job_lock (job_id, lock_id, triggered_at)
+                    select id, rq.lock_id, created_at from replication_queue rq
+                      left join replication_queue_job_lock rqjl on rq.id = rqjl.job_id
+                      where state = 'in_progress' and rqjl.job_id is null;
+                  update replication_queue_lock set acquired = 't';
           SQL
-        )
-      end
-
-      # Reconciles the previous primary node with the current one
-      # I.e., it brings the previous primary node up-to-date
-      def reconcile_nodes
-        reconcile_node_with_node(@primary_node, current_primary_node)
-      end
-
-      def reconcile_node_with_node(target, reference)
-        QA::Runtime::Logger.info("Reconcile #{target} with #{reference} on #{@virtual_storage}")
-        wait_until_shell_command_matches(
-          "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml reconcile -virtual #{@virtual_storage} -target #{target} -reference #{reference} -f'",
-          /FINISHED: \d+ repos were checked for consistency/,
-          sleep_interval: 5,
-          retry_on_exception: true
         )
       end
 
@@ -204,9 +174,7 @@ module QA
 
       def start_all_nodes
         start_postgres
-        start_node(@primary_node)
-        start_node(@secondary_node)
-        start_node(@tertiary_node)
+        gitaly_nodes.each { |node| start_node(node) }
         start_praefect
 
         wait_for_health_check_all_nodes
@@ -230,34 +198,12 @@ module QA
         destination_storage[:type] == :praefect ? verify_storage_move_to_praefect(repo_path, destination_storage[:name]) : verify_storage_move_to_gitaly(repo_path, destination_storage[:name])
       end
 
-      def wait_for_praefect
-        QA::Runtime::Logger.info("Waiting for health check on praefect")
-        Support::Waiter.wait_until(max_duration: 120, sleep_interval: 1, raise_on_failure: true) do
-          wait_until_shell_command("docker exec #{@praefect} gitlab-ctl status praefect") do |line|
-            break true if line.include?('run: praefect: ')
-
-            QA::Runtime::Logger.debug(line.chomp)
-          end
-        end
-      end
-
       def praefect_sql_ping_healthy?
         cmd = "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-ping'"
         wait_until_shell_command(cmd) do |line|
           QA::Runtime::Logger.debug(line.chomp)
           break line.include?('praefect sql-ping: OK')
         end
-      end
-
-      def wait_for_sql_ping
-        wait_until_shell_command_matches(
-          "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml sql-ping'",
-          /praefect sql-ping: OK/
-        )
-      end
-
-      def health_check_failure_message?(msg)
-        ['error when pinging healthcheck', 'failed checking node health'].include?(msg)
       end
 
       def wait_for_dial_nodes_successful
@@ -316,14 +262,6 @@ module QA
         dataloss_info
       end
 
-      def praefect_dataloss_info_for_project(project_id)
-        dataloss_info = []
-        Support::Retrier.retry_until(max_duration: 60) do
-          dataloss_info = praefect_dataloss_information(project_id)
-          dataloss_info.include?("#{Digest::SHA256.hexdigest(project_id.to_s)}.git")
-        end
-      end
-
       def wait_for_project_synced_across_all_storages(project_id)
         Support::Retrier.retry_until(max_duration: 60) do
           praefect_dataloss_information(project_id).include?('All repositories are fully available on all assigned storages!')
@@ -347,9 +285,7 @@ module QA
       end
 
       def wait_for_health_check_all_nodes
-        wait_for_gitaly_health_check(@primary_node)
-        wait_for_gitaly_health_check(@secondary_node)
-        wait_for_gitaly_health_check(@tertiary_node)
+        gitaly_nodes.each { |node| wait_for_gitaly_health_check(node) }
       end
 
       def wait_for_gitaly_health_check(node)
@@ -364,33 +300,9 @@ module QA
         wait_until_node_is_marked_as_healthy_storage(node)
       end
 
-      def wait_for_primary_node_health_check
-        wait_for_gitaly_health_check(@primary_node)
-      end
-
-      def wait_for_secondary_node_health_check
-        wait_for_gitaly_health_check(@secondary_node)
-      end
-
-      def wait_for_tertiary_node_health_check
-        wait_for_gitaly_health_check(@tertiary_node)
-      end
-
       def wait_for_health_check_failure(node)
         QA::Runtime::Logger.info("Waiting for health check failure on #{node}")
         wait_until_node_is_removed_from_healthy_storages(node)
-      end
-
-      def wait_for_primary_node_health_check_failure
-        wait_for_health_check_failure(@primary_node)
-      end
-
-      def wait_for_secondary_node_health_check_failure
-        wait_for_health_check_failure(@secondary_node)
-      end
-
-      def wait_for_tertiary_node_health_check_failure
-        wait_for_health_check_failure(@tertiary_node)
       end
 
       def wait_until_node_is_removed_from_healthy_storages(node)
@@ -459,10 +371,10 @@ module QA
         result = []
         shell sql_to_docker_exec_cmd(
           <<~SQL
-            select job from replication_queue
-            where state = 'ready'
-              and job ->> 'change' = 'update'
-              and job ->> 'target_node_storage' = '#{@primary_node}';
+                  select job from replication_queue
+                  where state = 'ready'
+                    and job ->> 'change' = 'update'
+                    and job ->> 'target_node_storage' = '#{@primary_node}';
           SQL
         ) do |line|
           result << line
@@ -601,20 +513,6 @@ module QA
 
       private
 
-      def current_primary_node
-        result = []
-        shell sql_to_docker_exec_cmd("select node_name from shard_primaries where shard_name = '#{@virtual_storage}';") do |line|
-          result << line
-        end
-        # The result looks like:
-        #  node_name
-        #  -----------
-        #   gitaly1
-        #  (1 row)
-
-        result[2].strip
-      end
-
       def dataloss_command
         "docker exec #{@praefect} bash -c '/opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss'"
       end
@@ -654,13 +552,6 @@ module QA
           log['grpc.method'] == 'ReplicateRepository' && log['grpc.request.repoStorage'] == storage && log['grpc.request.repoPath'] == repo_path
         rescue JSON::ParserError
           # Ignore lines that can't be parsed as JSON
-        end
-      end
-
-      def with_praefect_log(**kwargs)
-        wait_until_shell_command("docker exec #{@praefect} bash -c 'tail -n 1 /var/log/gitlab/praefect/current'", **kwargs) do |line|
-          QA::Runtime::Logger.debug(line.chomp)
-          yield JSON.parse(line)
         end
       end
 

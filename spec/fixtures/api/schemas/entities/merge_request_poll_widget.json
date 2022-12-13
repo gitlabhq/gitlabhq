@@ -1,38 +1,131 @@
 {
   "type": "object",
-  "properties" : {
-    "id": { "type": "integer" },
-    "iid": { "type": "integer" },
-    "description": { "type": ["string", "null"] },
-    "title": { "type": "string" },
-    "auto_merge_strategy": { "type": ["string", "null"] },
-    "available_auto_merge_strategies": { "type": "array" },
-    "source_branch_protected": { "type": "boolean" },
-    "allow_collaboration": { "type": "boolean"},
-    "should_be_rebased": { "type": "boolean" },
-    "ff_only_enabled": { "type": ["boolean", false] },
-    "merge_user": { "type": ["object", "null"] },
-    "pipeline": { "type": ["object", "null"] },
-    "merge_pipeline": { "type": ["object", "null"] },
-    "default_merge_commit_message": { "type": ["string", "null"] },
-    "mergeable": { "type": "boolean" },
-    "default_merge_commit_message_with_description": { "type": "string" },
-    "mergeable_discussions_state": { "type": "boolean" },
-    "project_archived": { "type": "boolean" },
-    "only_allow_merge_if_pipeline_succeeds": { "type": "boolean" },
-    "has_ci": { "type": "boolean" },
-    "ci_status": { "type": ["string", "null"] },
-    "pipeline_coverage_delta": { "type": ["float", "null"] },
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "iid": {
+      "type": "integer"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "auto_merge_strategy": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "available_auto_merge_strategies": {
+      "type": "array"
+    },
+    "source_branch_protected": {
+      "type": "boolean"
+    },
+    "allow_collaboration": {
+      "type": "boolean"
+    },
+    "should_be_rebased": {
+      "type": "boolean"
+    },
+    "ff_only_enabled": {
+      "type": [
+        "boolean",
+        false
+      ]
+    },
+    "merge_user": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "pipeline": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "merge_pipeline": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "default_merge_commit_message": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "mergeable": {
+      "type": "boolean"
+    },
+    "default_merge_commit_message_with_description": {
+      "type": "string"
+    },
+    "mergeable_discussions_state": {
+      "type": "boolean"
+    },
+    "project_archived": {
+      "type": "boolean"
+    },
+    "only_allow_merge_if_pipeline_succeeds": {
+      "type": "boolean"
+    },
+    "has_ci": {
+      "type": "boolean"
+    },
+    "ci_status": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pipeline_coverage_delta": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "float"
+    },
     "builds_with_coverage": {
-      "type": ["array", "null"],
+      "type": [
+        "array",
+        "null"
+      ],
       "items": {
         "type": "object",
-        "required": ["name", "coverage"]
+        "required": [
+          "name",
+          "coverage"
+        ]
       }
     },
-    "cancel_auto_merge_path": { "type": ["string", "null"] },
-    "test_reports_path": { "type": ["string", "null"] },
-    "create_issue_to_resolve_discussions_path": { "type": ["string", "null"] },
+    "cancel_auto_merge_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "test_reports_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "create_issue_to_resolve_discussions_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
     "current_user": {
       "type": "object",
       "required": [
@@ -42,20 +135,71 @@
         "can_create_issue"
       ],
       "properties": {
-        "can_remove_source_branch": { "type": "boolean" },
-        "can_revert_on_current_merge_request": { "type": ["boolean", "null"] },
-        "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] },
-        "can_create_issue": { "type": "boolean" }
+        "can_remove_source_branch": {
+          "type": "boolean"
+        },
+        "can_revert_on_current_merge_request": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "can_cherry_pick_on_current_merge_request": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "can_create_issue": {
+          "type": "boolean"
+        }
       },
       "additionalProperties": false
     },
-    "can_push_to_source_branch": { "type": "boolean" },
-    "new_blob_path": { "type": ["string", "null"] },
-    "rebase_path": { "type": ["string", "null"] },
-    "conflict_resolution_path": { "type": ["string", "null"] },
-    "remove_wip_path": { "type": ["string", "null"] },
-    "merge_path": { "type": ["string", "null"] },
-    "cherry_pick_in_fork_path": { "type": ["string", "null"] },
-    "revert_in_fork_path": { "type": ["string", "null"] }
+    "can_push_to_source_branch": {
+      "type": "boolean"
+    },
+    "new_blob_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "rebase_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "conflict_resolution_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "remove_wip_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "merge_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "cherry_pick_in_fork_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "revert_in_fork_path": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
   }
 }

@@ -187,7 +187,7 @@ Imported users can be mapped by their public email addresses on self-managed ins
 For project migration imports performed over GitLab.com groups, preserving author information is
 possible through a [professional services engagement](https://about.gitlab.com/services/migration/).
 
-## Rate Limits
+## Rate limits
 
 To help avoid abuse, by default, users are rate limited to:
 
@@ -196,9 +196,6 @@ To help avoid abuse, by default, users are rate limited to:
 | Export           | 6 projects per minute |
 | Download export  | 1 download per group per minute |
 | Import           | 6 projects per minute |
-
-GitLab.com may have [different settings](../../gitlab_com/index.md#importexport)
-from the defaults.
 
 ## Version history
 

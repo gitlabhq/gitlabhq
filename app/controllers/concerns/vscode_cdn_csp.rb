@@ -6,7 +6,7 @@ module VSCodeCDNCSP
 
   included do
     content_security_policy do |policy|
-      next if !Feature.enabled?(:vscode_web_ide) || policy.directives.blank?
+      next if policy.directives.blank?
 
       default_src = Array(policy.directives['default-src'] || [])
       policy.directives['frame-src'] ||= default_src

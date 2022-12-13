@@ -3,48 +3,55 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Bullet do
-  describe '#enabled?' do
-    it 'is enabled' do
-      stub_env('ENABLE_BULLET', true)
-
-      expect(described_class.enabled?).to be(true)
-    end
-
-    it 'is not enabled' do
+  context 'with bullet installed' do
+    before do
       stub_env('ENABLE_BULLET', nil)
-
-      expect(described_class.enabled?).to be(false)
+      stub_const('::Bullet', double)
     end
 
-    it 'is correctly aliased for #extra_logging_enabled?' do
-      expect(described_class.method(:extra_logging_enabled?).original_name).to eq(:enabled?)
+    describe '#enabled?' do
+      context 'with env enabled' do
+        before do
+          stub_env('ENABLE_BULLET', true)
+          allow(Gitlab.config.bullet).to receive(:enabled).and_return(false)
+        end
+
+        it 'is enabled' do
+          expect(described_class.enabled?).to be(true)
+        end
+      end
+
+      context 'with env disabled' do
+        before do
+          stub_env('ENABLE_BULLET', false)
+          allow(Gitlab.config.bullet).to receive(:enabled).and_return(true)
+        end
+
+        it 'is not enabled' do
+          expect(described_class.enabled?).to be(false)
+        end
+      end
     end
-  end
 
-  describe '#configure_bullet?' do
-    context 'with ENABLE_BULLET true' do
-      before do
-        stub_env('ENABLE_BULLET', true)
+    describe '#configure_bullet?' do
+      context 'with config enabled' do
+        before do
+          allow(Gitlab.config.bullet).to receive(:enabled).and_return(true)
+        end
+
+        it 'is configurable' do
+          expect(described_class.configure_bullet?).to be(true)
+        end
       end
 
-      it 'is configurable' do
-        expect(described_class.configure_bullet?).to be(true)
-      end
-    end
+      context 'with config disabled' do
+        before do
+          allow(Gitlab.config.bullet).to receive(:enabled).and_return(false)
+        end
 
-    context 'with ENABLE_BULLET falsey' do
-      before do
-        stub_env('ENABLE_BULLET', nil)
-      end
-
-      it 'is not configurable' do
-        expect(described_class.configure_bullet?).to be(false)
-      end
-
-      it 'is configurable in development' do
-        allow(Rails).to receive_message_chain(:env, :development?).and_return(true)
-
-        expect(described_class.configure_bullet?).to be(true)
+        it 'is not configurable' do
+          expect(described_class.configure_bullet?).to be(false)
+        end
       end
     end
   end

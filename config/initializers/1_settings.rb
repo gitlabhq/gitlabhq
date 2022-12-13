@@ -1052,6 +1052,12 @@ Settings.prometheus['enabled'] ||= false
 Settings.prometheus['server_address'] ||= nil
 
 #
+# Bullet settings
+#
+Settings['bullet'] ||= Settingslogic.new({})
+Settings.bullet['enabled'] ||= Rails.env.development?
+
+#
 # Shutdown settings
 #
 Settings['shutdown'] ||= Settingslogic.new({})
