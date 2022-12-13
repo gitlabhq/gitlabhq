@@ -105,7 +105,7 @@ You can override this behavior by defining specific variables:
 
 These variables also affect Auto Build and Auto Container Scanning. If you don't want to build and push an image to
 `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`, consider
-including only `Jobs/Deploy.gitlab-ci.yml`, or [disabling the `build` jobs](#disable-jobs).
+including only `Jobs/Deploy.gitlab-ci.yml`, or [disabling the `build` jobs](cicd_variables.md#job-disabling-variables).
 
 If you use Auto Container Scanning and set a value for `$CI_APPLICATION_REPOSITORY`, then you should
 also update `$CS_DEFAULT_BRANCH_IMAGE`. See [Setting the default branch image](../../user/application_security/container_scanning/index.md#setting-the-default-branch-image)
@@ -187,11 +187,11 @@ You can override the default values in the `values.yaml` file in the
 - Adding a file named `.gitlab/auto-deploy-values.yaml` to your repository, which is
   automatically used, if found.
 - Adding a file with a different name or path to the repository, and setting the
-  `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](#cicd-variables) with
+  `HELM_UPGRADE_VALUES_FILE` [CI/CD variable](cicd_variables.md) with
   the path and name.
 
 Some values cannot be overridden with the options above. Settings like `replicaCount` should instead be overridden with the `REPLICAS`
-[build and deployment](#build-and-deployment) CI/CD variable. Follow [this issue](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/31) for more information.
+[build and deployment](cicd_variables.md#build-and-deployment-variables) CI/CD variable. Follow [this issue](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/issues/31) for more information.
 
 NOTE:
 For GitLab 12.5 and earlier, use the `HELM_UPGRADE_EXTRA_ARGS` variable
@@ -308,7 +308,7 @@ You can configure many Auto DevOps jobs to run in an [offline environment](../..
 To support applications requiring a database,
 [PostgreSQL](https://www.postgresql.org/) is provisioned by default. The credentials to access
 the database are preconfigured, but can be customized by setting the associated
-[CI/CD variables](#cicd-variables). You can use these credentials to define a `DATABASE_URL`:
+[CI/CD variables](cicd_variables.md). You can use these credentials to define a `DATABASE_URL`:
 
 ```yaml
 postgres://user:password@postgres-host:postgres-port/postgres-database
@@ -340,9 +340,9 @@ To set custom values, do one of the following:
 - Add a file named `.gitlab/auto-deploy-postgres-values.yaml` to your repository. If found, this
   file is used automatically. This file is used by default for PostgreSQL Helm upgrades.
 - Add a file with a different name or path to the repository, and set the
-  `POSTGRES_HELM_UPGRADE_VALUES_FILE` [environment variable](#database) with the path
+  `POSTGRES_HELM_UPGRADE_VALUES_FILE` [environment variable](cicd_variables.md#database-variables) with the path
   and name.
-- Set the `POSTGRES_HELM_UPGRADE_EXTRA_ARGS` [environment variable](#database).
+- Set the `POSTGRES_HELM_UPGRADE_EXTRA_ARGS` [environment variable](cicd_variables.md#database-variables).
 
 ### Using external PostgreSQL database providers
 
@@ -370,342 +370,6 @@ You must define environment-scoped CI/CD variables for `POSTGRES_ENABLED` and
 
 You must ensure that your Kubernetes cluster has network access to wherever
 PostgreSQL is hosted.
-
-## CI/CD variables
-
-The following variables can be used for setting up the Auto DevOps domain,
-providing a custom Helm chart, or scaling your application. PostgreSQL can
-also be customized, and you can use a [custom buildpack](#custom-buildpacks).
-
-### Build and deployment
-
-The following table lists CI/CD variables related to building and deploying
-applications.
-
-| **CI/CD Variable**                      | **Description**                    |
-|-----------------------------------------|------------------------------------|
-| `ADDITIONAL_HOSTS`                      | Fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. |
-| `<ENVIRONMENT>_ADDITIONAL_HOSTS`        | For a specific environment, the fully qualified domain names specified as a comma-separated list that are added to the Ingress hosts. This takes precedence over `ADDITIONAL_HOSTS`. |
-| `AUTO_BUILD_IMAGE_VERSION`              | Customize the image version used for the `build` job. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-build-image/-/releases). |
-| `AUTO_DEPLOY_IMAGE_VERSION`            | Customize the image version used for Kubernetes deployment jobs. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
-| `AUTO_DEVOPS_ATOMIC_RELEASE`            | As of GitLab 13.0, Auto DevOps uses [`--atomic`](https://v2.helm.sh/docs/helm/#options-43) for Helm deployments by default. Set this variable to `false` to disable the use of `--atomic` |
-| `AUTO_DEVOPS_BUILD_IMAGE_CNB_ENABLED`   | Set to `false` to use Herokuish instead of Cloud Native Buildpacks with Auto Build. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
-| `AUTO_DEVOPS_BUILD_IMAGE_CNB_BUILDER`   | The builder used when building with Cloud Native Buildpacks. The default builder is `heroku/buildpacks:18`. [More details](stages.md#auto-build-using-cloud-native-buildpacks). |
-| `AUTO_DEVOPS_BUILD_IMAGE_EXTRA_ARGS`    | Extra arguments to be passed to the `docker build` command. Note that using quotes doesn't prevent word splitting. [More details](#passing-arguments-to-docker-build). |
-| `AUTO_DEVOPS_BUILD_IMAGE_FORWARDED_CI_VARIABLES` | A [comma-separated list of CI/CD variable names](#forward-cicd-variables-to-the-build-environment) to be forwarded to the build environment (the buildpack builder or `docker build`). |
-| `AUTO_DEVOPS_BUILD_IMAGE_CNB_PORT`      | In GitLab 15.0 and later, port exposed by the generated Docker image. Set to `false` to prevent exposing any ports. Defaults to `5000`. |
-| `AUTO_DEVOPS_CHART`                     | Helm Chart used to deploy your apps. Defaults to the one [provided by GitLab](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/tree/master/assets/auto-deploy-app). |
-| `AUTO_DEVOPS_CHART_REPOSITORY`          | Helm Chart repository used to search for charts. Defaults to `https://charts.gitlab.io`. |
-| `AUTO_DEVOPS_CHART_REPOSITORY_NAME`     | Used to set the name of the Helm repository. Defaults to `gitlab`. |
-| `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME` | Used to set a username to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD`. |
-| `AUTO_DEVOPS_CHART_REPOSITORY_PASSWORD` | Used to set a password to connect to the Helm repository. Defaults to no credentials. Also set `AUTO_DEVOPS_CHART_REPOSITORY_USERNAME`. |
-| `AUTO_DEVOPS_CHART_REPOSITORY_PASS_CREDENTIALS` | From GitLab 14.2, set to a non-empty value to enable forwarding of the Helm repository credentials to the chart server when the chart artifacts are on a different host than repository. |
-| `AUTO_DEVOPS_COMMON_NAME` | From GitLab 15.5, set to a valid domain name to customize the common name used for the TLS certificate. Defaults to `le-$CI_PROJECT_ID.$KUBE_INGRESS_BASE_DOMAIN`. Set to `false` to not set this alternative host on the Ingress. |
-| `AUTO_DEVOPS_DEPLOY_DEBUG`              | From GitLab 13.1, if this variable is present, Helm outputs debug logs. |
-| `AUTO_DEVOPS_ALLOW_TO_FORCE_DEPLOY_V<N>` | From [auto-deploy-image](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image) v1.0.0, if this variable is present, a new major version of chart is forcibly deployed. For more information, see [Ignore warnings and continue deploying](upgrading_auto_deploy_dependencies.md#ignore-warnings-and-continue-deploying). |
-| `BUILDPACK_URL`                         | Buildpack's full URL. [Must point to a URL supported by Pack or Herokuish](#custom-buildpacks). |
-| `CANARY_ENABLED`                        | Used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
-| `BUILDPACK_VOLUMES`                     | Specify one or more [Buildpack volumes to mount](stages.md#mount-volumes-into-the-build-container). Use a pipe `|` as list separator. |
-| `CANARY_PRODUCTION_REPLICAS`            | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md) in the production environment. Takes precedence over `CANARY_REPLICAS`. Defaults to 1. |
-| `CANARY_REPLICAS`                       | Number of canary replicas to deploy for [Canary Deployments](../../user/project/canary_deployments.md). Defaults to 1. |
-| `CI_APPLICATION_REPOSITORY`             | The repository of container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](#custom-container-image). |
-| `CI_APPLICATION_TAG`                    | The tag of the container image being built or deployed, `$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG`. For more details, read [Custom container image](#custom-container-image). |
-| `DAST_AUTO_DEPLOY_IMAGE_VERSION`        | Customize the image version used for DAST deployments on the default branch. Should usually be the same as `AUTO_DEPLOY_IMAGE_VERSION`. See [list of versions](https://gitlab.com/gitlab-org/cluster-integration/auto-deploy-image/-/releases). |
-| `DOCKERFILE_PATH`                       | From GitLab 13.2, allows overriding the [default Dockerfile path for the build stage](#custom-dockerfile) |
-| `HELM_RELEASE_NAME`                     | From GitLab 12.1, allows the `helm` release name to be overridden. Can be used to assign unique release names when deploying multiple projects to a single namespace. |
-| `HELM_UPGRADE_VALUES_FILE`              | From GitLab 12.6, allows the `helm upgrade` values file to be overridden. Defaults to `.gitlab/auto-deploy-values.yaml`. |
-| `HELM_UPGRADE_EXTRA_ARGS`               | Allows extra options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
-| `INCREMENTAL_ROLLOUT_MODE`              | If present, can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. Set to `manual` for manual deployment jobs or `timed` for automatic rollout deployments with a 5 minute delay each one. |
-| `K8S_SECRET_*`                          | Any variable prefixed with [`K8S_SECRET_`](#application-secret-variables) is made available by Auto DevOps as environment variables to the deployed application. |
-| `KUBE_CONTEXT`                          | From GitLab 14.5, can be used to select a context to use from `KUBECONFIG`. When `KUBE_CONTEXT` is blank, the default context in `KUBECONFIG` (if any) is used. A context must be selected when used [with the agent for Kubernetes](../../user/clusters/agent/ci_cd_workflow.md). |
-| `KUBE_INGRESS_BASE_DOMAIN`              | Can be used to set a domain per cluster. See [cluster domains](../../user/project/clusters/gitlab_managed_clusters.md#base-domain) for more information. |
-| `KUBE_NAMESPACE`                        | The namespace used for deployments. When using certificate-based clusters, [this value should not be overwritten directly](../../user/project/clusters/deploy_to_cluster.md#custom-namespace). |
-| `KUBECONFIG`                            | The kubeconfig to use for deployments. User-provided values take priority over GitLab-provided values. |
-| `PRODUCTION_REPLICAS`                   | Number of replicas to deploy in the production environment. Takes precedence over `REPLICAS` and defaults to 1. For zero downtime upgrades, set to 2 or greater. |
-| `REPLICAS`                              | Number of replicas to deploy. Defaults to 1. Change this variable instead of [modifying](#customize-values-for-helm-chart) `replicaCount`. |
-| `ROLLOUT_RESOURCE_TYPE`                 | Allows specification of the resource type being deployed when using a custom Helm chart. Default value is `deployment`. |
-| `ROLLOUT_STATUS_DISABLED`               | From GitLab 12.0, used to disable rollout status check because it does not support all resource types, for example, `cronjob`. |
-| `STAGING_ENABLED`                       | Used to define a [deploy policy for staging and production environments](#deploy-policy-for-staging-and-production-environments). |
-| `TRACE`                                 | Set to any value to make Helm commands produce verbose output. You can use this setting to help diagnose Auto DevOps deployment problems. |
-
-NOTE:
-After you set up your replica variables using a
-[project CI/CD variable](../../ci/variables/index.md),
-you can scale your application by redeploying it.
-
-WARNING:
-You should *not* scale your application using Kubernetes directly. This can
-cause confusion with Helm not detecting the change, and subsequent deploys with
-Auto DevOps can undo your changes.
-
-### Database
-
-The following table lists CI/CD variables related to the database.
-
-| **CI/CD Variable**                            | **Description**                    |
-|-----------------------------------------|------------------------------------|
-| `DB_INITIALIZE`                         | Used to specify the command to run to initialize the application's PostgreSQL database. Runs inside the application pod. |
-| `DB_MIGRATE`                            | Used to specify the command to run to migrate the application's PostgreSQL database. Runs inside the application pod. |
-| `POSTGRES_ENABLED`                      | Whether PostgreSQL is enabled. Defaults to `true`. Set to `false` to disable the automatic deployment of PostgreSQL. |
-| `POSTGRES_USER`                         | The PostgreSQL user. Defaults to `user`. Set it to use a custom username. |
-| `POSTGRES_PASSWORD`                     | The PostgreSQL password. Defaults to `testing-password`. Set it to use a custom password. |
-| `POSTGRES_DB`                           | The PostgreSQL database name. Defaults to the value of [`$CI_ENVIRONMENT_SLUG`](../../ci/variables/index.md#predefined-cicd-variables). Set it to use a custom database name. |
-| `POSTGRES_VERSION`                      | Tag for the [`postgres` Docker image](https://hub.docker.com/_/postgres) to use. Defaults to `9.6.16` for tests and deployments as of GitLab 13.0 (previously `9.6.2`). If `AUTO_DEVOPS_POSTGRES_CHANNEL` is set to `1`, deployments uses the default version `9.6.2`. |
-| `POSTGRES_HELM_UPGRADE_VALUES_FILE`     | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows the `helm upgrade` values file for PostgreSQL to be overridden. Defaults to `.gitlab/auto-deploy-postgres-values.yaml`. |
-| `POSTGRES_HELM_UPGRADE_EXTRA_ARGS`      | In GitLab 13.8 and later, and when using [auto-deploy-image v2](upgrading_auto_deploy_dependencies.md), this variable allows extra PostgreSQL options in `helm upgrade` commands when deploying the application. Note that using quotes doesn't prevent word splitting. |
-| `POSTGRES_CHART_REPOSITORY`             | Helm Chart repository used to search for PostgreSQL chart. Defaults to `https://raw.githubusercontent.com/bitnami/charts/eb5f9a9513d987b519f0ecd732e7031241c50328/bitnami`. |
-| `POSTGRES_CHART_VERSION`                | Helm Chart version used for PostgreSQL chart. Defaults to `8.2.1`. |
-
-### Disable jobs
-
-The following table lists variables used to disable jobs.
-
-| **Job Name**                           | **CI/CDVariable**               | **GitLab version**    | **Description** |
-|----------------------------------------|---------------------------------|-----------------------|-----------------|
-| `.fuzz_base`                           | `COVFUZZ_DISABLED`              | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/34984) | [Read more](../../user/application_security/coverage_fuzzing/index.md) about how `.fuzz_base` provide capability for your own jobs. If the variable is present, your jobs aren't created. |
-| `apifuzzer_fuzz`                       | `API_FUZZING_DISABLED`          | [From GitLab 13.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/39135) | If the variable is present, the job isn't created. |
-| `build`                                | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
-| `build_artifact`                       | `BUILD_DISABLED`                |                       | If the variable is present, the job isn't created. |
-| `bandit-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `brakeman-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `canary`                               | `CANARY_ENABLED`                |                       | This manual job is created if the variable is present. |
-| `cluster_image_scanning`               | `CLUSTER_IMAGE_SCANNING_DISABLED` |                     | If the variable is present, the job isn't created. |
-| `code_intelligence`                    | `CODE_INTELLIGENCE_DISABLED`    | From GitLab 13.6      | If the variable is present, the job isn't created. |
-| `code_quality`                         | `CODE_QUALITY_DISABLED`         |                       | If the variable is present, the job isn't created. |
-| `container_scanning`                   | `CONTAINER_SCANNING_DISABLED`   |                       | If the variable is present, the job isn't created. |
-| `dast`                                 | `DAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `dast_environment_deploy`              | `DAST_DISABLED_FOR_DEFAULT_BRANCH` or `DAST_DISABLED` | [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17789) | If either variable is present, the job isn't created. |
-| `dependency_scanning`                  | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `eslint-sast`                          | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `flawfinder-sast`                      | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `gemnasium-dependency_scanning`        | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `gemnasium-maven-dependency_scanning`  | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `gemnasium-python-dependency_scanning` | `DEPENDENCY_SCANNING_DISABLED`  |                       | If the variable is present, the job isn't created. |
-| `gosec-sast`                           | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `kubesec-sast`                         | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `license_management`                   | `LICENSE_MANAGEMENT_DISABLED`   | GitLab 12.7 and earlier | If the variable is present, the job isn't created. Job deprecated [from GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) |
-| `license_scanning`                     | `LICENSE_MANAGEMENT_DISABLED`   | [From GitLab 12.8](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | If the variable is present, the job isn't created. |
-| `load_performance`                     | `LOAD_PERFORMANCE_DISABLED`     | From GitLab 13.2      | If the variable is present, the job isn't created. |
-| `nodejs-scan-sast`                     | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `performance`                          | `PERFORMANCE_DISABLED`          | GitLab 13.12 and earlier | Browser performance. If the variable is present, the job isn't created. Replaced by `browser_performance`. |
-| `browser_performance`                  | `BROWSER_PERFORMANCE_DISABLED`  | From GitLab 14.0      | Browser performance. If the variable is present, the job isn't created. Replaces `performance`. |
-| `phpcs-security-audit-sast`            | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `pmd-apex-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `review`                               | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |
-| `review:stop`                          | `REVIEW_DISABLED`               |                       | Manual job. If the variable is present, the job isn't created. |
-| `sast`                                 | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `sast:container`                       | `CONTAINER_SCANNING_DISABLED`   |                       | If the variable is present, the job isn't created. |
-| `secret_detection`                     | `SECRET_DETECTION_DISABLED`     | From GitLab 13.1      | If the variable is present, the job isn't created. |
-| `secret_detection_default_branch`      | `SECRET_DETECTION_DISABLED`     | [From GitLab 13.2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/22773) | If the variable is present, the job isn't created. |
-| `security-code-scan-sast`              | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `secrets-sast`                         | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `sobelaw-sast`                         | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `stop_dast_environment`                | `DAST_DISABLED_FOR_DEFAULT_BRANCH` or `DAST_DISABLED` | [From GitLab 12.4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/17789) | If either variable is present, the job isn't created. |
-| `spotbugs-sast`                        | `SAST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `test`                                 | `TEST_DISABLED`                 |                       | If the variable is present, the job isn't created. |
-| `staging`                              | `STAGING_ENABLED`               |                       | The job is created if the variable is present. |
-| `stop_review`                          | `REVIEW_DISABLED`               |                       | If the variable is present, the job isn't created. |
-
-### Application secret variables
-
-Some applications need to define secret variables that are accessible by the deployed
-application. Auto DevOps detects CI/CD variables starting with `K8S_SECRET_`, and makes
-these prefixed variables available to the deployed application as environment variables.
-
-To configure your application variables:
-
-1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > CI/CD**.
-1. Expand **Variables**.
-1. Create a CI/CD variable, ensuring the key is prefixed with
-   `K8S_SECRET_`. For example, you can create a variable with key
-   `K8S_SECRET_RAILS_MASTER_KEY`.
-
-1. Run an Auto DevOps pipeline, either by manually creating a new
-   pipeline or by pushing a code change to GitLab.
-
-Auto DevOps pipelines take your application secret variables to
-populate a Kubernetes secret. This secret is unique per environment.
-When deploying your application, the secret is loaded as environment
-variables in the container running the application. Following the
-example above, you can see the secret below containing the
-`RAILS_MASTER_KEY` variable.
-
-```shell
-$ kubectl get secret production-secret -n minimal-ruby-app-54 -o yaml
-
-apiVersion: v1
-data:
-  RAILS_MASTER_KEY: MTIzNC10ZXN0
-kind: Secret
-metadata:
-  creationTimestamp: 2018-12-20T01:48:26Z
-  name: production-secret
-  namespace: minimal-ruby-app-54
-  resourceVersion: "429422"
-  selfLink: /api/v1/namespaces/minimal-ruby-app-54/secrets/production-secret
-  uid: 57ac2bfd-03f9-11e9-b812-42010a9400e4
-type: Opaque
-```
-
-Environment variables are generally considered immutable in a Kubernetes pod.
-If you update an application secret without changing any code, then manually
-create a new pipeline, any running application pods don't receive
-the updated secrets. To update the secrets, either:
-
-- Push a code update to GitLab to force the Kubernetes deployment to recreate pods.
-- Manually delete running pods to cause Kubernetes to create new pods with updated
-  secrets.
-
-Variables with multi-line values are not currently supported due to
-limitations with the current Auto DevOps scripting environment.
-
-### Advanced replica variables setup
-
-Apart from the two replica-related variables for production mentioned above,
-you can also use other variables for different environments.
-
-The Kubernetes' label named `track`, GitLab CI/CD environment names, and the
-replicas environment variable are combined into the format `TRACK_ENV_REPLICAS`,
-enabling you to define your own variables for scaling the pod's replicas:
-
-- `TRACK`: The capitalized value of the `track`
-  [Kubernetes label](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
-  in the Helm Chart app definition. If not set, it isn't taken into account
-  to the variable name.
-- `ENV`: The capitalized environment name of the deploy job, set in
-  `.gitlab-ci.yml`.
-
-In the example below, the environment's name is `qa`, and it deploys the track
-`foo`, which results in an environment variable named `FOO_QA_REPLICAS`:
-
-```yaml
-QA testing:
-  stage: deploy
-  environment:
-    name: qa
-  script:
-    - deploy foo
-```
-
-The track `foo` being referenced must also be defined in the application's Helm chart, like:
-
-```yaml
-replicaCount: 1
-image:
-  repository: gitlab.example.com/group/project
-  tag: stable
-  pullPolicy: Always
-  secrets:
-    - name: gitlab-registry
-application:
-  track: foo
-  tier: web
-service:
-  enabled: true
-  name: web
-  type: ClusterIP
-  url: http://my.host.com/
-  externalPort: 5000
-  internalPort: 5000
-```
-
-### Deploy policy for staging and production environments
-
-NOTE:
-You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
-
-The normal behavior of Auto DevOps is to use continuous deployment, pushing
-automatically to the `production` environment every time a new pipeline is run
-on the default branch. However, there are cases where you might want to use a
-staging environment, and deploy to production manually. For this scenario, the
-`STAGING_ENABLED` CI/CD variable was introduced.
-
-If you define `STAGING_ENABLED` with a non-empty value, then GitLab automatically deploys the application
-to a `staging` environment, and creates a `production_manual` job for
-you when you're ready to manually deploy to production.
-
-### Deploy policy for canary environments **(PREMIUM)**
-
-You can use a [canary environment](../../user/project/canary_deployments.md) before
-deploying any changes to production.
-
-If you define `CANARY_ENABLED` with a non-empty value, then two manual jobs are created:
-
-- `canary` - Deploys the application to the canary environment.
-- `production_manual` - Manually deploys the application to production.
-
-### Incremental rollout to production **(PREMIUM)**
-
-NOTE:
-You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
-
-When you're ready to deploy a new version of your app to production, you may want
-to use an incremental rollout to replace just a few pods with the latest code to
-check how the application is behaving before manually increasing the rollout up to 100%.
-
-If `INCREMENTAL_ROLLOUT_MODE` is set to `manual` in your project, then instead
-of the standard `production` job, 4 different
-[manual jobs](../../ci/pipelines/index.md#add-manual-interaction-to-your-pipeline)
-are created:
-
-1. `rollout 10%`
-1. `rollout 25%`
-1. `rollout 50%`
-1. `rollout 100%`
-
-The percentage is based on the `REPLICAS` CI/CD variable, and defines the number of
-pods you want to have for your deployment. If the value is `10`, and you run the
-`10%` rollout job, there is `1` new pod and `9` old ones.
-
-To start a job, select the play icon (**{play}**) next to the job's name. You're not
-required to go from `10%` to `100%`, you can jump to whatever job you want.
-You can also scale down by running a lower percentage job, just before hitting
-`100%`. Once you get to `100%`, you can't scale down, and you'd have to roll
-back by redeploying the old version using the
-[rollback button](../../ci/environments/index.md#retry-or-roll-back-a-deployment) in the
-environment page.
-
-Below, you can see how the pipeline appears if the rollout or staging
-variables are defined.
-
-Without `INCREMENTAL_ROLLOUT_MODE` and without `STAGING_ENABLED`:
-
-![Staging and rollout disabled](img/rollout_staging_disabled.png)
-
-Without `INCREMENTAL_ROLLOUT_MODE` and with `STAGING_ENABLED`:
-
-![Staging enabled](img/staging_enabled.png)
-
-With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and without `STAGING_ENABLED`:
-
-![Rollout enabled](img/rollout_enabled.png)
-
-With `INCREMENTAL_ROLLOUT_MODE` set to `manual` and with `STAGING_ENABLED`
-
-![Rollout and staging enabled](img/rollout_staging_enabled.png)
-
-WARNING:
-This configuration is deprecated, and is scheduled to be removed in the future.
-
-### Timed incremental rollout to production **(PREMIUM)**
-
-NOTE:
-You can also set this inside your [project's settings](requirements.md#auto-devops-deployment-strategy).
-
-This configuration is based on
-[incremental rollout to production](#incremental-rollout-to-production).
-
-Everything behaves the same way, except:
-
-- To enable it, set the `INCREMENTAL_ROLLOUT_MODE` CI/CD variable to `timed`.
-- Instead of the standard `production` job, the following jobs are created with
-  a 5 minute delay between each:
-
-  1. `timed rollout 10%`
-  1. `timed rollout 25%`
-  1. `timed rollout 50%`
-  1. `timed rollout 100%`
 
 ## Auto DevOps banner
 

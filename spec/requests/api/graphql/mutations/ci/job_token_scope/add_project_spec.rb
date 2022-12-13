@@ -60,7 +60,7 @@ RSpec.describe 'CiJobTokenScopeAddProject', feature_category: :continuous_integr
         post_graphql_mutation(mutation, current_user: current_user)
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response.dig('ciJobTokenScope', 'projects', 'nodes')).not_to be_empty
-      end.to change { Ci::JobToken::Scope.new(project).includes?(target_project) }.from(false).to(true)
+      end.to change { Ci::JobToken::Scope.new(project).allows?(target_project) }.from(false).to(true)
     end
 
     context 'when invalid target project is provided' do

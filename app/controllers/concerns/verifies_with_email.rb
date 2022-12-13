@@ -28,7 +28,7 @@ module VerifiesWithEmail
         if user.unlock_token
           # Prompt for the token if it already has been set
           prompt_for_email_verification(user)
-        elsif user.access_locked? || !AuthenticationEvent.initial_login_or_known_ip_address?(user, request.ip)
+        elsif user.access_locked? || !trusted_ip_address?(user)
           # require email verification if:
           # - their account has been locked because of too many failed login attempts, or
           # - they have logged in before, but never from the current ip address
@@ -131,6 +131,12 @@ module VerifiesWithEmail
     log_verification(user, :successful)
 
     sign_in(user)
+  end
+
+  def trusted_ip_address?(user)
+    return true if Feature.disabled?(:check_ip_address_for_email_verification)
+
+    AuthenticationEvent.initial_login_or_known_ip_address?(user, request.ip)
   end
 
   def prompt_for_email_verification(user)

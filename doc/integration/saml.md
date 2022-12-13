@@ -170,17 +170,17 @@ For more information on:
 
 ### Configure SAML on your IdP
 
-When configuring a SAML app on the IdP, you need at least:
+To configure a SAML application on your IdP, you need at least the following information:
 
-- Assertion consumer service URL
-- Issuer
-- [`NameID`](../user/group/saml_sso/index.md#nameid)
-- [Email address claim](#configure-assertions)
+- Assertion consumer service URL.
+- Issuer.
+- [`NameID`](../user/group/saml_sso/index.md#nameid).
+- [Email address claim](#configure-assertions).
 
-For example configurations, see the [notes on specific providers](#set-up-identity-providers).
+For an example configuration, see [set up identity providers](#set-up-identity-providers).
 
-Your identity provider may require additional configuration.
-See [additional information on configuring a SAML app](#additional-configuration-for-saml-apps-on-your-idp) on your IdP for more information.
+Your IdP may need additional configuration. For more information, see
+[additional configuration for SAML apps on your IdP](#additional-configuration-for-saml-apps-on-your-idp).
 
 ### Configure GitLab to use multiple SAML IdPs
 

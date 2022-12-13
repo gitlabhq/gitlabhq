@@ -367,4 +367,65 @@ RSpec.describe 'Query.project.pipeline', feature_category: :continuous_integrati
       expect_graphql_errors_to_include [/"jobs" field can be requested only for 1 Project\(s\) at a time./]
     end
   end
+
+  context 'when batched querying jobs for multiple projects' do
+    let(:batched) do
+      [
+        { query: query_1 },
+        { query: query_2 }
+      ]
+    end
+
+    let(:query_1) do
+      %(
+        query Page1 {
+          projects {
+            nodes {
+              jobs {
+                nodes {
+                  name
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:query_2) do
+      %(
+        query Page2 {
+          projects {
+            nodes {
+              jobs {
+                nodes {
+                  name
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    before do
+      create_list(:project, 2).each do |project|
+        project.add_developer(user)
+        create(:ci_build, project: project)
+      end
+    end
+
+    it 'limits the specific field evaluation per query' do
+      get_multiplex(batched, current_user: user)
+
+      resp = json_response
+
+      expect(resp.first.dig('data', 'projects', 'nodes').first.dig('jobs', 'nodes').first['name']).to eq('test')
+      expect(resp.first['errors'].first['message'])
+        .to match(/"jobs" field can be requested only for 1 Project\(s\) at a time./)
+      expect(resp.second.dig('data', 'projects', 'nodes').first.dig('jobs', 'nodes').first['name']).to eq('test')
+      expect(resp.second['errors'].first['message'])
+        .to match(/"jobs" field can be requested only for 1 Project\(s\) at a time./)
+    end
+  end
 end

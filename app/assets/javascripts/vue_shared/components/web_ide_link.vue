@@ -337,6 +337,11 @@ export default {
 
       this.select(KEY_WEB_IDE);
     },
+    dismissCalloutOnActionClicked(dismiss) {
+      if (this.displayVscodeWebIdeCallout) {
+        dismiss();
+      }
+    },
   },
   webIdeButtonId: 'web-ide-link',
   PREFERRED_EDITOR_KEY,
@@ -355,7 +360,7 @@ export default {
           :category="isBlob ? 'primary' : 'secondary'"
           :show-action-tooltip="!displayVscodeWebIdeCallout || !shouldShowCallout"
           @select="select"
-          @actionClicked="dismiss"
+          @actionClicked="dismissCalloutOnActionClicked(dismiss)"
         />
         <local-storage-sync
           :storage-key="$options.PREFERRED_EDITOR_KEY"

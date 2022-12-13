@@ -117,4 +117,8 @@ export default {
     text: s__('ProjectTemplates|Pages/Bridgetown'),
     icon: '.template-option .icon-gitlab_logo',
   },
+  typo3_distribution: {
+    text: s__('ProjectTemplates|TYPO3 Distribution'),
+    icon: '.template-option .icon-typo3',
+  },
 };

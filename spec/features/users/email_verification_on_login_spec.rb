@@ -223,6 +223,14 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
 
     it_behaves_like 'email verification required'
     it_behaves_like 'no email verification required when 2fa enabled or ff disabled'
+
+    context 'when the check_ip_address_for_email_verification feature flag is disabled' do
+      before do
+        stub_feature_flags(check_ip_address_for_email_verification: false)
+      end
+
+      it_behaves_like 'no email verification required'
+    end
   end
 
   describe 'when a previous authentication event exists for the same ip address' do

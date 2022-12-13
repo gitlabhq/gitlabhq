@@ -186,7 +186,7 @@ describe('Pipelines stage component', () => {
     });
   });
 
-  describe('pipelineActionRequestComplete', () => {
+  describe('job update in dropdown', () => {
     beforeEach(async () => {
       mock.onGet(dropdownPath).reply(200, stageReply);
       mock.onPost(`${stageReply.latest_statuses[0].status.action.path}.json`).reply(200);
@@ -204,24 +204,11 @@ describe('Pipelines stage component', () => {
       await findCiActionBtn().trigger('click');
     };
 
-    it('closes dropdown when job item action is clicked', async () => {
-      const hidden = jest.fn();
-
-      wrapper.vm.$root.$on('bv::dropdown::hide', hidden);
-
-      expect(hidden).toHaveBeenCalledTimes(0);
-
+    it('keeps dropdown open when job item action is clicked', async () => {
       await clickCiAction();
       await waitForPromises();
 
-      expect(hidden).toHaveBeenCalledTimes(1);
-    });
-
-    it('emits `pipelineActionRequestComplete` when job item action is clicked', async () => {
-      await clickCiAction();
-      await waitForPromises();
-
-      expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(1);
+      expect(findDropdown().classes('show')).toBe(true);
     });
   });
 

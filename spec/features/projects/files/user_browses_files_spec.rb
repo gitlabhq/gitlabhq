@@ -271,6 +271,8 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
   context "when browsing a specific ref", :js do
     let(:ref) { project_tree_path(project, "6d39438") }
 
+    ref_selector = '.ref-selector'
+
     before do
       visit(ref)
     end
@@ -281,24 +283,34 @@ RSpec.describe "User browses files", :js, feature_category: :projects do
     end
 
     it "shows files from a repository with apostroph in its name" do
-      first(".js-project-refs-dropdown").click
+      ref_name = 'test'
 
-      page.within(".project-refs-form") do
-        click_link("'test'")
+      find(ref_selector).click
+      wait_for_requests
+
+      page.within(ref_selector) do
+        fill_in 'Search by Git revision', with: ref_name
+        wait_for_requests
+        find('li', text: ref_name, match: :prefer_exact).click
       end
 
-      expect(page).to have_selector(".dropdown-toggle-text", text: "'test'")
+      expect(find(ref_selector)).to have_text(ref_name)
 
-      visit(project_tree_path(project, "'test'"))
+      visit(project_tree_path(project, ref_name))
 
       expect(page).not_to have_selector(".tree-commit .animation-container")
     end
 
     it "shows the code with a leading dot in the directory" do
-      first(".js-project-refs-dropdown").click
+      ref_name = 'fix'
 
-      page.within(".project-refs-form") do
-        click_link("fix")
+      find(ref_selector).click
+      wait_for_requests
+
+      page.within(ref_selector) do
+        fill_in 'Search by Git revision', with: ref_name
+        wait_for_requests
+        find('li', text: ref_name, match: :prefer_exact).click
       end
 
       visit(project_tree_path(project, "fix/.testdir"))

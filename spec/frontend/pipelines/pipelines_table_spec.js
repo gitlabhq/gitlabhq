@@ -17,7 +17,6 @@ import {
   TRACKING_CATEGORIES,
 } from '~/pipelines/constants';
 
-import eventHub from '~/pipelines/event_hub';
 import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
 
 jest.mock('~/pipelines/event_hub');
@@ -133,12 +132,6 @@ describe('Pipelines Table', () => {
         it('stages are not rendered', () => {
           expect(findPipelineMiniGraph().props('stages')).toHaveLength(0);
         });
-      });
-
-      it('when action request is complete, should refresh table', () => {
-        findPipelineMiniGraph().vm.$emit('pipelineActionRequestComplete');
-
-        expect(eventHub.$emit).toHaveBeenCalledWith('refreshPipelinesTable');
       });
     });
 

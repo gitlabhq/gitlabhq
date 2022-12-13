@@ -90,6 +90,22 @@ RSpec.describe "Admin Runners", feature_category: :runner_fleet do
         end
       end
 
+      it 'shows a running status badge that links to jobs tab' do
+        runner = create(:ci_runner, :project, projects: [project])
+        job = create(:ci_build, :running, runner: runner)
+
+        visit admin_runners_path
+
+        within_runner_row(runner.id) do
+          click_on(s_('Runners|Running'))
+        end
+
+        expect(current_url).to match(admin_runner_path(runner))
+
+        expect(find("[data-testid='td-status']")).to have_content "running"
+        expect(find("[data-testid='td-job']")).to have_content "##{job.id}"
+      end
+
       describe 'search' do
         before_all do
           create(:ci_runner, :instance, description: 'runner-foo')

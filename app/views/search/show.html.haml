@@ -9,7 +9,7 @@
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
 
 - if @search_results
-  - if @without_count
+  - if @search_service.without_count?
     - page_description(_("%{scope} results for term '%{term}'") % { scope: @scope, term: @search_term })
   - else
     - page_description(_("%{count} %{scope} for term '%{term}'") % { count: @search_results.formatted_count(@scope), scope: @scope, term: @search_term })

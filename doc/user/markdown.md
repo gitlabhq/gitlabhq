@@ -374,12 +374,12 @@ a^2+b^2=c^2
 
 #### LaTeX-compatible fencing
 
-> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default.
+> Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
 
 [View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#latex-compatible-fencing).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
+On self-managed GitLab, by default this feature is not available. To make it available per group,
 ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `markdown_dollar_math`.
 On GitLab.com, this feature is available.
 The feature is not ready for production use.

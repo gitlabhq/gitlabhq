@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectness do # rubocop: disable RSpec/FilePath
+RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/FilePath
+               :yaml_processor_feature_flag_corectness,
+               feature_category: :continuous_integration do
   describe 'pipeline logger' do
     let_it_be(:project) { create(:project, :repository) }
     let_it_be(:user)    { project.first_owner }
@@ -32,6 +34,9 @@ RSpec.describe Ci::CreatePipelineService, :yaml_processor_feature_flag_corectnes
         'pipeline_size_count' => a_kind_of(Numeric),
         'pipeline_step_gitlab_ci_pipeline_chain_seed_duration_s' => a_kind_of(Numeric),
         'pipeline_seed_build_inclusion_duration_s' => counters,
+        'pipeline_seed_build_errors_duration_s' => counters,
+        'pipeline_seed_build_to_resource_duration_s' => counters,
+        'pipeline_seed_stage_seeds_duration_s' => counters,
         'pipeline_builds_tags_count' => a_kind_of(Numeric),
         'pipeline_builds_distinct_tags_count' => a_kind_of(Numeric)
       }

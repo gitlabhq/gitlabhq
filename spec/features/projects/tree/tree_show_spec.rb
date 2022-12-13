@@ -157,17 +157,22 @@ RSpec.describe 'Projects tree', :js, feature_category: :web_ide do
     end
   end
 
-  context 'ref switcher' do
+  context 'ref switcher', :js do
     it 'switches ref to branch' do
+      ref_selector = '.ref-selector'
       ref_name = 'feature'
       visit project_tree_path(project, 'master')
-      first('.js-project-refs-dropdown').click
 
-      page.within '.project-refs-form' do
-        click_link ref_name
+      find(ref_selector).click
+      wait_for_requests
+
+      page.within(ref_selector) do
+        fill_in 'Search by Git revision', with: ref_name
+        wait_for_requests
+        find('li', text: ref_name, match: :prefer_exact).click
       end
 
-      expect(page).to have_selector '.dropdown-menu-toggle', text: ref_name
+      expect(find(ref_selector)).to have_text(ref_name)
     end
   end
 end

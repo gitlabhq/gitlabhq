@@ -846,6 +846,7 @@ class Group < Namespace
   def has_project_with_service_desk_enabled?
     Gitlab::ServiceDesk.supported? && all_projects.service_desk_enabled.exists?
   end
+  strong_memoize_attr :has_project_with_service_desk_enabled?, :has_project_with_service_desk_enabled
 
   def activity_path
     Gitlab::Routing.url_helpers.activity_group_path(self)

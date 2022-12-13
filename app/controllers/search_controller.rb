@@ -47,6 +47,7 @@ class SearchController < ApplicationController
   def show
     @project = search_service.project
     @group = search_service.group
+    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
 
     return unless search_term_valid?
 
@@ -55,15 +56,11 @@ class SearchController < ApplicationController
     @search_term = params[:search]
     @sort = params[:sort] || default_sort
 
-    @search_service = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
-
     @search_level = @search_service.level
     @search_type = search_type
 
     @global_search_duration_s = Benchmark.realtime do
       @scope = @search_service.scope
-      @without_count = @search_service.without_count?
-      @show_snippets = @search_service.show_snippets?
       @search_results = @search_service.search_results
       @search_objects = @search_service.search_objects
       @search_highlight = @search_service.search_highlight

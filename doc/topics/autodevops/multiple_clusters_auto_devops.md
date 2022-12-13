@@ -25,7 +25,7 @@ To deploy your environments to different Kubernetes clusters:
     1. [Install a GitLab Agent on each cluster](../../user/clusters/agent/index.md).
     1. [Configure each agent to access your project](../../user/clusters/agent/install/index.md#configure-your-agent).
 1. [Install NGINX Ingress Controller](cloud_deployments/auto_devops_with_gke.md#install-ingress) in each cluster. Save the IP address and Kubernetes namespace for the next step.
-1. [Configure the Auto DevOps CI/CD Pipeline variables](customize.md#build-and-deployment)
+1. [Configure the Auto DevOps CI/CD Pipeline variables](cicd_variables.md#build-and-deployment-variables)
     - Set up a `KUBE_CONTEXT` variable [for each environment](../../ci/variables/index.md#limit-the-environment-scope-of-a-cicd-variable). The value must point to the agent of the relevant cluster.
     - Set up a `KUBE_INGRESS_BASE_DOMAIN`. You must [configure the base domain](requirements.md#auto-devops-base-domain) for each environment to point to the Ingress of the relevant cluster.
     - Add a `KUBE_NAMESPACE` variable with a value of the Kubernetes namespace you want your deployments to target. You can scope the variable to multiple environments.
@@ -44,8 +44,8 @@ NOTE:
 | Cluster name | Cluster environment scope | `KUBE_INGRESS_BASE_DOMAIN` value | `KUBE CONTEXT` value               | Variable environment scope | Notes |
 | :------------| :-------------------------| :------------------------------- | :--------------------------------- | :--------------------------|:--|
 | review       | `review/*`                | `review.example.com`             | `path/to/project:review-agent`     | `review/*`                 | A review cluster that runs all [Review Apps](../../ci/review_apps/index.md).|
-| staging      | `staging`                 | `staging.example.com`            | `path/to/project:staging-agent`    | `staging`                  | Optional. A staging cluster that runs the deployments of the staging environments. You must [enable it first](customize.md#deploy-policy-for-staging-and-production-environments). |
-| production   | `production`              | `example.com`                    | `path/to/project:production-agent` | `production`               | A production cluster that runs the production environment deployments. You can use [incremental rollouts](customize.md#incremental-rollout-to-production). |
+| staging      | `staging`                 | `staging.example.com`            | `path/to/project:staging-agent`    | `staging`                  | Optional. A staging cluster that runs the deployments of the staging environments. You must [enable it first](cicd_variables.md#deploy-policy-for-staging-and-production-environments). |
+| production   | `production`              | `example.com`                    | `path/to/project:production-agent` | `production`               | A production cluster that runs the production environment deployments. You can use [incremental rollouts](cicd_variables.md#incremental-rollout-to-production). |
 
 ## Test your configuration
 

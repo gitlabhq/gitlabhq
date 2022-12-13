@@ -166,14 +166,14 @@ describe('RunnerTypeCell', () => {
     expect(findRunnerTags().props('tagList')).toEqual(['shell', 'linux']);
   });
 
-  it('Displays a custom slot', () => {
+  it.each(['runner-name', 'runner-job-status-badge'])('Displays a custom "%s" slot', (slotName) => {
     const slotContent = 'My custom runner name';
 
     createComponent(
       {},
       {
         slots: {
-          'runner-name': slotContent,
+          [slotName]: slotContent,
         },
       },
     );

@@ -56,11 +56,13 @@ module Gitlab
           strong_memoize_attr :included?, :inclusion
 
           def errors
-            # We check rules errors before checking "included?" because rules affects its inclusion status.
-            return rules_errors if rules_errors
-            return unless included?
+            logger.instrument(:pipeline_seed_build_errors) do
+              # We check rules errors before checking "included?" because rules affects its inclusion status.
+              next rules_errors if rules_errors
+              next unless included?
 
-            [needs_errors, variable_expansion_errors].compact.flatten
+              [needs_errors, variable_expansion_errors].compact.flatten
+            end
           end
           strong_memoize_attr :errors
 
@@ -88,17 +90,19 @@ module Gitlab
           end
 
           def to_resource
-            if reuse_build_in_seed_context?
-              # The `options` attribute need to be entirely reassigned because they may
-              # be overridden by evaluated_attributes.
-              # We also don't want to reassign all the `initial_attributes` since those
-              # can affect performance. We only want to assign what's changed.
-              assignable_attributes = initial_attributes.slice(:options)
-                .deep_merge(evaluated_attributes)
-              processable.assign_attributes(assignable_attributes)
-              processable
-            else
-              legacy_initialize_processable
+            logger.instrument(:pipeline_seed_build_to_resource) do
+              if reuse_build_in_seed_context?
+                # The `options` attribute need to be entirely reassigned because they may
+                # be overridden by evaluated_attributes.
+                # We also don't want to reassign all the `initial_attributes` since those
+                # can affect performance. We only want to assign what's changed.
+                assignable_attributes = initial_attributes.slice(:options)
+                  .deep_merge(evaluated_attributes)
+                processable.assign_attributes(assignable_attributes)
+                processable
+              else
+                legacy_initialize_processable
+              end
             end
           end
           strong_memoize_attr :to_resource

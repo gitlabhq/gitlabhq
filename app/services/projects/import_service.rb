@@ -179,6 +179,3 @@ module Projects
 end
 
 Projects::ImportService.prepend_mod_with('Projects::ImportService')
-
-# Measurable should be at the bottom of the ancestor chain, so it will measure execution of EE::Projects::ImportService as well
-Projects::ImportService.prepend(Measurable)

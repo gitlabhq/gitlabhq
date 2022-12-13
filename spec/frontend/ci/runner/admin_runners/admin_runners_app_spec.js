@@ -25,6 +25,7 @@ import RunnerStats from '~/ci/runner/components/stat/runner_stats.vue';
 import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
 import RegistrationDropdown from '~/ci/runner/components/registration/registration_dropdown.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
+import RunnerJobStatusBadge from '~/ci/runner/components/runner_job_status_badge.vue';
 
 import {
   ADMIN_FILTERED_SEARCH_NAMESPACE,
@@ -275,6 +276,15 @@ describe('AdminRunnersApp', () => {
 
       expect(runnerLink.text()).toBe(`#${id} (${shortSha})`);
       expect(runnerLink.attributes('href')).toBe(`http://localhost/admin/runners/${id}`);
+    });
+
+    it('Shows job status and links to jobs', () => {
+      const badge = wrapper
+        .find('tr [data-testid="td-summary"]')
+        .findComponent(RunnerJobStatusBadge);
+
+      expect(badge.props('jobStatus')).toBe(mockRunners[0].jobExecutionStatus);
+      expect(badge.attributes('href')).toBe(`http://localhost/admin/runners/${id}#/jobs`);
     });
 
     it('When runner is paused or unpaused, some data is refetched', async () => {

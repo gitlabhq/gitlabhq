@@ -30,6 +30,8 @@ RSpec.describe 'Alert details', :js, feature_category: :incident_management do
         alert_tabs = find('[data-testid="alertDetailsTabs"]')
 
         expect(alert_tabs).to have_content('Alert details')
+        expect(alert_tabs).to have_content('Metrics')
+        expect(alert_tabs).to have_content('Activity feed')
       end
     end
 

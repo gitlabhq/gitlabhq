@@ -619,7 +619,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/ci/pipeline/logger.rb'
     - 'lib/gitlab/ci/pipeline/metrics.rb'
     - 'lib/gitlab/ci/pipeline/quota/deployments.rb'
-    - 'lib/gitlab/ci/pipeline/seed/pipeline.rb'
     - 'lib/gitlab/ci/pipeline/seed/processable/resource_group.rb'
     - 'lib/gitlab/ci/project_config/auto_devops.rb'
     - 'lib/gitlab/ci/project_config/external_project.rb'

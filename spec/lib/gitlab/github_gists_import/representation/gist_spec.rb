@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubGistsImport::Representation::Gist do
+RSpec.describe Gitlab::GithubGistsImport::Representation::Gist, feature_category: :importer do
   shared_examples 'a Gist' do
     it 'returns an instance of Gist' do
       expect(gist).to be_an_instance_of(described_class)

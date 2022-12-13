@@ -1,5 +1,6 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSearchBoxByType, GlLoadingIcon } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { __ } from '~/locale';
 import { BRANCHES_PER_PAGE } from '../constants';
 import getProjectQuery from '../graphql/queries/get_project.query.graphql';
@@ -7,10 +8,7 @@ import getProjectQuery from '../graphql/queries/get_project.query.graphql';
 export default {
   BRANCHES_PER_PAGE,
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlSearchBoxByType,
-    GlLoadingIcon,
+    GlCollapsibleListbox,
   },
   props: {
     selectedProject: {
@@ -26,7 +24,6 @@ export default {
   },
   data() {
     return {
-      sourceBranchSearchQuery: '',
       initialSourceBranchNamesLoading: false,
       sourceBranchNamesLoading: false,
       sourceBranchNames: [],
@@ -59,6 +56,9 @@ export default {
     onSourceBranchSelect(branchName) {
       this.$emit('change', branchName);
     },
+    onSearch: debounce(function debouncedSearch(branchSearchQuery) {
+      this.onSourceBranchSearchQuery(branchSearchQuery);
+    }, 250),
     onSourceBranchSearchQuery(branchSearchQuery) {
       this.branchSearchQuery = branchSearchQuery;
       this.fetchSourceBranchNames({
@@ -83,7 +83,10 @@ export default {
         });
 
         const { branchNames, rootRef } = data?.project.repository || {};
-        this.sourceBranchNames = branchNames || [];
+        this.sourceBranchNames =
+          branchNames.map((value) => {
+            return { text: value, value };
+          }) || [];
 
         // Use root ref as the default selection
         if (rootRef && !this.hasSelectedSourceBranch) {
@@ -102,33 +105,15 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
-    :text="branchDropdownText"
-    :loading="initialSourceBranchNamesLoading"
-    :disabled="!hasSelectedProject"
+  <gl-collapsible-listbox
     :class="{ 'gl-font-monospace': hasSelectedSourceBranch }"
-  >
-    <template #header>
-      <gl-search-box-by-type
-        :debounce="250"
-        :value="sourceBranchSearchQuery"
-        @input="onSourceBranchSearchQuery"
-      />
-    </template>
-
-    <gl-loading-icon v-show="sourceBranchNamesLoading" />
-    <template v-if="!sourceBranchNamesLoading">
-      <gl-dropdown-item
-        v-for="branchName in sourceBranchNames"
-        v-show="!sourceBranchNamesLoading"
-        :key="branchName"
-        :is-checked="branchName === selectedBranchName"
-        is-check-item
-        class="gl-font-monospace"
-        @click="onSourceBranchSelect(branchName)"
-      >
-        {{ branchName }}
-      </gl-dropdown-item>
-    </template>
-  </gl-dropdown>
+    :disabled="!hasSelectedProject"
+    :items="sourceBranchNames"
+    :loading="initialSourceBranchNamesLoading"
+    :searchable="true"
+    :searching="sourceBranchNamesLoading"
+    :toggle-text="branchDropdownText"
+    @search="onSearch"
+    @select="onSourceBranchSelect"
+  />
 </template>

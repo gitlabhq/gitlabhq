@@ -90,7 +90,9 @@ export default {
     </div>
 
     <div>
-      <runner-job-status-badge :job-status="runner.jobExecutionStatus" />
+      <slot :runner="runner" name="runner-job-status-badge">
+        <runner-job-status-badge :job-status="runner.jobExecutionStatus" />
+      </slot>
 
       <runner-summary-field icon="clock">
         <gl-sprintf :message="$options.i18n.I18N_LAST_CONTACT_LABEL">

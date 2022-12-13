@@ -15,3 +15,11 @@ export const generateMockMessages = (n) =>
   [...Array(n).keys()].map((id) => generateMockMessage(id + 1));
 
 export const MOCK_MESSAGES = generateMockMessages(5).map((id) => generateMockMessage(id));
+
+export const MOCK_TARGET_ACCESS_LEVELS = [
+  ['Guest', 10],
+  ['Reporter', 20],
+  ['Developer', 30],
+  ['Maintainer', 40],
+  ['Owner', 50],
+];

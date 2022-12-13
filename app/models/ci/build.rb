@@ -1135,6 +1135,17 @@ module Ci
       end
     end
 
+    def partition_id_token_prefix
+      partition_id.to_s(16) if Feature.enabled?(:ci_build_partition_id_token_prefix, project)
+    end
+
+    override :format_token
+    def format_token(token)
+      return token if partition_id_token_prefix.nil?
+
+      "#{partition_id_token_prefix}_#{token}"
+    end
+
     protected
 
     def run_status_commit_hooks!

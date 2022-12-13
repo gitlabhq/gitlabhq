@@ -13,11 +13,12 @@ describe('RunnerTypeBadge', () => {
 
   const findBadge = () => wrapper.findComponent(GlBadge);
 
-  const createComponent = (props = {}) => {
+  const createComponent = ({ props, ...options } = {}) => {
     wrapper = shallowMount(RunnerJobStatusBadge, {
       propsData: {
         ...props,
       },
+      ...options,
     });
   };
 
@@ -28,7 +29,7 @@ describe('RunnerTypeBadge', () => {
   `(
     'renders $jobStatus job status with "$text" text and styles',
     ({ jobStatus, classes, text }) => {
-      createComponent({ jobStatus });
+      createComponent({ props: { jobStatus } });
 
       expect(findBadge().props()).toMatchObject({ size: 'sm', variant: 'muted' });
       expect(findBadge().classes().sort()).toEqual(classes.sort());
@@ -37,8 +38,14 @@ describe('RunnerTypeBadge', () => {
   );
 
   it('does not render an unknown status', () => {
-    createComponent({ jobStatus: 'UNKNOWN_STATUS' });
+    createComponent({ props: { jobStatus: 'UNKNOWN_STATUS' } });
 
     expect(wrapper.html()).toBe('');
+  });
+
+  it('adds arbitrary attributes', () => {
+    createComponent({ props: { jobStatus: JOB_STATUS_RUNNING }, attrs: { href: '/url' } });
+
+    expect(findBadge().attributes('href')).toBe('/url');
   });
 });

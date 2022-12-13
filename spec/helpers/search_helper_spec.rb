@@ -1057,7 +1057,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
       with_them do
         it 'data item condition is set correctly' do
-          @show_snippets = global_show_snippets
+          allow(search_service).to receive(:show_snippets?).and_return(global_show_snippets)
           @project = global_project
 
           expect(search_navigation[:snippet_titles][:condition]).to eq(condition)
@@ -1108,9 +1108,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
       allow(self).to receive(:can?).and_return(true)
       allow(self).to receive(:project_search_tabs?).and_return(true)
       allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
-      allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(true)
       allow(self).to receive(:feature_flag_tab_enabled?).and_return(true)
-      @show_snippets = true
+      allow(search_service).to receive(:show_elasticsearch_tabs?).and_return(true)
+      allow(search_service).to receive(:show_snippets?).and_return(true)
       @project = nil
     end
 

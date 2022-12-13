@@ -25,6 +25,7 @@
 - cluster_cost_management
 - code_quality
 - code_review
+- code_search
 - code_suggestions
 - code_testing
 - commerce_integrations
@@ -50,6 +51,7 @@
 - design_system
 - devops_reports
 - disaster_recovery
+- dora_metrics
 - dynamic_application_security_testing
 - editor_extension
 - environment_management

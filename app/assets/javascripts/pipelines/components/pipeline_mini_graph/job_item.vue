@@ -137,9 +137,6 @@ export default {
     hideTooltips() {
       this.$root.$emit(BV_HIDE_TOOLTIP);
     },
-    pipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
-    },
   },
 };
 </script>
@@ -184,7 +181,6 @@ export default {
       :link="status.action.path"
       :action-icon="status.action.icon"
       data-qa-selector="action_button"
-      @pipelineActionRequestComplete="pipelineActionRequestComplete"
     />
   </div>
 </template>

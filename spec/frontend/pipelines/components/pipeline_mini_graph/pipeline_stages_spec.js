@@ -39,15 +39,6 @@ describe('Pipeline Stages', () => {
     expect(findPipelineStages()).toHaveLength(0);
   });
 
-  it('triggers events in "action request complete" in stages', () => {
-    createComponent();
-
-    findPipelineStagesAt(0).vm.$emit('pipelineActionRequestComplete');
-    findPipelineStagesAt(1).vm.$emit('pipelineActionRequestComplete');
-
-    expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(2);
-  });
-
   it('update dropdown is false by default', () => {
     createComponent();
 

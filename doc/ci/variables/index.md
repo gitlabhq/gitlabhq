@@ -775,7 +775,7 @@ You can configure [Auto DevOps](../../topics/autodevops/index.md) to pass CI/CD 
 to a running application.
 
 To make a CI/CD variable available as an environment variable in the running application's container,
-[prefix the variable key](../../topics/autodevops/customize.md#application-secret-variables)
+[prefix the variable key](../../topics/autodevops/cicd_variables.md#configure-application-secret-variables)
 with `K8S_SECRET_`.
 
 CI/CD variables with multi-line values are not supported.

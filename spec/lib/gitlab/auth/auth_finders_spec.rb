@@ -69,7 +69,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
           expect(subject).to eq(user)
           expect(@current_authenticated_job).to eq job
           expect(subject).to be_from_ci_job_token
-          expect(subject.ci_job_token_scope.source_project).to eq(job.project)
+          expect(subject.ci_job_token_scope.current_project).to eq(job.project)
         end
       end
 
@@ -100,7 +100,7 @@ RSpec.describe Gitlab::Auth::AuthFinders do
             expect(subject).to eq(user)
             expect(@current_authenticated_job).to eq job
             expect(subject).to be_from_ci_job_token
-            expect(subject.ci_job_token_scope.source_project).to eq(job.project)
+            expect(subject.ci_job_token_scope.current_project).to eq(job.project)
           end
         else
           it 'returns nil' do

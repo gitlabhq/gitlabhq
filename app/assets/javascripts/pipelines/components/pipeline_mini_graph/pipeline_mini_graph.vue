@@ -56,11 +56,6 @@ export default {
       return Boolean(this.downstreamPipelines.length);
     },
   },
-  methods: {
-    onPipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
-    },
-  },
 };
 </script>
 <template>
@@ -84,7 +79,6 @@ export default {
       :update-dropdown="updateDropdown"
       :stages-class="stagesClass"
       data-testid="pipeline-stages"
-      @pipelineActionRequestComplete="onPipelineActionRequestComplete"
       @miniGraphStageClick="$emit('miniGraphStageClick')"
     />
     <gl-icon

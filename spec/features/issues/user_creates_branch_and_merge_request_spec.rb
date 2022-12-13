@@ -84,7 +84,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
           wait_for_requests
 
-          expect(page).to have_selector('.dropdown-toggle-text ', text: '1-cherry-coloured-funk')
+          expect(page).to have_selector('.ref-selector ', text: '1-cherry-coloured-funk')
           expect(page).to have_current_path project_tree_path(project, '1-cherry-coloured-funk'), ignore_query: true
         end
       end
@@ -109,7 +109,7 @@ RSpec.describe 'User creates branch and merge request on issue page', :js, featu
 
           wait_for_requests
 
-          expect(page).to have_selector('.dropdown-toggle-text ', text: branch_name)
+          expect(page).to have_selector('.ref-selector', text: branch_name)
           expect(page).to have_current_path project_tree_path(project, branch_name), ignore_query: true
         end
       end

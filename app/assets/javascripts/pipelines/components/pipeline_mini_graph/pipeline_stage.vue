@@ -100,13 +100,6 @@ export default {
           });
         });
     },
-    pipelineActionRequestComplete() {
-      // close the dropdown in MR widget
-      this.$refs.dropdown.hide();
-
-      // warn the pipelines table to update
-      this.$emit('pipelineActionRequestComplete');
-    },
     stageAriaLabel(title) {
       return sprintf(__('View Stage: %{title}'), { title });
     },
@@ -158,7 +151,6 @@ export default {
           :dropdown-length="dropdownContent.length"
           :job="job"
           css-class-job-name="mini-pipeline-graph-dropdown-item"
-          @pipelineActionRequestComplete="pipelineActionRequestComplete"
         />
       </li>
       <template v-if="isMergeTrain">

@@ -158,6 +158,9 @@ export default {
           <template #runner-name="{ runner }">
             <slot name="runner-name" :runner="runner" :index="index"></slot>
           </template>
+          <template #runner-job-status-badge="{ runner }">
+            <slot name="runner-job-status-badge" :runner="runner" :index="index"></slot>
+          </template>
         </runner-summary-cell>
       </template>
 

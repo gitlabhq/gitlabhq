@@ -79,15 +79,25 @@ feature_category: :user_management do
     end
 
     context 'when the user is signing in from an unknown ip address' do
+      let(:ip_check_enabled) { true }
+
       before do
+        stub_feature_flags(check_ip_address_for_email_verification: ip_check_enabled)
         allow(AuthenticationEvent)
           .to receive(:initial_login_or_known_ip_address?)
           .and_return(false)
+
         perform_enqueued_jobs { sign_in }
       end
 
       it_behaves_like 'send verification instructions'
       it_behaves_like 'prompt for email verification'
+
+      context 'when the check_ip_address_for_email_verification feature flag is disabled' do
+        let(:ip_check_enabled) { false }
+
+        it_behaves_like 'not verifying with email'
+      end
     end
   end
 

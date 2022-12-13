@@ -124,9 +124,6 @@ export default {
       eventHub.$emit('postAction', this.endpoint);
       this.cancelingPipeline = this.pipelineId;
     },
-    onPipelineActionRequestComplete() {
-      eventHub.$emit('refreshPipelinesTable');
-    },
     trackPipelineMiniGraph() {
       this.track('click_minigraph', { label: TRACKING_CATEGORIES.table });
     },
@@ -179,7 +176,6 @@ export default {
           :stages="item.details.stages"
           :update-dropdown="updateGraphDropdown"
           :upstream-pipeline="item.triggered_by"
-          @pipelineActionRequestComplete="onPipelineActionRequestComplete"
           @miniGraphStageClick="trackPipelineMiniGraph"
         />
       </template>

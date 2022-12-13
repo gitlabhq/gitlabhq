@@ -1,4 +1,4 @@
-import { GlSearchBoxByType, GlCollapsibleListbox, GlButton } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
@@ -13,7 +13,6 @@ describe('AvailableAgentsDropdown', () => {
 
   const i18n = I18N_AVAILABLE_AGENTS_DROPDOWN;
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findSearchInput = () => findDropdown().findComponent(GlSearchBoxByType);
   const findCreateButton = () => wrapper.findComponent(GlButton);
 
   const createWrapper = ({ propsData }) => {
@@ -48,7 +47,7 @@ describe('AvailableAgentsDropdown', () => {
       });
 
       it('renders only the agent searched for when the search item exists', async () => {
-        findSearchInput().vm.$emit('input', searchAgentName);
+        findDropdown().vm.$emit('search', searchAgentName);
         await nextTick();
 
         expect(findDropdown().props('items')).toMatchObject([
@@ -63,7 +62,7 @@ describe('AvailableAgentsDropdown', () => {
           ${'is not rendered'} | ${''}              | ${false}
           ${'is not rendered'} | ${searchAgentName} | ${false}
         `('$condition when search is "$search"', async ({ search, createButtonRendered }) => {
-          findSearchInput().vm.$emit('input', search);
+          findDropdown().vm.$emit('search', search);
           await nextTick();
 
           expect(findCreateButton().exists()).toBe(createButtonRendered);
@@ -87,7 +86,7 @@ describe('AvailableAgentsDropdown', () => {
 
     describe('create new agent configuration', () => {
       beforeEach(async () => {
-        findSearchInput().vm.$emit('input', newAgentName);
+        findDropdown().vm.$emit('search', newAgentName);
         await nextTick();
         findCreateButton().vm.$emit('click');
       });
@@ -103,9 +102,10 @@ describe('AvailableAgentsDropdown', () => {
 
     describe('click enter to register new agent without configuration', () => {
       beforeEach(async () => {
-        findSearchInput().vm.$emit('input', newAgentName);
+        const dropdown = findDropdown();
+        dropdown.vm.$emit('search', newAgentName);
         await nextTick();
-        await findDropdown().trigger('keydown.enter');
+        await dropdown.trigger('keydown.enter');
       });
 
       it('emits agentSelected with the name of the clicked agent', () => {

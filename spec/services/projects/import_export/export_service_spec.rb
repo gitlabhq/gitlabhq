@@ -220,20 +220,5 @@ RSpec.describe Projects::ImportExport::ExportService do
         expect { service.execute }.to raise_error(Gitlab::ImportExport::Error).with_message(expected_message)
       end
     end
-
-    it_behaves_like 'measurable service' do
-      let(:base_log_data) do
-        {
-          class: described_class.name,
-          current_user: user.name,
-          project_full_path: project.full_path,
-          file_path: shared.export_path
-        }
-      end
-
-      after do
-        service.execute(after_export_strategy)
-      end
-    end
   end
 end

@@ -44,6 +44,7 @@ export default {
 <template>
   <gl-badge
     v-if="badge"
+    v-bind="$attrs"
     size="sm"
     class="gl-mr-3 gl-bg-transparent!"
     variant="muted"

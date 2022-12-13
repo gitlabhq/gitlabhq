@@ -86,6 +86,9 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/removals/*.yml'
       run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
+  scripts:
+    "merge_conflicts":
+      runner: bash
 pre-commit:
   parallel: true
   commands:

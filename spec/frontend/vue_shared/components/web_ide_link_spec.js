@@ -442,7 +442,10 @@ describe('Web IDE link component', () => {
           {
             showEditButton: false,
           },
-          { glFeatures: { vscodeWebIde: true }, userCalloutDismisserSlotProps: { dismiss } },
+          {
+            glFeatures: { vscodeWebIde: true },
+            userCalloutDismisserSlotProps: { dismiss },
+          },
         );
       });
       it('does not skip the user_callout_dismisser query', () => {
@@ -514,12 +517,16 @@ describe('Web IDE link component', () => {
     `(
       'when vscode_web_ide=$featureFlag and showEditButton = $showEditButton',
       ({ vscodeWebIde, showEditButton }) => {
+        let dismiss;
+
         beforeEach(() => {
+          dismiss = jest.fn();
+
           createComponent(
             {
               showEditButton,
             },
-            { glFeatures: { vscodeWebIde } },
+            { glFeatures: { vscodeWebIde }, userCalloutDismisserSlotProps: { dismiss } },
           );
         });
 
@@ -533,6 +540,12 @@ describe('Web IDE link component', () => {
 
         it('mounts new web ide callout popover', () => {
           expect(findNewWebIdeCalloutPopover().exists()).toBe(false);
+        });
+
+        it('does not dismiss the callout when action button is clicked', () => {
+          findActionsButton().vm.$emit('actionClicked');
+
+          expect(dismiss).not.toHaveBeenCalled();
         });
       },
     );

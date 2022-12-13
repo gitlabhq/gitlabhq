@@ -29,7 +29,14 @@ module Resolvers
         {
           previous_stage_jobs_or_needs: [:needs, :pipeline],
           artifacts: [:job_artifacts],
-          pipeline: [:user]
+          pipeline: [:user],
+          detailed_status: [
+            :metadata,
+            { project: [:route, { namespace: :route }] }
+          ],
+          commit_path: [:pipeline, { project: [:route, { namespace: [:route] }] }],
+          short_sha: [:pipeline],
+          tags: [:tags]
         }
       end
     end

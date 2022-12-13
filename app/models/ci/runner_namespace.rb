@@ -15,6 +15,8 @@ module Ci
     validates :runner_id, uniqueness: { scope: :namespace_id }
     validate :group_runner_type
 
+    scope :for_runner, ->(runner_id) { where(runner_id: runner_id) }
+
     def recent_runners
       ::Ci::Runner.belonging_to_group(namespace_id).recent
     end

@@ -45,9 +45,9 @@ class SearchService
   end
 
   def show_snippets?
-    return @show_snippets if defined?(@show_snippets)
-
-    @show_snippets = params[:snippets] == 'true'
+    strong_memoize(:show_snippets) do
+      params[:snippets] == 'true'
+    end
   end
 
   delegate :scope, to: :search_service

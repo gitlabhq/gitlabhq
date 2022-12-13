@@ -369,10 +369,10 @@ export default {
           <alert-details-table :alert="alert" :loading="loading" :statuses="statuses" />
         </gl-tab>
 
-        <metric-images-tab
-          :data-testid="$options.tabsConfig[1].id"
-          :title="$options.tabsConfig[1].title"
-        />
+        <gl-tab :title="$options.tabsConfig[1].title">
+          <metric-images-tab :data-testid="$options.tabsConfig[1].id" />
+        </gl-tab>
+
         <gl-tab :data-testid="$options.tabsConfig[2].id" :title="$options.tabsConfig[2].title">
           <div v-if="alert.notes.nodes.length > 0" class="issuable-discussion">
             <ul class="notes main-notes-list timeline">

@@ -28,11 +28,6 @@ export default {
       default: false,
     },
   },
-  methods: {
-    onPipelineActionRequestComplete() {
-      this.$emit('pipelineActionRequestComplete');
-    },
-  },
 };
 </script>
 <template>
@@ -47,7 +42,6 @@ export default {
         :stage="stage"
         :update-dropdown="updateDropdown"
         :is-merge-train="isMergeTrain"
-        @pipelineActionRequestComplete="onPipelineActionRequestComplete"
         @miniGraphStageClick="$emit('miniGraphStageClick')"
       />
     </div>

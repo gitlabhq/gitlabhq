@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
@@ -15,6 +16,8 @@ function factory() {
     },
   });
 }
+
+const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
 
 describe('Merge requests target project dropdown component', () => {
   beforeEach(() => {
@@ -67,7 +70,7 @@ describe('Merge requests target project dropdown component', () => {
 
     await waitForPromises();
 
-    wrapper.find('[data-testid="listbox-search-input"]').setValue('test');
+    findDropdown().vm.$emit('search', 'test');
 
     jest.advanceTimersByTime(500);
     await waitForPromises();

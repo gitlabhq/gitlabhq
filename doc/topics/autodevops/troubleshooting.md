@@ -13,7 +13,7 @@ Auto DevOps, and any available workarounds.
 
 Set the CI/CD variable `TRACE` to any value to make Helm commands produce verbose output. You can use this output to diagnose Auto DevOps deployment problems.
 
-You can resolve some problems with Auto DevOps deployment by changing advanced Auto DevOps configuration variables. Read more about [customizing Auto DevOps CI/CD variables](customize.md#cicd-variables).
+You can resolve some problems with Auto DevOps deployment by changing advanced Auto DevOps configuration variables. Read more about [customizing Auto DevOps CI/CD variables](cicd_variables.md).
 
 ## Unable to select a buildpack
 

@@ -477,7 +477,7 @@ module SearchHelper
       notes: {          sort: 8, label: _("Comments"),                 condition: project_search_tabs?(:notes) || search_service.show_elasticsearch_tabs? },
       milestones: {     sort: 9, label: _("Milestones"),               condition: project_search_tabs?(:milestones) || @project.nil? },
       users: {          sort: 10, label: _("Users"),                   condition: show_user_search_tab? },
-      snippet_titles: { sort: 11, label: _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }, condition: @show_snippets.present? && @project.nil? }
+      snippet_titles: { sort: 11, label: _("Titles and Descriptions"), search: { snippets: true, group_id: nil, project_id: nil }, condition: search_service.show_snippets? && @project.nil? }
     }
   end
 

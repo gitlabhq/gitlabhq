@@ -195,7 +195,7 @@ If a default Storage Class doesn't already exist and is desired, follow Amazon's
 to create one.
 
 Alternatively, disable PostgreSQL by setting the project variable
-[`POSTGRES_ENABLED`](../../../topics/autodevops/customize.md#cicd-variables) to `false`.
+[`POSTGRES_ENABLED`](../../../topics/autodevops/cicd_variables.md#cicd-variables) to `false`.
 
 ## Deploy the app to EKS
 

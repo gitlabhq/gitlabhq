@@ -9,10 +9,10 @@ module Gitlab
       attr_reader :cache_key
 
       # The base cache key to use for storing the last page number.
-      CACHE_KEY = 'github-importer/page-counter/%{project}/%{collection}'
+      CACHE_KEY = '%{import_type}/page-counter/%{object}/%{collection}'
 
-      def initialize(project, collection)
-        @cache_key = CACHE_KEY % { project: project.id, collection: collection }
+      def initialize(object, collection, import_type = 'github-importer')
+        @cache_key = CACHE_KEY % { import_type: import_type, object: object.id, collection: collection }
       end
 
       # Sets the page number to the given value.

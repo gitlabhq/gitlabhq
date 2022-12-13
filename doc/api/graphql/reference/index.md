@@ -4310,6 +4310,25 @@ Input type: `PipelineScheduleDeleteInput`
 | <a id="mutationpipelinescheduledeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationpipelinescheduledeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 
+### `Mutation.pipelineSchedulePlay`
+
+Input type: `PipelineSchedulePlayInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpipelinescheduleplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpipelinescheduleplayid"></a>`id` | [`CiPipelineScheduleID!`](#cipipelinescheduleid) | ID of the pipeline schedule to mutate. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpipelinescheduleplayclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpipelinescheduleplayerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationpipelinescheduleplaypipelineschedule"></a>`pipelineSchedule` | [`PipelineSchedule`](#pipelineschedule) | Pipeline schedule after mutation. |
+
 ### `Mutation.pipelineScheduleTakeOwnership`
 
 Input type: `PipelineScheduleTakeOwnershipInput`
@@ -11093,7 +11112,7 @@ CI/CD variables for a project.
 | <a id="cirunnerdescription"></a>`description` | [`String`](#string) | Description of the runner. |
 | <a id="cirunnereditadminurl"></a>`editAdminUrl` | [`String`](#string) | Admin form URL of the runner. Only available for administrators. |
 | <a id="cirunnerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
-| <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
+| <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Types::GroupConnection. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
 | <a id="cirunneripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner. |
 | <a id="cirunnerjobcount"></a>`jobCount` | [`Int`](#int) | Number of jobs processed by the runner (limited to 1000, plus one to indicate that more items exist). |

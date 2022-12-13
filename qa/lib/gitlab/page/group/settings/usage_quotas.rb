@@ -35,7 +35,7 @@ module Gitlab
           div :purchased_usage_total_free # Different UI for free namespace
           span :purchased_usage_total
           div :storage_purchase_successful_alert, text: /You have successfully purchased a storage/
-          h2 :storage_available_alert, text: /purchased storage is available/
+          div :additional_storage_alert, text: /purchase additional storage/
 
           def plan_ci_limits
             plan_ci_minutes[/(\d+){2}/]
@@ -48,8 +48,8 @@ module Gitlab
           # Waits and Checks if storage available alert presents on the page
           #
           # @return [Boolean] True if the alert presents, false if not after 5 second wait
-          def purchased_storage_available?
-            storage_available_alert_element.wait_until(timeout: 5, &:present?)
+          def additional_storage_available?
+            additional_storage_alert_element.wait_until(timeout: 5, &:present?)
           rescue Watir::Wait::TimeoutError
             false
           end
@@ -67,7 +67,7 @@ module Gitlab
           #
           # @return [Float] Total purchased storage value in GiB
           def total_purchased_storage(free_name_space = true)
-            storage_available_alert_element.wait_until(&:present?)
+            additional_storage_alert_element.wait_until(&:present?)
 
             if free_name_space
               purchased_usage_total_free.split('/').last.match(/\d+\.\d+/)[0].to_f

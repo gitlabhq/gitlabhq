@@ -13,20 +13,22 @@ module Resolvers
         resolve_owner
       end
 
-      def preloads
-        {
-          full_path: [:route]
-        }
-      end
-
       private
 
-      def filtered_preloads
-        selection = lookahead
+      def node_selection(selection = lookahead)
+        # There are no nodes or edges selections in RunnerOwnerProjectResolver, but rather a project directly
+        selection
+      end
 
-        preloads.each.flat_map do |name, requirements|
-          selection&.selects?(name) ? requirements : []
-        end
+      def unconditional_includes
+        [:project_feature]
+      end
+
+      def preloads
+        {
+          full_path: [:route, { namespace: [:route] }],
+          web_url: [:route, { namespace: [:route] }]
+        }
       end
 
       def resolve_owner
@@ -48,7 +50,7 @@ module Resolvers
               .transform_values { |runner_projects| runner_projects.first.project_id }
           project_ids = owner_project_id_by_runner_id.values.uniq
 
-          projects = Project.where(id: project_ids)
+          projects = apply_lookahead(Project.id_in(project_ids))
           Preloaders::ProjectPolicyPreloader.new(projects, current_user).execute
           projects_by_id = projects.index_by(&:id)
 

@@ -2,58 +2,72 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobToken::Scope do
-  let_it_be(:project) { create(:project, ci_outbound_job_token_scope_enabled: true).tap(&:save!) }
+RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration do
+  let_it_be(:source_project) { create(:project, ci_outbound_job_token_scope_enabled: true) }
 
-  let(:scope) { described_class.new(project) }
+  let(:scope) { described_class.new(source_project) }
 
   describe '#all_projects' do
     subject(:all_projects) { scope.all_projects }
 
     context 'when no projects are added to the scope' do
       it 'returns the project defining the scope' do
-        expect(all_projects).to contain_exactly(project)
+        expect(all_projects).to contain_exactly(source_project)
       end
     end
 
-    context 'when other projects are added to the scope' do
-      let_it_be(:scoped_project) { create(:project) }
-      let_it_be(:unscoped_project) { create(:project) }
-
-      let!(:link_in_scope) { create(:ci_job_token_project_scope_link, source_project: project, target_project: scoped_project) }
-      let!(:link_out_of_scope) { create(:ci_job_token_project_scope_link, target_project: unscoped_project) }
+    context 'when projects are added to the scope' do
+      include_context 'with scoped projects'
 
       it 'returns all projects that can be accessed from a given scope' do
-        expect(subject).to contain_exactly(project, scoped_project)
+        expect(subject).to contain_exactly(source_project, outbound_scoped_project)
       end
     end
   end
 
-  describe '#includes?' do
-    subject { scope.includes?(target_project) }
+  describe '#allows?' do
+    subject { scope.allows?(includes_project) }
 
-    context 'when param is the project defining the scope' do
-      let(:target_project) { project }
+    context 'without scoped projects' do
+      context 'when self referential' do
+        let(:includes_project) { source_project }
 
-      it { is_expected.to be_truthy }
+        it { is_expected.to be_truthy }
+      end
     end
 
-    context 'when param is a project in scope' do
-      let(:target_link) { create(:ci_job_token_project_scope_link, source_project: project) }
-      let(:target_project) { target_link.target_project }
+    context 'with scoped projects' do
+      include_context 'with scoped projects'
 
-      it { is_expected.to be_truthy }
-    end
+      context 'when project is in outbound scope' do
+        let(:includes_project) { outbound_scoped_project }
 
-    context 'when param is a project in another scope' do
-      let(:scope_link) { create(:ci_job_token_project_scope_link) }
-      let(:target_project) { scope_link.target_project }
+        it { is_expected.to be_truthy }
+      end
 
-      it { is_expected.to be_falsey }
+      context 'when project is in inbound scope' do
+        let(:includes_project) { inbound_scoped_project }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when project is linked to a different project' do
+        let(:includes_project) { unscoped_project1 }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when project is unlinked to a project' do
+        let(:includes_project) { unscoped_project2 }
+
+        it { is_expected.to be_falsey }
+      end
 
       context 'when project scope setting is disabled' do
+        let(:includes_project) { unscoped_project1 }
+
         before do
-          project.ci_outbound_job_token_scope_enabled = false
+          source_project.ci_outbound_job_token_scope_enabled = false
         end
 
         it 'considers any project to be part of the scope' do

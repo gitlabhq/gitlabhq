@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe SearchServicePresenter do
+RSpec.describe SearchServicePresenter, feature_category: :global_search do
   let(:user) { create(:user) }
   let(:search) { '' }
   let(:search_service) { SearchService.new(user, search: search, scope: scope) }
@@ -50,5 +50,11 @@ RSpec.describe SearchServicePresenter do
     with_them do
       it { expect(presenter.show_results_status?).to eq(result) }
     end
+  end
+
+  describe '#advanced_search_enabled?' do
+    let(:scope) { nil }
+
+    it { expect(presenter.advanced_search_enabled?).to eq(false) }
   end
 end

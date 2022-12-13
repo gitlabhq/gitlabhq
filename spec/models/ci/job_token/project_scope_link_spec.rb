@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobToken::ProjectScopeLink do
+RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 
@@ -50,8 +50,8 @@ RSpec.describe Ci::JobToken::ProjectScopeLink do
     end
   end
 
-  describe '.from_project' do
-    subject { described_class.from_project(project) }
+  describe '.with_source' do
+    subject { described_class.with_source(project) }
 
     let!(:source_link) { create(:ci_job_token_project_scope_link, source_project: project) }
     let!(:target_link) { create(:ci_job_token_project_scope_link, target_project: project) }
@@ -61,8 +61,8 @@ RSpec.describe Ci::JobToken::ProjectScopeLink do
     end
   end
 
-  describe '.to_project' do
-    subject { described_class.to_project(project) }
+  describe '.with_target' do
+    subject { described_class.with_target(project) }
 
     let!(:source_link) { create(:ci_job_token_project_scope_link, source_project: project) }
     let!(:target_link) { create(:ci_job_token_project_scope_link, target_project: project) }

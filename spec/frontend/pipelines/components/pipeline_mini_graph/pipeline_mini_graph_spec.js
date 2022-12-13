@@ -63,15 +63,6 @@ describe('Pipeline Mini Graph', () => {
       expect(findUpstreamArrowIcon().exists()).toBe(false);
       expect(findDownstreamArrowIcon().exists()).toBe(false);
     });
-
-    it('triggers events in "action request complete"', () => {
-      createComponent();
-
-      findPipelineMiniGraph(0).vm.$emit('pipelineActionRequestComplete');
-      findPipelineMiniGraph(1).vm.$emit('pipelineActionRequestComplete');
-
-      expect(wrapper.emitted('pipelineActionRequestComplete')).toHaveLength(2);
-    });
   });
 
   describe('rendered state with upstream pipeline', () => {

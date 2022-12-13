@@ -38,8 +38,10 @@ module Types
       field :executor_name, GraphQL::Types::String, null: true,
                                                     description: 'Executor last advertised by the runner.',
                                                     method: :executor_name
-      field :groups, 'Types::GroupConnection', null: true,
-                                               description: 'Groups the runner is associated with. For group runners only.'
+      field :groups, 'Types::GroupConnection',
+            null: true,
+            resolver: ::Resolvers::Ci::RunnerGroupsResolver,
+            description: 'Groups the runner is associated with. For group runners only.'
       field :id, ::Types::GlobalIDType[::Ci::Runner], null: false,
                                                       description: 'ID of the runner.'
       field :ip_address, GraphQL::Types::String, null: true,
@@ -116,27 +118,19 @@ module Types
         Gitlab::Routing.url_helpers.edit_admin_runner_url(runner) if can_admin_runners?
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def project_count
         BatchLoader::GraphQL.for(runner.id).batch(key: :runner_project_count) do |ids, loader, args|
           counts = ::Ci::Runner.project_type
             .select(:id, 'COUNT(ci_runner_projects.id) as count')
             .left_outer_joins(:runner_projects)
             .id_in(ids)
-            .group(:id)
+            .group(:id) # rubocop: disable CodeReuse/ActiveRecord
             .index_by(&:id)
 
           ids.each do |id|
             loader.call(id, counts[id]&.count)
           end
         end
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
-
-      def groups
-        return unless runner.group_type?
-
-        batched_owners(::Ci::RunnerNamespace, Group, :runner_groups, :namespace_id)
       end
 
       def job_execution_status
@@ -154,29 +148,6 @@ module Types
       def can_admin_runners?
         context[:current_user]&.can_admin_all_resources?
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def batched_owners(runner_assoc_type, assoc_type, key, column_name)
-        BatchLoader::GraphQL.for(runner.id).batch(key: key) do |runner_ids, loader|
-          plucked_runner_and_owner_ids = runner_assoc_type
-            .select(:runner_id, column_name)
-            .where(runner_id: runner_ids)
-            .pluck(:runner_id, column_name)
-          # In plucked_runner_and_owner_ids, first() represents the runner ID, and second() the owner ID,
-          # so let's group the owner IDs by runner ID
-          runner_owner_ids_by_runner_id = plucked_runner_and_owner_ids
-            .group_by(&:first)
-            .transform_values { |runner_and_owner_id| runner_and_owner_id.map(&:second) }
-
-          owner_ids = runner_owner_ids_by_runner_id.values.flatten.uniq
-          owners = assoc_type.where(id: owner_ids).index_by(&:id)
-
-          runner_ids.each do |runner_id|
-            loader.call(runner_id, runner_owner_ids_by_runner_id[runner_id]&.map { |owner_id| owners[owner_id] } || [])
-          end
-        end
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

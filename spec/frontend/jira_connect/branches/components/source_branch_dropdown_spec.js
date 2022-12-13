@@ -1,4 +1,4 @@
-import { GlDropdown, GlDropdownItem, GlLoadingIcon, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
@@ -29,19 +29,13 @@ const mockQueryLoading = jest.fn().mockReturnValue(new Promise(() => {}));
 describe('SourceBranchDropdown', () => {
   let wrapper;
 
-  const findDropdown = () => wrapper.findComponent(GlDropdown);
-  const findAllDropdownItems = () => wrapper.findAllComponents(GlDropdownItem);
-  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findDropdownItemByText = (text) =>
-    findAllDropdownItems().wrappers.find((item) => item.text() === text);
+  const findListbox = () => wrapper.findComponent(GlCollapsibleListbox);
   const findSearchBox = () => wrapper.findComponent(GlSearchBoxByType);
 
-  const assertDropdownItems = () => {
-    const dropdownItems = findAllDropdownItems();
-    expect(dropdownItems.wrappers).toHaveLength(mockProject.repository.branchNames.length);
-    expect(dropdownItems.wrappers.map((item) => item.text())).toEqual(
-      mockProject.repository.branchNames,
-    );
+  const assertListboxItems = () => {
+    const listboxItems = findListbox().props('items');
+    expect(listboxItems).toHaveLength(mockProject.repository.branchNames.length);
+    expect(listboxItems.map((item) => item.text)).toEqual(mockProject.repository.branchNames);
   };
 
   function createMockApolloProvider({ getProjectQueryLoading = false } = {}) {
@@ -70,8 +64,8 @@ describe('SourceBranchDropdown', () => {
       createComponent();
     });
 
-    it('sets dropdown `disabled` prop to `true`', () => {
-      expect(findDropdown().props('disabled')).toBe(true);
+    it('sets listbox `disabled` prop to `true`', () => {
+      expect(findListbox().props('disabled')).toBe(true);
     });
 
     describe('when `selectedProject` becomes specified', () => {
@@ -83,29 +77,30 @@ describe('SourceBranchDropdown', () => {
         await waitForPromises();
       });
 
-      it('sets dropdown props correctly', () => {
-        expect(findDropdown().props()).toMatchObject({
-          loading: false,
+      it('sets listbox props correctly', () => {
+        expect(findListbox().props()).toMatchObject({
           disabled: false,
-          text: 'Select a branch',
+          loading: false,
+          searchable: true,
+          searching: false,
+          toggleText: 'Select a branch',
         });
       });
 
-      it('renders available source branches as dropdown items', () => {
-        assertDropdownItems();
+      it('renders available source branches as listbox items', () => {
+        assertListboxItems();
       });
     });
   });
 
   describe('when `selectedProject` prop is specified', () => {
     describe('when branches are loading', () => {
-      it('renders loading icon in dropdown', () => {
+      it('sets loading prop to true', () => {
         createComponent({
           mockApollo: createMockApolloProvider({ getProjectQueryLoading: true }),
           props: { selectedProject: mockSelectedProject },
         });
-
-        expect(findLoadingIcon().isVisible()).toBe(true);
+        expect(findListbox().props('loading')).toEqual(true);
       });
     });
 
@@ -134,32 +129,32 @@ describe('SourceBranchDropdown', () => {
           await waitForPromises();
         });
 
-        it('sets dropdown props correctly', () => {
-          expect(findDropdown().props()).toMatchObject({
-            loading: false,
+        it('sets listbox props correctly', () => {
+          expect(findListbox().props()).toMatchObject({
             disabled: false,
-            text: 'Select a branch',
+            loading: false,
+            searchable: true,
+            searching: false,
+            toggleText: 'Select a branch',
           });
         });
 
-        it('omits monospace styling from dropdown', () => {
-          expect(findDropdown().classes()).not.toContain('gl-font-monospace');
+        it('omits monospace styling from listbox', () => {
+          expect(findListbox().classes()).not.toContain('gl-font-monospace');
         });
 
-        it('renders available source branches as dropdown items', () => {
-          assertDropdownItems();
+        it('renders available source branches as listbox items', () => {
+          assertListboxItems();
         });
 
         it("emits `change` event with the repository's `rootRef` by default", () => {
           expect(wrapper.emitted('change')[0]).toEqual([mockProject.repository.rootRef]);
         });
 
-        describe('when selecting a dropdown item', () => {
+        describe('when selecting a listbox item', () => {
           it('emits `change` event with the selected branch name', async () => {
             const mockBranchName = mockProject.repository.branchNames[1];
-            const itemToSelect = findDropdownItemByText(mockBranchName);
-            await itemToSelect.vm.$emit('click');
-
+            findListbox().vm.$emit('select', mockBranchName);
             expect(wrapper.emitted('change')[1]).toEqual([mockBranchName]);
           });
         });
@@ -173,16 +168,12 @@ describe('SourceBranchDropdown', () => {
             });
           });
 
-          it('sets `isChecked` prop of the corresponding dropdown item to `true`', () => {
-            expect(findDropdownItemByText(mockBranchName).props('isChecked')).toBe(true);
+          it('sets listbox text to `selectedBranchName` value', () => {
+            expect(findListbox().props('toggleText')).toBe(mockBranchName);
           });
 
-          it('sets dropdown text to `selectedBranchName` value', () => {
-            expect(findDropdown().props('text')).toBe(mockBranchName);
-          });
-
-          it('adds monospace styling to dropdown', () => {
-            expect(findDropdown().classes()).toContain('gl-font-monospace');
+          it('adds monospace styling to listbox', () => {
+            expect(findListbox().classes()).toContain('gl-font-monospace');
           });
         });
       });

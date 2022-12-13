@@ -1768,6 +1768,9 @@ msgstr ""
 msgid "A sign-in to your account has been made from the following IP address: %{ip}"
 msgstr ""
 
+msgid "A template for starting a new TYPO3 project"
+msgstr ""
+
 msgid "A title is required"
 msgstr ""
 
@@ -7224,7 +7227,91 @@ msgstr ""
 msgid "Broadcast Messages"
 msgstr ""
 
+msgid "BroadcastMessages|Add broadcast message"
+msgstr ""
+
+msgid "BroadcastMessages|Allow users to dismiss the broadcast message"
+msgstr ""
+
+msgid "BroadcastMessages|Banner"
+msgstr ""
+
+msgid "BroadcastMessages|Blue"
+msgstr ""
+
+msgid "BroadcastMessages|Dark"
+msgstr ""
+
+msgid "BroadcastMessages|Dismissable"
+msgstr ""
+
+msgid "BroadcastMessages|Ends at"
+msgstr ""
+
+msgid "BroadcastMessages|Green"
+msgstr ""
+
+msgid "BroadcastMessages|Indigo"
+msgstr ""
+
+msgid "BroadcastMessages|Light"
+msgstr ""
+
+msgid "BroadcastMessages|Light Blue"
+msgstr ""
+
+msgid "BroadcastMessages|Light Green"
+msgstr ""
+
+msgid "BroadcastMessages|Light Indigo"
+msgstr ""
+
+msgid "BroadcastMessages|Light Red"
+msgstr ""
+
+msgid "BroadcastMessages|Message"
+msgstr ""
+
+msgid "BroadcastMessages|Notification"
+msgstr ""
+
+msgid "BroadcastMessages|Paths can contain wildcards, like */welcome"
+msgstr ""
+
+msgid "BroadcastMessages|Red"
+msgstr ""
+
+msgid "BroadcastMessages|Starts at"
+msgstr ""
+
+msgid "BroadcastMessages|Target Path"
+msgstr ""
+
+msgid "BroadcastMessages|Target roles"
+msgstr ""
+
+msgid "BroadcastMessages|The broadcast message displays only to users in projects and groups who have these roles."
+msgstr ""
+
+msgid "BroadcastMessages|Theme"
+msgstr ""
+
+msgid "BroadcastMessages|There was an error adding broadcast message."
+msgstr ""
+
+msgid "BroadcastMessages|There was an error updating broadcast message."
+msgstr ""
+
 msgid "BroadcastMessages|There was an issue deleting this message, please try again later."
+msgstr ""
+
+msgid "BroadcastMessages|Type"
+msgstr ""
+
+msgid "BroadcastMessages|Update broadcast message"
+msgstr ""
+
+msgid "BroadcastMessages|Your message here"
 msgstr ""
 
 msgid "Browse Directory"
@@ -32884,6 +32971,9 @@ msgstr ""
 msgid "ProjectTemplates|Spring"
 msgstr ""
 
+msgid "ProjectTemplates|TYPO3 Distribution"
+msgstr ""
+
 msgid "ProjectTemplates|Tencent Serverless Framework/NextjsSSR"
 msgstr ""
 
@@ -37247,9 +37337,6 @@ msgstr ""
 msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
 msgstr ""
 
-msgid "SecurityReports|At GitLab, we're all about iteration and feedback. That's why we are reaching out to customers like you to help guide what we work on this year for Vulnerability Management. We have a lot of exciting ideas and ask that you assist us by taking a short survey %{boldStart}no longer than 10 minutes%{boldEnd} to evaluate a few of our potential features."
-msgstr ""
-
 msgid "SecurityReports|Change status"
 msgstr ""
 
@@ -37469,9 +37556,6 @@ msgstr ""
 msgid "SecurityReports|Submit vulnerability"
 msgstr ""
 
-msgid "SecurityReports|Take survey"
-msgstr ""
-
 msgid "SecurityReports|The Vulnerability Report shows results of successful scans on your project's default branch, manually added vulnerability records, and vulnerabilities found from scanning operational environments. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
@@ -37529,9 +37613,6 @@ msgstr ""
 msgid "SecurityReports|Upgrade to manage vulnerabilities"
 msgstr ""
 
-msgid "SecurityReports|Vulnerability Management feature survey"
-msgstr ""
-
 msgid "SecurityReports|Vulnerability Report"
 msgstr ""
 
@@ -37548,9 +37629,6 @@ msgid "SecurityReports|You do not have sufficient permissions to access this rep
 msgstr ""
 
 msgid "SecurityReports|You must sign in as an authorized user to see this report"
-msgstr ""
-
-msgid "SecurityReports|Your feedback is important to us! We will ask again in a week."
 msgstr ""
 
 msgid "SecurityReports|scanned resources"
@@ -43561,22 +43639,10 @@ msgstr ""
 msgid "Trials|Day %{daysUsed}/%{duration}"
 msgstr ""
 
-msgid "Trials|Go back to GitLab"
-msgstr ""
-
-msgid "Trials|Skip Trial"
-msgstr ""
-
 msgid "Trials|Upgrade %{groupName} to %{planName}"
 msgstr ""
 
-msgid "Trials|You can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
-msgstr ""
-
 msgid "Trials|You can apply your trial to a new group or an existing group."
-msgstr ""
-
-msgid "Trials|You won't get a free trial right now but you can always resume this process by selecting your avatar and choosing 'Start an Ultimate trial'"
 msgstr ""
 
 msgid "Trials|You've got %{daysRemaining} day remaining on GitLab %{planName}!"

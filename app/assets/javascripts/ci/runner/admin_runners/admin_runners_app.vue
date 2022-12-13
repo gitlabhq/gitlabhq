@@ -23,6 +23,7 @@ import RunnerStats from '../components/stat/runner_stats.vue';
 import RunnerPagination from '../components/runner_pagination.vue';
 import RunnerTypeTabs from '../components/runner_type_tabs.vue';
 import RunnerActionsCell from '../components/cells/runner_actions_cell.vue';
+import RunnerJobStatusBadge from '../components/runner_job_status_badge.vue';
 
 import { pausedTokenConfig } from '../components/search_tokens/paused_token_config';
 import { statusTokenConfig } from '../components/search_tokens/status_token_config';
@@ -48,6 +49,7 @@ export default {
     RunnerPagination,
     RunnerTypeTabs,
     RunnerActionsCell,
+    RunnerJobStatusBadge,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['emptyStateSvgPath', 'emptyStateFilteredSvgPath'],
@@ -137,6 +139,12 @@ export default {
     this.reportToSentry(error);
   },
   methods: {
+    jobsUrl(runner) {
+      const url = new URL(runner.adminUrl);
+      url.hash = '#/jobs';
+
+      return url.href;
+    },
     onToggledPaused() {
       // When a runner becomes Paused, the tab count can
       // become stale, refetch outdated counts.
@@ -210,6 +218,12 @@ export default {
           <gl-link :href="runner.adminUrl">
             <runner-name :runner="runner" />
           </gl-link>
+        </template>
+        <template #runner-job-status-badge="{ runner }">
+          <runner-job-status-badge
+            :href="jobsUrl(runner)"
+            :job-status="runner.jobExecutionStatus"
+          />
         </template>
         <template #runner-actions-cell="{ runner }">
           <runner-actions-cell

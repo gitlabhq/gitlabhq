@@ -102,7 +102,7 @@ it's declared under the `reports:sast` key in the job definition, not because of
 
 ### Policies
 
-Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/customize.md#disable-jobs),
+Certain GitLab workflows, such as [AutoDevOps](../../topics/autodevops/cicd_variables.md#job-disabling-variables),
 define CI/CD variables to indicate that given scans should be disabled. You can check for this by looking
 for variables such as:
 

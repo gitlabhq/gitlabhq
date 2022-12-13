@@ -922,27 +922,6 @@ RSpec.describe Projects::CreateService, '#execute' do
     end
   end
 
-  it_behaves_like 'measurable service' do
-    before do
-      opts.merge!(
-        current_user: user,
-        path: 'foo'
-      )
-    end
-
-    let(:base_log_data) do
-      {
-        class: Projects::CreateService.name,
-        current_user: user.name,
-        project_full_path: "#{user.namespace.full_path}/#{opts[:path]}"
-      }
-    end
-
-    after do
-      create_project(user, opts)
-    end
-  end
-
   context 'with specialized project_authorization workers' do
     let_it_be(:other_user) { create(:user) }
     let_it_be(:group) { create(:group) }

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe Ci::AuthJobFinder do
+RSpec.describe Ci::AuthJobFinder, feature_category: :continuous_integration do
   let_it_be(:user, reload: true) { create(:user) }
   let_it_be(:job, reload: true) { create(:ci_build, status: :running, user: user) }
 
@@ -68,7 +68,7 @@ RSpec.describe Ci::AuthJobFinder do
       it 'sets ci_job_token_scope on the job user', :aggregate_failures do
         expect(subject).to eq(job)
         expect(subject.user).to be_from_ci_job_token
-        expect(subject.user.ci_job_token_scope.source_project).to eq(job.project)
+        expect(subject.user.ci_job_token_scope.current_project).to eq(job.project)
       end
     end
   end

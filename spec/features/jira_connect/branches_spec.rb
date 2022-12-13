@@ -49,16 +49,11 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
     expect(page).to have_button('Create branch', disabled: false)
 
     click_on 'master'
+    fill_in 'Search', with: source_branch
+    expect(page).not_to have_text(source_branch)
 
-    within_dropdown do
-      fill_in 'Search', with: source_branch
-
-      expect(page).not_to have_text(source_branch)
-
-      fill_in 'Search', with: 'master'
-
-      expect(page).to have_text('master')
-    end
+    fill_in 'Search', with: 'master'
+    expect(page).to have_text('master')
 
     # Switch to project2
 
@@ -70,10 +65,9 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
     end
 
     click_on 'master'
-
-    within_dropdown do
-      fill_in 'Search', with: source_branch
-      click_on source_branch
+    fill_in 'Search', with: source_branch
+    within '[role="listbox"]' do
+      find('li', text: source_branch).click
     end
 
     fill_in 'Branch name', with: new_branch

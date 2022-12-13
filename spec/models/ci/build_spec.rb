@@ -5647,4 +5647,33 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
       expect(ci_build.job_variables.second.partition_id).to eq(ci_testing_partition_id)
     end
   end
+
+  describe 'assigning token', :ci_partitionable do
+    include Ci::PartitioningHelpers
+
+    let(:new_pipeline) { create(:ci_pipeline) }
+    let(:ci_build) { create(:ci_build, pipeline: new_pipeline) }
+
+    before do
+      stub_current_partition_id
+    end
+
+    it 'includes partition_id as a token prefix' do
+      prefix = ci_build.token.split('_').first.to_i(16)
+
+      expect(prefix).to eq(ci_testing_partition_id)
+    end
+
+    context 'when ci_build_partition_id_token_prefix is disabled' do
+      before do
+        stub_feature_flags(ci_build_partition_id_token_prefix: false)
+      end
+
+      it 'does not include partition_id as a token prefix' do
+        prefix = ci_build.token.split('_').first.to_i(16)
+
+        expect(prefix).not_to eq(ci_testing_partition_id)
+      end
+    end
+  end
 end

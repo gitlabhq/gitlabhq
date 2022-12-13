@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache do
+RSpec.describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache, feature_category: :importer do
   let(:project) { double(:project, id: 1) }
   let(:counter) { described_class.new(project, :issues) }
 
@@ -15,6 +15,16 @@ RSpec.describe Gitlab::GithubImport::PageCounter, :clean_gitlab_redis_cache do
       Gitlab::Cache::Import::Caching.write(counter.cache_key, 2)
 
       expect(described_class.new(project, :issues).current).to eq(2)
+    end
+
+    context 'when gists import' do
+      let(:user) { instance_double('User', id: 2) }
+
+      it 'uses gists specific key' do
+        result = described_class.new(user, :gists, 'github-gists-importer')
+
+        expect(result.cache_key).to eq('github-gists-importer/page-counter/2/gists')
+      end
     end
   end
 

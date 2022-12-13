@@ -2,6 +2,7 @@
 import { GlButton, GlTableLite } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __ } from '~/locale';
+import { formatDate } from '~/lib/utils/datetime/date_format_utility';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 const DEFAULT_TD_CLASSES = 'gl-vertical-align-middle!';
@@ -78,6 +79,11 @@ export default {
   safeHtmlConfig: {
     ADD_TAGS: ['use'],
   },
+  methods: {
+    formatDate(dateString) {
+      return formatDate(new Date(dateString));
+    },
+  },
 };
 </script>
 <template>
@@ -89,6 +95,14 @@ export default {
   >
     <template #cell(preview)="{ item: { preview } }">
       <div v-safe-html:[$options.safeHtmlConfig]="preview"></div>
+    </template>
+
+    <template #cell(starts_at)="{ item: { starts_at } }">
+      {{ formatDate(starts_at) }}
+    </template>
+
+    <template #cell(ends_at)="{ item: { ends_at } }">
+      {{ formatDate(ends_at) }}
     </template>
 
     <template #cell(buttons)="{ item: { id, edit_path, disable_delete } }">

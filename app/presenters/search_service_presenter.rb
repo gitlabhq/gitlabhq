@@ -45,4 +45,10 @@ class SearchServicePresenter < Gitlab::View::Presenter::Delegated
   def without_count?
     search_objects.is_a?(Kaminari::PaginatableWithoutCount)
   end
+
+  def advanced_search_enabled?
+    false
+  end
 end
+
+SearchServicePresenter.prepend_mod_with('SearchServicePresenter')

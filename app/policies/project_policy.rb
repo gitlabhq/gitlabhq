@@ -121,7 +121,7 @@ class ProjectPolicy < BasePolicy
 
   desc "If user is authenticated via CI job token then the target project should be in scope"
   condition(:project_allowed_for_job_token) do
-    !@user&.from_ci_job_token? || @user.ci_job_token_scope.includes?(project)
+    !@user&.from_ci_job_token? || @user.ci_job_token_scope.allows?(project)
   end
 
   with_scope :subject

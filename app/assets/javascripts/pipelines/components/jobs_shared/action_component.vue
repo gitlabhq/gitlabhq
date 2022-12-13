@@ -70,7 +70,6 @@ export default {
       axios
         .post(`${this.link}.json`)
         .then(() => {
-          this.isDisabled = false;
           this.isLoading = false;
 
           this.$emit('pipelineActionRequestComplete');

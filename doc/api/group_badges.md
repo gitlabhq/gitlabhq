@@ -15,6 +15,8 @@ Badges support placeholders that are replaced in real time in both the link and 
 <!-- vale gitlab.Spelling = NO -->
 
 - **%{project_path}**: replaced by the project path.
+- **%{project_title}**: replaced by the project title.
+- **%{project_name}**: replaced by the project name.
 - **%{project_id}**: replaced by the project ID.
 - **%{default_branch}**: replaced by the project default branch.
 - **%{commit_sha}**: replaced by the last project's commit SHA.
