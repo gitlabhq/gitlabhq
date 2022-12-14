@@ -4,8 +4,6 @@
   %section.settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4= s_('ClusterIntegration|Provider details')
-      %button.btn.gl-button.js-settings-toggle{ type: 'button' }
-        = expanded ? _('Collapse') : _('Expand')
       %p= s_('ClusterIntegration|See and edit the details for your Kubernetes cluster')
     .settings-content
       = render 'provider_details_form', cluster: @cluster, platform: @cluster.platform_kubernetes, update_cluster_url_path: clusterable.cluster_path(@cluster)

@@ -36,6 +36,12 @@ module QA
         @executor_image = 'registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-qa-alpine-ruby-2.7'
       end
 
+      # Initially we only support fabricate
+      # via API
+      def fabricate!
+        fabricate_via_api!
+      end
+
       # Start container and register runner
       # Fetch via API and populate attributes
       #

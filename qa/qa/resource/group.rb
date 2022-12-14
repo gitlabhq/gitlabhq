@@ -40,9 +40,7 @@ module QA
         sandbox.visit!
 
         Page::Group::Show.perform do |group_show|
-          if group_show.has_subgroup?(path)
-            group_show.click_subgroup(path)
-          else
+          unless group_show.has_subgroup?(path)
             group_show.go_to_new_subgroup
 
             Page::Group::New.perform do |group_new|
@@ -56,7 +54,11 @@ module QA
               group_show.has_text?(path) &&
                 group_show.has_new_project_and_new_subgroup_buttons?
             end
+            sandbox.visit!
           end
+
+          group_show.click_subgroup(path)
+          @id = group_show.group_id
         end
       end
 
