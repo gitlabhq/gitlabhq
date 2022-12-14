@@ -10,7 +10,7 @@ module Gitlab
 
       ConfigError = Class.new(StandardError)
       TIMEOUT_SECONDS = 30.seconds
-      TIMEOUT_MESSAGE = 'Resolving config took longer than expected'
+      TIMEOUT_MESSAGE = 'Request timed out when fetching configuration files.'
 
       RESCUE_ERRORS = [
         Gitlab::Config::Loader::FormatError,

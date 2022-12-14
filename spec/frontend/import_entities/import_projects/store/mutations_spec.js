@@ -263,43 +263,6 @@ describe('import_projects store mutations', () => {
     });
   });
 
-  describe(`${types.REQUEST_NAMESPACES}`, () => {
-    it('sets namespaces loading flag to true', () => {
-      state = {};
-
-      mutations[types.REQUEST_NAMESPACES](state);
-
-      expect(state.isLoadingNamespaces).toBe(true);
-    });
-  });
-
-  describe(`${types.RECEIVE_NAMESPACES_SUCCESS}`, () => {
-    const response = [{ fullPath: 'some/path' }];
-
-    beforeEach(() => {
-      state = {};
-      mutations[types.RECEIVE_NAMESPACES_SUCCESS](state, response);
-    });
-
-    it('stores namespaces to state', () => {
-      expect(state.namespaces).toStrictEqual(response);
-    });
-
-    it('sets namespaces loading flag to false', () => {
-      expect(state.isLoadingNamespaces).toBe(false);
-    });
-  });
-
-  describe(`${types.RECEIVE_NAMESPACES_ERROR}`, () => {
-    it('sets namespaces loading flag to false', () => {
-      state = {};
-
-      mutations[types.RECEIVE_NAMESPACES_ERROR](state);
-
-      expect(state.isLoadingNamespaces).toBe(false);
-    });
-  });
-
   describe(`${types.SET_IMPORT_TARGET}`, () => {
     const PROJECT = {
       id: 2,

@@ -339,7 +339,7 @@ custom job:
 The above `.gitlab-ci.yml` causes a linting error:
 
 ```plaintext
-Found errors in your .gitlab-ci.yml:
+Unable to create pipeline
 - dependency_scanning job: chosen stage does not exist; available stages are .pre
 - unit-tests
 - .post
@@ -590,7 +590,7 @@ like [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/l
 the following error may occur, depending on your GitLab CI/CD configuration:
 
 ```plaintext
-Found errors in your .gitlab-ci.yml:
+Unable to create pipeline
 
     jobs:sast config key may not be used with `rules`: only/except
 ```

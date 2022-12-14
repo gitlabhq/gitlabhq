@@ -22,10 +22,6 @@ export default {
       type: Object,
       required: true,
     },
-    availableNamespaces: {
-      type: Array,
-      required: true,
-    },
   },
 
   computed: {
@@ -53,7 +49,6 @@ export default {
         #default="{ namespaces }"
         :text="fullPath"
         :disabled="!group.flags.isAvailableForImport"
-        :namespaces="availableNamespaces"
         toggle-class="gl-rounded-top-right-none! gl-rounded-bottom-right-none!"
         class="gl-h-7 gl-flex-grow-1"
         data-qa-selector="target_namespace_selector_dropdown"

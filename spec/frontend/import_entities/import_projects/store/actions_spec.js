@@ -13,9 +13,6 @@ import {
   RECEIVE_IMPORT_SUCCESS,
   RECEIVE_IMPORT_ERROR,
   RECEIVE_JOBS_SUCCESS,
-  REQUEST_NAMESPACES,
-  RECEIVE_NAMESPACES_SUCCESS,
-  RECEIVE_NAMESPACES_ERROR,
   SET_PAGE,
   SET_FILTER,
 } from '~/import_entities/import_projects/store/mutation_types';
@@ -30,7 +27,6 @@ const endpoints = {
   reposPath: MOCK_ENDPOINT,
   importPath: MOCK_ENDPOINT,
   jobsPath: MOCK_ENDPOINT,
-  namespacesPath: MOCK_ENDPOINT,
 };
 
 const {
@@ -40,7 +36,6 @@ const {
   fetchRepos,
   fetchImport,
   fetchJobs,
-  fetchNamespaces,
   setFilter,
 } = actionsFactory({
   endpoints,
@@ -315,51 +310,6 @@ describe('import_projects store actions', () => {
           ],
           [],
         );
-      });
-    });
-  });
-
-  describe('fetchNamespaces', () => {
-    let mock;
-    const namespaces = [{ full_name: 'test/ns1' }, { full_name: 'test_ns2' }];
-
-    beforeEach(() => {
-      mock = new MockAdapter(axios);
-    });
-
-    afterEach(() => mock.restore());
-
-    it('commits REQUEST_NAMESPACES and RECEIVE_NAMESPACES_SUCCESS on success', async () => {
-      mock.onGet(MOCK_ENDPOINT).reply(200, namespaces);
-
-      await testAction(
-        fetchNamespaces,
-        null,
-        localState,
-        [
-          { type: REQUEST_NAMESPACES },
-          {
-            type: RECEIVE_NAMESPACES_SUCCESS,
-            payload: convertObjectPropsToCamelCase(namespaces, { deep: true }),
-          },
-        ],
-        [],
-      );
-    });
-
-    it('commits REQUEST_NAMESPACES and RECEIVE_NAMESPACES_ERROR and shows generic error message on an unsuccessful request', async () => {
-      mock.onGet(MOCK_ENDPOINT).reply(500);
-
-      await testAction(
-        fetchNamespaces,
-        null,
-        localState,
-        [{ type: REQUEST_NAMESPACES }, { type: RECEIVE_NAMESPACES_ERROR }],
-        [],
-      );
-
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'Requesting namespaces failed',
       });
     });
   });

@@ -1,54 +1,33 @@
-import { n__, s__, sprintf } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import { SEVERITY_ICONS_MR_WIDGET } from '~/ci/reports/codequality_report/constants';
+import httpStatusCodes from '~/lib/utils/http_status';
 import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/store/utils/codequality_parser';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
+import { i18n } from './constants';
 
 export default {
   name: 'WidgetCodeQuality',
+  enablePolling: true,
   props: ['codeQuality', 'blobPath'],
-  i18n: {
-    label: s__('ciReport|Code Quality'),
-    loading: s__('ciReport|Code Quality test metrics results are being parsed'),
-    error: s__('ciReport|Code Quality failed loading results'),
-  },
+  i18n,
   computed: {
-    summary() {
-      const { newErrors, resolvedErrors, errorSummary } = this.collapsedData;
-      if (errorSummary.errored >= 1 && errorSummary.resolved >= 1) {
-        const improvements = sprintf(
-          n__(
-            '%{strong_start}%{errors}%{strong_end} point',
-            '%{strong_start}%{errors}%{strong_end} points',
-            resolvedErrors.length,
-          ),
-          {
-            errors: resolvedErrors.length,
-          },
-          false,
-        );
+    summary(data) {
+      const { newErrors, resolvedErrors, errorSummary, parsingInProgress } = data;
 
-        const degradations = sprintf(
-          n__(
-            '%{strong_start}%{errors}%{strong_end} point',
-            '%{strong_start}%{errors}%{strong_end} points',
-            newErrors.length,
-          ),
-          { errors: newErrors.length },
-          false,
-        );
-        return sprintf(
-          s__(`ciReport|Code Quality improved on ${improvements} and degraded on ${degradations}.`),
+      if (parsingInProgress) {
+        return i18n.loading;
+      } else if (errorSummary.errored >= 1 && errorSummary.resolved >= 1) {
+        return i18n.improvementAndDegradationCopy(
+          i18n.pluralReport(resolvedErrors),
+          i18n.pluralReport(newErrors),
         );
       } else if (errorSummary.resolved >= 1) {
-        const improvements = n__('%d point', '%d points', resolvedErrors.length);
-        return sprintf(s__(`ciReport|Code Quality improved on ${improvements}.`));
+        return i18n.improvedCopy(i18n.singularReport(resolvedErrors));
       } else if (errorSummary.errored >= 1) {
-        const degradations = n__('%d point', '%d points', newErrors.length);
-        return sprintf(s__(`ciReport|Code Quality degraded on ${degradations}.`));
+        return i18n.degradedCopy(i18n.singularReport(newErrors));
       }
-      return s__(`ciReport|No changes to Code Quality.`);
+      return i18n.noChanges;
     },
     statusIcon() {
       if (this.collapsedData.errorSummary?.errored >= 1) {
@@ -59,18 +38,17 @@ export default {
   },
   methods: {
     fetchCollapsedData() {
-      return Promise.all([this.fetchReport(this.codeQuality)]).then((values) => {
+      return axios.get(this.codeQuality).then((response) => {
+        const { data = {}, status } = response;
         return {
-          resolvedErrors: parseCodeclimateMetrics(
-            values[0].resolved_errors,
-            this.blobPath.head_path,
-          ),
-          newErrors: parseCodeclimateMetrics(values[0].new_errors, this.blobPath.head_path),
-          existingErrors: parseCodeclimateMetrics(
-            values[0].existing_errors,
-            this.blobPath.head_path,
-          ),
-          errorSummary: values[0].summary,
+          ...response,
+          data: {
+            parsingInProgress: status === httpStatusCodes.NO_CONTENT,
+            resolvedErrors: parseCodeclimateMetrics(data.resolved_errors, this.blobPath.head_path),
+            newErrors: parseCodeclimateMetrics(data.new_errors, this.blobPath.head_path),
+            existingErrors: parseCodeclimateMetrics(data.existing_errors, this.blobPath.head_path),
+            errorSummary: data.summary,
+          },
         };
       });
     },
@@ -81,7 +59,7 @@ export default {
         return fullData.push({
           text: `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
           subtext: {
-            prependText: s__(`ciReport|in`),
+            prependText: i18n.prependText,
             text: `${e.file_path}:${e.line}`,
             href: e.urlPath,
           },
@@ -95,7 +73,7 @@ export default {
         return fullData.push({
           text: `${capitalizeFirstCharacter(e.severity)} - ${e.description}`,
           subtext: {
-            prependText: s__(`ciReport|in`),
+            prependText: i18n.prependText,
             text: `${e.file_path}:${e.line}`,
             href: e.urlPath,
           },
@@ -104,7 +82,7 @@ export default {
           },
           badge: {
             variant: 'neutral',
-            text: s__(`ciReport|Fixed`),
+            text: i18n.fixed,
           },
         });
       });

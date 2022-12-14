@@ -18,13 +18,10 @@
 
   - if pipeline_has_errors
     .bs-callout.bs-callout-danger
-      %h4= _('Found errors in your %{gitlab_ci_yml}:') % { gitlab_ci_yml: '.gitlab-ci.yml' }
+      %h4= _('Unable to create pipeline')
       %ul
         - @pipeline.yaml_errors.split("\n").each do |error|
           %li= error
-      - lint_link_url = project_ci_pipeline_editor_path(@project, tab: "LINT_TAB")
-      - lint_link_start = '<a href="%{url}" class="gl-text-blue-500!">'.html_safe % { url: lint_link_url }
-      = s_('You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lint_link_end}').html_safe % { gitlab_ci_yml: '.gitlab-ci.yml', lint_link_start: lint_link_start, lint_link_end: '</a>'.html_safe }
 
   - else
     #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }

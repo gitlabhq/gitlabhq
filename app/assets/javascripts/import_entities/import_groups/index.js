@@ -12,7 +12,6 @@ export function mountImportGroupsApp(mountElement) {
 
   const {
     statusPath,
-    availableNamespacesPath,
     createBulkImportPath,
     jobsPath,
     historyPath,
@@ -25,7 +24,6 @@ export function mountImportGroupsApp(mountElement) {
       sourceUrl,
       endpoints: {
         status: statusPath,
-        availableNamespaces: availableNamespacesPath,
         createBulkImport: createBulkImportPath,
       },
     }),

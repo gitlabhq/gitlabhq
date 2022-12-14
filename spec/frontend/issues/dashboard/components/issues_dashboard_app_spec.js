@@ -1,5 +1,6 @@
 import { GlEmptyState } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
+import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { cloneDeep } from 'lodash';
@@ -8,9 +9,12 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
+  filteredTokens,
+  locationSearch,
   setSortPreferenceMutationResponse,
   setSortPreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
@@ -18,7 +22,12 @@ import IssuesDashboardApp from '~/issues/dashboard/components/issues_dashboard_a
 import { CREATED_DESC, i18n, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { getSortKey, getSortOptions } from '~/issues/list/utils';
+import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
+import {
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableStates } from '~/vue_shared/issuable/list/constants';
 import { emptyIssuesQueryResponse, issuesQueryResponse } from '../mock_data';
@@ -27,6 +36,7 @@ jest.mock('@sentry/browser');
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 
 describe('IssuesDashboardApp component', () => {
+  let axiosMock;
   let wrapper;
 
   Vue.use(VueApollo);
@@ -78,8 +88,18 @@ describe('IssuesDashboardApp component', () => {
     });
   };
 
+  beforeEach(() => {
+    setWindowLocation(TEST_HOST);
+    axiosMock = new AxiosMockAdapter(axios);
+  });
+
+  afterEach(() => {
+    axiosMock.reset();
+  });
+
   it('renders IssuableList component', async () => {
     mountComponent();
+    jest.runOnlyPendingTimers();
     await waitForPromises();
 
     expect(findIssuableList().props()).toMatchObject({
@@ -124,6 +144,7 @@ describe('IssuesDashboardApp component', () => {
 
   it('renders issue time information', async () => {
     mountComponent();
+    jest.runOnlyPendingTimers();
     await waitForPromises();
 
     expect(findIssueCardTimeInfo().exists()).toBe(true);
@@ -131,6 +152,7 @@ describe('IssuesDashboardApp component', () => {
 
   it('renders issue statistics', async () => {
     mountComponent();
+    jest.runOnlyPendingTimers();
     await waitForPromises();
 
     expect(findIssueCardStatistics().exists()).toBe(true);
@@ -147,6 +169,15 @@ describe('IssuesDashboardApp component', () => {
   });
 
   describe('initial url params', () => {
+    describe('search', () => {
+      it('is set from the url params', () => {
+        setWindowLocation(locationSearch);
+        mountComponent();
+
+        expect(findIssuableList().props('urlParams')).toMatchObject({ search: 'find issues' });
+      });
+    });
+
     describe('sort', () => {
       describe('when initial sort value uses old enum values', () => {
         const oldEnumSortValues = Object.values(urlSortParams);
@@ -189,11 +220,21 @@ describe('IssuesDashboardApp component', () => {
         expect(findIssuableList().props('currentTab')).toBe(initialState);
       });
     });
+
+    describe('filter tokens', () => {
+      it('is set from the url params', () => {
+        setWindowLocation(locationSearch);
+        mountComponent();
+
+        expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
+      });
+    });
   });
 
   describe('when there is an error fetching issues', () => {
     beforeEach(() => {
       mountComponent({ issuesQueryHandler: jest.fn().mockRejectedValue(new Error('ERROR')) });
+      jest.runOnlyPendingTimers();
       return waitForPromises();
     });
 
@@ -207,6 +248,40 @@ describe('IssuesDashboardApp component', () => {
       await nextTick();
 
       expect(findIssuableList().props('error')).toBeNull();
+    });
+  });
+
+  describe('tokens', () => {
+    const mockCurrentUser = {
+      id: 1,
+      name: 'Administrator',
+      username: 'root',
+      avatar_url: 'avatar/url',
+    };
+    const originalGon = window.gon;
+
+    beforeEach(() => {
+      window.gon = {
+        ...originalGon,
+        current_user_id: mockCurrentUser.id,
+        current_user_fullname: mockCurrentUser.name,
+        current_username: mockCurrentUser.username,
+        current_user_avatar_url: mockCurrentUser.avatar_url,
+      };
+      mountComponent();
+    });
+
+    afterEach(() => {
+      window.gon = originalGon;
+    });
+
+    it('renders all tokens alphabetically', () => {
+      const preloadedUsers = [{ ...mockCurrentUser, id: mockCurrentUser.id }];
+
+      expect(findIssuableList().props('searchTokens')).toMatchObject([
+        { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+        { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+      ]);
     });
   });
 

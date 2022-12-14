@@ -19,6 +19,10 @@ module Gitlab
             end
           end
 
+          def empty?
+            @monitors.empty?
+          end
+
           private
 
           def build_monitor_state(monitor_class, *args, max_strikes:, monitor_name: nil, **kwargs, &block)

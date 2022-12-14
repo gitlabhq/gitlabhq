@@ -59,9 +59,36 @@ export const statusEndpointFixture = {
   },
 };
 
-export const availableNamespacesFixture = Object.freeze([
-  { id: 24, fullPath: 'Commit451' },
-  { id: 22, fullPath: 'gitlab-org' },
-  { id: 23, fullPath: 'gnuwget' },
-  { id: 25, fullPath: 'jashkenas' },
-]);
+const makeGroupMock = ({ id, fullPath }) => ({
+  id,
+  fullPath,
+  name: fullPath,
+  visibility: 'public',
+  webUrl: `http://gdk.test:3000/groups/${fullPath}`,
+  __typename: 'Group',
+});
+
+export const AVAILABLE_NAMESPACES = [
+  makeGroupMock({ id: 24, fullPath: 'Commit451' }),
+  makeGroupMock({ id: 22, fullPath: 'gitlab-org' }),
+  makeGroupMock({ id: 23, fullPath: 'gnuwget' }),
+  makeGroupMock({ id: 25, fullPath: 'jashkenas' }),
+];
+
+export const availableNamespacesFixture = {
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      groups: {
+        nodes: AVAILABLE_NAMESPACES,
+        __typename: 'GroupConnection',
+      },
+      namespace: {
+        id: 'gid://gitlab/Namespaces::UserNamespace/1',
+        fullPath: 'root',
+        __typename: 'Namespace',
+      },
+      __typename: 'UserCore',
+    },
+  },
+};

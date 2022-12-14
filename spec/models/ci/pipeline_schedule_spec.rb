@@ -264,6 +264,17 @@ RSpec.describe Ci::PipelineSchedule, feature_category: :continuous_integration d
     end
   end
 
+  describe '#worker_cron' do
+    before do
+      allow(Settings).to receive(:cron_jobs)
+        .and_return({ pipeline_schedule_worker: { cron: "* 1 2 3 4" } }.with_indifferent_access)
+    end
+
+    it "returns cron expression set in Settings" do
+      expect(subject.worker_cron_expression).to eq("* 1 2 3 4")
+    end
+  end
+
   context 'loose foreign key on ci_pipeline_schedules.project_id' do
     it_behaves_like 'cleanup by a loose foreign key' do
       let!(:parent) { create(:project) }

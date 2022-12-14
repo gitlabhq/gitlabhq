@@ -185,7 +185,7 @@ describe('IDE pipelines list', () => {
             },
           );
 
-          expect(wrapper.text()).toContain('Found errors in your .gitlab-ci.yml:');
+          expect(wrapper.text()).toContain('Unable to create pipeline');
           expect(wrapper.text()).toContain(yamlError);
         });
       });

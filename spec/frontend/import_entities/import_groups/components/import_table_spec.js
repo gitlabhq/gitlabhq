@@ -15,8 +15,13 @@ import ImportTable from '~/import_entities/import_groups/components/import_table
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
+import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
 
-import { availableNamespacesFixture, generateFakeEntry } from '../graphql/fixtures';
+import {
+  AVAILABLE_NAMESPACES,
+  availableNamespacesFixture,
+  generateFakeEntry,
+} from '../graphql/fixtures';
 
 jest.mock('~/flash');
 jest.mock('~/import_entities/import_groups/services/status_poller');
@@ -60,15 +65,22 @@ describe('import table', () => {
     wrapper.findAll('tbody td input[type=checkbox]').at(idx).setChecked(true);
 
   const createComponent = ({ bulkImportSourceGroups, importGroups, defaultTargetNamespace }) => {
-    apolloProvider = createMockApollo([], {
-      Query: {
-        availableNamespaces: () => availableNamespacesFixture,
-        bulkImportSourceGroups,
+    apolloProvider = createMockApollo(
+      [
+        [
+          searchNamespacesWhereUserCanCreateProjectsQuery,
+          () => Promise.resolve(availableNamespacesFixture),
+        ],
+      ],
+      {
+        Query: {
+          bulkImportSourceGroups,
+        },
+        Mutation: {
+          importGroups,
+        },
       },
-      Mutation: {
-        importGroups,
-      },
-    });
+    );
 
     wrapper = mount(ImportTable, {
       propsData: {
@@ -173,7 +185,7 @@ describe('import table', () => {
   });
 
   it('respects default namespace if provided', async () => {
-    const targetNamespace = availableNamespacesFixture[1];
+    const targetNamespace = AVAILABLE_NAMESPACES[1];
 
     createComponent({
       bulkImportSourceGroups: () => ({
@@ -227,7 +239,7 @@ describe('import table', () => {
           {
             newName: FAKE_GROUP.lastImportTarget.newName,
             sourceGroupId: FAKE_GROUP.id,
-            targetNamespace: availableNamespacesFixture[0].fullPath,
+            targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
           },
         ],
       },
@@ -519,12 +531,12 @@ describe('import table', () => {
         variables: {
           importRequests: [
             {
-              targetNamespace: availableNamespacesFixture[0].fullPath,
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[0].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[0].id,
             },
             {
-              targetNamespace: availableNamespacesFixture[0].fullPath,
+              targetNamespace: AVAILABLE_NAMESPACES[0].fullPath,
               newName: NEW_GROUPS[1].lastImportTarget.newName,
               sourceGroupId: NEW_GROUPS[1].id,
             },

@@ -4,16 +4,22 @@
 query getDashboardIssues(
   $hideUsers: Boolean = false
   $isSignedIn: Boolean = false
+  $search: String
   $sort: IssueSort
   $state: IssuableState
+  $assigneeUsernames: [String!]
+  $authorUsername: String
   $afterCursor: String
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
 ) {
   issues(
+    search: $search
     sort: $sort
     state: $state
+    assigneeUsernames: $assigneeUsernames
+    authorUsername: $authorUsername
     after: $afterCursor
     before: $beforeCursor
     first: $firstPageSize

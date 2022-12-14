@@ -1,10 +1,8 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlTabs, GlTab, GlBadge, GlAlert } from '@gitlab/ui';
-import { escape } from 'lodash';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import IDEServices from '~/ide/services';
-import { sprintf, __ } from '~/locale';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import JobsList from '../jobs/list.vue';
 import EmptyState from './empty_state.vue';
@@ -41,16 +39,6 @@ export default {
       'stages',
       'isLoadingJobs',
     ]),
-    ciLintText() {
-      return sprintf(
-        __('You can test your .gitlab-ci.yml in %{linkStart}CI Lint%{linkEnd}.'),
-        {
-          linkStart: `<a href="${escape(this.currentProject.web_url)}/-/ci/lint">`,
-          linkEnd: '</a>',
-        },
-        false,
-      );
-    },
     showLoadingIcon() {
       return this.isLoadingPipeline && !this.hasLoadedPipeline;
     },
@@ -94,9 +82,8 @@ export default {
         :dismissible="false"
         class="gl-mt-5"
       >
-        <p class="gl-mb-0">{{ __('Found errors in your .gitlab-ci.yml:') }}</p>
+        <p class="gl-mb-0">{{ __('Unable to create pipeline') }}</p>
         <p class="gl-mb-0 break-word">{{ latestPipeline.yamlError }}</p>
-        <p v-safe-html="ciLintText" class="gl-mb-0"></p>
       </gl-alert>
       <gl-tabs v-else>
         <gl-tab :active="!pipelineFailed">

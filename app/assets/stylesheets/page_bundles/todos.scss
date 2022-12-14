@@ -59,7 +59,10 @@
 }
 
 .todo-title {
+  margin-right: 2.5rem;
+
   @include media-breakpoint-up(sm) {
+    @include gl-mr-0;
     @include gl-text-overflow-ellipsis;
     @include gl-white-space-nowrap;
     @include gl-overflow-hidden;
@@ -96,4 +99,13 @@
 .todo-body .todo-avatar,
 .todos-list > .todo a:not(.todo-target-link) {
   z-index: 11 !important;
+}
+
+.todo-actions {
+  @include gl-absolute;
+  @include gl-right-0;
+
+  @include media-breakpoint-up(sm) {
+    @include gl-relative;
+  }
 }

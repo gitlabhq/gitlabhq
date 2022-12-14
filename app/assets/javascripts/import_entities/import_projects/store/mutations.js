@@ -122,19 +122,6 @@ export default {
     });
   },
 
-  [types.REQUEST_NAMESPACES](state) {
-    state.isLoadingNamespaces = true;
-  },
-
-  [types.RECEIVE_NAMESPACES_SUCCESS](state, namespaces) {
-    state.isLoadingNamespaces = false;
-    state.namespaces = namespaces;
-  },
-
-  [types.RECEIVE_NAMESPACES_ERROR](state) {
-    state.isLoadingNamespaces = false;
-  },
-
   [types.SET_IMPORT_TARGET](state, { repoId, importTarget }) {
     const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
 

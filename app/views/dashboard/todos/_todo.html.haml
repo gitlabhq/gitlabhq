@@ -47,13 +47,13 @@
             %span.action-description.gl-font-style-italic<
               = first_line_in_markdown(todo, :body, 100, is_todo: true, project: todo.project, group: todo.group)
 
-    .todo-timestamp.gl-white-space-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-3.gl-sm-my-0.gl-px-2.gl-sm-px-0
+    .todo-timestamp.gl-white-space-nowrap.gl-sm-ml-3.gl-mt-2.gl-mb-2.gl-sm-my-0.gl-px-2.gl-sm-px-0
       %span.todo-timestamp.gl-font-sm.gl-text-gray-500
         = todo_due_date(todo)
         #{time_ago_with_tooltip(todo.created_at)}
 
 
-    .todo-actions.gl-sm-ml-3.gl-px-2.gl-sm-px-0
+    .todo-actions.gl-mr-4.gl-px-2.gl-sm-px-0.gl-sm-mx-0
       - if todo.pending?
         = render Pajamas::ButtonComponent.new(button_options: { class: 'btn-loading btn-icon gl-display-flex js-done-todo has-tooltip', title: _('Mark as done')}, method: :delete, href: dashboard_todo_path(todo)), 'aria-label' => _('Mark as done') do
           = gl_loading_icon(inline: true)

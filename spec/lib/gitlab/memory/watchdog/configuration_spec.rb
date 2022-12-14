@@ -22,6 +22,10 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
 
   describe '#event_reporter' do
     context 'when event reporter is not set' do
+      before do
+        allow(Gitlab::Metrics).to receive(:counter)
+      end
+
       it 'defaults to EventReporter' do
         expect(configuration.event_reporter).to be_an_instance_of(::Gitlab::Memory::Watchdog::EventReporter)
       end
@@ -99,6 +103,16 @@ RSpec.describe Gitlab::Memory::Watchdog::Configuration do
             expect(thresholds).to eq([false, true])
             expect(strikes).to eq([false, true])
             expect(monitor_names).to eq([monitor_name1, monitor_name2])
+          end
+
+          it 'monitors are not empty' do
+            expect(configuration.monitors).not_to be_empty
+          end
+        end
+
+        context 'when monitors are not configured' do
+          it 'monitors are empty' do
+            expect(configuration.monitors).to be_empty
           end
         end
 

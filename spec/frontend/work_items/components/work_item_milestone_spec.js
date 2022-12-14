@@ -179,6 +179,18 @@ describe('WorkItemMilestone component', () => {
       createComponent({ canUpdate: true });
     });
 
+    it('calls successSearchQueryHandler with variables when dropdown is opened', async () => {
+      showDropdown();
+      await nextTick();
+
+      expect(successSearchQueryHandler).toHaveBeenCalledWith({
+        first: 20,
+        fullPath: 'full-path',
+        state: 'active',
+        title: '',
+      });
+    });
+
     it('shows the skeleton loader when the items are being fetched on click', async () => {
       showDropdown();
       await nextTick();

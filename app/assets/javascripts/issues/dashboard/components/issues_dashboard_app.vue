@@ -13,12 +13,30 @@ import {
   urlSortParams,
 } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
-import { getInitialPageParams, getSortKey, getSortOptions, isSortKey } from '~/issues/list/utils';
+import {
+  convertToApiParams,
+  convertToSearchQuery,
+  convertToUrlParams,
+  getFilterTokens,
+  getInitialPageParams,
+  getSortKey,
+  getSortOptions,
+  isSortKey,
+} from '~/issues/list/utils';
+import axios from '~/lib/utils/axios_utils';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
+import {
+  TOKEN_TITLE_ASSIGNEE,
+  TOKEN_TITLE_AUTHOR,
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_AUTHOR,
+} from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import { IssuableListTabs, IssuableStates } from '~/vue_shared/issuable/list/constants';
+
+const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 
 export default {
   i18n: {
@@ -66,11 +84,11 @@ export default {
     const sortKey = dashboardSortKey || graphQLSortKey || defaultSortKey;
 
     return {
+      filterTokens: getFilterTokens(window.location.search),
       issues: [],
       issuesError: null,
       pageInfo: {},
       pageParams: getInitialPageParams(),
-      searchTokens: [],
       sortKey,
       state: state || IssuableStates.Opened,
     };
@@ -82,9 +100,11 @@ export default {
         return {
           hideUsers: this.isPublicVisibilityRestricted && !this.isSignedIn,
           isSignedIn: this.isSignedIn,
+          search: this.searchQuery,
           sort: this.sortKey,
           state: this.state,
           ...this.pageParams,
+          ...this.apiFilterParams,
         };
       },
       update(data) {
@@ -97,9 +117,52 @@ export default {
         this.issuesError = this.$options.i18n.errorFetchingIssues;
         Sentry.captureException(error);
       },
+      debounce: 200,
     },
   },
   computed: {
+    apiFilterParams() {
+      return convertToApiParams(this.filterTokens);
+    },
+    searchQuery() {
+      return convertToSearchQuery(this.filterTokens);
+    },
+    searchTokens() {
+      const preloadedUsers = [];
+
+      if (gon.current_user_id) {
+        preloadedUsers.push({
+          id: gon.current_user_id,
+          name: gon.current_user_fullname,
+          username: gon.current_username,
+          avatar_url: gon.current_user_avatar_url,
+        });
+      }
+
+      const tokens = [
+        {
+          type: TOKEN_TYPE_ASSIGNEE,
+          title: TOKEN_TITLE_ASSIGNEE,
+          icon: 'user',
+          token: UserToken,
+          fetchUsers: this.fetchUsers,
+          preloadedUsers,
+          recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-assignee',
+        },
+        {
+          type: TOKEN_TYPE_AUTHOR,
+          title: TOKEN_TITLE_AUTHOR,
+          icon: 'pencil',
+          token: UserToken,
+          fetchUsers: this.fetchUsers,
+          defaultUsers: [],
+          preloadedUsers,
+          recentSuggestionsStorageKey: 'dashboard-issues-recent-tokens-author',
+        },
+      ];
+
+      return tokens;
+    },
     showPaginationControls() {
       return this.issues.length > 0 && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
@@ -110,14 +173,22 @@ export default {
         hasIssueWeightsFeature: this.hasIssueWeightsFeature,
       });
     },
+    urlFilterParams() {
+      return convertToUrlParams(this.filterTokens);
+    },
     urlParams() {
       return {
+        search: this.searchQuery,
         sort: urlSortParams[this.sortKey],
         state: this.state,
+        ...this.urlFilterParams,
       };
     },
   },
   methods: {
+    fetchUsers(search) {
+      return axios.get('/-/autocomplete/users.json', { params: { active: true, search } });
+    },
     getStatus(issue) {
       if (issue.state === IssuableStatus.Closed && issue.moved) {
         return this.$options.i18n.closedMoved;
@@ -131,11 +202,15 @@ export default {
       if (this.state === state) {
         return;
       }
-      this.pageParams = getInitialPageParams();
       this.state = state;
+      this.pageParams = getInitialPageParams();
     },
     handleDismissAlert() {
       this.issuesError = null;
+    },
+    handleFilter(tokens) {
+      this.filterTokens = tokens;
+      this.pageParams = getInitialPageParams();
     },
     handleNextPage() {
       this.pageParams = {
@@ -156,8 +231,8 @@ export default {
         return;
       }
 
-      this.pageParams = getInitialPageParams();
       this.sortKey = sortKey;
+      this.pageParams = getInitialPageParams();
 
       if (this.isSignedIn) {
         this.saveSortPreference(sortKey);
@@ -189,6 +264,7 @@ export default {
     :has-next-page="pageInfo.hasNextPage"
     :has-previous-page="pageInfo.hasPreviousPage"
     :has-scoped-labels-feature="hasScopedLabelsFeature"
+    :initial-filter-value="filterTokens"
     :initial-sort-by="sortKey"
     :issuables="issues"
     :issuables-loading="$apollo.queries.issues.loading"
@@ -197,12 +273,14 @@ export default {
     :search-input-placeholder="$options.i18n.searchInputPlaceholder"
     :search-tokens="searchTokens"
     :show-pagination-controls="showPaginationControls"
+    show-work-item-type-icon
     :sort-options="sortOptions"
     :tabs="$options.IssuableListTabs"
     :url-params="urlParams"
     use-keyset-pagination
     @click-tab="handleClickTab"
     @dismiss-alert="handleDismissAlert"
+    @filter="handleFilter"
     @next-page="handleNextPage"
     @previous-page="handlePreviousPage"
     @sort="handleSort"

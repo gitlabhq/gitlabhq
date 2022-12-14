@@ -286,7 +286,7 @@ export default {
       return convertToUrlParams(this.filterTokens);
     },
     searchQuery() {
-      return convertToSearchQuery(this.filterTokens) || undefined;
+      return convertToSearchQuery(this.filterTokens);
     },
     searchTokens() {
       const preloadedUsers = [];

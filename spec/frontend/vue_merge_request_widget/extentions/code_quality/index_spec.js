@@ -8,9 +8,9 @@ import extensionsContainer from '~/vue_merge_request_widget/components/extension
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import codeQualityExtension from '~/vue_merge_request_widget/extensions/code_quality';
 import httpStatusCodes from '~/lib/utils/http_status';
+import { i18n } from '~/vue_merge_request_widget/extensions/code_quality/constants';
 import {
   codeQualityResponseNewErrors,
-  codeQualityResponseResolvedErrors,
   codeQualityResponseResolvedAndNewErrors,
   codeQualityResponseNoErrors,
 } from './mock_data';
@@ -59,7 +59,16 @@ describe('Code Quality extension', () => {
 
       createComponent();
 
-      expect(wrapper.text()).toBe('Code Quality test metrics results are being parsed');
+      expect(wrapper.text()).toBe(i18n.loading);
+    });
+
+    it('with a 204 response, continues to display loading state', async () => {
+      mockApi(httpStatusCodes.NO_CONTENT, '');
+      createComponent();
+
+      await waitForPromises();
+
+      expect(wrapper.text()).toBe(i18n.loading);
     });
 
     it('displays failed loading text', async () => {
@@ -68,37 +77,37 @@ describe('Code Quality extension', () => {
       createComponent();
 
       await waitForPromises();
-      expect(wrapper.text()).toBe('Code Quality failed loading results');
+      expect(wrapper.text()).toBe(i18n.error);
     });
 
-    it('displays quality degradation', async () => {
+    it('displays correct single Report', async () => {
       mockApi(httpStatusCodes.OK, codeQualityResponseNewErrors);
 
       createComponent();
 
       await waitForPromises();
 
-      expect(wrapper.text()).toBe('Code Quality degraded on 2 points.');
-    });
-
-    it('displays quality improvement', async () => {
-      mockApi(httpStatusCodes.OK, codeQualityResponseResolvedErrors);
-
-      createComponent();
-
-      await waitForPromises();
-
-      expect(wrapper.text()).toBe('Code Quality improved on 2 points.');
+      expect(wrapper.text()).toBe(
+        i18n.degradedCopy(i18n.singularReport(codeQualityResponseNewErrors.new_errors)),
+      );
     });
 
     it('displays quality improvement and degradation', async () => {
       mockApi(httpStatusCodes.OK, codeQualityResponseResolvedAndNewErrors);
 
       createComponent();
-
       await waitForPromises();
 
-      expect(wrapper.text()).toBe('Code Quality improved on 1 point and degraded on 1 point.');
+      // replacing strong tags because they will not be found in the rendered text
+      expect(wrapper.text()).toBe(
+        i18n
+          .improvementAndDegradationCopy(
+            i18n.pluralReport(codeQualityResponseResolvedAndNewErrors.resolved_errors),
+            i18n.pluralReport(codeQualityResponseResolvedAndNewErrors.new_errors),
+          )
+          .replace(/%{strong_start}/g, '')
+          .replace(/%{strong_end}/g, ''),
+      );
     });
 
     it('displays no detected errors', async () => {
@@ -108,7 +117,7 @@ describe('Code Quality extension', () => {
 
       await waitForPromises();
 
-      expect(wrapper.text()).toBe('No changes to Code Quality.');
+      expect(wrapper.text()).toBe(i18n.noChanges);
     });
   });
 
@@ -145,7 +154,7 @@ describe('Code Quality extension', () => {
 
     it('adds fixed indicator (badge) when error is resolved', () => {
       expect(findAllExtensionListItems().at(1).findComponent(GlBadge).exists()).toBe(true);
-      expect(findAllExtensionListItems().at(1).findComponent(GlBadge).text()).toEqual('Fixed');
+      expect(findAllExtensionListItems().at(1).findComponent(GlBadge).text()).toEqual(i18n.fixed);
     });
 
     it('should not add fixed indicator (badge) when error is new', () => {

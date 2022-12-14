@@ -764,8 +764,81 @@ for how to proceed.
   gitlab-psql`):
 
   ```sql
-  select count(*) from background_migration_jobs where class_name = 'MigrateMergeRequestDiffCommitUsers' and status = 0;
+  select status, count(*) from background_migration_jobs 
+  where class_name = 'MigrateMergeRequestDiffCommitUsers' group by status;
   ```
+
+  As jobs are completed, the database records change from `0` (pending) to `1`. If the number of
+  pending jobs doesn't decrease after a while, it's possible that the
+  `MigrateMergeRequestDiffCommitUsers` background migration jobs have failed. You
+  can check for errors in the Sidekiq logs:
+
+  ```shell
+  sudo grep MigrateMergeRequestDiffCommitUsers /var/log/gitlab/sidekiq/current | grep -i error
+  ```
+
+  If needed, you can attempt to run the `MigrateMergeRequestDiffCommitUsers` background
+  migration jobs manually in the [GitLab Rails Console](../administration/operations/rails_console.md).
+  This can be done using Sidekiq asynchronously, or by using a Rails process directly:
+
+  - Using Sidekiq to schedule jobs asynchronously:
+
+    ```ruby
+    # For the first run, only attempt to execute 1 migration. If successful, increase
+    # the limit for subsequent runs
+    limit = 1
+
+    jobs = Gitlab::Database::BackgroundMigrationJob.for_migration_class('MigrateMergeRequestDiffCommitUsers').pending.to_a
+
+    pp "#{jobs.length} jobs remaining"
+
+    jobs.first(limit).each do |job|
+      BackgroundMigrationWorker.perform_in(5.minutes, 'MigrateMergeRequestDiffCommitUsers', job.arguments)
+    end
+    ```
+
+    NOTE:
+    The queued jobs can be monitored using Sidekiq's admin panel, which can be accessed at the `/admin/sidekiq` endpoint URI.
+
+  - Using a Rails process to run jobs synchronously:
+
+    ```ruby
+    def process(concurrency: 1)
+      queue = Queue.new
+
+      Gitlab::Database::BackgroundMigrationJob
+        .where(class_name: 'MigrateMergeRequestDiffCommitUsers', status: 0)
+        .each { |job| queue << job }
+
+      concurrency
+        .times
+        .map do
+          Thread.new do
+            Thread.abort_on_exception = true
+
+            loop do
+              job = queue.pop(true)
+              time = Benchmark.measure do
+                Gitlab::BackgroundMigration::MigrateMergeRequestDiffCommitUsers
+                  .new
+                  .perform(*job.arguments)
+              end
+
+              puts "#{job.id} finished in #{time.real.round(2)} seconds"
+            rescue ThreadError
+              break
+            end
+          end
+        end
+        .each(&:join)
+    end
+
+    ActiveRecord::Base.logger.level = Logger::ERROR
+    process
+    ```
+
+    NOTE:
+    When using Rails to execute these background migrations synchronously, make sure that the machine running the process has sufficient resources to handle the task. If the process gets terminated, it's likely due to insufficient memory available. If your SSH session times out after a while, it might be necessary to run the previous code by using a terminal multiplexer like `screen` or `tmux`.
 
 - See [Maintenance mode issue in GitLab 13.9 to 14.4](#maintenance-mode-issue-in-gitlab-139-to-144).
 

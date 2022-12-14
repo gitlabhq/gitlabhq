@@ -405,6 +405,11 @@ export const ISSUABLE_TYPES = {
   INCIDENT: 'incident',
 };
 
+export const MILESTONE_STATE = {
+  ACTIVE: 'active',
+  CLOSED: 'closed',
+};
+
 export const SEVERITY_I18N = {
   UPDATE_SEVERITY_ERROR: s__('SeverityWidget|There was an error while updating severity.'),
   TRY_AGAIN: __('Please try again'),

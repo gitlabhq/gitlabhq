@@ -16,7 +16,6 @@ describe('ProviderRepoTableRow', () => {
     newName: 'newName',
   };
 
-  const availableNamespaces = ['test'];
   const userNamespace = 'root';
 
   function initStore(initialState) {
@@ -44,7 +43,7 @@ describe('ProviderRepoTableRow', () => {
 
     wrapper = shallowMount(ProviderRepoTableRow, {
       store,
-      propsData: { availableNamespaces, userNamespace, optionalStages: {}, ...props },
+      propsData: { userNamespace, optionalStages: {}, ...props },
     });
   }
 
@@ -78,9 +77,7 @@ describe('ProviderRepoTableRow', () => {
     });
 
     it('renders a group namespace select', () => {
-      expect(wrapper.findComponent(ImportGroupDropdown).props().namespaces).toBe(
-        availableNamespaces,
-      );
+      expect(wrapper.findComponent(ImportGroupDropdown).exists()).toBe(true);
     });
 
     it('renders import button', () => {

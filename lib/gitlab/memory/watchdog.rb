@@ -56,7 +56,7 @@ module Gitlab
       # Configuration for Watchdog, see Gitlab::Memory::Watchdog::Configurator
       # for examples.
       def configure
-        yield @configuration
+        yield configuration
       end
 
       def call
@@ -68,17 +68,27 @@ module Gitlab
           monitor if Feature.enabled?(:gitlab_memory_watchdog, type: :ops)
         end
 
-        event_reporter.stopped(log_labels)
+        event_reporter.stopped(log_labels(memwd_reason: @reason).compact)
       end
 
-      def stop
+      def stop(reason: nil)
+        @reason = reason
         @alive = false
       end
 
       private
 
+      attr_reader :configuration
+
+      delegate :event_reporter, :monitors, :sleep_time_seconds, to: :configuration
+
       def monitor
-        @configuration.monitors.call_each do |result|
+        if monitors.empty?
+          stop(reason: 'monitors are not configured')
+          return
+        end
+
+        monitors.call_each do |result|
           break unless @alive
 
           next unless result.threshold_violated?
@@ -87,7 +97,7 @@ module Gitlab
 
           next unless result.strikes_exceeded?
 
-          @alive = !strike_exceeded_callback(result.monitor_name, result.payload)
+          strike_exceeded_callback(result.monitor_name, result.payload)
         end
       end
 
@@ -96,7 +106,7 @@ module Gitlab
 
         Gitlab::Memory::Reports::HeapDump.enqueue!
 
-        handler.call
+        stop(reason: 'successfully handled') if handler.call
       end
 
       def handler
@@ -104,15 +114,7 @@ module Gitlab
         # all that happens is we collect logs and Prometheus events for fragmentation violations.
         return NullHandler.instance unless Feature.enabled?(:enforce_memory_watchdog, type: :ops)
 
-        @configuration.handler
-      end
-
-      def event_reporter
-        @configuration.event_reporter
-      end
-
-      def sleep_time_seconds
-        @configuration.sleep_time_seconds
+        configuration.handler
       end
 
       def log_labels(extra = {})

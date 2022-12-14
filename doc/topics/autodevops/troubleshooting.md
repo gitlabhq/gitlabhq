@@ -40,7 +40,7 @@ The following are possible reasons:
 If your pipeline fails with the following message:
 
 ```plaintext
-Found errors in your .gitlab-ci.yml:
+Unable to create pipeline
 
   jobs:test config key may not be used with `rules`: only
 ```

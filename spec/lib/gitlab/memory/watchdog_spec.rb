@@ -49,7 +49,6 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
           config.handler = handler
           config.event_reporter = reporter
           config.sleep_time_seconds = sleep_time_seconds
-          config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
         end
 
         allow(handler).to receive(:call).and_return(true)
@@ -75,42 +74,49 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
         watchdog.call
       end
 
-      context 'when gitlab_memory_watchdog ops toggle is off' do
+      context 'when no monitors are configured' do
+        it 'reports stopped event once with correct reason' do
+          expect(reporter).to receive(:stopped).once
+            .with(
+              memwd_handler_class: handler.class.name,
+              memwd_sleep_time_s: sleep_time_seconds,
+              memwd_reason: 'monitors are not configured'
+            )
+
+          watchdog.call
+        end
+      end
+
+      context 'when monitors are configured' do
         before do
-          stub_feature_flags(gitlab_memory_watchdog: false)
+          watchdog.configure do |config|
+            config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
+          end
         end
 
-        it 'does not trigger any monitor' do
-          expect(configuration).not_to receive(:monitors)
-        end
-      end
-
-      context 'when process does not exceed threshold' do
-        it 'does not report violations event' do
-          expect(reporter).not_to receive(:threshold_violated)
-          expect(reporter).not_to receive(:strikes_exceeded)
+        it 'reports stopped event once' do
+          expect(reporter).to receive(:stopped).once
+            .with(
+              memwd_handler_class: handler.class.name,
+              memwd_sleep_time_s: sleep_time_seconds
+            )
 
           watchdog.call
         end
 
-        it 'does not execute handler' do
-          expect(handler).not_to receive(:call)
+        context 'when gitlab_memory_watchdog ops toggle is off' do
+          before do
+            stub_feature_flags(gitlab_memory_watchdog: false)
+          end
 
-          watchdog.call
-        end
-      end
-
-      context 'when process exceeds threshold' do
-        let(:threshold_violated) { true }
-
-        it 'reports threshold violated event' do
-          expect(reporter).to receive(:threshold_violated).with(name)
-
-          watchdog.call
+          it 'does not trigger any monitor' do
+            expect(configuration).not_to receive(:monitors)
+          end
         end
 
-        context 'when process does not exceed the allowed number of strikes' do
-          it 'does not report strikes exceeded event' do
+        context 'when process does not exceed threshold' do
+          it 'does not report violations event' do
+            expect(reporter).not_to receive(:threshold_violated)
             expect(reporter).not_to receive(:strikes_exceeded)
 
             watchdog.call
@@ -123,76 +129,93 @@ RSpec.describe Gitlab::Memory::Watchdog, :aggregate_failures, feature_category: 
           end
         end
 
-        context 'when monitor exceeds the allowed number of strikes' do
-          let(:max_strikes) { 0 }
+        context 'when process exceeds threshold' do
+          let(:threshold_violated) { true }
 
-          it 'reports strikes exceeded event' do
-            expect(reporter).to receive(:strikes_exceeded)
-              .with(
-                name,
-                memwd_handler_class: handler.class.name,
-                memwd_sleep_time_s: sleep_time_seconds,
-                memwd_cur_strikes: 1,
-                memwd_max_strikes: max_strikes,
-                message: "dummy_text"
-              )
+          it 'reports threshold violated event' do
+            expect(reporter).to receive(:threshold_violated).with(name)
 
             watchdog.call
           end
 
-          it 'executes handler' do
-            expect(handler).to receive(:call)
+          context 'when process does not exceed the allowed number of strikes' do
+            it 'does not report strikes exceeded event' do
+              expect(reporter).not_to receive(:strikes_exceeded)
 
-            watchdog.call
-          end
-
-          it 'schedules a heap dump' do
-            expect(Gitlab::Memory::Reports::HeapDump).to receive(:enqueue!)
-
-            watchdog.call
-          end
-
-          context 'when enforce_memory_watchdog ops toggle is off' do
-            before do
-              stub_feature_flags(enforce_memory_watchdog: false)
+              watchdog.call
             end
 
-            it 'always uses the NullHandler' do
+            it 'does not execute handler' do
               expect(handler).not_to receive(:call)
-              expect(described_class::NullHandler.instance).to receive(:call).and_return(true)
 
               watchdog.call
             end
           end
 
-          context 'when multiple monitors exceeds allowed number of strikes' do
-            before do
-              watchdog.configure do |config|
-                config.handler = handler
-                config.event_reporter = reporter
-                config.sleep_time_seconds = sleep_time_seconds
-                config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
-                config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
+          context 'when monitor exceeds the allowed number of strikes' do
+            let(:max_strikes) { 0 }
+
+            it 'reports strikes exceeded event' do
+              expect(reporter).to receive(:strikes_exceeded)
+                .with(
+                  name,
+                  memwd_handler_class: handler.class.name,
+                  memwd_sleep_time_s: sleep_time_seconds,
+                  memwd_cur_strikes: 1,
+                  memwd_max_strikes: max_strikes,
+                  message: "dummy_text"
+                )
+
+              watchdog.call
+            end
+
+            it 'executes handler and stops the watchdog' do
+              expect(handler).to receive(:call).and_return(true)
+              expect(reporter).to receive(:stopped).once
+                .with(
+                  memwd_handler_class: handler.class.name,
+                  memwd_sleep_time_s: sleep_time_seconds,
+                  memwd_reason: 'successfully handled'
+                )
+
+              watchdog.call
+            end
+
+            it 'schedules a heap dump' do
+              expect(Gitlab::Memory::Reports::HeapDump).to receive(:enqueue!)
+
+              watchdog.call
+            end
+
+            context 'when enforce_memory_watchdog ops toggle is off' do
+              before do
+                stub_feature_flags(enforce_memory_watchdog: false)
+              end
+
+              it 'always uses the NullHandler' do
+                expect(handler).not_to receive(:call)
+                expect(described_class::NullHandler.instance).to receive(:call).and_return(true)
+
+                watchdog.call
               end
             end
 
-            it 'only calls the handler once' do
-              expect(handler).to receive(:call).once.and_return(true)
+            context 'when multiple monitors exceeds allowed number of strikes' do
+              before do
+                watchdog.configure do |config|
+                  config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
+                  config.monitors.push monitor_class, threshold_violated, payload, max_strikes: max_strikes
+                end
+              end
 
-              watchdog.call
+              it 'only calls the handler once' do
+                expect(handler).to receive(:call).once.and_return(true)
+
+                watchdog.call
+              end
             end
           end
         end
-      end
-
-      it 'reports stopped event once' do
-        expect(reporter).to receive(:stopped).once
-          .with(
-            memwd_handler_class: handler.class.name,
-            memwd_sleep_time_s: sleep_time_seconds
-          )
-
-        watchdog.call
       end
     end
 

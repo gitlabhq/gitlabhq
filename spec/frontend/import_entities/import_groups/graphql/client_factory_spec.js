@@ -10,12 +10,11 @@ import {
 import { LocalStorageCache } from '~/import_entities/import_groups/graphql/services/local_storage_cache';
 import importGroupsMutation from '~/import_entities/import_groups/graphql/mutations/import_groups.mutation.graphql';
 import updateImportStatusMutation from '~/import_entities/import_groups/graphql/mutations/update_import_status.mutation.graphql';
-import availableNamespacesQuery from '~/import_entities/import_groups/graphql/queries/available_namespaces.query.graphql';
 import bulkImportSourceGroupsQuery from '~/import_entities/import_groups/graphql/queries/bulk_import_source_groups.query.graphql';
 
 import axios from '~/lib/utils/axios_utils';
 import httpStatus from '~/lib/utils/http_status';
-import { statusEndpointFixture, availableNamespacesFixture } from './fixtures';
+import { statusEndpointFixture } from './fixtures';
 
 jest.mock('~/flash');
 jest.mock('~/import_entities/import_groups/graphql/services/local_storage_cache', () => ({
@@ -28,7 +27,6 @@ jest.mock('~/import_entities/import_groups/graphql/services/local_storage_cache'
 
 const FAKE_ENDPOINTS = {
   status: '/fake_status_url',
-  availableNamespaces: '/fake_available_namespaces',
   createBulkImport: '/fake_create_bulk_import',
   jobs: '/fake_jobs',
 };
@@ -55,14 +53,6 @@ describe('Bulk import resolvers', () => {
     client = createClient();
 
     axiosMockAdapter.onGet(FAKE_ENDPOINTS.status).reply(httpStatus.OK, statusEndpointFixture);
-    axiosMockAdapter.onGet(FAKE_ENDPOINTS.availableNamespaces).reply(
-      httpStatus.OK,
-      availableNamespacesFixture.map((ns) => ({
-        id: ns.id,
-        full_path: ns.fullPath,
-      })),
-    );
-
     client.watchQuery({ query: bulkImportSourceGroupsQuery }).subscribe(({ data }) => {
       results = data.bulkImportSourceGroups.nodes;
     });
@@ -75,22 +65,6 @@ describe('Bulk import resolvers', () => {
   });
 
   describe('queries', () => {
-    describe('availableNamespaces', () => {
-      let namespacesResults;
-      beforeEach(async () => {
-        const response = await client.query({ query: availableNamespacesQuery });
-        namespacesResults = response.data.availableNamespaces;
-      });
-
-      it('mirrors REST endpoint response fields', () => {
-        const extractRelevantFields = (obj) => ({ id: obj.id, full_path: obj.full_path });
-
-        expect(namespacesResults.map(extractRelevantFields)).toStrictEqual(
-          availableNamespacesFixture.map(extractRelevantFields),
-        );
-      });
-    });
-
     describe('bulkImportSourceGroups', () => {
       it('respects cached import state when provided by group manager', async () => {
         const [localStorageCache] = LocalStorageCache.mock.instances;

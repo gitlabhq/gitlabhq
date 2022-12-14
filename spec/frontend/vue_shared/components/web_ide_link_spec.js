@@ -452,7 +452,7 @@ describe('Web IDE link component', () => {
         expect(findUserCalloutDismisser().props()).toEqual(
           expect.objectContaining({
             skipQuery: false,
-            featureName: 'vscode_web_ide',
+            featureName: 'vscode_web_ide_callout',
           }),
         );
       });

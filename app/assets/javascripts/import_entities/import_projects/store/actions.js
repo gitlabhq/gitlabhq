@@ -176,22 +176,6 @@ export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, d
   });
 };
 
-const fetchNamespacesFactory = (namespacesPath = isRequired()) => ({ commit }) => {
-  commit(types.REQUEST_NAMESPACES);
-  axios
-    .get(namespacesPath)
-    .then(({ data }) =>
-      commit(types.RECEIVE_NAMESPACES_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true })),
-    )
-    .catch(() => {
-      createAlert({
-        message: s__('ImportProjects|Requesting namespaces failed'),
-      });
-
-      commit(types.RECEIVE_NAMESPACES_ERROR);
-    });
-};
-
 const setFilter = ({ commit, dispatch }, filter) => {
   commit(types.SET_FILTER, filter);
 
@@ -208,5 +192,4 @@ export default ({ endpoints = isRequired() }) => ({
   fetchRepos: fetchReposFactory({ reposPath: endpoints.reposPath }),
   fetchImport: fetchImportFactory(endpoints.importPath),
   fetchJobs: fetchJobsFactory(endpoints.jobsPath),
-  fetchNamespaces: fetchNamespacesFactory(endpoints.namespacesPath),
 });

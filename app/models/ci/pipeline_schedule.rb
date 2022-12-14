@@ -78,8 +78,6 @@ module Ci
       ref.start_with? 'refs/tags/'
     end
 
-    private
-
     def worker_cron_expression
       Settings.cron_jobs['pipeline_schedule_worker']['cron']
     end

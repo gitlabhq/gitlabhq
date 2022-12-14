@@ -49,6 +49,8 @@ health check manually to get this information and a few more details.
 
 #### Health check Rake task
 
+> The use of a custom NTP server was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105514) in GitLab 15.7.
+
 This Rake task can be run on a **Rails** node in the **primary** or **secondary**
 Geo sites:
 
@@ -79,6 +81,22 @@ All projects are in hashed storage? ... yes
 
 Checking Geo ... Finished
 ```
+
+You can also specify a custom NTP server using environment variables. For example:
+
+```shell
+export NTP_HOST="ntp.ubuntu.com"
+export NTP_TIMEOUT="30"
+sudo gitlab-rake gitlab:geo:check
+```
+
+The following environment variables are supported.
+
+| Variable    | Description | Default value |
+| ----------- | ----------- | ------------- |
+|`NTP_HOST`   | The NTP host. | `pool.ntp.org` |
+|`NTP_PORT`   | The NTP port the host listens on. |`ntp`|
+|`NTP_TIMEOUT`| The NTP timeout in seconds. | The value defined in the `net-ntp` Ruby library ([60 seconds](https://github.com/zencoder/net-ntp/blob/3d0990214f439a5127782e0f50faeaf2c8ca7023/lib/net/ntp/ntp.rb#L6)). |
 
 #### Sync status Rake task
 

@@ -95,12 +95,6 @@ describe('ImportProjectsTable', () => {
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
-  it('renders a loading icon while namespaces are loading', () => {
-    createComponent({ state: { isLoadingNamespaces: true } });
-
-    expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
-  });
-
   it('renders a table with provider repos', () => {
     const repositories = [
       { importSource: { id: 1 }, importedProject: null },

@@ -7,12 +7,13 @@ const accessTokensPath = '/path/to/access-tokens-page';
 const terraformApiUrl = 'https://gitlab.com/api/v4/projects/1';
 const username = 'username';
 const modalId = 'fake-modal-id';
-const stateName = 'production';
+const stateName = 'aws/eu-central-1';
+const stateNameEncoded = encodeURIComponent(stateName);
 const modalInfoCopyStr = `export GITLAB_ACCESS_TOKEN=<YOUR-ACCESS-TOKEN>
 terraform init \\
-    -backend-config="address=${terraformApiUrl}/${stateName}" \\
-    -backend-config="lock_address=${terraformApiUrl}/${stateName}/lock" \\
-    -backend-config="unlock_address=${terraformApiUrl}/${stateName}/lock" \\
+    -backend-config="address=${terraformApiUrl}/${stateNameEncoded}" \\
+    -backend-config="lock_address=${terraformApiUrl}/${stateNameEncoded}/lock" \\
+    -backend-config="unlock_address=${terraformApiUrl}/${stateNameEncoded}/lock" \\
     -backend-config="username=${username}" \\
     -backend-config="password=$GITLAB_ACCESS_TOKEN" \\
     -backend-config="lock_method=POST" \\
@@ -61,9 +62,15 @@ describe('InitCommandModal', () => {
       expect(findLink().attributes('href')).toBe(accessTokensPath);
     });
 
-    it('renders the init command with the username and state name prepopulated', () => {
-      expect(findInitCommand().text()).toContain(username);
-      expect(findInitCommand().text()).toContain(stateName);
+    describe('init command', () => {
+      it('includes correct address', () => {
+        expect(findInitCommand().text()).toContain(
+          `-backend-config="address=${terraformApiUrl}/${stateNameEncoded}"`,
+        );
+      });
+      it('includes correct username', () => {
+        expect(findInitCommand().text()).toContain(`-backend-config="username=${username}"`);
+      });
     });
 
     it('renders the copyToClipboard button', () => {

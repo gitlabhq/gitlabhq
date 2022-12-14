@@ -349,7 +349,10 @@ export default {
 </script>
 
 <template>
-  <user-callout-dismisser :skip-query="!displayVscodeWebIdeCallout" feature-name="vscode_web_ide">
+  <user-callout-dismisser
+    :skip-query="!displayVscodeWebIdeCallout"
+    feature-name="vscode_web_ide_callout"
+  >
     <template #default="{ dismiss, shouldShowCallout }">
       <div class="gl-sm-ml-3">
         <actions-button

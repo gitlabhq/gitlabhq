@@ -330,4 +330,4 @@ export const convertToSearchQuery = (filterTokens) =>
   filterTokens
     .filter((token) => token.type === FILTERED_SEARCH_TERM && token.value.data)
     .map((token) => token.value.data)
-    .join(' ');
+    .join(' ') || undefined;

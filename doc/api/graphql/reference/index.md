@@ -11994,6 +11994,7 @@ Approval summary of the deployment.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="deploymentpermissionsapprovedeployment"></a>`approveDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `approve_deployment` on this resource. This field can only be resolved for one environment in any single request. |
 | <a id="deploymentpermissionsdestroydeployment"></a>`destroyDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `destroy_deployment` on this resource. |
 | <a id="deploymentpermissionsupdatedeployment"></a>`updateDeployment` | [`Boolean!`](#boolean) | Indicates the user can perform `update_deployment` on this resource. |
 
@@ -22798,6 +22799,7 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumuser_reached_limit_free_plan_alert"></a>`USER_REACHED_LIMIT_FREE_PLAN_ALERT` | Callout feature name for user_reached_limit_free_plan_alert. |
 | <a id="usercalloutfeaturenameenumverification_reminder"></a>`VERIFICATION_REMINDER` | Callout feature name for verification_reminder. |
 | <a id="usercalloutfeaturenameenumvscode_web_ide"></a>`VSCODE_WEB_IDE` | Callout feature name for vscode_web_ide. |
+| <a id="usercalloutfeaturenameenumvscode_web_ide_callout"></a>`VSCODE_WEB_IDE_CALLOUT` | Callout feature name for vscode_web_ide_callout. |
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
 

@@ -1,16 +1,61 @@
 import { GlSearchBoxByType, GlDropdown } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import GroupDropdown from '~/import_entities/components/group_dropdown.vue';
+import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
+import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+
+Vue.use(VueApollo);
+
+const makeGroupMock = (fullPath) => ({
+  id: `gid://gitlab/Group/${fullPath}`,
+  fullPath,
+  name: fullPath,
+  visibility: 'public',
+  webUrl: `http://gdk.test:3000/groups/${fullPath}`,
+  __typename: 'Group',
+});
+
+const AVAILABLE_NAMESPACES = [
+  makeGroupMock('match1'),
+  makeGroupMock('unrelated'),
+  makeGroupMock('match2'),
+];
+
+const SEARCH_NAMESPACES_MOCK = Promise.resolve({
+  data: {
+    currentUser: {
+      id: 'gid://gitlab/User/1',
+      groups: {
+        nodes: AVAILABLE_NAMESPACES,
+        __typename: 'GroupConnection',
+      },
+      namespace: {
+        id: 'gid://gitlab/Namespaces::UserNamespace/1',
+        fullPath: 'root',
+        __typename: 'Namespace',
+      },
+      __typename: 'UserCore',
+    },
+  },
+});
 
 describe('Import entities group dropdown component', () => {
   let wrapper;
   let namespacesTracker;
 
   const createComponent = (propsData) => {
+    const apolloProvider = createMockApollo([
+      [searchNamespacesWhereUserCanCreateProjectsQuery, () => SEARCH_NAMESPACES_MOCK],
+    ]);
+
     namespacesTracker = jest.fn();
 
     wrapper = shallowMount(GroupDropdown, {
+      apolloProvider,
       scopedSlots: {
         default: namespacesTracker,
       },
@@ -23,33 +68,30 @@ describe('Import entities group dropdown component', () => {
     wrapper.destroy();
   });
 
-  it('passes namespaces from props to default slot', () => {
-    const namespaces = [
-      { id: 1, fullPath: 'ns1' },
-      { id: 2, fullPath: 'ns2' },
-    ];
-    createComponent({ namespaces });
+  it('passes namespaces from graphql query to default slot', async () => {
+    createComponent();
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    await nextTick();
+    await waitForPromises();
+    await nextTick();
 
-    expect(namespacesTracker).toHaveBeenCalledWith({ namespaces });
+    expect(namespacesTracker).toHaveBeenCalledWith({ namespaces: AVAILABLE_NAMESPACES });
   });
 
   it('filters namespaces based on user input', async () => {
-    const namespaces = [
-      { id: 1, fullPath: 'match1' },
-      { id: 2, fullPath: 'some unrelated' },
-      { id: 3, fullPath: 'match2' },
-    ];
-    createComponent({ namespaces });
+    createComponent();
 
     namespacesTracker.mockReset();
     wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', 'match');
-
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    await nextTick();
+    await waitForPromises();
     await nextTick();
 
     expect(namespacesTracker).toHaveBeenCalledWith({
       namespaces: [
-        { id: 1, fullPath: 'match1' },
-        { id: 3, fullPath: 'match2' },
+        expect.objectContaining({ fullPath: 'match1' }),
+        expect.objectContaining({ fullPath: 'match2' }),
       ],
     });
   });

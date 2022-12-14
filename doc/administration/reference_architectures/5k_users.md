@@ -41,7 +41,6 @@ costly-to-operate environment by using the
 | GitLab Rails                              | 3     | 16 vCPU, 14.4 GB memory | `n1-highcpu-16` | `c5.4xlarge` |
 | Monitoring node                           | 1     | 2 vCPU, 1.8 GB memory   | `n1-highcpu-2`  | `c5.large`   |
 | Object storage<sup>4</sup>                | -     | -                       | -               | -            |
-| NFS server (non-Gitaly)                   | 1     | 4 vCPU, 3.6 GB memory   | `n1-highcpu-4`  | `c5.xlarge`  |
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
@@ -231,9 +230,6 @@ To set up GitLab and its components to accommodate up to 5,000 users:
    environment.
 1. [Configure the object storage](#configure-the-object-storage)
    used for shared data objects.
-1. [Configure NFS](#configure-nfs-optional) (optional, and not recommended)
-   to have shared disk storage service as an alternative to Gitaly or object
-   storage.
 1. [Configure Advanced Search](#configure-advanced-search) (optional) for faster,
    more advanced code search across your entire GitLab instance.
 
@@ -1709,9 +1705,8 @@ To configure Praefect with TLS:
 
 Sidekiq requires connection to the [Redis](#configure-redis),
 [PostgreSQL](#configure-postgresql) and [Gitaly](#configure-gitaly) instances.
-Since it's recommended to use [Object storage](#configure-the-object-storage)
-over [NFS](#configure-nfs-optional) for data objects, the following examples
-include the Object storage configuration.
+Because you must use [Object storage](#configure-the-object-storage) instead of NFS for data objects, the following
+examples include the Object storage configuration.
 
 - `10.6.0.71`: Sidekiq 1
 - `10.6.0.72`: Sidekiq 2
@@ -1877,9 +1872,8 @@ run [multiple Sidekiq processes](../sidekiq/extra_sidekiq_processes.md).
 ## Configure GitLab Rails
 
 This section describes how to configure the GitLab application (Rails) component.
-Since it's recommended to use [Object storage](#configure-the-object-storage)
-over [NFS](#configure-nfs-optional) for data objects, the following examples
-include the Object storage configuration.
+Because you must use [Object storage](#configure-the-object-storage) instead of NFS for data objects, the following
+examples include the Object storage configuration.
 
 On each node perform the following:
 
@@ -2021,7 +2015,6 @@ On each node perform the following:
 
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the first Omnibus node you configured and add or replace
    the file of the same name on this server. If this is the first Omnibus node you are configuring then you can skip this step.
-
 1. To ensure database migrations are only run during reconfigure and not automatically on upgrade, run:
 
    ```shell
@@ -2032,11 +2025,8 @@ On each node perform the following:
    [GitLab Rails post-configuration](#gitlab-rails-post-configuration) section.
 
 1. [Reconfigure GitLab](../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-
-1. [Enable incremental logging](#enable-incremental-logging), unless you are using [NFS](#configure-nfs-optional).
-
+1. [Enable incremental logging](#enable-incremental-logging).
 1. Run `sudo gitlab-rake gitlab:gitaly:check` to confirm the node can connect to Gitaly.
-
 1. Tail the logs to see the requests:
 
    ```shell
@@ -2175,9 +2165,6 @@ running [Prometheus](../monitoring/prometheus/index.md) and
 ## Configure the object storage
 
 GitLab supports using an object storage service for holding numerous types of data.
-It's recommended over [NFS](#configure-nfs-optional) and in general it's better
-in larger setups as object storage is typically much more performant, reliable,
-and scalable.
 
 GitLab has been tested on a number of object storage providers:
 
@@ -2201,7 +2188,7 @@ NOTE:
 When using the [storage-specific form](../object_storage.md#storage-specific-configuration)
 in GitLab 14.x and earlier, you should enable [direct upload mode](../../development/uploads/index.md#direct-upload).
 The previous [background upload](../../development/uploads/index.md#direct-upload) mode,
-which was deprecated in 14.9, requires shared storage such as [NFS](#configure-nfs-optional).
+which was deprecated in 14.9, requires shared storage such as NFS.
 
 Using separate buckets for each data type is the recommended approach for GitLab.
 This ensures there are no collisions across the various types of data GitLab stores.
@@ -2219,22 +2206,6 @@ in the future.
 GitLab Runner returns job logs in chunks which Omnibus GitLab caches temporarily on disk in `/var/opt/gitlab/gitlab-ci/builds` by default, even when using consolidated object storage. With default configuration, this directory needs to be shared through NFS on any GitLab Rails and Sidekiq nodes.
 
 While sharing the job logs through NFS is supported, it's recommended to avoid the need to use NFS by enabling [incremental logging](../job_logs.md#incremental-logging-architecture) (required when no NFS node has been deployed). Incremental logging uses Redis instead of disk space for temporary caching of job logs.
-
-## Configure NFS (optional)
-
-[Object storage](#configure-the-object-storage), along with [Gitaly](#configure-gitaly)
-are recommended over NFS wherever possible for improved performance.
-
-See how to [configure NFS](../nfs.md).
-
-WARNING:
-Engineering support for NFS for Git repositories is deprecated, and [technical support is scheduled to be unavailable](../nfs.md#gitaly-and-nfs-deprecation)
-after the release of GitLab 15.6. No further enhancements are planned for this feature.
-
-Read:
-
-- [Gitaly and NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation).
-- About the [correct mount options to use](../nfs.md#upgrade-to-gitaly-cluster-or-disable-caching-if-experiencing-data-loss).
 
 ## Configure Advanced Search
 

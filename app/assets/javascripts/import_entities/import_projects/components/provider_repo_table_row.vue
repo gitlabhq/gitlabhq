@@ -39,10 +39,6 @@ export default {
       type: String,
       required: true,
     },
-    availableNamespaces: {
-      type: Array,
-      required: true,
-    },
     optionalStages: {
       type: Object,
       required: true,
@@ -127,11 +123,7 @@ export default {
       <template v-if="repo.importSource.target">{{ repo.importSource.target }}</template>
       <template v-else-if="isImportNotStarted">
         <div class="import-entities-target-select gl-display-flex gl-align-items-stretch gl-w-full">
-          <import-group-dropdown
-            #default="{ namespaces }"
-            :text="importTarget.targetNamespace"
-            :namespaces="availableNamespaces"
-          >
+          <import-group-dropdown #default="{ namespaces }" :text="importTarget.targetNamespace">
             <template v-if="namespaces.length">
               <gl-dropdown-section-header>{{ __('Groups') }}</gl-dropdown-section-header>
               <gl-dropdown-item

@@ -1,9 +1,22 @@
 import { GlDropdownItem, GlFormInput } from '@gitlab/ui';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
 import { shallowMount } from '@vue/test-utils';
+import createMockApollo from 'helpers/mock_apollo_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import ImportGroupDropdown from '~/import_entities/components/group_dropdown.vue';
 import { STATUSES } from '~/import_entities/constants';
 import ImportTargetCell from '~/import_entities/import_groups/components/import_target_cell.vue';
-import { generateFakeEntry, availableNamespacesFixture } from '../graphql/fixtures';
+import { DEBOUNCE_DELAY } from '~/vue_shared/components/filtered_search_bar/constants';
+import searchNamespacesWhereUserCanCreateProjectsQuery from '~/projects/new/queries/search_namespaces_where_user_can_create_projects.query.graphql';
+
+import {
+  generateFakeEntry,
+  availableNamespacesFixture,
+  AVAILABLE_NAMESPACES,
+} from '../graphql/fixtures';
+
+Vue.use(VueApollo);
 
 const generateFakeTableEntry = ({ flags = {}, ...config }) => {
   const entry = generateFakeEntry(config);
@@ -11,7 +24,7 @@ const generateFakeTableEntry = ({ flags = {}, ...config }) => {
   return {
     ...entry,
     importTarget: {
-      targetNamespace: availableNamespacesFixture[0],
+      targetNamespace: AVAILABLE_NAMESPACES[0],
       newName: entry.lastImportTarget.newName,
     },
     flags,
@@ -20,16 +33,24 @@ const generateFakeTableEntry = ({ flags = {}, ...config }) => {
 
 describe('import target cell', () => {
   let wrapper;
+  let apolloProvider;
   let group;
 
   const findNameInput = () => wrapper.findComponent(GlFormInput);
   const findNamespaceDropdown = () => wrapper.findComponent(ImportGroupDropdown);
 
   const createComponent = (props) => {
+    apolloProvider = createMockApollo([
+      [
+        searchNamespacesWhereUserCanCreateProjectsQuery,
+        () => Promise.resolve(availableNamespacesFixture),
+      ],
+    ]);
+
     wrapper = shallowMount(ImportTargetCell, {
+      apolloProvider,
       stubs: { ImportGroupDropdown },
       propsData: {
-        availableNamespaces: availableNamespacesFixture,
         groupPathRegex: /.*/,
         ...props,
       },
@@ -42,9 +63,12 @@ describe('import target cell', () => {
   });
 
   describe('events', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       group = generateFakeTableEntry({ id: 1, status: STATUSES.NONE });
       createComponent({ group });
+      await nextTick();
+      jest.advanceTimersByTime(DEBOUNCE_DELAY);
+      await nextTick();
     });
 
     it('emits update-new-name when input value is changed', () => {
@@ -59,7 +83,9 @@ describe('import target cell', () => {
       dropdownItem.vm.$emit('click');
 
       expect(wrapper.emitted('update-target-namespace')).toBeDefined();
-      expect(wrapper.emitted('update-target-namespace')[0][0]).toBe(availableNamespacesFixture[1]);
+      expect(wrapper.emitted('update-target-namespace')[0][0]).toStrictEqual(
+        AVAILABLE_NAMESPACES[1],
+      );
     });
   });
 
@@ -94,18 +120,20 @@ describe('import target cell', () => {
     expect(items).toHaveLength(1);
   });
 
-  it('renders both no parent option and available namespaces list when available namespaces list is not empty', () => {
+  it('renders both no parent option and available namespaces list when available namespaces list is not empty', async () => {
     createComponent({
       group: generateFakeTableEntry({ id: 1, status: STATUSES.NONE }),
-      availableNamespaces: availableNamespacesFixture,
     });
+    jest.advanceTimersByTime(DEBOUNCE_DELAY);
+    await waitForPromises();
+    await nextTick();
 
     const [firstItem, ...rest] = findNamespaceDropdown()
       .findAllComponents(GlDropdownItem)
       .wrappers.map((w) => w.text());
 
     expect(firstItem).toBe('No parent');
-    expect(rest).toHaveLength(availableNamespacesFixture.length);
+    expect(rest).toHaveLength(AVAILABLE_NAMESPACES.length);
   });
 
   describe('when entity is not available for import', () => {

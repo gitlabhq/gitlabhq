@@ -201,7 +201,7 @@
 {"name":"gitaly","version":"15.5.2","platform":"ruby","checksum":"62babe0596a4505bf95051ea50f17160055e6cf6cacf209273691542120d7881"},
 {"name":"gitlab","version":"4.19.0","platform":"ruby","checksum":"3f645e3e195dbc24f0834fbf83e8ccfb2056d8e9712b01a640aad418a6949679"},
 {"name":"gitlab-chronic","version":"0.10.5","platform":"ruby","checksum":"f80f18dc699b708870a80685243331290bc10cfeedb6b99c92219722f729c875"},
-{"name":"gitlab-dangerfiles","version":"3.6.3","platform":"ruby","checksum":"c696893dcadd99cd1f2074a335085f64bd601ff5778f3c704c98fd6c5ba23e88"},
+{"name":"gitlab-dangerfiles","version":"3.6.4","platform":"ruby","checksum":"864ea24440349ef233ede0d767537d33be4e3c719b298dfd3244b70b4d01756c"},
 {"name":"gitlab-experiment","version":"0.7.1","platform":"ruby","checksum":"166dddb3aa83428bcaa93c35684ed01dc4d61f321fd2ae40b020806dc54a7824"},
 {"name":"gitlab-fog-azure-rm","version":"1.4.0","platform":"ruby","checksum":"af4163c32b028aa5208814a3f4765a5817d50527e6c61931f766bf18a2e0eb7e"},
 {"name":"gitlab-labkit","version":"0.29.0","platform":"ruby","checksum":"eb19ac5c11698683775ab847a3441d7af87d72fbaec38d635149fb65c5d9b427"},

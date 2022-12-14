@@ -13,6 +13,7 @@ import { debounce } from 'lodash';
 import Tracking from '~/tracking';
 import { s__, __ } from '~/locale';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+import { MILESTONE_STATE } from '~/sidebar/constants';
 import projectMilestonesQuery from '~/sidebar/queries/project_milestones.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import {
@@ -140,6 +141,7 @@ export default {
         return {
           fullPath: this.fullPath,
           title: this.searchTerm,
+          state: MILESTONE_STATE.ACTIVE,
           first: 20,
         };
       },

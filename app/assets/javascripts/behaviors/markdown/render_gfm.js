@@ -5,6 +5,7 @@ import { renderKroki } from './render_kroki';
 import renderMath from './render_math';
 import renderSandboxedMermaid from './render_sandboxed_mermaid';
 import renderMetrics from './render_metrics';
+import renderObservability from './render_observability';
 import { renderJSONTable } from './render_json_table';
 
 // Render GitLab flavoured Markdown
@@ -32,6 +33,7 @@ $.fn.renderGFM = function renderGFM() {
   }
 
   renderMetrics(this.find('.js-render-metrics').get());
+  renderObservability(this.find('.js-render-observability').get());
   return this;
 };
 

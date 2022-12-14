@@ -10,3 +10,5 @@ module Types
     end
   end
 end
+
+Types::PermissionTypes::Deployment.prepend_mod_with('Types::PermissionTypes::Deployment')

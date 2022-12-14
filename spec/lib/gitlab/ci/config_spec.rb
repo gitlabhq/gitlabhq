@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config do
+RSpec.describe Gitlab::Ci::Config, feature_category: :pipeline_authoring do
   include StubRequests
 
   let_it_be(:user) { create(:user) }
@@ -503,7 +503,7 @@ RSpec.describe Gitlab::Ci::Config do
 
         expect { config }.to raise_error(
           described_class::ConfigError,
-          'Resolving config took longer than expected'
+          'Request timed out when fetching configuration files.'
         )
       end
     end

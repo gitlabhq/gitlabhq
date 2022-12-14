@@ -54,9 +54,8 @@ Before deploying Gitaly Cluster, review:
 
 If you have:
 
-- Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. NFS is
-  supported in 14.x releases but is [deprecated](../../update/deprecations.md#nfs-for-git-repository-storage).
-  Support for storing Git repository data on NFS is scheduled to end for all versions of GitLab on November 22, 2022.
+- Not yet migrated to Gitaly Cluster and want to continue using NFS, remain on the service you are using. However, NFS
+  is [no longer supported](../../update/removals.md#nfs-as-git-repository-storage-is-no-longer-supported).
 - Not yet migrated to Gitaly Cluster but want to migrate away from NFS, you have two options:
   - A sharded Gitaly instance.
   - Gitaly Cluster.
@@ -104,35 +103,8 @@ These IOPS values are initial recommendations, and may be adjusted to greater or
 depending on the scale of your environment's workload. If you’re running the environment on a
 cloud provider, refer to their documentation about how to configure IOPS correctly.
 
-For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons. Alternatives such as
-[NFS](#moving-beyond-nfs) or [cloud-based systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.
-
-### Moving beyond NFS
-
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be unavailable starting
-November 22, 2022. See our [statement of support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
-for more details.
-
-[Network File System (NFS)](https://en.wikipedia.org/wiki/Network_File_System)
-is not well suited to Git workloads which are CPU and IOPS sensitive.
-Specifically:
-
-- Git is sensitive to file system latency. Some operations require many
-  read operations. Operations that are fast on block storage can become an order of
-  magnitude slower. This significantly impacts GitLab application performance.
-- NFS performance optimizations that prevent the performance gap between
-  block storage and NFS being even wider are vulnerable to race conditions. We have observed
-  [data inconsistencies](https://gitlab.com/gitlab-org/gitaly/-/issues/2589)
-  in production environments caused by simultaneous writes to different NFS
-  clients. Data corruption is not an acceptable risk.
-
-Gitaly Cluster is purpose built to provide reliable, high performance, fault
-tolerant Git storage.
-
-Further reading:
-
-- Blog post: [The road to Gitaly v1.0 (aka, why GitLab doesn't require NFS for storing Git data anymore)](https://about.gitlab.com/blog/2018/09/12/the-road-to-gitaly-1-0/)
-- Blog post: [How we spent two weeks hunting an NFS bug in the Linux kernel](https://about.gitlab.com/blog/2018/11/14/how-we-spent-two-weeks-hunting-an-nfs-bug/)
+For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons.
+Alternatives such as [NFS](../nfs.md) or [cloud-based file systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.
 
 ## Directly accessing repositories
 
@@ -713,8 +685,3 @@ There are two facets to our efforts to remove direct Git access in GitLab:
 
 The second facet presents the only real solution. For this, we developed
 [Gitaly Cluster](#gitaly-cluster).
-
-## NFS deprecation notice
-
-Engineering support for NFS for Git repositories is deprecated. Technical support is planned to be
-unavailable beginning November 22, 2022. For further information, see our [NFS Deprecation](../nfs.md#gitaly-and-nfs-deprecation) documentation.

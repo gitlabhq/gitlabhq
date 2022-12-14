@@ -65,9 +65,12 @@ As of December 22, 2022, we are removing the Flowdock integration because the se
 
 ## Removed in 15.6
 
-### NFS as Git repository storage is no longer supported. Migrate to Gitaly Cluster as soon as possible
+### NFS as Git repository storage is no longer supported
 
-As of November 22, 2022, we are removing support for customers utilizing NFS for Git repository storage. This was originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we chose to extend our removal of support date until now. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs) for further information.
+As of November 22, 2022, we have removed support for customers using NFS for Git repository storage. This was
+originally planned for May 22, 2022, but in an effort to allow continued maturity of Gitaly Cluster, we delayed
+our removal of support date until now. Please see our official [Statement of Support](https://about.gitlab.com/support/statement-of-support/#gitaly-and-nfs)
+for further information.
 
 This change in support follows the development deprecation for NFS for Git repository storage that occurred in GitLab 14.0.
 

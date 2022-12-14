@@ -28008,8 +28008,6 @@ CREATE INDEX product_analytics_events_exper_project_id_collector_tstamp_idx9 ON 
 
 CREATE INDEX product_analytics_events_experi_project_id_collector_tstamp_idx ON gitlab_partitions_static.product_analytics_events_experimental_00 USING btree (project_id, collector_tstamp);
 
-CREATE INDEX active_billable_users ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[NULL::integer, 6, 4]))) AND ((user_type IS NULL) OR (user_type <> ALL ('{2,6,1,3,7,8}'::smallint[]))));
-
 CREATE INDEX analytics_index_audit_events_part_on_created_at_and_author_id ON ONLY audit_events USING btree (created_at, author_id);
 
 CREATE INDEX analytics_index_events_on_created_at_and_author_id ON events USING btree (created_at, author_id);
@@ -31399,6 +31397,8 @@ CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHE
 CREATE INDEX index_web_hooks_on_integration_id ON web_hooks USING btree (integration_id);
 
 CREATE INDEX index_web_hooks_on_project_id ON web_hooks USING btree (project_id);
+
+CREATE INDEX index_users_for_active_billable ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[NULL::integer, 6, 4]))) AND ((user_type IS NULL) OR (user_type <> ALL ('{1,2,3,4,5,6,7,8,9,11}'::smallint[]))));
 
 CREATE INDEX index_web_hooks_on_project_id_recent_failures ON web_hooks USING btree (project_id, recent_failures);
 

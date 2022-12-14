@@ -364,7 +364,9 @@ This can lead to several confusing issues such as creating links or namespaces w
 GitLab can automatically lowercase usernames provided by the LDAP server by enabling
 the configuration option `lowercase_usernames`. By default, this configuration option is `false`.
 
-**Omnibus configuration**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -379,7 +381,7 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-**Source configuration**
+:::TabTitle Self-compiled (source)
 
 1. Edit `config/gitlab.yaml`:
 
@@ -394,6 +396,8 @@ the configuration option `lowercase_usernames`. By default, this configuration o
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
 
+::EndTabs
+
 ### Disable LDAP web sign in
 
 It can be useful to prevent using LDAP credentials through the web UI when
@@ -404,7 +408,9 @@ checks like custom 2FA.
 When LDAP web sign in is disabled, users don't see an **LDAP** tab on the sign-in page.
 This does not disable using LDAP credentials for Git access.
 
-**Omnibus configuration**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 
@@ -414,7 +420,30 @@ This does not disable using LDAP credentials for Git access.
 
 1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-**Source configuration**
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       ldap:
+         preventSignin: true
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Self-compiled (source)
 
 1. Edit `config/gitlab.yaml`:
 
@@ -425,6 +454,8 @@ This does not disable using LDAP credentials for Git access.
    ```
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+::EndTabs
 
 ### Use encrypted credentials
 
@@ -445,7 +476,9 @@ The supported configuration items for the encrypted file are:
 
 The encrypted contents can be configured with the [LDAP secret edit Rake command](../../raketasks/ldap.md#edit-secret).
 
-**Omnibus configuration**
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
 
 If initially your LDAP configuration looked like:
 
@@ -479,7 +512,7 @@ If initially your LDAP configuration looked like:
 
 1. [Reconfigure GitLab](../../restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
 
-**Source configuration**
+:::TabTitle Self-compiled (source)
 
 If initially your LDAP configuration looked like:
 
@@ -512,6 +545,8 @@ If initially your LDAP configuration looked like:
 1. Edit `config/gitlab.yaml` and remove the settings for `bind_dn` and `password`.
 
 1. [Restart GitLab](../../restart_gitlab.md#installations-from-source) for the changes to take effect.
+
+::EndTabs
 
 ## Updating LDAP DN and email
 

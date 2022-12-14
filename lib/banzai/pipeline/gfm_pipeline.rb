@@ -37,6 +37,7 @@ module Banzai
           Filter::CustomEmojiFilter,
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
+          Filter::InlineObservabilityFilter,
           Filter::SetDirectionFilter,
           Filter::SyntaxHighlightFilter # this filter should remain at the end
         ]

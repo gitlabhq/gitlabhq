@@ -134,7 +134,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       runner_data = graphql_data_at(:runner)
       expect(runner_data).not_to be_nil
 
-      expect(runner_data).to match a_graphql_entity_for(runner, :tag_list, admin_url: nil)
+      expect(runner_data).to match a_graphql_entity_for(runner, admin_url: nil)
+      expect(runner_data['tagList']).to match_array runner.tag_list
     end
   end
 
