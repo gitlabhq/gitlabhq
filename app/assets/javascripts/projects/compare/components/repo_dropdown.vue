@@ -57,7 +57,7 @@ export default {
     <gl-dropdown
       :text="selectedProject.name"
       :header-text="s__(`CompareRevisions|Select target project`)"
-      class="gl-w-full gl-font-monospace gl-sm-pr-3"
+      class="gl-w-full gl-font-monospace"
       toggle-class="gl-min-w-0"
       :disabled="disableRepoDropdown"
     >

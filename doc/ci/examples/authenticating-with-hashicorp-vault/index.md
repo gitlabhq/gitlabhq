@@ -184,6 +184,31 @@ This example uses [bound claims](https://developer.hashicorp.com/vault/api-docs/
 
 Combined with [protected branches](../../../user/project/protected_branches.md), you can restrict who is able to authenticate and read the secrets.
 
+To use the same policy for a list of projects, use `namespace_id`:
+
+```json
+"bound_claims": {
+  "namespace_id": ["12", "22", "37"]
+}
+```
+
+Any of the claims [included in the JWT](#how-it-works) can be matched against a list of values
+in the bound claims. For example:
+
+```json
+"bound_claims": {
+  "user_login": ["alice", "bob", "mallory"]
+}
+
+"bound_claims": {
+  "ref": ["main", "develop", "test"]
+}
+
+"bound_claims": {
+  "project_id": ["12", "22", "37"]
+}
+```
+
 [`token_explicit_max_ttl`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#token_explicit_max_ttl) specifies that the token issued by Vault, upon successful authentication, has a hard lifetime limit of 60 seconds.
 
 [`user_claim`](https://developer.hashicorp.com/vault/api-docs/auth/jwt#user_claim) specifies the name for the Identity alias created by Vault upon a successful login.

@@ -337,6 +337,53 @@ RSpec.describe Issuable do
     it { expect(MergeRequest.to_ability_name).to eq("merge_request") }
   end
 
+  describe '.without_hidden' do
+    let_it_be(:banned_user) { create(:user, :banned) }
+
+    where(issuable_type: [:issue, :merge_request])
+
+    with_them do
+      let!(:public_issuable) { create(issuable_type, :closed) }
+      let!(:hidden_issuable) { create(issuable_type, :closed, author: banned_user) }
+
+      subject { issuable_type.to_s.classify.constantize.without_hidden }
+
+      it 'only returns public issuables' do
+        expect(subject).to contain_exactly(public_issuable)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(ban_user_feature_flag: false)
+        end
+
+        it 'returns public and hidden issuables' do
+          expect(subject).to contain_exactly(public_issuable, hidden_issuable)
+        end
+      end
+    end
+  end
+
+  describe '#hidden?' do
+    let_it_be(:author) { create(:user) }
+
+    where(issuable_type: [:issue, :merge_request])
+
+    with_them do
+      let(:issuable) { build_stubbed(issuable_type, author: author) }
+
+      subject { issuable.hidden? }
+
+      it { is_expected.to eq(false) }
+
+      context 'when the author is banned' do
+        let_it_be(:author) { create(:user, :banned) }
+
+        it { is_expected.to eq(true) }
+      end
+    end
+  end
+
   describe "#sort_by_attribute" do
     let(:project) { create(:project) }
 

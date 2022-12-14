@@ -1,5 +1,4 @@
 <script>
-import { GlEmptyState } from '@gitlab/ui';
 import PaginationLinks from '~/vue_shared/components/pagination_links.vue';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -12,7 +11,6 @@ export default {
   },
   components: {
     PaginationLinks,
-    GlEmptyState,
   },
   props: {
     groups: {
@@ -21,10 +19,6 @@ export default {
     },
     pageInfo: {
       type: Object,
-      required: true,
-    },
-    searchEmpty: {
-      type: Boolean,
       required: true,
     },
     action: {
@@ -46,18 +40,11 @@ export default {
 
 <template>
   <div class="groups-list-tree-container" data-qa-selector="groups_list_tree_container">
-    <gl-empty-state
-      v-if="searchEmpty"
-      :title="$options.i18n.emptyStateTitle"
-      :description="$options.i18n.emptyStateDescription"
+    <group-folder :groups="groups" :action="action" />
+    <pagination-links
+      :change="change"
+      :page-info="pageInfo"
+      class="d-flex justify-content-center gl-mt-3"
     />
-    <template v-else>
-      <group-folder :groups="groups" :action="action" />
-      <pagination-links
-        :change="change"
-        :page-info="pageInfo"
-        class="d-flex justify-content-center gl-mt-3"
-      />
-    </template>
   </div>
 </template>

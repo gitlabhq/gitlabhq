@@ -86,8 +86,7 @@ import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
 import NewIssueDropdown from './new_issue_dropdown.vue';
 
-const AuthorToken = () =>
-  import('~/vue_shared/components/filtered_search_bar/tokens/author_token.vue');
+const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
 const LabelToken = () =>
@@ -290,10 +289,10 @@ export default {
       return convertToSearchQuery(this.filterTokens) || undefined;
     },
     searchTokens() {
-      const preloadedAuthors = [];
+      const preloadedUsers = [];
 
       if (gon.current_user_id) {
-        preloadedAuthors.push({
+        preloadedUsers.push({
           id: convertToGraphQLId(TYPE_USER, gon.current_user_id),
           name: gon.current_user_fullname,
           username: gon.current_username,
@@ -322,22 +321,22 @@ export default {
           type: TOKEN_TYPE_AUTHOR,
           title: TOKEN_TITLE_AUTHOR,
           icon: 'pencil',
-          token: AuthorToken,
-          defaultAuthors: [],
+          token: UserToken,
+          defaultUsers: [],
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
-          fetchAuthors: this.fetchUsers,
+          fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-author`,
-          preloadedAuthors,
+          preloadedUsers,
         },
         {
           type: TOKEN_TYPE_ASSIGNEE,
           title: TOKEN_TITLE_ASSIGNEE,
           icon: 'user',
-          token: AuthorToken,
+          token: UserToken,
           operators: this.hasOrFeature ? OPERATORS_IS_NOT_OR : OPERATORS_IS_NOT,
-          fetchAuthors: this.fetchUsers,
+          fetchUsers: this.fetchUsers,
           recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-assignee`,
-          preloadedAuthors,
+          preloadedUsers,
         },
         {
           type: TOKEN_TYPE_MILESTONE,

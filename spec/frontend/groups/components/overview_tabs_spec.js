@@ -5,6 +5,9 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import OverviewTabs from '~/groups/components/overview_tabs.vue';
 import GroupsApp from '~/groups/components/app.vue';
 import GroupFolderComponent from '~/groups/components/group_folder.vue';
+import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/subgroups_and_projects_empty_state.vue';
+import SharedProjectsEmptyState from '~/groups/components/empty_states/shared_projects_empty_state.vue';
+import ArchivedProjectsEmptyState from '~/groups/components/empty_states/archived_projects_empty_state.vue';
 import GroupsStore from '~/groups/store/groups_store';
 import GroupsService from '~/groups/service/groups_service';
 import { createRouter } from '~/groups/init_overview_tabs';
@@ -16,6 +19,7 @@ import {
   OVERVIEW_TABS_SORTING_ITEMS,
 } from '~/groups/constants';
 import axios from '~/lib/utils/axios_utils';
+import waitForPromises from 'helpers/wait_for_promises';
 
 Vue.component('GroupFolder', GroupFolderComponent);
 const router = createRouter();
@@ -68,6 +72,7 @@ describe('OverviewTabs', () => {
 
   beforeEach(() => {
     axiosMock = new AxiosMockAdapter(axios);
+    axiosMock.onGet({ data: [] });
   });
 
   afterEach(() => {
@@ -75,7 +80,7 @@ describe('OverviewTabs', () => {
     axiosMock.restore();
   });
 
-  it('renders `Subgroups and projects` tab with `GroupsApp` component', async () => {
+  it('renders `Subgroups and projects` tab with `GroupsApp` component with correct empty state', async () => {
     await createComponent();
 
     const tabPanel = findTabPanels().at(0);
@@ -89,11 +94,14 @@ describe('OverviewTabs', () => {
       store: new GroupsStore({ showSchemaMarkup: true }),
       service: new GroupsService(defaultProvide.endpoints[ACTIVE_TAB_SUBGROUPS_AND_PROJECTS]),
       hideProjects: false,
-      renderEmptyState: true,
     });
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(SubgroupsAndProjectsEmptyState).exists()).toBe(true);
   });
 
-  it('renders `Shared projects` tab and renders `GroupsApp` component after clicking tab', async () => {
+  it('renders `Shared projects` tab and renders `GroupsApp` component with correct empty state after clicking tab', async () => {
     await createComponent();
 
     const tabPanel = findTabPanels().at(1);
@@ -110,13 +118,16 @@ describe('OverviewTabs', () => {
       store: new GroupsStore(),
       service: new GroupsService(defaultProvide.endpoints[ACTIVE_TAB_SHARED]),
       hideProjects: false,
-      renderEmptyState: false,
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(SharedProjectsEmptyState).exists()).toBe(true);
   });
 
-  it('renders `Archived projects` tab and renders `GroupsApp` component after clicking tab', async () => {
+  it('renders `Archived projects` tab and renders `GroupsApp` component with correct empty state after clicking tab', async () => {
     await createComponent();
 
     const tabPanel = findTabPanels().at(2);
@@ -133,10 +144,13 @@ describe('OverviewTabs', () => {
       store: new GroupsStore(),
       service: new GroupsService(defaultProvide.endpoints[ACTIVE_TAB_ARCHIVED]),
       hideProjects: false,
-      renderEmptyState: false,
     });
 
     expect(tabPanel.vm.$attrs.lazy).toBe(false);
+
+    await waitForPromises();
+
+    expect(wrapper.findComponent(ArchivedProjectsEmptyState).exists()).toBe(true);
   });
 
   it('sets `lazy` prop to `false` for initially active tab and `true` for all other tabs', async () => {

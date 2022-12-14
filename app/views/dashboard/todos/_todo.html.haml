@@ -5,6 +5,12 @@
 
         = todo_target_state_pill(todo)
 
+        %span.todo-target-title{ data: { qa_selector: "todo_target_title_content" }, :id => dom_id(todo) + "_describer" }
+          = todo_target_title(todo)
+
+          - if !todo.for_design? && !todo.member_access_requested?
+            &middot;
+
         %span
           = todo_parent_path(todo)
 
@@ -14,12 +20,6 @@
               = link_to todo_target_name(todo), todo_target_path(todo), class: 'todo-target-link gl-text-gray-500! gl-text-decoration-none!', :'aria-describedby' => dom_id(todo) + "_describer", :'aria-label' => todo_target_aria_label(todo)
             - else
               = _("(removed)")
-
-          - if !todo.for_design?
-            &middot;
-
-        %span.todo-target-title{ data: { qa_selector: "todo_target_title_content" }, :id => dom_id(todo) + "_describer" }
-          = todo_target_title(todo)
 
       .todo-body.gl-mb-2.gl-px-2.gl-display-flex.gl-align-items-flex-start.gl-lg-align-items-center
         .todo-avatar.gl-display-none.gl-sm-display-inline-block

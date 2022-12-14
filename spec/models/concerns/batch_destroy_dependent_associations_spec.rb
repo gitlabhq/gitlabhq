@@ -27,6 +27,7 @@ RSpec.describe BatchDestroyDependentAssociations do
     let_it_be(:build) { create(:ci_build, project: project) }
     let_it_be(:notification_setting) { create(:notification_setting, project: project) }
     let_it_be(:note) { create(:note, project: project) }
+    let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
     it 'destroys multiple notes' do
       create(:note, project: project)
@@ -51,9 +52,10 @@ RSpec.describe BatchDestroyDependentAssociations do
     end
 
     it 'excludes associations' do
-      project.destroy_dependent_associations_in_batches(exclude: [:notes])
+      project.destroy_dependent_associations_in_batches(exclude: [:merge_requests])
 
-      expect(Note.count).to eq(1)
+      expect(MergeRequest.count).to eq(1)
+      expect(Note.count).to eq(0)
       expect(Ci::Build.count).to eq(1)
       expect(User.count).to be > 0
       expect(NotificationSetting.count).to eq(User.count)

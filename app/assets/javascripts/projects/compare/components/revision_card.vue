@@ -43,7 +43,7 @@ export default {
     <h2 class="gl-font-size-h2">
       {{ s__(`CompareRevisions|${revisionText}`) }}
     </h2>
-    <div class="gl-sm-display-flex gl-align-items-center">
+    <div class="gl-sm-display-flex gl-align-items-center gl-gap-3">
       <repo-dropdown
         class="gl-sm-w-half"
         :params-name="paramsName"

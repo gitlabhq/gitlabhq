@@ -18,7 +18,7 @@ import {
   processFilters,
   filterToQueryObject,
 } from '~/vue_shared/components/filtered_search_bar/filtered_search_utils';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
@@ -75,21 +75,21 @@ export default {
           icon: 'pencil',
           title: TOKEN_TITLE_AUTHOR,
           type: TOKEN_TYPE_AUTHOR,
-          token: AuthorToken,
-          initialAuthors: this.authorsData,
+          token: UserToken,
+          initialUsers: this.authorsData,
           unique: true,
           operators: OPERATORS_IS,
-          fetchAuthors: this.fetchAuthors,
+          fetchUsers: this.fetchAuthors,
         },
         {
           icon: 'user',
           title: TOKEN_TITLE_ASSIGNEE,
           type: TOKEN_TYPE_ASSIGNEE,
-          token: AuthorToken,
-          initialAuthors: this.assigneesData,
+          token: UserToken,
+          initialUsers: this.assigneesData,
           unique: false,
           operators: OPERATORS_IS,
-          fetchAuthors: this.fetchAssignees,
+          fetchUsers: this.fetchAssignees,
         },
       ];
     },

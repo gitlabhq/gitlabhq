@@ -58,9 +58,9 @@ RSpec.describe 'Dashboard > User filters todos', :js, feature_category: :team_pl
 
     wait_for_requests
 
-    expect(page).to     have_content "#{group1.name} / project_1 #{issue1.to_reference} · issue"
+    expect(page).to     have_content "issue · #{group1.name} / project_1 #{issue1.to_reference}"
     expect(page).to     have_content merge_request.to_reference.to_s
-    expect(page).not_to have_content "#{group2.name} / project_3 #{issue2.to_reference} · issue"
+    expect(page).not_to have_content "issue · #{group2.name} / project_3 #{issue2.to_reference}"
   end
 
   context 'Author filter' do

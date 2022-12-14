@@ -33,7 +33,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Additional text for the sign-in and Help page.')
-      = link_to s_('Learn more.'), help_page_path('user/admin_area/settings/help_page.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('user/admin_area/settings/help_page.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'help_page'
 

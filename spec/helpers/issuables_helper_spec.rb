@@ -629,4 +629,66 @@ RSpec.describe IssuablesHelper do
       expect(helper.sidebar_milestone_tooltip_label(milestone)).to eq('&lt;img onerror=alert(1)&gt;<br/>Milestone')
     end
   end
+
+  describe '#issuable_hidden?' do
+    let_it_be(:issuable) { build(:issue) }
+
+    context 'when issuable is hidden' do
+      let_it_be(:banned_user) { build(:user, :banned) }
+      let_it_be(:hidden_issuable) { build(:issue, author: banned_user) }
+
+      context 'when `ban_user_feature_flag` feature flag is enabled' do
+        it 'returns `true`' do
+          expect(helper.issuable_hidden?(hidden_issuable)).to eq(true)
+        end
+      end
+
+      context 'when `ban_user_feature_flag` feature flag is disabled' do
+        before do
+          stub_feature_flags(ban_user_feature_flag: false)
+        end
+
+        it 'returns `false`' do
+          expect(helper.issuable_hidden?(hidden_issuable)).to eq(false)
+        end
+      end
+    end
+
+    context 'when issuable is not hidden' do
+      it 'returns `false`' do
+        expect(helper.issuable_hidden?(issuable)).to eq(false)
+      end
+    end
+  end
+
+  describe '#hidden_issuable_icon' do
+    let_it_be(:banned_user) { build(:user, :banned) }
+    let_it_be(:hidden_issuable) { build(:issue, author: banned_user) }
+    let_it_be(:issuable) { build(:issue) }
+    let_it_be(:mock_svg) { '<svg></svg>'.html_safe }
+
+    before do
+      allow(helper).to receive(:sprite_icon).and_return(mock_svg)
+    end
+
+    context 'when issuable is hidden' do
+      it 'returns icon with tooltip' do
+        expect(helper.hidden_issuable_icon(hidden_issuable)).to eq("<span class=\"has-tooltip\" title=\"This issue is hidden because its author has been banned\">#{mock_svg}</span>")
+      end
+
+      context 'when issuable is a merge request' do
+        let_it_be(:hidden_issuable) { build(:merge_request, author: banned_user) }
+
+        it 'returns icon with tooltip' do
+          expect(helper.hidden_issuable_icon(hidden_issuable)).to eq("<span class=\"has-tooltip\" title=\"This merge request is hidden because its author has been banned\">#{mock_svg}</span>")
+        end
+      end
+    end
+
+    context 'when issuable is not hidden' do
+      it 'returns `nil`' do
+        expect(helper.hidden_issuable_icon(issuable)).to be_nil
+      end
+    end
+  end
 end

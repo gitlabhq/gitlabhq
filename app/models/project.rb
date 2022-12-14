@@ -218,6 +218,17 @@ class Project < ApplicationRecord
   has_one :fork_network_member
   has_one :fork_network, through: :fork_network_member
   has_one :forked_from_project, through: :fork_network_member
+
+  # Projects with a very large number of notes may time out destroying them
+  # through the foreign key. Additionally, the deprecated attachment uploader
+  # for notes requires us to use dependent: :destroy to avoid orphaning uploaded
+  # files.
+  #
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/207222
+  # Order of this association is important for project deletion.
+  # has_many :notes` should be the first association among all `has_many` associations.
+  has_many :notes, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
   has_many :forked_to_members, class_name: 'ForkNetworkMember', foreign_key: 'forked_from_project_id'
   has_many :forks, through: :forked_to_members, source: :project, inverse_of: :forked_from_project
   has_many :fork_network_projects, through: :fork_network, source: :projects
@@ -246,13 +257,13 @@ class Project < ApplicationRecord
   has_one :service_desk_setting, class_name: 'ServiceDeskSetting'
 
   # Merge requests for target project should be removed with it
-  has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project
+  has_many :merge_requests, foreign_key: 'target_project_id', inverse_of: :target_project, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :merge_request_metrics, foreign_key: 'target_project', class_name: 'MergeRequest::Metrics', inverse_of: :target_project
   has_many :source_of_merge_requests, foreign_key: 'source_project_id', class_name: 'MergeRequest'
-  has_many :issues
+  has_many :issues, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :incident_management_issuable_escalation_statuses, through: :issues, inverse_of: :project, class_name: 'IncidentManagement::IssuableEscalationStatus'
   has_many :incident_management_timeline_event_tags, inverse_of: :project, class_name: 'IncidentManagement::TimelineEventTag'
-  has_many :labels, class_name: 'ProjectLabel'
+  has_many :labels, class_name: 'ProjectLabel', dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :events
   has_many :milestones
 
@@ -270,15 +281,6 @@ class Project < ApplicationRecord
   has_many :push_hooks_integrations, -> { push_hooks }, class_name: 'Integration'
   has_many :tag_push_hooks_integrations, -> { tag_push_hooks }, class_name: 'Integration'
   has_many :wiki_page_hooks_integrations, -> { wiki_page_hooks }, class_name: 'Integration'
-
-  # Projects with a very large number of notes may time out destroying them
-  # through the foreign key. Additionally, the deprecated attachment uploader
-  # for notes requires us to use dependent: :destroy to avoid orphaning uploaded
-  # files.
-  #
-  # https://gitlab.com/gitlab-org/gitlab/-/issues/207222
-  has_many :notes, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
   has_many :snippets, class_name: 'ProjectSnippet'
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches

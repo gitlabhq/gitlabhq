@@ -1,5 +1,5 @@
 import boardListsQuery from 'ee_else_ce/boards/graphql/board_lists.query.graphql';
-import { s__, __ } from '~/locale';
+import { __ } from '~/locale';
 import updateEpicSubscriptionMutation from '~/sidebar/queries/update_epic_subscription.mutation.graphql';
 import updateEpicTitleMutation from '~/sidebar/queries/update_epic_title.mutation.graphql';
 import destroyBoardListMutation from './graphql/board_list_destroy.mutation.graphql';
@@ -141,16 +141,3 @@ export default {
 };
 
 export const DEFAULT_BOARD_LIST_ITEMS_SIZE = 10;
-
-export const MOVE_TO_START = 'moveToStart';
-export const MOVE_TO_END = 'moveToEnd';
-export const BOARD_CARD_MOVE_TO_POSITION_OPTIONS = [
-  {
-    text: s__('Boards|Move to start of list'),
-    value: MOVE_TO_START,
-  },
-  {
-    text: s__('Boards|Move to end of list'),
-    value: MOVE_TO_END,
-  },
-];

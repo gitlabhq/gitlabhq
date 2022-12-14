@@ -22,7 +22,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_SOURCE_BRANCH,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import BranchToken from '~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
@@ -31,7 +31,7 @@ import ReleaseToken from '~/vue_shared/components/filtered_search_bar/tokens/rel
 import CrmContactToken from '~/vue_shared/components/filtered_search_bar/tokens/crm_contact_token.vue';
 import CrmOrganizationToken from '~/vue_shared/components/filtered_search_bar/tokens/crm_organization_token.vue';
 
-export const mockAuthor1 = {
+export const mockUser1 = {
   id: 1,
   name: 'Administrator',
   username: 'root',
@@ -40,7 +40,7 @@ export const mockAuthor1 = {
   web_url: 'http://0.0.0.0:3000/root',
 };
 
-export const mockAuthor2 = {
+export const mockUser2 = {
   id: 2,
   name: 'Claudio Beer',
   username: 'ericka_terry',
@@ -49,7 +49,7 @@ export const mockAuthor2 = {
   web_url: 'http://0.0.0.0:3000/ericka_terry',
 };
 
-export const mockAuthor3 = {
+export const mockUser3 = {
   id: 6,
   name: 'Shizue Hartmann',
   username: 'junita.weimann',
@@ -58,7 +58,7 @@ export const mockAuthor3 = {
   web_url: 'http://0.0.0.0:3000/junita.weimann',
 };
 
-export const mockAuthors = [mockAuthor1, mockAuthor2, mockAuthor3];
+export const mockUsers = [mockUser1, mockUser2, mockUser3];
 
 export const mockBranches = [{ name: 'Main' }, { name: 'v1.x' }, { name: 'my-Branch' }];
 
@@ -232,10 +232,10 @@ export const mockAuthorToken = {
   title: TOKEN_TITLE_AUTHOR,
   unique: false,
   symbol: '@',
-  token: AuthorToken,
+  token: UserToken,
   operators: OPERATORS_IS,
   fetchPath: 'gitlab-org/gitlab-test',
-  fetchAuthors: Api.projectUsers.bind(Api),
+  fetchUsers: Api.projectUsers.bind(Api),
 };
 
 export const mockLabelToken = {

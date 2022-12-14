@@ -22,7 +22,7 @@
       = expanded_by_default? ? 'Collapse' : 'Expand'
     %p
       = _('Configure repository mirroring.')
-      = link_to s_('Learn more.'), help_page_path('user/project/repository/mirror/index.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render partial: 'repository_mirrors_form'
 
@@ -34,7 +34,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Configure repository storage.')
-      = link_to s_('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/repository_storage_paths.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'repository_storage'
 
@@ -61,6 +61,6 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Serve repository static objects (for example, archives and blobs) from external storage.')
-      = link_to s_('Learn more.'), help_page_path('administration/static_objects_external_storage.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/static_objects_external_storage.md'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'repository_static_objects'

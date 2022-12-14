@@ -4,7 +4,7 @@
   %fieldset
     .form-group
       = f.gitlab_ui_checkbox_component :performance_bar_enabled,
-        s_("Allow non-administrators access to the performance bar"),
+        _("Allow non-administrators access to the performance bar"),
         checkbox_options: { data: { qa_selector: 'enable_performance_bar_checkbox' } }
     .form-group
       = f.label :performance_bar_allowed_group_path, _('Allow access to members of the following group'), class: 'label-bold'

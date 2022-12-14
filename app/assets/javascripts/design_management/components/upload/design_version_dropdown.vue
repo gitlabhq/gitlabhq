@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import { GlAvatar, GlCollapsibleListbox } from '@gitlab/ui';
 import defaultAvatarUrl from 'images/no_avatar.png';
 import { __, sprintf } from '~/locale';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -8,13 +8,19 @@ import { findVersionId } from '../../utils/design_management_utils';
 
 export default {
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlSprintf,
+    GlAvatar,
+    GlCollapsibleListbox,
     TimeAgo,
   },
   mixins: [allVersionsMixin],
   computed: {
+    allVersionsList() {
+      return this.allVersions.map(({ id, ...item }, index) => ({
+        value: id,
+        index,
+        ...item,
+      }));
+    },
     queryVersion() {
       return this.$route.query.version;
     },
@@ -29,17 +35,11 @@ export default {
       // then return the latest version (index 0)
       return idx !== -1 ? idx : 0;
     },
-    currentVersionId() {
-      if (this.queryVersion) return this.queryVersion;
-
-      const currentVersion = this.allVersions[this.currentVersionIdx];
-      return this.findVersionId(currentVersion.id);
-    },
     dropdownText() {
       if (this.isLatestVersion) {
         return __('Showing latest version');
       }
-      // allVersions is sorted in reverse chronological order (latest first)
+      // allVersions is sorted in reverse chronological order (the latest first)
       const currentVersionNumber = this.allVersions.length - this.currentVersionIdx;
 
       return sprintf(__('Showing version #%{versionNumber}'), {
@@ -55,47 +55,49 @@ export default {
         query: { version: this.findVersionId(versionId) },
       });
     },
-    versionText(versionId) {
-      if (this.findVersionId(versionId) === this.latestVersionId) {
-        return __('Version %{versionNumber} (latest)');
-      }
-      return __('Version %{versionNumber}');
+    versionText(item) {
+      const versionNumber = this.allVersions.length - item.index;
+      const message =
+        this.findVersionId(item.value) === this.latestVersionId
+          ? __('Version %{versionNumber} (latest)')
+          : __('Version %{versionNumber}');
+      return sprintf(message, { versionNumber });
     },
     getAvatarUrl(version) {
       return version?.author?.avatarUrl || defaultAvatarUrl;
+    },
+    getAuthorName(author) {
+      return author?.name;
     },
   },
 };
 </script>
 
 <template>
-  <gl-dropdown :text="dropdownText" size="small">
-    <gl-dropdown-item
-      v-for="(version, index) in allVersions"
-      :key="version.id"
-      is-check-item
-      is-check-centered
-      :is-checked="findVersionId(version.id) === currentVersionId"
-      :avatar-url="getAvatarUrl(version)"
-      @click="routeToVersion(version.id)"
-    >
-      <strong>
-        <gl-sprintf :message="versionText(version.id)">
-          <template #versionNumber>
-            {{ allVersions.length - index }}
-          </template>
-        </gl-sprintf>
-      </strong>
-
-      <div v-if="version.author" class="gl-text-gray-600 gl-mt-1">
-        <div>{{ version.author.name }}</div>
-        <time-ago
-          v-if="version.createdAt"
-          class="text-1"
-          :time="version.createdAt"
-          tooltip-placement="bottom"
-        />
-      </div>
-    </gl-dropdown-item>
-  </gl-dropdown>
+  <gl-collapsible-listbox
+    is-check-centered
+    :items="allVersionsList"
+    :toggle-text="dropdownText"
+    :selected="designsVersion"
+    size="small"
+    @select="routeToVersion"
+  >
+    <template #list-item="{ item }">
+      <span class="gl-display-flex gl-align-items-center">
+        <gl-avatar :alt="getAuthorName(item.author)" :size="32" :src="getAvatarUrl(item)" />
+        <span class="gl-display-flex gl-flex-direction-column">
+          <span class="gl-font-weight-bold">{{ versionText(item) }}</span>
+          <span v-if="item.author" class="gl-text-gray-600 gl-mt-1">
+            <span class="gl-display-block">{{ getAuthorName(item.author) }}</span>
+            <time-ago
+              v-if="item.createdAt"
+              class="text-1"
+              :time="item.createdAt"
+              tooltip-placement="bottom"
+            />
+          </span>
+        </span>
+      </span>
+    </template>
+  </gl-collapsible-listbox>
 </template>

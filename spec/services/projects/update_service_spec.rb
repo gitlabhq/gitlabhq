@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 require 'spec_helper'
 
 RSpec.describe Projects::UpdateService do
@@ -302,6 +301,25 @@ RSpec.describe Projects::UpdateService do
 
         expect(project.default_branch).to eq 'master'
         expect(project.previous_default_branch).to be_nil
+      end
+
+      context 'when repository has an ambiguous branch named "HEAD"' do
+        before do
+          allow(project.repository.raw).to receive(:write_ref).and_return(false)
+          allow(project.repository).to receive(:branch_names) { %w[fix master main HEAD] }
+        end
+
+        it 'returns an error to the user' do
+          result = update_project(project, admin, default_branch: 'fix')
+
+          expect(result).to include(status: :error)
+          expect(result[:message]).to include("Could not set the default branch. Do you have a branch named 'HEAD' in your repository?")
+
+          project.reload
+
+          expect(project.default_branch).to eq 'master'
+          expect(project.previous_default_branch).to be_nil
+        end
       end
     end
 

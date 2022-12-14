@@ -31,7 +31,7 @@ import {
   TOKEN_TYPE_RELEASE,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import EmojiToken from '~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import MilestoneToken from '~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue';
@@ -60,7 +60,7 @@ export default {
     tokensCE() {
       const { issue, incident } = this.$options.i18n;
       const { types } = this.$options;
-      const { fetchAuthors, fetchLabels } = issueBoardFilters(
+      const { fetchUsers, fetchLabels } = issueBoardFilters(
         this.$apollo,
         this.fullPath,
         this.boardType,
@@ -72,10 +72,10 @@ export default {
           title: TOKEN_TITLE_ASSIGNEE,
           type: TOKEN_TYPE_ASSIGNEE,
           operators: OPERATORS_IS_NOT,
-          token: AuthorToken,
+          token: UserToken,
           unique: true,
-          fetchAuthors,
-          preloadedAuthors: this.preloadedAuthors(),
+          fetchUsers,
+          preloadedUsers: this.preloadedUsers(),
         },
         {
           icon: 'pencil',
@@ -83,10 +83,10 @@ export default {
           type: TOKEN_TYPE_AUTHOR,
           operators: OPERATORS_IS_NOT,
           symbol: '@',
-          token: AuthorToken,
+          token: UserToken,
           unique: true,
-          fetchAuthors,
-          preloadedAuthors: this.preloadedAuthors(),
+          fetchUsers,
+          preloadedUsers: this.preloadedUsers(),
         },
         {
           icon: 'labels',
@@ -186,7 +186,7 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMilestones']),
-    preloadedAuthors() {
+    preloadedUsers() {
       return gon?.current_user_id
         ? [
             {

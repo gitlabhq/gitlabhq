@@ -1,4 +1,4 @@
-- to_names = content_tag(:strong, issuable.assignees.any? ? sanitize_name(issuable.assignee_list) : s_('Unassigned'))
+- to_names = content_tag(:strong, issuable.assignees.any? ? sanitize_name(issuable.assignee_list) : _('Unassigned'))
 
 %p
   - if previous_assignees.any?

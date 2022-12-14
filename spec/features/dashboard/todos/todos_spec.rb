@@ -167,7 +167,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows issue assigned to yourself message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{issue.to_reference} · Fix bug")
+          expect(page).to have_content("Fix bug · #{project.namespace.owner_name} / #{project.name} #{issue.to_reference}")
           expect(page).to have_content("You assigned to yourself.")
         end
       end
@@ -181,7 +181,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows you added a to-do item message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{issue.to_reference} · Fix bug")
+          expect(page).to have_content("Fix bug · #{project.namespace.owner_name} / #{project.name} #{issue.to_reference}")
           expect(page).to have_content("You added a to-do item.")
         end
       end
@@ -195,7 +195,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows you mentioned yourself message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{issue.to_reference} · Fix bug")
+          expect(page).to have_content("Fix bug · #{project.namespace.owner_name} / #{project.name} #{issue.to_reference}")
           expect(page).to have_content("You mentioned yourself.")
         end
       end
@@ -209,7 +209,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows you directly addressed yourself message being displayed as mentioned yourself' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{issue.to_reference} · Fix bug")
+          expect(page).to have_content("Fix bug · #{project.namespace.owner_name} / #{project.name} #{issue.to_reference}")
           expect(page).to have_content("You mentioned yourself.")
         end
       end
@@ -225,7 +225,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows you set yourself as an approver message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{merge_request.to_reference} · Fixes issue")
+          expect(page).to have_content("Fixes issue · #{project.namespace.owner_name} / #{project.name} #{merge_request.to_reference}")
           expect(page).to have_content("You set yourself as an approver.")
         end
       end
@@ -241,7 +241,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows you set yourself as an reviewer message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{merge_request.to_reference} · Fixes issue")
+          expect(page).to have_content("Fixes issue · #{project.namespace.owner_name} / #{project.name} #{merge_request.to_reference}")
           expect(page).to have_content("You requested a review from yourself.")
         end
       end
@@ -261,7 +261,7 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
 
       it 'shows unmergeable message' do
         page.within('.js-todos-all') do
-          expect(page).to have_content("#{project.namespace.owner_name} / #{project.name} #{issue.to_reference} · Fix bug")
+          expect(page).to have_content("Fix bug · #{project.namespace.owner_name} / #{project.name} #{issue.to_reference}")
           expect(page).to have_content("Could not merge.")
         end
       end

@@ -1,7 +1,7 @@
 import { GlEmptyState } from '@gitlab/ui';
 
 import { mountExtended } from 'jest/__helpers__/vue_test_utils_helper';
-import EmptyState from '~/groups/components/empty_state.vue';
+import SubgroupsAndProjectsEmptyState from '~/groups/components/empty_states/subgroups_and_projects_empty_state.vue';
 
 let wrapper;
 
@@ -16,7 +16,7 @@ const defaultProvide = {
 };
 
 const createComponent = ({ provide = {} } = {}) => {
-  wrapper = mountExtended(EmptyState, {
+  wrapper = mountExtended(SubgroupsAndProjectsEmptyState, {
     provide: {
       ...defaultProvide,
       ...provide,
@@ -30,18 +30,18 @@ afterEach(() => {
 
 const findNewSubgroupLink = () =>
   wrapper.findByRole('link', {
-    name: new RegExp(EmptyState.i18n.withLinks.subgroup.title),
+    name: new RegExp(SubgroupsAndProjectsEmptyState.i18n.withLinks.subgroup.title),
   });
 const findNewProjectLink = () =>
   wrapper.findByRole('link', {
-    name: new RegExp(EmptyState.i18n.withLinks.project.title),
+    name: new RegExp(SubgroupsAndProjectsEmptyState.i18n.withLinks.project.title),
   });
 const findNewSubgroupIllustration = () =>
-  wrapper.findByRole('img', { name: EmptyState.i18n.withLinks.subgroup.title });
+  wrapper.findByRole('img', { name: SubgroupsAndProjectsEmptyState.i18n.withLinks.subgroup.title });
 const findNewProjectIllustration = () =>
-  wrapper.findByRole('img', { name: EmptyState.i18n.withLinks.project.title });
+  wrapper.findByRole('img', { name: SubgroupsAndProjectsEmptyState.i18n.withLinks.project.title });
 
-describe('EmptyState', () => {
+describe('SubgroupsAndProjectsEmptyState', () => {
   describe('when user has permission to create a subgroup', () => {
     it('renders `Create new subgroup` link', () => {
       createComponent();
@@ -69,8 +69,8 @@ describe('EmptyState', () => {
       createComponent({ provide: { canCreateSubgroups: false, canCreateProjects: false } });
 
       expect(wrapper.findComponent(GlEmptyState).props()).toMatchObject({
-        title: EmptyState.i18n.withoutLinks.title,
-        description: EmptyState.i18n.withoutLinks.description,
+        title: SubgroupsAndProjectsEmptyState.i18n.withoutLinks.title,
+        description: SubgroupsAndProjectsEmptyState.i18n.withoutLinks.description,
         svgPath: defaultProvide.emptySubgroupIllustration,
       });
     });

@@ -649,16 +649,20 @@ RSpec.describe Notify do
       end
 
       context 'the model has no namespace' do
-        class TopLevelThing
-          include Referable
-          include Noteable
+        before do
+          stub_const('TopLevelThing', Class.new)
 
-          def to_reference(*_args)
-            'tlt-ref'
-          end
+          TopLevelThing.class_eval do
+            include Referable
+            include Noteable
 
-          def id
-            'tlt-id'
+            def to_reference(*_args)
+              'tlt-ref'
+            end
+
+            def id
+              'tlt-id'
+            end
           end
         end
 
@@ -672,8 +676,10 @@ RSpec.describe Notify do
       end
 
       context 'the model has a namespace' do
-        module Namespaced
-          class Thing
+        before do
+          stub_const('Namespaced::Thing', Class.new)
+
+          Namespaced::Thing.class_eval do
             include Referable
             include Noteable
 

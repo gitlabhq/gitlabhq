@@ -60,7 +60,7 @@
             - if diff_file.deleted_file?
               %strong<
                 = diff_file.old_path
-              = s_('deleted')
+              = _('deleted')
             - elsif diff_file.renamed_file?
               %strong<
                 = diff_file.old_path

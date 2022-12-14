@@ -535,8 +535,8 @@ describe('CE IssuesListApp component', () => {
 
       it('does not render My-Reaction or Confidential tokens', () => {
         expect(findIssuableList().props('searchTokens')).not.toMatchObject([
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors: [mockCurrentUser] },
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors: [mockCurrentUser] },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers: [mockCurrentUser] },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers: [mockCurrentUser] },
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_CONFIDENTIAL },
         ]);
@@ -584,13 +584,13 @@ describe('CE IssuesListApp component', () => {
       });
 
       it('renders all tokens alphabetically', () => {
-        const preloadedAuthors = [
+        const preloadedUsers = [
           { ...mockCurrentUser, id: convertToGraphQLId('User', mockCurrentUser.id) },
         ];
 
         expect(findIssuableList().props('searchTokens')).toMatchObject([
-          { type: TOKEN_TYPE_ASSIGNEE, preloadedAuthors },
-          { type: TOKEN_TYPE_AUTHOR, preloadedAuthors },
+          { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
+          { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
           { type: TOKEN_TYPE_CONFIDENTIAL },
           { type: TOKEN_TYPE_CONTACT },
           { type: TOKEN_TYPE_LABEL },

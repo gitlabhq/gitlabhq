@@ -24,10 +24,6 @@ class Projects::PipelinesController < Projects::ApplicationController
   before_action :ensure_pipeline, only: [:show, :downloadable_artifacts]
   before_action :reject_if_build_artifacts_size_refreshing!, only: [:destroy]
 
-  before_action do
-    push_frontend_feature_flag(:pipeline_tabs_vue, @project)
-  end
-
   # Will be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/225596
   before_action :redirect_for_legacy_scope_filter, only: [:index], if: -> { request.format.html? }
 

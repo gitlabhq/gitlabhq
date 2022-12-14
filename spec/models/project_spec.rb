@@ -368,6 +368,33 @@ RSpec.describe Project, factory_default: :keep do
         subject.ci_pipelines
       end
     end
+
+    context 'order of the `has_many :notes` association' do
+      let(:associations_having_dependent_destroy) do
+        described_class.reflect_on_all_associations(:has_many).select do |assoc|
+          assoc.options[:dependent] == :destroy
+        end
+      end
+
+      let(:associations_having_dependent_destroy_with_issuable_included) do
+        associations_having_dependent_destroy.select do |association|
+          association.klass.include?(Issuable)
+        end
+      end
+
+      it 'has `has_many :notes` as the first association among all the other associations that'\
+         'includes the `Issuable` module' do
+        names_of_associations_having_dependent_destroy = associations_having_dependent_destroy.map(&:name)
+        index_of_has_many_notes_association = names_of_associations_having_dependent_destroy.find_index(:notes)
+
+        associations_having_dependent_destroy_with_issuable_included.each do |issuable_included_association|
+          index_of_issuable_included_association =
+            names_of_associations_having_dependent_destroy.find_index(issuable_included_association.name)
+
+          expect(index_of_has_many_notes_association).to be < index_of_issuable_included_association
+        end
+      end
+    end
   end
 
   describe 'modules' do

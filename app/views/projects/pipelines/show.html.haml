@@ -9,7 +9,7 @@
 - add_page_startup_graphql_call('pipelines/get_pipeline_details', { projectPath: @project.full_path, iid: @pipeline.iid })
 
 .js-pipeline-container{ data: { controller_action: "#{controller.action_name}" } }
-  #js-pipeline-header-vue.pipeline-header-container{ data: { full_path: @project.full_path, pipeline_iid: @pipeline.iid, pipeline_id: @pipeline.id, pipelines_path: project_pipelines_path(@project) } }
+  #js-pipeline-header-vue.pipeline-header-container{ data: { full_path: @project.full_path, graphql_resource_etag: graphql_etag_pipeline_path(@pipeline), pipeline_iid: @pipeline.iid, pipeline_id: @pipeline.id, pipelines_path: project_pipelines_path(@project) } }
 
   = render_if_exists 'projects/pipelines/cc_validation_required_alert', pipeline: @pipeline
 
@@ -26,8 +26,5 @@
       - lint_link_start = '<a href="%{url}" class="gl-text-blue-500!">'.html_safe % { url: lint_link_url }
       = s_('You can also test your %{gitlab_ci_yml} in %{lint_link_start}CI Lint%{lint_link_end}').html_safe % { gitlab_ci_yml: '.gitlab-ci.yml', lint_link_start: lint_link_start, lint_link_end: '</a>'.html_safe }
 
-  - if Feature.enabled?(:pipeline_tabs_vue, @project)
-    #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }
   - else
-    = render "projects/pipelines/with_tabs", pipeline: @pipeline, stages: @stages, pipeline_has_errors: pipeline_has_errors
-.js-pipeline-details-vue{ data: { metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: @project.namespace, project_id: @project, format: :json), pipeline_project_path: @project.full_path, pipeline_iid: @pipeline.iid, graphql_resource_etag: graphql_etag_pipeline_path(@pipeline), pipeline_path: pipeline_path(@pipeline) } }
+    #js-pipeline-tabs{ data: js_pipeline_tabs_data(@project, @pipeline, @current_user) }

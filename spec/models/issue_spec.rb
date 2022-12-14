@@ -1432,26 +1432,6 @@ RSpec.describe Issue do
     end
   end
 
-  describe '.without_hidden' do
-    let_it_be(:banned_user) { create(:user, :banned) }
-    let_it_be(:public_issue) { create(:issue, project: reusable_project) }
-    let_it_be(:hidden_issue) { create(:issue, project: reusable_project, author: banned_user) }
-
-    it 'only returns without_hidden issues' do
-      expect(described_class.without_hidden).to eq([public_issue])
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(ban_user_feature_flag: false)
-      end
-
-      it 'returns public and hidden issues' do
-        expect(described_class.without_hidden).to contain_exactly(public_issue, hidden_issue)
-      end
-    end
-  end
-
   describe '.by_project_id_and_iid' do
     let_it_be(:issue_a) { create(:issue, project: reusable_project) }
     let_it_be(:issue_b) { create(:issue, iid: issue_a.iid) }

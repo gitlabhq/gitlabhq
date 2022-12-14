@@ -1,18 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
-import { GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
+import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 
 import BoardCardMoveToPosition from '~/boards/components/board_card_move_to_position.vue';
 import { mockList, mockIssue2, mockIssue, mockIssue3, mockIssue4 } from 'jest/boards/mock_data';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import { BOARD_CARD_MOVE_TO_POSITION_OPTIONS } from '~/boards/constants';
 
 Vue.use(Vuex);
 
 const dropdownOptions = [
-  BOARD_CARD_MOVE_TO_POSITION_OPTIONS[0].text,
-  BOARD_CARD_MOVE_TO_POSITION_OPTIONS[1].text,
+  BoardCardMoveToPosition.i18n.moveToStartText,
+  BoardCardMoveToPosition.i18n.moveToEndText,
 ];
 
 describe('Board Card Move to position', () => {
@@ -54,7 +53,8 @@ describe('Board Card Move to position', () => {
         ...propsData,
       },
       stubs: {
-        GlCollapsibleListbox,
+        GlDropdown,
+        GlDropdownItem,
       },
     });
   };
@@ -68,8 +68,8 @@ describe('Board Card Move to position', () => {
     wrapper.destroy();
   });
 
-  const findMoveToPositionDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findDropdownItems = () => findMoveToPositionDropdown().findAllComponents(GlListboxItem);
+  const findMoveToPositionDropdown = () => wrapper.findComponent(GlDropdown);
+  const findDropdownItems = () => findMoveToPositionDropdown().findAllComponents(GlDropdownItem);
   const findDropdownItemAtIndex = (index) => findDropdownItems().at(index);
 
   describe('Dropdown', () => {
@@ -80,6 +80,7 @@ describe('Board Card Move to position', () => {
       });
 
       it('is opened on the click of vertical ellipsis and has 2 dropdown items when number of list items < 10', () => {
+        findMoveToPositionDropdown().vm.$emit('click');
         expect(findDropdownItems()).toHaveLength(dropdownOptions.length);
       });
     });
@@ -96,17 +97,18 @@ describe('Board Card Move to position', () => {
       });
 
       it.each`
-        dropdownIndex | dropdownLabel                                  | trackLabel         | positionInList
-        ${0}          | ${BOARD_CARD_MOVE_TO_POSITION_OPTIONS[0].text} | ${'move_to_start'} | ${0}
-        ${1}          | ${BOARD_CARD_MOVE_TO_POSITION_OPTIONS[1].text} | ${'move_to_end'}   | ${-1}
+        dropdownIndex | dropdownLabel                                   | trackLabel         | positionInList
+        ${0}          | ${BoardCardMoveToPosition.i18n.moveToStartText} | ${'move_to_start'} | ${0}
+        ${1}          | ${BoardCardMoveToPosition.i18n.moveToEndText}   | ${'move_to_end'}   | ${-1}
       `(
         'on click of dropdown index $dropdownIndex with label $dropdownLabel should call moveItem action with tracking label $trackLabel',
         async ({ dropdownIndex, dropdownLabel, trackLabel, positionInList }) => {
-          await findMoveToPositionDropdown().vm.$emit(
-            'select',
-            BOARD_CARD_MOVE_TO_POSITION_OPTIONS[dropdownIndex].value,
-          );
+          await findMoveToPositionDropdown().vm.$emit('click');
+
           expect(findDropdownItemAtIndex(dropdownIndex).text()).toBe(dropdownLabel);
+          await findDropdownItemAtIndex(dropdownIndex).vm.$emit('click', {
+            stopPropagation: () => {},
+          });
 
           await nextTick();
 

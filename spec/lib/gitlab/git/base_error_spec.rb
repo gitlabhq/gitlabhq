@@ -20,4 +20,15 @@ RSpec.describe Gitlab::Git::BaseError do
   with_them do
     it { is_expected.to eq(result) }
   end
+
+  describe "When initialized with GRPC errors" do
+    let(:grpc_error) { GRPC::DeadlineExceeded.new }
+    let(:git_error) { described_class.new grpc_error }
+
+    it "has status and code fields" do
+      expect(git_error.service).to eq('git')
+      expect(git_error.status).to eq(4)
+      expect(git_error.code).to eq('deadline_exceeded')
+    end
+  end
 end

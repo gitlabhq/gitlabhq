@@ -30,30 +30,30 @@ export default {
   },
   data() {
     return {
-      authors: this.config.initialAuthors || [],
+      users: this.config.initialUsers || [],
       loading: false,
     };
   },
   computed: {
-    defaultAuthors() {
-      return this.config.defaultAuthors || OPTIONS_NONE_ANY;
+    defaultUsers() {
+      return this.config.defaultUsers || OPTIONS_NONE_ANY;
     },
-    preloadedAuthors() {
-      return this.config.preloadedAuthors || [];
+    preloadedUsers() {
+      return this.config.preloadedUsers || [];
     },
   },
   methods: {
-    getActiveAuthor(authors, data) {
-      return authors.find((author) => author.username.toLowerCase() === data.toLowerCase());
+    getActiveUser(users, data) {
+      return users.find((user) => user.username.toLowerCase() === data.toLowerCase());
     },
-    getAvatarUrl(author) {
-      return author.avatarUrl || author.avatar_url;
+    getAvatarUrl(user) {
+      return user.avatarUrl || user.avatar_url;
     },
-    fetchAuthors(searchTerm) {
+    fetchUsers(searchTerm) {
       this.loading = true;
       const fetchPromise = this.config.fetchPath
-        ? this.config.fetchAuthors(this.config.fetchPath, searchTerm)
-        : this.config.fetchAuthors(searchTerm);
+        ? this.config.fetchUsers(this.config.fetchPath, searchTerm)
+        : this.config.fetchUsers(searchTerm);
 
       fetchPromise
         .then((res) => {
@@ -62,7 +62,7 @@ export default {
           // return response differently
 
           // TODO: rm when completed https://gitlab.com/gitlab-org/gitlab/-/issues/345756
-          this.authors = Array.isArray(res) ? compact(res) : compact(res.data);
+          this.users = Array.isArray(res) ? compact(res) : compact(res.data);
         })
         .catch(() =>
           createAlert({
@@ -83,12 +83,12 @@ export default {
     :value="value"
     :active="active"
     :suggestions-loading="loading"
-    :suggestions="authors"
-    :get-active-token-value="getActiveAuthor"
-    :default-suggestions="defaultAuthors"
-    :preloaded-suggestions="preloadedAuthors"
+    :suggestions="users"
+    :get-active-token-value="getActiveUser"
+    :default-suggestions="defaultUsers"
+    :preloaded-suggestions="preloadedUsers"
     v-bind="$attrs"
-    @fetch-suggestions="fetchAuthors"
+    @fetch-suggestions="fetchUsers"
     v-on="$listeners"
   >
     <template #view="{ viewTokenProps: { inputValue, activeTokenValue } }">
@@ -102,15 +102,15 @@ export default {
     </template>
     <template #suggestions-list="{ suggestions }">
       <gl-filtered-search-suggestion
-        v-for="author in suggestions"
-        :key="author.username"
-        :value="author.username"
+        v-for="user in suggestions"
+        :key="user.username"
+        :value="user.username"
       >
         <div class="gl-display-flex">
-          <gl-avatar :size="32" :src="getAvatarUrl(author)" />
+          <gl-avatar :size="32" :src="getAvatarUrl(user)" />
           <div>
-            <div>{{ author.name }}</div>
-            <div>@{{ author.username }}</div>
+            <div>{{ user.name }}</div>
+            <div>@{{ user.username }}</div>
           </div>
         </div>
       </gl-filtered-search-suggestion>

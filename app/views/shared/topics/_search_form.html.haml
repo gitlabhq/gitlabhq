@@ -1,6 +1,6 @@
 = form_tag page_filter_path, method: :get, class: "topic-filter-form js-topic-filter-form", id: 'topic-filter-form' do |f|
   = search_field_tag :search, params[:search],
-    placeholder: s_('Filter by name'),
+    placeholder: _('Filter by name'),
     class: 'topic-filter-form-field form-control input-short',
     spellcheck: false,
     id: 'topic-filter-form-field',

@@ -5,6 +5,5 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/lib/gitlab/config/entry/simplifiable_spec.rb'
     - 'spec/lib/gitlab/quick_actions/dsl_spec.rb'
     - 'spec/lib/marginalia_spec.rb'
-    - 'spec/mailers/notify_spec.rb'
     - 'spec/models/concerns/batch_destroy_dependent_associations_spec.rb'
     - 'spec/models/concerns/bulk_insert_safe_spec.rb'

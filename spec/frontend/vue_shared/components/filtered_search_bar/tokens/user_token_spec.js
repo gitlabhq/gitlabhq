@@ -12,10 +12,10 @@ import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
 import { OPTIONS_NONE_ANY } from '~/vue_shared/components/filtered_search_bar/constants';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import BaseToken from '~/vue_shared/components/filtered_search_bar/tokens/base_token.vue';
 
-import { mockAuthorToken, mockAuthors } from '../mock_data';
+import { mockAuthorToken, mockUsers } from '../mock_data';
 
 jest.mock('~/flash');
 const defaultStubs = {
@@ -28,7 +28,7 @@ const defaultStubs = {
   },
 };
 
-const mockPreloadedAuthors = [
+const mockPreloadedUsers = [
   {
     id: 13,
     name: 'Administrator',
@@ -46,7 +46,7 @@ function createComponent(options = {}) {
     data = {},
     listeners = {},
   } = options;
-  return mount(AuthorToken, {
+  return mount(UserToken, {
     propsData: {
       config,
       value,
@@ -66,7 +66,7 @@ function createComponent(options = {}) {
   });
 }
 
-describe('AuthorToken', () => {
+describe('UserToken', () => {
   const originalGon = window.gon;
   const currentUserLength = 1;
   let mock;
@@ -85,40 +85,40 @@ describe('AuthorToken', () => {
   });
 
   describe('methods', () => {
-    describe('fetchAuthors', () => {
+    describe('fetchUsers', () => {
       beforeEach(() => {
         wrapper = createComponent();
       });
 
-      it('calls `config.fetchAuthors` with provided searchTerm param', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchAuthors');
+      it('calls `config.fetchUsers` with provided searchTerm param', () => {
+        jest.spyOn(wrapper.vm.config, 'fetchUsers');
 
-        getBaseToken().vm.$emit('fetch-suggestions', mockAuthors[0].username);
+        getBaseToken().vm.$emit('fetch-suggestions', mockUsers[0].username);
 
-        expect(wrapper.vm.config.fetchAuthors).toHaveBeenCalledWith(
+        expect(wrapper.vm.config.fetchUsers).toHaveBeenCalledWith(
           mockAuthorToken.fetchPath,
-          mockAuthors[0].username,
+          mockUsers[0].username,
         );
       });
 
-      it('sets response to `authors` when request is succesful', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockResolvedValue(mockAuthors);
+      it('sets response to `users` when request is successful', () => {
+        jest.spyOn(wrapper.vm.config, 'fetchUsers').mockResolvedValue(mockUsers);
 
         getBaseToken().vm.$emit('fetch-suggestions', 'root');
 
         return waitForPromises().then(() => {
-          expect(getBaseToken().props('suggestions')).toEqual(mockAuthors);
+          expect(getBaseToken().props('suggestions')).toEqual(mockUsers);
         });
       });
 
       // TODO: rm when completed https://gitlab.com/gitlab-org/gitlab/-/issues/345756
       describe('when there are null users presents', () => {
-        const mockAuthorsWithNullUser = mockAuthors.concat([null]);
+        const mockUsersWithNullUser = mockUsers.concat([null]);
 
         beforeEach(() => {
           jest
-            .spyOn(wrapper.vm.config, 'fetchAuthors')
-            .mockResolvedValue({ data: mockAuthorsWithNullUser });
+            .spyOn(wrapper.vm.config, 'fetchUsers')
+            .mockResolvedValue({ data: mockUsersWithNullUser });
 
           getBaseToken().vm.$emit('fetch-suggestions', 'root');
         });
@@ -126,7 +126,7 @@ describe('AuthorToken', () => {
         describe('when res.data is present', () => {
           it('filters the successful response when null values are present', () => {
             return waitForPromises().then(() => {
-              expect(getBaseToken().props('suggestions')).toEqual(mockAuthors);
+              expect(getBaseToken().props('suggestions')).toEqual(mockUsers);
             });
           });
         });
@@ -134,14 +134,14 @@ describe('AuthorToken', () => {
         describe('when response is an array', () => {
           it('filters the successful response when null values are present', () => {
             return waitForPromises().then(() => {
-              expect(getBaseToken().props('suggestions')).toEqual(mockAuthors);
+              expect(getBaseToken().props('suggestions')).toEqual(mockUsers);
             });
           });
         });
       });
 
       it('calls `createAlert` with flash error message when request fails', () => {
-        jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
+        jest.spyOn(wrapper.vm.config, 'fetchUsers').mockRejectedValue({});
 
         getBaseToken().vm.$emit('fetch-suggestions', 'root');
 
@@ -153,7 +153,7 @@ describe('AuthorToken', () => {
       });
 
       it('sets `loading` to false when request completes', async () => {
-        jest.spyOn(wrapper.vm.config, 'fetchAuthors').mockRejectedValue({});
+        jest.spyOn(wrapper.vm.config, 'fetchUsers').mockRejectedValue({});
 
         getBaseToken().vm.$emit('fetch-suggestions', 'root');
 
@@ -174,23 +174,23 @@ describe('AuthorToken', () => {
 
     it('renders base-token component', () => {
       wrapper = createComponent({
-        value: { data: mockAuthors[0].username },
-        data: { authors: mockAuthors },
+        value: { data: mockUsers[0].username },
+        data: { users: mockUsers },
       });
 
       const baseTokenEl = getBaseToken();
 
       expect(baseTokenEl.exists()).toBe(true);
       expect(baseTokenEl.props()).toMatchObject({
-        suggestions: mockAuthors,
-        getActiveTokenValue: wrapper.vm.getActiveAuthor,
+        suggestions: mockUsers,
+        getActiveTokenValue: wrapper.vm.getActiveUser,
       });
     });
 
     it('renders token item when value is selected', async () => {
       wrapper = createComponent({
-        value: { data: mockAuthors[0].username },
-        data: { authors: mockAuthors },
+        value: { data: mockUsers[0].username },
+        data: { users: mockUsers },
         stubs: { Portal: true },
       });
 
@@ -201,20 +201,20 @@ describe('AuthorToken', () => {
 
       const tokenValue = tokenSegments.at(2);
 
-      expect(tokenValue.findComponent(GlAvatar).props('src')).toBe(mockAuthors[0].avatar_url);
-      expect(tokenValue.text()).toBe(mockAuthors[0].name); // "Administrator"
+      expect(tokenValue.findComponent(GlAvatar).props('src')).toBe(mockUsers[0].avatar_url);
+      expect(tokenValue.text()).toBe(mockUsers[0].name); // "Administrator"
     });
 
-    it('renders token value with correct avatarUrl from author object', async () => {
+    it('renders token value with correct avatarUrl from user object', async () => {
       const getAvatarEl = () =>
         wrapper.findAllComponents(GlFilteredSearchTokenSegment).at(2).findComponent(GlAvatar);
 
       wrapper = createComponent({
-        value: { data: mockAuthors[0].username },
+        value: { data: mockUsers[0].username },
         data: {
-          authors: [
+          users: [
             {
-              ...mockAuthors[0],
+              ...mockUsers[0],
             },
           ],
         },
@@ -223,15 +223,15 @@ describe('AuthorToken', () => {
 
       await nextTick();
 
-      expect(getAvatarEl().props('src')).toBe(mockAuthors[0].avatar_url);
+      expect(getAvatarEl().props('src')).toBe(mockUsers[0].avatar_url);
 
       // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
       // eslint-disable-next-line no-restricted-syntax
       wrapper.setData({
-        authors: [
+        users: [
           {
-            ...mockAuthors[0],
-            avatarUrl: mockAuthors[0].avatar_url,
+            ...mockUsers[0],
+            avatarUrl: mockUsers[0].avatar_url,
             avatar_url: undefined,
           },
         ],
@@ -239,14 +239,14 @@ describe('AuthorToken', () => {
 
       await nextTick();
 
-      expect(getAvatarEl().props('src')).toBe(mockAuthors[0].avatar_url);
+      expect(getAvatarEl().props('src')).toBe(mockUsers[0].avatar_url);
     });
 
-    it('renders provided defaultAuthors as suggestions', async () => {
-      const defaultAuthors = OPTIONS_NONE_ANY;
+    it('renders provided defaultUsers as suggestions', async () => {
+      const defaultUsers = OPTIONS_NONE_ANY;
       wrapper = createComponent({
         active: true,
-        config: { ...mockAuthorToken, defaultAuthors, preloadedAuthors: mockPreloadedAuthors },
+        config: { ...mockAuthorToken, defaultUsers, preloadedUsers: mockPreloadedUsers },
         stubs: { Portal: true },
       });
 
@@ -254,16 +254,16 @@ describe('AuthorToken', () => {
 
       const suggestions = wrapper.findAllComponents(GlFilteredSearchSuggestion);
 
-      expect(suggestions).toHaveLength(defaultAuthors.length + currentUserLength);
-      defaultAuthors.forEach((label, index) => {
+      expect(suggestions).toHaveLength(defaultUsers.length + currentUserLength);
+      defaultUsers.forEach((label, index) => {
         expect(suggestions.at(index).text()).toBe(label.text);
       });
     });
 
-    it('does not render divider when no defaultAuthors', async () => {
+    it('does not render divider when no defaultUsers', async () => {
       wrapper = createComponent({
         active: true,
-        config: { ...mockAuthorToken, defaultAuthors: [] },
+        config: { ...mockAuthorToken, defaultUsers: [] },
         stubs: { Portal: true },
       });
       const tokenSegments = wrapper.findAllComponents(GlFilteredSearchTokenSegment);
@@ -277,7 +277,7 @@ describe('AuthorToken', () => {
     it('renders `OPTIONS_NONE_ANY` as default suggestions', async () => {
       wrapper = createComponent({
         active: true,
-        config: { ...mockAuthorToken, preloadedAuthors: mockPreloadedAuthors },
+        config: { ...mockAuthorToken, preloadedUsers: mockPreloadedUsers },
         stubs: { Portal: true },
       });
 
@@ -308,8 +308,8 @@ describe('AuthorToken', () => {
           active: true,
           config: {
             ...mockAuthorToken,
-            preloadedAuthors: mockPreloadedAuthors,
-            defaultAuthors: [],
+            preloadedUsers: mockPreloadedUsers,
+            defaultUsers: [],
           },
           stubs: { Portal: true },
         });

@@ -358,6 +358,7 @@ The following table lists group permissions available for each role:
 
 | Action                                                                                  | Guest | Reporter | Developer | Maintainer | Owner |
 |-----------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|
+| Add/remove [child epics](group/epics/manage_epics.md#multi-level-child-epics)           | ✓ (8) | ✓        | ✓         | ✓          | ✓     |
 | Add an issue to an [epic](group/epics/index.md)                                         | ✓ (7) | ✓ (7)    | ✓ (7)     | ✓ (7)      | ✓ (7) |
 | Browse group                                                                            | ✓     | ✓        | ✓         | ✓          | ✓     |
 | Pull a container image using the dependency proxy                                       | ✓     | ✓        | ✓         | ✓          | ✓     |
@@ -427,6 +428,7 @@ The following table lists group permissions available for each role:
 5. In addition, if your group is public or internal, all users who can see the group can also see group wiki pages.
 6. Users can only view events based on their individual actions.
 7. You must have permission to [view the epic](group/epics/manage_epics.md#who-can-view-an-epic) and edit the issue.
+8. You must have permission to [view](group/epics/manage_epics.md#who-can-view-an-epic) the parent and child epics.
 
 <!-- markdownlint-enable MD029 -->
 

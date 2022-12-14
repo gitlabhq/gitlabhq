@@ -24,7 +24,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Link to your Grafana instance.')
-      = link_to s_('Learn more.'), help_page_path('administration/monitoring/performance/grafana_configuration.md'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/grafana_configuration.md'), target: '_blank', rel: 'noopener noreferrer'
 
   .settings-content
     = render 'grafana'
@@ -37,7 +37,7 @@
       = expanded_by_default? ? _('Collapse') : _('Expand')
     %p
       = _('Enable access to the performance bar for non-administrators in a given group.')
-      = link_to s_('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar.md', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
+      = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar.md', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
   .settings-content
     = render 'performance_bar'
 

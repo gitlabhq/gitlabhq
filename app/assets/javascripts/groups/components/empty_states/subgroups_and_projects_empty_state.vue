@@ -83,7 +83,6 @@ export default {
   </div>
   <gl-empty-state
     v-else
-    class="gl-mt-5"
     :title="$options.i18n.withoutLinks.title"
     :svg-path="emptySubgroupIllustration"
     :description="$options.i18n.withoutLinks.description"

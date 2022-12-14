@@ -1,21 +1,25 @@
 <script>
-import { GlLoadingIcon, GlModal } from '@gitlab/ui';
+import { GlLoadingIcon, GlModal, GlEmptyState } from '@gitlab/ui';
 import { createAlert } from '~/flash';
 import { mergeUrlParams, getParameterByName } from '~/lib/utils/url_utility';
-import { HIDDEN_CLASS } from '~/lib/utils/constants';
 import { __, s__, sprintf } from '~/locale';
 
-import { COMMON_STR, CONTENT_LIST_CLASS } from '../constants';
+import { COMMON_STR } from '../constants';
 import eventHub from '../event_hub';
 import GroupsComponent from './groups.vue';
-import EmptyState from './empty_state.vue';
 
 export default {
+  i18n: {
+    searchEmptyState: {
+      title: __('No results found'),
+      description: __('Edit your search and try again'),
+    },
+  },
   components: {
     GroupsComponent,
     GlModal,
     GlLoadingIcon,
-    EmptyState,
+    GlEmptyState,
   },
   props: {
     action: {
@@ -40,20 +44,14 @@ export default {
       type: Boolean,
       required: true,
     },
-    renderEmptyState: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
       isModalVisible: false,
       isLoading: true,
-      isSearchEmpty: false,
+      fromSearch: false,
       targetGroup: null,
       targetParentGroup: null,
-      showEmptyState: false,
     };
   },
   computed: {
@@ -78,6 +76,9 @@ export default {
     },
     groups() {
       return this.store.getGroups();
+    },
+    hasGroups() {
+      return this.groups && this.groups.length > 0;
     },
     pageInfo() {
       return this.store.getPaginationInfo();
@@ -231,46 +232,16 @@ export default {
           this.targetGroup.isBeingRemoved = false;
         });
     },
-    showLegacyEmptyState() {
-      const { containerEl } = this;
-
-      if (!containerEl) return;
-
-      const contentListEl = containerEl.querySelector(CONTENT_LIST_CLASS);
-      const emptyStateEl = containerEl.querySelector('.empty-state');
-
-      if (contentListEl) {
-        contentListEl.remove();
-      }
-
-      if (emptyStateEl) {
-        emptyStateEl.classList.remove(HIDDEN_CLASS);
-      }
-    },
     updatePagination(headers) {
       this.store.setPaginationInfo(headers);
     },
     updateGroups(groups, fromSearch) {
-      const hasGroups = groups && groups.length > 0;
-
-      if (this.renderEmptyState) {
-        this.isSearchEmpty = fromSearch && !hasGroups;
-      } else {
-        this.isSearchEmpty = !hasGroups;
-      }
+      this.fromSearch = fromSearch;
 
       if (fromSearch) {
         this.store.setSearchedGroups(groups);
       } else {
         this.store.setGroups(groups);
-      }
-
-      if (this.action && !hasGroups && !fromSearch) {
-        if (this.renderEmptyState) {
-          this.showEmptyState = true;
-        } else {
-          this.showLegacyEmptyState();
-        }
       }
     },
   },
@@ -285,14 +256,16 @@ export default {
       size="lg"
       class="loading-animation prepend-top-20"
     />
-    <groups-component
-      v-else
-      :groups="groups"
-      :search-empty="isSearchEmpty"
-      :page-info="pageInfo"
-      :action="action"
-    />
-    <empty-state v-if="showEmptyState" />
+    <template v-else>
+      <groups-component v-if="hasGroups" :groups="groups" :page-info="pageInfo" :action="action" />
+      <gl-empty-state
+        v-else-if="fromSearch"
+        :title="$options.i18n.searchEmptyState.title"
+        :description="$options.i18n.searchEmptyState.description"
+        data-testid="search-empty-state"
+      />
+      <slot v-else name="empty-state"></slot>
+    </template>
     <gl-modal
       modal-id="leave-group-modal"
       :visible="isModalVisible"

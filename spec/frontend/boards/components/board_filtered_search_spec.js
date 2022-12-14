@@ -17,7 +17,7 @@ import {
   TOKEN_TYPE_WEIGHT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import FilteredSearchBarRoot from '~/vue_shared/components/filtered_search_bar/filtered_search_bar_root.vue';
-import AuthorToken from '~/vue_shared/components/filtered_search_bar/tokens/author_token.vue';
+import UserToken from '~/vue_shared/components/filtered_search_bar/tokens/user_token.vue';
 import LabelToken from '~/vue_shared/components/filtered_search_bar/tokens/label_token.vue';
 import { createStore } from '~/boards/stores';
 
@@ -49,9 +49,9 @@ describe('BoardFilteredSearch', () => {
         { value: '!=', description: 'is not' },
       ],
       symbol: '@',
-      token: AuthorToken,
+      token: UserToken,
       unique: true,
-      fetchAuthors: () => new Promise(() => {}),
+      fetchUsers: () => new Promise(() => {}),
     },
   ];
 

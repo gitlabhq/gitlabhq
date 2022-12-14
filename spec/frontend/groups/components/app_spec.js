@@ -1,7 +1,7 @@
 import { GlModal, GlLoadingIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/flash';
 import appComponent from '~/groups/components/app.vue';
@@ -10,8 +10,6 @@ import groupItemComponent from '~/groups/components/group_item.vue';
 import eventHub from '~/groups/event_hub';
 import GroupsService from '~/groups/service/groups_service';
 import GroupsStore from '~/groups/store/groups_store';
-import EmptyState from '~/groups/components/empty_state.vue';
-import GroupsComponent from '~/groups/components/groups.vue';
 import axios from '~/lib/utils/axios_utils';
 import * as urlUtilities from '~/lib/utils/url_utility';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -43,13 +41,16 @@ describe('AppComponent', () => {
 
   const createShallowComponent = ({ propsData = {} } = {}) => {
     store.state.pageInfo = mockPageInfo;
-    wrapper = shallowMount(appComponent, {
+    wrapper = shallowMountExtended(appComponent, {
       propsData: {
         store,
         service,
         hideProjects: false,
         containerId: 'js-groups-tree',
         ...propsData,
+      },
+      scopedSlots: {
+        'empty-state': '<div data-testid="empty-state" />',
       },
       mocks: {
         $toast,
@@ -68,6 +69,7 @@ describe('AppComponent', () => {
     mock.onGet('/dashboard/groups.json').reply(200, mockGroups);
     Vue.component('GroupFolder', groupFolderComponent);
     Vue.component('GroupItem', groupItemComponent);
+    setWindowLocation('?filter=foobar');
 
     document.body.innerHTML = `
       <div id="js-groups-tree">
@@ -149,13 +151,13 @@ describe('AppComponent', () => {
 
         expect(vm.fetchGroups).toHaveBeenCalledWith({
           page: null,
-          filterGroupsBy: null,
+          filterGroupsBy: 'foobar',
           sortBy: null,
           updatePagination: true,
           archived: null,
         });
         return fetchPromise.then(() => {
-          expect(vm.updateGroups).toHaveBeenCalled();
+          expect(vm.updateGroups).toHaveBeenCalledWith(mockSearchedGroups, true);
         });
       });
     });
@@ -375,32 +377,16 @@ describe('AppComponent', () => {
         expect(vm.store.setSearchedGroups).toHaveBeenCalledWith(mockGroups);
       });
 
-      it('should set `isSearchEmpty` prop based on groups count and `filter` query param', () => {
-        setWindowLocation('?filter=foobar');
-        createShallowComponent();
-
-        vm.updateGroups(mockGroups);
-
-        expect(vm.isSearchEmpty).toBe(false);
-
-        vm.updateGroups([]);
-
-        expect(vm.isSearchEmpty).toBe(true);
-      });
-
       describe.each`
-        action                      | groups        | fromSearch | shouldRenderEmptyState | searchEmpty
-        ${'subgroups_and_projects'} | ${[]}         | ${false}   | ${true}                | ${false}
-        ${''}                       | ${[]}         | ${false}   | ${false}               | ${false}
-        ${'subgroups_and_projects'} | ${mockGroups} | ${false}   | ${false}               | ${false}
-        ${'subgroups_and_projects'} | ${[]}         | ${true}    | ${false}               | ${true}
+        groups        | fromSearch | shouldRenderEmptyState | shouldRenderSearchEmptyState
+        ${[]}         | ${false}   | ${true}                | ${false}
+        ${mockGroups} | ${false}   | ${false}               | ${false}
+        ${[]}         | ${true}    | ${false}               | ${true}
       `(
-        'when `action` is $action, `groups` is $groups, and `fromSearch` is $fromSearch',
-        ({ action, groups, fromSearch, shouldRenderEmptyState, searchEmpty }) => {
+        'when `groups` is $groups, and `fromSearch` is $fromSearch',
+        ({ groups, fromSearch, shouldRenderEmptyState, shouldRenderSearchEmptyState }) => {
           it(`${shouldRenderEmptyState ? 'renders' : 'does not render'} empty state`, async () => {
-            createShallowComponent({
-              propsData: { action, renderEmptyState: true },
-            });
+            createShallowComponent();
 
             await waitForPromises();
 
@@ -408,27 +394,13 @@ describe('AppComponent', () => {
 
             await nextTick();
 
-            expect(wrapper.findComponent(EmptyState).exists()).toBe(shouldRenderEmptyState);
-            expect(wrapper.findComponent(GroupsComponent).props('searchEmpty')).toBe(searchEmpty);
+            expect(wrapper.findByTestId('empty-state').exists()).toBe(shouldRenderEmptyState);
+            expect(wrapper.findByTestId('search-empty-state').exists()).toBe(
+              shouldRenderSearchEmptyState,
+            );
           });
         },
       );
-    });
-
-    describe('when `action` is subgroups_and_projects, `groups` is [], `fromSearch` is `false`, and `renderEmptyState` is `false`', () => {
-      it('renders legacy empty state', async () => {
-        createShallowComponent({
-          propsData: { action: 'subgroups_and_projects' },
-        });
-
-        vm.updateGroups([], false);
-
-        await nextTick();
-
-        expect(
-          document.querySelector('[data-testid="legacy-empty-state"]').classList.contains('hidden'),
-        ).toBe(false);
-      });
     });
   });
 

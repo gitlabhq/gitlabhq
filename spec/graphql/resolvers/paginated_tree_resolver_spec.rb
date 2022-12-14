@@ -66,9 +66,8 @@ RSpec.describe Resolvers::PaginatedTreeResolver do
         let(:args) { super().merge(after: 'invalid') }
 
         it 'generates an error' do
-          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::ArgumentError) do
-            subject
-          end
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::BaseError) { subject }
+          expect(subject.extensions.keys).to match_array([:code, :gitaly_code, :service])
         end
       end
 
@@ -90,6 +89,22 @@ RSpec.describe Resolvers::PaginatedTreeResolver do
         end
 
         expect(collected_entries).to match_array(expected_entries)
+      end
+    end
+
+    describe 'Custom error handling' do
+      before do
+        grpc_err = GRPC::Unavailable.new
+        allow(repository).to receive(:tree).and_raise(Gitlab::Git::CommandError, grpc_err)
+      end
+
+      context 'when gitaly is not available' do
+        let(:request) { get :index, format: :html, params: { namespace_id: project.namespace, project_id: project } }
+
+        it 'generates an unavailable error' do
+          expect_graphql_error_to_be_created(Gitlab::Graphql::Errors::BaseError) { subject }
+          expect(subject.extensions).to eq(code: 'unavailable', gitaly_code: 14, service: 'git')
+        end
       end
     end
   end

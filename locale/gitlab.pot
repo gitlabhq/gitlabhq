@@ -2128,9 +2128,6 @@ msgstr ""
 msgid "Activate Service Desk"
 msgstr ""
 
-msgid "Activated on"
-msgstr ""
-
 msgid "Active"
 msgstr ""
 
@@ -3301,7 +3298,7 @@ msgstr ""
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
-msgid "AdminUsers|Issues authored by this user are hidden from other users."
+msgid "AdminUsers|Issues and merge requests authored by this user are hidden from other users."
 msgstr ""
 
 msgid "AdminUsers|It's you!"
@@ -4417,15 +4414,6 @@ msgstr ""
 msgid "An error occurred while loading projects."
 msgstr ""
 
-msgid "An error occurred while loading the Jobs tab."
-msgstr ""
-
-msgid "An error occurred while loading the Needs tab."
-msgstr ""
-
-msgid "An error occurred while loading the Test Reports tab."
-msgstr ""
-
 msgid "An error occurred while loading the blob controls."
 msgstr ""
 
@@ -4457,9 +4445,6 @@ msgid "An error occurred while loading the merge request."
 msgstr ""
 
 msgid "An error occurred while loading the notification settings. Please try again."
-msgstr ""
-
-msgid "An error occurred while loading the pipeline."
 msgstr ""
 
 msgid "An error occurred while loading the pipelines jobs."
@@ -16560,9 +16545,6 @@ msgstr ""
 msgid "Expires %{preposition} %{expires_at}"
 msgstr ""
 
-msgid "Expires on"
-msgstr ""
-
 msgid "Expires:"
 msgstr ""
 
@@ -19886,7 +19868,13 @@ msgstr ""
 msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder."
 msgstr ""
 
+msgid "GroupsEmptyState|No archived projects."
+msgstr ""
+
 msgid "GroupsEmptyState|No groups found"
+msgstr ""
+
+msgid "GroupsEmptyState|No shared projects."
 msgstr ""
 
 msgid "GroupsEmptyState|No subgroups or projects."
@@ -23732,9 +23720,6 @@ msgstr ""
 msgid "Jobs|All"
 msgstr ""
 
-msgid "Jobs|An error occurred while loading the Failed Jobs tab."
-msgstr ""
-
 msgid "Jobs|Are you sure you want to proceed?"
 msgstr ""
 
@@ -24208,9 +24193,6 @@ msgid "Last Pipeline"
 msgstr ""
 
 msgid "Last Seen"
-msgstr ""
-
-msgid "Last Sync"
 msgstr ""
 
 msgid "Last Used"
@@ -31561,7 +31543,13 @@ msgstr ""
 msgid "ProductAnalytics|Audience"
 msgstr ""
 
+msgid "ProductAnalytics|Dashboards are created by editing the projects dashboard files."
+msgstr ""
+
 msgid "ProductAnalytics|New Analytics Widget Title"
+msgstr ""
+
+msgid "ProductAnalytics|Product analytics dashboards"
 msgstr ""
 
 msgid "ProductAnalytics|There is no data for this type of chart currently. Please see the Setup tab if you have not configured the product analytics tool already."
@@ -34647,9 +34635,6 @@ msgid "Render diagrams in your documents using PlantUML."
 msgstr ""
 
 msgid "Renew subscription"
-msgstr ""
-
-msgid "Renews"
 msgstr ""
 
 msgid "Reopen"
@@ -40044,16 +40029,34 @@ msgstr ""
 msgid "Subscriptions"
 msgstr ""
 
+msgid "Subscriptions|Activation date"
+msgstr ""
+
 msgid "Subscriptions|Chat with sales"
 msgstr ""
 
 msgid "Subscriptions|Close"
 msgstr ""
 
+msgid "Subscriptions|End date"
+msgstr ""
+
+msgid "Subscriptions|End date:"
+msgstr ""
+
+msgid "Subscriptions|Last sync"
+msgstr ""
+
+msgid "Subscriptions|None"
+msgstr ""
+
 msgid "Subscriptions|Not ready to buy yet?"
 msgstr ""
 
 msgid "Subscriptions|Start a free trial"
+msgstr ""
+
+msgid "Subscriptions|Start date"
 msgstr ""
 
 msgid "Subscriptions|We understand. Maybe you have some questions for our sales team, or maybe you'd like to try some of the paid features first. What would you like to do?"
@@ -41107,9 +41110,6 @@ msgstr ""
 msgid "TestReports|Test reports require job artifacts but all artifacts are expired. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
-msgid "TestReports|Tests"
-msgstr ""
-
 msgid "TestReports|There are no test cases to display."
 msgstr ""
 
@@ -42065,6 +42065,9 @@ msgid "Third Party Advisory Link"
 msgstr ""
 
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
+msgstr ""
+
+msgid "This %{issuable} is hidden because its author has been banned"
 msgstr ""
 
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
@@ -44268,6 +44271,9 @@ msgstr ""
 msgid "UpdateProject|Could not set the default branch"
 msgstr ""
 
+msgid "UpdateProject|Could not set the default branch. Do you have a branch named 'HEAD' in your repository? (%{linkStart}How do I fix this?%{linkEnd})"
+msgstr ""
+
 msgid "UpdateProject|New visibility level not allowed!"
 msgstr ""
 
@@ -45237,9 +45243,6 @@ msgid "Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their
 msgstr ""
 
 msgid "VS Code in your browser. View code and make changes from the same UI as in your local IDE."
-msgstr ""
-
-msgid "Valid From"
 msgstr ""
 
 msgid "Validate"

@@ -35,12 +35,8 @@ export default {
       title: '',
       body: null,
       open: false,
+      drawerTop: '0px',
     };
-  },
-  computed: {
-    drawerOffsetTop() {
-      return `${contentTop()}px`;
-    },
   },
   watch: {
     documentPath: {
@@ -77,6 +73,9 @@ export default {
         cache[this.documentPath] = { title, body };
       }
     },
+    getDrawerTop() {
+      this.drawerTop = `${contentTop()}px`;
+    },
     renderGLFM() {
       this.$nextTick(() => {
         $(this.$refs['content-element']).renderGFM();
@@ -86,9 +85,11 @@ export default {
       this.open = false;
     },
     toggleDrawer() {
+      this.getDrawerTop();
       this.open = !this.open;
     },
     openDrawer() {
+      this.getDrawerTop();
       this.open = true;
     },
   },
@@ -98,7 +99,7 @@ export default {
 };
 </script>
 <template>
-  <gl-drawer :header-height="drawerOffsetTop" :open="open" header-sticky @close="closeDrawer">
+  <gl-drawer :header-height="drawerTop" :open="open" header-sticky @close="closeDrawer">
     <template #title>
       <h4 data-testid="title-element" class="gl-m-0">{{ title }}</h4>
     </template>

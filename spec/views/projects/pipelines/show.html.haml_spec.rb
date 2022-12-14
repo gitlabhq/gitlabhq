@@ -13,7 +13,6 @@ RSpec.describe 'projects/pipelines/show' do
   before do
     assign(:project, project)
     assign(:pipeline, presented_pipeline)
-    stub_feature_flags(pipeline_tabs_vue: false)
   end
 
   context 'when pipeline has errors' do
@@ -31,7 +30,7 @@ RSpec.describe 'projects/pipelines/show' do
     it 'does not render the pipeline tabs' do
       render
 
-      expect(rendered).not_to have_css('ul.pipelines-tabs')
+      expect(rendered).not_to have_selector('#js-pipeline-tabs')
     end
   end
 
@@ -45,7 +44,7 @@ RSpec.describe 'projects/pipelines/show' do
     it 'renders the pipeline tabs' do
       render
 
-      expect(rendered).to have_css('ul.pipelines-tabs')
+      expect(rendered).to have_selector('#js-pipeline-tabs')
     end
   end
 end

@@ -12,6 +12,7 @@ module Projects
         graphql_resource_etag: graphql_etag_pipeline_path(pipeline),
         metrics_path: namespace_project_ci_prometheus_metrics_histograms_path(namespace_id: project.namespace, project_id: project, format: :json),
         pipeline_iid: pipeline.iid,
+        pipeline_path: pipeline_path(pipeline),
         pipeline_project_path: project.full_path,
         total_job_count: pipeline.total_size,
         summary_endpoint: summary_project_pipeline_tests_path(project, pipeline, format: :json),
