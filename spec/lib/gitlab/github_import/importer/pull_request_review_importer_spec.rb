@@ -215,12 +215,6 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequestReviewImporter, :clean
 
       let(:review) { create_review(type: 'APPROVED', note: '') }
 
-      it 'logs an error' do
-        expect(Gitlab::Import::Logger).to receive(:warn)
-
-        subject.execute
-      end
-
       it 'creates a note for the review with the author username' do
         expect { subject.execute }
           .to change(Note, :count).by(1)

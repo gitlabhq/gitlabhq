@@ -1890,6 +1890,7 @@ class User < ApplicationRecord
 
   def invalidate_issue_cache_counts
     Rails.cache.delete(['users', id, 'assigned_open_issues_count'])
+    Rails.cache.delete(['users', id, 'max_assigned_open_issues_count']) if Feature.enabled?(:limit_assigned_issues_count)
   end
 
   def invalidate_merge_request_cache_counts

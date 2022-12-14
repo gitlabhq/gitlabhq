@@ -38742,9 +38742,6 @@ msgstr ""
 msgid "SlackIntegration|Install GitLab for Slack app"
 msgstr ""
 
-msgid "SlackIntegration|Notifications only work if you're on the latest version of the GitLab for Slack app"
-msgstr ""
-
 msgid "SlackIntegration|Project alias"
 msgstr ""
 
@@ -38773,6 +38770,12 @@ msgid "SlackIntegration|This integration allows users to perform common operatio
 msgstr ""
 
 msgid "SlackIntegration|Update to the latest version"
+msgstr ""
+
+msgid "SlackIntegration|Update to the latest version of GitLab for Slack to get notifications"
+msgstr ""
+
+msgid "SlackIntegration|Update to the latest version to receive notifications from GitLab."
 msgstr ""
 
 msgid "SlackIntegration|Verification token"

@@ -9,7 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/221259) from GitLab Premium to GitLab Free in 13.3.
 
 With the GitLab Package Registry, you can use GitLab as a private or public registry for a variety
-of [supported package managers](reference.md#supported-package-managers).
+of [supported package managers](supported_package_managers.md).
 You can publish and share packages, which can be consumed as a dependency in downstream projects.
 
 ## Package workflows

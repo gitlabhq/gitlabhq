@@ -229,7 +229,10 @@ export default {
   billingPlanNames,
   slackUpgradeInfo: {
     title: s__(
-      `SlackIntegration|Notifications only work if you're on the latest version of the GitLab for Slack app`,
+      `SlackIntegration|Update to the latest version of GitLab for Slack to get notifications`,
+    ),
+    text: s__(
+      `SlackIntegration|Update to the latest version to receive notifications from GitLab.`,
     ),
     btnText: s__('SlackIntegration|Update to the latest version'),
   },
@@ -290,11 +293,11 @@ export default {
       <gl-alert
         :dismissible="false"
         :title="$options.slackUpgradeInfo.title"
-        variant="warning"
         :primary-button-link="customState.upgradeSlackUrl"
         :primary-button-text="$options.slackUpgradeInfo.btnText"
         class="gl-mb-8 gl-mt-5"
-      />
+        >{{ $options.slackUpgradeInfo.text }}</gl-alert
+      >
     </div>
 
     <template v-if="hasSections">

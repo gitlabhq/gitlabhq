@@ -1019,13 +1019,7 @@ Do not change to a reference style link.
 
 #### Change the image dimensions
 
-> Introduced in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `markdown_image_attributes`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available,
-ask an administrator to [enable the feature flag](../administration/feature_flags.md) named `markdown_image_attributes`.
-On GitLab.com, this feature is available.
-The feature is not ready for production use.
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28118) in GitLab 15.7.
 
 You can control the width and height of an image by following the image with
 an attribute list.

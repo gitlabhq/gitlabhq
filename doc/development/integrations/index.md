@@ -124,6 +124,39 @@ module Integrations
 end
 ```
 
+## Define configuration test
+
+Optionally, you can define a configuration test of an integration's settings. The test is executed from the integration form's **Test** button, and results are returned to the user.
+
+A good configuration test:
+
+- Does not change data on the service. For example, it should not trigger a CI build. Sending a message is okay.
+- Is meaningful and as thorough as possible.
+
+If it's not possible to follow the above guidelines, consider not adding a configuration test.
+
+To add a configuration test, define a `#test` method for the integration model.
+
+The method receives `data`, which is a test push event payload.
+It should return a hash, containing the keys:
+
+- `success` (required): a boolean to indicate if the configuration test has passed.
+- `result` (optional): a message returned to the user if the configuration test has failed.
+
+For example:
+
+```ruby
+module Integrations
+  class FooBar < Integration
+    def test(data)
+      success = test_api_key(data)
+
+      { success: success, result: 'API key is invalid' }
+    end
+  end
+end
+```
+
 ### Customize the frontend form
 
 The frontend form is generated dynamically based on metadata defined in the model.
@@ -281,6 +314,8 @@ and link it from the [Integrations overview](../../user/project/integrations/ind
 You can also refer to our general [documentation guidelines](../documentation/index.md).
 
 ## Testing
+
+Testing should not be confused with [defining configuration tests](#define-configuration-test).
 
 It is often sufficient to add tests for the integration model in `spec/models/integrations`,
 and a factory with example settings in `spec/factories/integrations.rb`.

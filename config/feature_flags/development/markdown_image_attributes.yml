@@ -1,8 +1,0 @@
----
-name: markdown_image_attributes
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104904
-rollout_issue_url:
-milestone: '15.7'
-type: development
-group: group::project management
-default_enabled: false

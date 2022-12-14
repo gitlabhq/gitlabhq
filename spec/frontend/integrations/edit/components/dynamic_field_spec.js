@@ -7,11 +7,16 @@ import { mockField } from '../mock_data';
 describe('DynamicField', () => {
   let wrapper;
 
-  const createComponent = (props, isInheriting = false) => {
+  const createComponent = (props, isInheriting = false, editable = true) => {
     wrapper = mount(DynamicField, {
       propsData: { ...mockField, ...props },
       computed: {
         isInheriting: () => isInheriting,
+        propsSource: () => {
+          return {
+            editable,
+          };
+        },
       },
     });
   };
@@ -28,12 +33,14 @@ describe('DynamicField', () => {
 
   describe('template', () => {
     describe.each`
-      isInheriting | disabled      | readonly      | checkboxLabel
-      ${true}      | ${'disabled'} | ${'readonly'} | ${undefined}
-      ${false}     | ${undefined}  | ${undefined}  | ${'Custom checkbox label'}
+      isInheriting | editable | disabled      | readonly      | checkboxLabel
+      ${true}      | ${true}  | ${'disabled'} | ${'readonly'} | ${undefined}
+      ${false}     | ${true}  | ${undefined}  | ${undefined}  | ${'Custom checkbox label'}
+      ${true}      | ${false} | ${'disabled'} | ${'readonly'} | ${undefined}
+      ${false}     | ${false} | ${'disabled'} | ${undefined}  | ${'Custom checkbox label'}
     `(
-      'dynamic field, when isInheriting = `%p`',
-      ({ isInheriting, disabled, readonly, checkboxLabel }) => {
+      'dynamic field, when isInheriting = `$isInheriting` and editable = `$editable`',
+      ({ isInheriting, editable, disabled, readonly, checkboxLabel }) => {
         describe('type is checkbox', () => {
           beforeEach(() => {
             createComponent(
@@ -42,6 +49,7 @@ describe('DynamicField', () => {
                 checkboxLabel,
               },
               isInheriting,
+              editable,
             );
           });
 
@@ -74,6 +82,7 @@ describe('DynamicField', () => {
                 ],
               },
               isInheriting,
+              editable,
             );
           });
 
@@ -97,6 +106,7 @@ describe('DynamicField', () => {
                 type: 'textarea',
               },
               isInheriting,
+              editable,
             );
           });
 
@@ -119,6 +129,7 @@ describe('DynamicField', () => {
                 type: 'password',
               },
               isInheriting,
+              editable,
             );
           });
 
@@ -143,6 +154,7 @@ describe('DynamicField', () => {
                 required: true,
               },
               isInheriting,
+              editable,
             );
           });
 

@@ -21,8 +21,6 @@ module Banzai
       VALID_SIZE_REGEX   = %r{\A\d{1,4}(%|px)?\z}.freeze
 
       def call
-        return doc unless Feature.enabled?(:markdown_image_attributes, group)
-
         doc.xpath(XPATH).each do |img|
           sibling = img.next
           next unless sibling && sibling.text? && sibling.content.first == '{'
@@ -47,10 +45,6 @@ module Banzai
 
       def valid_size?(size)
         size.match?(VALID_SIZE_REGEX)
-      end
-
-      def group
-        context[:group] || context[:project]&.group
       end
     end
   end

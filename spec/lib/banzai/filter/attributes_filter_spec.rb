@@ -10,13 +10,6 @@ RSpec.describe Banzai::Filter::AttributesFilter, feature_category: :team_plannin
     %(<img src="example.jpg">)
   end
 
-  it 'does not recognize new syntax when feature flag is off' do
-    stub_feature_flags(markdown_image_attributes: false)
-    doc = filter("#{image}{width=100}")
-
-    expect(doc.to_s).to eq "#{image}{width=100}"
-  end
-
   describe 'attribute syntax' do
     context 'when attribute syntax is valid' do
       where(:text, :result) do

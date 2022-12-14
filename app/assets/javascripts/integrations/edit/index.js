@@ -108,6 +108,7 @@ export default function initIntegrationSettingsForm() {
   const initialState = {
     defaultState: null,
     customState: customSettingsProps,
+    editable: customSettingsProps.editable && !customSettingsProps.shouldUpgradeSlack,
   };
   if (defaultSettingsEl) {
     initialState.defaultState = Object.freeze(parseDatasetToProps(defaultSettingsEl.dataset));

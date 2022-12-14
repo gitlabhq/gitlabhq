@@ -5225,6 +5225,10 @@ RSpec.describe User do
   describe '#invalidate_issue_cache_counts' do
     let(:user) { build_stubbed(:user) }
 
+    before do
+      stub_feature_flags(limit_assigned_issues_count: false)
+    end
+
     it 'invalidates cache for issue counter' do
       cache_mock = double
 
@@ -5233,6 +5237,23 @@ RSpec.describe User do
       allow(Rails).to receive(:cache).and_return(cache_mock)
 
       user.invalidate_issue_cache_counts
+    end
+
+    context 'when limit_assigned_issues_count is enabled' do
+      before do
+        stub_feature_flags(limit_assigned_issues_count: true)
+      end
+
+      it 'invalidates cache for issue counter' do
+        cache_mock = double
+
+        expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_issues_count'])
+        expect(cache_mock).to receive(:delete).with(['users', user.id, 'max_assigned_open_issues_count'])
+
+        allow(Rails).to receive(:cache).and_return(cache_mock)
+
+        user.invalidate_issue_cache_counts
+      end
     end
   end
 

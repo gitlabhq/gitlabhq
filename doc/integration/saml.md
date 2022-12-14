@@ -334,12 +334,12 @@ connect to the Google Workspace SAML app.
 | First Name      | `first_name`, `firstname`, `firstName` |
 | Last Name       | `last_name`, `lastname`, `lastName`    |
 
-See [`attribute_statements`](#map-saml-response-attribute-names) for examples on how custom
-assertions are configured. This section also describes how to configure custom
-username attributes.
+See [`attribute_statements`](#map-saml-response-attribute-names) for:
 
-Please refer to [the OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
-for a full list of supported assertions.
+- Custom assertion configuration examples.
+- How to configure custom username attributes.
+
+For a full list of supported assertions, see the [OmniAuth SAML gem](https://github.com/omniauth/omniauth-saml/blob/master/lib/omniauth/strategies/saml.rb)
 
 ## Configure users based on SAML group membership
 
@@ -381,16 +381,19 @@ to add a `groups_attribute:` element to your SAML settings.
 
 ### Required groups
 
-Your IdP passes Group information to the SP (GitLab) in the SAML Response.
-To use this response, configure GitLab to identify:
+Your IdP passes group information to GitLab in the SAML response. To use this
+response, configure GitLab to identify:
 
-- Where to look for the groups in the SAML response via the `groups_attribute` setting
-- Which group membership is requisite to sign in via the `required_groups` setting
+- Where to look for the groups in the SAML response, using the `groups_attribute` setting.
+- Information about a group or user, using a group setting.
 
-When `required_groups` is empty or not set, anyone with proper authentication
-is able to use the service.
+Use the `required_groups` setting to configure GitLab to identify which group
+membership is required to sign in.
 
-Example:
+If you do not set `required_groups` or leave the setting empty, anyone with proper
+authentication can use the service.
+
+Example configuration:
 
 ```yaml
 { name: 'saml',
@@ -428,11 +431,16 @@ membership in the SAML identity provider.
 
 ### Administrator groups
 
-The requirements are the same as the previous settings:
+Your IdP passes group information to GitLab in the SAML response. To use this
+response, configure GitLab to identify:
 
-- The IdP must pass Group information to GitLab.
-- GitLab must know where to look for the groups in the SAML response, as well as
-  which groups grant the user administrator access.
+- Where to look for the groups in the SAML response, using the `groups_attribute` setting.
+- Information about a group or user, using a group setting.
+
+Use the `admin_groups` setting to configure GitLab to identify which groups grant
+the user administrator access.
+
+Example configuration:
 
 ```yaml
 { name: 'saml',
