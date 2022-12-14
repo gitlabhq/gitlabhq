@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe NotePolicy do
+RSpec.describe NotePolicy, feature_category: :team_planning do
   describe '#rules', :aggregate_failures do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public) }
@@ -255,6 +255,31 @@ RSpec.describe NotePolicy do
 
             it_behaves_like 'user can read the note'
           end
+
+          context 'when notes widget is disabled for task' do
+            let(:policy) { described_class.new(developer, note) }
+
+            before do
+              widgets_per_type = WorkItems::Type::WIDGETS_FOR_TYPE.dup
+              widgets_per_type[:task] = [::WorkItems::Widgets::Description]
+              stub_const('WorkItems::Type::WIDGETS_FOR_TYPE', widgets_per_type)
+            end
+
+            context 'when noteable is task' do
+              let(:noteable) { create(:work_item, :task, project: project) }
+              let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
+
+              it_behaves_like 'user cannot read or act on the note'
+            end
+
+            context 'when noteable is issue' do
+              let(:noteable) { create(:work_item, :issue, project: project) }
+              let(:note) { create(:note, system: true, noteable: noteable, author: user, project: project) }
+
+              it_behaves_like 'user can read the note'
+              it_behaves_like 'user can act on the note'
+            end
+          end
         end
 
         context 'when it is a system note referencing a confidential issue' do
@@ -313,7 +338,7 @@ RSpec.describe NotePolicy do
           end
 
           it 'does not allow guests to read confidential notes and replies' do
-            expect(permissions(guest, confidential_note)).to be_disallowed(:read_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
+            expect(permissions(guest, confidential_note)).to be_disallowed(:read_note, :read_internal_note, :admin_note, :reposition_note, :resolve_note, :award_emoji, :mark_note_as_confidential)
           end
 
           it 'allows reporter to read all notes but not resolve and admin them' do

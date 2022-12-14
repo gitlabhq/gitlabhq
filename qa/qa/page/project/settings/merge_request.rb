@@ -15,7 +15,7 @@ module QA
             element :merge_ff_radio
           end
 
-          view 'app/views/projects/_merge_request_merge_checks_settings.html.haml' do
+          view 'app/views/projects/_merge_request_pipelines_and_threads_options.html.haml' do
             element :allow_merge_if_all_discussions_are_resolved_checkbox
           end
 

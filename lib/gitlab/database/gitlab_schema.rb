@@ -15,7 +15,7 @@
 module Gitlab
   module Database
     module GitlabSchema
-      GITLAB_SCHEMAS_FILE = 'lib/gitlab/database/gitlab_schemas.yml'
+      DICTIONARY_PATH = 'db/docs/'
 
       # These tables are deleted/renamed, but still referenced by migrations.
       # This is needed for now, but should be removed in the future
@@ -70,7 +70,7 @@ module Gitlab
         table_name.gsub!(/_[0-9]+$/, '')
 
         # Tables that are properly mapped
-        if gitlab_schema = tables_to_schema[table_name]
+        if gitlab_schema = views_and_tables_to_schema[table_name]
           return gitlab_schema
         end
 
@@ -98,12 +98,36 @@ module Gitlab
         undefined ? :"undefined_#{table_name}" : nil
       end
 
+      def self.dictionary_path_globs
+        [Rails.root.join(DICTIONARY_PATH, '*.yml')]
+      end
+
+      def self.view_path_globs
+        [Rails.root.join(DICTIONARY_PATH, 'views', '*.yml')]
+      end
+
+      def self.views_and_tables_to_schema
+        @views_and_tables_to_schema ||= self.tables_to_schema.merge(self.views_to_schema)
+      end
+
       def self.tables_to_schema
-        @tables_to_schema ||= YAML.load_file(Rails.root.join(GITLAB_SCHEMAS_FILE))
+        @tables_to_schema ||= Dir.glob(self.dictionary_path_globs).each_with_object({}) do |file_path, dic|
+          data = YAML.load_file(file_path)
+
+          dic[data['table_name']] = data['gitlab_schema'].to_sym
+        end
+      end
+
+      def self.views_to_schema
+        @views_to_schema ||= Dir.glob(self.view_path_globs).each_with_object({}) do |file_path, dic|
+          data = YAML.load_file(file_path)
+
+          dic[data['view_name']] = data['gitlab_schema'].to_sym
+        end
       end
 
       def self.schema_names
-        @schema_names ||= self.tables_to_schema.values.to_set
+        @schema_names ||= self.views_and_tables_to_schema.values.to_set
       end
     end
   end

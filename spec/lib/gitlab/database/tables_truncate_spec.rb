@@ -148,6 +148,18 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
         }
       )
 
+      allow(Gitlab::Database::GitlabSchema).to receive(:views_and_tables_to_schema).and_return(
+        {
+          "_test_gitlab_main_items" => :gitlab_main,
+          "_test_gitlab_main_references" => :gitlab_main,
+          "_test_gitlab_hook_logs" => :gitlab_main,
+          "_test_gitlab_ci_items" => :gitlab_ci,
+          "_test_gitlab_ci_references" => :gitlab_ci,
+          "_test_gitlab_shared_items" => :gitlab_shared,
+          "_test_gitlab_geo_items" => :gitlab_geo
+        }
+      )
+
       allow(logger).to receive(:info).with(any_args)
     end
 

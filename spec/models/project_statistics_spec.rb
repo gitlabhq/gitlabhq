@@ -467,6 +467,13 @@ RSpec.describe ProjectStatistics do
           .to change { statistics.reload.storage_size }
           .by(20)
       end
+
+      it 'schedules a namespace aggregation worker' do
+        expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
+         .with(statistics.project.namespace.id)
+
+        described_class.increment_statistic(project, stat, 20)
+      end
     end
 
     shared_examples 'a statistic that increases storage_size asynchronously' do
@@ -474,7 +481,8 @@ RSpec.describe ProjectStatistics do
         described_class.increment_statistic(project, stat, 13)
 
         Gitlab::Redis::SharedState.with do |redis|
-          increment = redis.get(statistics.counter_key(stat))
+          key = statistics.counter(stat).key
+          increment = redis.get(key)
           expect(increment.to_i).to eq(13)
         end
       end
@@ -482,7 +490,7 @@ RSpec.describe ProjectStatistics do
       it 'schedules a worker to update the statistic and storage_size async', :sidekiq_inline do
         expect(FlushCounterIncrementsWorker)
           .to receive(:perform_in)
-          .with(CounterAttribute::WORKER_DELAY, described_class.name, statistics.id, stat)
+          .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat)
           .and_call_original
 
         expect { described_class.increment_statistic(project, stat, 20) }

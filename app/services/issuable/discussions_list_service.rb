@@ -16,7 +16,7 @@ module Issuable
     end
 
     def execute
-      return Note.none unless can_read_issuable?
+      return Note.none unless can_read_issuable_notes?
 
       notes = NotesFinder.new(current_user, params.merge({ target: issuable, project: issuable.project }))
                 .execute.with_web_entity_associations.inc_relations_for_view.fresh
@@ -58,10 +58,11 @@ module Issuable
       end
     end
 
-    def can_read_issuable?
+    def can_read_issuable_notes?
       return Ability.allowed?(current_user, :read_security_resource, issuable) if issuable.is_a?(Vulnerability)
 
-      Ability.allowed?(current_user, :"read_#{issuable.to_ability_name}", issuable)
+      Ability.allowed?(current_user, :"read_#{issuable.to_ability_name}", issuable) &&
+        Ability.allowed?(current_user, :read_note, issuable)
     end
   end
 end

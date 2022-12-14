@@ -13,19 +13,19 @@ class ProjectStatistics < ApplicationRecord
   counter_attribute :build_artifacts_size
   counter_attribute :packages_size
 
-  counter_attribute_after_flush do |project_statistic|
-    project_statistic.refresh_storage_size!
+  counter_attribute_after_commit do |project_statistics|
+    project_statistics.refresh_storage_size!
 
-    Namespaces::ScheduleAggregationWorker.perform_async(project_statistic.namespace_id)
+    Namespaces::ScheduleAggregationWorker.perform_async(project_statistics.namespace_id)
   end
 
   before_save :update_storage_size
 
   COLUMNS_TO_REFRESH = [:repository_size, :wiki_size, :lfs_objects_size, :commit_count, :snippets_size, :uploads_size, :container_registry_size].freeze
-  INCREMENTABLE_COLUMNS = {
-    pipeline_artifacts_size: %i[storage_size],
-    snippets_size: %i[storage_size]
-  }.freeze
+  INCREMENTABLE_COLUMNS = [
+    :pipeline_artifacts_size,
+    :snippets_size
+  ].freeze
   NAMESPACE_RELATABLE_COLUMNS = [:repository_size, :wiki_size, :lfs_objects_size, :uploads_size, :container_registry_size].freeze
   STORAGE_SIZE_COMPONENTS = [
     :repository_size,
@@ -120,7 +120,7 @@ class ProjectStatistics < ApplicationRecord
   # we have to update the storage_size separately.
   #
   # For counter attributes, storage_size will be refreshed after the counter is flushed,
-  # through counter_attribute_after_flush
+  # through counter_attribute_after_commit
   #
   # For non-counter attributes, storage_size is updated depending on key => [columns] in INCREMENTABLE_COLUMNS
   def self.increment_statistic(project, key, amount)
@@ -131,26 +131,14 @@ class ProjectStatistics < ApplicationRecord
 
   def increment_statistic(key, amount)
     raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
-    return if amount == 0
 
-    if counter_attribute_enabled?(key)
-      delayed_increment_counter(key, amount)
-    else
-      legacy_increment_statistic(key, amount)
-    end
-  end
-
-  def legacy_increment_statistic(key, amount)
-    increment_columns!(key, amount)
-
-    Namespaces::ScheduleAggregationWorker.perform_async( # rubocop: disable CodeReuse/Worker
-      project.namespace_id)
+    increment_counter(key, amount)
   end
 
   private
 
   def incrementable_attribute?(key)
-    INCREMENTABLE_COLUMNS.key?(key) || counter_attribute_enabled?(key)
+    INCREMENTABLE_COLUMNS.include?(key) || counter_attribute_enabled?(key)
   end
 
   def storage_size_components
@@ -159,16 +147,6 @@ class ProjectStatistics < ApplicationRecord
 
   def storage_size_sum
     storage_size_components.map { |component| "COALESCE (#{component}, 0)" }.join(' + ').freeze
-  end
-
-  def increment_columns!(key, amount)
-    increments = { key => amount }
-    additional = INCREMENTABLE_COLUMNS.fetch(key, [])
-    additional.each do |column|
-      increments[column] = amount
-    end
-
-    update_counters_with_lease(increments)
   end
 
   def schedule_namespace_aggregation_worker

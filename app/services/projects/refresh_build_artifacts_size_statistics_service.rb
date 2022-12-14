@@ -18,7 +18,7 @@ module Projects
           # Mark the refresh ready for another worker to pick up and process the next batch
           refresh.requeue!(batch.last.id)
 
-          refresh.project.statistics.delayed_increment_counter(:build_artifacts_size, total_artifacts_size)
+          refresh.project.statistics.increment_counter(:build_artifacts_size, total_artifacts_size)
         end
       else
         # Remove the refresh job from the table if there are no more

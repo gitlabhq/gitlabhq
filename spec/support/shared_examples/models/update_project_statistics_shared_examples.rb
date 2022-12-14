@@ -15,7 +15,7 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
 
   def read_pending_increment
     Gitlab::Redis::SharedState.with do |redis|
-      key = project.statistics.counter_key(project_statistics_name)
+      key = project.statistics.counter(project_statistics_name).key
       redis.get(key).to_i
     end
   end
@@ -25,7 +25,7 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
   def expect_flush_counter_increments_worker_performed
     expect(FlushCounterIncrementsWorker)
       .to receive(:perform_in)
-      .with(CounterAttribute::WORKER_DELAY, project.statistics.class.name, project.statistics.id, project_statistics_name)
+      .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, project.statistics.class.name, project.statistics.id, project_statistics_name)
 
     yield
 

@@ -713,7 +713,7 @@ RSpec.describe Packages::Package, type: :model do
     subject(:destroy!) { package.destroy! }
 
     it 'updates the project statistics' do
-      expect(project_statistics).to receive(:delayed_increment_counter).with(:packages_size, -package_file.size)
+      expect(project_statistics).to receive(:increment_counter).with(:packages_size, -package_file.size)
 
       destroy!
     end

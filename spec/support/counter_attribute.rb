@@ -15,7 +15,7 @@ RSpec.configure do |config|
 
       attr_accessor :flushed, :allow_package_size_counter
 
-      counter_attribute_after_flush do |subject|
+      counter_attribute_after_commit do |subject|
         subject.flushed = true
       end
     end

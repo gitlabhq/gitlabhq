@@ -1,5 +1,5 @@
 ---
-table_name: ci_pipelines_metadata
+table_name: ci_pipeline_metadata
 classes:
 - Ci::PipelineMetadata
 feature_categories:

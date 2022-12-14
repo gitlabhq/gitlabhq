@@ -20,11 +20,19 @@ class NotePolicy < BasePolicy
 
   condition(:confidential, scope: :subject) { @subject.confidential? }
 
+  # if noteable is a work item it needs to check the notes widget availability
+  condition(:notes_widget_enabled, scope: :subject) do
+    !@subject.noteable.respond_to?(:work_item_type) ||
+      @subject.noteable.work_item_type.widgets.include?(::WorkItems::Widgets::Notes)
+  end
+
   # Should be matched with IssuablePolicy#read_internal_note
   # and EpicPolicy#read_internal_note
   condition(:can_read_confidential) do
     access_level >= Gitlab::Access::REPORTER || admin?
   end
+
+  rule { ~notes_widget_enabled }.prevent_all
 
   rule { ~editable }.prevent :admin_note
 

@@ -48,7 +48,7 @@
               = _("Changes")
               = gl_badge_tag @diffs_count, { size: :sm }
         .d-flex.flex-wrap.align-items-center.justify-content-lg-end
-          #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
+          #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?(inherit_group_setting: true).to_s } }
           - if moved_mr_sidebar_enabled?
             - if !!@issuable_sidebar.dig(:current_user, :id)
               .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }
