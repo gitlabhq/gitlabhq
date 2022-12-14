@@ -35,7 +35,8 @@ To configure SAML Group Sync:
    - For GitLab.com, named `Groups` or `groups`.
 
 NOTE:
-The value for `Groups` or `groups` in the SAML response can be either the group name or the group ID.
+The value for `Groups` or `groups` in the SAML response may be either the group name or an ID.
+For example, Azure AD sends the Azure Group Object ID instead of the name. Use the ID value when configuring [SAML Group Links](#configure-saml-group-links).
 
 ```xml
 <saml:AttributeStatement>
@@ -59,7 +60,7 @@ a SAML identity provider group name to a GitLab role. This can be done for a top
 
 To link the SAML groups:
 
-1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`.
+1. In **SAML Group Name**, enter the value of the relevant `saml:AttributeValue`. The value entered here must exactly match the value sent in the SAML response. For some IdPs, this may be a group ID or object ID (Azure AD) instead of a friendly group name.
 1. Choose the role in **Access Level**.
 1. Select **Save**.
 1. Repeat to add additional group links if required.

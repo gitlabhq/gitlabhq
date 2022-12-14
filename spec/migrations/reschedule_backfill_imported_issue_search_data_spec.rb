@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleBackfillImportedIssueSearchData do
+RSpec.describe RescheduleBackfillImportedIssueSearchData, feature_category: :global_search do
   let!(:reschedule_migration) { described_class::MIGRATION }
 
   def create_batched_migration(max_value:)

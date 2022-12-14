@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe PopulateAuditEventStreamingVerificationToken do
+RSpec.describe PopulateAuditEventStreamingVerificationToken, feature_category: :audit_events do
   let(:groups) { table(:namespaces) }
   let(:destinations) { table(:audit_events_external_audit_event_destinations) }
   let(:migration) { described_class.new }

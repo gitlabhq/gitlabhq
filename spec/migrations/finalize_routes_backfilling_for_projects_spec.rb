@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FinalizeRoutesBackfillingForProjects, :migration do
+RSpec.describe FinalizeRoutesBackfillingForProjects, :migration, feature_category: :projects do
   let(:batched_migrations) { table(:batched_background_migrations) }
 
   let!(:migration) { described_class::MIGRATION }

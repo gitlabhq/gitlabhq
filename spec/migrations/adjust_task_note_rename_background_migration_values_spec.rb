@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AdjustTaskNoteRenameBackgroundMigrationValues, :migration do
+RSpec.describe AdjustTaskNoteRenameBackgroundMigrationValues, :migration, feature_category: :team_planning do
   let(:finished_status) { 3 }
   let(:failed_status) { described_class::MIGRATION_FAILED_STATUS }
   let(:active_status) { described_class::MIGRATION_ACTIVE_STATUS }

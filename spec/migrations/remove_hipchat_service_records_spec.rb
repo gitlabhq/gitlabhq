@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveHipchatServiceRecords do
+RSpec.describe RemoveHipchatServiceRecords, feature_category: :integrations do
   let(:services) { table(:services) }
 
   before do

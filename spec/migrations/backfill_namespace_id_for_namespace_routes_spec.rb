@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillNamespaceIdForNamespaceRoutes do
+RSpec.describe BackfillNamespaceIdForNamespaceRoutes, feature_category: :projects do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

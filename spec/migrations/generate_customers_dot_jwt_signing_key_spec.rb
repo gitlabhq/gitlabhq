@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe GenerateCustomersDotJwtSigningKey do
+RSpec.describe GenerateCustomersDotJwtSigningKey, feature_category: :customersdot_application do
   let(:application_settings) do
     Class.new(ActiveRecord::Base) do
       self.table_name = 'application_settings'

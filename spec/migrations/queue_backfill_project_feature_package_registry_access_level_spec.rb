@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillProjectFeaturePackageRegistryAccessLevel do
+RSpec.describe QueueBackfillProjectFeaturePackageRegistryAccessLevel, feature_category: :package_registry do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules a new batched migration' do

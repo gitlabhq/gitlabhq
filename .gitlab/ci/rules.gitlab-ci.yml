@@ -1030,22 +1030,6 @@
     - <<: *if-default-branch-refs
       changes: *code-backstage-patterns
 
-.frontend:rules:qa-frontend-node:
-  rules:
-    - <<: *if-default-branch-refs
-      changes: *frontend-dependency-patterns
-    - <<: *if-merge-request
-      changes: *frontend-dependency-patterns
-
-.frontend:rules:qa-frontend-node-latest:
-  rules:
-    - <<: *if-default-branch-refs
-      changes: *frontend-dependency-patterns
-      allow_failure: true
-    - <<: *if-merge-request
-      changes: *frontend-dependency-patterns
-      allow_failure: true
-
 .frontend:rules:bundle-size-review:
   rules:
     - <<: *if-not-canonical-namespace

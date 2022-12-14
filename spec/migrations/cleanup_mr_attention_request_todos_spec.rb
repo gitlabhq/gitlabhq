@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupMrAttentionRequestTodos, :migration do
+RSpec.describe CleanupMrAttentionRequestTodos, :migration, feature_category: :code_review do
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }
   let(:users) { table(:users) }

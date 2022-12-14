@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DisableJobTokenScopeWhenUnused do
+RSpec.describe DisableJobTokenScopeWhenUnused, feature_category: :continuous_integration do
   it 'is a no-op' do
     migrate!
   end

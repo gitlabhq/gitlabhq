@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SchedulePopulateRequirementsIssueId do
+RSpec.describe SchedulePopulateRequirementsIssueId, feature_category: :requirements_management do
   include MigrationHelpers::WorkItemTypesHelper
 
   let(:issues) { table(:issues) }

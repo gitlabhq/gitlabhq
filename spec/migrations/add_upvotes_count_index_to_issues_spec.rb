@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddUpvotesCountIndexToIssues do
+RSpec.describe AddUpvotesCountIndexToIssues, feature_category: :team_planning do
   let(:migration_instance) { described_class.new }
 
   describe '#up' do

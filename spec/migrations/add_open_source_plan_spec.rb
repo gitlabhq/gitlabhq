@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddOpenSourcePlan, :migration do
+RSpec.describe AddOpenSourcePlan, :migration, feature_category: :purchase do
   describe '#up' do
     before do
       allow(Gitlab).to receive(:com?).and_return true

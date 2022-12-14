@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe PopulateReleasesAccessLevelFromRepository, :migration do
+RSpec.describe PopulateReleasesAccessLevelFromRepository, :migration, feature_category: :navigation do
   let(:projects) { table(:projects) }
   let(:groups) { table(:namespaces) }
   let(:project_features) { table(:project_features) }

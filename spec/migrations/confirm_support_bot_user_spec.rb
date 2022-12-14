@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ConfirmSupportBotUser, :migration do
+RSpec.describe ConfirmSupportBotUser, :migration, feature_category: :users do
   let(:users) { table(:users) }
 
   context 'when support bot user is currently unconfirmed' do

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddTriggersToIntegrationsTypeNew do
+RSpec.describe AddTriggersToIntegrationsTypeNew, feature_category: :purchase do
   let(:migration) { described_class.new }
   let(:integrations) { table(:integrations) }
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe ReplaceExternalWikiTriggers do
+RSpec.describe ReplaceExternalWikiTriggers, feature_category: :integrations do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

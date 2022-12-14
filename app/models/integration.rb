@@ -41,7 +41,9 @@ class Integration < ApplicationRecord
     Integrations::BaseCi
     Integrations::BaseIssueTracker
     Integrations::BaseMonitoring
+    Integrations::BaseSlackNotification
     Integrations::BaseSlashCommands
+    Integrations::BaseThirdPartyWiki
   ].freeze
 
   SECTION_TYPE_CONFIGURATION = 'configuration'

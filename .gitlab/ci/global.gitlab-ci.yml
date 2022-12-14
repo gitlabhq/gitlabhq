@@ -201,11 +201,6 @@
   cache:
     - *node-modules-cache
 
-.qa-frontend-node-cache:
-  cache:
-    - *node-modules-cache
-    - *assets-tmp-cache
-
 .assets-compile-cache:
   cache:
     - *ruby-gems-cache

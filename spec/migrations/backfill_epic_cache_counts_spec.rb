@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillEpicCacheCounts, :migration do
+RSpec.describe BackfillEpicCacheCounts, :migration, feature_category: :portfolio_management do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

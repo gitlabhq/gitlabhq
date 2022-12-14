@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillGroupFeatures, :migration do
+RSpec.describe BackfillGroupFeatures, :migration, feature_category: :feature_flags do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

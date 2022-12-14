@@ -11,42 +11,21 @@ module Ci
         unlocked_pipeline_artifacts: 0
       }
 
-      if ::Feature.enabled?(:ci_update_unlocked_job_artifacts, ci_ref.project)
-        loop do
-          unlocked_pipelines = []
-          unlocked_job_artifacts = []
+      loop do
+        unlocked_pipelines = []
+        unlocked_job_artifacts = []
 
-          ::Ci::Pipeline.transaction do
-            unlocked_pipelines = unlock_pipelines(ci_ref, before_pipeline)
-            unlocked_job_artifacts = unlock_job_artifacts(unlocked_pipelines)
+        ::Ci::Pipeline.transaction do
+          unlocked_pipelines = unlock_pipelines(ci_ref, before_pipeline)
+          unlocked_job_artifacts = unlock_job_artifacts(unlocked_pipelines)
 
-            results[:unlocked_pipeline_artifacts] += unlock_pipeline_artifacts(unlocked_pipelines)
-          end
-
-          break if unlocked_pipelines.empty?
-
-          results[:unlocked_pipelines] += unlocked_pipelines.length
-          results[:unlocked_job_artifacts] += unlocked_job_artifacts.length
+          results[:unlocked_pipeline_artifacts] += unlock_pipeline_artifacts(unlocked_pipelines)
         end
-      else
-        query = <<~SQL.squish
-          UPDATE "ci_pipelines"
-          SET    "locked" = #{::Ci::Pipeline.lockeds[:unlocked]}
-          WHERE  "ci_pipelines"."id" in (
-              #{collect_pipelines(ci_ref, before_pipeline).select(:id).to_sql}
-              LIMIT  #{BATCH_SIZE}
-              FOR  UPDATE SKIP LOCKED
-          )
-          RETURNING "ci_pipelines"."id";
-        SQL
 
-        loop do
-          unlocked_pipelines = Ci::Pipeline.connection.exec_query(query)
+        break if unlocked_pipelines.empty?
 
-          break if unlocked_pipelines.empty?
-
-          results[:unlocked_pipelines] += unlocked_pipelines.length
-        end
+        results[:unlocked_pipelines] += unlocked_pipelines.length
+        results[:unlocked_job_artifacts] += unlocked_job_artifacts.length
       end
 
       results
@@ -87,13 +66,6 @@ module Ci
     # rubocop:enable CodeReuse/ActiveRecord
 
     private
-
-    def collect_pipelines(ci_ref, before_pipeline)
-      pipeline_scope = ci_ref.pipelines
-      pipeline_scope = pipeline_scope.before_pipeline(before_pipeline) if before_pipeline
-
-      pipeline_scope.artifacts_locked
-    end
 
     def unlock_job_artifacts(pipelines)
       return if pipelines.empty?

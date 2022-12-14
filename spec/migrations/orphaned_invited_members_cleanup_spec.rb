@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe OrphanedInvitedMembersCleanup, :migration do
+RSpec.describe OrphanedInvitedMembersCleanup, :migration, feature_category: :subgroups do
   describe '#up', :aggregate_failures do
     it 'removes accepted members with no associated user' do
       user = create_user!('testuser1')

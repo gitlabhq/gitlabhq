@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillEscalationPoliciesForOncallSchedules do
+RSpec.describe BackfillEscalationPoliciesForOncallSchedules, feature_category: :incident_management do
   let!(:projects) { table(:projects) }
   let!(:schedules) { table(:incident_management_oncall_schedules) }
   let!(:policies) { table(:incident_management_escalation_policies) }

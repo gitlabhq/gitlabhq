@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleIssueWorkItemTypeIdBackfill, :migration do
+RSpec.describe RescheduleIssueWorkItemTypeIdBackfill, :migration, feature_category: :team_planning do
   let!(:migration) { described_class::MIGRATION }
   let!(:interval) { 2.minutes }
   let!(:issue_type_enum) { { issue: 0, incident: 1, test_case: 2, requirement: 3, task: 4 } }

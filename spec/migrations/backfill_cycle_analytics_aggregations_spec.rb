@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillCycleAnalyticsAggregations, :migration do
+RSpec.describe BackfillCycleAnalyticsAggregations, :migration, feature_category: :value_stream_management do
   let(:migration) { described_class.new }
 
   let(:aggregations) { table(:analytics_cycle_analytics_aggregations) }

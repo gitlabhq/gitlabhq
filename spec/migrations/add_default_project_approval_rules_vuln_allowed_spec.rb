@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddDefaultProjectApprovalRulesVulnAllowed do
+RSpec.describe AddDefaultProjectApprovalRulesVulnAllowed, feature_category: :source_code_management do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:namespace) { namespaces.create!(name: 'namespace', path: 'namespace') }

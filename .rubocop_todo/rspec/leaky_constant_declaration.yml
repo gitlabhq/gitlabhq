@@ -8,4 +8,3 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/mailers/notify_spec.rb'
     - 'spec/models/concerns/batch_destroy_dependent_associations_spec.rb'
     - 'spec/models/concerns/bulk_insert_safe_spec.rb'
-    - 'spec/models/concerns/bulk_insertable_associations_spec.rb'

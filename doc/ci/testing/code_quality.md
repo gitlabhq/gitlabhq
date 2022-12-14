@@ -71,6 +71,7 @@ See also the Code Climate list of [Supported Languages for Maintainability](http
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 13.12.
 > - [Disabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) in GitLab 14.0 due to [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/334116).
 > - [Inline annotation added](https://gitlab.com/gitlab-org/gitlab/-/issues/2526) and [feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/284140) in GitLab 14.1.
+> - [Updated](https://gitlab.com/groups/gitlab-org/-/epics/8071) to handle multiple findings better in GitLab 15.7, disabled by default behind the `refactor_code_quality_inline_findings` [feature flag](../../administration/feature_flags.md).
 
 Changes to files in merge requests can cause Code Quality to fall if merged. In these cases,
 the merge request's diff view displays an indicator next to lines with new Code Quality violations. For example:

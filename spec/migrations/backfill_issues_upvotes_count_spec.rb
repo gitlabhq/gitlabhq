@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillIssuesUpvotesCount do
+RSpec.describe BackfillIssuesUpvotesCount, feature_category: :team_planning do
   let(:migration) { described_class.new }
   let(:issues) { table(:issues) }
   let(:award_emoji) { table(:award_emoji) }

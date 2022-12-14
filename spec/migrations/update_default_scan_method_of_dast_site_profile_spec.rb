@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateDefaultScanMethodOfDastSiteProfile do
+RSpec.describe UpdateDefaultScanMethodOfDastSiteProfile, feature_category: :dynamic_application_security_testing do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:dast_sites) { table(:dast_sites) }

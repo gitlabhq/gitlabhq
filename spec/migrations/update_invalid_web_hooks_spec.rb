@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateInvalidWebHooks do
+RSpec.describe UpdateInvalidWebHooks, feature_category: :integrations do
   let(:web_hooks) { table(:web_hooks) }
   let(:groups) { table(:namespaces) }
   let(:projects) { table(:projects) }

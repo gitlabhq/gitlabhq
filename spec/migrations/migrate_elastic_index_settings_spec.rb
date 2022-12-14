@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe MigrateElasticIndexSettings do
+RSpec.describe MigrateElasticIndexSettings, feature_category: :global_search do
   let(:elastic_index_settings) { table(:elastic_index_settings) }
   let(:application_settings) { table(:application_settings) }
 

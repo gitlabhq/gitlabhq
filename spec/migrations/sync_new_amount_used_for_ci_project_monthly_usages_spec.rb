@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe SyncNewAmountUsedForCiProjectMonthlyUsages, migration: :gitlab_ci do
+RSpec.describe SyncNewAmountUsedForCiProjectMonthlyUsages, migration: :gitlab_ci,
+                                                           feature_category: :continuous_integration do
   let(:project_usages) { table(:ci_project_monthly_usages) }
 
   before do

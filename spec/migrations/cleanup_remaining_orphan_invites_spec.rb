@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupRemainingOrphanInvites, :migration do
+RSpec.describe CleanupRemainingOrphanInvites, :migration, feature_category: :subgroups do
   def create_member(**extra_attributes)
     defaults = {
       access_level: 10,

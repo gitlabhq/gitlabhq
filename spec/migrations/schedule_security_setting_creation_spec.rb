@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleSecuritySettingCreation, :sidekiq do
+RSpec.describe ScheduleSecuritySettingCreation, :sidekiq, feature_category: :projects do
   describe '#up' do
     let(:projects) { table(:projects) }
     let(:namespaces) { table(:namespaces) }

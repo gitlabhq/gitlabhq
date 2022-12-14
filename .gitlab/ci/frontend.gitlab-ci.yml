@@ -273,32 +273,6 @@ coverage-frontend:
         coverage_format: cobertura
         path: coverage-frontend/cobertura-coverage.xml
 
-.qa-frontend-node:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .qa-frontend-node-cache
-    - .frontend:rules:qa-frontend-node
-  stage: test
-  needs: []
-  script:
-    - yarn_install_script
-    - run_timed_command "retry yarn run webpack-prod"
-
-qa-frontend-node:14:
-  extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:14
-
-qa-frontend-node:16:
-  extends: .qa-frontend-node
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:16
-
-qa-frontend-node:latest:
-  extends:
-    - .qa-frontend-node
-    - .frontend:rules:qa-frontend-node-latest
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}node:latest
-
 webpack-dev-server:
   extends:
     - .default-retry

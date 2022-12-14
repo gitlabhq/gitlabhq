@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleFixIncorrectMaxSeatsUsed, :migration do
+RSpec.describe ScheduleFixIncorrectMaxSeatsUsed, :migration, feature_category: :purchase do
   let(:migration) { described_class.new }
 
   describe '#up' do

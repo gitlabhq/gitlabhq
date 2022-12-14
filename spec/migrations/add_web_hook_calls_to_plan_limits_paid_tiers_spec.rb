@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddWebHookCallsToPlanLimitsPaidTiers do
+RSpec.describe AddWebHookCallsToPlanLimitsPaidTiers, feature_category: :purchase do
   let!(:plans) { table(:plans) }
   let!(:plan_limits) { table(:plan_limits) }
 

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe PopulateOperationVisibilityPermissions, :migration do
+RSpec.describe PopulateOperationVisibilityPermissions, :migration, feature_category: :navigation do
   let(:migration) { described_class::MIGRATION }
 
   before do

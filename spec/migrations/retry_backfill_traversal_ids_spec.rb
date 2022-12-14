@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RetryBackfillTraversalIds, :migration do
+RSpec.describe RetryBackfillTraversalIds, :migration, feature_category: :subgroups do
   include ReloadHelpers
 
   let!(:namespaces_table) { table(:namespaces) }

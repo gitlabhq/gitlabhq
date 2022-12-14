@@ -47,11 +47,11 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 ## Software requirements
 
 | Software           | Minimum version | Notes                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------ | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ------------------ | --------------- |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Ruby](#2-ruby)    | `2.7`           | From GitLab 13.6, Ruby 2.7 is required. Ruby 3.0 is not supported yet (see [the relevant epic](https://gitlab.com/groups/gitlab-org/-/epics/5149) for the current status). You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [Go](#3-go)        | `1.18`          | From GitLab 15.6, Go 1.18 or later is required.                                                                                                                                                                                                                                                                                                                                                                          |
 | [Git](#git)        | `2.37.x`        | From GitLab 15.6, Git 2.37.x and later is required. It's highly recommended that you use the [Git version provided by Gitaly](#git).                                                                                                                                                                                                                                                                                     |
-| [Node.js](#4-node) | `14.15.0`       | GitLab uses [webpack](https://webpack.js.org/) to compile frontend assets. Node.js 16.x is recommended, as it's faster. You can check which version you're running with `node -v`. You must update it to a newer version if needed.                                                                                                                                                                                      |
+| [Node.js](#4-node) | `16.15.0`       | From GitLab 15.7, Node.js 16.15.0 or later is required.                                                                                                                                                                                                                                                                                                                                                                  |
 
 ## GitLab directory structure
 
@@ -263,7 +263,8 @@ GitLab requires the use of Node to compile JavaScript
 assets, and Yarn to manage JavaScript dependencies. The current minimum
 requirements for these are:
 
-- `node` >= v14.15.0. (We recommend node 16.x as it is faster)
+- `node` 16.x releases (v16.15.0 or later).
+  [Other LTS versions of Node.js](https://github.com/nodejs/release#release-schedule) might be able to build assets, but we only guarantee Node.js 16.x.
 - `yarn` = v1.22.x (Yarn 2 is not supported yet)
 
 In many distributions,

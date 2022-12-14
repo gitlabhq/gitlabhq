@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RescheduleDeleteOrphanedDeployments, :sidekiq, schema: 20210617161348 do
+RSpec.describe RescheduleDeleteOrphanedDeployments, :sidekiq, schema: 20210617161348,
+                                                              feature_category: :continuous_delivery do
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:project) { table(:projects).create!(namespace_id: namespace.id) }
   let!(:environment) { table(:environments).create!(name: 'production', slug: 'production', project_id: project.id) }

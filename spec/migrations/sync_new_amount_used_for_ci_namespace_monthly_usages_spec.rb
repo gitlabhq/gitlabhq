@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe SyncNewAmountUsedForCiNamespaceMonthlyUsages, migration: :gitlab_ci do
+RSpec.describe SyncNewAmountUsedForCiNamespaceMonthlyUsages, migration: :gitlab_ci,
+                                                             feature_category: :continuous_integration do
   let(:namespace_usages) { table(:ci_namespace_monthly_usages) }
 
   before do

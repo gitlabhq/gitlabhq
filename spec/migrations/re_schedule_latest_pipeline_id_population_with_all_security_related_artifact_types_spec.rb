@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ReScheduleLatestPipelineIdPopulationWithAllSecurityRelatedArtifactTypes,
-               :suppress_gitlab_schemas_validate_connection do
+               :suppress_gitlab_schemas_validate_connection, feature_category: :vulnerability_management do
   let(:namespaces) { table(:namespaces) }
   let(:pipelines) { table(:ci_pipelines) }
   let(:projects) { table(:projects) }

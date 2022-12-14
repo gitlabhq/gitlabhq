@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe MoveSecurityFindingsTableToGitlabPartitionsDynamicSchema do
+RSpec.describe MoveSecurityFindingsTableToGitlabPartitionsDynamicSchema, feature_category: :vulnerability_management do
   let(:partitions_sql) do
     <<~SQL
       SELECT

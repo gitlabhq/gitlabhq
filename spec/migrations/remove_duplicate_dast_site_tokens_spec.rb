@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveDuplicateDastSiteTokens do
+RSpec.describe RemoveDuplicateDastSiteTokens, feature_category: :dynamic_application_security_testing do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:dast_site_tokens) { table(:dast_site_tokens) }

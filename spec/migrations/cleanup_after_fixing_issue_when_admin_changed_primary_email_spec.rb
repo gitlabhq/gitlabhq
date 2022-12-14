@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupAfterFixingIssueWhenAdminChangedPrimaryEmail, :sidekiq do
+RSpec.describe CleanupAfterFixingIssueWhenAdminChangedPrimaryEmail, :sidekiq, feature_category: :users do
   let(:migration) { described_class.new }
   let(:users) { table(:users) }
   let(:emails) { table(:emails) }

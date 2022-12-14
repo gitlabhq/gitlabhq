@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe SanitizeConfidentialNoteTodos do
+RSpec.describe SanitizeConfidentialNoteTodos, feature_category: :team_planning do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

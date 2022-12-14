@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillProjectImportLevel do
+RSpec.describe BackfillProjectImportLevel, feature_category: :importers do
   let!(:batched_migration) { described_class::MIGRATION }
 
   describe '#up' do
