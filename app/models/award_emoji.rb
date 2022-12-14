@@ -26,8 +26,8 @@ class AwardEmoji < ApplicationRecord
   scope :named, ->(names) { where(name: names) }
   scope :awarded_by, ->(users) { where(user: users) }
 
-  after_save :expire_cache
   after_destroy :expire_cache
+  after_save :expire_cache
 
   class << self
     def votes_for_collection(ids, type)

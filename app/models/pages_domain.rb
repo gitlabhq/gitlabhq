@@ -17,6 +17,7 @@ class PagesDomain < ApplicationRecord
   has_many :acme_orders, class_name: "PagesDomainAcmeOrder"
   has_many :serverless_domain_clusters, class_name: 'Serverless::DomainCluster', inverse_of: :pages_domain
 
+  after_initialize :set_verification_code
   before_validation :clear_auto_ssl_failure, unless: :auto_ssl_enabled
 
   validates :domain, hostname: { allow_numeric_hostname: true }
@@ -43,8 +44,6 @@ class PagesDomain < ApplicationRecord
     insecure_mode: true,
     key: Settings.attr_encrypted_db_key_base,
     algorithm: 'aes-256-cbc'
-
-  after_initialize :set_verification_code
 
   scope :for_project, ->(project) { where(project: project) }
 

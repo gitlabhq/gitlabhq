@@ -300,16 +300,17 @@ class User < ApplicationRecord
 
   validates :website_url, allow_blank: true, url: true, if: :website_url_changed?
 
+  after_initialize :set_projects_limit
   before_validation :sanitize_attrs
+  before_validation :ensure_namespace_correct
+  after_validation :set_username_errors
   before_save :default_private_profile_to_false
   before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
-  before_validation :ensure_namespace_correct
   before_save :ensure_namespace_correct # in case validation is skipped
   before_save :ensure_user_detail_assigned
-  after_validation :set_username_errors
   after_update :username_changed_hook, if: :saved_change_to_username?
   after_destroy :post_destroy_hook
   after_destroy :remove_key_cache
@@ -329,8 +330,6 @@ class User < ApplicationRecord
   after_commit(on: :update) do
     update_invalid_gpg_signatures if previous_changes.key?('email')
   end
-
-  after_initialize :set_projects_limit
 
   # User's Layout preference
   enum layout: { fixed: 0, fluid: 1 }

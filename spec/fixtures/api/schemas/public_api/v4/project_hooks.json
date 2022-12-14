@@ -1,10 +1,6 @@
 {
   "type": "array",
   "items": {
-    "type": "object",
-    "properties" : {
-      "$ref": "./project_hook.json"
-    }
+    "$ref": "./project_hook.json"
   }
 }
-

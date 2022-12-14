@@ -16,14 +16,13 @@ class Upload < ApplicationRecord
   scope :with_files_stored_locally, -> { where(store: ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(store: ObjectStorage::Store::REMOTE) }
 
-  before_save  :calculate_checksum!, if: :foreground_checksummable?
-  after_commit :schedule_checksum,   if: :needs_checksum?
-
-  after_commit :update_project_statistics, on: [:create, :destroy], if: :project?
-
+  before_save :calculate_checksum!, if: :foreground_checksummable?
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord
   # hooks are not executed and the file will not be deleted
   after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
+  after_commit :schedule_checksum, if: :needs_checksum?
+
+  after_commit :update_project_statistics, on: [:create, :destroy], if: :project?
 
   class << self
     def inner_join_local_uploads_projects

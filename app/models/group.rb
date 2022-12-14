@@ -155,10 +155,10 @@ class Group < Namespace
                                  prefix: RunnersTokenPrefixable::RUNNERS_TOKEN_PREFIX
 
   after_create :post_create_hook
+  after_create -> { create_or_load_association(:group_feature) }
+  after_update :path_changed_hook, if: :saved_change_to_path?
   after_destroy :post_destroy_hook
   after_commit :update_two_factor_requirement
-  after_update :path_changed_hook, if: :saved_change_to_path?
-  after_create -> { create_or_load_association(:group_feature) }
 
   scope :with_users, -> { includes(:users) }
 

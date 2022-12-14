@@ -216,8 +216,8 @@ class Issue < ApplicationRecord
 
   before_validation :ensure_namespace_id, :ensure_work_item_type
 
-  after_commit :expire_etag_cache, unless: :importing?
   after_save :ensure_metrics, unless: :importing?
+  after_commit :expire_etag_cache, unless: :importing?
   after_create_commit :record_create_action, unless: :importing?
 
   attr_spammable :title, spam_title: true

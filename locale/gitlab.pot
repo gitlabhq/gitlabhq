@@ -31537,7 +31537,13 @@ msgstr ""
 msgid "Proceed"
 msgstr ""
 
-msgid "Product Analytics|Onboarding view"
+msgid "Product Analytics|Analyze your product with Product Analytics"
+msgstr ""
+
+msgid "Product Analytics|Set up Product Analytics to track how your product is performing. Combine it with your GitLab data to better understand where you can improve your product and development processes."
+msgstr ""
+
+msgid "Product Analytics|Set up product analytics..."
 msgstr ""
 
 msgid "Product analytics"
@@ -36268,6 +36274,12 @@ msgstr ""
 msgid "ScanExecutionPolicy|A pipeline is run"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Ex, tag-name-1, tag-name-2"
+msgstr ""
+
+msgid "ScanExecutionPolicy|If the field is empty, the runner will be automatically selected"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Scanner profile"
 msgstr ""
 
@@ -36290,9 +36302,6 @@ msgid "ScanExecutionPolicy|Select scanner profile"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Select site profile"
-msgstr ""
-
-msgid "ScanExecutionPolicy|Select tags (if any)"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Site profile"
@@ -37187,7 +37196,7 @@ msgstr ""
 msgid "SecurityOrchestration|Summary"
 msgstr ""
 
-msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all branches to ensure the values are accurate before updating this policy."
+msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
 msgstr ""
 
 msgid "SecurityOrchestration|There was a problem creating the new security policy"
@@ -37250,10 +37259,10 @@ msgstr ""
 msgid "SecurityOrchestration|a"
 msgstr ""
 
-msgid "SecurityOrchestration|all branches"
+msgid "SecurityOrchestration|all namespaces"
 msgstr ""
 
-msgid "SecurityOrchestration|all namespaces"
+msgid "SecurityOrchestration|all protected branches"
 msgstr ""
 
 msgid "SecurityOrchestration|an"

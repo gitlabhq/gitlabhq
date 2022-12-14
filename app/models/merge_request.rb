@@ -140,6 +140,7 @@ class MergeRequest < ApplicationRecord
   after_create :ensure_merge_request_diff, unless: :skip_ensure_merge_request_diff
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
+  after_save :keep_around_commit, unless: :importing?
   after_commit :ensure_metrics, on: [:create, :update], unless: :importing?
   after_commit :expire_etag_cache, unless: :importing?
 
@@ -440,8 +441,6 @@ class MergeRequest < ApplicationRecord
       .merge(MergeRequest::Metrics.with_valid_time_to_merge)
       .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
-
-  after_save :keep_around_commit, unless: :importing?
 
   alias_attribute :project, :target_project
   alias_attribute :project_id, :target_project_id

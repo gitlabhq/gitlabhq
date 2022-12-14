@@ -1,32 +1,95 @@
 {
   "type": "object",
-  "properties" : {
-    "id": { "type": "integer" },
-    "iid": { "type": "integer" },
-    "project_id": { "type": ["integer", "null"] },
-    "group_id": { "type": ["integer", "null"] },
-    "title": { "type": "string" },
-    "description": { "type": ["string", "null"] },
-    "state": { "type": "string" },
-    "created_at": { "type": "string", "format": "date-time" },
-    "updated_at": { "type": "string", "format": "date-time" },
-    "start_date": { "type": ["string", "null"], "format": "date-time" },
-    "due_date": { "type": ["string", "null"], "format": "date-time" },
-    "expired": { "type": ["boolean", "null"] },
-    "web_url": { "type": "string" },
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "iid": {
+      "type": "integer"
+    },
+    "project_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "group_id": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "state": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "start_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "due_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "expired": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "web_url": {
+      "type": "string"
+    },
     "issue_stats": {
-      "required": ["total", "closed"],
+      "required": [
+        "total",
+        "closed"
+      ],
       "properties": {
-        "total": { "type": "integer" },
-        "closed": { "type": "integer" }
+        "total": {
+          "type": "integer"
+        },
+        "closed": {
+          "type": "integer"
+        }
       },
       "additionalProperties": false
     }
   },
   "required": [
-    "id", "iid", "title", "description", "state",
-    "state", "created_at", "updated_at", "start_date",
-    "due_date", "expired", "issue_stats"
+    "id",
+    "iid",
+    "title",
+    "description",
+    "state",
+    "created_at",
+    "updated_at",
+    "start_date",
+    "due_date",
+    "expired",
+    "issue_stats"
   ],
   "additionalProperties": false
 }

@@ -93,12 +93,31 @@
           "format": "date-time"
         },
         "due_date": {
-          "type": "string",
-          "format": "date-time"
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": [
+            "date-time",
+            "date"
+          ]
         },
         "start_date": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": [
+            "date-time",
+            "date"
+          ]
+        },
+        "expired": {
+          "type": "boolean"
+        },
+        "web_url": {
           "type": "string",
-          "format": "date-time"
+          "format": "uri"
         }
       },
       "additionalProperties": false

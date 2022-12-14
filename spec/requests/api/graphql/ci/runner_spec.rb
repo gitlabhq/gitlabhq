@@ -232,6 +232,47 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
       end
     end
 
+    describe 'jobCount' do
+      let_it_be(:pipeline1) { create(:ci_pipeline, project: project1) }
+      let_it_be(:pipeline2) { create(:ci_pipeline, project: project1) }
+      let_it_be(:build1) { create(:ci_build, :running, runner: active_project_runner, pipeline: pipeline1) }
+      let_it_be(:build2) { create(:ci_build, :running, runner: active_project_runner, pipeline: pipeline2) }
+
+      let(:runner_query_fragment) { 'id jobCount' }
+      let(:query) do
+        %(
+          query {
+            runner1: runner(id: "#{active_project_runner.to_global_id}") { #{runner_query_fragment} }
+            runner2: runner(id: "#{inactive_instance_runner.to_global_id}") { #{runner_query_fragment} }
+          }
+        )
+      end
+
+      it 'retrieves correct jobCount values' do
+        post_graphql(query, current_user: user)
+
+        expect(graphql_data).to match a_hash_including(
+          'runner1' => a_graphql_entity_for(active_project_runner, job_count: 2),
+          'runner2' => a_graphql_entity_for(inactive_instance_runner, job_count: 0)
+        )
+      end
+
+      context 'when JOB_COUNT_LIMIT is in effect' do
+        before do
+          stub_const('Types::Ci::RunnerType::JOB_COUNT_LIMIT', 1)
+        end
+
+        it 'retrieves correct capped jobCount values' do
+          post_graphql(query, current_user: user)
+
+          expect(graphql_data).to match a_hash_including(
+            'runner1' => a_graphql_entity_for(active_project_runner, job_count: 1),
+            'runner2' => a_graphql_entity_for(inactive_instance_runner, job_count: 0)
+          )
+        end
+      end
+    end
+
     describe 'ownerProject' do
       let_it_be(:project2) { create(:project) }
       let_it_be(:runner1) { create(:ci_runner, :project, projects: [project2, project1]) }
@@ -510,8 +551,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     let(:active_project_runner2) { create(:ci_runner, :project) }
     let(:active_group_runner2) { create(:ci_runner, :group) }
 
-    # Currently excluding known N+1 issues, see https://gitlab.com/gitlab-org/gitlab/-/issues/334759
-    let(:excluded_fields) { %w[jobCount jobs groups projects ownerProject] }
+    # Exclude fields that are already hardcoded above
+    let(:excluded_fields) { %w[jobs groups projects ownerProject] }
 
     let(:single_query) do
       <<~QUERY

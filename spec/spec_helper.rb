@@ -39,8 +39,6 @@ require 'test_prof/factory_default'
 require 'test_prof/factory_prof/nate_heckler'
 require 'parslet/rig/rspec'
 
-warn_missing_feature_category = Gitlab::Utils.to_boolean(ENV['RSPEC_WARN_MISSING_FEATURE_CATEGORY'], default: true)
-
 rspec_profiling_is_configured =
   ENV['RSPEC_PROFILING_POSTGRES_URL'].present? ||
   ENV['RSPEC_PROFILING']
@@ -462,13 +460,6 @@ RSpec.configure do |config|
   # Ensures that any Javascript script that tries to make the external VersionCheck API call skips it and returns a response
   config.before(:each, :js) do
     allow_any_instance_of(VersionCheck).to receive(:response).and_return({ "severity" => "success" })
-  end
-
-  # Add warning for example missing feature_category
-  config.before do |example|
-    if warn_missing_feature_category && example.metadata[:feature_category].blank? && !ENV['CI']
-      warn "Missing metadata feature_category: #{example.location} See https://docs.gitlab.com/ee/development/testing_guide/best_practices.html#feature-category-metadata"
-    end
   end
 end
 

@@ -2,45 +2,106 @@
   "type": "array",
   "items": {
     "type": "object",
-    "properties" : {
-      "id": { "type": "integer" },
-      "project_id": { "type": ["integer", "null"] },
-      "title": { "type": "string" },
-      "file_name": { "type": ["string", "null"] },
-      "files" : {
+    "properties": {
+      "id": {
+        "type": "integer"
+      },
+      "project_id": {
+        "type": [
+          "integer",
+          "null"
+        ]
+      },
+      "title": {
+        "type": "string"
+      },
+      "file_name": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "files": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "path": { "type": "string" },
-            "raw_url": { "type": "string" }
+            "path": {
+              "type": "string"
+            },
+            "raw_url": {
+              "type": "string"
+            }
           }
         }
       },
-      "description": { "type": ["string", "null"] },
-      "visibility": { "type": "string" },
-      "web_url": { "type": "string" },
-      "raw_url": { "type": "string" },
-      "created_at": { "type": "string", "format": "date-time" },
-      "updated_at": { "type": "string", "format": "date-time" },
+      "description": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "visibility": {
+        "type": "string"
+      },
+      "web_url": {
+        "type": "string"
+      },
+      "raw_url": {
+        "type": "string"
+      },
+      "created_at": {
+        "type": "string",
+        "format": "date-time"
+      },
+      "updated_at": {
+        "type": "string",
+        "format": "date-time"
+      },
       "author": {
         "type": "object",
         "properties": {
-          "name": { "type": "string" },
-          "username": { "type": "string" },
-          "id": { "type": "integer" },
-          "state": { "type": "string" },
-          "avatar_url": { "type": "uri" },
-          "web_url": { "type": "uri" }
+          "name": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          },
+          "id": {
+            "type": "integer"
+          },
+          "state": {
+            "type": "string"
+          },
+          "avatar_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "web_url": {
+            "type": "string",
+            "format": "uri"
+          }
         },
-        "required" : [
-          "id", "name", "username", "state", "avatar_url", "web_url"
+        "required": [
+          "id",
+          "name",
+          "username",
+          "state",
+          "avatar_url",
+          "web_url"
         ]
       }
     },
     "required": [
-      "id", "title", "file_name", "description", "web_url",
-      "created_at", "updated_at", "author", "raw_url"
+      "id",
+      "title",
+      "file_name",
+      "description",
+      "web_url",
+      "created_at",
+      "updated_at",
+      "author",
+      "raw_url"
     ],
     "additionalProperties": false
   }

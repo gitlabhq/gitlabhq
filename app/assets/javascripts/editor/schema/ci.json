@@ -336,10 +336,10 @@
     "include_item": {
       "oneOf": [
         {
-          "description": "Will infer the method based on the value. E.g. `https://...` strings will be of type `include:remote`, and `/templates/...` will be of type `include:local`.",
+          "description": "Will infer the method based on the value. E.g. `https://...` strings will be of type `include:remote`, and `/templates/...` or `templates/...` will be of type `include:local`.",
           "type": "string",
           "format": "uri-reference",
-          "pattern": "^(https?://|/).+\\.ya?ml$"
+          "pattern": "^(https?://|/?.?-?(?!\\w+://)\\w).+\\.ya?ml$"
         },
         {
           "type": "object",

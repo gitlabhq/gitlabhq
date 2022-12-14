@@ -10,7 +10,7 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
-      expose :expired?, as: :expired
+      expose :expired
 
       expose :web_url do |milestone, _options|
         Gitlab::UrlBuilder.build(milestone)

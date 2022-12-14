@@ -65,7 +65,11 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
     end
 
     click_on 'master'
+    wait_for_requests
+
     fill_in 'Search', with: source_branch
+    wait_for_requests
+
     within '[role="listbox"]' do
       find('li', text: source_branch).click
     end

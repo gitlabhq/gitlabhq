@@ -38,12 +38,12 @@ class Key < ApplicationRecord
     signing: 2
   }
 
-  after_commit :add_to_authorized_keys, on: :create
   after_create :post_create_hook
   after_create :refresh_user_cache
-  after_commit :remove_from_authorized_keys, on: :destroy
   after_destroy :post_destroy_hook
   after_destroy :refresh_user_cache
+  after_commit :add_to_authorized_keys, on: :create
+  after_commit :remove_from_authorized_keys, on: :destroy
 
   alias_attribute :fingerprint_md5, :fingerprint
   alias_attribute :name, :title

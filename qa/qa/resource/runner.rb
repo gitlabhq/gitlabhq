@@ -119,7 +119,12 @@ module QA
       end
 
       def this_runner
-        runners_list.find { |runner| runner[:description] == name }
+        runner = nil
+        Support::Retrier.retry_until(max_duration: 60, sleep_interval: 1) do
+          runner = runners_list.find { |runner| runner[:description] == name }
+          !runner.nil?
+        end
+        runner
       end
 
       def populate_runner_attributes
