@@ -67,10 +67,8 @@ a (very) rough estimate of how your feature will look and behave on GitLab.com.
 Both of these instances are connected to Sentry so make sure you check the projects
 there for any exceptions while testing your feature after enabling the feature flag.
 
-For these pre-production environments, the commands should be run in a
-Slack channel for the stage the feature is relevant to. For example, use the
-`#s_monitor` channel for features developed by the Monitor stage, Health
-group.
+For these pre-production environments, it's strongly encouraged to run the command in
+`#staging`, `#production`, or `#chatops-ops-test`, for improved visibility.
 
 To enable a feature for 25% of the time, run the following in Slack:
 

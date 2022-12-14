@@ -276,7 +276,7 @@ dast:
 NOTE:
 Adjusting these values may impact scan time because they adjust how long each browser waits for various activities to complete.
 
-### Artifacts
+## Artifacts
 
 Using the latest version of the DAST [template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/DAST.latest.gitlab-ci.yml) these artifacts are exposed for download by default.
 
@@ -285,3 +285,7 @@ The list of artifacts includes the following files:
 - `gl-dast-debug-auth-report.html`
 - `gl-dast-debug-crawl-report.html`
 - `gl-dast-crawl-graph.svg`
+
+## Troubleshooting
+
+See [troubleshooting](browser_based_troubleshooting.md) for more information.

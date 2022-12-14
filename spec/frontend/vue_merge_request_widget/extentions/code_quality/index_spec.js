@@ -1,4 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
+import { GlBadge } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -138,8 +139,17 @@ describe('Code Quality extension', () => {
         "Minor - Parsing error: 'return' outside of function in index.js:12",
       );
       expect(text.resolvedError).toContain(
-        "Minor - Parsing error: 'return' outside of function in index.js:12",
+        "Minor - Parsing error: 'return' outside of function Fixed in index.js:12",
       );
+    });
+
+    it('adds fixed indicator (badge) when error is resolved', () => {
+      expect(findAllExtensionListItems().at(1).findComponent(GlBadge).exists()).toBe(true);
+      expect(findAllExtensionListItems().at(1).findComponent(GlBadge).text()).toEqual('Fixed');
+    });
+
+    it('should not add fixed indicator (badge) when error is new', () => {
+      expect(findAllExtensionListItems().at(0).findComponent(GlBadge).exists()).toBe(false);
     });
   });
 });

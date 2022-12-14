@@ -329,7 +329,7 @@ RSpec.describe 'Project', feature_category: :projects do
     it 'has working links to submodules' do
       click_link('645f6c4c')
 
-      expect(page).to have_selector('[data-testid="branches-select"]', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6')
+      expect(page).to have_selector('.ref-selector', text: '645f6c4c82fd3f5e06f67134450a570b795e55a6')
     end
 
     context 'for signed commit on default branch', :js do

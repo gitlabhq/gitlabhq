@@ -86,6 +86,38 @@ These two variables will be removed in GitLab 16.0.
 
 <div class="deprecation removal-160 breaking-change">
 
+### DAST ZAP advanced configuration variables deprecation
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_ZAP_CLI_OPTIONS` and `DAST_ZAP_LOG_CONFIGURATION`. These variables allowed for advanced configuration of the legacy DAST analyzer, which was based on OWASP ZAP. The new browser-based analyzer will not include the same functionality, as these were specific to how ZAP worked.
+
+These three variables will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
+### DAST report variables deprecation
+
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+With the new browser-based DAST analyzer GA in GitLab 15.7, we are working towards making it the default DAST analyzer at some point in the future. In preparation for this, the following legacy DAST variables are being deprecated and scheduled for removal in GitLab 16.0: `DAST_HTML_REPORT`, `DAST_XML_REPORT`, and `DAST_MARKDOWN_REPORT`. These reports relied on the legacy DAST analyzer and we do not plan to implement them in the new browser-based analyzer. As of GitLab 16.0, these report artifacts will no longer be generated.
+
+These three variables will be removed in GitLab 16.0.
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### KAS Metrics Port in GitLab Helm Chart
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
@@ -191,7 +223,7 @@ and will be moved to the JiHu GitLab codebase.
 
 ### `POST ci/lint` API endpoint deprecated
 
-Planned removal: GitLab <span class="removal-milestone">16.0</span> (2021-03-22)
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -226,7 +258,7 @@ From GitLab 13.6, users can [specify any runner configuration in the GitLab Runn
 ### GitLab Runner registration token in Runner Operator
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -241,7 +273,7 @@ The [`runner-registration-token`](https://docs.gitlab.com/runner/install/operato
 ### Registration tokens and server-side runner arguments in `POST /api/v4/runners` endpoint
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -265,7 +297,7 @@ From GitLab 17.0 and later, the runner registration methods implemented by the n
 ### Registration tokens and server-side runner arguments in `gitlab-runner register` command
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -286,7 +318,7 @@ to the `gitlab-runner register` command.
 ### `runnerRegistrationToken` parameter for GitLab Runner Helm Chart
 
 End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
-Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-04-22)
+Planned removal: GitLab <span class="removal-milestone">17.0</span> (2024-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
@@ -1159,7 +1191,7 @@ status value can be used in place of `active` since GitLab 14.8.
 
 ### GraphQL ID and GlobalID compatibility
 
-Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-04-22)
+Planned removal: GitLab <span class="removal-milestone">15.0</span> (2022-05-22)
 
 WARNING:
 This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).

@@ -102,6 +102,10 @@ export default {
           icon: {
             name: SEVERITY_ICONS_MR_WIDGET[e.severity],
           },
+          badge: {
+            variant: 'neutral',
+            text: s__(`ciReport|Fixed`),
+          },
         });
       });
 
