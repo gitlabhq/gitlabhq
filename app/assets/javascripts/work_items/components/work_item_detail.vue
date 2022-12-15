@@ -30,6 +30,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WIDGET_TYPE_NOTES,
 } from '../constants';
 
 import workItemDatesSubscription from '../graphql/work_item_dates.subscription.graphql';
@@ -49,6 +50,7 @@ import WorkItemDueDate from './work_item_due_date.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemMilestone from './work_item_milestone.vue';
+import WorkItemNotes from './work_item_notes.vue';
 
 export default {
   i18n,
@@ -75,6 +77,7 @@ export default {
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemMilestone,
     WorkItemTree,
+    WorkItemNotes,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath'],
@@ -258,6 +261,9 @@ export default {
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
     },
+    workItemNotes() {
+      return this.isWidgetPresent(WIDGET_TYPE_NOTES);
+    },
     fetchByIid() {
       return this.glFeatures.useIidInWorkItemsPath && parseBoolean(getParameterByName('iid_path'));
     },
@@ -428,7 +434,7 @@ export default {
       <div class="gl-display-flex gl-align-items-center" data-testid="work-item-body">
         <ul
           v-if="parentWorkItem"
-          class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0"
+          class="list-unstyled gl-display-flex gl-mr-auto gl-max-w-26 gl-md-max-w-50p gl-min-w-0 gl-mb-0 gl-z-index-0"
           data-testid="work-item-parent"
         >
           <li class="gl-ml-n4 gl-display-flex gl-align-items-center gl-overflow-hidden">
@@ -589,6 +595,17 @@ export default {
         @addWorkItemChild="addChild"
         @removeChild="removeChild"
       />
+      <template v-if="workItemsMvc2Enabled">
+        <work-item-notes
+          v-if="workItemNotes"
+          :work-item-id="workItem.id"
+          :query-variables="queryVariables"
+          :full-path="fullPath"
+          :fetch-by-iid="fetchByIid"
+          class="gl-pt-5"
+          @error="updateError = $event"
+        />
+      </template>
       <gl-empty-state
         v-if="error"
         :title="$options.i18n.fetchErrorTitle"

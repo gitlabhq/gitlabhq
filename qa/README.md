@@ -88,6 +88,43 @@ bundle exec bin/qa Test::Instance::All {GDK IP ADDRESS}
 - Note: If you want to run tests requiring SSH against GDK, you will need to [modify your GDK setup](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/run_qa_against_gdk.md).
 - Note: If this is your first time running GDK, you can use the password pre-set for `root`. [See supported GitLab environment variables](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables). If you have changed your `root` password, use that when exporting `GITLAB_INITIAL_ROOT_PASSWORD`.
 
+#### Run the end-to-end tests on GitLab in Docker
+
+1. [GitLab can be installed in Docker](https://docs.gitlab.com/ee/install/docker.html). You can use the following command to start an instance that you can visit at `http://127.0.0.1`:
+
+   ```
+   docker run \    
+    --hostname 127.0.0.1 \
+    --publish 80:80 --publish 22:22 \
+    --name gitlab \
+    --shm-size 256m \
+    --env GITLAB_OMNIBUS_CONFIG="gitlab_rails['initial_root_password']='5iveL\!fe';" \
+    gitlab/gitlab-ee:nightly
+   ```
+
+  Notes:
+  - If you are on a Mac with [Apple Silicon](https://support.apple.com/en-us/HT211814), you will also need to add: `--platform=linux/amd64`
+  - If you are on Windows, please be aware that [Docker Desktop must be set to use Linux containers](https://learn.microsoft.com/en-us/virtualization/windowscontainers/quick-start/quick-start-windows-10-linux#run-your-first-linux-container).
+
+
+2. Navigate to the QA folder and run the following commands.
+
+   ```bash
+   cd gitlab/qa
+   bundle install
+   export WEBDRIVER_HEADLESS=false
+   export GITLAB_INITIAL_ROOT_PASSWORD=5iveL\!fe
+   export QA_GITLAB_URL="http://127.0.0.1"
+   ```
+
+3. Most tests that do not require special setup could then be run with the following command.
+
+   ```bash
+   bundle exec rspec <path/to/spec.rb>
+   ```
+
+- Note: See the section above for situations that might require adjustment to the commands or to the configuration of the GitLab instance. [You can find more information in the documentation](https://docs.gitlab.com/ee/install/docker.html).
+
 #### Running EE tests
 
 When running EE tests you'll need to have a license available. GitLab engineers can [request a license](https://about.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee).

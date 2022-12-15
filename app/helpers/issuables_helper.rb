@@ -275,7 +275,7 @@ module IssuablesHelper
       zoomMeetingUrl: ZoomMeeting.canonical_meeting_url(issuable),
       sentryIssueIdentifier: SentryIssue.find_by(issue: issuable)&.sentry_issue_identifier, # rubocop:disable CodeReuse/ActiveRecord
       iid: issuable.iid.to_s,
-      isHidden: issuable_hidden?(issuable),
+      isHidden: issue_hidden?(issuable),
       canCreateIncident: create_issue_type_allowed?(issuable.project, :incident)
     }
   end
@@ -369,20 +369,6 @@ module IssuablesHelper
       [_("Open"), "issues"]
     else
       [_("Closed"), "issue-closed"]
-    end
-  end
-
-  def issuable_hidden?(issuable)
-    Feature.enabled?(:ban_user_feature_flag) && issuable.hidden?
-  end
-
-  def hidden_issuable_icon(issuable)
-    return unless issuable_hidden?(issuable)
-
-    title = format(_('This %{issuable} is hidden because its author has been banned'),
-                   issuable: issuable.human_class_name)
-    content_tag(:span, class: 'has-tooltip', title: title) do
-      sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
     end
   end
 

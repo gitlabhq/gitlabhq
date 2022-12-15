@@ -19,6 +19,7 @@ export const WIDGET_TYPE_WEIGHT = 'WEIGHT';
 export const WIDGET_TYPE_HIERARCHY = 'HIERARCHY';
 export const WIDGET_TYPE_MILESTONE = 'MILESTONE';
 export const WIDGET_TYPE_ITERATION = 'ITERATION';
+export const WIDGET_TYPE_NOTES = 'NOTES';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -145,3 +146,4 @@ export const FORM_TYPES = {
 };
 
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
+export const DEFAULT_PAGE_SIZE_NOTES = 100;

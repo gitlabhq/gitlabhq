@@ -57,7 +57,6 @@ describe('IssuableHeaderWarnings', () => {
         beforeEach(() => {
           store.getters.getNoteableData.confidential = confidentialStatus;
           store.getters.getNoteableData.discussion_locked = lockStatus;
-          store.getters.getNoteableData.targetType = issuableType;
 
           createComponent({ store, provide: { hidden: hiddenStatus } });
         });
@@ -85,7 +84,7 @@ describe('IssuableHeaderWarnings', () => {
 
           if (hiddenStatus) {
             expect(hiddenIcon.attributes('title')).toBe(
-              `This ${issuableType} is hidden because its author has been banned`,
+              'This issue is hidden because its author has been banned',
             );
             expect(getBinding(hiddenIcon.element, 'gl-tooltip')).not.toBeUndefined();
           }

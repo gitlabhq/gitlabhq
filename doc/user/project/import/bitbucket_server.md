@@ -63,6 +63,10 @@ The following items are changed when they are imported:
 
 ## User assignment
 
+Prerequisite:
+
+- Authentication token with administrator access.
+
 When issues and pull requests are importing, the importer tries to find the author's email address
 with a confirmed email address in the GitLab user database. If no such user is available, the
 project creator is set as the author. The importer appends a note in the comment to mark the

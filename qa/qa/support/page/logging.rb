@@ -79,9 +79,12 @@ module QA
           super
         end
 
+        # @param name [Symbol] name of the data_qa_selector element
+        # @param page [Class] a target page class to check existence of (class must inherit from QA::Page::Base)
+        # @param kwargs [Hash] keyword arguments to pass to Capybara finder
         def click_element(name, page = nil, **kwargs)
           msg = ["clicking :#{highlight_element(name)}"]
-          msg << ", expecting to be at #{page.class}" if page
+          msg << "and ensuring #{page} is present" if page
 
           log(msg.join(' '), :info)
           log("with args #{kwargs}")

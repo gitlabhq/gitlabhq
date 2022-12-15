@@ -144,14 +144,6 @@ module Issuable
       includes(*associations)
     end
 
-    scope :without_hidden, -> {
-      if Feature.enabled?(:ban_user_feature_flag)
-        where.not(author_id: Users::BannedUser.all.select(:user_id))
-      else
-        all
-      end
-    }
-
     attr_mentionable :title, pipeline: :single_line
     attr_mentionable :description
 
@@ -233,10 +225,6 @@ module Issuable
       return IssuableSeverity::DEFAULT unless supports_severity?
 
       issuable_severity&.severity || IssuableSeverity::DEFAULT
-    end
-
-    def hidden?
-      author&.banned?
     end
 
     private

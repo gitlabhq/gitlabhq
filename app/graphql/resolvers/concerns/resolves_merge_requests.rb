@@ -34,7 +34,7 @@ module ResolvesMergeRequests
   end
 
   def unconditional_includes
-    [:target_project, :author]
+    [:target_project]
   end
 
   def preloads

@@ -139,6 +139,7 @@ RSpec.describe 'Every Sidekiq worker' do
         'BuildQueueWorker' => 3,
         'BuildSuccessWorker' => 3,
         'BulkImportWorker' => false,
+        'BulkImports::ExportRequestWorker' => 5,
         'BulkImports::EntityWorker' => false,
         'BulkImports::PipelineWorker' => false,
         'Chaos::CpuSpinWorker' => 3,

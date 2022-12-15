@@ -6,7 +6,7 @@
           - if issue.confidential?
             %span.has-tooltip{ title: _('Confidential') }
               = confidential_icon(issue)
-          = hidden_issuable_icon(issue)
+          = hidden_issue_icon(issue)
           = link_to issue.title, issue_path(issue), class: 'js-prefetch-document'
         = render_if_exists 'projects/issues/subepic_flag', issue: issue
         - if issue.tasks?

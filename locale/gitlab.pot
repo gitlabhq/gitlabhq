@@ -3298,7 +3298,7 @@ msgstr ""
 msgid "AdminUsers|Is using seat"
 msgstr ""
 
-msgid "AdminUsers|Issues and merge requests authored by this user are hidden from other users."
+msgid "AdminUsers|Issues authored by this user are hidden from other users."
 msgstr ""
 
 msgid "AdminUsers|It's you!"
@@ -42070,9 +42070,6 @@ msgstr ""
 msgid "This %{issuableDisplayName} is locked. Only project members can comment."
 msgstr ""
 
-msgid "This %{issuable} is hidden because its author has been banned"
-msgstr ""
-
 msgid "This %{issuable} is locked. Only %{strong_open}project members%{strong_close} can comment."
 msgstr ""
 
@@ -46873,6 +46870,9 @@ msgid "Work in progress Limit"
 msgstr ""
 
 msgid "WorkItem|%{workItemType} deleted"
+msgstr ""
+
+msgid "WorkItem|Activity"
 msgstr ""
 
 msgid "WorkItem|Add"

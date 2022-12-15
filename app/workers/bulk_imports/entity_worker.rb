@@ -74,6 +74,8 @@ module BulkImports
         source_version: source_version,
         importer: 'gitlab_migration'
       )
+
+      entity.fail_op!
     end
 
     private

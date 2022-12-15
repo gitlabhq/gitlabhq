@@ -54,13 +54,16 @@ RSpec.describe BulkImports::Tracker, type: :model do
 
     it 'returns the not started pipeline trackers from the minimum stage number' do
       stage_1_tracker = create(:bulk_import_tracker, entity: entity, stage: 1)
+      stage_1_finished_tracker = create(:bulk_import_tracker, :finished, entity: entity, stage: 1)
+      stage_1_failed_tracker = create(:bulk_import_tracker, :failed, entity: entity, stage: 1)
+      stage_1_skipped_tracker = create(:bulk_import_tracker, :skipped, entity: entity, stage: 1)
       stage_2_tracker = create(:bulk_import_tracker, entity: entity, stage: 2)
 
       expect(described_class.next_pipeline_trackers_for(entity.id))
         .to include(stage_1_tracker)
 
       expect(described_class.next_pipeline_trackers_for(entity.id))
-        .not_to include(stage_2_tracker)
+        .not_to include(stage_2_tracker, stage_1_finished_tracker, stage_1_failed_tracker, stage_1_skipped_tracker)
     end
   end
 

@@ -79,4 +79,7 @@ fragment WorkItemWidgets on WorkItemWidget {
       ...MilestoneFragment
     }
   }
+  ... on WorkItemWidgetNotes {
+    type
+  }
 }

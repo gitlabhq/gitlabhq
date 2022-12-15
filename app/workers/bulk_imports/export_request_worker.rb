@@ -4,11 +4,15 @@ module BulkImports
   class ExportRequestWorker
     include ApplicationWorker
 
-    data_consistency :always
-
     idempotent!
-    worker_has_external_dependencies!
+    data_consistency :always
     feature_category :importers
+    sidekiq_options dead: false, retry: 5
+    worker_has_external_dependencies!
+
+    sidekiq_retries_exhausted do |msg, exception|
+      new.perform_failure(exception, msg['args'].first)
+    end
 
     def perform(entity_id)
       entity = BulkImports::Entity.find(entity_id)
@@ -18,26 +22,12 @@ module BulkImports
       request_export(entity)
 
       BulkImports::EntityWorker.perform_async(entity_id)
-    rescue BulkImports::NetworkError => e
-      if e.retriable?(entity)
-        retry_request(e, entity)
-      else
-        log_exception(e,
-          {
-            bulk_import_entity_id: entity.id,
-            bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_type: entity.source_type,
-            source_full_path: entity.source_full_path,
-            message: "Request to export #{entity.source_type} failed",
-            source_version: entity.bulk_import.source_version_info.to_s,
-            importer: 'gitlab_migration'
-          }
-        )
+    end
 
-        BulkImports::Failure.create(failure_attributes(e, entity))
+    def perform_failure(exception, entity_id)
+      entity = BulkImports::Entity.find(entity_id)
 
-        entity.fail_op!
-      end
+      log_and_fail(exception, entity)
     end
 
     private
@@ -104,22 +94,6 @@ module BulkImports
       end
     end
 
-    def retry_request(exception, entity)
-      log_exception(exception,
-        {
-          message: 'Retrying export request',
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          source_version: entity.bulk_import.source_version_info.to_s,
-          importer: 'gitlab_migration'
-        }
-      )
-
-      self.class.perform_in(2.seconds, entity.id)
-    end
-
     def logger
       @logger ||= Gitlab::Import::Logger.build
     end
@@ -128,6 +102,24 @@ module BulkImports
       Gitlab::ExceptionLogFormatter.format!(exception, payload)
 
       logger.error(structured_payload(payload))
+    end
+
+    def log_and_fail(exception, entity)
+      log_exception(exception,
+        {
+          bulk_import_entity_id: entity.id,
+          bulk_import_id: entity.bulk_import_id,
+          bulk_import_entity_type: entity.source_type,
+          source_full_path: entity.source_full_path,
+          message: "Request to export #{entity.source_type} failed",
+          source_version: entity.bulk_import.source_version_info.to_s,
+          importer: 'gitlab_migration'
+        }
+      )
+
+      BulkImports::Failure.create(failure_attributes(exception, entity))
+
+      entity.fail_op!
     end
   end
 end

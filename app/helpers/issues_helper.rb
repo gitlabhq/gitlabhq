@@ -70,6 +70,18 @@ module IssuesHelper
     sprite_icon('eye-slash', css_class: 'gl-vertical-align-text-bottom') if issue.confidential?
   end
 
+  def issue_hidden?(issue)
+    Feature.enabled?(:ban_user_feature_flag) && issue.hidden?
+  end
+
+  def hidden_issue_icon(issue)
+    return unless issue_hidden?(issue)
+
+    content_tag(:span, class: 'has-tooltip', title: _('This issue is hidden because its author has been banned')) do
+      sprite_icon('spam', css_class: 'gl-vertical-align-text-bottom')
+    end
+  end
+
   def award_user_list(awards, current_user, limit: 10)
     names = awards.map do |award|
       award.user == current_user ? 'You' : award.user.name

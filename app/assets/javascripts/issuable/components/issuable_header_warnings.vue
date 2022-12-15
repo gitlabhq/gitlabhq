@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
-import { sprintf, __ } from '~/locale';
+import { __ } from '~/locale';
 import { IssuableType, WorkspaceType } from '~/issues/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
@@ -40,9 +40,7 @@ export default {
           iconName: 'spam',
           visible: this.hidden,
           dataTestId: 'hidden',
-          tooltip: sprintf(__('This %{issuable} is hidden because its author has been banned'), {
-            issuable: this.getNoteableData.targetType.replace('_', ' '),
-          }),
+          tooltip: __('This issue is hidden because its author has been banned'),
         },
       ];
     },

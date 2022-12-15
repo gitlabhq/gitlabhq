@@ -3,6 +3,7 @@
 module BulkImports
   class PipelineWorker # rubocop:disable Scalability/IdempotentWorker
     include ApplicationWorker
+    include ExclusiveLeaseGuard
 
     FILE_EXTRACTION_PIPELINE_PERFORM_DELAY = 10.seconds
 
@@ -10,44 +11,24 @@ module BulkImports
     feature_category :importers
     sidekiq_options retry: false, dead: false
     worker_has_external_dependencies!
+    deduplicate :until_executing
 
     def perform(pipeline_tracker_id, stage, entity_id)
-      @pipeline_tracker = ::BulkImports::Tracker
-        .with_status(:enqueued)
-        .find_by_id(pipeline_tracker_id)
+      @entity = ::BulkImports::Entity.find(entity_id)
+      @pipeline_tracker = ::BulkImports::Tracker.find(pipeline_tracker_id)
 
-      if pipeline_tracker.present?
-        @entity = @pipeline_tracker.entity
+      try_obtain_lease do
+        if pipeline_tracker.enqueued?
+          logger.info(log_attributes(message: 'Pipeline starting'))
 
-        logger.info(
-          structured_payload(
-            bulk_import_entity_id: entity.id,
-            bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_type: entity.source_type,
-            source_full_path: entity.source_full_path,
-            pipeline_name: pipeline_tracker.pipeline_name,
-            message: 'Pipeline starting',
-            source_version: source_version,
-            importer: 'gitlab_migration'
-          )
-        )
+          run
+        else
+          message = "Pipeline in #{pipeline_tracker.human_status_name} state instead of expected enqueued state"
 
-        run
-      else
-        @entity = ::BulkImports::Entity.find(entity_id)
+          logger.error(log_attributes(message: message))
 
-        logger.error(
-          structured_payload(
-            bulk_import_entity_id: entity_id,
-            bulk_import_id: entity.bulk_import_id,
-            bulk_import_entity_type: entity.source_type,
-            source_full_path: entity.source_full_path,
-            pipeline_tracker_id: pipeline_tracker_id,
-            message: 'Unstarted pipeline not found',
-            source_version: source_version,
-            importer: 'gitlab_migration'
-          )
-        )
+          fail_tracker(StandardError.new(message)) unless pipeline_tracker.finished? || pipeline_tracker.skipped?
+        end
       end
 
     ensure
@@ -83,29 +64,9 @@ module BulkImports
     def fail_tracker(exception)
       pipeline_tracker.update!(status_event: 'fail_op', jid: jid)
 
-      log_exception(exception,
-        {
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          pipeline_name: pipeline_tracker.pipeline_name,
-          message: 'Pipeline failed',
-          source_version: source_version,
-          importer: 'gitlab_migration'
-        }
-      )
+      log_exception(exception, log_attributes(message: 'Pipeline failed'))
 
-      Gitlab::ErrorTracking.track_exception(
-        exception,
-        bulk_import_entity_id: entity.id,
-        bulk_import_id: entity.bulk_import_id,
-        bulk_import_entity_type: entity.source_type,
-        source_full_path: entity.source_full_path,
-        pipeline_name: pipeline_tracker.pipeline_name,
-        source_version: source_version,
-        importer: 'gitlab_migration'
-      )
+      Gitlab::ErrorTracking.track_exception(exception, log_attributes)
 
       BulkImports::Failure.create(
         bulk_import_entity_id: entity.id,
@@ -171,18 +132,7 @@ module BulkImports
     end
 
     def retry_tracker(exception)
-      log_exception(exception,
-        {
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          pipeline_name: pipeline_tracker.pipeline_name,
-          message: "Retrying pipeline",
-          source_version: source_version,
-          importer: 'gitlab_migration'
-        }
-      )
+      log_exception(exception, log_attributes(message: "Retrying pipeline"))
 
       pipeline_tracker.update!(status_event: 'retry', jid: jid)
 
@@ -190,29 +140,43 @@ module BulkImports
     end
 
     def skip_tracker
-      logger.info(
-        structured_payload(
-          bulk_import_entity_id: entity.id,
-          bulk_import_id: entity.bulk_import_id,
-          bulk_import_entity_type: entity.source_type,
-          source_full_path: entity.source_full_path,
-          pipeline_name: pipeline_tracker.pipeline_name,
-          message: 'Skipping pipeline due to failed entity',
-          source_version: source_version,
-          importer: 'gitlab_migration'
-        )
-      )
+      logger.info(log_attributes(message: 'Skipping pipeline due to failed entity'))
 
       pipeline_tracker.update!(status_event: 'skip', jid: jid)
     end
 
+    def log_attributes(extra = {})
+      structured_payload(
+        {
+          bulk_import_entity_id: entity.id,
+          bulk_import_id: entity.bulk_import_id,
+          bulk_import_entity_type: entity.source_type,
+          source_full_path: entity.source_full_path,
+          pipeline_tracker_id: pipeline_tracker.id,
+          pipeline_name: pipeline_tracker.pipeline_name,
+          pipeline_tracker_state: pipeline_tracker.human_status_name,
+          source_version: source_version,
+          importer: 'gitlab_migration'
+        }.merge(extra)
+      )
+    end
+
     def log_exception(exception, payload)
       Gitlab::ExceptionLogFormatter.format!(exception, payload)
+
       logger.error(structured_payload(payload))
     end
 
     def time_since_entity_created
       Time.zone.now - entity.created_at
+    end
+
+    def lease_timeout
+      30
+    end
+
+    def lease_key
+      "gitlab:bulk_imports:pipeline_worker:#{pipeline_tracker.id}"
     end
   end
 end

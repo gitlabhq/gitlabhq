@@ -193,6 +193,6 @@ overrides:
       '@graphql-eslint/no-unused-fragments': error
       '@graphql-eslint/no-duplicate-fields': error
   - files:
-    - 'spec/contracts/consumer/**/*'
+    - '{,ee/}spec/contracts/consumer/**/*'
     rules:
       '@gitlab/require-i18n-strings': off

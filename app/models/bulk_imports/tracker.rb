@@ -26,7 +26,7 @@ class BulkImports::Tracker < ApplicationRecord
     entity_scope = where(bulk_import_entity_id: entity_id)
     next_stage_scope = entity_scope.with_status(:created).select('MIN(stage)')
 
-    entity_scope.where(stage: next_stage_scope)
+    entity_scope.where(stage: next_stage_scope).with_status(:created)
   }
 
   def self.stage_running?(entity_id, stage)

@@ -91,7 +91,10 @@ If you are using a self-managed GitLab instance or if you are importing from Git
 
 ### Use a GitHub token
 
-NOTE:
+Prerequisite:
+
+- Authentication token with administrator access.
+
 Using a personal access token to import projects is not recommended. If you are a GitLab.com user,
 you can use a personal access token to import your project from GitHub, but this method cannot
 associate all user activity (such as issues and pull requests) with matching GitLab users.
@@ -225,7 +228,7 @@ When they are imported, supported GitHub branch protection rules are mapped to e
 - Project-wide GitLab settings.
 
 | GitHub rule                                                                         | GitLab rule                                                                                                                                                 | Introduced in                                                       |
-|:------------------------------------------------------------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------------------------------|
+| :---------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------ |
 | **Require conversation resolution before merging** for the project's default branch | **All threads must be resolved** [project setting](../../discussions/index.md#prevent-merge-unless-all-threads-are-resolved)                                | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/371110) |
 | **Require a pull request before merging**                                           | **No one** option in the **Allowed to push** list of [branch protection settings](../protected_branches.md#configure-a-protected-branch)                    | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370951) |
 | **Require signed commits** for the project's default branch                         | **Reject unsigned commits** GitLab [push rule](../repository/push_rules.md#prevent-unintended-consequences) **(PREMIUM)**                                   | [GitLab 15.5](https://gitlab.com/gitlab-org/gitlab/-/issues/370949) |

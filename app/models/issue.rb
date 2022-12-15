@@ -178,6 +178,14 @@ class Issue < ApplicationRecord
 
   scope :confidential_only, -> { where(confidential: true) }
 
+  scope :without_hidden, -> {
+    if Feature.enabled?(:ban_user_feature_flag)
+      where.not(author_id: Users::BannedUser.all.select(:user_id))
+    else
+      all
+    end
+  }
+
   scope :counts_by_state, -> { reorder(nil).group(:state_id).count }
 
   scope :service_desk, -> { where(author: ::User.support_bot) }
@@ -648,6 +656,10 @@ class Issue < ApplicationRecord
     else
       project.team.member?(user)
     end
+  end
+
+  def hidden?
+    author&.banned?
   end
 
   # Necessary until all issues are backfilled and we add a NOT NULL constraint on the DB

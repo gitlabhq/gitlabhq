@@ -139,6 +139,7 @@ export default {
     size="lg"
     modal-id="work-item-detail-modal"
     header-class="gl-p-0 gl-pb-2!"
+    scrollable
     @hide="closeModal"
   >
     <gl-alert v-if="error" variant="danger" @dismiss="error = false">

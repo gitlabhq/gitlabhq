@@ -49,7 +49,7 @@ class IssuesFinder < IssuableFinder
 
   # rubocop: disable CodeReuse/ActiveRecord
   def with_confidentiality_access_check
-    return model_class.all if params.user_can_see_all_issuables?
+    return model_class.all if params.user_can_see_all_issues?
 
     # Only admins can see hidden issues, so for non-admins, we filter out any hidden issues
     issues = model_class.without_hidden

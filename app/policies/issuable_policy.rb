@@ -16,9 +16,6 @@ class IssuablePolicy < BasePolicy
 
   condition(:is_incident) { @subject.incident? }
 
-  desc "Issuable is hidden"
-  condition(:hidden, scope: :subject) { @subject.hidden? }
-
   rule { can?(:guest_access) & assignee_or_author & ~is_incident }.policy do
     enable :read_issue
     enable :update_issue
