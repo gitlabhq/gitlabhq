@@ -1,4 +1,4 @@
-= form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-search-limits-settings'), html: { class: 'fieldset-form' } do |f|
+= gitlab_ui_form_for @application_setting, url: network_admin_application_settings_path(anchor: 'js-search-limits-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -13,4 +13,4 @@
       = f.number_field :search_rate_limit_unauthenticated, class: 'form-control gl-form-input'
 
 
-  = f.submit _('Save changes'), class: "gl-button btn btn-confirm", data: { qa_selector: 'save_changes_button' }
+  = f.submit _('Save changes'), data: { qa_selector: 'save_changes_button' }, pajamas_button: true

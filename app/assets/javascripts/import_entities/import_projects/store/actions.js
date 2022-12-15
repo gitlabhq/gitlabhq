@@ -1,4 +1,5 @@
 import Visibility from 'visibilityjs';
+import _ from 'lodash';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
@@ -8,6 +9,7 @@ import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 import { isProjectImportable } from '../utils';
+import { PROVIDERS } from '../../constants';
 import * as types from './mutation_types';
 
 let eTagPoll;
@@ -21,6 +23,24 @@ const pathWithParams = ({ path, ...params }) => {
   );
   const queryString = objectToQuery(filteredParams);
   return queryString ? `${path}?${queryString}` : path;
+};
+const commitPaginationData = ({ state, commit, data }) => {
+  const cursorsGitHubResponse = !_.isEmpty(data.pageInfo || {});
+
+  if (state.provider === PROVIDERS.GITHUB && cursorsGitHubResponse) {
+    commit(types.SET_PAGE_CURSORS, data.pageInfo);
+  } else {
+    const nextPage = state.pageInfo.page + 1;
+    commit(types.SET_PAGE, nextPage);
+  }
+};
+const paginationParams = ({ state }) => {
+  if (state.provider === PROVIDERS.GITHUB && state.pageInfo.endCursor) {
+    return { after: state.pageInfo.endCursor };
+  }
+
+  const nextPage = state.pageInfo.page + 1;
+  return { page: nextPage === 1 ? '' : nextPage.toString() };
 };
 
 const isRequired = () => {
@@ -55,7 +75,6 @@ const importAll = ({ state, dispatch }, config = {}) => {
 };
 
 const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) => {
-  const nextPage = state.pageInfo.page + 1;
   commit(types.REQUEST_REPOS);
 
   const { provider, filter } = state;
@@ -65,12 +84,13 @@ const fetchReposFactory = ({ reposPath = isRequired() }) => ({ state, commit }) 
       pathWithParams({
         path: reposPath,
         filter: filter ?? '',
-        page: nextPage === 1 ? '' : nextPage.toString(),
+        ...paginationParams({ state }),
       }),
     )
     .then(({ data }) => {
-      commit(types.SET_PAGE, nextPage);
-      commit(types.RECEIVE_REPOS_SUCCESS, convertObjectPropsToCamelCase(data, { deep: true }));
+      const camelData = convertObjectPropsToCamelCase(data, { deep: true });
+      commitPaginationData({ state, commit, data: camelData });
+      commit(types.RECEIVE_REPOS_SUCCESS, camelData);
     })
     .catch((e) => {
       if (hasRedirectInError(e)) {

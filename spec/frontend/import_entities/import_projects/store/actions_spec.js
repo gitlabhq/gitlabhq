@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { TEST_HOST } from 'helpers/test_constants';
 import testAction from 'helpers/vuex_action_helper';
 import { createAlert } from '~/flash';
-import { STATUSES } from '~/import_entities/constants';
+import { STATUSES, PROVIDERS } from '~/import_entities/constants';
 import actionsFactory from '~/import_entities/import_projects/store/actions';
 import { getImportTarget } from '~/import_entities/import_projects/store/getters';
 import {
@@ -15,6 +15,7 @@ import {
   RECEIVE_JOBS_SUCCESS,
   SET_PAGE,
   SET_FILTER,
+  SET_PAGE_CURSORS,
 } from '~/import_entities/import_projects/store/mutation_types';
 import state from '~/import_entities/import_projects/store/state';
 import axios from '~/lib/utils/axios_utils';
@@ -72,7 +73,11 @@ describe('import_projects store actions', () => {
 
   describe('fetchRepos', () => {
     let mock;
-    const payload = { imported_projects: [{}], provider_repos: [{}] };
+    const payload = {
+      imported_projects: [{}],
+      provider_repos: [{}],
+      page_info: { startCursor: 'start', endCursor: 'end', hasNextPage: true },
+    };
 
     beforeEach(() => {
       mock = new MockAdapter(axios);
@@ -80,23 +85,53 @@ describe('import_projects store actions', () => {
 
     afterEach(() => mock.restore());
 
-    it('commits REQUEST_REPOS, SET_PAGE, RECEIVE_REPOS_SUCCESS mutations on a successful request', () => {
-      mock.onGet(MOCK_ENDPOINT).reply(200, payload);
+    describe('with a successful request', () => {
+      it('commits REQUEST_REPOS, SET_PAGE, RECEIVE_REPOS_SUCCESS mutations', () => {
+        mock.onGet(MOCK_ENDPOINT).reply(200, payload);
 
-      return testAction(
-        fetchRepos,
-        null,
-        localState,
-        [
-          { type: REQUEST_REPOS },
-          { type: SET_PAGE, payload: 1 },
-          {
-            type: RECEIVE_REPOS_SUCCESS,
-            payload: convertObjectPropsToCamelCase(payload, { deep: true }),
-          },
-        ],
-        [],
-      );
+        return testAction(
+          fetchRepos,
+          null,
+          localState,
+          [
+            { type: REQUEST_REPOS },
+            { type: SET_PAGE, payload: 1 },
+            {
+              type: RECEIVE_REPOS_SUCCESS,
+              payload: convertObjectPropsToCamelCase(payload, { deep: true }),
+            },
+          ],
+          [],
+        );
+      });
+
+      describe('when provider is GITHUB_PROVIDER', () => {
+        beforeEach(() => {
+          localState.provider = PROVIDERS.GITHUB;
+        });
+
+        it('commits SET_PAGE_CURSORS instead of SET_PAGE', () => {
+          mock.onGet(MOCK_ENDPOINT).reply(200, payload);
+
+          return testAction(
+            fetchRepos,
+            null,
+            localState,
+            [
+              { type: REQUEST_REPOS },
+              {
+                type: SET_PAGE_CURSORS,
+                payload: { startCursor: 'start', endCursor: 'end', hasNextPage: true },
+              },
+              {
+                type: RECEIVE_REPOS_SUCCESS,
+                payload: convertObjectPropsToCamelCase(payload, { deep: true }),
+              },
+            ],
+            [],
+          );
+        });
+      });
     });
 
     it('commits REQUEST_REPOS, RECEIVE_REPOS_ERROR mutations on an unsuccessful request', () => {
@@ -111,18 +146,52 @@ describe('import_projects store actions', () => {
       );
     });
 
-    it('includes page in url query params', async () => {
-      let requestedUrl;
-      mock.onGet().reply((config) => {
-        requestedUrl = config.url;
-        return [200, payload];
+    describe('with pagination params', () => {
+      it('includes page in url query params', async () => {
+        let requestedUrl;
+        mock.onGet().reply((config) => {
+          requestedUrl = config.url;
+          return [200, payload];
+        });
+
+        const localStateWithPage = { ...localState, pageInfo: { page: 2 } };
+
+        await testAction(
+          fetchRepos,
+          null,
+          localStateWithPage,
+          expect.any(Array),
+          expect.any(Array),
+        );
+
+        expect(requestedUrl).toBe(`${MOCK_ENDPOINT}?page=${localStateWithPage.pageInfo.page + 1}`);
       });
 
-      const localStateWithPage = { ...localState, pageInfo: { page: 2 } };
+      describe('when provider is "github"', () => {
+        beforeEach(() => {
+          localState.provider = PROVIDERS.GITHUB;
+        });
 
-      await testAction(fetchRepos, null, localStateWithPage, expect.any(Array), expect.any(Array));
+        it('includes cursor in url query params', async () => {
+          let requestedUrl;
+          mock.onGet().reply((config) => {
+            requestedUrl = config.url;
+            return [200, payload];
+          });
 
-      expect(requestedUrl).toBe(`${MOCK_ENDPOINT}?page=${localStateWithPage.pageInfo.page + 1}`);
+          const localStateWithPage = { ...localState, pageInfo: { endCursor: 'endTest' } };
+
+          await testAction(
+            fetchRepos,
+            null,
+            localStateWithPage,
+            expect.any(Array),
+            expect.any(Array),
+          );
+
+          expect(requestedUrl).toBe(`${MOCK_ENDPOINT}?after=endTest`);
+        });
+      });
     });
 
     it('correctly keeps current page on an unsuccessful request', () => {

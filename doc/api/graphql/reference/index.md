@@ -4292,6 +4292,31 @@ Input type: `PipelineRetryInput`
 | <a id="mutationpipelineretryerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpipelineretrypipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline after mutation. |
 
+### `Mutation.pipelineScheduleCreate`
+
+Input type: `PipelineScheduleCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpipelineschedulecreateactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the pipeline schedule should be active or not. |
+| <a id="mutationpipelineschedulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpipelineschedulecreatecron"></a>`cron` | [`String!`](#string) | Cron expression of the pipeline schedule. |
+| <a id="mutationpipelineschedulecreatecrontimezone"></a>`cronTimezone` | [`String`](#string) | Cron time zone supported by ActiveSupport::TimeZone. For example: "Pacific Time (US & Canada)" (default: "UTC"). |
+| <a id="mutationpipelineschedulecreatedescription"></a>`description` | [`String!`](#string) | Description of the pipeline schedule. |
+| <a id="mutationpipelineschedulecreateprojectpath"></a>`projectPath` | [`ID!`](#id) | Full path of the project the pipeline schedule is associated with. |
+| <a id="mutationpipelineschedulecreateref"></a>`ref` | [`String!`](#string) | Ref of the pipeline schedule. |
+| <a id="mutationpipelineschedulecreatevariables"></a>`variables` | [`[PipelineScheduleVariableInput!]`](#pipelineschedulevariableinput) | Variables for the pipeline schedule. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationpipelineschedulecreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationpipelineschedulecreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationpipelineschedulecreatepipelineschedule"></a>`pipelineSchedule` | [`PipelineSchedule`](#pipelineschedule) | Created pipeline schedule. |
+
 ### `Mutation.pipelineScheduleDelete`
 
 Input type: `PipelineScheduleDeleteInput`
@@ -8778,6 +8803,29 @@ The edge type for [`PipelineSchedule`](#pipelineschedule).
 | ---- | ---- | ----------- |
 | <a id="pipelinescheduleedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelinescheduleedgenode"></a>`node` | [`PipelineSchedule`](#pipelineschedule) | The item at the end of the edge. |
+
+#### `PipelineScheduleVariableConnection`
+
+The connection type for [`PipelineScheduleVariable`](#pipelineschedulevariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineschedulevariableconnectionedges"></a>`edges` | [`[PipelineScheduleVariableEdge]`](#pipelineschedulevariableedge) | A list of edges. |
+| <a id="pipelineschedulevariableconnectionnodes"></a>`nodes` | [`[PipelineScheduleVariable]`](#pipelineschedulevariable) | A list of nodes. |
+| <a id="pipelineschedulevariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineScheduleVariableEdge`
+
+The edge type for [`PipelineScheduleVariable`](#pipelineschedulevariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineschedulevariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelineschedulevariableedgenode"></a>`node` | [`PipelineScheduleVariable`](#pipelineschedulevariable) | The item at the end of the edge. |
 
 #### `PipelineSecurityReportFindingConnection`
 
@@ -16865,11 +16913,14 @@ Represents pipeline counts for the project.
 
 ### `PipelineSchedule`
 
+Represents a pipeline schedule.
+
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="pipelinescheduleactive"></a>`active` | [`Boolean!`](#boolean) | Indicates if a pipeline schedule is active. |
+| <a id="pipelinescheduleactive"></a>`active` | [`Boolean!`](#boolean) | Indicates if the pipeline schedule is active. |
+| <a id="pipelineschedulecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the pipeline schedule was created. |
 | <a id="pipelineschedulecron"></a>`cron` | [`String!`](#string) | Cron notation for the schedule. |
 | <a id="pipelineschedulecrontimezone"></a>`cronTimezone` | [`String!`](#string) | Timezone for the pipeline schedule. |
 | <a id="pipelinescheduledescription"></a>`description` | [`String`](#string) | Description of the pipeline schedule. |
@@ -16879,10 +16930,14 @@ Represents pipeline counts for the project.
 | <a id="pipelineschedulelastpipeline"></a>`lastPipeline` | [`Pipeline`](#pipeline) | Last pipeline object. |
 | <a id="pipelineschedulenextrunat"></a>`nextRunAt` | [`Time!`](#time) | Time when the next pipeline will run. |
 | <a id="pipelinescheduleowner"></a>`owner` | [`UserCore!`](#usercore) | Owner of the pipeline schedule. |
+| <a id="pipelinescheduleproject"></a>`project` | [`Project`](#project) | Project of the pipeline schedule. |
 | <a id="pipelineschedulerealnextrun"></a>`realNextRun` | [`Time!`](#time) | Time when the next pipeline will run. |
+| <a id="pipelinescheduleref"></a>`ref` | [`String`](#string) | Ref of the pipeline schedule. |
 | <a id="pipelineschedulereffordisplay"></a>`refForDisplay` | [`String`](#string) | Git ref for the pipeline schedule. |
 | <a id="pipelineschedulerefpath"></a>`refPath` | [`String`](#string) | Path to the ref that triggered the pipeline. |
+| <a id="pipelinescheduleupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the pipeline schedule was last updated. |
 | <a id="pipelinescheduleuserpermissions"></a>`userPermissions` | [`PipelineSchedulePermissions!`](#pipelineschedulepermissions) | Permissions for the current user on the resource. |
+| <a id="pipelineschedulevariables"></a>`variables` | [`PipelineScheduleVariableConnection`](#pipelineschedulevariableconnection) | Pipeline schedule variables. (see [Connections](#connections)) |
 
 ### `PipelineSchedulePermissions`
 
@@ -16894,6 +16949,18 @@ Represents pipeline counts for the project.
 | <a id="pipelineschedulepermissionsplaypipelineschedule"></a>`playPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `play_pipeline_schedule` on this resource. |
 | <a id="pipelineschedulepermissionstakeownershippipelineschedule"></a>`takeOwnershipPipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `take_ownership_pipeline_schedule` on this resource. |
 | <a id="pipelineschedulepermissionsupdatepipelineschedule"></a>`updatePipelineSchedule` | [`Boolean!`](#boolean) | Indicates the user can perform `update_pipeline_schedule` on this resource. |
+
+### `PipelineScheduleVariable`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineschedulevariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="pipelineschedulevariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="pipelineschedulevariableraw"></a>`raw` | [`Boolean`](#boolean) | Indicates whether the variable is raw. |
+| <a id="pipelineschedulevariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
+| <a id="pipelineschedulevariablevariabletype"></a>`variableType` | [`CiVariableType`](#civariabletype) | Type of the variable. |
 
 ### `PipelineSecurityReportFinding`
 
@@ -23803,6 +23870,7 @@ Implementations:
 - [`CiInstanceVariable`](#ciinstancevariable)
 - [`CiManualVariable`](#cimanualvariable)
 - [`CiProjectVariable`](#ciprojectvariable)
+- [`PipelineScheduleVariable`](#pipelineschedulevariable)
 
 ##### Fields
 
@@ -24685,6 +24753,18 @@ The rotation user and color palette.
 | <a id="oncalluserinputtypecolorpalette"></a>`colorPalette` | [`DataVisualizationColorEnum`](#datavisualizationcolorenum) | Value of DataVisualizationColorEnum. The color from the palette to assign to the on-call user. |
 | <a id="oncalluserinputtypecolorweight"></a>`colorWeight` | [`DataVisualizationWeightEnum`](#datavisualizationweightenum) | Color weight to assign to for the on-call user. To view on-call schedules in GitLab, do not provide a value below 500. A value between 500 and 950 ensures sufficient contrast. |
 | <a id="oncalluserinputtypeusername"></a>`username` | [`String!`](#string) | Username of the user to participate in the on-call rotation. For example, `"user_one"`. |
+
+### `PipelineScheduleVariableInput`
+
+Attributes for the pipeline schedule variable.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineschedulevariableinputkey"></a>`key` | [`String!`](#string) | Name of the variable. |
+| <a id="pipelineschedulevariableinputvalue"></a>`value` | [`String!`](#string) | Value of the variable. |
+| <a id="pipelineschedulevariableinputvariabletype"></a>`variableType` | [`CiVariableType!`](#civariabletype) | Type of the variable. |
 
 ### `ReleaseAssetLinkInput`
 

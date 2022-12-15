@@ -1,7 +1,7 @@
 %h1.page-title.gl-font-size-h-display
   = _('New merge request')
 
-= form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
+= gitlab_ui_form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
   .js-merge-request-new-compare.row{ 'data-source-branch-url': project_new_merge_request_branch_from_path(@source_project), 'data-target-branch-url': project_new_merge_request_branch_to_path(@source_project) }
@@ -71,4 +71,4 @@
 
   - if @merge_request.errors.any?
     = form_errors(@merge_request)
-  = f.submit _('Compare branches and continue'), class: "gl-button btn btn-confirm mr-compare-btn gl-mt-4", data: { qa_selector: "compare_branches_button" }
+  = f.submit _('Compare branches and continue'), data: { qa_selector: 'compare_branches_button' }, pajamas_button: true

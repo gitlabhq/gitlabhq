@@ -39,9 +39,14 @@ RSpec.describe ServiceDeskSetting do
     let_it_be(:project1) { create(:project, name: 'test-one', group: group) }
     let_it_be(:project2) { create(:project, name: 'one', group: subgroup) }
     let_it_be(:project_key) { 'key' }
-
-    before_all do
+    let!(:setting) do
       create(:service_desk_setting, project: project1, project_key: project_key)
+    end
+
+    context 'when project_key exists' do
+      it 'is valid' do
+        expect(setting).to be_valid
+      end
     end
 
     context 'when project_key is unique for every project slug' do

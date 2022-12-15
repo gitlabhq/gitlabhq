@@ -16,12 +16,27 @@ class Import::GiteaController < Import::GithubController
     super
   end
 
-  # We need to re-expose controller's internal method 'status' as action.
-  # rubocop:disable Lint/UselessMethodDefinition
   def status
-    super
+    # Request repos to display error page if provider token is invalid
+    # Improving in https://gitlab.com/gitlab-org/gitlab/-/issues/25859
+    client_repos
+
+    respond_to do |format|
+      format.json do
+        render json: { imported_projects: serialized_imported_projects,
+                       provider_repos: serialized_provider_repos,
+                       incompatible_repos: serialized_incompatible_repos }
+      end
+
+      format.html do
+        if params[:namespace_id].present?
+          @namespace = Namespace.find_by_id(params[:namespace_id])
+
+          render_404 unless current_user.can?(:create_projects, @namespace)
+        end
+      end
+    end
   end
-  # rubocop:enable Lint/UselessMethodDefinition
 
   protected
 
@@ -61,7 +76,6 @@ class Import::GiteaController < Import::GithubController
     @client_repos ||= filtered(client.repos)
   end
 
-  override :client
   def client
     @client ||= Gitlab::LegacyGithubImport::Client.new(session[access_token_key], **client_options)
   end

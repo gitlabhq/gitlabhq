@@ -579,13 +579,111 @@ RSpec.describe Gitlab::GithubImport::Client do
       allow(client.octokit).to receive(:user).and_return(user)
     end
 
-    describe '#search_repos_by_name' do
-      it 'searches for repositories based on name' do
-        expected_search_query = 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2'
+    describe '#search_repos_by_name_graphql' do
+      let(:expected_query) { 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2' }
+      let(:expected_graphql_params) { "type: REPOSITORY, query: \"#{expected_query}\"" }
+      let(:expected_graphql) do
+        <<-TEXT
+          {
+              search(#{expected_graphql_params}) {
+                  nodes {
+                      __typename
+                      ... on Repository {
+                          id: databaseId
+                          name
+                          full_name: nameWithOwner
+                          owner { login }
+                      }
+                  }
+                  pageInfo {
+                      startCursor
+                      endCursor
+                      hasNextPage
+                      hasPreviousPage
+                  }
+              }
+          }
+        TEXT
+      end
 
-        expect(client.octokit).to receive(:search_repositories).with(expected_search_query, {})
+      it 'searches for repositories based on name' do
+        expect(client.octokit).to receive(:post).with(
+          '/graphql', { query: expected_graphql }.to_json
+        )
+
+        client.search_repos_by_name_graphql('test')
+      end
+
+      context 'when pagination options present' do
+        context 'with "first" option' do
+          let(:expected_graphql_params) do
+            "type: REPOSITORY, query: \"#{expected_query}\", first: 25"
+          end
+
+          it 'searches for repositories via expected query' do
+            expect(client.octokit).to receive(:post).with(
+              '/graphql', { query: expected_graphql }.to_json
+            )
+
+            client.search_repos_by_name_graphql('test', { first: 25 })
+          end
+        end
+
+        context 'with "after" option' do
+          let(:expected_graphql_params) do
+            "type: REPOSITORY, query: \"#{expected_query}\", after: \"Y3Vyc29yOjE=\""
+          end
+
+          it 'searches for repositories via expected query' do
+            expect(client.octokit).to receive(:post).with(
+              '/graphql', { query: expected_graphql }.to_json
+            )
+
+            client.search_repos_by_name_graphql('test', { after: 'Y3Vyc29yOjE=' })
+          end
+        end
+      end
+
+      context 'when Faraday error received from octokit', :aggregate_failures do
+        let(:error_class) { described_class::CLIENT_CONNECTION_ERROR }
+        let(:info_params) { { 'error.class': error_class } }
+
+        it 'retries on error and succeeds' do
+          allow_retry(:post)
+
+          expect(Gitlab::Import::Logger).to receive(:info).with(hash_including(info_params)).once
+
+          expect(client.search_repos_by_name_graphql('test')).to eq({})
+        end
+
+        it 'retries and does not succeed' do
+          allow(client.octokit)
+            .to receive(:post)
+            .with('/graphql', { query: expected_graphql }.to_json)
+            .and_raise(error_class, 'execution expired')
+
+          expect { client.search_repos_by_name_graphql('test') }.to raise_error(error_class, 'execution expired')
+        end
+      end
+    end
+
+    describe '#search_repos_by_name' do
+      let(:expected_query) { 'test in:name is:public,private user:user repo:repo1 repo:repo2 org:org1 org:org2' }
+
+      it 'searches for repositories based on name' do
+        expect(client.octokit).to receive(:search_repositories).with(expected_query, {})
 
         client.search_repos_by_name('test')
+      end
+
+      context 'when pagination options present' do
+        it 'searches for repositories via expected query' do
+          expect(client.octokit).to receive(:search_repositories).with(
+            expected_query, page: 2, per_page: 25
+          )
+
+          client.search_repos_by_name('test', { page: 2, per_page: 25 })
+        end
       end
 
       context 'when Faraday error received from octokit', :aggregate_failures do
@@ -601,33 +699,12 @@ RSpec.describe Gitlab::GithubImport::Client do
         end
 
         it 'retries and does not succeed' do
-          allow(client.octokit).to receive(:search_repositories).and_raise(error_class, 'execution expired')
+          allow(client.octokit)
+            .to receive(:search_repositories)
+            .with(expected_query, {})
+            .and_raise(error_class, 'execution expired')
 
           expect { client.search_repos_by_name('test') }.to raise_error(error_class, 'execution expired')
-        end
-      end
-    end
-
-    describe '#search_query' do
-      it 'returns base search query' do
-        result = client.search_query(str: 'test', type: :test, include_collaborations: false, include_orgs: false)
-
-        expect(result).to eq('test in:test is:public,private user:user')
-      end
-
-      context 'when include_collaborations is true' do
-        it 'returns search query including users' do
-          result = client.search_query(str: 'test', type: :test, include_collaborations: true, include_orgs: false)
-
-          expect(result).to eq('test in:test is:public,private user:user repo:repo1 repo:repo2')
-        end
-      end
-
-      context 'when include_orgs is true' do
-        it 'returns search query including users' do
-          result = client.search_query(str: 'test', type: :test, include_collaborations: false, include_orgs: true)
-
-          expect(result).to eq('test in:test is:public,private user:user org:org1 org:org2')
         end
       end
     end

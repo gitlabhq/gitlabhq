@@ -164,7 +164,7 @@ export default {
       }
 
       return this.groups.map((group) => {
-        const importTarget = this.getImportTarget(group);
+        const importTarget = this.importTargets[group.id];
         const status = this.getStatus(group);
 
         const flags = {
@@ -256,10 +256,14 @@ export default {
       this.page = 1;
     },
 
-    groupsTableData() {
+    groups() {
       const table = this.getTableRef();
       const matches = new Set();
-      this.groupsTableData.forEach((g, idx) => {
+      this.groups.forEach((g, idx) => {
+        if (!this.importGroups[g.id]) {
+          this.setDefaultImportTarget(g);
+        }
+
         if (this.selectedGroupsIds.includes(g.id)) {
           matches.add(g.id);
           this.$nextTick(() => {
@@ -450,11 +454,7 @@ export default {
       importTarget.validationErrors = newValidationErrors;
     }, VALIDATION_DEBOUNCE_TIME),
 
-    getImportTarget(group) {
-      if (this.importTargets[group.id]) {
-        return this.importTargets[group.id];
-      }
-
+    setDefaultImportTarget(group) {
       // If we've reached this Vue application we have at least one potential import destination
       const defaultTargetNamespace =
         // first option: namespace id was explicitly provided
@@ -515,7 +515,6 @@ export default {
         .catch(() => {
           // empty catch intended
         });
-      return this.importTargets[group.id];
     },
   },
 

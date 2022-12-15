@@ -30,6 +30,7 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
         cron
         cronTimezone
         editPath
+        variables { nodes { #{all_graphql_fields_for('PipelineScheduleVariable')} } }
       }
     QUERY
   end
@@ -67,6 +68,38 @@ RSpec.describe 'Query.project.pipelineSchedules', feature_category: :continuous_
       edit_path = pipeline_schedule_graphql_data['editPath']
 
       expect(edit_path).to eq("/#{project.full_path}/-/pipeline_schedules/#{pipeline_schedule.id}/edit")
+    end
+  end
+
+  describe 'variables' do
+    let!(:env_vars) { create_list(:ci_pipeline_schedule_variable, 5, pipeline_schedule: pipeline_schedule) }
+
+    it 'returns all variables' do
+      post_graphql(query, current_user: user)
+
+      variables = pipeline_schedule_graphql_data['variables']['nodes']
+      expected = env_vars.map do |var|
+        a_graphql_entity_for(var, :key, :value, variable_type: var.variable_type.upcase)
+      end
+
+      expect(variables).to match_array(expected)
+    end
+
+    it 'is N+1 safe on the variables level' do
+      baseline = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: user) }
+
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule)
+
+      expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(baseline)
+    end
+
+    it 'is N+1 safe on the schedules level' do
+      baseline = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: user) }
+
+      pipeline_schedule_2 = create(:ci_pipeline_schedule, project: project, owner: user)
+      create_list(:ci_pipeline_schedule_variable, 2, pipeline_schedule: pipeline_schedule_2)
+
+      expect { post_graphql(query, current_user: user) }.not_to exceed_query_limit(baseline)
     end
   end
 

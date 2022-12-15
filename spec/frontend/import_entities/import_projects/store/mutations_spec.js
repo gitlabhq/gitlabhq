@@ -308,4 +308,14 @@ describe('import_projects store mutations', () => {
       expect(state.pageInfo.page).toBe(NEW_PAGE);
     });
   });
+
+  describe(`${types.SET_PAGE_CURSORS}`, () => {
+    it('sets page cursors', () => {
+      const NEW_CURSORS = { startCursor: 'startCur', endCursor: 'endCur', hasNextPage: false };
+      state = { pageInfo: { page: 1, startCursor: null, endCursor: null, hasNextPage: true } };
+
+      mutations[types.SET_PAGE_CURSORS](state, NEW_CURSORS);
+      expect(state.pageInfo).toEqual({ ...NEW_CURSORS, page: 1 });
+    });
+  });
 });

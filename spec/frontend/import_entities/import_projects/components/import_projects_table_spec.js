@@ -208,35 +208,52 @@ describe('ImportProjectsTable', () => {
   });
 
   describe('when paginatable is set to true', () => {
-    const pageInfo = { page: 1 };
+    const initState = {
+      namespaces: [{ fullPath: 'path' }],
+      pageInfo: { page: 1, hasNextPage: true },
+      repositories: [
+        { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
+      ],
+    };
 
-    beforeEach(() => {
-      createComponent({
-        state: {
-          namespaces: [{ fullPath: 'path' }],
-          pageInfo,
-          repositories: [
-            { importSource: { id: 1 }, importedProject: null, importStatus: STATUSES.NONE },
-          ],
-        },
-        paginatable: true,
+    describe('with hasNextPage true', () => {
+      beforeEach(() => {
+        createComponent({
+          state: initState,
+          paginatable: true,
+        });
+      });
+
+      it('does not call fetchRepos on mount', () => {
+        expect(fetchReposFn).not.toHaveBeenCalled();
+      });
+
+      it('renders intersection observer component', () => {
+        expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(true);
+      });
+
+      it('calls fetchRepos when intersection observer appears', async () => {
+        wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
+
+        await nextTick();
+
+        expect(fetchReposFn).toHaveBeenCalled();
       });
     });
 
-    it('does not call fetchRepos on mount', () => {
-      expect(fetchReposFn).not.toHaveBeenCalled();
-    });
+    describe('with hasNextPage false', () => {
+      beforeEach(() => {
+        initState.pageInfo.hasNextPage = false;
 
-    it('renders intersection observer component', () => {
-      expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(true);
-    });
+        createComponent({
+          state: initState,
+          paginatable: true,
+        });
+      });
 
-    it('calls fetchRepos when intersection observer appears', async () => {
-      wrapper.findComponent(GlIntersectionObserver).vm.$emit('appear');
-
-      await nextTick();
-
-      expect(fetchReposFn).toHaveBeenCalled();
+      it('does not render intersection observer component', () => {
+        expect(wrapper.findComponent(GlIntersectionObserver).exists()).toBe(false);
+      });
     });
   });
 

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlBadge, GlButton, GlModalDirective, GlForm } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlButton, GlForm } from '@gitlab/ui';
 import axios from 'axios';
 import * as Sentry from '@sentry/browser';
 import { mapState, mapActions, mapGetters } from 'vuex';
@@ -10,7 +10,6 @@ import {
   I18N_DEFAULT_ERROR_MESSAGE,
   I18N_SUCCESSFUL_CONNECTION_MESSAGE,
   INTEGRATION_FORM_TYPE_SLACK,
-  integrationLevels,
   integrationFormSectionComponents,
   billingPlanNames,
 } from '~/integrations/constants';
@@ -19,11 +18,10 @@ import csrf from '~/lib/utils/csrf';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { testIntegrationSettings } from '../api';
 import ActiveCheckbox from './active_checkbox.vue';
-import ConfirmationModal from './confirmation_modal.vue';
 import DynamicField from './dynamic_field.vue';
 import OverrideDropdown from './override_dropdown.vue';
-import ResetConfirmationModal from './reset_confirmation_modal.vue';
 import TriggerFields from './trigger_fields.vue';
+import IntegrationFormActions from './integration_form_actions.vue';
 
 export default {
   name: 'IntegrationForm',
@@ -32,8 +30,7 @@ export default {
     ActiveCheckbox,
     TriggerFields,
     DynamicField,
-    ConfirmationModal,
-    ResetConfirmationModal,
+    IntegrationFormActions,
     IntegrationSectionConfiguration: () =>
       import(
         /* webpackChunkName: 'integrationSectionConfiguration' */ '~/integrations/edit/components/sections/configuration.vue'
@@ -60,7 +57,6 @@ export default {
     GlForm,
   },
   directives: {
-    GlModal: GlModalDirective,
     SafeHtml,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -72,10 +68,10 @@ export default {
   data() {
     return {
       integrationActive: false,
-      isTesting: false,
-      isSaving: false,
-      isResetting: false,
       isValidated: false,
+      isSaving: false,
+      isTesting: false,
+      isResetting: false,
     };
   },
   computed: {
@@ -83,21 +79,6 @@ export default {
     ...mapState(['defaultState', 'customState', 'override']),
     isEditable() {
       return this.propsSource.editable;
-    },
-    isInstanceOrGroupLevel() {
-      return (
-        this.customState.integrationLevel === integrationLevels.INSTANCE ||
-        this.customState.integrationLevel === integrationLevels.GROUP
-      );
-    },
-    showResetButton() {
-      return this.isInstanceOrGroupLevel && this.propsSource.resetPath;
-    },
-    showTestButton() {
-      return this.propsSource.canTest;
-    },
-    disableButtons() {
-      return Boolean(this.isSaving || this.isResetting || this.isTesting);
     },
     hasSections() {
       if (this.hasSlackNotificationsDisabled) {
@@ -150,7 +131,6 @@ export default {
     },
     onSaveClick() {
       this.isSaving = true;
-
       if (this.integrationActive && !this.form().checkValidity()) {
         this.isSaving = false;
         this.setIsValidated();
@@ -196,7 +176,6 @@ export default {
     },
     onResetClick() {
       this.isResetting = true;
-
       return axios
         .post(this.propsSource.resetPath)
         .then(() => {
@@ -351,71 +330,16 @@ export default {
       </div>
     </section>
 
-    <section v-if="isEditable" :class="!hasSections && 'gl-lg-display-flex gl-justify-content-end'">
-      <div :class="!hasSections && 'gl-flex-basis-two-thirds'">
-        <div
-          class="footer-block row-content-block gl-lg-display-flex gl-justify-content-space-between"
-        >
-          <div>
-            <template v-if="isInstanceOrGroupLevel">
-              <gl-button
-                v-gl-modal.confirmSaveIntegration
-                category="primary"
-                variant="confirm"
-                :loading="isSaving"
-                :disabled="disableButtons"
-                data-testid="save-button-instance-group"
-                data-qa-selector="save_changes_button"
-              >
-                {{ __('Save changes') }}
-              </gl-button>
-              <confirmation-modal @submit="onSaveClick" />
-            </template>
-            <gl-button
-              v-else
-              category="primary"
-              variant="confirm"
-              type="submit"
-              :loading="isSaving"
-              :disabled="disableButtons"
-              data-testid="save-button"
-              data-qa-selector="save_changes_button"
-              @click.prevent="onSaveClick"
-            >
-              {{ __('Save changes') }}
-            </gl-button>
-
-            <gl-button
-              v-if="showTestButton"
-              category="secondary"
-              variant="confirm"
-              :loading="isTesting"
-              :disabled="disableButtons"
-              data-testid="test-button"
-              @click.prevent="onTestClick"
-            >
-              {{ __('Test settings') }}
-            </gl-button>
-
-            <gl-button :href="propsSource.cancelPath">{{ __('Cancel') }}</gl-button>
-          </div>
-
-          <template v-if="showResetButton">
-            <gl-button
-              v-gl-modal.confirmResetIntegration
-              category="tertiary"
-              variant="danger"
-              :loading="isResetting"
-              :disabled="disableButtons"
-              data-testid="reset-button"
-            >
-              {{ __('Reset') }}
-            </gl-button>
-
-            <reset-confirmation-modal @reset="onResetClick" />
-          </template>
-        </div>
-      </div>
-    </section>
+    <integration-form-actions
+      v-if="isEditable"
+      :has-sections="hasSections"
+      :class="{ 'gl-lg-display-flex gl-justify-content-end': !hasSections }"
+      :is-saving="isSaving"
+      :is-testing="isTesting"
+      :is-resetting="isResetting"
+      @save="onSaveClick"
+      @test="onTestClick"
+      @reset="onResetClick"
+    />
   </gl-form>
 </template>

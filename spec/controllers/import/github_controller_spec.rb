@@ -41,6 +41,16 @@ RSpec.describe Import::GithubController do
         expect(response).to render_template(:new)
       end
     end
+
+    it 'gets authorization url using oauth client' do
+      allow(controller).to receive(:logged_in_with_provider?).and_return(true)
+      expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
+      expect_next_instance_of(OAuth2::Client) do |client|
+        expect(client.auth_code).to receive(:authorize_url).and_call_original
+      end
+
+      get :new
+    end
   end
 
   describe "GET callback" do
@@ -124,7 +134,48 @@ RSpec.describe Import::GithubController do
   end
 
   describe "GET status" do
-    context 'when using OAuth' do
+    shared_examples 'calls repos through Clients::Proxy with expected args' do
+      it 'calls repos list from provider with expected args' do
+        expect_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |client|
+          expect(client).to receive(:repos)
+            .with(expected_filter, expected_pagination_options)
+            .and_return({ repos: [], page_info: {} })
+        end
+
+        get :status, params: params, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['imported_projects'].size).to eq 0
+        expect(json_response['provider_repos'].size).to eq 0
+        expect(json_response['incompatible_repos'].size).to eq 0
+        expect(json_response['page_info']).to eq({})
+      end
+    end
+
+    let(:provider_token) { 'asdasd12345' }
+    let(:client_auth_success) { true }
+    let(:client_stub) { instance_double(Gitlab::GithubImport::Client, user: { login: 'user' }) }
+    let(:expected_pagination_options) { pagination_params.merge(first: 25, page: 1, per_page: 25) }
+    let(:expected_filter) { nil }
+    let(:params) { nil }
+    let(:pagination_params) { { before: nil, after: nil } }
+    let(:provider_repos) { [] }
+
+    before do
+      allow_next_instance_of(Gitlab::GithubImport::Clients::Proxy) do |proxy|
+        if client_auth_success
+          allow(proxy).to receive(:repos).and_return({ repos: provider_repos })
+          allow(proxy).to receive(:client).and_return(client_stub)
+        else
+          allow(proxy).to receive(:repos).and_raise(Octokit::Unauthorized)
+        end
+      end
+      session[:"#{provider}_access_token"] = provider_token
+    end
+
+    context 'with OAuth' do
+      let(:provider_token) { nil }
+
       before do
         allow(controller).to receive(:logged_in_with_provider?).and_return(true)
       end
@@ -146,178 +197,133 @@ RSpec.describe Import::GithubController do
       end
     end
 
-    context 'when feature remove_legacy_github_client is disabled' do
-      before do
-        stub_feature_flags(remove_legacy_github_client: false)
-        session[:"#{provider}_access_token"] = 'asdasd12345'
-      end
+    context 'with invalid access token' do
+      let(:client_auth_success) { false }
 
-      it_behaves_like 'a GitHub-ish import controller: GET status'
+      it "handles an invalid token" do
+        get :status, format: :json
 
-      it 'uses Gitlab::LegacyGitHubImport::Client' do
-        expect(controller.send(:client)).to be_instance_of(Gitlab::LegacyGithubImport::Client)
-      end
-
-      it 'fetches repos using legacy client' do
-        expect_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
-          expect(client).to receive(:repos).and_return([])
-        end
-
-        get :status
-      end
-
-      it 'gets authorization url using legacy client' do
-        allow(controller).to receive(:logged_in_with_provider?).and_return(true)
-        expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
-        expect_next_instance_of(Gitlab::LegacyGithubImport::Client) do |client|
-          expect(client).to receive(:authorize_url).and_call_original
-        end
-
-        get :new
+        expect(session[:"#{provider}_access_token"]).to be_nil
+        expect(controller).to redirect_to(new_import_url)
+        expect(flash[:alert]).to eq("Access denied to your #{Gitlab::ImportSources.title(provider.to_s)} account.")
       end
     end
 
-    context 'when feature remove_legacy_github_client is enabled' do
+    context 'when user has few different repos' do
+      let(:repo_struct) { Struct.new(:id, :login, :full_name, :name, :owner, keyword_init: true) }
+      let(:provider_repos) do
+        [repo_struct.new(login: 'vim', full_name: 'asd/vim', name: 'vim', owner: { login: 'owner' })]
+      end
+
+      let!(:imported_project) do
+        create(
+          :project,
+          import_type: provider, namespace: user.namespace,
+          import_status: :finished, import_source: 'example/repo'
+        )
+      end
+
+      it 'responds with expected high-level structure' do
+        get :status, format: :json
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response.dig("imported_projects", 0, "id")).to eq(imported_project.id)
+        expect(json_response.dig("provider_repos", 0, "id")).to eq(provider_repos[0].id)
+      end
+    end
+
+    it_behaves_like 'calls repos through Clients::Proxy with expected args'
+
+    context 'with namespace_id param' do
+      let_it_be(:user) { create(:user) }
+
       before do
-        stub_feature_flags(remove_legacy_github_client: true)
-        session[:"#{provider}_access_token"] = 'asdasd12345'
+        sign_in(user)
       end
 
-      it_behaves_like 'a GitHub-ish import controller: GET status'
-
-      it 'uses Gitlab::GithubImport::Client' do
-        expect(controller.send(:client)).to be_instance_of(Gitlab::GithubImport::Client)
+      after do
+        sign_out(user)
       end
 
-      it 'fetches repos using latest github client' do
-        expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
-          expect(client).to receive(:repos).and_return([])
-        end
+      context 'when user is allowed to create projects in this namespace' do
+        let(:namespace) { create(:namespace, owner: user) }
 
-        get :status
-      end
+        it 'provides namespace to the template' do
+          get :status, params: { namespace_id: namespace.id }, format: :html
 
-      it 'gets authorization url using oauth client' do
-        allow(controller).to receive(:logged_in_with_provider?).and_return(true)
-        expect(controller).to receive(:go_to_provider_for_permissions).and_call_original
-        expect_next_instance_of(OAuth2::Client) do |client|
-          expect(client.auth_code).to receive(:authorize_url).and_call_original
-        end
-
-        get :new
-      end
-
-      context 'pagination' do
-        context 'when no page is specified' do
-          it 'requests first page' do
-            expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
-              expect(client).to receive(:repos).with({ page: 1, per_page: 25 }).and_return([])
-            end
-
-            get :status
-          end
-        end
-
-        context 'when page is specified' do
-          it 'requests repos with specified page' do
-            expect_next_instance_of(Octokit::Client) do |client|
-              expect(client).to receive(:repos).with(nil, { page: 2, per_page: 25 }).and_return([].to_enum)
-            end
-
-            get :status, params: { page: 2 }
-          end
+          expect(response).to have_gitlab_http_status :ok
+          expect(assigns(:namespace)).to eq(namespace)
         end
       end
 
-      context 'when filtering' do
-        let(:filter) { 'test' }
-        let(:user_login) { 'user' }
-        let(:collaborations_subquery) { 'repo:repo1 repo:repo2' }
-        let(:organizations_subquery) { 'org:org1 org:org2' }
-        let(:search_query) { "test in:name is:public,private user:#{user_login} #{collaborations_subquery} #{organizations_subquery}" }
+      context 'when user is not allowed to create projects in this namespace' do
+        let(:namespace) { create(:namespace) }
 
-        before do
-          allow_next_instance_of(Octokit::Client) do |client|
-            allow(client).to receive(:user).and_return(double(login: user_login))
-          end
+        it 'renders 404' do
+          get :status, params: { namespace_id: namespace.id }, format: :html
+
+          expect(response).to have_gitlab_http_status :not_found
+        end
+      end
+    end
+
+    context 'pagination' do
+      context 'when cursor is specified' do
+        let(:pagination_params) { { before: nil, after: 'CURSOR' } }
+        let(:params) { pagination_params }
+
+        it_behaves_like 'calls repos through Clients::Proxy with expected args'
+      end
+
+      context 'when page is specified' do
+        let(:pagination_params) { { before: nil, after: nil, page: 2 } }
+        let(:expected_pagination_options) { pagination_params.merge(first: 25, page: 2, per_page: 25) }
+        let(:params) { pagination_params }
+
+        it_behaves_like 'calls repos through Clients::Proxy with expected args'
+      end
+    end
+
+    context 'when filtering' do
+      let(:filter_param) { FFaker::Lorem.word }
+      let(:params) { { filter: filter_param } }
+      let(:expected_filter) { filter_param }
+
+      it_behaves_like 'calls repos through Clients::Proxy with expected args'
+
+      context 'with pagination' do
+        context 'when before cursor present' do
+          let(:pagination_params) { { before: 'before-cursor', after: nil } }
+          let(:params) { { filter: filter_param }.merge(pagination_params) }
+
+          it_behaves_like 'calls repos through Clients::Proxy with expected args'
         end
 
-        it 'makes request to github search api' do
-          expect_next_instance_of(Octokit::Client) do |client|
-            expect(client).to receive(:user).and_return({ login: user_login })
-            expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
-          end
+        context 'when after cursor present' do
+          let(:pagination_params) { { before: nil, after: 'after-cursor' } }
+          let(:params) { { filter: filter_param }.merge(pagination_params) }
 
-          expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
-            expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
-            expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
-          end
-
-          get :status, params: { filter: filter }, format: :json
+          it_behaves_like 'calls repos through Clients::Proxy with expected args'
         end
+      end
 
-        context 'pagination' do
-          context 'when no page is specified' do
-            it 'requests first page' do
-              expect_next_instance_of(Octokit::Client) do |client|
-                expect(client).to receive(:user).and_return({ login: user_login })
-                expect(client).to receive(:search_repositories).with(search_query, { page: 1, per_page: 25 }).and_return({ items: [].to_enum })
-              end
+      context 'when user input contains colons and spaces' do
+        let(:filter_param) { ' test1:test2 test3 : test4 ' }
+        let(:expected_filter) { 'test1test2test3test4' }
 
-              expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
-                expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
-                expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
-              end
+        it_behaves_like 'calls repos through Clients::Proxy with expected args'
+      end
+    end
 
-              get :status, params: { filter: filter }, format: :json
-            end
-          end
+    context 'when rate limit threshold is exceeded' do
+      before do
+        allow(controller).to receive(:status).and_raise(Gitlab::GithubImport::RateLimitError)
+      end
 
-          context 'when page is specified' do
-            it 'requests repos with specified page' do
-              expect_next_instance_of(Octokit::Client) do |client|
-                expect(client).to receive(:user).and_return({ login: user_login })
-                expect(client).to receive(:search_repositories).with(search_query, { page: 2, per_page: 25 }).and_return({ items: [].to_enum })
-              end
+      it 'returns 429' do
+        get :status, format: :json
 
-              expect_next_instance_of(Gitlab::GithubImport::Client) do |client|
-                expect(client).to receive(:collaborations_subquery).and_return(collaborations_subquery)
-                expect(client).to receive(:organizations_subquery).and_return(organizations_subquery)
-              end
-
-              get :status, params: { filter: filter, page: 2 }, format: :json
-            end
-          end
-        end
-
-        context 'when user input contains colons and spaces' do
-          before do
-            allow_next_instance_of(Gitlab::GithubImport::Client) do |client|
-              allow(client).to receive(:search_repos_by_name).and_return(items: [])
-            end
-          end
-
-          it 'sanitizes user input' do
-            filter = ' test1:test2 test3 : test4 '
-            expected_filter = 'test1test2test3test4'
-
-            get :status, params: { filter: filter }, format: :json
-
-            expect(assigns(:filter)).to eq(expected_filter)
-          end
-        end
-
-        context 'when rate limit threshold is exceeded' do
-          before do
-            allow(controller).to receive(:status).and_raise(Gitlab::GithubImport::RateLimitError)
-          end
-
-          it 'returns 429' do
-            get :status, params: { filter: 'test' }, format: :json
-
-            expect(response).to have_gitlab_http_status(:too_many_requests)
-          end
-        end
+        expect(response).to have_gitlab_http_status(:too_many_requests)
       end
     end
   end

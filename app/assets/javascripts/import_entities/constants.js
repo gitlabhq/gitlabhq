@@ -12,3 +12,7 @@ export const STATUSES = {
   CANCELLED: 'cancelled',
   TIMEOUT: 'timeout',
 };
+
+export const PROVIDERS = {
+  GITHUB: 'github',
+};

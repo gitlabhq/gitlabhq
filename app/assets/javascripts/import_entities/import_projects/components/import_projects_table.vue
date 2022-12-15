@@ -203,7 +203,7 @@ export default {
       </table>
     </div>
     <gl-intersection-observer
-      v-if="paginatable"
+      v-if="paginatable && pageInfo.hasNextPage"
       :key="pagePaginationStateKey"
       @appear="fetchRepos"
     />

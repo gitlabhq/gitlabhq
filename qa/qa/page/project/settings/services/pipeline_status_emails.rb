@@ -9,6 +9,9 @@ module QA
             view 'app/assets/javascripts/integrations/edit/components/integration_form.vue' do
               element :recipients_div, %q(:data-qa-selector="`${field.name}_div`") # rubocop:disable QA/ElementWithPattern
               element :notify_only_broken_pipelines_div, %q(:data-qa-selector="`${field.name}_div`") # rubocop:disable QA/ElementWithPattern
+            end
+
+            view 'app/assets/javascripts/integrations/edit/components/integration_form_actions.vue' do
               element :save_changes_button
             end
 

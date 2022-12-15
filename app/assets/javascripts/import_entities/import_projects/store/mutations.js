@@ -138,4 +138,9 @@ export default {
   [types.SET_PAGE](state, page) {
     state.pageInfo.page = page;
   },
+
+  [types.SET_PAGE_CURSORS](state, pageInfo) {
+    const { startCursor, endCursor, hasNextPage } = pageInfo;
+    state.pageInfo = { ...state.pageInfo, startCursor, endCursor, hasNextPage };
+  },
 };

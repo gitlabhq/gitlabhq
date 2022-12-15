@@ -623,14 +623,6 @@ RSpec.describe ProjectPresenter do
     context 'empty repo' do
       let(:project) { create(:project, :stubbed_repository) }
 
-      context 'for a guest user' do
-        it 'orders the items correctly' do
-          expect(empty_repo_statistics_buttons.map(&:label)).to start_with(
-            a_string_including('No license')
-          )
-        end
-      end
-
       it 'includes a button to configure integrations for maintainers' do
         project.add_maintainer(user)
 

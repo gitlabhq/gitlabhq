@@ -319,6 +319,18 @@ this command:
 pip cache purge
 ```
 
+### Multiple `index-url` or `extra-index-url` parameters
+
+You can define multiple `index-url` and `extra-index-url` parameters.
+
+If you use the same domain name (such as `gitlab.example.com`) multiple times with different authentication
+tokens, `pip` may not be able to find your packages. This problem is due to how `pip` 
+[registers and stores your tokens](https://github.com/pypa/pip/pull/10904#issuecomment-1126690115) during commands executions.
+
+To workaround this issue, you can use a [group deploy token](../../project/deploy_tokens/index.md) with the
+scope `read_package_registry` from a common parent group for all projects or groups targeted by the
+`index-url` and `extra-index-url` values.
+
 ## Supported CLI commands
 
 The GitLab PyPI repository supports the following CLI commands:

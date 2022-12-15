@@ -14,4 +14,4 @@ export const SET_IMPORT_TARGET = 'SET_IMPORT_TARGET';
 
 export const SET_PAGE = 'SET_PAGE';
 
-export const SET_PAGE_INFO = 'SET_PAGE_INFO';
+export const SET_PAGE_CURSORS = 'SET_PAGE_CURSORS';

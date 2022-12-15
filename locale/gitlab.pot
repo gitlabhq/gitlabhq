@@ -27609,9 +27609,6 @@ msgstr ""
 msgid "No labels with such name or description"
 msgstr ""
 
-msgid "No license. All rights reserved"
-msgstr ""
-
 msgid "No matches found"
 msgstr ""
 
@@ -36873,6 +36870,15 @@ msgid "SecurityOrchestration|%{branches} and %{lastBranch} branches"
 msgstr ""
 
 msgid "SecurityOrchestration|%{branches} branch"
+msgstr ""
+
+msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd}"
+msgstr ""
+
+msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd} on runners with the %{tags} and %{lastTag} tags"
+msgstr ""
+
+msgid "SecurityOrchestration|%{scannerStart}%{scanner}%{scannerEnd} on runners with the %{tags} tag"
 msgstr ""
 
 msgid "SecurityOrchestration|%{scanners}"

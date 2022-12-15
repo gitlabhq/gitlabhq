@@ -15,6 +15,7 @@ module Gitlab
     #     end
     class Client
       include ::Gitlab::Utils::StrongMemoize
+      include ::Gitlab::GithubImport::Clients::SearchRepos
 
       attr_reader :octokit
 
@@ -180,19 +181,6 @@ module Gitlab
           # raise an error in parallel mode.
           retry
         end
-      end
-
-      def search_repos_by_name(name, options = {})
-        with_retry { octokit.search_repositories(search_query(str: name, type: :name), options).to_h }
-      end
-
-      def search_query(str:, type:, include_collaborations: true, include_orgs: true)
-        query = "#{str} in:#{type} is:public,private user:#{octokit.user.to_h[:login]}"
-
-        query = [query, collaborations_subquery].join(' ') if include_collaborations
-        query = [query, organizations_subquery].join(' ') if include_orgs
-
-        query
       end
 
       # Returns `true` if we're still allowed to perform API calls.
