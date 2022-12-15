@@ -679,7 +679,7 @@ RSpec.describe Gitlab::GithubImport::Client do
       context 'when pagination options present' do
         it 'searches for repositories via expected query' do
           expect(client.octokit).to receive(:search_repositories).with(
-            expected_query, page: 2, per_page: 25
+            expected_query, { page: 2, per_page: 25 }
           )
 
           client.search_repos_by_name('test', { page: 2, per_page: 25 })

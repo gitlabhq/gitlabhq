@@ -26,8 +26,8 @@ module Gitlab
 
       # it maps the tables to the tables that depend on it
       def tables_dependencies
-        @tables.to_h do |table_name|
-          [table_name, all_foreign_keys[table_name]]
+        @tables.index_with do |table_name|
+          all_foreign_keys[table_name]
         end
       end
 

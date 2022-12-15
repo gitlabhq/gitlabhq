@@ -768,8 +768,8 @@ module Gitlab
 
       # rubocop:disable CodeReuse/ActiveRecord
       def distinct_count_user_auth_by_provider(time_period)
-        counts = auth_providers_except_ldap.each_with_object({}) do |provider, hash|
-          hash[provider] = distinct_count(
+        counts = auth_providers_except_ldap.index_with do |provider|
+          distinct_count(
             ::AuthenticationEvent.success.for_provider(provider).where(time_period), :user_id)
         end
 

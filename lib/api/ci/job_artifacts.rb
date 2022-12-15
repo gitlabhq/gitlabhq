@@ -16,8 +16,6 @@ module API
         end
       end
 
-      prepend_mod_with('API::Ci::JobArtifacts') # rubocop: disable Cop/InjectEnterpriseEditionModule
-
       params do
         requires :id, types: [String, Integer], desc: 'The ID or URL-encoded path of the project'
       end
@@ -216,3 +214,5 @@ module API
     end
   end
 end
+
+API::Ci::JobArtifacts.prepend_mod

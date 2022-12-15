@@ -589,76 +589,35 @@ RSpec.describe 'File blob', :js, feature_category: :projects do
           file_path: '.gitlab/dashboards/custom-dashboard.yml',
           file_content: file_content
         ).execute
+
+        visit_blob('.gitlab/dashboards/custom-dashboard.yml')
       end
 
-      context 'with metrics_dashboard_exhaustive_validations feature flag off' do
-        before do
-          stub_feature_flags(metrics_dashboard_exhaustive_validations: false)
-          visit_blob('.gitlab/dashboards/custom-dashboard.yml')
-        end
+      context 'valid dashboard file' do
+        let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
 
-        context 'valid dashboard file' do
-          let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+        it 'displays an auxiliary viewer' do
+          aggregate_failures do
+            # shows that dashboard yaml is valid
+            expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
 
-          it 'displays an auxiliary viewer' do
-            aggregate_failures do
-              # shows that dashboard yaml is valid
-              expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
-
-              # shows a learn more link
-              expect(page).to have_link('Learn more')
-            end
-          end
-        end
-
-        context 'invalid dashboard file' do
-          let(:file_content) { "dashboard: 'invalid'" }
-
-          it 'displays an auxiliary viewer' do
-            aggregate_failures do
-              # shows that dashboard yaml is invalid
-              expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
-              expect(page).to have_content("panel_groups: should be an array of panel_groups objects")
-
-              # shows a learn more link
-              expect(page).to have_link('Learn more')
-            end
+            # shows a learn more link
+            expect(page).to have_link('Learn more')
           end
         end
       end
 
-      context 'with metrics_dashboard_exhaustive_validations feature flag on' do
-        before do
-          stub_feature_flags(metrics_dashboard_exhaustive_validations: true)
-          visit_blob('.gitlab/dashboards/custom-dashboard.yml')
-        end
+      context 'invalid dashboard file' do
+        let(:file_content) { "dashboard: 'invalid'" }
 
-        context 'valid dashboard file' do
-          let(:file_content) { File.read(Rails.root.join('config/prometheus/common_metrics.yml')) }
+        it 'displays an auxiliary viewer' do
+          aggregate_failures do
+            # shows that dashboard yaml is invalid
+            expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
+            expect(page).to have_content("panel_groups: should be an array of panel_groups objects")
 
-          it 'displays an auxiliary viewer' do
-            aggregate_failures do
-              # shows that dashboard yaml is valid
-              expect(page).to have_content('Metrics Dashboard YAML definition is valid.')
-
-              # shows a learn more link
-              expect(page).to have_link('Learn more')
-            end
-          end
-        end
-
-        context 'invalid dashboard file' do
-          let(:file_content) { "dashboard: 'invalid'" }
-
-          it 'displays an auxiliary viewer' do
-            aggregate_failures do
-              # shows that dashboard yaml is invalid
-              expect(page).to have_content('Metrics Dashboard YAML definition is invalid:')
-              expect(page).to have_content("root is missing required keys: panel_groups")
-
-              # shows a learn more link
-              expect(page).to have_link('Learn more')
-            end
+            # shows a learn more link
+            expect(page).to have_link('Learn more')
           end
         end
       end

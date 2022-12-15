@@ -39,7 +39,7 @@ module Ci
     def job_statuses
       statuses = Ci::HasStatus::AVAILABLE_STATUSES
 
-      statuses.to_h { |status| [status, status.upcase] }
+      statuses.index_with(&:upcase)
     end
   end
 end

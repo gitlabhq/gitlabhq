@@ -18,4 +18,5 @@
       %h5= _("Maximum page reached")
       %p= _("Sorry, you have exceeded the maximum browsable page number. Please use the API to explore further.")
 
-      = link_to _("Back to page %{number}") % { number: @max_page_number }, request.params.merge(page: @max_page_number), class: 'gl-button btn btn-inverted'
+      = render Pajamas::ButtonComponent.new(href: request.params.merge(page: @max_page_number)) do
+        = _("Back to page %{number}") % { number: @max_page_number }

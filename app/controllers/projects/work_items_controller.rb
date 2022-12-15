@@ -11,3 +11,5 @@ class Projects::WorkItemsController < Projects::ApplicationController
   feature_category :team_planning
   urgency :low
 end
+
+Projects::WorkItemsController.prepend_mod

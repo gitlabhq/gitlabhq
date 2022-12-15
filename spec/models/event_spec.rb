@@ -303,11 +303,11 @@ RSpec.describe Event do
     end
 
     def visible_to_none_except(*roles)
-      visible_to_none.merge(roles.to_h { |role| [role, true] })
+      visible_to_none.merge(roles.index_with { true })
     end
 
     def visible_to_all_except(*roles)
-      visible_to_all.merge(roles.to_h { |role| [role, false] })
+      visible_to_all.merge(roles.index_with { false })
     end
 
     shared_examples 'visibility examples' do

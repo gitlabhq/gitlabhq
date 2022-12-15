@@ -178,7 +178,7 @@ graph LR
 
 ## Faster feedback for merge requests that fix a broken `master`
 
-When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite-master-fixing` label to expedite the pipelines that run on the merge request.
+When you need to [fix a broken `master`](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline:expedite` label to expedite the pipelines that run on the merge request.
 
 When this label is assigned, the following steps of the CI/CD pipeline are skipped:
 

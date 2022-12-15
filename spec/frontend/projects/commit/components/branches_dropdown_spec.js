@@ -13,7 +13,7 @@ describe('BranchesDropdown', () => {
   let store;
   const spyFetchBranches = jest.fn();
 
-  const createComponent = (term, state = { isFetching: false }) => {
+  const createComponent = (props, state = { isFetching: false }) => {
     store = new Vuex.Store({
       getters: {
         joinedBranches: () => ['_main_', '_branch_1_', '_branch_2_'],
@@ -28,7 +28,8 @@ describe('BranchesDropdown', () => {
       shallowMount(BranchesDropdown, {
         store,
         propsData: {
-          value: term,
+          value: props.value,
+          blanked: props.blanked || false,
         },
       }),
     );
@@ -48,23 +49,40 @@ describe('BranchesDropdown', () => {
 
   describe('On mount', () => {
     beforeEach(() => {
-      createComponent('');
+      createComponent({ value: '' });
     });
 
     it('invokes fetchBranches', () => {
       expect(spyFetchBranches).toHaveBeenCalled();
     });
+
+    describe('with a value but visually blanked', () => {
+      beforeEach(() => {
+        createComponent({ value: '_main_', blanked: true }, { branch: '_main_' });
+      });
+
+      it('renders all branches', () => {
+        expect(findAllDropdownItems()).toHaveLength(3);
+        expect(findDropdownItemByIndex(0).text()).toBe('_main_');
+        expect(findDropdownItemByIndex(1).text()).toBe('_branch_1_');
+        expect(findDropdownItemByIndex(2).text()).toBe('_branch_2_');
+      });
+
+      it('selects the active branch', () => {
+        expect(wrapper.vm.isSelected('_main_')).toBe(true);
+      });
+    });
   });
 
   describe('Loading states', () => {
     it('shows loading icon while fetching', () => {
-      createComponent('', { isFetching: true });
+      createComponent({ value: '' }, { isFetching: true });
 
       expect(findLoading().isVisible()).toBe(true);
     });
 
     it('does not show loading icon', () => {
-      createComponent('');
+      createComponent({ value: '' });
 
       expect(findLoading().isVisible()).toBe(false);
     });
@@ -72,7 +90,7 @@ describe('BranchesDropdown', () => {
 
   describe('No branches found', () => {
     beforeEach(() => {
-      createComponent('_non_existent_branch_');
+      createComponent({ value: '_non_existent_branch_' });
     });
 
     it('renders empty results message', () => {
@@ -90,7 +108,7 @@ describe('BranchesDropdown', () => {
 
   describe('Search term is empty', () => {
     beforeEach(() => {
-      createComponent('');
+      createComponent({ value: '' });
     });
 
     it('renders all branches when search term is empty', () => {
@@ -107,7 +125,7 @@ describe('BranchesDropdown', () => {
 
   describe('When searching', () => {
     beforeEach(() => {
-      createComponent('');
+      createComponent({ value: '' });
     });
 
     it('invokes fetchBranches', async () => {
@@ -124,7 +142,7 @@ describe('BranchesDropdown', () => {
 
   describe('Branches found', () => {
     beforeEach(() => {
-      createComponent('_branch_1_', { branch: '_branch_1_' });
+      createComponent({ value: '_branch_1_' }, { branch: '_branch_1_' });
     });
 
     it('renders only the branch searched for', () => {
@@ -156,7 +174,7 @@ describe('BranchesDropdown', () => {
 
   describe('Case insensitive for search term', () => {
     beforeEach(() => {
-      createComponent('_BrAnCh_1_');
+      createComponent({ value: '_BrAnCh_1_' });
     });
 
     it('renders only the branch searched for', () => {

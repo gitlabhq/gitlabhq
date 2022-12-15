@@ -407,7 +407,7 @@ namespace :gitlab do
         Rails.application.eager_load!
 
         tables = Gitlab::Database.database_base_models.flat_map { |_, m| m.connection.tables }
-        classes = tables.to_h { |t| [t, []] }
+        classes = tables.index_with { [] }
 
         Gitlab::Database.database_base_models.each do |_, model_class|
           model_class

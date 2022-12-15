@@ -22,6 +22,7 @@ module ResolvesGroups
       custom_emoji: [:custom_emoji],
       full_path: [:route],
       path: [:route],
+      web_url: [:route],
       dependency_proxy_blob_count: [:dependency_proxy_blobs],
       dependency_proxy_blobs: [:dependency_proxy_blobs],
       dependency_proxy_image_count: [:dependency_proxy_manifests],

@@ -14402,6 +14402,25 @@ CREATE SEQUENCE customer_relations_organizations_id_seq
 
 ALTER SEQUENCE customer_relations_organizations_id_seq OWNED BY customer_relations_organizations.id;
 
+CREATE TABLE dast_pre_scan_verification_steps (
+    id bigint NOT NULL,
+    dast_pre_scan_verification_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    name text,
+    verification_errors text[] DEFAULT '{}'::text[] NOT NULL,
+    CONSTRAINT check_cd216b95e4 CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE dast_pre_scan_verification_steps_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dast_pre_scan_verification_steps_id_seq OWNED BY dast_pre_scan_verification_steps.id;
+
 CREATE TABLE dast_pre_scan_verifications (
     id bigint NOT NULL,
     dast_profile_id bigint NOT NULL,
@@ -23897,6 +23916,8 @@ ALTER TABLE ONLY customer_relations_contacts ALTER COLUMN id SET DEFAULT nextval
 
 ALTER TABLE ONLY customer_relations_organizations ALTER COLUMN id SET DEFAULT nextval('customer_relations_organizations_id_seq'::regclass);
 
+ALTER TABLE ONLY dast_pre_scan_verification_steps ALTER COLUMN id SET DEFAULT nextval('dast_pre_scan_verification_steps_id_seq'::regclass);
+
 ALTER TABLE ONLY dast_pre_scan_verifications ALTER COLUMN id SET DEFAULT nextval('dast_pre_scan_verifications_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_profile_schedules ALTER COLUMN id SET DEFAULT nextval('dast_profile_schedules_id_seq'::regclass);
@@ -25742,6 +25763,9 @@ ALTER TABLE ONLY customer_relations_contacts
 
 ALTER TABLE ONLY customer_relations_organizations
     ADD CONSTRAINT customer_relations_organizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dast_pre_scan_verification_steps
+    ADD CONSTRAINT dast_pre_scan_verification_steps_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dast_pre_scan_verifications
     ADD CONSTRAINT dast_pre_scan_verifications_pkey PRIMARY KEY (id);
@@ -28063,6 +28087,8 @@ CREATE INDEX finding_links_on_vulnerability_occurrence_id ON vulnerability_findi
 CREATE INDEX i_batched_background_migration_job_transition_logs_on_job_id ON ONLY batched_background_migration_job_transition_logs USING btree (batched_background_migration_job_id);
 
 CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_management_frameworks USING btree (id, created_at, pipeline_configuration_full_path);
+
+CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON dast_pre_scan_verification_steps USING btree (dast_pre_scan_verification_id);
 
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
 
@@ -34912,6 +34938,9 @@ ALTER TABLE ONLY error_tracking_client_keys
 
 ALTER TABLE ONLY pages_deployments
     ADD CONSTRAINT fk_rails_993b88f59a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dast_pre_scan_verification_steps
+    ADD CONSTRAINT fk_rails_9990fc2adf FOREIGN KEY (dast_pre_scan_verification_id) REFERENCES dast_pre_scan_verifications(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_rails_9aff2c3b45 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

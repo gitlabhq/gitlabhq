@@ -47,14 +47,14 @@ module API
           end
 
           def recipe_upload_urls
-            { upload_urls: file_names.select(&method(:recipe_file?)).to_h do |file_name|
-                             [file_name, build_recipe_file_upload_url(file_name)]
+            { upload_urls: file_names.select(&method(:recipe_file?)).index_with do |file_name|
+                             build_recipe_file_upload_url(file_name)
                            end }
           end
 
           def package_upload_urls
-            { upload_urls: file_names.select(&method(:package_file?)).to_h do |file_name|
-                             [file_name, build_package_file_upload_url(file_name)]
+            { upload_urls: file_names.select(&method(:package_file?)).index_with do |file_name|
+                             build_package_file_upload_url(file_name)
                            end }
           end
 

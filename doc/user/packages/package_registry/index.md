@@ -117,7 +117,7 @@ The **Packages and registries > Package Registry** entry is removed from the sid
 [Project-level permissions](../../permissions.md)
 determine actions such as downloading, pushing, or deleting packages.
 
-The visibility of the Package Registry is independent of the repository and can't be controlled from
+The visibility of the Package Registry is independent of the repository and can be controlled from
 your project's settings. For example, if you have a public project and set the repository visibility
 to **Only Project Members**, the Package Registry is then public. Disabling the Package
 Registry disables all Package Registry operations.
@@ -134,7 +134,23 @@ Registry disables all Package Registry operations.
 | Private            | Publish a package     | Developer or higher                                     |
 | Private            | Pull a package        | Reporter or higher(1)                                   |
 
-1. [GitLab-#329253](https://gitlab.com/gitlab-org/gitlab/-/issues/329253) proposes adding a setting to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is.
+### Allow anyone to pull from Package Registry
+
+> Introduced in GitLab 15.7 [with a flag](../../../administration/feature_flags.md) named `package_registry_access_level`. Enabled by default.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To disable it,
+ask an administrator to [disable the feature flag](../../../administration/feature_flags.md) named `package_registry_access_level`.
+
+If you want to allow anyone (everyone on the internet) to pull from the Package Registry, no matter what the project visibility is, you can use the additional toggle `Allow anyone to pull from Package Registry` that appears when the project visibility is Private or Internal.
+
+Several known issues exist when you allow anyone to pull from the Package Registry:
+
+- Project-level endpoints are supported. Group-level and instance-level endpoints are not supported. Support for group-level endpoints is proposed in [issue 383537](https://gitlab.com/gitlab-org/gitlab/-/issues/383537).
+- It does not work with the [Composer](../composer_repository/index.md#install-a-composer-package), because Composer only has a group endpoint.
+- It does not work with the [Debian](../debian_repository/index.md#install-a-package) repository. Support for the Debian repository is proposed in [issue 385258](https://gitlab.com/gitlab-org/gitlab/-/issues/385258).
+- It does not work with the [Ruby gems](../rubygems_registry/index.md#install-a-ruby-gem) repository. Support for the Ruby gems repository is proposed in [issue 385259](https://gitlab.com/gitlab-org/gitlab/-/issues/385259).
+- It will work with Conan, but using [`conan search`](../conan_repository/index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
 ## Accepting contributions
 

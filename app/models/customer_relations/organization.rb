@@ -85,8 +85,8 @@ class CustomerRelations::Organization < ApplicationRecord
   private
 
   def self.default_state_counts
-    states.keys.each_with_object({}) do |key, memo|
-      memo[key] = 0
+    states.keys.index_with do |key|
+      0
     end
   end
 

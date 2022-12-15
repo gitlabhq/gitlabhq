@@ -4,10 +4,10 @@ module Resolvers
   module Ci
     class RunnerGroupsResolver < BaseResolver
       include Gitlab::Graphql::Authorize::AuthorizeResource
-      include LooksAhead
       include ResolvesGroups
 
       type Types::GroupConnection, null: true
+
       authorize :read_runner
       authorizes_object!
 
@@ -39,12 +39,6 @@ module Resolvers
             loader.call(runner_id, runner_namespaces)
           end
         end
-      end
-
-      private
-
-      def preloads
-        super.merge({ web_url: [:route] })
       end
     end
   end

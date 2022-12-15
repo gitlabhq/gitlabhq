@@ -6111,6 +6111,7 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateiterationwidget"></a>`iterationWidget` | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | Input for iteration widget. |
 | <a id="mutationworkitemupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitemupdatemilestonewidget"></a>`milestoneWidget` | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | Input for milestone widget. |
+| <a id="mutationworkitemupdateprogresswidget"></a>`progressWidget` | [`WorkItemWidgetProgressInput`](#workitemwidgetprogressinput) | Input for progress widget. |
 | <a id="mutationworkitemupdatestartandduedatewidget"></a>`startAndDueDateWidget` | [`WorkItemWidgetStartAndDueDateUpdateInput`](#workitemwidgetstartandduedateupdateinput) | Input for start and due date widget. |
 | <a id="mutationworkitemupdatestateevent"></a>`stateEvent` | [`WorkItemStateEvent`](#workitemstateevent) | Close or reopen a work item. |
 | <a id="mutationworkitemupdatestatuswidget"></a>`statusWidget` | [`StatusInput`](#statusinput) | Input for status widget. |
@@ -25020,6 +25021,14 @@ A time-frame defined as a closed inclusive range of two dates.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="workitemwidgetmilestoneinputmilestoneid"></a>`milestoneId` | [`MilestoneID`](#milestoneid) | Milestone to assign to the work item. |
+
+### `WorkItemWidgetProgressInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetprogressinputprogress"></a>`progress` | [`Int!`](#int) | Progress of the work item. |
 
 ### `WorkItemWidgetStartAndDueDateUpdateInput`
 

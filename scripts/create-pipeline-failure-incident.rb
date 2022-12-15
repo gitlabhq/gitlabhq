@@ -99,7 +99,7 @@ class CreatePipelineFailureIncident
       You can create a merge request, assign to any available maintainer, and ping people that were involved/related to the introduction of the failure.
       Additionally, a message can be posted in `#backend_maintainers` or `#frontend_maintainers` to get a maintainer take a look at the fix ASAP.
 
-    In both cases, make sure to add the ~"pipeline:expedite-master-fixing" label, and `master:broken` or `master:foss-broken` label, to speed up the `master`-fixing pipelines.
+    In both cases, make sure to add the ~"pipeline:expedite" label, and `master:broken` or `master:foss-broken` label, to speed up the `master`-fixing pipelines.
 
     ### Resolution
 

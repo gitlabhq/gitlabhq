@@ -60,7 +60,7 @@ module Banzai
       def get_uri_types(paths)
         return {} if paths.empty?
 
-        uri_types = paths.to_h { |name| [name, nil] }
+        uri_types = paths.index_with { nil }
 
         get_blob_types(paths).each do |name, type|
           if type == :blob

@@ -158,6 +158,7 @@ custom_emoji: :gitlab_main
 customer_relations_contacts: :gitlab_main
 customer_relations_organizations: :gitlab_main
 dast_pre_scan_verifications: :gitlab_main
+dast_pre_scan_verification_steps: :gitlab_main
 dast_profile_schedules: :gitlab_main
 dast_profiles: :gitlab_main
 dast_profiles_pipelines: :gitlab_main

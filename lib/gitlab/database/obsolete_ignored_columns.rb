@@ -23,8 +23,8 @@ module Gitlab
       private
 
       def ignored_columns_safe_to_remove_for(klass)
-        ignores = ignored_and_not_present(klass).each_with_object({}) do |col, h|
-          h[col] = klass.ignored_columns_details[col.to_sym]
+        ignores = ignored_and_not_present(klass).index_with do |col|
+          klass.ignored_columns_details[col.to_sym]
         end
 
         ignores.select { |_, i| i&.safe_to_remove? }

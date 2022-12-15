@@ -104,8 +104,8 @@ module Ci
       to: :pipeline
 
     def clone(current_user:, new_job_variables_attributes: [])
-      new_attributes = self.class.clone_accessors.to_h do |attribute|
-        [attribute, public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
+      new_attributes = self.class.clone_accessors.index_with do |attribute|
+        public_send(attribute) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       if persisted_environment.present?

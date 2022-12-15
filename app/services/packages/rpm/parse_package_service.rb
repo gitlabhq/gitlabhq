@@ -49,8 +49,8 @@ module Packages
       end
 
       def extract_static_attributes
-        STATIC_ATTRIBUTES.each_with_object({}) do |attribute, hash|
-          hash[attribute] = package_tags[attribute]
+        STATIC_ATTRIBUTES.index_with do |attribute|
+          package_tags[attribute]
         end
       end
 

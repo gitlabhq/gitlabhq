@@ -153,7 +153,7 @@ module Trigger
 
     # Read version files from all components
     def version_file_variables
-      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params|
+      Dir.glob("*_VERSION").each_with_object({}) do |version_file, params| # rubocop:disable Rails/IndexWith
         params[version_file] = version_param_value(version_file)
       end
     end

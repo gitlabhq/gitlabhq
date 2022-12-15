@@ -1,8 +1,0 @@
----
-name: metrics_dashboard_exhaustive_validations
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/40103
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/241697
-milestone: '13.4'
-type: development
-group: group::respond
-default_enabled: false

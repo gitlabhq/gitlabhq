@@ -16,6 +16,8 @@ module Gitlab
             errors.empty? || raise(errors.first)
           end
 
+          private
+
           def errors(content, schema_path = DASHBOARD_SCHEMA_PATH, dashboard_path: nil, project: nil)
             Validator::Client
               .new(content, schema_path, dashboard_path: dashboard_path, project: project)

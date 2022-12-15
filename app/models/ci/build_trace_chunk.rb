@@ -31,8 +31,8 @@ module Ci
       redis_trace_chunks: 4
     }.freeze
 
-    STORE_TYPES = DATA_STORES.keys.to_h do |store|
-      [store, "Ci::BuildTraceChunks::#{store.to_s.camelize}".constantize]
+    STORE_TYPES = DATA_STORES.keys.index_with do |store|
+      "Ci::BuildTraceChunks::#{store.to_s.camelize}".constantize
     end.freeze
     LIVE_STORES = %i[redis redis_trace_chunks].freeze
 

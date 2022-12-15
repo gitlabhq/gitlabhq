@@ -33,8 +33,8 @@ module Gitlab
       private
 
       def update_discussion_ids(notes)
-        mapping = notes.each_with_object({}) do |note, hash|
-          hash[note] = { discussion_id: note.generate_discussion_id }
+        mapping = notes.index_with do |note|
+          { discussion_id: note.generate_discussion_id }
         end
 
         Gitlab::Database::BulkUpdate.execute(%i(discussion_id), mapping)

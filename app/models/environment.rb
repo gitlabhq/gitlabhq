@@ -222,8 +222,8 @@ class Environment < ApplicationRecord
     def count_by_state
       environments_count_by_state = group(:state).count
 
-      valid_states.each_with_object({}) do |state, count_hash|
-        count_hash[state] = environments_count_by_state[state.to_s] || 0
+      valid_states.index_with do |state|
+        environments_count_by_state[state.to_s] || 0
       end
     end
   end

@@ -27,8 +27,8 @@ module Gitlab
     def data
       return {} if issuable_ids.empty?
 
-      issuable_ids.each_with_object({}) do |id, issuable_meta|
-        issuable_meta[id] = metadata_for_issuable(id)
+      issuable_ids.index_with do |id|
+        metadata_for_issuable(id)
       end
     end
 

@@ -8,10 +8,10 @@ RSpec.describe Gitlab::APIAuthentication::SentThroughBuilder do
     let(:locators) { Array.new(3) { double } }
 
     it 'adds a strategy for each of locators x resolvers' do
-      strategies = locators.to_h { |l| [l, []] }
+      strategies = locators.index_with { [] }
       described_class.new(strategies, resolvers).sent_through(*locators)
 
-      expect(strategies).to eq(locators.to_h { |l| [l, resolvers] })
+      expect(strategies).to eq(locators.index_with { resolvers })
     end
   end
 end

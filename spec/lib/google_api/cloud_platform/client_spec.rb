@@ -106,8 +106,8 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
     let(:enable_addons) { [] }
 
     let(:addons_config) do
-      enable_addons.each_with_object({}) do |addon, hash|
-        hash[addon] = { disabled: false }
+      enable_addons.index_with do
+        { disabled: false }
       end
     end
 

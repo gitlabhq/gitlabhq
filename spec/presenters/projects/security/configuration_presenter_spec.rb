@@ -11,7 +11,7 @@ RSpec.describe Projects::Security::ConfigurationPresenter do
   let(:presenter) { described_class.new(project, current_user: current_user) }
 
   before do
-    stub_licensed_features(licensed_scan_types.to_h { |type| [type, true] })
+    stub_licensed_features(licensed_scan_types.index_with { true })
   end
 
   describe '#to_html_data_attribute' do
