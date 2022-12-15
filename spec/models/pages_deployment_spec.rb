@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PagesDeployment do
+RSpec.describe PagesDeployment, feature_category: :pages do
   let_it_be(:project) { create(:project) }
 
   describe 'associations' do

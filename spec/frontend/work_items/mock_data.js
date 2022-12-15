@@ -254,6 +254,7 @@ export const workItemResponseFactory = ({
   datesWidgetPresent = true,
   labelsWidgetPresent = true,
   weightWidgetPresent = true,
+  progressWidgetPresent = true,
   milestoneWidgetPresent = true,
   iterationWidgetPresent = true,
   confidential = false,
@@ -345,6 +346,13 @@ export const workItemResponseFactory = ({
                 startDate: '2022-09-22',
                 dueDate: '2022-09-30',
               },
+            }
+          : { type: 'MOCK TYPE' },
+        progressWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetProgress',
+              type: 'PROGRESS',
+              progress: 0,
             }
           : { type: 'MOCK TYPE' },
         milestoneWidgetPresent

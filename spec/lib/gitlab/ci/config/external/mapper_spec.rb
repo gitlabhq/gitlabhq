@@ -2,7 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
+# This will be removed with FF ci_refactoring_external_mapper and moved to below.
+RSpec.shared_context 'gitlab_ci_config_external_mapper' do
   include StubRequests
   include RepoHelpers
 
@@ -39,7 +40,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
       it 'propagates the pipeline logger' do
         process
 
-        fetch_content_log_count = mapper
+        fetch_content_log_count = context
           .logger
           .observations_hash
           .dig(key, 'count')
@@ -232,7 +233,7 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
       it 'has expanset with one' do
         process
-        expect(mapper.expandset.size).to eq(1)
+        expect(context.expandset.size).to eq(1)
       end
     end
 
@@ -457,8 +458,20 @@ RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline
 
       it 'has expanset with two' do
         process
-        expect(mapper.expandset.size).to eq(2)
+        expect(context.expandset.size).to eq(2)
       end
     end
+  end
+end
+
+RSpec.describe Gitlab::Ci::Config::External::Mapper, feature_category: :pipeline_authoring do
+  it_behaves_like 'gitlab_ci_config_external_mapper'
+
+  context 'when the FF ci_refactoring_external_mapper is disabled' do
+    before do
+      stub_feature_flags(ci_refactoring_external_mapper: false)
+    end
+
+    it_behaves_like 'gitlab_ci_config_external_mapper'
   end
 end

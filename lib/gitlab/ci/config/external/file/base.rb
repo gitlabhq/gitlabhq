@@ -47,7 +47,7 @@ module Gitlab
             end
 
             def validate!
-              validate_execution_time!
+              context.check_execution_time! if ::Feature.disabled?(:ci_refactoring_external_mapper, context.project)
               validate_location!
               validate_context! if valid?
               fetch_and_validate_content! if valid?
@@ -85,10 +85,6 @@ module Gitlab
               end
             rescue Gitlab::Config::Loader::FormatError
               nil
-            end
-
-            def validate_execution_time!
-              context.check_execution_time!
             end
 
             def validate_location!

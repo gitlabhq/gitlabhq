@@ -49,7 +49,7 @@ the task opens in a full-page view.
 
 Prerequisites:
 
-- You must have at least the Guest role for the project, or the project must be public.
+- You must have at least the Reporter role for the project, or the project must be public.
 
 To create a task:
 

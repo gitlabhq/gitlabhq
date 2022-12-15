@@ -154,7 +154,9 @@ namespace :gitlab do
 
     desc 'GitLab | Assets | Check that scss mixins do not introduce any sideffects'
     task :check_page_bundle_mixins_css_for_sideeffects do
-      system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
+      unless system('./scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js')
+        abort 'Error: At least one CSS changes introduces an unwanted sideeffect'.color(:red)
+      end
     end
   end
 end

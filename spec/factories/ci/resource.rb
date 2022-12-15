@@ -6,6 +6,7 @@ FactoryBot.define do
 
     trait(:retained) do
       processable factory: :ci_build
+      partition_id { processable.partition_id }
     end
   end
 end

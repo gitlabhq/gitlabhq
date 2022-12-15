@@ -715,3 +715,16 @@ export const getFirstPropertyValue = (data) => {
 
   return data[key];
 };
+
+// TODO: remove when FF `new_fonts` is removed https://gitlab.com/gitlab-org/gitlab/-/issues/379147
+/**
+ * This method checks the FF `new_fonts`
+ * as well as a query parameter `new_fonts`.
+ * If either of them is enabled, new fonts will be applied.
+ *
+ * @returns Boolean Whether to apply new fonts
+ */
+export const useNewFonts = () => {
+  const hasQueryParam = new URLSearchParams(window.location.search).has('new_fonts');
+  return window?.gon.features?.newFonts || hasQueryParam;
+};

@@ -25,6 +25,7 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   WIDGET_TYPE_START_AND_DUE_DATE,
   WIDGET_TYPE_WEIGHT,
+  WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
@@ -73,6 +74,7 @@ export default {
     WorkItemTitle,
     WorkItemState,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
+    WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemTypeIcon,
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
     WorkItemMilestone,
@@ -251,6 +253,9 @@ export default {
     },
     workItemWeight() {
       return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    workItemProgress() {
+      return this.isWidgetPresent(WIDGET_TYPE_PROGRESS);
     },
     workItemHierarchy() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
@@ -558,6 +563,17 @@ export default {
         class="gl-mb-5"
         :can-update="canUpdate"
         :weight="workItemWeight.weight"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
+        :fetch-by-iid="fetchByIid"
+        :query-variables="queryVariables"
+        @error="updateError = $event"
+      />
+      <work-item-progress
+        v-if="workItemProgress"
+        class="gl-mb-5"
+        :can-update="canUpdate"
+        :progress="workItemProgress.progress"
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
         :fetch-by-iid="fetchByIid"

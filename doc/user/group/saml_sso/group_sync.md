@@ -21,6 +21,13 @@ For a demo of Group Sync using Azure, see [Demo: SAML Group Sync](https://youtu.
 
 ## Configure SAML Group Sync
 
+NOTE:
+You must include the SAML configuration block on all Sidekiq nodes in addition to Rails application nodes if you:
+
+- Use SAML Group Sync.
+- Have multiple GitLab nodes, for example in a distributed or highly available architecture.
+
+WARNING:
 To prevent users being accidentally removed from the GitLab group, follow these instructions closely before
 enabling Group Sync in GitLab.
 
@@ -182,4 +189,4 @@ Because of a [known issue with Azure AD](https://support.esri.com/en/technical-a
 in the user's SAML assertion.
 
 To work around this issue, allow more than 150 group IDs to be sent in SAML token using configuration steps in the
-[Azure AD documentation](https://support.esri.com/en/technical-article/000022190).  
+[Azure AD documentation](https://support.esri.com/en/technical-article/000022190).

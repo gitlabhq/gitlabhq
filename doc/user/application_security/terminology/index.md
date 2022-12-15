@@ -83,11 +83,6 @@ once.
 
 A finding that doesn't exist but is incorrectly reported as existing.
 
-### Feedback
-
-Feedback the user provides about a finding. Types of feedback include dismissal, creating an issue,
-or creating a merge request.
-
 ### Finding
 
 An asset that has the potential to be vulnerable, identified in a project by an analyzer. Assets
@@ -95,6 +90,11 @@ include but are not restricted to source code, binary packages, containers, depe
 applications, and infrastructure.
 
 Findings are all potential vulnerability items scanners identify in MRs/feature branches. Only after merging to default does a finding become a [vulnerability](#vulnerability).
+
+You can interact with vulnerability findings in two ways. 
+
+1. You can open an issue or merge request for the vulnerability finding.
+1. You can dismiss the vulnerability finding. Dismissing the finding hides it from the default views.
 
 ### Grouping
 

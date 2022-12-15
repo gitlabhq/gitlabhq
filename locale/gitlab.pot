@@ -2917,6 +2917,9 @@ msgstr ""
 msgid "AdminSettings|Maximum number of custom domains per project"
 msgstr ""
 
+msgid "AdminSettings|Maximum number of downstream pipelines in a pipeline's hierarchy tree"
+msgstr ""
+
 msgid "AdminSettings|Maximum number of jobs in a single pipeline"
 msgstr ""
 

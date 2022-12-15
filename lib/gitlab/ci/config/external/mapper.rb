@@ -7,6 +7,7 @@ module Gitlab
         class Mapper
           include Gitlab::Utils::StrongMemoize
 
+          # Will be removed with FF ci_refactoring_external_mapper
           FILE_CLASSES = [
             External::File::Local,
             External::File::Project,
@@ -15,6 +16,7 @@ module Gitlab
             External::File::Artifact
           ].freeze
 
+          # Will be removed with FF ci_refactoring_external_mapper
           FILE_SUBKEYS = FILE_CLASSES.map { |f| f.name.demodulize.downcase }.freeze
 
           Error = Class.new(StandardError)
@@ -22,27 +24,43 @@ module Gitlab
           TooManyIncludesError = Class.new(Error)
 
           def initialize(values, context)
-            @locations = Array.wrap(values.fetch(:include, []))
+            @locations = Array.wrap(values.fetch(:include, [])).compact
             @context = context
           end
 
           def process
-            return [] if locations.empty?
+            return [] if @locations.empty?
 
-            logger.instrument(:config_mapper_process) do
-              process_without_instrumentation
+            context.logger.instrument(:config_mapper_process) do
+              if ::Feature.enabled?(:ci_refactoring_external_mapper, context.project)
+                process_without_instrumentation
+              else
+                legacy_process_without_instrumentation
+              end
             end
           end
 
           private
 
-          attr_reader :locations, :context
+          attr_reader :context
 
           delegate :expandset, :logger, to: :context
 
           def process_without_instrumentation
-            locations
-              .compact
+            locations = Normalizer.new(context).process(@locations)
+            locations = Filter.new(context).process(locations)
+            locations = LocationExpander.new(context).process(locations)
+            locations = VariablesExpander.new(context).process(locations)
+
+            files = Matcher.new(context).process(locations)
+            Verifier.new(context).process(files)
+
+            files
+          end
+
+          # This and the following methods will be removed with FF ci_refactoring_external_mapper
+          def legacy_process_without_instrumentation
+            @locations
               .map(&method(:normalize_location))
               .filter_map(&method(:verify_rules))
               .flat_map(&method(:expand_project_files))

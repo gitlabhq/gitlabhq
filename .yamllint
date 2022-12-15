@@ -23,15 +23,18 @@ ignore: |
   node_modules/
   tmp/
 
-# Why disabling all of those rules?
+# In CI some YAML files are linted using different rules.
+# See `.gitlab/ci/yaml.gitlab-ci.yml`.
 #
-# For the scope of https://gitlab.com/gitlab-org/gitlab/-/issues/359968,
-# we would like to catch syntax errors as soon as possible.
-# Style "errors" are not as important right now, but they should ideally be added later on.
-#
-# Please consider enabling a rule, and fixing the issues you'll see in an MR.
+# https://gitlab.com/gitlab-org/gitlab/-/issues/385693 tracks to enable all
+# rules below:
 rules:
-  braces: disable
+  braces:
+    min-spaces-inside: 1
+    max-spaces-inside: 1
+    min-spaces-inside-empty: 0
+    max-spaces-inside-empty: 0
+
   colons: disable
   comments-indentation: disable
   comments: disable

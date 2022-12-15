@@ -29,6 +29,26 @@ RSpec.describe Admin::PlanLimitsController do
       end
     end
 
+    context "when pipeline_hierarchy_size is passed in params" do
+      let(:params) do
+        {
+          plan_limits: {
+            plan_id: plan.id,
+            pipeline_hierarchy_size: 200, id: plan_limits.id
+          }
+        }
+      end
+
+      it "updates the pipeline_hierarchy_size plan limit" do
+        sign_in(create(:admin))
+
+        post :create, params: params
+
+        expect(response).to redirect_to(general_admin_application_settings_path)
+        expect(plan_limits.reload.pipeline_hierarchy_size).to eq(params[:plan_limits][:pipeline_hierarchy_size])
+      end
+    end
+
     context 'without admin access' do
       let(:file_size) { 1.megabytes }
 

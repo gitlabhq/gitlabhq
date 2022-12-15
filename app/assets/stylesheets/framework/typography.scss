@@ -772,3 +772,8 @@ textarea {
 wbr {
   display: inline-block;
 }
+
+// The font used in Monaco editor - Web IDE, Snippets, single file editor
+:root {
+  --code-editor-font: #{$monospace-font};
+}

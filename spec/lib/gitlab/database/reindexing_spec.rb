@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Database::Reindexing do
+RSpec.describe Gitlab::Database::Reindexing, feature_category: :database do
   include ExclusiveLeaseHelpers
   include Database::DatabaseHelpers
 

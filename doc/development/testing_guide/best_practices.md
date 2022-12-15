@@ -1467,11 +1467,51 @@ GitLab uses [`factory_bot`](https://github.com/thoughtbot/factory_bot) as a test
   resulting record to pass validation.
 - When instantiating from a factory, don't supply attributes that aren't
   required by the test.
-- Prefer [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition),
+- Use [implicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#implicit-definition),
   [explicit](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#explicit-definition), or
   [inline](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#inline-definition) associations
-  over `create` / `build` for association setup in callbacks.
+  instead of `create` / `build` for association setup in callbacks.
   See [issue #262624](https://gitlab.com/gitlab-org/gitlab/-/issues/262624) for further context.
+
+  When creating factories with a [`has_many`](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#has_many-associations) and `belongs_to` association, use the `instance` method to refer to the object being built.
+  This prevents [creation of unnecessary records](https://gitlab.com/gitlab-org/gitlab/-/issues/378183) by using [interconnected associations](https://github.com/thoughtbot/factory_bot/blob/master/GETTING_STARTED.md#interconnected-associations).
+
+  For example, if we have the following classes:
+
+  ```ruby
+  class Car < ApplicationRecord
+    has_many :wheels, inverse_of: :car, foreign_key: :car_id
+  end
+
+  class Wheel < ApplicationRecord
+    belongs_to :car, foreign_key: :car_id, inverse_of: :wheel, optional: false
+  end
+  ```
+
+  We can create the following factories:
+
+  ```ruby
+  FactoryBot.define do
+    factory :car do
+      transient do
+        wheels_count { 2 }
+      end
+
+      wheels do
+        Array.new(wheels_count) do
+          association(:wheel, car: instance)
+        end
+      end
+    end
+  end
+
+  FactoryBot.define do
+    factory :wheel do
+      car { association :car }
+    end
+  end
+  ```
+
 - Factories don't have to be limited to `ActiveRecord` objects.
   [See example](https://gitlab.com/gitlab-org/gitlab-foss/commit/0b8cefd3b2385a21cfed779bd659978c0402766d).
 - Factories and their traits should produce valid objects that are [verified by specs](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/models/factories_spec.rb).

@@ -425,7 +425,7 @@ A configuration with different pipeline names depending on the pipeline conditio
 
 ```yaml
 variables:
-  PIPELINE_NAME: 'Default pipeline name'
+  PIPELINE_NAME: 'Default pipeline name'  # A default is not required.
 
 workflow:
   name: '$PIPELINE_NAME'
@@ -437,6 +437,11 @@ workflow:
       variables:
         PIPELINE_NAME: 'Ruby 3 pipeline'
 ```
+
+**Additional details**:
+
+- If the name is an empty string, the pipeline is not assigned a name. A name consisting
+  of only CI/CD variables could evaluate to an empty string if all the variables are also empty.
 
 #### `workflow:rules`
 

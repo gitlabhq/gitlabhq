@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ImportExport::Group::TreeRestorer do
+RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups do
   include ImportExport::CommonUtil
 
   shared_examples 'group restoration' do

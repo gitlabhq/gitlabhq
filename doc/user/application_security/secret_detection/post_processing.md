@@ -10,8 +10,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - [Disabled by default for GitLab personal access tokens](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) in GitLab 15.6 [with a flag](../../../administration/feature_flags.md) named `gitlab_pat_auto_revocation`. Available to GitLab.com only.
 
 FLAG:
-By default, auto revocation of GitLab personal access tokens is not available. To opt-in on GitLab.com,
-please reach out to GitLab support.
+By default, auto revocation of GitLab personal access tokens is not available. To opt-in on GitLab.com
+during the [Beta period](https://about.gitlab.com/handbook/product/gitlab-the-product/#alpha-beta-ga), please
+[let us know by completing this form](https://docs.google.com/forms/d/e/1FAIpQLSdRbFhvA5jvI-Rt_Qnl1PQ1znOXKK8m6lRtmM0uva4upetKvQ/viewform).
 
 GitLab supports running post-processing hooks after detecting a secret. These
 hooks can perform actions, like notifying the cloud service that issued the secret.

@@ -66,6 +66,7 @@ describe('Work items router', () => {
         issuesListPath: 'full-path/-/issues',
         hasIssueWeightsFeature: false,
         hasIterationsFeature: false,
+        hasOkrsFeature: false,
       },
       stubs: {
         WorkItemWeight: true,

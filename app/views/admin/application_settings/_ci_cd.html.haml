@@ -101,4 +101,7 @@
               .form-group
                 = f.label :ci_registered_project_runners, s_('AdminSettings|Maximum number of runners registered per project')
                 = f.number_field :ci_registered_project_runners, class: 'form-control gl-form-input'
+              .form-group
+                = f.label :pipeline_hierarchy_size, s_("AdminSettings|Maximum number of downstream pipelines in a pipeline's hierarchy tree")
+                = f.number_field :pipeline_hierarchy_size, class: 'form-control gl-form-input'
               = f.submit s_('AdminSettings|Save %{name} limits').html_safe % { name: plan.name.capitalize }, pajamas_button: true

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'ffaker'
 
-RSpec.describe Banzai::Filter::CommitTrailersFilter do
+RSpec.describe Banzai::Filter::CommitTrailersFilter, feature_category: :source_code_management do
   include FilterSpecHelper
   include CommitTrailersSpecHelper
 

@@ -13374,7 +13374,7 @@ CREATE TABLE ci_resources (
     updated_at timestamp with time zone NOT NULL,
     resource_group_id bigint NOT NULL,
     build_id bigint,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint
 );
 
 CREATE SEQUENCE ci_resources_id_seq
@@ -19533,7 +19533,8 @@ CREATE TABLE plan_limits (
     group_ci_variables integer DEFAULT 200 NOT NULL,
     ci_max_artifact_size_cyclonedx integer DEFAULT 1 NOT NULL,
     rpm_max_file_size bigint DEFAULT '5368709120'::bigint NOT NULL,
-    ci_max_artifact_size_requirements_v2 integer DEFAULT 0 NOT NULL
+    ci_max_artifact_size_requirements_v2 integer DEFAULT 0 NOT NULL,
+    pipeline_hierarchy_size integer DEFAULT 1000 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

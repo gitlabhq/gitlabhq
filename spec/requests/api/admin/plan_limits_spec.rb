@@ -40,6 +40,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owne
           expect(json_response['pypi_max_file_size']).to eq(Plan.default.actual_limits.pypi_max_file_size)
           expect(json_response['terraform_module_max_file_size']).to eq(Plan.default.actual_limits.terraform_module_max_file_size)
           expect(json_response['storage_size_limit']).to eq(Plan.default.actual_limits.storage_size_limit)
+          expect(json_response['pipeline_hierarchy_size']).to eq(Plan.default.actual_limits.pipeline_hierarchy_size)
         end
       end
 
@@ -70,6 +71,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owne
           expect(json_response['pypi_max_file_size']).to eq(Plan.default.actual_limits.pypi_max_file_size)
           expect(json_response['terraform_module_max_file_size']).to eq(Plan.default.actual_limits.terraform_module_max_file_size)
           expect(json_response['storage_size_limit']).to eq(Plan.default.actual_limits.storage_size_limit)
+          expect(json_response['pipeline_hierarchy_size']).to eq(Plan.default.actual_limits.pipeline_hierarchy_size)
         end
       end
 
@@ -118,7 +120,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owne
             'nuget_max_file_size': 50,
             'pypi_max_file_size': 60,
             'terraform_module_max_file_size': 70,
-            'storage_size_limit': 80
+            'storage_size_limit': 80,
+            'pipeline_hierarchy_size': 250
           }
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -140,6 +143,7 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owne
           expect(json_response['pypi_max_file_size']).to eq(60)
           expect(json_response['terraform_module_max_file_size']).to eq(70)
           expect(json_response['storage_size_limit']).to eq(80)
+          expect(json_response['pipeline_hierarchy_size']).to eq(250)
         end
 
         it 'updates single plan limits' do
@@ -183,7 +187,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owne
             'nuget_max_file_size': 'e',
             'pypi_max_file_size': 'f',
             'terraform_module_max_file_size': 'g',
-            'storage_size_limit': 'j'
+            'storage_size_limit': 'j',
+            'pipeline_hierarchy_size': 'r'
           }
 
           expect(response).to have_gitlab_http_status(:bad_request)
@@ -204,7 +209,8 @@ RSpec.describe API::Admin::PlanLimits, 'PlanLimits', feature_category: :not_owne
             'nuget_max_file_size is invalid',
             'pypi_max_file_size is invalid',
             'terraform_module_max_file_size is invalid',
-            'storage_size_limit is invalid'
+            'storage_size_limit is invalid',
+            'pipeline_hierarchy_size is invalid'
           )
         end
       end

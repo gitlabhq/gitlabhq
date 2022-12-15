@@ -82,7 +82,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-card-body gl-relative gl-pb-0 gl-px-0" data-qa-selector="terms_content">
+    <div class="gl-relative gl-pb-0 gl-px-0" data-qa-selector="terms_content">
       <div
         class="terms-fade gl-absolute gl-left-5 gl-right-5 gl-bottom-0 gl-h-11 gl-pointer-events-none"
       ></div>
@@ -97,7 +97,7 @@ export default {
         </gl-intersection-observer>
       </div>
     </div>
-    <div v-if="isLoggedIn" class="gl-card-footer gl-display-flex gl-justify-content-end">
+    <div v-if="isLoggedIn" class="gl-display-flex gl-justify-content-end">
       <form v-if="permissions.canDecline" method="post" :action="paths.decline">
         <gl-button type="submit">{{ $options.i18n.decline }}</gl-button>
         <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />

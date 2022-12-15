@@ -1,3 +1,12 @@
+import { useNewFonts } from '~/lib/utils/common_utils';
+import { getCssVariable } from '~/lib/utils/css_utils';
+
+const fontOptions = {};
+
+if (useNewFonts()) {
+  fontOptions.fontFamily = getCssVariable('--code-editor-font');
+}
+
 export const defaultEditorOptions = {
   model: null,
   readOnly: false,
@@ -9,6 +18,7 @@ export const defaultEditorOptions = {
   wordWrap: 'on',
   glyphMargin: true,
   automaticLayout: true,
+  ...fontOptions,
 };
 
 export const defaultDiffOptions = {

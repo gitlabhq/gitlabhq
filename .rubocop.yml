@@ -49,7 +49,7 @@ AllCops:
     - 'db/ci_migrate/*.rb'      # since the `db/ci_migrate` is a symlinked to `db/migrate`
   # Use absolute path to avoid orphan directories with changed workspace root.
   CacheRootDirectory: <%= Dir.getwd %>/tmp
-  MaxFilesInCache: 35000
+  MaxFilesInCache: 1_000_000
   NewCops: disable
   SuggestExtensions: false
 

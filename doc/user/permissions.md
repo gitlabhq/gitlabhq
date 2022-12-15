@@ -204,7 +204,7 @@ The following table lists project permissions available for each role:
 | [Security dashboard](application_security/security_dashboard/index.md):<br>Use security dashboard                                                                                    |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability                                                                                        |          |          | ✓         | ✓          | ✓        |
 | [Security dashboard](application_security/security_dashboard/index.md):<br>View vulnerability findings in [dependency list](application_security/dependency_list/index.md)           |          |          | ✓         | ✓          | ✓        |
-| [Tasks](tasks.md):<br>Create (*17*)     | ✓        | ✓        | ✓         | ✓          | ✓        |
+| [Tasks](tasks.md):<br>Create (*17*)     |          | ✓        | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Edit              |          | ✓         | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Remove from issue |          | ✓         | ✓         | ✓          | ✓        |
 | [Tasks](tasks.md):<br>Delete (*21*)     |          |           |            |            | ✓        |

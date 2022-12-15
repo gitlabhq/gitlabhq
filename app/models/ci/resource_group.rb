@@ -24,11 +24,18 @@ module Ci
     # NOTE: This is concurrency-safe method that the subquery in the `UPDATE`
     # works as explicit locking.
     def assign_resource_to(processable)
-      resources.free.limit(1).update_all(build_id: processable.id) > 0
+      attrs = {
+        build_id: processable.id,
+        partition_id: processable.partition_id
+      }
+
+      resources.free.limit(1).update_all(attrs) > 0
     end
 
     def release_resource_from(processable)
-      resources.retained_by(processable).update_all(build_id: nil) > 0
+      attrs = { build_id: nil, partition_id: nil }
+
+      resources.retained_by(processable).update_all(attrs) > 0
     end
 
     def upcoming_processables

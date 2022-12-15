@@ -1058,7 +1058,7 @@ production: &base
       #             disable_ssl_verification: false,
       #             login_url: '/cas/login',
       #             service_validate_url: '/cas/p3/serviceValidate',
-      #             logout_url: '/cas/logout'} }
+      #             logout_url: '/cas/logout' } }
       # - { name: 'authentiq',
       #     # for client credentials (client ID and secret), go to https://www.authentiq.com/developers
       #     app_id: 'YOUR_CLIENT_ID',
@@ -1567,7 +1567,7 @@ test:
                   disable_ssl_verification: false,
                   login_url: '/cas/login',
                   service_validate_url: '/cas/p3/serviceValidate',
-                  logout_url: '/cas/logout'} }
+                  logout_url: '/cas/logout' } }
       - { name: 'github',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET',

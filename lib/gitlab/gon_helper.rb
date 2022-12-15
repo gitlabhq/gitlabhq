@@ -68,6 +68,7 @@ module Gitlab
       push_frontend_feature_flag(:vscode_web_ide, current_user)
       push_frontend_feature_flag(:integration_slack_app_notifications)
       push_frontend_feature_flag(:vue_group_select)
+      push_frontend_feature_flag(:new_fonts, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

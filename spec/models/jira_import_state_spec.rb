@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe JiraImportState do
+RSpec.describe JiraImportState, feature_category: :integrations do
   describe "associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:user) }

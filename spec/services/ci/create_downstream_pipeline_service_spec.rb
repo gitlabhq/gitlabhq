@@ -948,25 +948,47 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
       let_it_be(:child)      { create(:ci_pipeline, child_of: parent) }
       let_it_be(:sibling)    { create(:ci_pipeline, child_of: parent) }
 
-      before do
-        stub_const("#{described_class}::MAX_HIERARCHY_SIZE", 3)
-      end
-
+      let(:project) { build(:project, :repository) }
       let(:bridge) do
-        create(:ci_bridge, status: :pending, user: user, options: trigger, pipeline: child)
+        create(:ci_bridge, status: :pending, user: user, options: trigger, pipeline: child, project: project)
       end
 
-      it 'does not create a new pipeline' do
-        expect { subject }.not_to change { Ci::Pipeline.count }
-        expect(subject).to be_error
-        expect(subject.message).to eq("Pre-conditions not met")
+      context 'when limit was specified by admin' do
+        before do
+          project.actual_limits.update!(pipeline_hierarchy_size: 3)
+        end
+
+        it 'does not create a new pipeline' do
+          expect { subject }.not_to change { Ci::Pipeline.count }
+        end
+
+        it 'drops the trigger job with an explanatory reason' do
+          subject
+
+          expect(bridge.reload).to be_failed
+          expect(bridge.failure_reason).to eq('reached_max_pipeline_hierarchy_size')
+        end
       end
 
-      it 'drops the trigger job with an explanatory reason' do
-        subject
+      context 'when there was no limit specified by admin' do
+        before do
+          allow(bridge.pipeline).to receive(:complete_hierarchy_count).and_return(1000)
+        end
 
-        expect(bridge.reload).to be_failed
-        expect(bridge.failure_reason).to eq('reached_max_pipeline_hierarchy_size')
+        context 'when pipeline count reaches the default limit of 1000' do
+          it 'does not create a new pipeline' do
+            expect { subject }.not_to change { Ci::Pipeline.count }
+            expect(subject).to be_error
+            expect(subject.message).to eq("Pre-conditions not met")
+          end
+
+          it 'drops the trigger job with an explanatory reason' do
+            subject
+
+            expect(bridge.reload).to be_failed
+            expect(bridge.failure_reason).to eq('reached_max_pipeline_hierarchy_size')
+          end
+        end
       end
 
       context 'with :ci_limit_complete_hierarchy_size disabled' do

@@ -121,6 +121,7 @@ describe('WorkItemDetail component', () => {
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
+        hasOkrsFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
       },

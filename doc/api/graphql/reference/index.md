@@ -18057,12 +18057,14 @@ Returns [`Requirement`](#requirement).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrequirementauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
-| <a id="projectrequirementiid"></a>`iid` | [`ID`](#id) | IID of the requirement, e.g., "1". |
-| <a id="projectrequirementiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, e.g., `[1, 2]`. |
+| <a id="projectrequirementiid"></a>`iid` | [`ID`](#id) | IID of the requirement, for example, "1". |
+| <a id="projectrequirementiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, for example, `[1, 2]`. |
 | <a id="projectrequirementlasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementsearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementsort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
 | <a id="projectrequirementstate"></a>`state` | [`RequirementState`](#requirementstate) | Filter requirements by state. |
+| <a id="projectrequirementworkitemiid"></a>`workItemIid` | [`ID`](#id) | IID of the requirement work item, for example, "1". |
+| <a id="projectrequirementworkitemiids"></a>`workItemIids` | [`[ID!]`](#id) | List of IIDs of requirement work items, for example, `[1, 2]`. |
 
 ##### `Project.requirements`
 
@@ -18079,12 +18081,14 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectrequirementsauthorusername"></a>`authorUsername` | [`[String!]`](#string) | Filter requirements by author username. |
-| <a id="projectrequirementsiid"></a>`iid` | [`ID`](#id) | IID of the requirement, e.g., "1". |
-| <a id="projectrequirementsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, e.g., `[1, 2]`. |
+| <a id="projectrequirementsiid"></a>`iid` | [`ID`](#id) | IID of the requirement, for example, "1". |
+| <a id="projectrequirementsiids"></a>`iids` | [`[ID!]`](#id) | List of IIDs of requirements, for example, `[1, 2]`. |
 | <a id="projectrequirementslasttestreportstate"></a>`lastTestReportState` | [`RequirementStatusFilter`](#requirementstatusfilter) | State of latest requirement test report. |
 | <a id="projectrequirementssearch"></a>`search` | [`String`](#string) | Search query for requirement title. |
 | <a id="projectrequirementssort"></a>`sort` | [`Sort`](#sort) | List requirements by sort order. |
 | <a id="projectrequirementsstate"></a>`state` | [`RequirementState`](#requirementstate) | Filter requirements by state. |
+| <a id="projectrequirementsworkitemiid"></a>`workItemIid` | [`ID`](#id) | IID of the requirement work item, for example, "1". |
+| <a id="projectrequirementsworkitemiids"></a>`workItemIids` | [`[ID!]`](#id) | List of IIDs of requirement work items, for example, `[1, 2]`. |
 
 ##### `Project.runners`
 
