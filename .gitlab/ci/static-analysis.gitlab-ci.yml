@@ -22,7 +22,7 @@ update-static-analysis-cache:
     # Silence cop offenses for rules with "grace period".
     # This will notify Slack if offenses were silenced.
     # For the moment we only cache `tmp/rubocop_cache` so we don't need to run all the tasks.
-    - run_timed_command "bundle exec rake rubocop:check:graceful"
+    - run_timed_command "fail_on_warnings bundle exec rake rubocop:check:graceful"
 
 static-analysis:
   extends:
@@ -132,12 +132,12 @@ rubocop:
         # We won't notify Slack if offenses were silenced to avoid frequent messages.
         # Job `update-static-analysis-cache` takes care of Slack notifications every 2 hours.
         unset CI_SLACK_WEBHOOK_URL
-        run_timed_command "bundle exec rake rubocop:check:graceful"
+        run_timed_command "fail_on_warnings bundle exec rake rubocop:check:graceful"
       else
         cat "${RSPEC_CHANGED_FILES_PATH}" | ruby -e 'print $stdin.read.split(" ").select { |f| File.exist?(f) }.join(" ")' > "$RUBOCOP_TARGET_FILES"
         # Skip running RuboCop if there's no target files
         if [ -s "${RUBOCOP_TARGET_FILES}" ]; then
-          run_timed_command "bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
+          run_timed_command "fail_on_warnings bundle exec rubocop --parallel --force-exclusion $(cat ${RUBOCOP_TARGET_FILES})"
         else
           echoinfo "Nothing interesting changed for RuboCop. Skipping."
         fi
@@ -177,7 +177,7 @@ feature-flags-usage:
   script:
     # We need to disable the cache for this cop since it creates files under tmp/feature_flags/*.used,
     # the cache would prevent these files from being created.
-    - run_timed_command "bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false"
+    - run_timed_command "fail_on_warnings bundle exec rubocop --only Gitlab/MarkUsedFeatureFlags --cache false"
   artifacts:
     expire_in: 31d
     when: always

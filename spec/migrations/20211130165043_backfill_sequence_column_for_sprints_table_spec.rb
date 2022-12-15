@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe BackfillSequenceColumnForSprintsTable, :migration, schema: 20211126042235 do
+RSpec.describe BackfillSequenceColumnForSprintsTable, :migration, schema: 20211126042235, feature_category: :team_planning do
   let(:migration) { described_class.new }
   let(:namespaces) { table(:namespaces) }
   let(:sprints) { table(:sprints) }

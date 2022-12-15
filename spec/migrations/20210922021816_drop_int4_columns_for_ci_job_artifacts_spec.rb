@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropInt4ColumnsForCiJobArtifacts do
+RSpec.describe DropInt4ColumnsForCiJobArtifacts, feature_category: :build_artifacts do
   let(:ci_job_artifacts) { table(:ci_job_artifacts) }
 
   it 'correctly migrates up and down' do

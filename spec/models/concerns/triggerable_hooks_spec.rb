@@ -7,7 +7,7 @@ RSpec.describe TriggerableHooks do
     stub_const('TestableHook', Class.new(WebHook))
 
     TestableHook.class_eval do
-      include TriggerableHooks # rubocop:disable Rspec/DescribedClass
+      include TriggerableHooks # rubocop:disable RSpec/DescribedClass
       triggerable_hooks [:push_hooks]
     end
   end

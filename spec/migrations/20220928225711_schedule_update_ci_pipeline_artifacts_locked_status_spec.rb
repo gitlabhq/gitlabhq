@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleUpdateCiPipelineArtifactsLockedStatus, migration: :gitlab_ci do
+RSpec.describe ScheduleUpdateCiPipelineArtifactsLockedStatus, migration: :gitlab_ci,
+                                                              feature_category: :build_artifacts do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDisableLegacyOpenSourceLicenseForProjectsLessThanOneMb do
+RSpec.describe ScheduleDisableLegacyOpenSourceLicenseForProjectsLessThanOneMb, feature_category: :projects do
   let!(:migration) { described_class.new }
   let!(:post_migration) { described_class::MIGRATION }
 

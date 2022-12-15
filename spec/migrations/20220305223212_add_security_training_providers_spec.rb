@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddSecurityTrainingProviders, :migration do
+RSpec.describe AddSecurityTrainingProviders, :migration, feature_category: :vulnerability_management do
   include MigrationHelpers::WorkItemTypesHelper
 
   let!(:security_training_providers) { table(:security_training_providers) }

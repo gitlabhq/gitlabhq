@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe CreateSyncProjectNamespaceDetailsTrigger do
+RSpec.describe CreateSyncProjectNamespaceDetailsTrigger, feature_category: :projects do
   let(:migration) { described_class.new }
   let(:projects) { table(:projects) }
   let(:namespaces) { table(:namespaces) }

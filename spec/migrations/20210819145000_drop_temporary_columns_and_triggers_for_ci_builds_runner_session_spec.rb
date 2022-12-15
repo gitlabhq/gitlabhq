@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildsRunnerSession, :migration do
+RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildsRunnerSession, :migration, feature_category: :runner do
   let(:ci_builds_runner_session_table) { table(:ci_builds_runner_session) }
 
   it 'correctly migrates up and down' do

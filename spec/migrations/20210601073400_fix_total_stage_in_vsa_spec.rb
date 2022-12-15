@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixTotalStageInVsa, :migration, schema: 20210518001450 do
+RSpec.describe FixTotalStageInVsa, :migration, schema: 20210518001450, feature_category: :devops_reports do
   let(:namespaces) { table(:namespaces) }
   let(:group_value_streams) { table(:analytics_cycle_analytics_group_value_streams) }
   let(:group_stages) { table(:analytics_cycle_analytics_group_stages) }

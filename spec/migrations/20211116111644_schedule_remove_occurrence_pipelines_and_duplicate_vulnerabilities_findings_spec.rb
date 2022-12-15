@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ScheduleRemoveOccurrencePipelinesAndDuplicateVulnerabilitiesFindings,
-               :suppress_gitlab_schemas_validate_connection, :migration do
+               :suppress_gitlab_schemas_validate_connection, :migration, feature_category: :vulnerability_management do
   let!(:background_migration_jobs) { table(:background_migration_jobs) }
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let!(:users) { table(:users) }

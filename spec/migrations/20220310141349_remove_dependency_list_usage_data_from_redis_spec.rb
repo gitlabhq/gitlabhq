@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveDependencyListUsageDataFromRedis, :migration, :clean_gitlab_redis_shared_state do
+RSpec.describe RemoveDependencyListUsageDataFromRedis, :migration, :clean_gitlab_redis_shared_state,
+feature_category: :dependency_management do
   let(:key) { "DEPENDENCY_LIST_USAGE_COUNTER" }
 
   describe "#up" do

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SchedulePopulateTopicsTotalProjectsCountCache do
+RSpec.describe SchedulePopulateTopicsTotalProjectsCountCache, feature_category: :projects do
   let(:topics) { table(:topics) }
   let!(:topic_1) { topics.create!(name: 'Topic1') }
   let!(:topic_2) { topics.create!(name: 'Topic2') }

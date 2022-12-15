@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CreateRoutingTableForBuildsMetadataV2, :migration do
+RSpec.describe CreateRoutingTableForBuildsMetadataV2, :migration, feature_category: :continuous_integration do
   let!(:migration) { described_class.new }
 
   describe '#up' do

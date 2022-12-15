@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, :suppress_gitlab_schemas_validate_connection, schema: 20211108211434 do
+RSpec.describe ScheduleDropInvalidSecurityFindings, :migration, :suppress_gitlab_schemas_validate_connection, schema: 20211108211434,
+                                                                                                              feature_category: :vulnerability_management do
   let!(:background_migration_jobs) { table(:background_migration_jobs) }
 
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user', type: Namespaces::UserNamespace.sti_name) }

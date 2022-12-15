@@ -2,7 +2,7 @@
 require 'spec_helper'
 require_migration!('schedule_remove_duplicate_vulnerabilities_findings3')
 
-RSpec.describe ScheduleRemoveDuplicateVulnerabilitiesFindings3, :migration do
+RSpec.describe ScheduleRemoveDuplicateVulnerabilitiesFindings3, :migration, feature_category: :vulnerability_management do
   let(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }
   let(:users) { table(:users) }
   let(:user) { create_user! }

@@ -73,7 +73,7 @@ Below are the settings for SaaS runners on Linux.
 | Setting                                                                 | GitLab.com       | Default |
 |-------------------------------------------------------------------------|------------------|---------|
 | Executor                                                                | `docker+machine` | -       |
-| Default Docker image                                                    | `ruby:2.5`       | -       |
+| Default Docker image                                                    | `ruby:3.1`       | -       |
 | `privileged` (run [Docker in Docker](https://hub.docker.com/_/docker/)) | `true`           | `false` |
 
 - **Cache**: These runners share a
@@ -198,7 +198,7 @@ sentry_dsn = "X"
   ]
   limit = X
   [runners.docker]
-    image = "ruby:2.5"
+    image = "ruby:3.1"
     privileged = true
     volumes = [
       "/certs/client",

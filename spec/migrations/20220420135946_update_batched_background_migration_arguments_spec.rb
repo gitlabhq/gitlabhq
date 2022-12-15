@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateBatchedBackgroundMigrationArguments do
+RSpec.describe UpdateBatchedBackgroundMigrationArguments, feature_category: :database do
   let(:batched_migrations) { table(:batched_background_migrations) }
 
   before do

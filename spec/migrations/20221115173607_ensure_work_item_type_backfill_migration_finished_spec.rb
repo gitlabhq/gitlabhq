@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe EnsureWorkItemTypeBackfillMigrationFinished, :migration do
+RSpec.describe EnsureWorkItemTypeBackfillMigrationFinished, :migration, feature_category: :team_planning do
   let(:batched_migrations) { table(:batched_background_migrations) }
   let(:work_item_types) { table(:work_item_types) }
   let(:batch_failed_status) { 2 }

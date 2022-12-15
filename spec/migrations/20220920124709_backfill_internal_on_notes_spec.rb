@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillInternalOnNotes, :migration do
+RSpec.describe BackfillInternalOnNotes, :migration, feature_category: :team_planning do
   let(:migration) { described_class::MIGRATION }
 
   describe '#up' do

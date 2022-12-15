@@ -4,7 +4,8 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddProjectValueStreamIdToProjectStages, schema: 20210503105022 do
+RSpec.describe AddProjectValueStreamIdToProjectStages, schema: 20210503105022,
+                                                       feature_category: :value_stream_management do
   let(:stages) { table(:analytics_cycle_analytics_project_stages) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

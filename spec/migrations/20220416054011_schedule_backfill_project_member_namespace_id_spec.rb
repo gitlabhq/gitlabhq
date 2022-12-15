@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleBackfillProjectMemberNamespaceId do
+RSpec.describe ScheduleBackfillProjectMemberNamespaceId, feature_category: :subgroups do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

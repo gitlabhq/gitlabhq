@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe MigrateRemainingU2fRegistrations, :migration do
+RSpec.describe MigrateRemainingU2fRegistrations, :migration, feature_category: :authentication_and_authorization do
   let(:u2f_registrations) { table(:u2f_registrations) }
   let(:webauthn_registrations) { table(:webauthn_registrations) }
   let(:users) { table(:users) }

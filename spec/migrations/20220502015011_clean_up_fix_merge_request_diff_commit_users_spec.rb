@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration! 'clean_up_fix_merge_request_diff_commit_users'
 
-RSpec.describe CleanUpFixMergeRequestDiffCommitUsers, :migration do
+RSpec.describe CleanUpFixMergeRequestDiffCommitUsers, :migration, feature_category: :code_review do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:project_namespace) { namespaces.create!(name: 'project2', path: 'project2', type: 'Project') }

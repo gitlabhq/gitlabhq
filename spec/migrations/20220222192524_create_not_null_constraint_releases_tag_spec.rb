@@ -2,7 +2,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CreateNotNullConstraintReleasesTag do
+RSpec.describe CreateNotNullConstraintReleasesTag, feature_category: :release_orchestration do
   let!(:releases) { table(:releases) }
   let!(:migration) { described_class.new }
 

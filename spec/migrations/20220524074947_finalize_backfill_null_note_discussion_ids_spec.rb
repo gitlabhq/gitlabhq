@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe FinalizeBackfillNullNoteDiscussionIds, :migration do
+RSpec.describe FinalizeBackfillNullNoteDiscussionIds, :migration, feature_category: :team_planning do
   subject(:migration) { described_class.new }
 
   let(:notes) { table(:notes) }

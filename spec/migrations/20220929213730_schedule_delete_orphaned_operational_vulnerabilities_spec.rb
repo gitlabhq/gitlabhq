@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDeleteOrphanedOperationalVulnerabilities do
+RSpec.describe ScheduleDeleteOrphanedOperationalVulnerabilities, feature_category: :vulnerability_management do
   let!(:migration) { described_class.new }
   let!(:post_migration) { described_class::MIGRATION }
 

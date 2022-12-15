@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration do
+RSpec.describe UpdateTrialPlansCiDailyPipelineScheduleTriggers, :migration, feature_category: :purchase do
   let!(:plans) { table(:plans) }
   let!(:plan_limits) { table(:plan_limits) }
   let!(:premium_trial_plan) { plans.create!(name: 'premium_trial', title: 'Premium Trial') }

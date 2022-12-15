@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddObjectiveAndKeyresultToWorkItemTypes, :migration do
+RSpec.describe AddObjectiveAndKeyresultToWorkItemTypes, :migration, feature_category: :team_planning do
   include MigrationHelpers::WorkItemTypesHelper
 
   let!(:work_item_types) { table(:work_item_types) }

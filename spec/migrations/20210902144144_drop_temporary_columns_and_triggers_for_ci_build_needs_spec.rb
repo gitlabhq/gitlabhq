@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildNeeds do
+RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildNeeds, feature_category: :pipeline_authoring do
   let(:ci_build_needs_table) { table(:ci_build_needs) }
 
   it 'correctly migrates up and down' do

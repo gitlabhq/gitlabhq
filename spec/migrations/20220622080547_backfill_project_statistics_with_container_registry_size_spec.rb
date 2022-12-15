@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillProjectStatisticsWithContainerRegistrySize do
+RSpec.describe BackfillProjectStatisticsWithContainerRegistrySize, feature_category: :container_registry do
   let!(:batched_migration) { described_class::MIGRATION_CLASS }
 
   it 'does not schedule background jobs when Gitlab.com is false' do

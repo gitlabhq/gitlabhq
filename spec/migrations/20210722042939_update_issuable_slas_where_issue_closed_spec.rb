@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateIssuableSlasWhereIssueClosed, :migration do
+RSpec.describe UpdateIssuableSlasWhereIssueClosed, :migration, feature_category: :team_planning do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:issues) { table(:issues) }

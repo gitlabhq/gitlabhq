@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleMigratePersonalNamespaceProjectMaintainerToOwner do
+RSpec.describe ScheduleMigratePersonalNamespaceProjectMaintainerToOwner, feature_category: :subgroups do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

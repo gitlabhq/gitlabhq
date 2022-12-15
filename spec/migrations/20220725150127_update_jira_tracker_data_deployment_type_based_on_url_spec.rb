@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration do
+RSpec.describe UpdateJiraTrackerDataDeploymentTypeBasedOnUrl, :migration, feature_category: :integrations do
   let(:integrations_table) { table(:integrations) }
   let(:service_jira_cloud) { integrations_table.create!(id: 1, type_new: 'JiraService') }
   let(:service_jira_server) { integrations_table.create!(id: 2, type_new: 'JiraService') }

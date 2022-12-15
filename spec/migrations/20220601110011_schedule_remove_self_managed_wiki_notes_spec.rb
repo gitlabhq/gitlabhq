@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleRemoveSelfManagedWikiNotes do
+RSpec.describe ScheduleRemoveSelfManagedWikiNotes, feature_category: :wiki do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'schedules new batched migration' do

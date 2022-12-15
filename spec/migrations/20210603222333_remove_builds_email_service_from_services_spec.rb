@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveBuildsEmailServiceFromServices do
+RSpec.describe RemoveBuildsEmailServiceFromServices, feature_category: :navigation do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:services) { table(:services) }

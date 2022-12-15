@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe MigrateShimoConfluenceServiceCategory, :migration do
+RSpec.describe MigrateShimoConfluenceServiceCategory, :migration, feature_category: :integrations do
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }
   let(:integrations) { table(:integrations) }

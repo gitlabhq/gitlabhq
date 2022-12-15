@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe EnsureTaskNoteRenamingBackgroundMigrationFinished, :migration do
+RSpec.describe EnsureTaskNoteRenamingBackgroundMigrationFinished, :migration, feature_category: :team_planning do
   let(:batched_migrations) { table(:batched_background_migrations) }
   let(:batch_failed_status) { 2 }
   let(:batch_finalized_status) { 3 }

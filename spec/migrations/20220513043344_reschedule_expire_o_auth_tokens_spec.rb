@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleExpireOAuthTokens do
+RSpec.describe RescheduleExpireOAuthTokens, feature_category: :authentication_and_authorization do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

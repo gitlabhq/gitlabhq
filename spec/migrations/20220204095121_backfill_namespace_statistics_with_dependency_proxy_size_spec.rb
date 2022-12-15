@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillNamespaceStatisticsWithDependencyProxySize do
+RSpec.describe BackfillNamespaceStatisticsWithDependencyProxySize, feature_category: :dependency_proxy do
   let!(:groups) { table(:namespaces) }
   let!(:group1) { groups.create!(id: 10, name: 'test1', path: 'test1', type: 'Group') }
   let!(:group2) { groups.create!(id: 20, name: 'test2', path: 'test2', type: 'Group') }

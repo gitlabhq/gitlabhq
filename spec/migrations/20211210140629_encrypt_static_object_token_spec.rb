@@ -3,7 +3,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe EncryptStaticObjectToken, :migration do
+RSpec.describe EncryptStaticObjectToken, :migration, feature_category: :source_code_management do
   let!(:background_migration_jobs) { table(:background_migration_jobs) }
   let!(:users) { table(:users) }
 

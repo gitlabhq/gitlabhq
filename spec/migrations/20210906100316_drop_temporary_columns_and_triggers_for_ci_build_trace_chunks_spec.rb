@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildTraceChunks do
+RSpec.describe DropTemporaryColumnsAndTriggersForCiBuildTraceChunks, feature_category: :continuous_integration do
   let(:ci_build_trace_chunks_table) { table(:ci_build_trace_chunks) }
 
   it 'correctly migrates up and down' do

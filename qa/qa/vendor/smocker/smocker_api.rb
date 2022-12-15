@@ -31,6 +31,7 @@ module QA
 
         def self.teardown!
           @container&.remove!
+          @container = nil
         end
 
         def initialize(container, **wait_args)

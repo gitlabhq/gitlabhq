@@ -38,7 +38,7 @@ GitLab supports the following OmniAuth providers.
 | [SAML](saml.md)                                                     | `saml`                     |
 | [Twitter](twitter.md)                                               | `twitter`                  |
 
-## Configure initial settings
+## Initial settings
 
 Before you configure the OmniAuth provider,
 configure the settings that are common for all providers.
@@ -49,7 +49,9 @@ Omnibus, Docker, and source | Helm chart | Description | Default value
 `auto_link_ldap_user`      | `autoLinkLdapUser` | Creates an LDAP identity in GitLab for users that are created through an OmniAuth provider. You can enable this setting if you have [LDAP integration](../administration/auth/ldap/index.md) enabled. Requires the `uid` of the user to be the same in both LDAP and the OmniAuth provider. | `false`
 `block_auto_created_users` | `blockAutoCreatedUsers` | Blocks users that are automatically created from signing in until they are approved by an administrator. | `true`. If you set the value to `false`, make sure you define providers that you can control, like SAML or Google. Otherwise, any user on the internet can sign in to GitLab without an administrator's approval.
 
-To change these settings:
+### Configure initial settings
+
+To change the OmniAuth settings:
 
   ::Tabs
 

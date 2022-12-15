@@ -37577,6 +37577,9 @@ msgstr ""
 msgid "SecurityReports|There was an error dismissing the vulnerability."
 msgstr ""
 
+msgid "SecurityReports|There was an error fetching the finding. Please try again."
+msgstr ""
+
 msgid "SecurityReports|There was an error reverting the dismissal."
 msgstr ""
 

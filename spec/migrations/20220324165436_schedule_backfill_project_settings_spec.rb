@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleBackfillProjectSettings do
+RSpec.describe ScheduleBackfillProjectSettings, feature_category: :projects do
   let!(:migration) { described_class::MIGRATION }
 
   describe '#up' do

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe DeleteLegacyOperationsFeatureFlags do
+RSpec.describe DeleteLegacyOperationsFeatureFlags, feature_category: :feature_flags do
   let(:namespace) { table(:namespaces).create!(name: 'foo', path: 'bar') }
   let(:project) { table(:projects).create!(namespace_id: namespace.id) }
   let(:issue) { table(:issues).create!(id: 123, project_id: project.id) }

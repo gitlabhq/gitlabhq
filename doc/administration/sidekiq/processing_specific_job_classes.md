@@ -34,6 +34,12 @@ because they only change the arguments to the launched Sidekiq process.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59604) in GitLab 13.12.
 > - [Default routing rule value](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97908) added in GitLab 15.4.
 
+NOTE:
+Mailer jobs cannot be routed by routing rules, and always go to the
+`mailers` queue. When using routing rules, ensure that at least one process is
+listening to the `mailers` queue. Typically this can be placed alongside the
+`default` queue.
+
 We recommend most GitLab instances using routing rules to manage their Sidekiq
 queues. This allows administrators to choose single queue names for groups of
 job classes based on their attributes. The syntax is an ordered array of pairs of `[query, queue]`:
@@ -89,8 +95,8 @@ not a recommendation.
      'high-urgency',
      # Run one process for throttled, network-intensive, import
      'throttled,network-intensive,import',
-     # Run one 'catchall' process on the default queue
-     'default'
+     # Run one 'catchall' process on the default and mailers queues
+     'default,mailers'
    ]
    ```
 
@@ -175,7 +181,7 @@ To migrate from queue selectors to routing rules:
 1. Add a wildcard match of `['*', 'default']` as the last entry in `sidekiq['routing_rules']`. This "catchall" queue has
    to be named as `default`.
 1. Replace `sidekiq['queue_groups']` with `queue_name`s.
-1. Add at least one `default` queue to the `sidekiq['queue_groups']`.
+1. Add at least one `default` queue and at least one `mailers` queue to the `sidekiq['queue_groups']`.
 1. Save the file and reconfigure GitLab:
 
    ```shell
@@ -226,7 +232,7 @@ The following example better illustrates the migration process above:
      'high_urgency',
      'low_urgency',
      'throttled_urgency',
-     'default'
+     'default,mailers'
    ]
    ```
 

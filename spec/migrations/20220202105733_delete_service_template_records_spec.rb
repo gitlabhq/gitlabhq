@@ -3,7 +3,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe DeleteServiceTemplateRecords do
+RSpec.describe DeleteServiceTemplateRecords, feature_category: :integrations do
   let(:integrations) { table(:integrations) }
   let(:chat_names) { table(:chat_names) }
   let(:web_hooks) { table(:web_hooks) }

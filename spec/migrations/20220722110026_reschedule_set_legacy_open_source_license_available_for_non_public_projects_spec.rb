@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RescheduleSetLegacyOpenSourceLicenseAvailableForNonPublicProjects do
+RSpec.describe RescheduleSetLegacyOpenSourceLicenseAvailableForNonPublicProjects, feature_category: :projects do
   context 'when on gitlab.com' do
     let(:migration) { described_class::MIGRATION }
 

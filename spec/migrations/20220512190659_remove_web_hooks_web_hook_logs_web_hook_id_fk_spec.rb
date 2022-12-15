@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveWebHooksWebHookLogsWebHookIdFk do
+RSpec.describe RemoveWebHooksWebHookLogsWebHookIdFk, feature_category: :integrations do
   let(:web_hooks) { table(:web_hooks) }
   let(:logs) { table(:web_hook_logs) }
 

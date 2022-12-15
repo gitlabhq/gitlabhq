@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe UpdateIntegrationsTriggerTypeNewOnInsertNullSafe, :migration do
+RSpec.describe UpdateIntegrationsTriggerTypeNewOnInsertNullSafe, :migration, feature_category: :integrations do
   let(:integrations) { table(:integrations) }
 
   before do

@@ -3,9 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::QuickActions::Dsl do
-  before :all do
-    DummyClass = Struct.new(:project) do
-      include Gitlab::QuickActions::Dsl
+  before do
+    stub_const('DummyClass', Struct.new(:project))
+    DummyClass.class_eval do
+      include Gitlab::QuickActions::Dsl # rubocop:disable RSpec/DescribedClass
 
       desc 'A command with no args'
       command :no_args, :none do

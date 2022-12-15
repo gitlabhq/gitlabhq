@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!('drop_position_from_security_findings')
 
-RSpec.describe DropPositionFromSecurityFindings do
+RSpec.describe DropPositionFromSecurityFindings, feature_category: :vulnerability_management do
   let(:events) { table(:security_findings) }
 
   it 'correctly migrates up and down' do

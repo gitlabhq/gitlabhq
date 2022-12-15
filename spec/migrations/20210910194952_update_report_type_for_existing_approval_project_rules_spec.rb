@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe UpdateReportTypeForExistingApprovalProjectRules, :migration do
+RSpec.describe UpdateReportTypeForExistingApprovalProjectRules, :migration, feature_category: :source_code_management do
   using RSpec::Parameterized::TableSyntax
 
   let(:group) { table(:namespaces).create!(name: 'user', path: 'user') }

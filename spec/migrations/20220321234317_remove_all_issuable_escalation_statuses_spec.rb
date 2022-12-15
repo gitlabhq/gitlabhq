@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe RemoveAllIssuableEscalationStatuses do
+RSpec.describe RemoveAllIssuableEscalationStatuses, feature_category: :incident_management do
   let(:namespaces)  { table(:namespaces) }
   let(:projects)    { table(:projects) }
   let(:issues)      { table(:issues) }

@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FinalizeGroupMemberNamespaceIdMigration, :migration do
+RSpec.describe FinalizeGroupMemberNamespaceIdMigration, :migration, feature_category: :subgroups do
   let(:batched_migrations) { table(:batched_background_migrations) }
 
   let!(:migration) { described_class::MIGRATION }

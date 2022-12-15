@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe GroupProtectedEnvironmentsAddIndexAndConstraint do
+RSpec.describe GroupProtectedEnvironmentsAddIndexAndConstraint, feature_category: :continuous_delivery do
   let(:migration) { described_class.new }
   let(:protected_environments) { table(:protected_environments) }
   let(:group) { table(:namespaces).create!(name: 'group', path: 'group') }

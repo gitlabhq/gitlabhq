@@ -2,7 +2,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddNotNullConstraintToSecurityFindingsUuid do
+RSpec.describe AddNotNullConstraintToSecurityFindingsUuid, feature_category: :vulnerability_management do
   let!(:security_findings) { table(:security_findings) }
   let!(:migration) { described_class.new }
 

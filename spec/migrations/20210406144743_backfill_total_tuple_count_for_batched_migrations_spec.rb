@@ -3,7 +3,8 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe BackfillTotalTupleCountForBatchedMigrations, :migration, schema: 20210406140057 do
+RSpec.describe BackfillTotalTupleCountForBatchedMigrations, :migration, schema: 20210406140057,
+                                                                        feature_category: :database do
   let!(:table_name) { 'projects' }
 
   let!(:migrations) { table(:batched_background_migrations) }

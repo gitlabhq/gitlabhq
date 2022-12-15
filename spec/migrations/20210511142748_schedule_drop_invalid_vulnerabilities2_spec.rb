@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ScheduleDropInvalidVulnerabilities2, :migration do
+RSpec.describe ScheduleDropInvalidVulnerabilities2, :migration, feature_category: :value_stream_management do
   let!(:background_migration_jobs) { table(:background_migration_jobs) }
 
   let!(:namespace) { table(:namespaces).create!(name: 'user', path: 'user') }

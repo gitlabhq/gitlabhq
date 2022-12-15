@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FinalizeCiBuildsBigintConversion, :migration, schema: 20210907182359 do
+RSpec.describe FinalizeCiBuildsBigintConversion, :migration, schema: 20210907182359, feature_category: :continuous_integration do
   context 'with an unexpected FK fk_3f0c88d7dc' do
     it 'removes the FK and migrates successfully' do
       # Add the unexpected FK

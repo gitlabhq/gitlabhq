@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixIncorrectJobArtifactsExpireAt, migration: :gitlab_ci do
+RSpec.describe FixIncorrectJobArtifactsExpireAt, migration: :gitlab_ci, feature_category: :build_artifacts do
   let!(:batched_migration) { described_class::MIGRATION }
 
   it 'does not schedule background jobs when Gitlab.com is true' do

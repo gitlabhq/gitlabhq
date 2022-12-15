@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe ConsumeRemainingUserNamespaceJobs do
+RSpec.describe ConsumeRemainingUserNamespaceJobs, feature_category: :subgroups do
   let(:namespaces) { table(:namespaces) }
   let!(:namespace) { namespaces.create!(name: 'gitlab', path: 'gitlab-org', type: nil) }
 

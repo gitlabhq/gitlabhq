@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveIntegrationsType, :migration do
+RSpec.describe RemoveIntegrationsType, :migration, feature_category: :integrations do
   subject(:migration) { described_class.new }
 
   let(:integrations) { table(:integrations) }

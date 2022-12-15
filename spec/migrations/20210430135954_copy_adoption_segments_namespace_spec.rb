@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe CopyAdoptionSegmentsNamespace, :migration do
+RSpec.describe CopyAdoptionSegmentsNamespace, :migration, feature_category: :devops_reports do
   let(:namespaces_table) { table(:namespaces) }
   let(:segments_table) { table(:analytics_devops_adoption_segments) }
 

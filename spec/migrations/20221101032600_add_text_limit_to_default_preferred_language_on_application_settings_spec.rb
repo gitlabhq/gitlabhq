@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe AddTextLimitToDefaultPreferredLanguageOnApplicationSettings do
+RSpec.describe AddTextLimitToDefaultPreferredLanguageOnApplicationSettings, feature_category: :internationalization do
   let(:application_setting) { table(:application_settings).create! }
   let(:too_long_text) { SecureRandom.alphanumeric(described_class::MAXIMUM_LIMIT + 1) }
 

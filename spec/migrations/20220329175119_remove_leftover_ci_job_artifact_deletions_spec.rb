@@ -3,7 +3,7 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveLeftoverCiJobArtifactDeletions do
+RSpec.describe RemoveLeftoverCiJobArtifactDeletions, feature_category: :sharding do
   let(:deleted_records) { table(:loose_foreign_keys_deleted_records) }
 
   target_table_name = Ci::JobArtifact.table_name

@@ -443,6 +443,15 @@ ee:jira:
     - if: $QA_SUITES =~ /Test::Integration::Jira/
     - !reference [.rules:test:manual, rules]
 
+ee:integrations:
+  extends: .qa
+  variables:
+    QA_SCENARIO: Test::Integration::Integrations
+  rules:
+    - !reference [.rules:test:qa, rules]
+    - if: $QA_SUITES =~ /Test::Integration::Integrations/
+    - !reference [.rules:test:manual, rules]
+
 ee:ldap-no-server:
   extends: .qa
   variables:

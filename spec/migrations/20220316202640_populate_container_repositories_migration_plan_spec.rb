@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe PopulateContainerRepositoriesMigrationPlan, :aggregate_failures do
+RSpec.describe PopulateContainerRepositoriesMigrationPlan, :aggregate_failures, feature_category: :container_registry do
   let!(:namespaces) { table(:namespaces) }
   let!(:projects) { table(:projects) }
   let!(:container_repositories) { table(:container_repositories) }

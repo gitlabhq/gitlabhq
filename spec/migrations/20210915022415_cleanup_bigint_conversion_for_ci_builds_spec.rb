@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe CleanupBigintConversionForCiBuilds do
+RSpec.describe CleanupBigintConversionForCiBuilds, feature_category: :continuous_integration do
   let(:ci_builds) { table(:ci_builds) }
 
   it 'correctly migrates up and down' do
