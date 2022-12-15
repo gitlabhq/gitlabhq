@@ -36,62 +36,48 @@ exports[`Code Coverage when fetching data is successful matches the snapshot 1`]
      
     <!---->
      
-    <gl-dropdown-stub
+    <gl-base-dropdown-stub
+      ariahaspopup="listbox"
       category="primary"
-      clearalltext="Clear all"
-      clearalltextclass="gl-px-5"
-      headertext=""
-      hideheaderborder="true"
-      highlighteditemstitle="Selected"
-      highlighteditemstitleclass="gl-px-5"
+      icon=""
       size="medium"
-      text="rspec"
+      toggleid="dropdown-toggle-btn-6"
+      toggletext="rspec"
       variant="default"
     >
-      <gl-dropdown-item-stub
-        avatarurl=""
-        iconcolor=""
-        iconname=""
-        iconrightarialabel=""
-        iconrightname=""
-        ischecked="true"
-        ischeckitem="true"
-        secondarytext=""
-        value="rspec"
+      <!---->
+       
+      <!---->
+       
+      <ul
+        aria-labelledby="dropdown-toggle-btn-6"
+        class="gl-dropdown-contents gl-list-style-none gl-pl-0 gl-mb-0"
+        id="listbox"
+        role="listbox"
+        tabindex="-1"
       >
-        
-        rspec
-      
-      </gl-dropdown-item-stub>
-      <gl-dropdown-item-stub
-        avatarurl=""
-        iconcolor=""
-        iconname=""
-        iconrightarialabel=""
-        iconrightname=""
-        ischeckitem="true"
-        secondarytext=""
-        value="cypress"
-      >
-        
-        cypress
-      
-      </gl-dropdown-item-stub>
-      <gl-dropdown-item-stub
-        avatarurl=""
-        iconcolor=""
-        iconname=""
-        iconrightarialabel=""
-        iconrightname=""
-        ischeckitem="true"
-        secondarytext=""
-        value="karma"
-      >
-        
-        karma
-      
-      </gl-dropdown-item-stub>
-    </gl-dropdown-stub>
+        <gl-listbox-item-stub
+          isselected="true"
+        >
+          
+            rspec
+          
+        </gl-listbox-item-stub>
+        <gl-listbox-item-stub>
+          
+            cypress
+          
+        </gl-listbox-item-stub>
+        <gl-listbox-item-stub>
+          
+            karma
+          
+        </gl-listbox-item-stub>
+      </ul>
+       
+      <!---->
+       
+    </gl-base-dropdown-stub>
   </div>
    
   <gl-area-chart-stub

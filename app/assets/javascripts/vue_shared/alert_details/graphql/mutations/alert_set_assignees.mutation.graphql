@@ -7,8 +7,8 @@ mutation alertSetAssignees($fullPath: ID!, $assigneeUsernames: [String!]!, $iid:
     input: { iid: $iid, assigneeUsernames: $assigneeUsernames, projectPath: $fullPath }
   ) {
     errors
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     issuable: alert {
+      id
       iid
       assignees {
         nodes {

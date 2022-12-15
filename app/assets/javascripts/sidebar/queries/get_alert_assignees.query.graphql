@@ -8,8 +8,8 @@ query alertAssignees(
 ) {
   workspace: project(fullPath: $fullPath) {
     id
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     issuable: alertManagementAlert(domain: $domain, iid: $iid) {
+      id
       iid
       assignees {
         nodes {

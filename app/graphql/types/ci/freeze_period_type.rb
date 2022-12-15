@@ -24,6 +24,10 @@ module Types
             null: false,
             method: :freeze_end
 
+      field :cron_timezone, GraphQL::Types::String,
+            description: 'Time zone for the cron fields, defaults to UTC if not provided.',
+            null: true
+
       field :start_time, Types::TimeType,
             description: 'Timestamp (UTC) of when the current/next active period starts.',
             null: true

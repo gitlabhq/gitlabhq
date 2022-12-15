@@ -17652,6 +17652,9 @@ msgstr ""
 msgid "ForksDivergence|%{messages} upstream repository"
 msgstr ""
 
+msgid "ForksDivergence|Fork has diverged from upstream repository"
+msgstr ""
+
 msgid "ForksDivergence|Up to date with upstream repository"
 msgstr ""
 
@@ -23976,6 +23979,9 @@ msgid "Key"
 msgstr ""
 
 msgid "Key (PEM)"
+msgstr ""
+
+msgid "Key result"
 msgstr ""
 
 msgid "Key:"
@@ -40851,6 +40857,21 @@ msgid "TerraformBanner|The GitLab managed Terraform state backend can store your
 msgstr ""
 
 msgid "TerraformBanner|Using Terraform? Try the GitLab Managed Terraform State"
+msgstr ""
+
+msgid "TerraformLimits|Learn more about Terraform limits."
+msgstr ""
+
+msgid "TerraformLimits|Limits for Terraform features"
+msgstr ""
+
+msgid "TerraformLimits|Maximum file size (in bytes) of Terraform state files. Set to 0 for no limit."
+msgstr ""
+
+msgid "TerraformLimits|Terraform limits"
+msgstr ""
+
+msgid "TerraformLimits|Terraform state size limit (bytes)"
 msgstr ""
 
 msgid "Terraform|%{name} successfully removed"

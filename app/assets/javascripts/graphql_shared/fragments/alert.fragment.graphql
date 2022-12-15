@@ -1,4 +1,5 @@
 fragment AlertListItem on AlertManagementAlert {
+  id
   iid
   title
   severity

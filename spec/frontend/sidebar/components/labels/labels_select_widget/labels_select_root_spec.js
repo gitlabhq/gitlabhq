@@ -8,6 +8,7 @@ import { IssuableType } from '~/issues/constants';
 import SidebarEditableItem from '~/sidebar/components/sidebar_editable_item.vue';
 import DropdownContents from '~/sidebar/components/labels/labels_select_widget/dropdown_contents.vue';
 import DropdownValue from '~/sidebar/components/labels/labels_select_widget/dropdown_value.vue';
+import EmbeddedLabelsList from '~/sidebar/components/labels/labels_select_widget/embedded_labels_list.vue';
 import issueLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/issue_labels.query.graphql';
 import updateIssueLabelsMutation from '~/boards/graphql/issue_set_labels.mutation.graphql';
 import updateMergeRequestLabelsMutation from '~/sidebar/queries/update_merge_request_labels.mutation.graphql';
@@ -19,6 +20,8 @@ import {
   issuableLabelsQueryResponse,
   updateLabelsMutationResponse,
   issuableLabelsSubscriptionResponse,
+  mockLabels,
+  mockRegularLabel,
 } from './mock_data';
 
 jest.mock('~/flash');
@@ -42,6 +45,7 @@ describe('LabelsSelectRoot', () => {
   const findSidebarEditableItem = () => wrapper.findComponent(SidebarEditableItem);
   const findDropdownValue = () => wrapper.findComponent(DropdownValue);
   const findDropdownContents = () => wrapper.findComponent(DropdownContents);
+  const findEmbeddedLabelsList = () => wrapper.findComponent(EmbeddedLabelsList);
 
   const createComponent = ({
     config = mockConfig,
@@ -148,6 +152,52 @@ describe('LabelsSelectRoot', () => {
       createComponent({ queryHandler: errorQueryHandler });
       await waitForPromises();
       expect(createAlert).toHaveBeenCalledWith({ message: 'Error fetching labels.' });
+    });
+  });
+
+  describe('if dropdown variant is `embedded`', () => {
+    it('shows the embedded labels list', () => {
+      createComponent({
+        config: { ...mockConfig, iid: '', variant: 'embedded', showEmbeddedLabelsList: true },
+      });
+
+      expect(findEmbeddedLabelsList().props()).toMatchObject({
+        disabled: false,
+        selectedLabels: [],
+        allowLabelRemove: false,
+        labelsFilterBasePath: mockConfig.labelsFilterBasePath,
+        labelsFilterParam: mockConfig.labelsFilterParam,
+      });
+    });
+
+    it('passes the selected labels if provided', () => {
+      createComponent({
+        config: {
+          ...mockConfig,
+          iid: '',
+          variant: 'embedded',
+          showEmbeddedLabelsList: true,
+          selectedLabels: mockLabels,
+        },
+      });
+
+      expect(findEmbeddedLabelsList().props('selectedLabels')).toStrictEqual(mockLabels);
+      expect(findDropdownContents().props('selectedLabels')).toStrictEqual(mockLabels);
+    });
+
+    it('emits the `onLabelRemove` when the embedded list triggers a removal', () => {
+      createComponent({
+        config: {
+          ...mockConfig,
+          iid: '',
+          variant: 'embedded',
+          showEmbeddedLabelsList: true,
+          selectedLabels: [mockRegularLabel],
+        },
+      });
+
+      findEmbeddedLabelsList().vm.$emit('onLabelRemove', [mockRegularLabel.id]);
+      expect(wrapper.emitted('onLabelRemove')).toStrictEqual([[[mockRegularLabel.id]]]);
     });
   });
 

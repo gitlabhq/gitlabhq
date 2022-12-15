@@ -4,8 +4,8 @@ query alertDetails($fullPath: ID!, $alertId: String) {
   project(fullPath: $fullPath) {
     id
     alertManagementAlerts(iid: $alertId) {
-      # eslint-disable-next-line @graphql-eslint/require-id-when-available
       nodes {
+        id
         ...AlertDetailItem
       }
     }

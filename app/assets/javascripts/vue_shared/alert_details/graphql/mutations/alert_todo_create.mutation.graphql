@@ -4,7 +4,6 @@
 mutation alertTodoCreate($projectPath: ID!, $iid: String!) {
   alertTodoCreate(input: { iid: $iid, projectPath: $projectPath }) {
     errors
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     alert {
       ...AlertDetailItem
       assignees {

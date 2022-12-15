@@ -287,6 +287,35 @@ The identity can be specified with the following keys:
 
 See the [official Kubernetes documentation for details](https://kubernetes.io/docs/reference/access-authn-authz/authentication/#user-impersonation).
 
+## Restrict project and group access to specific environments **(FREE)**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343885) in GitLab 15.7.
+
+By default, if your agent is [available to a project](#authorize-the-agent), all of the project's CI/CD jobs can use that agent.
+
+To restrict access to the agent to only jobs with specific environments, add `environments` to `ci_access.projects` or `ci_access.groups`. For example:
+
+  ```yaml
+  ci_access:
+    projects:
+      - id: path/to/project-1
+      - id: path/to/project-2
+        environments:
+          - staging
+          - review/*
+    groups:
+      - id: path/to/group-1
+        environments:
+          - production
+  ```
+
+In this example:
+
+- All CI/CD jobs under `project-1` can access the agent.
+- CI/CD jobs under `project-2` with `staging` or `review/*` environments can access the agent.
+  - `*` is a wildcard, so `review/*` matches all environments under `review`.
+- CI/CD jobs for projects under `group-1` with `production` environments can access the agent.
+
 ## Related topics
 
 - [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)

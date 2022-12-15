@@ -64,6 +64,7 @@ module Types
     mount_mutation Mutations::Issues::Update
     mount_mutation Mutations::Issues::Move
     mount_mutation Mutations::Issues::LinkAlerts
+    mount_mutation Mutations::Issues::UnlinkAlert
     mount_mutation Mutations::Labels::Create
     mount_mutation Mutations::MergeRequests::Accept
     mount_mutation Mutations::MergeRequests::Create

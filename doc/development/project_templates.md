@@ -138,3 +138,12 @@ Sometimes it is necessary to completely replace the template files. In this case
 ## For GitLab team members
 
 Please ensure the merge request has been reviewed by the Security Counterpart before merging.
+
+To review a merge request which changes a vendored project template, run the `check-template-changes` script:
+
+```shell
+scripts/check-template-changes vendor/project_templates/<template_name>.tar.gz
+```
+
+This script outputs a diff of the file changes against the default branch and also verifies that
+the template repository matches the source template project.

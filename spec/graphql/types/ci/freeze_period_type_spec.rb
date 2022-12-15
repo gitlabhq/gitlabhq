@@ -7,7 +7,7 @@ RSpec.describe GitlabSchema.types['CiFreezePeriod'], feature_category: :release_
 
   it 'has the expected fields' do
     expected_fields = %w[
-      status start_cron end_cron start_time end_time
+      status start_cron end_cron cron_timezone start_time end_time
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

@@ -131,3 +131,41 @@ To permit a user with the Developer role to run destructive commands, you need a
    1. Set the value of `TF_USERNAME` to the username of your project access token.
    1. Set the value of `TF_PASSWORD` to the password of your project access token.
    1. Optional. Protect the variables to make them only available in pipelines that run on protected branches or protected tags.
+
+### State not found if the state name contains a period
+
+GitLab 15.6 and earlier returned 404 errors if the state name contained a period and Terraform attempted
+a state lock.
+
+You could work around this limitation by adding `-lock=false` to your Terraform commands. The GitLab backend
+accepted the request, but internally stripped the period and any characters that followed from the state name.
+For example, a state named `foo.bar` would be stored as `foo`. However, this workaround wasn't recommended,
+and could even cause state name collisions.
+
+In GitLab 15.7 and later, [state names with periods are supported](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106861). If you use the `-lock=false` workaround and upgrade to GitLab 15.7 or later,
+your jobs might fail. The failure is caused by the GitLab backend storing a new state with the full state name, which diverges from the existing state name.
+
+To fix the failing jobs, rename your state names to exclude the period and any characters that follow it. For example,
+if you use the Terraform template:
+
+```yaml
+include:
+  - template: Terraform.gitlab-ci.yml
+
+variables:
+  TF_STATE_NAME: foo
+```
+
+If your `TF_HTTP_ADDRESS`, `TF_HTTP_LOCK_ADDRESS` and `TF_HTTP_UNLOCK_ADDRESS` are set, be sure
+to update the state names there.
+
+Alternatively, you can [migrate your terraform state](terraform_state.md#migrate-to-a-gitlab-managed-terraform-state).
+
+#### Self-managed GitLab instances
+
+By default, support for state names with periods is not enabled on self-managed GitLab.
+You can enable it from the Rails console:
+
+```ruby
+Feature.enable(:allow_dots_on_tf_state_names)
+```

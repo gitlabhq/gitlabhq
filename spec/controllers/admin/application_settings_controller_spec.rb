@@ -326,6 +326,19 @@ RSpec.describe Admin::ApplicationSettingsController, :do_not_mock_admin_mode_set
       end
     end
 
+    describe 'Terraform settings' do
+      let(:application_setting) { ApplicationSetting.current }
+
+      context 'max_terraform_state_size_bytes' do
+        it 'updates the receive_max_input_size setting' do
+          put :update, params: { application_setting: { max_terraform_state_size_bytes: '123' } }
+
+          expect(response).to redirect_to(general_admin_application_settings_path)
+          expect(application_setting.max_terraform_state_size_bytes).to eq(123)
+        end
+      end
+    end
+
     describe 'user_email_lookup_limit aliasing' do
       let(:application_setting) { ApplicationSetting.current }
       let(:user_email_lookup_limit) { 8675 }

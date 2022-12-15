@@ -43,6 +43,7 @@ They are frequently updated, and everyone should make sure they are aware of the
 - [ ] Set yourself as the Assignee, meaning you are the DRI.
 - [ ] If the deprecation is a [breaking change](https://about.gitlab.com/handbook/product/gitlab-the-product/#breaking-change), add label `breaking change`.
 - [ ] Follow the process to [create a deprecation YAML file](https://about.gitlab.com/handbook/marketing/blog/release-posts/#creating-a-deprecation-entry).
+- [ ] Make sure that the milestone dates are based on the dates in [Product milestone creation](https://about.gitlab.com/handbook/product/milestones/#product-milestone-creation).
 - [ ] Add reviewers by the 10th.
 - [ ] When ready to be merged and not later than the 15th, add the `~ready` label and @ message the TW for final review and merge.
 
@@ -73,6 +74,8 @@ yourself as a reviewer if it's not ready for merge yet.
 - [ ] Title:
   - Length limit: 7 words (not including articles or prepositions).
   - Capitalization: ensure the title is [sentence cased](https://design.gitlab.com/content/punctuation#case).
+- [ ] Dates:
+  - Make sure that the milestone dates are based on the dates in [Product milestone creation](https://about.gitlab.com/handbook/product/milestones/#product-milestone-creation).
 - [ ] Consistency:
   - Ensure that all resources (docs, deprecation, etc.) refer to the feature with the same term / feature name.
 - [ ] Content:

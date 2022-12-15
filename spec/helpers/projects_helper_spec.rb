@@ -1348,6 +1348,8 @@ RSpec.describe ProjectsHelper do
       0 | 1 | '1 commit ahead of upstream repository'
       0 | 2 | '2 commits ahead of upstream repository'
       5 | 7 | '5 commits behind, 7 commits ahead of upstream repository'
+      nil | 7 | 'Fork has diverged from upstream repository'
+      7 | nil | 'Fork has diverged from upstream repository'
     end
 
     with_them do

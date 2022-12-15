@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Sbom::Source do
+RSpec.describe Gitlab::Ci::Reports::Sbom::Source, feature_category: :dependency_management do
   let(:attributes) do
     {
       type: :dependency_scanning,

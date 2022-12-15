@@ -97,3 +97,15 @@
 
   .settings-content
     = render 'sidekiq_job_limits'
+
+%section.settings.as-terraform-limits.no-animate#js-terraform-limits-settings{ class: ('expanded' if expanded_by_default?) }
+  .settings-header
+    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
+      = s_('TerraformLimits|Terraform limits')
+    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
+      = expanded_by_default? ? _('Collapse') : _('Expand')
+    %p
+      = s_('TerraformLimits|Limits for Terraform features')
+      = link_to s_('TerraformLimits|Learn more about Terraform limits.'), help_page_path('user/admin_area/settings/terraform_limits.md'), target: '_blank', rel: 'noopener noreferrer'
+  .settings-content
+    = render 'terraform_limits'

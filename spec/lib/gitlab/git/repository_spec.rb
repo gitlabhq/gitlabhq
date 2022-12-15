@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe Gitlab::Git::Repository do
+RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_management do
   include Gitlab::EncodingHelper
   include RepoHelpers
   using RSpec::Parameterized::TableSyntax
@@ -2552,6 +2552,32 @@ RSpec.describe Gitlab::Git::Repository do
           expect(new_repository.list_refs([tmp_ref]).map(&:name)).to match_array([tmp_ref])
         end
       end
+    end
+  end
+
+  describe '#check_objects_exist' do
+    it 'returns hash specifying which object exists in repo' do
+      refs_exist = %w(
+        b83d6e391c22777fca1ed3012fce84f633d7fed0
+        498214de67004b1da3d820901307bed2a68a8ef6
+        1b12f15a11fc6e62177bef08f47bc7b5ce50b141
+      )
+      refs_dont_exist = %w(
+        1111111111111111111111111111111111111111
+        2222222222222222222222222222222222222222
+      )
+      object_existence_map = repository.check_objects_exist(refs_exist + refs_dont_exist)
+      expect(object_existence_map).to eq({
+        'b83d6e391c22777fca1ed3012fce84f633d7fed0' => true,
+        '498214de67004b1da3d820901307bed2a68a8ef6' => true,
+        '1b12f15a11fc6e62177bef08f47bc7b5ce50b141' => true,
+        '1111111111111111111111111111111111111111' => false,
+        '2222222222222222222222222222222222222222' => false
+      })
+      expect(object_existence_map.keys).to eq(refs_exist + refs_dont_exist)
+
+      single_sha = 'b83d6e391c22777fca1ed3012fce84f633d7fed0'
+      expect(repository.check_objects_exist(single_sha)).to eq({ single_sha => true })
     end
   end
 end

@@ -519,7 +519,9 @@ sentry_issues: :gitlab_main
 serverless_domain_cluster: :gitlab_main
 service_desk_settings: :gitlab_main
 shards: :gitlab_main
+slack_api_scopes: :gitlab_main
 slack_integrations: :gitlab_main
+slack_integrations_scopes: :gitlab_main
 smartcard_identities: :gitlab_main
 snippet_repositories: :gitlab_main
 snippet_repository_storage_moves: :gitlab_main

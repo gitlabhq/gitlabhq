@@ -385,6 +385,12 @@ module Gitlab
         end
       end
 
+      def check_objects_exist(refs)
+        wrapped_gitaly_errors do
+          gitaly_commit_client.object_existence_map(Array.wrap(refs))
+        end
+      end
+
       def new_blobs(newrevs, dynamic_timeout: nil)
         newrevs = Array.wrap(newrevs).reject { |rev| rev.blank? || rev == ::Gitlab::Git::BLANK_SHA }
         return [] if newrevs.empty?

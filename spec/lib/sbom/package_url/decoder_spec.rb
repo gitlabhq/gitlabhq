@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../support/shared_contexts/lib/sbom/package_url_shared_contexts'
 
-RSpec.describe Sbom::PackageUrl::Decoder do
+RSpec.describe Sbom::PackageUrl::Decoder, feature_category: :dependency_management do
   describe '#decode' do
     subject(:decode) { described_class.new(purl).decode! }
 

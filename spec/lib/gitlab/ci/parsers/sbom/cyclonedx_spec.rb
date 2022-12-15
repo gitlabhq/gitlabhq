@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx do
+RSpec.describe Gitlab::Ci::Parsers::Sbom::Cyclonedx, feature_category: :dependency_management do
   let(:report) { instance_double('Gitlab::Ci::Reports::Sbom::Report') }
   let(:report_data) { base_report_data }
   let(:raw_report_data) { report_data.to_json }

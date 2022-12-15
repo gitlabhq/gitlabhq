@@ -2,7 +2,7 @@
 
 module IncidentManagement
   module LinkAlerts
-    class CreateService < ::BaseProjectService
+    class CreateService < BaseService
       # @param incident [Issue] an incident to link alerts
       # @param current_user [User]
       # @param alert_references [[String]] a list of alert references. Can be either a short reference or URL
@@ -28,7 +28,7 @@ module IncidentManagement
 
       private
 
-      attr_reader :incident, :current_user, :alert_references
+      attr_reader :alert_references
 
       def extract_alerts_from_references
         text = alert_references.join(' ')
@@ -36,22 +36,6 @@ module IncidentManagement
         extractor.analyze(text, {})
 
         extractor.alerts
-      end
-
-      def allowed?
-        current_user&.can?(:admin_issue, project)
-      end
-
-      def success
-        ServiceResponse.success(payload: { incident: incident })
-      end
-
-      def error(message)
-        ServiceResponse.error(message: message)
-      end
-
-      def error_no_permissions
-        error(_('You have insufficient permissions to manage alerts for this project'))
       end
     end
   end

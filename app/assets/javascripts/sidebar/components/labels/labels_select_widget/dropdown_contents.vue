@@ -110,6 +110,9 @@ export default {
     isStandalone() {
       return isDropdownVariantStandalone(this.variant);
     },
+    isSidebar() {
+      return isDropdownVariantSidebar(this.variant);
+    },
   },
   watch: {
     localSelectedLabels: {
@@ -129,7 +132,7 @@ export default {
       }
     },
     selectedLabels(newVal) {
-      if (!this.isDirty) {
+      if (!this.isDirty || !this.isSidebar) {
         this.localSelectedLabels = newVal;
       }
     },
@@ -159,7 +162,7 @@ export default {
     },
     handleDropdownHide() {
       this.$emit('closeDropdown');
-      if (!isDropdownVariantSidebar(this.variant)) {
+      if (!this.isSidebar) {
         this.setLabels();
       }
     },

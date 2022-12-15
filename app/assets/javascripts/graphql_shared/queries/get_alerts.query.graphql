@@ -26,7 +26,6 @@ query getAlerts(
       before: $prevPageCursor
       domain: $domain
     ) {
-      # eslint-disable-next-line @graphql-eslint/require-id-when-available
       nodes {
         ...AlertListItem
         assignees {

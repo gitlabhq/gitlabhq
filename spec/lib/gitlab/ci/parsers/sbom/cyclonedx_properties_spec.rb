@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties do
+RSpec.describe Gitlab::Ci::Parsers::Sbom::CyclonedxProperties, feature_category: :dependency_management do
   subject(:parse_source_from_properties) { described_class.parse_source(properties) }
 
   context 'when properties are nil' do

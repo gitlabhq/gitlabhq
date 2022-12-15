@@ -114,6 +114,7 @@ module ApplicationSettingImplementation
         max_attachment_size: Settings.gitlab['max_attachment_size'],
         max_export_size: 0,
         max_import_size: 0,
+        max_terraform_state_size_bytes: 0,
         max_yaml_size_bytes: 1.megabyte,
         max_yaml_depth: 100,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,

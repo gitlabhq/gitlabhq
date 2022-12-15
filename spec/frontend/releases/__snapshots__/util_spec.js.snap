@@ -43,10 +43,10 @@ Object {
       },
       "author": Object {
         "__typename": "UserCore",
-        "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
         "id": Any<String>,
-        "username": "administrator",
-        "webUrl": "http://localhost/administrator",
+        "username": "user1",
+        "webUrl": "http://localhost/user1",
       },
       "commit": Object {
         "shortId": "b83d6e39",
@@ -141,10 +141,10 @@ Object {
       },
       "author": Object {
         "__typename": "UserCore",
-        "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+        "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
         "id": Any<String>,
-        "username": "administrator",
-        "webUrl": "http://localhost/administrator",
+        "username": "user1",
+        "webUrl": "http://localhost/user1",
       },
       "commit": Object {
         "shortId": "b83d6e39",
@@ -365,10 +365,10 @@ Object {
     },
     "author": Object {
       "__typename": "UserCore",
-      "avatarUrl": "https://www.gravatar.com/avatar/16f8e2050ce10180ca571c2eb19cfce2?s=80&d=identicon",
+      "avatarUrl": "https://www.gravatar.com/avatar/eb329fbfeccd9e6d45ff159da8736876?s=80&d=identicon",
       "id": Any<String>,
-      "username": "administrator",
-      "webUrl": "http://localhost/administrator",
+      "username": "user1",
+      "webUrl": "http://localhost/user1",
     },
     "commit": Object {
       "shortId": "b83d6e39",

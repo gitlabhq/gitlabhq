@@ -3,8 +3,8 @@ query getAlert($iid: String!, $fullPath: ID!) {
     id
     issue(iid: $iid) {
       id
-      # eslint-disable-next-line @graphql-eslint/require-id-when-available
       alertManagementAlert {
+        id
         iid
         title
         detailsUrl

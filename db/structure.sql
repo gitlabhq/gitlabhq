@@ -21658,6 +21658,21 @@ CREATE SEQUENCE shards_id_seq
 
 ALTER SEQUENCE shards_id_seq OWNED BY shards.id;
 
+CREATE TABLE slack_api_scopes (
+    id bigint NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_738678187a CHECK ((char_length(name) <= 100))
+);
+
+CREATE SEQUENCE slack_api_scopes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE slack_api_scopes_id_seq OWNED BY slack_api_scopes.id;
+
 CREATE TABLE slack_integrations (
     id integer NOT NULL,
     team_id character varying NOT NULL,
@@ -21682,6 +21697,21 @@ CREATE SEQUENCE slack_integrations_id_seq
     CACHE 1;
 
 ALTER SEQUENCE slack_integrations_id_seq OWNED BY slack_integrations.id;
+
+CREATE TABLE slack_integrations_scopes (
+    id bigint NOT NULL,
+    slack_api_scope_id bigint NOT NULL,
+    slack_integration_id bigint NOT NULL
+);
+
+CREATE SEQUENCE slack_integrations_scopes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE slack_integrations_scopes_id_seq OWNED BY slack_integrations_scopes.id;
 
 CREATE TABLE smartcard_identities (
     id bigint NOT NULL,
@@ -24519,7 +24549,11 @@ ALTER TABLE ONLY sentry_issues ALTER COLUMN id SET DEFAULT nextval('sentry_issue
 
 ALTER TABLE ONLY shards ALTER COLUMN id SET DEFAULT nextval('shards_id_seq'::regclass);
 
+ALTER TABLE ONLY slack_api_scopes ALTER COLUMN id SET DEFAULT nextval('slack_api_scopes_id_seq'::regclass);
+
 ALTER TABLE ONLY slack_integrations ALTER COLUMN id SET DEFAULT nextval('slack_integrations_id_seq'::regclass);
+
+ALTER TABLE ONLY slack_integrations_scopes ALTER COLUMN id SET DEFAULT nextval('slack_integrations_scopes_id_seq'::regclass);
 
 ALTER TABLE ONLY smartcard_identities ALTER COLUMN id SET DEFAULT nextval('smartcard_identities_id_seq'::regclass);
 
@@ -26836,8 +26870,14 @@ ALTER TABLE ONLY service_desk_settings
 ALTER TABLE ONLY shards
     ADD CONSTRAINT shards_pkey PRIMARY KEY (id);
 
+ALTER TABLE ONLY slack_api_scopes
+    ADD CONSTRAINT slack_api_scopes_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY slack_integrations
     ADD CONSTRAINT slack_integrations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY slack_integrations_scopes
+    ADD CONSTRAINT slack_integrations_scopes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY smartcard_identities
     ADD CONSTRAINT smartcard_identities_pkey PRIMARY KEY (id);
@@ -30904,6 +30944,10 @@ CREATE INDEX index_service_desk_settings_on_file_template_project_id ON service_
 CREATE UNIQUE INDEX index_shards_on_name ON shards USING btree (name);
 
 CREATE UNIQUE INDEX index_site_profile_secret_variables_on_site_profile_id_and_key ON dast_site_profile_secret_variables USING btree (dast_site_profile_id, key);
+
+CREATE UNIQUE INDEX index_slack_api_scopes_on_name ON slack_api_scopes USING btree (name);
+
+CREATE UNIQUE INDEX index_slack_api_scopes_on_name_and_integration ON slack_integrations_scopes USING btree (slack_integration_id, slack_api_scope_id);
 
 CREATE INDEX index_slack_integrations_on_integration_id ON slack_integrations USING btree (integration_id);
 
@@ -35189,6 +35233,9 @@ ALTER TABLE ONLY atlassian_identities
 ALTER TABLE ONLY serverless_domain_cluster
     ADD CONSTRAINT fk_rails_c09009dee1 FOREIGN KEY (pages_domain_id) REFERENCES pages_domains(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY slack_integrations_scopes
+    ADD CONSTRAINT fk_rails_c0e018a6fe FOREIGN KEY (slack_api_scope_id) REFERENCES slack_api_scopes(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY packages_npm_metadata
     ADD CONSTRAINT fk_rails_c0e5fce6f3 FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
 
@@ -35458,6 +35505,9 @@ ALTER TABLE ONLY alert_management_alert_user_mentions
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_rails_ebc283ccf1 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY slack_integrations_scopes
+    ADD CONSTRAINT fk_rails_ece1eb6772 FOREIGN KEY (slack_integration_id) REFERENCES slack_integrations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY iterations_cadences
     ADD CONSTRAINT fk_rails_ece400c55a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

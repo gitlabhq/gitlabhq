@@ -144,7 +144,7 @@ rule in the defined policy are met.
 | `site_profile` | `string` | Name of the selected [DAST site profile](../dast/proxy-based.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
 | `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/proxy-based.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
 | `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
-| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs will be run by runner with the specified tags. Tags are not supported for the `sast` and `dependency_scanning` scan types because they use the default template and run in a child pipeline. |
+| `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs will be run by runner with the specified tags. |
 
 Note the following:
 
@@ -164,7 +164,6 @@ Note the following:
   mode when executed as part of a scheduled scan.
 - A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
-- The Dependency Scanning and SAST scans use the default templates and run in a [child pipeline](../../../ci/pipelines/downstream_pipelines.md#parent-child-pipelines).
 
 ## Example security policies project
 

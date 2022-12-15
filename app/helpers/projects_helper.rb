@@ -485,6 +485,10 @@ module ProjectsHelper
   def fork_divergence_message(counts)
     messages = []
 
+    if counts[:behind].nil? || counts[:ahead].nil?
+      return s_('ForksDivergence|Fork has diverged from upstream repository')
+    end
+
     if counts[:behind] > 0
       messages << s_("ForksDivergence|%{behind} %{commit_word} behind") % {
         behind: counts[:behind], commit_word: n_('commit', 'commits', counts[:behind])

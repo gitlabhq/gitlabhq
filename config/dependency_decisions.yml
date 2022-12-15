@@ -375,3 +375,9 @@
     :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/1265
     :versions: []
     :when: 2022-12-02 08:24:56.611523399 Z
+- - :approve
+  - llhttp-ffi
+  - :who: Hunter Stewart
+    :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/1293
+    :versions: []
+    :when: 2022-12-09 20:28:33.507704000 Z

@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlDropdown, GlDropdownItem, GlSprintf } from '@gitlab/ui';
+import { GlAlert, GlButton, GlListbox, GlSprintf } from '@gitlab/ui';
 import { GlAreaChart } from '@gitlab/ui/dist/charts';
 import { get } from 'lodash';
 import { formatDate } from '~/lib/utils/datetime_utility';
@@ -12,8 +12,7 @@ export default {
     GlAlert,
     GlAreaChart,
     GlButton,
-    GlDropdown,
-    GlDropdownItem,
+    GlListbox,
     GlSprintf,
   },
   props: {
@@ -96,6 +95,14 @@ export default {
     formattedData() {
       return this.sortedData.map((value) => [value.date, value.coverage]);
     },
+    mappedCoverages() {
+      return this.dailyCoverageData?.map((item, index) => ({
+        // A numerical index makes an item into a group header, so
+        // convert these to strings to get non-header GlListbox items
+        value: index.toString(),
+        text: item.group_name,
+      }));
+    },
     chartData() {
       return [
         {
@@ -175,18 +182,13 @@ export default {
           {{ __('It seems that there is currently no available data for code coverage') }}
         </span>
       </gl-alert>
-      <gl-dropdown v-if="canShowData" :text="selectedDailyCoverageName">
-        <gl-dropdown-item
-          v-for="({ group_name }, index) in dailyCoverageData"
-          :key="index"
-          :value="group_name"
-          is-check-item
-          :is-checked="index === selectedCoverageIndex"
-          @click="setSelectedCoverage(index)"
-        >
-          {{ group_name }}
-        </gl-dropdown-item>
-      </gl-dropdown>
+      <gl-listbox
+        v-if="canShowData"
+        :items="mappedCoverages"
+        :selected="selectedCoverageIndex.toString()"
+        :toggle-text="selectedDailyCoverageName"
+        @select="setSelectedCoverage"
+      />
     </div>
     <gl-area-chart
       v-if="!isLoading"

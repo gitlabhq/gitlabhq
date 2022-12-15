@@ -26,12 +26,9 @@ describe('RelatedItemsTree', () => {
           'Objective',
         );
 
-        // TODO: Uncomment once following two issues addressed
-        // https://gitlab.com/gitlab-org/gitlab/-/issues/381833
-        // https://gitlab.com/gitlab-org/gitlab/-/issues/385084
-        // expect(wrapper.findAllComponents(GlDropdownSectionHeader).at(1).text()).toContain(
-        //   'Key result',
-        // );
+        expect(wrapper.findAllComponents(GlDropdownSectionHeader).at(1).text()).toContain(
+          'Key result',
+        );
       });
     });
   });

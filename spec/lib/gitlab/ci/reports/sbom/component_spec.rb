@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Reports::Sbom::Component do
+RSpec.describe Gitlab::Ci::Reports::Sbom::Component, feature_category: :dependency_management do
   let(:component_type) { 'library' }
   let(:name) { 'component-name' }
   let(:purl_type) { 'npm' }

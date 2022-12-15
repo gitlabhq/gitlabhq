@@ -5,7 +5,7 @@ require 'rspec-parameterized'
 
 require_relative '../../../support/shared_contexts/lib/sbom/package_url_shared_contexts'
 
-RSpec.describe Sbom::PackageUrl::ArgumentValidator do
+RSpec.describe Sbom::PackageUrl::ArgumentValidator, feature_category: :dependency_management do
   let(:mock_package_url) { Struct.new(:type, :namespace, :name, :version, :qualifiers, keyword_init: true) }
   let(:package) do
     mock_package_url.new(

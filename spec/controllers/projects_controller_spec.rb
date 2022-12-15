@@ -1627,6 +1627,12 @@ RSpec.describe ProjectsController do
         context 'applies correct scope when throttling', :clean_gitlab_redis_rate_limiting do
           before do
             stub_application_setting(project_download_export_limit: 1)
+
+            travel_to Date.current.beginning_of_day
+          end
+
+          after do
+            travel_back
           end
 
           it 'applies throttle per namespace' do

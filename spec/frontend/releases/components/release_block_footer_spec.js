@@ -66,7 +66,7 @@ describe('Release block footer', () => {
         describe.each`
           authorType   | authorFlag                | expectedAuthorString
           ${'empty'}   | ${undefined}              | ${null}
-          ${'present'} | ${originalRelease.author} | ${'by administrator'}
+          ${'present'} | ${originalRelease.author} | ${'by user1'}
         `('with author set to $authorType', ({ authorFlag, expectedAuthorString }) => {
           const propsData = { sort: sortFlag, author: authorFlag };
           if (dateFlag !== '') {

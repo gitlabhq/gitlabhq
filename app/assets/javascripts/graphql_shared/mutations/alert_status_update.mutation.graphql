@@ -3,8 +3,8 @@
 mutation updateAlertStatus($projectPath: ID!, $status: AlertManagementStatus!, $iid: String!) {
   updateAlertStatus(input: { iid: $iid, status: $status, projectPath: $projectPath }) {
     errors
-    # eslint-disable-next-line @graphql-eslint/require-id-when-available
     alert {
+      id
       iid
       status
       endedAt

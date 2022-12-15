@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning do
+RSpec.describe Gitlab::Ci::Parsers::Sbom::Source::DependencyScanning, feature_category: :dependency_management do
   subject { described_class.source(property_data) }
 
   context 'when all property data is present' do

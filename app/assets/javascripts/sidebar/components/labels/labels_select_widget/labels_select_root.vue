@@ -12,6 +12,7 @@ import SidebarEditableItem from '../../sidebar_editable_item.vue';
 import { DEBOUNCE_DROPDOWN_DELAY, DropdownVariant } from './constants';
 import DropdownContents from './dropdown_contents.vue';
 import DropdownValue from './dropdown_value.vue';
+import EmbeddedLabelsList from './embedded_labels_list.vue';
 import {
   isDropdownVariantSidebar,
   isDropdownVariantStandalone,
@@ -22,6 +23,7 @@ export default {
   components: {
     DropdownValue,
     DropdownContents,
+    EmbeddedLabelsList,
     SidebarEditableItem,
   },
   mixins: [glFeatureFlagsMixin()],
@@ -46,6 +48,11 @@ export default {
       default: false,
     },
     allowMultiselect: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showEmbeddedLabelsList: {
       type: Boolean,
       required: false,
       default: false,
@@ -106,6 +113,11 @@ export default {
       type: String,
       required: true,
     },
+    selectedLabels: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -124,10 +136,20 @@ export default {
       return this.issuableLabels.map((label) => label.id);
     },
     issuableLabels() {
-      return this.issuable?.labels.nodes || [];
+      if (this.iid !== '') {
+        return this.issuable?.labels.nodes || [];
+      }
+
+      return this.selectedLabels || [];
     },
     issuableId() {
       return this.issuable?.id;
+    },
+    isRealtimeEnabled() {
+      return this.glFeatures.realtimeLabels;
+    },
+    isLabelListEnabled() {
+      return this.showEmbeddedLabelsList && isDropdownVariantEmbedded(this.variant);
     },
   },
   apollo: {
@@ -311,7 +333,10 @@ export default {
       }
     },
     handleLabelRemove(labelId) {
-      this.updateSelectedLabels(this.getRemoveVariables(labelId));
+      if (this.iid !== '') {
+        this.updateSelectedLabels(this.getRemoveVariables(labelId));
+      }
+
       this.$emit('onLabelRemove', labelId);
     },
     isDropdownVariantSidebar,
@@ -385,22 +410,32 @@ export default {
         </template>
       </sidebar-editable-item>
     </template>
-    <dropdown-contents
-      v-else
-      ref="dropdownContents"
-      :allow-multiselect="allowMultiselect"
-      :dropdown-button-text="dropdownButtonText"
-      :labels-list-title="labelsListTitle"
-      :footer-create-label-title="footerCreateLabelTitle"
-      :footer-manage-label-title="footerManageLabelTitle"
-      :labels-create-title="labelsCreateTitle"
-      :selected-labels="issuableLabels"
-      :variant="variant"
-      :full-path="fullPath"
-      :workspace-type="workspaceType"
-      :attr-workspace-path="attrWorkspacePath"
-      :label-create-type="labelCreateType"
-      @setLabels="handleDropdownClose"
-    />
+    <template v-else>
+      <dropdown-contents
+        ref="dropdownContents"
+        :allow-multiselect="allowMultiselect"
+        :dropdown-button-text="dropdownButtonText"
+        :labels-list-title="labelsListTitle"
+        :footer-create-label-title="footerCreateLabelTitle"
+        :footer-manage-label-title="footerManageLabelTitle"
+        :labels-create-title="labelsCreateTitle"
+        :selected-labels="issuableLabels"
+        :variant="variant"
+        :full-path="fullPath"
+        :workspace-type="workspaceType"
+        :attr-workspace-path="attrWorkspacePath"
+        :label-create-type="labelCreateType"
+        @setLabels="handleDropdownClose"
+      />
+      <embedded-labels-list
+        v-if="isLabelListEnabled"
+        :disabled="labelsSelectInProgress"
+        :selected-labels="issuableLabels"
+        :allow-label-remove="allowLabelRemove"
+        :labels-filter-base-path="labelsFilterBasePath"
+        :labels-filter-param="labelsFilterParam"
+        @onLabelRemove="handleLabelRemove"
+      />
+    </template>
   </div>
 </template>
