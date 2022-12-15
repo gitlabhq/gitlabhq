@@ -1,0 +1,8 @@
+---
+name: add_refresh_pull_mirror_worker
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103665
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/382226
+milestone: '15.7'
+type: development
+group: group::source code
+default_enabled: false

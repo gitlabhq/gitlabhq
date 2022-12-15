@@ -32,6 +32,7 @@ module Resolvers
           pipeline: [:user],
           detailed_status: [
             :metadata,
+            { pipeline: [:merge_request] },
             { project: [:route, { namespace: :route }] }
           ],
           commit_path: [:pipeline, { project: [:route, { namespace: [:route] }] }],

@@ -1,8 +1,0 @@
-name: policy_project_updated
-description: "This event is triggered whenever the security policy project is updated for a project."
-introduced_by_issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/377877"
-introduced_by_mr: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102154"
-milestone: "15.6"
-feature_category: "security_policy_management"
-saved_to_database: true
-streamed: false

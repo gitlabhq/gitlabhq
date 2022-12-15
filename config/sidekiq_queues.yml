@@ -441,6 +441,8 @@
   - 1
 - - propagate_integration_project
   - 1
+- - pull_mirrors_reenable_configuration
+  - 1
 - - reactive_caching
   - 1
 - - rebase

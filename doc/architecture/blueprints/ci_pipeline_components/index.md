@@ -509,6 +509,6 @@ Domain experts:
 | Area                         | Who
 |------------------------------|------------------------|
 | Verify / Pipeline authoring  | Avielle Wolfe          |
-| Verify / Pipeline authoring  | Furkan Ayhan           |
+| Verify / Pipeline authoring  | Laura Montemayor-Rodriguez  |
 
 <!-- vale gitlab.Spelling = YES -->

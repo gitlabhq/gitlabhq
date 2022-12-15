@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'admin/application_settings/_repository_check.html.haml' do
+RSpec.describe 'admin/application_settings/_repository_check.html.haml', feature_category: :source_code_management do
   let_it_be(:user) { create(:admin) }
   let_it_be(:application_setting) { build(:application_setting) }
 
@@ -40,9 +40,28 @@ RSpec.describe 'admin/application_settings/_repository_check.html.haml' do
       render
 
       expect(rendered).to have_field('Enable automatic repository housekeeping')
-      expect(rendered).to have_field('Incremental repack period')
-      expect(rendered).to have_field('Full repack period')
-      expect(rendered).to have_field('Git GC period')
+      expect(rendered).to have_field('Optimize repository period')
+
+      # TODO: Remove it along with optimized_housekeeping feature flag
+      expect(rendered).not_to have_field('Incremental repack period')
+      expect(rendered).not_to have_field('Full repack period')
+      expect(rendered).not_to have_field('Git GC period')
+    end
+
+    context 'when optimized_housekeeping is disabled' do
+      before do
+        stub_feature_flags(optimized_housekeeping: false)
+      end
+
+      it 'renders the correct setting subsection content' do
+        render
+
+        expect(rendered).to have_field('Enable automatic repository housekeeping')
+        expect(rendered).to have_field('Incremental repack period')
+        expect(rendered).to have_field('Full repack period')
+        expect(rendered).to have_field('Git GC period')
+        expect(rendered).not_to have_field('Optimize repository period')
+      end
     end
   end
 

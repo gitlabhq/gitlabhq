@@ -463,6 +463,7 @@ describe('Web IDE link component', () => {
             showCloseButton: '',
             target: 'web-ide-link',
             triggers: 'manual',
+            boundaryPadding: 80,
           }),
         );
       });

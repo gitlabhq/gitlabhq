@@ -78,6 +78,17 @@ module Gitlab
             definitions.keys.map(&:to_s)
           end
 
+          def defined?(key)
+            get(key).present?
+          end
+
+          def stream_only?(key)
+            event_definition = get(key)
+            return false unless event_definition
+
+            event_definition.streamed && !event_definition.saved_to_database
+          end
+
           private
 
           def load_all!

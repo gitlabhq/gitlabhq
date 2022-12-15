@@ -5,8 +5,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 import blobBundle from '~/blob_edit/blob_bundle';
 
 import SourceEditor from '~/blob_edit/edit_blob';
+import { createAlert } from '~/flash';
 
 jest.mock('~/blob_edit/edit_blob');
+jest.mock('~/flash');
 
 describe('BlobBundle', () => {
   it('does not load SourceEditor by default', () => {
@@ -91,6 +93,28 @@ describe('BlobBundle', () => {
         label: 'suggest_gitlab_ci_yml',
         property: 'owner',
       });
+    });
+  });
+
+  describe('Error handling', () => {
+    let message;
+    beforeEach(() => {
+      setHTMLFixture(`<div class="js-edit-blob-form" data-blob-filename="blah"></div>`);
+      message = 'Foo';
+      SourceEditor.mockImplementation(() => {
+        throw new Error(message);
+      });
+    });
+
+    afterEach(() => {
+      resetHTMLFixture();
+      SourceEditor.mockClear();
+    });
+
+    it('correctly outputs error message when it occurs', async () => {
+      blobBundle();
+      await waitForPromises();
+      expect(createAlert).toHaveBeenCalledWith({ message });
     });
   });
 });

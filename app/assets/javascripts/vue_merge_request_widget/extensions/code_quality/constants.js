@@ -2,9 +2,9 @@ import { n__, s__, sprintf } from '~/locale';
 
 export const i18n = {
   label: s__('ciReport|Code Quality'),
-  loading: s__('ciReport|Code Quality test metrics results are being parsed'),
-  error: s__('ciReport|Code Quality failed loading results'),
-  noChanges: s__(`ciReport|No changes to Code Quality.`),
+  loading: s__('ciReport|Code Quality is loading'),
+  error: s__('ciReport|Code Quality failed to load results'),
+  noChanges: s__(`ciReport|Code Quality hasn't changed.`),
   prependText: s__(`ciReport|in`),
   fixed: s__(`ciReport|Fixed`),
   pluralReport: (errors) =>

@@ -1541,7 +1541,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "1 user"
-msgid_plural "%{num} users"
+msgid_plural "%d users"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -12272,7 +12272,10 @@ msgstr ""
 msgid "DORA4Metrics|Cycle time"
 msgstr ""
 
-msgid "DORA4Metrics|DORA metrics for %{groupName} group"
+msgid "DORA4Metrics|DORA metrics for %{name} group"
+msgstr ""
+
+msgid "DORA4Metrics|DORA metrics for %{name} project"
 msgstr ""
 
 msgid "DORA4Metrics|Date"
@@ -28348,6 +28351,9 @@ msgstr ""
 msgid "Number of Git pushes after which %{code_start}git gc%{code_end} is run."
 msgstr ""
 
+msgid "Number of Git pushes after which Gitaly is asked to optimize a repository."
+msgstr ""
+
 msgid "Number of Git pushes after which a full %{code_start}git repack%{code_end} is run."
 msgstr ""
 
@@ -28992,6 +28998,9 @@ msgid "OperationsDashboard|The operations dashboard provides a summary of each p
 msgstr ""
 
 msgid "Opstrace endpoint for Error Tracking integration"
+msgstr ""
+
+msgid "Optimize repository period"
 msgstr ""
 
 msgid "Optimize your workflow with CI/CD Pipelines"
@@ -47883,8 +47892,10 @@ msgstr ""
 msgid "You've rejected %{user}"
 msgstr ""
 
-msgid "You've successfully purchased the %{plan} plan subscription for %{seats} and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
-msgstr ""
+msgid "You've successfully purchased the %{plan} plan subscription for 1 user and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
+msgid_plural "You've successfully purchased the %{plan} plan subscription for %{quantity} users and you'll receive a receipt by email. Your purchase may take a minute to sync, refresh the page if your subscription details haven't displayed yet."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "YouTube"
 msgstr ""
@@ -48666,10 +48677,13 @@ msgstr ""
 msgid "ciReport|Code Quality"
 msgstr ""
 
-msgid "ciReport|Code Quality failed loading results"
+msgid "ciReport|Code Quality failed to load results"
 msgstr ""
 
-msgid "ciReport|Code Quality test metrics results are being parsed"
+msgid "ciReport|Code Quality hasn't changed."
+msgstr ""
+
+msgid "ciReport|Code Quality is loading"
 msgstr ""
 
 msgid "ciReport|Code quality degraded due to 1 new issue"
@@ -48820,9 +48834,6 @@ msgid "ciReport|New"
 msgstr ""
 
 msgid "ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch."
-msgstr ""
-
-msgid "ciReport|No changes to Code Quality."
 msgstr ""
 
 msgid "ciReport|No changes to code quality"

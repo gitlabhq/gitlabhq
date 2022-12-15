@@ -353,7 +353,7 @@ gem 'batch-loader', '~> 2.0.1'
 gem 'peek', '~> 1.1'
 
 # Snowplow events tracking
-gem 'snowplow-tracker', '~> 0.6.1'
+gem 'snowplow-tracker', '~> 0.8.0'
 
 # Metrics
 gem 'webrick', '~> 1.6.1', require: false

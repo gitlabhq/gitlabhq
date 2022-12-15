@@ -393,6 +393,7 @@ export default {
           :target="$options.webIdeButtonId"
           :show="shouldShowCallout"
           :css-classes="['web-ide-promo-popover']"
+          :boundary-padding="80"
           show-close-button
           triggers="manual"
           @close-button-clicked="dismiss"

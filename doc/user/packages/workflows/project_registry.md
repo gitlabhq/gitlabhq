@@ -57,8 +57,8 @@ you do this, you can publish your npm package to your project using `npm publish
 ### Maven
 
 If you are using Maven, you update your `pom.xml` file with distribution sections. These updates include the
-appropriate URL for your project, as described in the [GitLab Maven Repository documentation](../maven_repository/index.md#project-level-maven-endpoint).
-Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/index.md#authenticate-with-a-personal-access-token-in-maven).
+appropriate URL for your project, as described in the [GitLab Maven Repository documentation](../maven_repository/index.md#naming-convention).
+Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/index.md#authenticate-to-the-package-registry).
 Now you can [publish Maven packages](../maven_repository/index.md#publish-a-package) to your project.
 
 ### Conan

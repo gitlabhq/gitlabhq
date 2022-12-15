@@ -376,7 +376,7 @@ Occasionally a migration may need to acquire multiple locks on different objects
 To prevent catalog bloat, ask for all those locks explicitly before performing any DDL.
 A better strategy is to split the migration, so that we only need to acquire one lock at the time.
 
-**Removing a column:**
+#### Removing a column
 
 ```ruby
 enable_lock_retries!
@@ -386,7 +386,7 @@ def change
 end
 ```
 
-**Multiple changes on the same table:**
+#### Multiple changes on the same table
 
 With the lock-retry methodology enabled, all operations wrap into a single transaction. When you have the lock,
 you should do as much as possible inside the transaction rather than trying to get another lock later.
@@ -406,7 +406,7 @@ def down
 end
 ```
 
-**Removing a foreign key:**
+#### Removing a foreign key
 
 ```ruby
 enable_lock_retries!
@@ -420,7 +420,7 @@ def down
 end
 ```
 
-**Changing default value for a column:**
+#### Changing default value for a column
 
 ```ruby
 enable_lock_retries!
@@ -434,7 +434,7 @@ def down
 end
 ```
 
-**Creating a new table with a foreign key:**
+#### Creating a new table with a foreign key
 
 We can wrap the `create_table` method with `with_lock_retries`:
 
@@ -453,7 +453,7 @@ def down
 end
 ```
 
-**Creating a new table when we have two foreign keys:**
+#### Creating a new table when we have two foreign keys
 
 Only one foreign key should be created per transaction. This is because [the addition of a foreign key constraint requires a `SHARE ROW EXCLUSIVE` lock on the referenced table](https://www.postgresql.org/docs/12/sql-createtable.html#:~:text=The%20addition%20of%20a%20foreign%20key%20constraint%20requires%20a%20SHARE%20ROW%20EXCLUSIVE%20lock%20on%20the%20referenced%20table), and locking multiple tables in the same transaction should be avoided.
 

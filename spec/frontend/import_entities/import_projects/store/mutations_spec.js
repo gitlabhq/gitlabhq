@@ -27,7 +27,12 @@ describe('import_projects store mutations', () => {
       state = {
         filter: 'some-value',
         repositories: ['some', ' repositories'],
-        pageInfo: { page: 1 },
+        pageInfo: {
+          page: 1,
+          startCursor: 'Y3Vyc30yOjI2',
+          endCursor: 'Y3Vyc29yOjI1',
+          hasNextPage: false,
+        },
       };
       mutations[types.SET_FILTER](state, NEW_VALUE);
     });
@@ -36,8 +41,11 @@ describe('import_projects store mutations', () => {
       expect(state.repositories.length).toBe(0);
     });
 
-    it('resets current page to 0', () => {
+    it('resets pagintation', () => {
       expect(state.pageInfo.page).toBe(0);
+      expect(state.pageInfo.startCursor).toBe(null);
+      expect(state.pageInfo.endCursor).toBe(null);
+      expect(state.pageInfo.hasNextPage).toBe(true);
     });
   });
 

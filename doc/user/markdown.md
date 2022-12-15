@@ -1547,6 +1547,7 @@ Tables are not part of the core Markdown specification, but are part of GitLab F
      by pipes (`|`).
    - You **can** have blank cells.
 1. Column widths are calculated dynamically based on the content of the cells.
+1. To use the pipe character (`|`) in the text and not as table delimiter, you must escape it with a backslash (`\|`).
 
 Example:
 
@@ -1598,13 +1599,39 @@ use `<br>` tags to force a cell to have multiple lines:
 | Item2 | This item has:<br>- Multiple items<br>- That we want listed separately |
 
 You can use HTML formatting in GitLab itself to add [task lists](#task-lists) with checkboxes,
-but they do not render properly on `docs.gitlab.com`:
+but they do not render properly on `docs.gitlab.com`. Note that these tasks will not save their
+state when selected, like regular GitLab task lists.
 
 ```markdown
 | header 1 | header 2 |
 | ---      | ---      |
 | cell 1   | cell 2   |
 | cell 3   | <ul><li> - [ ] Task one </li><li> - [ ] Task two </li></ul> |
+```
+
+To have fully functioning task lists in a table, create an HTML table with Markdown in the cells:
+
+```html
+<table>
+<thead>
+<tr><th>header 1</th><th>header 2</th></tr>
+</thead>
+<tbody>
+<tr>
+<td>cell 1</td>
+<td>cell 2</td>
+</tr>
+<tr>
+<td>cell 3</td>
+<td>
+
+- [ ] Task one
+- [ ] Task two
+
+</td>
+</tr>
+</tbody>
+</table>
 ```
 
 ##### Copy and paste from a spreadsheet

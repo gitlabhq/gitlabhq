@@ -622,9 +622,15 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
     let!(:project2) { create(:project, :repository, group: group1) }
     let!(:project3) { create(:project, :repository, group: group2) }
 
-    let!(:pipeline1) { create(:ci_pipeline, project: project1) }
-    let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
+    let!(:merge_request1) { create(:merge_request, source_project: project1) }
+    let!(:merge_request2) { create(:merge_request, source_project: project3) }
+
     let(:project_runner2) { create(:ci_runner, :project, projects: [project1, project2]) }
+    let!(:build1) { create(:ci_build, :success, name: 'Build One', runner: project_runner2, pipeline: pipeline1) }
+    let!(:pipeline1) do
+      create(:ci_pipeline, project: project1, source: :merge_request_event, merge_request: merge_request1, ref: 'main',
+                           target_sha: 'xxx')
+    end
 
     let(:query) do
       <<~QUERY
@@ -664,7 +670,8 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       # Add a new build to project_runner2
       project_runner2.runner_projects << build(:ci_runner_project, runner: project_runner2, project: project3)
-      pipeline2 = create(:ci_pipeline, project: project3)
+      pipeline2 = create(:ci_pipeline, project: project3, source: :merge_request_event, merge_request: merge_request2,
+                                       ref: 'main', target_sha: 'xxx')
       build2 = create(:ci_build, :success, name: 'Build Two', runner: project_runner2, pipeline: pipeline2)
 
       args[:current_user] = create(:user, :admin) # do not reuse same user

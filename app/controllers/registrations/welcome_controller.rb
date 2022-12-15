@@ -14,12 +14,16 @@ module Registrations
 
     def show
       return redirect_to path_for_signed_in_user(current_user) if completed_welcome_step?
+
+      track_event('render')
     end
 
     def update
       result = ::Users::SignupService.new(current_user, update_params).execute
 
       if result[:status] == :success
+        track_event('successfully_submitted_form')
+
         return redirect_to issues_dashboard_path(assignee_username: current_user.username) if show_tasks_to_be_done?
 
         return redirect_to update_success_path if show_signup_onboarding?
@@ -85,6 +89,10 @@ module Registrations
 
     # overridden in EE
     def update_success_path
+    end
+
+    # overridden in EE
+    def track_event(category)
     end
   end
 end

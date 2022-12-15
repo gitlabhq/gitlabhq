@@ -36,7 +36,12 @@ export default {
   [types.SET_FILTER](state, filter) {
     state.filter = filter;
     state.repositories = [];
-    state.pageInfo.page = 0;
+    state.pageInfo = {
+      page: 0,
+      startCursor: null,
+      endCursor: null,
+      hasNextPage: true,
+    };
   },
 
   [types.REQUEST_REPOS](state) {

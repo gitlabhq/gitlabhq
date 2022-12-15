@@ -129,6 +129,53 @@ RSpec.describe Gitlab::Audit::Type::Definition do
     end
   end
 
+  describe '.defined?' do
+    before do
+      allow(described_class).to receive(:definitions) do
+        { definition.key => definition }
+      end
+    end
+
+    it 'returns true if definition for the event name exists' do
+      expect(described_class.defined?('group_deploy_token_destroyed')).to be_truthy
+    end
+
+    it 'returns false if definition for the event name exists' do
+      expect(described_class.defined?('random_event_name')).to be_falsey
+    end
+  end
+
+  describe '.stream_only?' do
+    let(:stream_only_event_attributes) do
+      { name: 'policy_project_updated',
+        description: 'This event is triggered whenever the security policy project is updated for a project',
+        introduced_by_issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/2',
+        introduced_by_mr: 'https://gitlab.com/gitlab-org/gitlab/-/merge_requests/2',
+        feature_category: 'security_policy_management',
+        milestone: '15.6',
+        saved_to_database: false,
+        streamed: true }
+    end
+
+    let(:stream_only_event_path) { File.join('types', 'policy_project_updated.yml') }
+    let(:stream_only_event_definition) { described_class.new(stream_only_event_path, stream_only_event_attributes) }
+
+    before do
+      allow(described_class).to receive(:definitions) do
+        { definition.key => definition,
+          stream_only_event_definition.key => stream_only_event_definition }
+      end
+    end
+
+    it 'returns true for a stream only event' do
+      expect(described_class.stream_only?('group_deploy_token_destroyed')).to be_falsey
+    end
+
+    it 'returns false for an event that is saved to database' do
+      expect(described_class.stream_only?('policy_project_updated')).to be_truthy
+    end
+  end
+
   describe '.load_from_file' do
     it 'properly loads a definition from file' do
       expect_file_read(path, content: yaml_content)

@@ -59,7 +59,8 @@ module Gitlab
         @context = context
 
         @name = @context.fetch(:name, 'audit_operation')
-        @stream_only = @context.fetch(:stream_only, false)
+        @is_audit_event_yaml_defined = Gitlab::Audit::Type::Definition.defined?(@name)
+        @stream_only = stream_only?
         @author = @context.fetch(:author)
         @scope = @context.fetch(:scope)
         @target = @context.fetch(:target)
@@ -70,6 +71,14 @@ module Gitlab
         @target_details = @context[:target_details]
         @authentication_event = @context.fetch(:authentication_event, false)
         @authentication_provider = @context[:authentication_provider]
+
+        # TODO: Remove this code once we close https://gitlab.com/gitlab-org/gitlab/-/issues/367870
+        return unless @is_audit_event_yaml_defined
+
+        # rubocop:disable Gitlab/RailsLogger
+        Rails.logger.warn('WARNING: Logging audit events without an event type definition will be deprecated soon.')
+        Rails.logger.warn('See https://docs.gitlab.com/ee/development/audit_event_guide/#event-type-definitions')
+        # rubocop:enable Gitlab/RailsLogger
       end
 
       def single_audit
@@ -109,6 +118,14 @@ module Gitlab
 
       def authentication_event?
         @authentication_event
+      end
+
+      def stream_only?
+        if @is_audit_event_yaml_defined
+          Gitlab::Audit::Type::Definition.stream_only?(@name)
+        else
+          @context.fetch(:stream_only, false)
+        end
       end
 
       def log_authentication_event

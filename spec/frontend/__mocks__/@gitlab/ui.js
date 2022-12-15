@@ -50,6 +50,7 @@ jest.mock('@gitlab/ui/dist/components/base/popover/popover.js', () => ({
         'container',
         'showCloseButton',
         'show',
+        'boundaryPadding',
       ].map((prop) => [prop, {}]),
     ),
   },
