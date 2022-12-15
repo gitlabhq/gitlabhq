@@ -59,8 +59,9 @@ Not all group and project resources are imported. See list of migrated resources
 
 GitLab maps users and their contributions correctly provided:
 
-- Users already exists on the target GitLab instance.
+- Users already exist on the target GitLab instance.
 - Users have a public email on the source GitLab instance that matches their primary email on the target GitLab instance.
+- Users' primary email addresses on the target GitLab instance are confirmed. Most users receives an email asking them to confirm their email address.
 - When using an OmniAuth provider like SAML, GitLab and SAML accounts of users on GitLab must be linked. All users on the target GitLab instance must sign in
   and verify their account on the target GitLab instance.
 

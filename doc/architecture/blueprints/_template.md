@@ -1,6 +1,6 @@
 ---
 status: proposed
-creation-date: yyyy-mm-dd
+creation-date: "yyyy-mm-dd"
 authors: [ "@username" ]
 coach: "@username"
 approvers: [ "@product-manager", "@engineering-manager" ]

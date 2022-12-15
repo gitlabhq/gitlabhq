@@ -188,6 +188,19 @@ RSpec.describe Gitlab::Ci::Config::External::File::Remote do
                               'is blocked: Requests to localhost are not allowed!'
       end
     end
+
+    context 'when connection refused error has been raised' do
+      let(:location) { 'http://127.0.0.1/some/path/to/config.yaml' }
+      let(:exception) { Errno::ECONNREFUSED.new }
+
+      before do
+        stub_full_request(location).to_raise(exception)
+      end
+
+      it 'returns details about connection failure' do
+        expect(subject).to eq "Remote file could not be fetched because Connection refused!"
+      end
+    end
   end
 
   describe '#expand_context' do
