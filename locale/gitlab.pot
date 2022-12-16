@@ -13318,11 +13318,10 @@ msgstr ""
 msgid "DeletionSettings|Keep deleted"
 msgstr ""
 
-msgid "DeletionSettings|Keep deleted projects for %{number} days"
-msgstr ""
-
-msgid "DeletionSettings|Keep deleted projects for 1 day"
-msgstr ""
+msgid "DeletionSettings|Keep deleted projects for %{number} day"
+msgid_plural "DeletionSettings|Keep deleted projects for %{number} days"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "DeletionSettings|None, delete immediately"
 msgstr ""
@@ -19964,6 +19963,9 @@ msgstr ""
 msgid "GroupsNew|Import groups from another instance of GitLab"
 msgstr ""
 
+msgid "GroupsNew|Importing groups by direct transfer is currently disabled."
+msgstr ""
+
 msgid "GroupsNew|No import options available"
 msgstr ""
 
@@ -19973,6 +19975,12 @@ msgstr ""
 msgid "GroupsNew|Personal access token"
 msgstr ""
 
+msgid "GroupsNew|Please %{admin_link_start}enable it in the Admin settings%{admin_link_end}."
+msgstr ""
+
+msgid "GroupsNew|Please ask your Administrator to enable it in the Admin settings."
+msgstr ""
+
 msgid "GroupsNew|Please fill in GitLab source URL."
 msgstr ""
 
@@ -19980,6 +19988,9 @@ msgid "GroupsNew|Please fill in your personal access token."
 msgstr ""
 
 msgid "GroupsNew|Provide credentials for another instance of GitLab to import your groups directly."
+msgstr ""
+
+msgid "GroupsNew|Remember to enable it also on the instance you are migrating from."
 msgstr ""
 
 msgid "GroupsNew|This feature is deprecated and replaced by %{docs_link_start}group migration%{docs_link_end}."
@@ -31342,9 +31353,6 @@ msgstr ""
 msgid "Preferences|Choose what content you want to see on a project’s overview page."
 msgstr ""
 
-msgid "Preferences|Choose which Web IDE version you want to use."
-msgstr ""
-
 msgid "Preferences|Color for added lines"
 msgstr ""
 
@@ -31402,6 +31410,9 @@ msgstr ""
 msgid "Preferences|Must be a number between %{min} and %{max}"
 msgstr ""
 
+msgid "Preferences|Opt out of the Web IDE Beta"
+msgstr ""
+
 msgid "Preferences|Preview"
 msgstr ""
 
@@ -31429,7 +31440,10 @@ msgstr ""
 msgid "Preferences|Tab width"
 msgstr ""
 
-msgid "Preferences|The legacy Web IDE remains available while the new Web IDE is in Beta."
+msgid "Preferences|The Web IDE Beta is the default Web IDE experience."
+msgstr ""
+
+msgid "Preferences|The Web IDE remains available alongside the Beta."
 msgstr ""
 
 msgid "Preferences|This feature is experimental and translations are not yet complete."
@@ -31442,9 +31456,6 @@ msgid "Preferences|This setting allows you to customize the behavior of the syst
 msgstr ""
 
 msgid "Preferences|Time preferences"
-msgstr ""
-
-msgid "Preferences|Use legacy Web IDE"
 msgstr ""
 
 msgid "Preferences|Use relative times"

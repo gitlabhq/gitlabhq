@@ -87,6 +87,8 @@ module QA
     end
 
     before do
+      Runtime::ApplicationSettings.set_application_settings(bulk_import_enabled: true)
+
       target_sandbox.add_member(user, Resource::Members::AccessLevel::OWNER)
     end
 

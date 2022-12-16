@@ -56,6 +56,7 @@ the problem.
 - [Example 1](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/10148/diffs): Without
   specifying `ORDER BY`, database will not give deterministic ordering, or data race happening
   in the tests.
+- [Example 2](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106936/diffs).
 
 ### Dataset-specific
 
@@ -104,6 +105,7 @@ or the app.
 **Description:** The DOM selector used in the test is unreliable.
 
 **Difficulty to reproduce:** Moderate to difficult. Depending on whether the DOM selector is duplicated, or appears after a delay etc.
+Adding a delay in API or controller could help reproducing the issue.
 
 **Resolution:** It really depends on the problem here. It could be to wait for requests to finish, to scroll down the page etc.
 

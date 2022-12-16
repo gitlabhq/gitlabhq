@@ -153,13 +153,13 @@
         %h4.gl-mt-0
           = s_('Preferences|Web IDE')
         %p
-          = s_('Preferences|Choose which Web IDE version you want to use.')
+          = s_('Preferences|The Web IDE Beta is the default Web IDE experience.')
           = link_to _('Learn more'), help_page_path('user/profile/preferences', anchor: 'web-ide'), target: '_blank', rel: 'noopener noreferrer'
       .col-lg-8
         .form-group
           = f.gitlab_ui_checkbox_component :use_legacy_web_ide,
-            s_('Preferences|Use legacy Web IDE'),
-            help_text: s_('Preferences|The legacy Web IDE remains available while the new Web IDE is in Beta.')
+            s_('Preferences|Opt out of the Web IDE Beta'),
+            help_text: s_('Preferences|The Web IDE remains available alongside the Beta.')
       .col-sm-12
         %hr
   .row.js-preferences-form.js-search-settings-section

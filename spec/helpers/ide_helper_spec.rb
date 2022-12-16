@@ -18,6 +18,8 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
 
         self.instance_variable_set(:@branch, 'master')
         self.instance_variable_set(:@project, project)
+        self.instance_variable_set(:@path, 'foo/README.md')
+        self.instance_variable_set(:@merge_request, '7')
       end
 
       it 'returns hash' do
@@ -31,7 +33,10 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
             'branch-name' => 'master',
             'project-path' => project.path_with_namespace,
             'csp-nonce' => 'test-csp-nonce',
-            'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path')
+            'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
+            'file-path' => 'foo/README.md',
+            'merge-request' => '7',
+            'fork-info' => nil
           )
       end
 

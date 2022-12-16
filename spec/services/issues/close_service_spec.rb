@@ -357,11 +357,8 @@ RSpec.describe Issues::CloseService do
           it 'resolves an alert and sends a system note' do
             alert = create(:alert_management_alert, issue: issue, project: project)
 
-            expect_any_instance_of(SystemNoteService) do |notes_service|
-              expect(notes_service).to receive(:change_alert_status).with(
-                alert, current_user, " by closing issue #{issue.to_reference(project)}"
-              )
-            end
+            expect(SystemNoteService).to receive(:change_alert_status)
+              .with(alert, User.alert_bot, " because #{user.to_reference} closed incident #{issue.to_reference(project)}")
 
             close_issue
 
@@ -395,11 +392,8 @@ RSpec.describe Issues::CloseService do
             alerts = create_list(:alert_management_alert, 2, issue: issue, project: project)
 
             alerts.each do |alert|
-              expect_any_instance_of(SystemNoteService) do |notes_service|
-                expect(notes_service).to receive(:change_alert_status).with(
-                  alert, current_user, " by closing issue #{issue.to_reference(project)}"
-                )
-              end
+              expect(SystemNoteService).to receive(:change_alert_status)
+                .with(alert, User.alert_bot, " because #{user.to_reference} closed incident #{issue.to_reference(project)}")
             end
 
             close_issue

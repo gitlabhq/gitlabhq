@@ -22,11 +22,26 @@ const buildRemoteIdeURL = (ideRemotePath, remoteHost, remotePathArg) => {
   });
 };
 
+const getMRTargetProject = () => {
+  const url = new URL(window.location.href);
+
+  return url.searchParams.get('target_project') || '';
+};
+
 export const initGitlabWebIDE = async (el) => {
   // what: Pull what we need from the element. We will replace it soon.
-  const { cspNonce: nonce, branchName: ref, projectPath, ideRemotePath } = el.dataset;
+  const {
+    cspNonce: nonce,
+    branchName: ref,
+    projectPath,
+    ideRemotePath,
+    filePath,
+    mergeRequest: mrId,
+    forkInfo: forkInfoJSON,
+  } = el.dataset;
 
   const rootEl = setupRootElement(el);
+  const forkInfo = forkInfoJSON ? JSON.parse(forkInfoJSON) : null;
 
   // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
   start(rootEl, {
@@ -39,6 +54,12 @@ export const initGitlabWebIDE = async (el) => {
     },
     projectPath,
     ref,
+    filePath,
+    mrId,
+    mrTargetProject: getMRTargetProject(),
+    // note: At the time of writing this, forkInfo isn't expected by `@gitlab/web-ide`,
+    //       but it will be soon.
+    forkInfo,
     links: {
       feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,
       userPreferences: el.dataset.userPreferencesPath,

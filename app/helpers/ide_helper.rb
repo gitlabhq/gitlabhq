@@ -7,7 +7,10 @@ module IdeHelper
       'use-new-web-ide' => use_new_web_ide?.to_s,
       'new-web-ide-help-page-path' => help_page_path('user/project/web_ide/index.md', anchor: 'vscode-reimplementation'),
       'user-preferences-path' => profile_preferences_path,
-      'branch-name' => @branch
+      'branch-name' => @branch,
+      'file-path' => @path,
+      'fork-info' => @fork_info&.to_json,
+      'merge-request' => @merge_request
     }.merge(use_new_web_ide? ? new_ide_data : legacy_ide_data)
   end
 
@@ -44,9 +47,6 @@ module IdeHelper
       'render-whitespace-in-code': current_user.render_whitespace_in_code.to_s,
       'codesandbox-bundler-url': Gitlab::CurrentSettings.web_ide_clientside_preview_bundler_url,
       'default-branch' => @project && @project.default_branch,
-      'file-path' => @path,
-      'merge-request' => @merge_request,
-      'fork-info' => @fork_info&.to_json,
       'project' => convert_to_project_entity_json(@project),
       'enable-environments-guidance' => enable_environments_guidance?.to_s,
       'preview-markdown-path' => @project && preview_markdown_path(@project),
