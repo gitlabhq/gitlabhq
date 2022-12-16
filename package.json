@@ -124,7 +124,7 @@
     "dropzone": "^4.2.0",
     "editorconfig": "^0.15.3",
     "emoji-regex": "^10.0.0",
-    "esbuild": "0.15.9",
+    "esbuild": "0.15.18",
     "esbuild-loader": "^2.20.0",
     "fast-mersenne-twister": "1.0.2",
     "file-loader": "^6.2.0",

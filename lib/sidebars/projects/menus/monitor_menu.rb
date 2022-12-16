@@ -41,11 +41,7 @@ module Sidebars
         private
 
         def feature_enabled?
-          if ::Feature.enabled?(:split_operations_visibility_permissions, context.project)
-            context.project.feature_available?(:monitor, context.current_user)
-          else
-            context.project.feature_available?(:operations, context.current_user)
-          end
+          context.project.feature_available?(:monitor, context.current_user)
         end
 
         def metrics_dashboard_menu_item

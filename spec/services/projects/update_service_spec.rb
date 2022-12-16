@@ -440,25 +440,6 @@ RSpec.describe Projects::UpdateService do
         expect(feature.feature_flags_access_level).not_to eq(ProjectFeature::DISABLED)
         expect(feature.environments_access_level).not_to eq(ProjectFeature::DISABLED)
       end
-
-      context 'when split_operations_visibility_permissions feature is disabled' do
-        before do
-          stub_feature_flags(split_operations_visibility_permissions: false)
-        end
-
-        it 'syncs the changes to the related fields' do
-          result = update_project(project, user, project_feature_attributes: feature_params)
-
-          expect(result).to eq({ status: :success })
-          feature = project.project_feature
-
-          expect(feature.operations_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.monitor_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.infrastructure_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.feature_flags_access_level).to eq(ProjectFeature::DISABLED)
-          expect(feature.environments_access_level).to eq(ProjectFeature::DISABLED)
-        end
-      end
     end
 
     context 'when updating a project that contains container images' do

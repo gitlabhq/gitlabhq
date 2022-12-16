@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import VueApollo from 'vue-apollo';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import EnvironmentsDetailHeader from './components/environments_detail_header.vue';
+import { apolloProvider } from './graphql/client';
 import environmentsMixin from './mixins/environments_mixin';
 
 export const initHeader = () => {
@@ -41,7 +43,33 @@ export const initHeader = () => {
           cancelAutoStopPath: dataset.environmentCancelAutoStopPath,
           terminalPath: dataset.environmentTerminalPath,
           metricsPath: dataset.environmentMetricsPath,
-          updatePath: dataset.environmentEditPath,
+          updatePath: dataset.tnvironmentEditPath,
+        },
+      });
+    },
+  });
+};
+
+export const initPage = async () => {
+  if (!gon.features.environmentDetailsVue) {
+    return null;
+  }
+  const EnvironmentsDetailPageModule = await import('./environment_details/index.vue');
+  const EnvironmentsDetailPage = EnvironmentsDetailPageModule.default;
+  const dataElement = document.getElementById('environments-detail-view');
+  const dataSet = convertObjectPropsToCamelCase(JSON.parse(dataElement.dataset.details));
+
+  Vue.use(VueApollo);
+  const el = document.getElementById('environment_details_page');
+  return new Vue({
+    el,
+    apolloProvider: apolloProvider(),
+    provide: {},
+    render(createElement) {
+      return createElement(EnvironmentsDetailPage, {
+        props: {
+          projectFullPath: dataSet.projectFullPath,
+          environmentName: dataSet.name,
         },
       });
     },

@@ -50,10 +50,28 @@ RSpec.describe Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter, :cl
   end
 
   describe '.track_create_mr_action' do
-    subject { described_class.track_create_mr_action(user: user) }
+    subject { described_class.track_create_mr_action(user: user, merge_request: merge_request) }
+
+    let(:merge_request) { create(:merge_request) }
+    let(:target_project) { merge_request.target_project }
+
+    it_behaves_like 'a tracked merge request unique event' do
+      let(:action) { described_class::MR_USER_CREATE_ACTION }
+    end
 
     it_behaves_like 'a tracked merge request unique event' do
       let(:action) { described_class::MR_CREATE_ACTION }
+    end
+
+    it_behaves_like 'Snowplow event tracking with RedisHLL context' do
+      let(:action) { :create }
+      let(:category) { described_class.name }
+      let(:project) { target_project }
+      let(:namespace) { project.namespace.reload }
+      let(:user) { project.creator }
+      let(:feature_flag_name) { :route_hll_to_snowplow_phase2 }
+      let(:label) { 'redis_hll_counters.code_review.i_code_review_create_mr_monthly' }
+      let(:property) { described_class::MR_CREATE_ACTION }
     end
   end
 

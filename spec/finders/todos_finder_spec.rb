@@ -327,9 +327,9 @@ RSpec.describe TodosFinder do
     it 'returns the expected types' do
       expected_result =
         if Gitlab.ee?
-          %w[Epic Issue MergeRequest DesignManagement::Design AlertManagement::Alert]
+          %w[Epic Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert]
         else
-          %w[Issue MergeRequest DesignManagement::Design AlertManagement::Alert]
+          %w[Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert]
         end
 
       expect(described_class.todo_types).to contain_exactly(*expected_result)

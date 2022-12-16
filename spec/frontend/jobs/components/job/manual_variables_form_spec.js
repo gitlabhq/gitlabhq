@@ -35,6 +35,7 @@ describe('Manual Variables Form', () => {
       propsData: {
         ...props,
         jobId: mockId,
+        isRetryable: true,
       },
       provide: {
         ...defaultProvide,

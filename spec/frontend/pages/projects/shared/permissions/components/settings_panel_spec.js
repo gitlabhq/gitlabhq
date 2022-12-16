@@ -24,7 +24,6 @@ const defaultProps = {
     buildsAccessLevel: 20,
     wikiAccessLevel: 20,
     snippetsAccessLevel: 20,
-    operationsAccessLevel: 20,
     metricsDashboardAccessLevel: 20,
     pagesAccessLevel: 10,
     analyticsAccessLevel: 20,
@@ -136,9 +135,6 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'metrics-visibility-settings' });
   const findMetricsVisibilityInput = () =>
     findMetricsVisibilitySettings().findComponent(ProjectFeatureSetting);
-  const findOperationsSettings = () => wrapper.findComponent({ ref: 'operations-settings' });
-  const findOperationsVisibilityInput = () =>
-    findOperationsSettings().findComponent(ProjectFeatureSetting);
   const findConfirmDangerButton = () => wrapper.findComponent(ConfirmDanger);
   const findEnvironmentsSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findFeatureFlagsSettings = () => wrapper.findComponent({ ref: 'feature-flags-settings' });
@@ -146,6 +142,8 @@ describe('Settings Panel', () => {
     wrapper.findComponent({ ref: 'infrastructure-settings' });
   const findReleasesSettings = () => wrapper.findComponent({ ref: 'environments-settings' });
   const findMonitorSettings = () => wrapper.findComponent({ ref: 'monitor-settings' });
+  const findMonitorVisibilityInput = () =>
+    findMonitorSettings().findComponent(ProjectFeatureSetting);
 
   afterEach(() => {
     wrapper.destroy();
@@ -789,27 +787,27 @@ describe('Settings Panel', () => {
       ${featureAccessLevel.EVERYONE}        | ${featureAccessLevel.NOT_ENABLED}
       ${featureAccessLevel.PROJECT_MEMBERS} | ${featureAccessLevel.NOT_ENABLED}
     `(
-      'when updating Operations Settings access level from `$before` to `$after`, Metric Dashboard access is updated to `$after` as well',
+      'when updating Monitor access level from `$before` to `$after`, Metric Dashboard access is updated to `$after` as well',
       async ({ before, after }) => {
         wrapper = mountComponent({
-          currentSettings: { operationsAccessLevel: before, metricsDashboardAccessLevel: before },
+          currentSettings: { monitorAccessLevel: before, metricsDashboardAccessLevel: before },
         });
 
-        await findOperationsVisibilityInput().vm.$emit('change', after);
+        await findMonitorVisibilityInput().vm.$emit('change', after);
 
         expect(findMetricsVisibilityInput().props('value')).toBe(after);
       },
     );
 
-    it('when updating Operations Settings access level from `10` to `20`, Metric Dashboard access is not increased', async () => {
+    it('when updating Monitor access level from `10` to `20`, Metric Dashboard access is not increased', async () => {
       wrapper = mountComponent({
         currentSettings: {
-          operationsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
+          monitorAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
           metricsDashboardAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
         },
       });
 
-      await findOperationsVisibilityInput().vm.$emit('change', featureAccessLevel.EVERYONE);
+      await findMonitorVisibilityInput().vm.$emit('change', featureAccessLevel.EVERYONE);
 
       expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.PROJECT_MEMBERS);
     });
@@ -818,7 +816,7 @@ describe('Settings Panel', () => {
       wrapper = mountComponent({
         currentSettings: {
           visibilityLevel: VISIBILITY_LEVEL_PUBLIC_INTEGER,
-          operationsAccessLevel: featureAccessLevel.EVERYONE,
+          monitorAccessLevel: featureAccessLevel.EVERYONE,
           metricsDashboardAccessLevel: featureAccessLevel.EVERYONE,
         },
       });
@@ -837,84 +835,32 @@ describe('Settings Panel', () => {
     });
   });
 
-  describe('Operations', () => {
-    it('should show the operations toggle', () => {
-      wrapper = mountComponent();
-
-      expect(findOperationsSettings().exists()).toBe(true);
-    });
-  });
-
   describe('Environments', () => {
-    describe('with feature flag', () => {
-      it('should show the environments toggle', () => {
-        wrapper = mountComponent({
-          glFeatures: { splitOperationsVisibilityPermissions: true },
-        });
+    it('should show the environments toggle', () => {
+      wrapper = mountComponent({});
 
-        expect(findEnvironmentsSettings().exists()).toBe(true);
-      });
-    });
-    describe('without feature flag', () => {
-      it('should not show the environments toggle', () => {
-        wrapper = mountComponent({});
-
-        expect(findEnvironmentsSettings().exists()).toBe(false);
-      });
+      expect(findEnvironmentsSettings().exists()).toBe(true);
     });
   });
   describe('Feature Flags', () => {
-    describe('with feature flag', () => {
-      it('should show the feature flags toggle', () => {
-        wrapper = mountComponent({
-          glFeatures: { splitOperationsVisibilityPermissions: true },
-        });
+    it('should show the feature flags toggle', () => {
+      wrapper = mountComponent({});
 
-        expect(findFeatureFlagsSettings().exists()).toBe(true);
-      });
-    });
-    describe('without feature flag', () => {
-      it('should not show the feature flags toggle', () => {
-        wrapper = mountComponent({});
-
-        expect(findFeatureFlagsSettings().exists()).toBe(false);
-      });
+      expect(findFeatureFlagsSettings().exists()).toBe(true);
     });
   });
   describe('Infrastructure', () => {
-    describe('with feature flag', () => {
-      it('should show the infrastructure toggle', () => {
-        wrapper = mountComponent({
-          glFeatures: { splitOperationsVisibilityPermissions: true },
-        });
+    it('should show the infrastructure toggle', () => {
+      wrapper = mountComponent({});
 
-        expect(findInfrastructureSettings().exists()).toBe(true);
-      });
-    });
-    describe('without feature flag', () => {
-      it('should not show the infrastructure toggle', () => {
-        wrapper = mountComponent({});
-
-        expect(findInfrastructureSettings().exists()).toBe(false);
-      });
+      expect(findInfrastructureSettings().exists()).toBe(true);
     });
   });
   describe('Releases', () => {
-    describe('with feature flag', () => {
-      it('should show the releases toggle', () => {
-        wrapper = mountComponent({
-          glFeatures: { splitOperationsVisibilityPermissions: true },
-        });
+    it('should show the releases toggle', () => {
+      wrapper = mountComponent({});
 
-        expect(findReleasesSettings().exists()).toBe(true);
-      });
-    });
-    describe('without feature flag', () => {
-      it('should not show the releases toggle', () => {
-        wrapper = mountComponent({});
-
-        expect(findReleasesSettings().exists()).toBe(false);
-      });
+      expect(findReleasesSettings().exists()).toBe(true);
     });
   });
   describe('Monitor', () => {
@@ -922,37 +868,20 @@ describe('Settings Panel', () => {
       [10, 'Only Project Members'],
       [20, 'Everyone With Access'],
     ];
-    describe('with feature flag', () => {
-      it('shows Monitor toggle instead of Operations toggle', () => {
-        wrapper = mountComponent({
-          glFeatures: { splitOperationsVisibilityPermissions: true },
-        });
+    it('shows Monitor toggle instead of Operations toggle', () => {
+      wrapper = mountComponent({});
 
-        expect(findMonitorSettings().exists()).toBe(true);
-        expect(findOperationsSettings().exists()).toBe(false);
-        expect(findMonitorSettings().findComponent(ProjectFeatureSetting).props('options')).toEqual(
-          expectedAccessLevel,
-        );
-      });
-      it('when monitorAccessLevel is for project members, it is also for everyone', () => {
-        wrapper = mountComponent({
-          glFeatures: { splitOperationsVisibilityPermissions: true },
-          currentSettings: { monitorAccessLevel: featureAccessLevel.PROJECT_MEMBERS },
-        });
-
-        expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.EVERYONE);
-      });
+      expect(findMonitorSettings().exists()).toBe(true);
+      expect(findMonitorSettings().findComponent(ProjectFeatureSetting).props('options')).toEqual(
+        expectedAccessLevel,
+      );
     });
-    describe('without feature flag', () => {
-      it('shows Operations toggle instead of Monitor toggle', () => {
-        wrapper = mountComponent({});
-
-        expect(findMonitorSettings().exists()).toBe(false);
-        expect(findOperationsSettings().exists()).toBe(true);
-        expect(
-          findOperationsSettings().findComponent(ProjectFeatureSetting).props('options'),
-        ).toEqual(expectedAccessLevel);
+    it('when monitorAccessLevel is for project members, it is also for everyone', () => {
+      wrapper = mountComponent({
+        currentSettings: { monitorAccessLevel: featureAccessLevel.PROJECT_MEMBERS },
       });
+
+      expect(findMetricsVisibilityInput().props('value')).toBe(featureAccessLevel.EVERYONE);
     });
   });
 });

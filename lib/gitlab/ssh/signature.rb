@@ -9,6 +9,8 @@ module Gitlab
     class Signature
       include Gitlab::Utils::StrongMemoize
 
+      GIT_NAMESPACE = 'git'
+
       def initialize(signature_text, signed_text, committer_email)
         @signature_text = signature_text
         @signed_text = signed_text
@@ -53,6 +55,7 @@ module Gitlab
       # still need to check that the key belongs to the committer.
       def valid_signature_blob?
         return false unless signature
+        return false unless signature.namespace == GIT_NAMESPACE
 
         signature.verify(@signed_text)
       end

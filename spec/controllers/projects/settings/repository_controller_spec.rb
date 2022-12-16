@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Settings::RepositoryController do
+RSpec.describe Projects::Settings::RepositoryController, feature_category: :source_code_management do
   let(:project) { create(:project_empty_repo, :public) }
   let(:user) { create(:user) }
   let(:base_params) { { namespace_id: project.namespace, project_id: project } }
@@ -18,6 +18,40 @@ RSpec.describe Projects::Settings::RepositoryController do
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response).to render_template(:show)
+    end
+
+    context 'when feature flag `group_protected_branches` disabled' do
+      before do
+        stub_feature_flags(group_protected_branches: false)
+      end
+
+      it 'does not assign instance variable `protected_group_branches`' do
+        get :show, params: base_params
+
+        expect(assigns).not_to include(:protected_group_branches)
+      end
+    end
+
+    context 'when feature flag `group_protected_branches` enabled' do
+      context 'when the root namespace is a user' do
+        it 'assigns empty instance variable `protected_group_branches`' do
+          get :show, params: base_params
+
+          expect(assigns[:protected_group_branches]).to eq([])
+        end
+      end
+
+      context 'when the root namespace is a group' do
+        let_it_be(:project) { create(:project_empty_repo, :public, :in_group) }
+
+        let(:protected_group_branch) { create(:protected_branch, group: project.root_namespace, project: nil) }
+
+        it 'assigns instance variable `protected_group_branches`' do
+          get :show, params: base_params
+
+          expect(assigns[:protected_group_branches]).to include(protected_group_branch)
+        end
+      end
     end
   end
 

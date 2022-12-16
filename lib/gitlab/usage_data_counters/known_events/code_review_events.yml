@@ -39,6 +39,10 @@
   redis_slot: code_review
   category: code_review
   aggregation: weekly
+- name: i_code_review_create_mr
+  redis_slot: code_review
+  category: code_review
+  aggregation: weekly
 - name: i_code_review_user_create_mr
   redis_slot: code_review
   category: code_review

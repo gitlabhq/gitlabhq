@@ -16,6 +16,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     authorize_metrics_dashboard!
   end
 
+  before_action only: [:show] do
+    push_frontend_feature_flag(:environment_details_vue, @project)
+  end
   before_action :authorize_read_environment!, except: [:metrics, :additional_metrics, :metrics_dashboard, :metrics_redirect]
   before_action :authorize_create_environment!, only: [:new, :create]
   before_action :authorize_stop_environment!, only: [:stop]

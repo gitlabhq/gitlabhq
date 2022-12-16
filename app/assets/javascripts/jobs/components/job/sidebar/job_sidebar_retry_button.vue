@@ -1,7 +1,6 @@
 <script>
 import { GlButton, GlDropdown, GlDropdownItem, GlModalDirective } from '@gitlab/ui';
 import { mapGetters } from 'vuex';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { JOB_SIDEBAR_COPY } from '~/jobs/constants';
 
 export default {
@@ -17,7 +16,6 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     modalId: {
       type: String,
@@ -34,9 +32,6 @@ export default {
   },
   computed: {
     ...mapGetters(['hasForwardDeploymentFailure']),
-    showRetryDropdown() {
-      return this.glFeatures?.graphqlJobApp && this.isManualJob;
-    },
   },
 };
 </script>
@@ -51,7 +46,7 @@ export default {
     data-testid="retry-job-button"
   />
   <gl-dropdown
-    v-else-if="showRetryDropdown"
+    v-else-if="isManualJob"
     icon="retry"
     category="primary"
     :right="true"

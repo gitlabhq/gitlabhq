@@ -24,7 +24,7 @@ class TodosFinder
 
   NONE = '0'
 
-  TODO_TYPES = Set.new(%w[Issue MergeRequest DesignManagement::Design AlertManagement::Alert]).freeze
+  TODO_TYPES = Set.new(%w[Issue WorkItem MergeRequest DesignManagement::Design AlertManagement::Alert]).freeze
 
   attr_accessor :current_user, :params
 

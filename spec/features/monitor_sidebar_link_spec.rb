@@ -19,21 +19,13 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
     let(:enabled) { Featurable::PRIVATE }
     let(:disabled) { Featurable::DISABLED }
 
-    where(:flag_enabled, :operations_access_level, :monitor_level, :render) do
-      true  | ref(:disabled) | ref(:enabled)  | true
-      true  | ref(:disabled) | ref(:disabled) | false
-      true  | ref(:enabled)  | ref(:enabled)  | true
-      true  | ref(:enabled)  | ref(:disabled) | false
-      false | ref(:disabled) | ref(:enabled)  | false
-      false | ref(:disabled) | ref(:disabled) | false
-      false | ref(:enabled)  | ref(:enabled)  | true
-      false | ref(:enabled)  | ref(:disabled) | true
+    where(:monitor_level, :render) do
+      ref(:enabled)  | true
+      ref(:disabled) | false
     end
 
     with_them do
       it 'renders when expected to' do
-        stub_feature_flags(split_operations_visibility_permissions: flag_enabled)
-        project.project_feature.update_attribute(:operations_access_level, operations_access_level)
         project.project_feature.update_attribute(:monitor_access_level, monitor_level)
 
         visit project_issues_path(project)
@@ -51,7 +43,6 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
     let(:access_level) { ProjectFeature::PUBLIC }
 
     before do
-      project.project_feature.update_attribute(:operations_access_level, access_level)
       project.project_feature.update_attribute(:monitor_access_level, access_level)
     end
 
@@ -67,41 +58,19 @@ RSpec.describe 'Monitor dropdown sidebar', :aggregate_failures, feature_category
       expect(page).not_to have_link('Kubernetes', href: project_clusters_path(project))
     end
 
-    context 'with new monitor visiblity flag disabled' do
-      stub_feature_flags(split_operations_visibility_permissions: false)
+    context 'when monitor project feature is PRIVATE' do
+      let(:access_level) { ProjectFeature::PRIVATE }
 
-      context 'when operations project feature is PRIVATE' do
-        let(:access_level) { ProjectFeature::PRIVATE }
-
-        it 'does not show the `Monitor` menu' do
-          expect(page).not_to have_selector('a.shortcuts-monitor')
-        end
-      end
-
-      context 'when operations project feature is DISABLED' do
-        let(:access_level) { ProjectFeature::DISABLED }
-
-        it 'does not show the `Operations` menu' do
-          expect(page).not_to have_selector('a.shortcuts-monitor')
-        end
+      it 'does not show the `Monitor` menu' do
+        expect(page).not_to have_selector('a.shortcuts-monitor')
       end
     end
 
-    context 'with new monitor visiblity flag enabled' do
-      context 'when monitor project feature is PRIVATE' do
-        let(:access_level) { ProjectFeature::PRIVATE }
+    context 'when monitor project feature is DISABLED' do
+      let(:access_level) { ProjectFeature::DISABLED }
 
-        it 'does not show the `Monitor` menu' do
-          expect(page).not_to have_selector('a.shortcuts-monitor')
-        end
-      end
-
-      context 'when operations project feature is DISABLED' do
-        let(:access_level) { ProjectFeature::DISABLED }
-
-        it 'does not show the `Operations` menu' do
-          expect(page).not_to have_selector('a.shortcuts-monitor')
-        end
+      it 'does not show the `Monitor` menu' do
+        expect(page).not_to have_selector('a.shortcuts-monitor')
       end
     end
   end

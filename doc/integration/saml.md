@@ -82,8 +82,8 @@ For more information on:
 
 1. Configure the following attributes so your SAML users cannot change them:
 
-   - [`NameID`](../user/group/saml_sso/index.md#nameid)
-   - `Email` when used with `omniauth_auto_link_saml_user`
+   - [`NameID`](../user/group/saml_sso/index.md#nameid).
+   - `Email` when used with `omniauth_auto_link_saml_user`.
 
    If users can change these attributes, they can sign in as other authorized users.
    See your SAML IdP documentation for information on how to make these attributes
@@ -186,18 +186,48 @@ Your IdP may need additional configuration. For more information, see
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14361) in GitLab 14.6.
 
-You can configure GitLab to use multiple SAML 2.0 identity providers if:
+You can configure GitLab to use multiple SAML IdPs if:
 
-- Each provider has a unique name set that matches a name set in `args`. At least one provider **must** have the name `saml` to mitigate a
-  [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450) in GitLab 14.6 and newer.
-- The providers' names are:
-  - Used in OmniAuth configuration for properties based on the provider name. For example, `allowBypassTwoFactor`, `allowSingleSignOn`, and
-    `syncProfileFromProvider`.
-  - Used for association to each existing user as an additional identity.
+- Each provider has a unique name set that matches a name set in `args`. At least
+  one provider must have the name `saml` to mitigate a
+  [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/366450) in GitLab
+  14.6 and newer.
+- The providers' names are used:
+  - In OmniAuth configuration for properties based on the provider name. For example,
+    `allowBypassTwoFactor`, `allowSingleSignOn`, and `syncProfileFromProvider`.
+  - For association to each existing user as an additional identity.
 - The `assertion_consumer_service_url` matches the provider name.
-- The `strategy_class` is explicitly set because it cannot be inferred from provider name.
+- The `strategy_class` is explicitly set because it cannot be inferred from provider
+  name.
 
-Example multiple providers configuration for Omnibus GitLab:
+Example provider's configuration for installations from source:
+
+```yaml
+omniauth:
+  providers:
+    - {
+      name: 'saml', # This must match the following name configuration parameter
+      args: {
+        name: 'saml', # This is mandatory and must match the provider name
+        strategy_class: 'OmniAuth::Strategies::SAML',
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
+        ... # Put here all the required arguments similar to a single provider
+      },
+      label: 'Provider 1' # Differentiate the two buttons and providers in the UI
+    }
+    - {
+      name: 'saml1', # This must match the following name configuration parameter
+      args: {
+        name: 'saml1', # This is mandatory and must match the provider name
+        strategy_class: 'OmniAuth::Strategies::SAML',
+        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
+        ... # Put here all the required arguments similar to a single provider
+      },
+      label: 'Provider 2' # Differentiate the two buttons and providers in the UI
+    }
+```
+
+Example provider's configuration for Omnibus GitLab installations:
 
 To allow your users to use SAML to sign up without having to manually create an account from either of the providers, add the following values to your configuration.
 
@@ -230,31 +260,11 @@ gitlab_rails['omniauth_providers'] = [
 ]
 ```
 
-Example providers configuration for installations from source:
+To allow your users to use SAML to sign up without having to manually create an
+account from either of the providers, add the following values to your configuration.
 
-```yaml
-omniauth:
-  providers:
-    - {
-      name: 'saml',
-      args: {
-        name: 'saml', # This is mandatory and must match the provider name
-        strategy_class: 'OmniAuth::Strategies::SAML',
-        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_1/callback', # URL must match the name of the provider
-        ... # Put here all the required arguments similar to a single provider
-      },
-      label: 'Provider 1' # Differentiate the two buttons and providers in the UI
-    }
-    - {
-      name: 'saml1',
-      args: {
-        name: 'saml1', # This is mandatory and must match the provider name
-        strategy_class: 'OmniAuth::Strategies::SAML',
-        assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml_2/callback', # URL must match the name of the provider
-        ... # Put here all the required arguments similar to a single provider
-      },
-      label: 'Provider 2' # Differentiate the two buttons and providers in the UI
-    }
+```ruby
+gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'saml1']
 ```
 
 ## Set up identity providers
@@ -643,11 +653,11 @@ For more information on solving these errors, see the [troubleshooting SAML guid
 
 ### Redirect users to SAML server for authentication
 
-You can add this setting to your GitLab configuration to automatically redirect you
-to your SAML server for authentication. This removes the requirement to select a button
-before actually signing in.
+You can add the `auto_sign_in_with_provider` setting to your GitLab configuration
+to automatically redirect you to your SAML server for authentication. This removes
+the requirement to select an element before actually signing in.
 
-For Omnibus package:
+For Omnibus GitLab installations:
 
 ```ruby
 gitlab_rails['omniauth_auto_sign_in_with_provider'] = 'saml'
@@ -660,31 +670,28 @@ omniauth:
   auto_sign_in_with_provider: saml
 ```
 
-Keep in mind that every sign in attempt redirects to the SAML server;
-you cannot sign in using local credentials. Ensure at least one of the
-SAML users has administrator access.
+Every sign in attempt redirects to the SAML server, so you cannot sign in using
+local credentials. Make sure at least one of the SAML users has administrator access.
 
-You may also bypass the auto sign-in feature by browsing to
+You can also bypass the auto sign-in feature by
 `https://gitlab.example.com/users/sign_in?auto_sign_in=false`.
 
 ### Map SAML response attribute names **(FREE SELF)**
 
-NOTE:
-This setting should be used only to map attributes that are part of the OmniAuth
-`info` hash schema.
-
-`attribute_statements` is used to map Attribute Names in a `SAMLResponse` to entries
+You can use `attribute_statements` to map attribute names in a SAML response to entries
 in the OmniAuth [`info` hash](https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema#schema-10-and-later).
+
+NOTE:
+Only use this setting to map attributes that are part of the OmniAuth `info` hash schema.
 
 For example, if your `SAMLResponse` contains an Attribute called `EmailAddress`,
 specify `{ email: ['EmailAddress'] }` to map the Attribute to the
 corresponding key in the `info` hash. URI-named Attributes are also supported, for example,
 `{ email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'] }`.
 
-This setting allows you tell GitLab where to look for certain attributes required
-to create an account. Like mentioned above, if your IdP sends the user's email
-address as `EmailAddress` instead of `email`, let GitLab know by setting it on
-your configuration:
+Use this setting to tell GitLab where to look for certain attributes required
+to create an account. If your IdP sends the user's email address as `EmailAddress`
+instead of `email`, let GitLab know by setting it on your configuration:
 
 ```yaml
 args: {
@@ -738,7 +745,9 @@ args: {
 
 ### Designate a unique attribute for the `uid`
 
-By default, the `uid` is set as the `name_id` in the SAML response. If you'd like to designate a unique attribute for the `uid`, you can set the `uid_attribute`. In the example below, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
+By default, the `uid` is set as the `name_id` in the SAML response. To designate
+a unique attribute for the `uid`, you can set the `uid_attribute`. In the following
+example, the value of `uid` attribute in the SAML response is set as the `uid_attribute`.
 
 ```yaml
 args: {
@@ -751,9 +760,15 @@ args: {
 }
 ```
 
-Ensure that attributes define the SAML user, such as
-[`NameID`](../user/group/saml_sso/index.md#nameid) and email address, are fixed
-for each user before changing this value.
+Before setting the `uid` to a unique attribute, make sure that you have configured
+the following attributes so your SAML users cannot change them:
+
+- [`NameID`](../user/group/saml_sso/index.md#nameid).
+- `Email` when used with `omniauth_auto_link_saml_user`.
+
+If users can change these attributes, they can sign in as other authorized users.
+See your SAML IdP documentation for information on how to make these attributes
+unchangeable.
 
 ## Assertion encryption (optional)
 

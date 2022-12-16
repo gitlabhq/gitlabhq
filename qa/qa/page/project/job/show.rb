@@ -15,7 +15,7 @@ module QA
             element :pipeline_path, required: true
           end
 
-          view 'app/assets/javascripts/jobs/components/job/sidebar/legacy_sidebar_header.vue' do
+          view 'app/assets/javascripts/jobs/components/job/sidebar/sidebar_header.vue' do
             element :retry_button
           end
 

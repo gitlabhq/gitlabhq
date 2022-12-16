@@ -49,7 +49,8 @@ module Gitlab
           if table_schema.nil?
             error_message = <<~ERROR
               No gitlab_schema is defined for the table #{table_name}. Please consider
-              adding it to the file config 'lib/gitlab/database/gitlab_schemas.yml'
+              adding it to the database dictionary.
+              More info: https://docs.gitlab.com/ee/development/database/database_dictionary.html
             ERROR
             raise error_message
           end

@@ -28,7 +28,8 @@
 
     .file-buttons.gl-display-flex.gl-align-items-center.gl-justify-content-end
       - if is_markdown
-        = render 'shared/blob/markdown_buttons', show_fullscreen_button: false, supports_file_upload: false
+        - unless Feature.enabled?(:source_editor_toolbar, current_user)
+          = render 'shared/blob/markdown_buttons', show_fullscreen_button: false, supports_file_upload: false
       %span.soft-wrap-toggle
         = render Pajamas::ButtonComponent.new(icon: 'soft-unwrap', button_options: { class: 'no-wrap' }) do
           = _("No wrap")

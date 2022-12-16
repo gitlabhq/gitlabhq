@@ -10,7 +10,6 @@ module Projects
     def execute
       build_topics
       remove_unallowed_params
-      mirror_operations_access_level_changes
       validate!
 
       ensure_wiki_exists if enabling_wiki?
@@ -101,21 +100,6 @@ module Projects
 
     def remove_unallowed_params
       params.delete(:emails_disabled) unless can?(current_user, :set_emails_disabled, project)
-    end
-
-    # Temporary code to sync permissions changes as operations access setting
-    # is being split into monitor_access_level, deployments_access_level, infrastructure_access_level.
-    # To be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/364240
-    def mirror_operations_access_level_changes
-      return if Feature.enabled?(:split_operations_visibility_permissions, project)
-
-      operations_access_level = params.dig(:project_feature_attributes, :operations_access_level)
-
-      return if operations_access_level.nil?
-
-      [:monitor_access_level, :infrastructure_access_level, :feature_flags_access_level, :environments_access_level].each do |key|
-        params[:project_feature_attributes][key] = operations_access_level
-      end
     end
 
     def after_update

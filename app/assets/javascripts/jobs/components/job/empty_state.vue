@@ -1,16 +1,12 @@
 <script>
 import { GlLink } from '@gitlab/ui';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import LegacyManualVariablesForm from '~/jobs/components/job/legacy_manual_variables_form.vue';
 import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
 
 export default {
   components: {
     GlLink,
-    LegacyManualVariablesForm,
     ManualVariablesForm,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     illustrationPath: {
       type: String,
@@ -22,7 +18,7 @@ export default {
     },
     isRetryable: {
       type: Boolean,
-      required: false,
+      required: true,
     },
     jobId: {
       type: Number,
@@ -62,9 +58,6 @@ export default {
     },
   },
   computed: {
-    showGraphQLManualVariablesForm() {
-      return this.glFeatures?.graphqlJobApp && this.isRetryable;
-    },
     shouldRenderManualVariables() {
       return this.playable && !this.scheduled;
     },
@@ -85,16 +78,12 @@ export default {
 
         <p v-if="content" data-testid="job-empty-state-content">{{ content }}</p>
       </div>
-      <template v-if="showGraphQLManualVariablesForm">
-        <manual-variables-form
-          v-if="shouldRenderManualVariables"
-          :job-id="jobId"
-          @hideManualVariablesForm="$emit('hideManualVariablesForm')"
-        />
-      </template>
-      <template v-else>
-        <legacy-manual-variables-form v-if="shouldRenderManualVariables" :action="action" />
-      </template>
+      <manual-variables-form
+        v-if="shouldRenderManualVariables"
+        :is-retryable="isRetryable"
+        :job-id="jobId"
+        @hideManualVariablesForm="$emit('hideManualVariablesForm')"
+      />
       <div v-if="action && !shouldRenderManualVariables" class="text-content">
         <div class="text-center">
           <gl-link

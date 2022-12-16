@@ -10,6 +10,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { cloneDeep, uniqueId } from 'lodash';
+import { mapActions } from 'vuex';
 import { fetchPolicies } from '~/lib/graphql';
 import { createAlert } from '~/flash';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
@@ -58,6 +59,10 @@ export default {
     },
   },
   props: {
+    isRetryable: {
+      type: Boolean,
+      required: true,
+    },
     jobId: {
       type: Number,
       required: true,
@@ -76,8 +81,13 @@ export default {
     keyLabel: s__('CiVariables|Key'),
     keyPlaceholder: s__('CiVariables|Input variable key'),
     runAgainButtonText: s__('CiVariables|Run job again'),
+    triggerButtonText: s__('CiVariables|Trigger this manual action'),
     valueLabel: s__('CiVariables|Value'),
     valuePlaceholder: s__('CiVariables|Input variable value'),
+  },
+  variableValueKeys: {
+    rest: 'secret_value',
+    gql: 'value',
   },
   data() {
     return {
@@ -90,14 +100,29 @@ export default {
         },
       ],
       runAgainBtnDisabled: false,
+      triggerBtnDisabled: false,
     };
   },
   computed: {
+    preparedVariables() {
+      // filtering out 'id' along with empty variables to send only key, value in the mutation.
+      // This will be removed in: https://gitlab.com/gitlab-org/gitlab/-/issues/377268
+
+      return this.variables
+        .filter((variable) => variable.key !== '')
+        .map(({ key, value }) => ({ key, [this.valueKey]: value }));
+    },
+    valueKey() {
+      return this.isRetryable
+        ? this.$options.variableValueKeys.gql
+        : this.$options.variableValueKeys.rest;
+    },
     variableSettings() {
       return helpPagePath('ci/variables/index', { anchor: 'add-a-cicd-variable-to-a-project' });
     },
   },
   methods: {
+    ...mapActions(['triggerManualJob']),
     addEmptyVariable() {
       const lastVar = this.variables[this.variables.length - 1];
 
@@ -128,18 +153,12 @@ export default {
     },
     async retryJob() {
       try {
-        // filtering out 'id' along with empty variables to send only key, value in the mutation.
-        // This will be removed in: https://gitlab.com/gitlab-org/gitlab/-/issues/377268
-        const preparedVariables = this.variables
-          .filter((variable) => variable.key !== '')
-          .map(({ key, value }) => ({ key, value }));
-
         const { data } = await this.$apollo.mutate({
           mutation: retryJobWithVariablesMutation,
           variables: {
             id: convertToGraphQLId(GRAPHQL_ID_TYPES.ciBuild, this.jobId),
             // we need to ensure no empty variables are passed to the API
-            variables: preparedVariables,
+            variables: this.preparedVariables,
           },
         });
         if (data.jobRetry?.errors?.length) {
@@ -155,6 +174,11 @@ export default {
       this.runAgainBtnDisabled = true;
 
       this.retryJob();
+    },
+    triggerJob() {
+      this.triggerBtnDisabled = true;
+
+      this.triggerManualJob(this.preparedVariables);
     },
   },
 };
@@ -226,7 +250,7 @@ export default {
           </template>
         </gl-sprintf>
       </div>
-      <div class="gl-display-flex gl-justify-content-center gl-mt-5">
+      <div v-if="isRetryable" class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-button
           class="gl-mt-5"
           :aria-label="__('Cancel')"
@@ -244,6 +268,19 @@ export default {
           @click="runAgain"
         >
           {{ $options.i18n.runAgainButtonText }}
+        </gl-button>
+      </div>
+      <div v-else class="gl-display-flex gl-justify-content-center gl-mt-5">
+        <gl-button
+          class="gl-mt-5"
+          variant="confirm"
+          category="primary"
+          :aria-label="__('Trigger manual job')"
+          :disabled="triggerBtnDisabled"
+          data-testid="trigger-manual-job-btn"
+          @click="triggerJob"
+        >
+          {{ $options.i18n.triggerButtonText }}
         </gl-button>
       </div>
     </div>

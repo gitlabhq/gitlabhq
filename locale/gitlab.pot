@@ -8655,6 +8655,9 @@ msgstr ""
 msgid "CiVariables|This %{entity} has %{currentVariableCount} defined CI/CD variables. The maximum number of variables per %{entity} is %{maxVariableLimit}. To add new variables, you must reduce the number of defined variables."
 msgstr ""
 
+msgid "CiVariables|Trigger this manual action"
+msgstr ""
+
 msgid "CiVariables|Type"
 msgstr ""
 
@@ -8778,6 +8781,9 @@ msgid "Click the link below to confirm your email address (%{email})"
 msgstr ""
 
 msgid "Click the link below to confirm your email address."
+msgstr ""
+
+msgid "Click to expand"
 msgstr ""
 
 msgid "Click to expand it."
@@ -32548,9 +32554,6 @@ msgstr ""
 msgid "ProjectSettings|Configure your infrastructure."
 msgstr ""
 
-msgid "ProjectSettings|Configure your project resources and monitor their health."
-msgstr ""
-
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -32720,9 +32723,6 @@ msgid "ProjectSettings|Only commits that include a %{code_block_start}Signed-off
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
-msgstr ""
-
-msgid "ProjectSettings|Operations"
 msgstr ""
 
 msgid "ProjectSettings|Override user notification preferences for all project members."
@@ -40335,6 +40335,9 @@ msgstr ""
 msgid "SuperSonics|Activation not possible due to true-up value mismatch"
 msgstr ""
 
+msgid "SuperSonics|Add activation code"
+msgstr ""
+
 msgid "SuperSonics|An error occurred while adding your subscription"
 msgstr ""
 
@@ -40354,9 +40357,6 @@ msgid "SuperSonics|Cloud licensing is now available. It's an easier way to activ
 msgstr ""
 
 msgid "SuperSonics|Customers Portal"
-msgstr ""
-
-msgid "SuperSonics|Enter activation code"
 msgstr ""
 
 msgid "SuperSonics|Export license usage file"

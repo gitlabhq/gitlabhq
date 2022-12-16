@@ -260,7 +260,7 @@ RSpec.describe 'Query.runner(id)', feature_category: :runner_fleet do
 
       context 'when JOB_COUNT_LIMIT is in effect' do
         before do
-          stub_const('Types::Ci::RunnerType::JOB_COUNT_LIMIT', 1)
+          stub_const('Types::Ci::RunnerType::JOB_COUNT_LIMIT', 0)
         end
 
         it 'retrieves correct capped jobCount values' do

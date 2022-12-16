@@ -3,14 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Dashboard::TodosController do
-  let(:user) { create(:user) }
-  let(:author)  { create(:user) }
-  let(:project) { create(:project) }
-  let(:todo_service) { TodoService.new }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:project) { create(:project).tap { |project| project.add_developer(user) } }
+  let_it_be(:author) { create(:user) }
 
   before do
     sign_in(user)
-    project.add_developer(user)
   end
 
   describe 'GET #index' do
@@ -83,11 +81,14 @@ RSpec.describe Dashboard::TodosController do
     end
 
     it_behaves_like 'paginated collection' do
-      let!(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
+      let_it_be(:issues) { create_list(:issue, 3, project: project, assignees: [user]) }
       let(:collection) { user.todos }
 
+      before_all do
+        issues.each { |issue| TodoService.new.new_issue(issue, user) }
+      end
+
       before do
-        issues.each { |issue| todo_service.new_issue(issue, user) }
         allow(Kaminari.config).to receive(:default_per_page).and_return(2)
       end
 
@@ -125,6 +126,26 @@ RSpec.describe Dashboard::TodosController do
           get :index, params: { action_id: ::Todo::MENTIONED, project_id: project.id }
 
           expect(assigns(:todos)).to match_array(mentioned_todos)
+        end
+
+        context 'when filtering by type Issue' do
+          it 'also includes work item todos' do
+            mentioned_issue_todos = [
+              create(:todo, :mentioned, project: project, user: user, target: issues.first),
+              create(
+                :todo,
+                :mentioned,
+                project: project,
+                user: user,
+                target_id: issues.last.id,
+                target_type: 'WorkItem'
+              )
+            ]
+
+            get :index, params: { action_id: ::Todo::MENTIONED, type: 'Issue', project_id: project.id }
+
+            expect(assigns(:todos)).to match_array(mentioned_issue_todos)
+          end
         end
       end
     end

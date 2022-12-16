@@ -47,44 +47,16 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu do
       end
     end
 
-    shared_examples 'split_operations_visibility_permissions FF disabled' do
-      before do
-        stub_feature_flags(split_operations_visibility_permissions: false)
-      end
-
-      it { is_expected.not_to be_nil }
-
-      context 'and the feature is disabled' do
-        before do
-          project.update_attribute("#{item_id}_access_level", 'disabled')
-        end
-
-        it { is_expected.not_to be_nil }
-      end
-
-      context 'and operations is disabled' do
-        before do
-          project.update_attribute(:operations_access_level, 'disabled')
-        end
-
-        it do
-          is_expected.to be_nil if [:environments, :feature_flags].include?(item_id)
-        end
-      end
-    end
-
     describe 'Feature Flags' do
       let(:item_id) { :feature_flags }
 
       it_behaves_like 'access rights checks'
-      it_behaves_like 'split_operations_visibility_permissions FF disabled'
     end
 
     describe 'Environments' do
       let(:item_id) { :environments }
 
       it_behaves_like 'access rights checks'
-      it_behaves_like 'split_operations_visibility_permissions FF disabled'
     end
 
     describe 'Releases' do

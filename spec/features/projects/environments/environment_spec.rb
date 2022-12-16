@@ -10,10 +10,81 @@ RSpec.describe 'Environment', feature_category: :projects do
   before do
     sign_in(user)
     project.add_role(user, role)
+    stub_feature_flags(environment_details_vue: false)
   end
 
   def auto_stop_button_selector
     %q{button[title="Prevent environment from auto-stopping"]}
+  end
+
+  describe 'environment details page vue' do
+    let_it_be(:environment) { create(:environment, project: project) }
+    let!(:permissions) {}
+    let!(:deployment) {}
+    let!(:action) {}
+    let!(:cluster) {}
+
+    before do
+      stub_feature_flags(environment_details_vue: true)
+    end
+
+    context 'with auto-stop' do
+      let_it_be(:environment) { create(:environment, :will_auto_stop, name: 'staging', project: project) }
+
+      before do
+        visit_environment(environment)
+      end
+
+      it 'shows auto stop info', :js do
+        expect(page).to have_content('Auto stops')
+      end
+
+      it 'shows auto stop button', :js do
+        expect(page).to have_selector(auto_stop_button_selector)
+        expect(page.find(auto_stop_button_selector).find(:xpath, '..')['action']).to have_content(cancel_auto_stop_project_environment_path(environment.project, environment))
+      end
+
+      it 'allows user to cancel auto stop', :js do
+        page.find(auto_stop_button_selector).click
+        wait_for_all_requests
+        expect(page).to have_content('Auto stop successfully canceled.')
+        expect(page).not_to have_selector(auto_stop_button_selector)
+      end
+    end
+
+    context 'with deployments' do
+      before do
+        visit_environment(environment)
+      end
+
+      context 'when there is a successful deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, :success, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :success, environment: environment, deployable: build)
+        end
+
+        it 'does show deployments', :js do
+          wait_for_requests
+          expect(page).to have_link("#{build.name} (##{build.id})")
+        end
+      end
+
+      context 'when there is a failed deployment' do
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+
+        let(:deployment) do
+          create(:deployment, :failed, environment: environment, deployable: build)
+        end
+
+        it 'does show deployments', :js do
+          wait_for_requests
+          expect(page).to have_link("#{build.name} (##{build.id})")
+        end
+      end
+    end
   end
 
   describe 'environment details page' do

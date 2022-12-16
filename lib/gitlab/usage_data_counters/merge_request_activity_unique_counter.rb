@@ -6,7 +6,8 @@ module Gitlab
       MR_DIFFS_ACTION = 'i_code_review_mr_diffs'
       MR_DIFFS_SINGLE_FILE_ACTION = 'i_code_review_mr_single_file_diffs'
       MR_DIFFS_USER_SINGLE_FILE_ACTION = 'i_code_review_user_single_file_diffs'
-      MR_CREATE_ACTION = 'i_code_review_user_create_mr'
+      MR_CREATE_ACTION = 'i_code_review_create_mr'
+      MR_USER_CREATE_ACTION = 'i_code_review_user_create_mr'
       MR_CLOSE_ACTION = 'i_code_review_user_close_mr'
       MR_REOPEN_ACTION = 'i_code_review_user_reopen_mr'
       MR_MERGE_ACTION = 'i_code_review_user_merge_mr'
@@ -62,8 +63,24 @@ module Gitlab
           track_unique_action_by_user(MR_DIFFS_USER_SINGLE_FILE_ACTION, user)
         end
 
-        def track_create_mr_action(user:)
-          track_unique_action_by_user(MR_CREATE_ACTION, user)
+        def track_create_mr_action(user:, merge_request:)
+          track_unique_action_by_user(MR_USER_CREATE_ACTION, user)
+          track_unique_action_by_merge_request(MR_CREATE_ACTION, merge_request)
+
+          project = merge_request.target_project
+          return unless Feature.enabled?(:route_hll_to_snowplow_phase2, project.namespace)
+
+          Gitlab::Tracking.event(
+            name,
+            :create,
+            project: project,
+            namespace: project.namespace,
+            user: user,
+            property: MR_CREATE_ACTION,
+            label: 'redis_hll_counters.code_review.i_code_review_create_mr_monthly',
+            context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll,
+                                                               event: MR_CREATE_ACTION).to_context]
+          )
         end
 
         def track_close_mr_action(user:)

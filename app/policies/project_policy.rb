@@ -369,29 +369,12 @@ class ProjectPolicy < BasePolicy
     prevent(:metrics_dashboard)
   end
 
-  condition(:split_operations_visibility_permissions) do
-    ::Feature.enabled?(:split_operations_visibility_permissions, @subject)
-  end
-
-  rule { ~split_operations_visibility_permissions & operations_disabled }.policy do
-    prevent(*create_read_update_admin_destroy(:feature_flag))
-    prevent(*create_read_update_admin_destroy(:environment))
-    prevent(*create_read_update_admin_destroy(:sentry_issue))
-    prevent(*create_read_update_admin_destroy(:alert_management_alert))
-    prevent(*create_read_update_admin_destroy(:cluster))
-    prevent(*create_read_update_admin_destroy(:terraform_state))
-    prevent(*create_read_update_admin_destroy(:deployment))
-    prevent(:metrics_dashboard)
-    prevent(:read_pod_logs)
-    prevent(:read_prometheus)
-  end
-
-  rule { split_operations_visibility_permissions & environments_disabled }.policy do
+  rule { environments_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:environment))
     prevent(*create_read_update_admin_destroy(:deployment))
   end
 
-  rule { split_operations_visibility_permissions & feature_flags_disabled }.policy do
+  rule { feature_flags_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:feature_flag))
     prevent(:admin_feature_flags_user_lists)
     prevent(:admin_feature_flags_client)
@@ -401,13 +384,13 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:release))
   end
 
-  rule { split_operations_visibility_permissions & monitor_disabled }.policy do
+  rule { monitor_disabled }.policy do
     prevent(:metrics_dashboard)
     prevent(*create_read_update_admin_destroy(:sentry_issue))
     prevent(*create_read_update_admin_destroy(:alert_management_alert))
   end
 
-  rule { split_operations_visibility_permissions & infrastructure_disabled }.policy do
+  rule { infrastructure_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:terraform_state))
     prevent(*create_read_update_admin_destroy(:cluster))
     prevent(:read_pod_logs)

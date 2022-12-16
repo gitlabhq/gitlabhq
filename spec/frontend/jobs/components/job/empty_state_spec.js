@@ -1,6 +1,7 @@
-import { mount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import EmptyState from '~/jobs/components/job/empty_state.vue';
-import { mockId } from './mock_data';
+import ManualVariablesForm from '~/jobs/components/job/manual_variables_form.vue';
+import { mockFullPath, mockId } from './mock_data';
 
 describe('Empty State', () => {
   let wrapper;
@@ -11,13 +12,17 @@ describe('Empty State', () => {
     jobId: mockId,
     title: 'This job has not started yet',
     playable: false,
+    isRetryable: true,
   };
 
   const createWrapper = (props) => {
-    wrapper = mount(EmptyState, {
+    wrapper = shallowMountExtended(EmptyState, {
       propsData: {
         ...defaultProps,
         ...props,
+      },
+      provide: {
+        projectPath: mockFullPath,
       },
     });
   };
@@ -25,10 +30,10 @@ describe('Empty State', () => {
   const content = 'This job is in pending state and is waiting to be picked by a runner';
 
   const findEmptyStateImage = () => wrapper.find('img');
-  const findTitle = () => wrapper.find('[data-testid="job-empty-state-title"]');
-  const findContent = () => wrapper.find('[data-testid="job-empty-state-content"]');
-  const findAction = () => wrapper.find('[data-testid="job-empty-state-action"]');
-  const findManualVarsForm = () => wrapper.find('[data-testid="manual-vars-form"]');
+  const findTitle = () => wrapper.findByTestId('job-empty-state-title');
+  const findContent = () => wrapper.findByTestId('job-empty-state-content');
+  const findAction = () => wrapper.findByTestId('job-empty-state-action');
+  const findManualVarsForm = () => wrapper.findComponent(ManualVariablesForm);
 
   afterEach(() => {
     if (wrapper?.destroy) {

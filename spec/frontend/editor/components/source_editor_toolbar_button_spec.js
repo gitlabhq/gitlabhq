@@ -15,6 +15,9 @@ describe('Source Editor Toolbar button', () => {
       propsData: {
         ...props,
       },
+      stubs: {
+        GlButton,
+      },
     });
   };
 
@@ -51,6 +54,41 @@ describe('Source Editor Toolbar button', () => {
       });
       const btn = findButton();
       expect(btn.props()).toMatchObject(customProps);
+    });
+
+    describe('CSS class', () => {
+      let blueprintClasses;
+
+      beforeEach(() => {
+        createComponent();
+        blueprintClasses = findButton().element.classList;
+      });
+
+      it.each`
+        cssClass     | expectedExtraClasses
+        ${undefined} | ${['']}
+        ${''}        | ${['']}
+        ${'foo'}     | ${['foo']}
+        ${'foo bar'} | ${['foo', 'bar']}
+      `(
+        'does set CSS class correctly when `class` is "$cssClass"',
+        ({ cssClass, expectedExtraClasses }) => {
+          createComponent({
+            button: {
+              ...defaultBtn,
+              class: cssClass,
+            },
+          });
+          const btn = findButton().element;
+          expectedExtraClasses.forEach((c) => {
+            if (c) {
+              expect(btn.classList.contains(c)).toBe(true);
+            } else {
+              expect(btn.classList).toEqual(blueprintClasses);
+            }
+          });
+        },
+      );
     });
   });
 

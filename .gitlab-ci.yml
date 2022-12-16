@@ -152,6 +152,10 @@ variables:
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
 
+  # Disable useless network connections when installing some NPM packages.
+  # See https://gitlab.com/gitlab-com/gl-security/engineering-and-research/inventory/-/issues/827#note_1203181407
+  DISABLE_OPENCOLLECTIVE: "true"
+
 include:
   - local: .gitlab/ci/*.gitlab-ci.yml
   - remote: 'https://gitlab.com/gitlab-org/frontend/untamper-my-lockfile/-/raw/main/templates/merge_request_pipelines.yml'

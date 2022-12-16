@@ -113,7 +113,7 @@ module Types
           runners_tbl = ::Ci::Runner.arel_table
           lateral_query = ::Ci::Build.select(1)
                                      .where(builds_tbl['runner_id'].eq(runners_tbl['id']))
-                                     .limit(JOB_COUNT_LIMIT)
+                                     .limit(JOB_COUNT_LIMIT + 1)
           counts = ::Ci::Runner.joins("JOIN LATERAL (#{lateral_query.to_sql}) builds_with_limit ON true")
                                .id_in(runner_ids)
                                .select(:id, Arel.star.count.as('count'))

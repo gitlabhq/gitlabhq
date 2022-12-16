@@ -97,11 +97,16 @@ RSpec.describe 'Editing file blob', :js, feature_category: :projects do
         "Add a table"
       ]
 
-      before do
+      it "does not have any buttons" do
+        stub_feature_flags(source_editor_toolbar: true)
         visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
+        buttons = page.all('.file-buttons .md-header-toolbar button[type="button"]')
+        expect(buttons.length).to eq(0)
       end
 
-      it "has defined set of toolbar buttons" do
+      it "has defined set of toolbar buttons when the flag is off" do
+        stub_feature_flags(source_editor_toolbar: false)
+        visit project_edit_blob_path(project, tree_join(branch, readme_file_path))
         buttons = page.all('.file-buttons .md-header-toolbar button[type="button"]')
         expect(buttons.length).to eq(toolbar_buttons.length)
         toolbar_buttons.each_with_index do |button_title, i|

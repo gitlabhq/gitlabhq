@@ -87,13 +87,14 @@ Prerequisites:
 
 - GitLab.com must serve as a proxy for the instance.
 - The instance must be publicly available.
+- The instance must be on version 15.7 or later.
 
 You can link self-managed instances after installing the GitLab.com for Jira Cloud app from the marketplace.
 Jira apps can only link to one URL per marketplace listing. The official listing links to GitLab.com.
 
 ### Set up your instance
 
-To set up your self-managed instance for the GitLab.com for Jira Cloud app:
+To set up your self-managed instance for the GitLab.com for Jira Cloud app in GitLab 15.7 or later:
 
 1. On the top bar, select **Main menu > Admin**.
 1. On the left sidebar, select **Applications** (`/admin/applications`).

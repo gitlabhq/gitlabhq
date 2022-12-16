@@ -1,0 +1,48 @@
+query getEnvironmentDetails($projectFullPath: ID!, $environmentName: String, $pageSize: Int) {
+  project(fullPath: $projectFullPath) {
+    id
+    name
+    fullPath
+    environment(name: $environmentName) {
+      id
+      name
+      deployments(orderBy: { createdAt: DESC }, first: $pageSize) {
+        nodes {
+          id
+          iid
+          status
+          ref
+          tag
+          job {
+            name
+            id
+            webPath
+          }
+          commit {
+            id
+            shortId
+            message
+            webUrl
+            authorGravatar
+            authorName
+            authorEmail
+            author {
+              id
+              name
+              avatarUrl
+              webUrl
+            }
+          }
+          triggerer {
+            id
+            webUrl
+            name
+            avatarUrl
+          }
+          createdAt
+          finishedAt
+        }
+      }
+    }
+  }
+}

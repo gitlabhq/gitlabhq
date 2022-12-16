@@ -48,10 +48,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:package_registry_access_level)
   end
 
-  before_action only: :edit do
-    push_frontend_feature_flag(:split_operations_visibility_permissions, @project)
-  end
-
   layout :determine_layout
 
   feature_category :projects, [
@@ -433,17 +429,11 @@ class ProjectsController < Projects::ApplicationController
       security_and_compliance_access_level
       container_registry_access_level
       releases_access_level
-    ] + operations_feature_attributes
-  end
-
-  def operations_feature_attributes
-    if Feature.enabled?(:split_operations_visibility_permissions, project)
-      %i[
-        environments_access_level feature_flags_access_level monitor_access_level infrastructure_access_level
-      ]
-    else
-      %i[operations_access_level]
-    end
+      environments_access_level
+      feature_flags_access_level
+      monitor_access_level
+      infrastructure_access_level
+    ]
   end
 
   def project_setting_attributes

@@ -31,41 +31,16 @@ RSpec.describe Sidebars::Projects::Menus::InfrastructureMenu do
       let(:enabled) { Featurable::PRIVATE }
       let(:disabled) { Featurable::DISABLED }
 
-      where(:operations_access_level, :infrastructure_access_level, :render) do
-        ref(:disabled) | ref(:enabled)  | true
-        ref(:disabled) | ref(:disabled) | false
-        ref(:enabled)  | ref(:enabled)  | true
-        ref(:enabled)  | ref(:disabled) | false
+      where(:infrastructure_access_level, :render) do
+        ref(:enabled)  | true
+        ref(:disabled) | false
       end
 
       with_them do
         it 'renders based on the infrastructure access level' do
-          project.project_feature.update!(operations_access_level: operations_access_level)
           project.project_feature.update!(infrastructure_access_level: infrastructure_access_level)
 
           expect(subject.render?).to be render
-        end
-      end
-
-      context 'when `split_operations_visibility_permissions` feature flag is disabled' do
-        before do
-          stub_feature_flags(split_operations_visibility_permissions: false)
-        end
-
-        where(:operations_access_level, :infrastructure_access_level, :render) do
-          ref(:disabled) | ref(:enabled)  | false
-          ref(:disabled) | ref(:disabled) | false
-          ref(:enabled)  | ref(:enabled)  | true
-          ref(:enabled)  | ref(:disabled) | true
-        end
-
-        with_them do
-          it 'renders based on the operations access level' do
-            project.project_feature.update!(operations_access_level: operations_access_level)
-            project.project_feature.update!(infrastructure_access_level: infrastructure_access_level)
-
-            expect(subject.render?).to be render
-          end
         end
       end
     end

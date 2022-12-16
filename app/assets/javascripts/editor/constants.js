@@ -1,5 +1,6 @@
+import { MODIFIER_KEY } from '~/constants';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
-import { s__, __ } from '~/locale';
+import { s__, __, sprintf } from '~/locale';
 
 export const URI_PREFIX = 'gitlab';
 export const CONTENT_UPDATE_DEBOUNCE = DEFAULT_DEBOUNCE_AND_THROTTLE_MS;
@@ -62,3 +63,104 @@ export const EXTENSION_MARKDOWN_PREVIEW_PANEL_WIDTH = 0.5; // 50% of the width
 export const EXTENSION_MARKDOWN_PREVIEW_UPDATE_DELAY = 250; // ms
 export const EXTENSION_MARKDOWN_PREVIEW_LABEL = __('Preview Markdown');
 export const EXTENSION_MARKDOWN_HIDE_PREVIEW_LABEL = __('Hide Live Preview');
+export const EXTENSION_MARKDOWN_BUTTONS = [
+  {
+    id: 'bold',
+    label: sprintf(s__('MarkdownEditor|Add bold text (%{modifierKey}B)'), {
+      modifierKey: MODIFIER_KEY,
+    }),
+    data: {
+      mdTag: '**',
+      mdShortcuts: '["mod+b"]',
+    },
+  },
+  {
+    id: 'italic',
+    label: sprintf(s__('MarkdownEditor|Add italic text (%{modifierKey}I)'), {
+      modifierKey: MODIFIER_KEY,
+    }),
+    data: {
+      mdTag: '_',
+      mdShortcuts: '["mod+i"]',
+    },
+  },
+  {
+    id: 'strikethrough',
+    label: sprintf(s__('MarkdownEditor|Add strikethrough text (%{modifierKey}⇧X)'), {
+      modifierKey: MODIFIER_KEY,
+    }),
+    data: {
+      mdTag: '~~',
+      mdShortcuts: '["mod+shift+x]',
+    },
+  },
+  {
+    id: 'quote',
+    label: __('Insert a quote'),
+    data: {
+      mdTag: '> ',
+      mdPrepend: true,
+    },
+  },
+  {
+    id: 'code',
+    label: __('Insert code'),
+    data: {
+      mdTag: '`',
+      mdBlock: '```',
+    },
+  },
+  {
+    id: 'link',
+    label: sprintf(s__('MarkdownEditor|Add a link (%{modifier_key}K)'), {
+      modifierKey: MODIFIER_KEY,
+    }),
+    data: {
+      mdTag: '[{text}](url)',
+      mdSelect: 'url',
+      mdShortcuts: '["mod+k"]',
+    },
+  },
+  {
+    id: 'list-bulleted',
+    label: __('Add a bullet list'),
+    data: {
+      mdTag: '- ',
+      mdPrepend: true,
+    },
+  },
+  {
+    id: 'list-numbered',
+    label: __('Add a numbered list'),
+    data: {
+      mdTag: '1. ',
+      mdPrepend: true,
+    },
+  },
+  {
+    id: 'list-task',
+    label: __('Add a checklist'),
+    data: {
+      mdTag: '- [ ] ',
+      mdPrepend: true,
+    },
+  },
+  {
+    id: 'details-block',
+    label: __('Add a collapsible section'),
+    data: {
+      mdTag: '<details><summary>Click to expand</summary>\n{text}\n</details>',
+      mdPrepend: true,
+      mdSelect: __('Click to expand'),
+    },
+  },
+  {
+    id: 'table',
+    label: __('Add a table'),
+    data: {
+      /* eslint-disable-next-line @gitlab/require-i18n-strings */
+      mdTag: '| header | header |\n| ------ | ------ |\n|        |        |\n|        |        |',
+      mdPrepend: true,
+    },
+  },
+];

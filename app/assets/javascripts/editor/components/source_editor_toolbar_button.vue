@@ -59,6 +59,7 @@ export default {
     :icon="icon"
     :title="label"
     :aria-label="label"
+    :class="button.class"
     @click="clickHandler($event)"
   />
 </template>

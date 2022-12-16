@@ -3,6 +3,7 @@
 class Dashboard::TodosController < Dashboard::ApplicationController
   include ActionView::Helpers::NumberHelper
   include PaginatedCollection
+  include Gitlab::Utils::StrongMemoize
 
   before_action :authorize_read_project!, only: :index
   before_action :authorize_read_group!, only: :index
@@ -99,14 +100,28 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def todo_params
-    aliased_action_id(
+    aliased_params(
       params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
     )
   end
+  strong_memoize_attr :todo_params
 
-  def aliased_action_id(original_params)
-    return original_params unless original_params[:action_id].to_i == ::Todo::MENTIONED
+  def aliased_params(original_params)
+    alias_issue_type(original_params)
+    alias_action_id(original_params)
 
-    original_params.merge(action_id: [::Todo::MENTIONED, ::Todo::DIRECTLY_ADDRESSED])
+    original_params
+  end
+
+  def alias_issue_type(original_params)
+    return unless original_params[:type] == Issue.name
+
+    original_params[:type] = [Issue.name, WorkItem.name]
+  end
+
+  def alias_action_id(original_params)
+    return unless original_params[:action_id].to_i == ::Todo::MENTIONED
+
+    original_params[:action_id] = [::Todo::MENTIONED, ::Todo::DIRECTLY_ADDRESSED]
   end
 end

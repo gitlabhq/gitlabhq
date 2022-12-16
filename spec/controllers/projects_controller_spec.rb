@@ -920,35 +920,6 @@ RSpec.describe ProjectsController do
       with_them do
         it_behaves_like 'feature update success'
       end
-
-      context 'for feature_access_level operations_access_level' do
-        let(:feature_access_level) { :operations_access_level }
-
-        include_examples 'feature update failure'
-      end
-
-      context 'with feature flag split_operations_visibility_permissions disabled' do
-        before do
-          stub_feature_flags(split_operations_visibility_permissions: false)
-        end
-
-        context 'for feature_access_level operations_access_level' do
-          let(:feature_access_level) { :operations_access_level }
-
-          include_examples 'feature update success'
-        end
-
-        where(:feature_access_level) do
-          %i[
-            environments_access_level feature_flags_access_level
-            monitor_access_level
-          ]
-        end
-
-        with_them do
-          it_behaves_like 'feature update failure'
-        end
-      end
     end
   end
 

@@ -14,9 +14,6 @@ import {
 import GetJob from '../graphql/queries/get_job.query.graphql';
 import JobSidebarRetryButton from './job_sidebar_retry_button.vue';
 
-// This component is a port of ~/jobs/components/job/sidebar/legacy_sidebar_header.vue
-// It is meant to fetch the job information via GraphQL instead of REST API.
-
 export default {
   name: 'SidebarHeader',
   i18n: {

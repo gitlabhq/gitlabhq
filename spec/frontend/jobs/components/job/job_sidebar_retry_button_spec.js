@@ -16,7 +16,7 @@ describe('Job Sidebar Retry Button', () => {
     wrapper = shallowMountExtended(JobsSidebarRetryButton, {
       propsData: {
         href: job.retry_path,
-        isManualJob: true,
+        isManualJob: false,
         modalId: 'modal-id',
         ...props,
       },

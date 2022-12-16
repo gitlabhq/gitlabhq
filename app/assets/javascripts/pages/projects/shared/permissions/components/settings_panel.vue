@@ -38,7 +38,6 @@ export default {
     issuesLabel: s__('ProjectSettings|Issues'),
     lfsLabel: s__('ProjectSettings|Git Large File Storage (LFS)'),
     mergeRequestsLabel: s__('ProjectSettings|Merge requests'),
-    operationsLabel: s__('ProjectSettings|Operations'),
     environmentsLabel: s__('ProjectSettings|Environments'),
     environmentsHelpText: s__(
       'ProjectSettings|Every project can make deployments to environments either via CI/CD or API calls. Non-project members have read-only access.',
@@ -259,7 +258,6 @@ export default {
       analyticsAccessLevel: featureAccessLevel.EVERYONE,
       requirementsAccessLevel: featureAccessLevel.EVERYONE,
       securityAndComplianceAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
-      operationsAccessLevel: featureAccessLevel.EVERYONE,
       environmentsAccessLevel: featureAccessLevel.EVERYONE,
       featureFlagsAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
       infrastructureAccessLevel: featureAccessLevel.PROJECT_MEMBERS,
@@ -316,10 +314,6 @@ export default {
       return options;
     },
 
-    operationsEnabled() {
-      return this.operationsAccessLevel > featureAccessLevel.NOT_ENABLED;
-    },
-
     environmentsEnabled() {
       return this.environmentsAccessLevel > featureAccessLevel.NOT_ENABLED;
     },
@@ -373,16 +367,8 @@ export default {
     packageRegistryApiForEveryoneEnabledShown() {
       return this.visibilityLevel !== VISIBILITY_LEVEL_PUBLIC_INTEGER;
     },
-    splitOperationsEnabled() {
-      return this.glFeatures.splitOperationsVisibilityPermissions;
-    },
     monitorOperationsFeatureAccessLevelOptions() {
-      if (this.splitOperationsEnabled) {
-        return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
-      }
-      return this.featureAccessLevelOptions.filter(
-        ([value]) => value <= this.operationsAccessLevel,
-      );
+      return this.featureAccessLevelOptions.filter(([value]) => value <= this.monitorAccessLevel);
     },
   },
 
@@ -435,10 +421,6 @@ export default {
         this.securityAndComplianceAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
           this.securityAndComplianceAccessLevel,
-        );
-        this.operationsAccessLevel = Math.min(
-          featureAccessLevel.PROJECT_MEMBERS,
-          this.operationsAccessLevel,
         );
         this.environmentsAccessLevel = Math.min(
           featureAccessLevel.PROJECT_MEMBERS,
@@ -498,8 +480,6 @@ export default {
           this.metricsDashboardAccessLevel = featureAccessLevel.EVERYONE;
         if (this.requirementsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.requirementsAccessLevel = featureAccessLevel.EVERYONE;
-        if (this.operationsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
-          this.operationsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.environmentsAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
           this.environmentsAccessLevel = featureAccessLevel.EVERYONE;
         if (this.monitorAccessLevel === featureAccessLevel.PROJECT_MEMBERS)
@@ -536,10 +516,6 @@ export default {
         toggleHiddenClassBySelector('.merge-requests-feature', true);
       else if (oldValue === featureAccessLevel.NOT_ENABLED)
         toggleHiddenClassBySelector('.merge-requests-feature', false);
-    },
-
-    operationsAccessLevel(value, oldValue) {
-      this.updateSubFeatureAccessLevel(value, oldValue);
     },
 
     monitorAccessLevel(value, oldValue) {
@@ -971,7 +947,6 @@ export default {
         />
       </project-setting-row>
       <project-setting-row
-        v-if="splitOperationsEnabled"
         ref="monitor-settings"
         :label="$options.i18n.monitorLabel"
         :help-text="
@@ -983,21 +958,6 @@ export default {
           :label="$options.i18n.monitorLabel"
           :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][monitor_access_level]"
-        />
-      </project-setting-row>
-      <project-setting-row
-        v-else
-        ref="operations-settings"
-        :label="$options.i18n.operationsLabel"
-        :help-text="
-          s__('ProjectSettings|Configure your project resources and monitor their health.')
-        "
-      >
-        <project-feature-setting
-          v-model="operationsAccessLevel"
-          :label="$options.i18n.operationsLabel"
-          :options="featureAccessLevelOptions"
-          name="project[project_feature_attributes][operations_access_level]"
         />
       </project-setting-row>
       <div class="project-feature-setting-group gl-pl-7 gl-sm-pl-5">
@@ -1014,47 +974,45 @@ export default {
           />
         </project-setting-row>
       </div>
-      <template v-if="splitOperationsEnabled">
-        <project-setting-row
-          ref="environments-settings"
+      <project-setting-row
+        ref="environments-settings"
+        :label="$options.i18n.environmentsLabel"
+        :help-text="$options.i18n.environmentsHelpText"
+        :help-path="environmentsHelpPath"
+      >
+        <project-feature-setting
+          v-model="environmentsAccessLevel"
           :label="$options.i18n.environmentsLabel"
-          :help-text="$options.i18n.environmentsHelpText"
-          :help-path="environmentsHelpPath"
-        >
-          <project-feature-setting
-            v-model="environmentsAccessLevel"
-            :label="$options.i18n.environmentsLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][environments_access_level]"
-          />
-        </project-setting-row>
-        <project-setting-row
-          ref="feature-flags-settings"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][environments_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        ref="feature-flags-settings"
+        :label="$options.i18n.featureFlagsLabel"
+        :help-text="$options.i18n.featureFlagsHelpText"
+        :help-path="featureFlagsHelpPath"
+      >
+        <project-feature-setting
+          v-model="featureFlagsAccessLevel"
           :label="$options.i18n.featureFlagsLabel"
-          :help-text="$options.i18n.featureFlagsHelpText"
-          :help-path="featureFlagsHelpPath"
-        >
-          <project-feature-setting
-            v-model="featureFlagsAccessLevel"
-            :label="$options.i18n.featureFlagsLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][feature_flags_access_level]"
-          />
-        </project-setting-row>
-        <project-setting-row
-          ref="infrastructure-settings"
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][feature_flags_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        ref="infrastructure-settings"
+        :label="$options.i18n.infrastructureLabel"
+        :help-text="$options.i18n.infrastructureHelpText"
+        :help-path="infrastructureHelpPath"
+      >
+        <project-feature-setting
+          v-model="infrastructureAccessLevel"
           :label="$options.i18n.infrastructureLabel"
-          :help-text="$options.i18n.infrastructureHelpText"
-          :help-path="infrastructureHelpPath"
-        >
-          <project-feature-setting
-            v-model="infrastructureAccessLevel"
-            :label="$options.i18n.infrastructureLabel"
-            :options="featureAccessLevelOptions"
-            name="project[project_feature_attributes][infrastructure_access_level]"
-          />
-        </project-setting-row>
-      </template>
+          :options="featureAccessLevelOptions"
+          name="project[project_feature_attributes][infrastructure_access_level]"
+        />
+      </project-setting-row>
       <project-setting-row
         ref="releases-settings"
         :label="$options.i18n.releasesLabel"
