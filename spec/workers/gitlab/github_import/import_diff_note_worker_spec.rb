@@ -14,6 +14,7 @@ RSpec.describe Gitlab::GithubImport::ImportDiffNoteWorker do
       hash = {
         'noteable_id' => 42,
         'github_id' => 42,
+        'html_url' => 'https://github.com/foo/bar/pull/42',
         'path' => 'README.md',
         'commit_id' => '123abc',
         'diff_hunk' => "@@ -1 +1 @@\n-Hello\n+Hello world",

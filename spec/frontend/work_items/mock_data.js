@@ -36,6 +36,16 @@ export const mockLabels = [
   },
 ];
 
+export const mockMilestone = {
+  __typename: 'Milestone',
+  id: 'gid://gitlab/Milestone/30',
+  title: 'v4.0',
+  state: 'active',
+  expired: false,
+  startDate: '2022-10-17',
+  dueDate: '2022-10-24',
+};
+
 export const workItemQueryResponse = {
   data: {
     workItem: {
@@ -359,11 +369,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetMilestone',
               type: 'MILESTONE',
-              milestone: {
-                expired: false,
-                id: 'gid://gitlab/Milestone/30',
-                title: 'v4.0',
-              },
+              milestone: mockMilestone,
             }
           : { type: 'MOCK TYPE' },
         {
@@ -937,7 +943,17 @@ export const workItemObjectiveWithChild = {
     iconName: 'issue-type-objective',
     __typename: 'WorkItemType',
   },
+  project: {
+    __typename: 'Project',
+    id: '1',
+    fullPath: 'test-project-path',
+  },
+  userPermissions: {
+    deleteWorkItem: true,
+    updateWorkItem: true,
+  },
   title: 'Objective',
+  description: 'Objective description',
   state: 'OPEN',
   confidential: false,
   createdAt: '2022-08-03T12:41:54Z',
@@ -946,10 +962,49 @@ export const workItemObjectiveWithChild = {
     {
       type: 'HIERARCHY',
       hasChildren: true,
+      parent: null,
+      children: {
+        nodes: [],
+      },
       __typename: 'WorkItemWidgetHierarchy',
+    },
+    {
+      type: 'MILESTONE',
+      __typename: 'WorkItemWidgetMilestone',
+      milestone: mockMilestone,
+    },
+    {
+      type: 'ASSIGNEES',
+      __typename: 'WorkItemWidgetAssignees',
+      canInviteMembers: true,
+      allowsMultipleAssignees: true,
+      assignees: {
+        __typename: 'UserCoreConnection',
+        nodes: mockAssignees,
+      },
+    },
+    {
+      type: 'LABELS',
+      __typename: 'WorkItemWidgetLabels',
+      allowsScopedLabels: true,
+      labels: {
+        __typename: 'LabelConnection',
+        nodes: mockLabels,
+      },
     },
   ],
   __typename: 'WorkItem',
+};
+
+export const workItemObjectiveNoMetadata = {
+  ...workItemObjectiveWithChild,
+  widgets: [
+    {
+      type: 'HIERARCHY',
+      hasChildren: true,
+      __typename: 'WorkItemWidgetHierarchy',
+    },
+  ],
 };
 
 export const workItemHierarchyTreeResponse = {

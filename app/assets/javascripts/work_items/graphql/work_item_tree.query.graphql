@@ -1,3 +1,7 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "./work_item_metadata_widgets.fragment.graphql"
+
 query workItemTreeQuery($id: WorkItemID!) {
   workItem(id: $id) {
     id
@@ -38,10 +42,12 @@ query workItemTreeQuery($id: WorkItemID!) {
                 type
                 hasChildren
               }
+              ...WorkItemMetadataWidgets
             }
           }
         }
       }
+      ...WorkItemMetadataWidgets
     }
   }
 }

@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlIcon, GlTooltipDirective } from '@gitlab/ui';
+import { GlButton, GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/flash';
@@ -10,18 +10,24 @@ import {
   STATE_OPEN,
   TASK_TYPE_NAME,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_HIERARCHY,
+  WIDGET_TYPE_ASSIGNEES,
+  WIDGET_TYPE_LABELS,
   WORK_ITEM_NAME_TO_ICON_MAP,
 } from '../../constants';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
+import WorkItemLinkChildMetadata from './work_item_link_child_metadata.vue';
 import WorkItemLinksMenu from './work_item_links_menu.vue';
 import WorkItemTreeChildren from './work_item_tree_children.vue';
 
 export default {
   components: {
+    GlLink,
     GlButton,
     GlIcon,
     RichTimestampTooltip,
+    WorkItemLinkChildMetadata,
     WorkItemLinksMenu,
     WorkItemTreeChildren,
   },
@@ -67,6 +73,9 @@ export default {
     canHaveChildren() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE;
     },
+    allowsScopedLabels() {
+      return this.getWidgetByType(this.childItem, WIDGET_TYPE_LABELS)?.allowsScopedLabels;
+    },
     isItemOpen() {
       return this.childItem.state === STATE_OPEN;
     },
@@ -95,13 +104,25 @@ export default {
       return `/${this.projectPath}/-/work_items/${getIdFromGraphQLId(this.childItem.id)}`;
     },
     hasChildren() {
-      return this.getWidgetHierarchyForChild(this.childItem)?.hasChildren;
+      return this.getWidgetByType(this.childItem, WIDGET_TYPE_HIERARCHY)?.hasChildren;
     },
     chevronType() {
       return this.isExpanded ? 'chevron-down' : 'chevron-right';
     },
     chevronTooltip() {
       return this.isExpanded ? __('Collapse') : __('Expand');
+    },
+    hasMetadata() {
+      return this.milestone || this.assignees.length > 0 || this.labels.length > 0;
+    },
+    milestone() {
+      return this.getWidgetByType(this.childItem, WIDGET_TYPE_MILESTONE)?.milestone;
+    },
+    assignees() {
+      return this.getWidgetByType(this.childItem, WIDGET_TYPE_ASSIGNEES)?.assignees?.nodes || [];
+    },
+    labels() {
+      return this.getWidgetByType(this.childItem, WIDGET_TYPE_LABELS)?.labels?.nodes || [];
     },
   },
   methods: {
@@ -111,11 +132,8 @@ export default {
         this.fetchChildren();
       }
     },
-    getWidgetHierarchyForChild(workItem) {
-      const widgetHierarchy = workItem?.widgets?.find(
-        (widget) => widget.type === WIDGET_TYPE_HIERARCHY,
-      );
-      return widgetHierarchy || {};
+    getWidgetByType(workItem, widgetType) {
+      return workItem?.widgets?.find((widget) => widget.type === widgetType);
     },
     async fetchChildren() {
       this.isLoadingChildren = true;
@@ -126,7 +144,7 @@ export default {
             id: this.childItem.id,
           },
         });
-        this.children = this.getWidgetHierarchyForChild(data?.workItem).children.nodes;
+        this.children = this.getWidgetByType(data?.workItem, WIDGET_TYPE_HIERARCHY).children.nodes;
       } catch (error) {
         this.isExpanded = !this.isExpanded;
         createAlert({
@@ -145,7 +163,7 @@ export default {
 <template>
   <div>
     <div
-      class="gl-display-flex gl-align-items-center gl-mb-3"
+      class="gl-display-flex gl-align-items-flex-start gl-mb-3"
       :class="{ 'gl-ml-6': canHaveChildren && !hasChildren && hasIndirectChildren }"
     >
       <gl-button
@@ -156,7 +174,7 @@ export default {
         :icon="chevronType"
         category="tertiary"
         :loading="isLoadingChildren"
-        class="gl-px-0! gl-py-4! gl-mr-3"
+        class="gl-px-0! gl-py-3! gl-mr-3"
         data-testid="expand-child"
         @click="toggleItem"
       />
@@ -164,40 +182,60 @@ export default {
         class="gl-relative gl-display-flex gl-flex-grow-1 gl-overflow-break-word gl-min-w-0 gl-bg-white gl-py-3 gl-px-4 gl-border gl-border-gray-100 gl-rounded-base gl-line-height-32"
         data-testid="links-child"
       >
-        <div class="gl-overflow-hidden gl-display-flex gl-align-items-center gl-flex-grow-1">
-          <span :id="`stateIcon-${childItem.id}`" class="gl-mr-3" data-testid="item-status-icon">
-            <gl-icon
-              class="gl-text-secondary"
-              :class="iconClass"
-              :name="iconName"
-              :aria-label="stateTimestampTypeText"
-            />
-          </span>
-          <rich-timestamp-tooltip
-            :target="`stateIcon-${childItem.id}`"
-            :raw-timestamp="stateTimestamp"
-            :timestamp-type-text="stateTimestampTypeText"
-          />
+        <span
+          :id="`stateIcon-${childItem.id}`"
+          class="gl-mr-3"
+          :class="{ 'gl-display-flex': hasMetadata }"
+          data-testid="item-status-icon"
+        >
           <gl-icon
-            v-if="childItem.confidential"
-            v-gl-tooltip.top
-            name="eye-slash"
-            class="gl-mr-2 gl-text-orange-500"
-            data-testid="confidential-icon"
-            :aria-label="__('Confidential')"
-            :title="__('Confidential')"
+            class="gl-text-secondary"
+            :class="iconClass"
+            :name="iconName"
+            :aria-label="stateTimestampTypeText"
           />
-          <gl-button
-            :href="childPath"
-            category="tertiary"
-            variant="link"
-            class="gl-text-truncate gl-max-w-80 gl-text-black-normal!"
-            @click="$emit('click', $event)"
-            @mouseover="$emit('mouseover')"
-            @mouseout="$emit('mouseout')"
-          >
-            {{ childItem.title }}
-          </gl-button>
+        </span>
+        <div
+          class="gl-display-flex gl-flex-grow-1"
+          :class="{
+            'gl-flex-direction-column gl-align-items-flex-start': hasMetadata,
+            'gl-align-items-center': !hasMetadata,
+          }"
+        >
+          <div class="gl-display-flex">
+            <rich-timestamp-tooltip
+              :target="`stateIcon-${childItem.id}`"
+              :raw-timestamp="stateTimestamp"
+              :timestamp-type-text="stateTimestampTypeText"
+            />
+            <gl-icon
+              v-if="childItem.confidential"
+              v-gl-tooltip.top
+              name="eye-slash"
+              class="gl-mr-2 gl-text-orange-500"
+              data-testid="confidential-icon"
+              :aria-label="__('Confidential')"
+              :title="__('Confidential')"
+            />
+            <gl-link
+              :href="childPath"
+              class="gl-overflow-wrap-break gl-line-height-normal gl-text-black-normal! gl-font-weight-bold"
+              data-testid="item-title"
+              @click="$emit('click', $event)"
+              @mouseover="$emit('mouseover')"
+              @mouseout="$emit('mouseout')"
+            >
+              {{ childItem.title }}
+            </gl-link>
+          </div>
+          <work-item-link-child-metadata
+            v-if="hasMetadata"
+            :allows-scoped-labels="allowsScopedLabels"
+            :milestone="milestone"
+            :assignees="assignees"
+            :labels="labels"
+            class="gl-mt-3"
+          />
         </div>
         <div
           v-if="canUpdate"

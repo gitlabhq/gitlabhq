@@ -1,4 +1,4 @@
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -9,6 +9,7 @@ import { createAlert } from '~/flash';
 import RichTimestampTooltip from '~/vue_shared/components/rich_timestamp_tooltip.vue';
 
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
+import WorkItemLinkChildMetadata from '~/work_items/components/work_item_links/work_item_link_child_metadata.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import WorkItemLinksMenu from '~/work_items/components/work_item_links/work_item_links_menu.vue';
 import WorkItemTreeChildren from '~/work_items/components/work_item_links/work_item_tree_children.vue';
@@ -21,8 +22,12 @@ import {
 import {
   workItemTask,
   workItemObjectiveWithChild,
+  workItemObjectiveNoMetadata,
   confidentialWorkItemTask,
   closedWorkItemTask,
+  mockMilestone,
+  mockAssignees,
+  mockLabels,
   workItemHierarchyTreeResponse,
   workItemHierarchyTreeFailureResponse,
 } from '../../mock_data';
@@ -101,7 +106,7 @@ describe('WorkItemLinkChild', () => {
     beforeEach(() => {
       createComponent();
 
-      titleEl = wrapper.findComponent(GlButton);
+      titleEl = wrapper.findByTestId('item-title');
     });
 
     it('renders item title', () => {
@@ -126,6 +131,37 @@ describe('WorkItemLinkChild', () => {
       titleEl.vm.$emit('click', eventObj);
 
       expect(wrapper.emitted('click')).toEqual([[eventObj]]);
+    });
+  });
+
+  describe('item metadata', () => {
+    const findMetadataComponent = () => wrapper.findComponent(WorkItemLinkChildMetadata);
+
+    beforeEach(() => {
+      createComponent({
+        childItem: workItemObjectiveWithChild,
+        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+      });
+    });
+
+    it('renders item metadata component when item has metadata present', () => {
+      const metadataEl = findMetadataComponent();
+      expect(metadataEl.exists()).toBe(true);
+      expect(metadataEl.props()).toMatchObject({
+        allowsScopedLabels: true,
+        milestone: mockMilestone,
+        assignees: mockAssignees,
+        labels: mockLabels,
+      });
+    });
+
+    it('does not render item metadata component when item has no metadata present', () => {
+      createComponent({
+        childItem: workItemObjectiveNoMetadata,
+        workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+      });
+
+      expect(findMetadataComponent().exists()).toBe(false);
     });
   });
 

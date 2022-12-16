@@ -10,11 +10,12 @@ RSpec.describe UpdateImportSourcesOnApplicationSettings, feature_category: :migr
 
   describe "#up" do
     it 'removes google_code and preserves existing valid import sources' do
-      settings.create!(import_sources: import_sources_with_google)
+      record = settings.create!(import_sources: import_sources_with_google.to_yaml)
 
       migrate!
 
-      expect(YAML.safe_load(ApplicationSetting.last.import_sources)).to eq(import_sources_without_google)
+      expect(record.reload.import_sources).to start_with('---')
+      expect(ApplicationSetting.last.import_sources).to eq(import_sources_without_google)
     end
   end
 end

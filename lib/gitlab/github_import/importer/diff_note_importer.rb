@@ -18,7 +18,6 @@ module Gitlab
         def execute
           return if merge_request_id.blank?
 
-          note.project = project
           note.merge_request = merge_request
 
           build_author_attributes

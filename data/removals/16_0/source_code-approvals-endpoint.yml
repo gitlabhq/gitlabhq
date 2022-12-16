@@ -2,7 +2,7 @@
   announcement_milestone: "12.3"
   announcement_date: "2019-09-22"
   removal_milestone: "16.0"
-  removal_date: "2023-03-22"
+  removal_date: "2023-05-22"
   breaking_change: true
   reporter: tlinz
   stage: Create

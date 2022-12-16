@@ -15,6 +15,7 @@ import {
   WORK_ITEMS_TREE_TEXT_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '../../constants';
 import workItemQuery from '../../graphql/work_item.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
@@ -148,13 +149,17 @@ export default {
       });
     },
     prefetchWorkItem({ id, iid }) {
-      this.prefetch = setTimeout(
-        () => this.addWorkItemQuery({ id, iid }),
-        DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
-      );
+      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_OBJECTIVE) {
+        this.prefetch = setTimeout(
+          () => this.addWorkItemQuery({ id, iid }),
+          DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
+        );
+      }
     },
     clearPrefetching() {
-      clearTimeout(this.prefetch);
+      if (this.prefetch) {
+        clearTimeout(this.prefetch);
+      }
     },
   },
 };

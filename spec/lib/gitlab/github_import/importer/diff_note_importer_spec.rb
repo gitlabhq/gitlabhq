@@ -35,7 +35,8 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
       end_line: end_line,
       github_id: 1,
       diff_hunk: diff_hunk,
-      side: 'RIGHT'
+      side: 'RIGHT',
+      discussion_id: discussion_id
     )
   end
 
@@ -114,10 +115,6 @@ RSpec.describe Gitlab::GithubImport::Importer::DiffNoteImporter, :aggregate_fail
             .to receive(:database_id)
             .and_return(merge_request.id)
         end
-
-        expect(Discussion)
-          .to receive(:discussion_id)
-          .and_return(discussion_id)
       end
 
       it_behaves_like 'diff notes without suggestion'

@@ -54,12 +54,14 @@ or stop alert escalations by [updating the alert's status](alerts.md#change-an-a
 > - [Feature flag `incident_escalations`](https://gitlab.com/gitlab-org/gitlab/-/issues/345769) removed in GitLab 15.1.
 
 For incidents, paging on-call responders is optional for each individual incident.
-To begin escalating the incident, [set the incident's escalation policy](incidents.md#change-escalation-policy).
-For each escalation rule, the designated on-call responders receive one email when
-the rule fires. You can respond to a page or stop incident escalations by
-[updating the incident's status](incidents.md#change-incident-status) or, if applicable,
-[unsetting the incident's escalation policy](incidents.md#change-escalation-policy).
 
-In GitLab 15.1 and earlier, [incidents created from alerts](alerts.md#create-an-incident-from-an-alert)
+To begin escalating the incident, [set the incident's escalation policy](manage_incidents.md#change-escalation-policy).
+
+For each escalation rule, the designated on-call responders receive one email when
+the rule fires. Respond to a page or stop incident escalations by
+[changing the incident's status](manage_incidents.md#change-status) or
+changing the incident's escalation policy back to **No escalation policy**.
+
+In GitLab 15.1 and earlier, [incidents created from alerts](manage_incidents.md#from-an-alert)
 do not support independent escalation. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 all incidents can be escalated independently.

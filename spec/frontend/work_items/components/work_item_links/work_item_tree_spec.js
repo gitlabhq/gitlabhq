@@ -1,17 +1,26 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueApollo from 'vue-apollo';
+
+import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import OkrActionsSplitButton from '~/work_items/components/work_item_links/okr_actions_split_button.vue';
+import workItemQuery from '~/work_items/graphql/work_item.query.graphql';
+
+import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
+
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
 } from '~/work_items/constants';
-import { childrenWorkItems } from '../../mock_data';
+import { childrenWorkItems, workItemObjectiveWithChild } from '../../mock_data';
 
 describe('WorkItemTree', () => {
+  let getWorkItemQueryHandler;
   let wrapper;
 
   const findToggleButton = () => wrapper.findByTestId('toggle-tree');
@@ -21,10 +30,31 @@ describe('WorkItemTree', () => {
   const findForm = () => wrapper.findComponent(WorkItemLinksForm);
   const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
 
-  const createComponent = ({ children = childrenWorkItems } = {}) => {
+  Vue.use(VueApollo);
+
+  const createComponent = ({
+    workItemType = 'Objective',
+    children = childrenWorkItems,
+    apolloProvider = null,
+  } = {}) => {
+    const mockWorkItemResponse = {
+      data: {
+        workItem: {
+          ...workItemObjectiveWithChild,
+          workItemType: {
+            ...workItemObjectiveWithChild.workItemType,
+            name: workItemType,
+          },
+        },
+      },
+    };
+    getWorkItemQueryHandler = jest.fn().mockResolvedValue(mockWorkItemResponse);
+
     wrapper = shallowMountExtended(WorkItemTree, {
+      apolloProvider:
+        apolloProvider || createMockApollo([[workItemQuery, getWorkItemQueryHandler]]),
       propsData: {
-        workItemType: 'Objective',
+        workItemType,
         workItemId: 'gid://gitlab/WorkItem/515',
         children,
         projectPath: 'test/project',
@@ -91,4 +121,27 @@ describe('WorkItemTree', () => {
 
     expect(wrapper.emitted('removeChild')).toEqual([['gid://gitlab/WorkItem/2']]);
   });
+
+  it.each`
+    description            | workItemType   | prefetch
+    ${'prefetches'}        | ${'Issue'}     | ${true}
+    ${'does not prefetch'} | ${'Objective'} | ${false}
+  `(
+    '$description work-item-link-child on mouseover when workItemType is "$workItemType"',
+    async ({ workItemType, prefetch }) => {
+      createComponent({ workItemType });
+      const firstChild = findWorkItemLinkChildItems().at(0);
+      firstChild.vm.$emit('mouseover', childrenWorkItems[0]);
+      await nextTick();
+      await waitForPromises();
+
+      jest.advanceTimersByTime(DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
+
+      if (prefetch) {
+        expect(getWorkItemQueryHandler).toHaveBeenCalled();
+      } else {
+        expect(getWorkItemQueryHandler).not.toHaveBeenCalled();
+      }
+    },
+  );
 });

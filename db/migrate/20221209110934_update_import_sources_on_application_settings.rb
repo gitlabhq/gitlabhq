@@ -9,11 +9,10 @@ class UpdateImportSourcesOnApplicationSettings < Gitlab::Database::Migration[2.0
   end
 
   def up
-    # rubocop: disable Style/GuardClause
-    unless import_sources.empty?
-      ApplicationSetting.update_all(import_sources: import_sources.reject { |x| x == "google_code" })
-    end
-    # rubocop: enable Style/GuardClause
+    return if import_sources.empty?
+
+    new_sources = import_sources - ['google_code']
+    ApplicationSetting.update_all(import_sources: new_sources.to_yaml)
   end
 
   def down

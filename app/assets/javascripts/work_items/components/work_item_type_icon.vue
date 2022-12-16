@@ -33,6 +33,11 @@ export default {
   },
   computed: {
     iconName() {
+      // TODO: Remove this once https://gitlab.com/gitlab-org/gitlab-svgs/-/merge_requests/865
+      // is merged and updated in GitLab repo.
+      if (this.workItemIconName === 'issue-type-keyresult') {
+        return 'issue-type-key-result';
+      }
       return (
         this.workItemIconName || WORK_ITEMS_TYPE_MAP[this.workItemType]?.icon || 'issue-type-issue'
       );

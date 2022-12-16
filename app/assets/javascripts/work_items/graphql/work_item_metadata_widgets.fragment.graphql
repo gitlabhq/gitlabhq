@@ -1,0 +1,29 @@
+#import "~/graphql_shared/fragments/label.fragment.graphql"
+#import "~/graphql_shared/fragments/user.fragment.graphql"
+#import "~/work_items/graphql/milestone.fragment.graphql"
+
+fragment WorkItemMetadataWidgets on WorkItemWidget {
+  ... on WorkItemWidgetMilestone {
+    type
+    milestone {
+      ...MilestoneFragment
+    }
+  }
+  ... on WorkItemWidgetAssignees {
+    type
+    assignees {
+      nodes {
+        ...User
+      }
+    }
+  }
+  ... on WorkItemWidgetLabels {
+    type
+    allowsScopedLabels
+    labels {
+      nodes {
+        ...Label
+      }
+    }
+  }
+}

@@ -17,27 +17,44 @@ Alerts are not supported for [Prometheus cluster integrations](../../user/cluste
 
 ## Trigger actions from alerts **(ULTIMATE)**
 
-Alerts can be used to trigger actions, like opening an issue automatically
-(disabled by default since `13.1`). To configure the actions:
+> - Introduced in GitLab 13.1: incidents are not created automatically by default .
+> - Mapping common severity values from the alert payload ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab 13.9.
 
-1. Navigate to your project's **Settings > Monitor > Alerts**.
-1. Enable the option to create issues.
-1. Choose the [issue template](../../user/project/description_templates.md) to create the issue from.
-1. Optionally, select whether to send an email notification to the developers of the project.
+Turn on creating [incidents](../incident_management/incidents.md) automatically whenever an alert is triggered.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To configure the actions:
+
+1. On the top bar, select **Main menu > Projects** and find your project.
+1. On the left sidebar, select **Settings > Monitor**.
+1. Expand the **Alerts** section, then select the **Alert settings** tab.
+1. Select the **Create an incident** checkbox.
+1. Optional. To customize the incident, from the **Incident template**, select a template to be
+   appended to the [incident summary](../incident_management/incidents.md#summary).
+   If the dropdown list is empty,
+   [create an issue template](../../user/project/description_templates.md#create-an-issue-template) first.
+1. Optional. To send [an email notification](../incident_management/paging.md#email-notifications-for-alerts), select the
+   **Send a single email notification to Owners and Maintainers for new alerts** checkbox.
 1. Select **Save changes**.
 
-After enabling, GitLab automatically opens an issue when an alert is triggered containing
-values extracted from the [`alerts` field in webhook payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
+### Fields in automatically created incidents
 
-- Issue author: `GitLab Alert Bot`
-- Issue title: Extracted from the alert payload fields `annotations/title`, `annotations/summary`, or `labels/alertname`.
-- Issue description: Extracted from alert payload field `annotations/description`.
+Incidents [created automatically from an alert](#trigger-actions-from-alerts) are filled with
+values extracted from the `alerts` field in the
+[webhook payload](https://prometheus.io/docs/alerting/latest/configuration/#webhook_config):
+
+- Incident author: `GitLab Alert Bot`
+- Incident title: Extracted from the alert payload fields `annotations/title`, `annotations/summary`, or `labels/alertname`.
+- Incident description: Extracted from alert payload field `annotations/description`.
 - Alert `Summary`: A list of properties from the alert's payload.
   - `starts_at`: Alert start time from the payload's `startsAt` field
   - `full_query`: Alert query extracted from the payload's `generatorURL` field
   - Optional list of attached annotations extracted from `annotations/*`
 - Alert [GLFM](../../user/markdown.md): GitLab Flavored Markdown from the payload's `annotations/gitlab_incident_markdown` field.
-- Alert Severity ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50871) in GitLab version 13.9):
+- Alert severity:
   Extracted from the alert payload field `labels/severity`. Maps case-insensitive
   value to [Alert's severity](../incident_management/alerts.md#alert-severity):
   - **Critical**: `critical`, `s1`, `p1`, `emergency`, `fatal`, or any value not in this list
@@ -46,23 +63,17 @@ values extracted from the [`alerts` field in webhook payload](https://prometheus
   - **Low**: `low`, `s4`, `p4`, `warn`, `warning`
   - **Info**: `info`, `s5`, `p5`, `debug`, `information`, `notice`
 
-To further customize the issue, you can add labels, mentions, or any other supported
+To further customize the incident, you can add labels, mentions, or any other supported
 [quick action](../../user/project/quick_actions.md) in the selected issue template,
 which applies to all incidents. To limit quick actions or other information to
 only specific types of alerts, use the `annotations/gitlab_incident_markdown` field.
 
-Since [version 12.2](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/63373),
 GitLab tags each incident issue with the `incident` label automatically. If the label
-does not yet exist, it is also created automatically.
-
-If the metric exceeds the threshold of the alert for over 5 minutes, GitLab sends
-an email to all Maintainers and Owners of the project.
+does not yet exist, it's created automatically.
 
 ### Recovery alerts
 
-> [From GitLab 12.5](https://gitlab.com/gitlab-org/gitlab/-/issues/13401), when GitLab receives a recovery alert, it automatically closes the associated issue.
-
-The alert in GitLab will be automatically resolved when Prometheus
+The alert in GitLab is automatically resolved when Prometheus
 sends a payload with the field `status` set to `resolved`.
 
-You can also configure the associated [incident to be closed automatically](../incident_management/incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.
+You can also configure the associated [incident to be closed automatically](../incident_management/manage_incidents.md#automatically-close-incidents-via-recovery-alerts) when the alert resolves.

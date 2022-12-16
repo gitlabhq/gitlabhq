@@ -78,7 +78,7 @@ The comment is shown on the incident timeline as a timeline event.
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375280) in GitLab 15.6.
 
-A new timeline event is created when someone [changes the severity](incidents.md#change-severity)
+A new timeline event is created when someone [changes the severity](manage_incidents.md#change-severity)
 of an incident.
 
 ![Incident timeline event for severity change](img/timeline_event_for_severity_change_v15_6.png)

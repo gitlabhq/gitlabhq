@@ -44867,6 +44867,12 @@ msgstr ""
 msgid "User %{username} was successfully removed."
 msgstr ""
 
+msgid "User %{user} SCIM identity is deactivated"
+msgstr ""
+
+msgid "User %{user} SCIM identity is reactivated"
+msgstr ""
+
 msgid "User %{user} was removed from %{group}."
 msgstr ""
 
@@ -46903,6 +46909,9 @@ msgid "Work in progress (open and unassigned)"
 msgstr ""
 
 msgid "Work in progress Limit"
+msgstr ""
+
+msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
 msgid "WorkItem|%{workItemType} deleted"

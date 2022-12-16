@@ -113,7 +113,7 @@ timeline of the alert's investigation and assignment history.
 The following actions result in a system note:
 
 - [Updating the status of an alert](#change-an-alerts-status)
-- [Creating an incident based on an alert](#create-an-incident-from-an-alert)
+- [Creating an incident based on an alert](manage_incidents.md#from-an-alert)
 - [Assignment of an alert to a user](#assign-an-alert)
 - [Escalation of an alert to on-call responders](paging.md#escalating-an-alert)
 
@@ -158,8 +158,8 @@ Prerequisites:
 
 - You must have at least the Reporter role.
 
-When you close an [incident](incidents.md) that is linked to an alert,
-the linked alert's status changes to **Resolved**.
+When you [close an incident](manage_incidents.md#close-an-incident) that is linked to an alert,
+GitLab [changes the alert's status](#change-an-alerts-status) to **Resolved**.
 You are then credited with the alert's status change.
 
 #### As an on-call responder **(PREMIUM)**
@@ -173,24 +173,9 @@ Changing the status has the following effects:
 - To **Resolved**: silences all on-call pages for the alert.
 - From **Resolved** to **Triggered**: restarts the alert escalating.
 
-In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](alerts.md#create-an-incident-from-an-alert)
+In GitLab 15.1 and earlier, updating the status of an [alert with an associated incident](manage_incidents.md#from-an-alert)
 also updates the incident status. In [GitLab 15.2 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/356057),
 the incident status is independent and does not update when the alert status changes.
-
-### Create an incident from an alert
-
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217745) in GitLab 13.1.
-
-The Alert detail view enables you to create an issue with a
-description populated from an alert. To create the issue,
-select the **Create Issue** button. You can then view the issue from the
-alert by selecting the **View Issue** button.
-
-You can also [create incidents for alerts automatically](incidents.md#create-incidents-automatically).
-
-Closing a GitLab issue associated with an alert [changes the alert's status](#change-an-alerts-status) to
-**Resolved**. See [Alert List](#alert-list) for more details
-about alert statuses.
 
 ### Assign an alert
 
