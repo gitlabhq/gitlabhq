@@ -903,3 +903,11 @@ Rake/Require:
   Include:
     - '{,ee/,jh/}lib/**/*.rake'
     - 'qa/tasks/**/*.rake'
+
+Cop/FeatureFlagUsage:
+  Include:
+    - 'lib/gitlab/redis/**/*.rb'
+    - 'lib/gitlab/patch/**/*.rb'
+    - 'lib/gitlab/instrumentation/**/*.rb'
+  Exclude:
+    - 'lib/gitlab/redis/multi_store.rb'

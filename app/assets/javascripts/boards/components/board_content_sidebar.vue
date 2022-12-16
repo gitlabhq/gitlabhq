@@ -149,7 +149,7 @@ export default {
     <gl-drawer
       v-bind="$attrs"
       :open="showSidebar"
-      class="boards-sidebar gl-absolute"
+      class="boards-sidebar"
       variant="sidebar"
       @close="handleClose"
     >

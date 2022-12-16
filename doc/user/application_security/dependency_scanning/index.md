@@ -309,7 +309,7 @@ table.supported-languages ul {
   <li>
     <a id="notes-regarding-supported-languages-and-package-managers-3"></a>
     <p>
-      npm is supported for <code>lockfileVersion = 1</code>, <code>lockfileVersion = 2</code>, and <code>lockfileVersion = 3</code>. Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7</a>.
+      npm is supported for <code>lockfileVersion = 1</code>, <code>lockfileVersion = 2</code>, and <code>lockfileVersion = 3</code>. Support for <code>lockfileVersion = 3</code> was <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/365176">introduced</a> in GitLab 15.7.
     </p>
   </li>
   <li>
