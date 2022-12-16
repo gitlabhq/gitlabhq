@@ -18,7 +18,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 > - Custom HTTP headers UI [made generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) in GitLab 15.3. [Feature flag `custom_headers_streaming_audit_events_ui`](https://gitlab.com/gitlab-org/gitlab/-/issues/365259) removed.
 > - [Improved user experience](https://gitlab.com/gitlab-org/gitlab/-/issues/367963) in GitLab 15.3.
 > - User-specified verification token API support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360813) in GitLab 15.4.
-> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7 [with a flag](feature_flags.md) named `allow_audit_event_type_filtering`. Disabled by default.
+> - Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
 
 Users can set a streaming destination for a top-level group to receive all audit events about the group, its subgroups, and
 projects as structured JSON.
@@ -288,11 +288,7 @@ Users with the Owner role for a group can list streaming destinations and see th
 
 ## Event type filters
 
-> Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7 [with a flag](feature_flags.md) named `allow_audit_event_type_filtering`. Disabled by default
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available per group or for your entire instance, ask an administrator to
-[enable the feature flag](feature_flags.md) named `allow_audit_event_type_filtering`.
+> Event type filters API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/344845) in GitLab 15.7.
 
 When this feature is enabled for a group, you can use an API to permit users to filter streamed audit events per destination.
 If the feature is enabled with no filters, the destination receives all audit events.

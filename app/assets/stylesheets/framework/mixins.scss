@@ -450,7 +450,7 @@
 }
 
 @mixin avatar-counter($border-radius: 1em) {
-  background-color: $gray-darkest;
+  background-color: $gray-400;
   color: $white;
   border: 1px solid $gray-normal;
   border-radius: $border-radius;

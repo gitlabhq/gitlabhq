@@ -17,7 +17,7 @@ module QA
       before do
         Flow::Login.sign_in
 
-        if QA::Support::FIPS.enabled?
+        if Runtime::Env.personal_access_tokens_disabled?
           # Ensure user exists
           user
           Flow::Login.sign_in_as_admin
@@ -31,7 +31,7 @@ module QA
           project.add_member(user)
         end
 
-        if QA::Support::FIPS.enabled?
+        if Runtime::Env.personal_access_tokens_disabled?
           Resource::Issue.fabricate_via_browser_ui! do |issue|
             issue.project = project
           end.visit!

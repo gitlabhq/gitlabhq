@@ -145,17 +145,19 @@ RSpec.describe QA::Resource::User do
   end
 
   describe '#fabricate_or_use' do
-    # Signup Disabled, FIPS enabled, method used, method that is not used
+    # Signup Disabled, Personal Access Tokens disabled, method used, method that is not used
     [
       [true,  false, :fabricate_via_api!, :fabricate!],
       [false, false, :fabricate!, :fabricate_via_api!],
       [false, true,  :fabricate!, :fabricate_via_api!],
       [true,  true,  :fabricate!, :fabricate_via_api!]
-    ].each do |signup_disabled, fips_enabled, method_used, method_not_used|
-      it "when signup_disabled is #{signup_disabled}, fips_enabled is #{fips_enabled}, "\
+    ].each do |signup_disabled, personal_access_tokens_disabled, method_used, method_not_used|
+      it "when signup_disabled is #{signup_disabled}, "\
+         "personal_access_tokens_disabled is #{personal_access_tokens_disabled}, "\
          "calls #{method_used}, does not call #{method_not_used}" do
         allow(QA::Runtime::Env).to receive(:signup_disabled?).and_return(signup_disabled)
-        allow(QA::Support::FIPS).to receive(:enabled?).and_return(fips_enabled)
+        allow(QA::Runtime::Env).to receive(:personal_access_tokens_disabled?)
+          .and_return(personal_access_tokens_disabled)
 
         expect(described_class).to receive(method_used)
         expect(described_class).not_to receive(method_not_used)

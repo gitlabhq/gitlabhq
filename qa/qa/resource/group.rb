@@ -18,7 +18,7 @@ module QA
       end
 
       attribute :sandbox do
-        if QA::Support::FIPS.enabled?
+        if Runtime::Env.personal_access_tokens_disabled?
           Resource::Sandbox.fabricate! do |sandbox|
             sandbox.path = Runtime::Namespace.sandbox_name
           end

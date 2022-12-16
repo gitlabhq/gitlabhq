@@ -428,4 +428,7 @@ export default {
   [types.SET_PROMOTE_COMMENT_TO_TIMELINE_PROGRESS](state, value) {
     state.isPromoteCommentToTimelineEventInProgress = value;
   },
+  [types.SET_IS_POLLING_INITIALIZED](state, value) {
+    state.isPollingInitialized = value;
+  },
 };

@@ -3,10 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_authoring do
-  let(:pipeline)        { create(:ci_pipeline) }
-  let(:seed_attributes) { { 'name' => 'some-job' } }
+  let_it_be(:pipeline) { create(:ci_pipeline) }
 
-  subject(:context) { described_class.new(pipeline, seed_attributes) }
+  let(:job) { build(:ci_build, pipeline: pipeline, name: 'some-job') }
+
+  subject(:context) { described_class.new(pipeline, job) }
 
   shared_examples 'variables collection' do
     it { is_expected.to include('CI_COMMIT_REF_NAME' => 'master') }
@@ -15,16 +16,10 @@ RSpec.describe Gitlab::Ci::Build::Context::Build, feature_category: :pipeline_au
     it { is_expected.to include('CI_JOB_NAME'        => 'some-job') }
     it { is_expected.to include('CI_BUILD_REF_NAME'  => 'master') }
 
-    context 'without passed build-specific attributes' do
-      let(:context) { described_class.new(pipeline) }
-
-      it { is_expected.to include('CI_JOB_NAME'       => nil) }
-      it { is_expected.to include('CI_BUILD_REF_NAME' => 'master') }
-      it { is_expected.to include('CI_PROJECT_PATH'   => pipeline.project.full_path) }
-    end
-
     context 'when environment:name is provided' do
-      let(:seed_attributes) { { 'name' => 'some-job', 'environment' => 'test' } }
+      before do
+        job.environment = 'test'
+      end
 
       it { is_expected.to include('CI_ENVIRONMENT_NAME' => 'test') }
     end

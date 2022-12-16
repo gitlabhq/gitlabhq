@@ -18851,6 +18851,12 @@ msgstr ""
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
 msgstr ""
 
+msgid "GlobalSearch|Close"
+msgstr ""
+
+msgid "GlobalSearch|Group"
+msgstr ""
+
 msgid "GlobalSearch|Groups"
 msgstr ""
 
@@ -18875,6 +18881,9 @@ msgstr ""
 msgid "GlobalSearch|Merge requests that I'm a reviewer"
 msgstr ""
 
+msgid "GlobalSearch|Project"
+msgstr ""
+
 msgid "GlobalSearch|Projects"
 msgstr ""
 
@@ -18893,6 +18902,9 @@ msgstr ""
 msgid "GlobalSearch|Results updated. %{count} results available. Use the up and down arrow keys to navigate search results list, or ENTER to submit."
 msgstr ""
 
+msgid "GlobalSearch|Search"
+msgstr ""
+
 msgid "GlobalSearch|Search GitLab"
 msgstr ""
 
@@ -18905,7 +18917,13 @@ msgstr ""
 msgid "GlobalSearch|Settings"
 msgstr ""
 
+msgid "GlobalSearch|Syntax options"
+msgstr ""
+
 msgid "GlobalSearch|There was an error fetching search autocomplete suggestions."
+msgstr ""
+
+msgid "GlobalSearch|There was an error fetching the \"Syntax Options\" document."
 msgstr ""
 
 msgid "GlobalSearch|Type and press the enter key to submit search."
@@ -26120,6 +26138,9 @@ msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr ""
 
 msgid "MergeRequest|Error loading full diff. Please try again."
+msgstr ""
+
+msgid "MergeRequest|Failed to load the page"
 msgstr ""
 
 msgid "MergeRequest|No files found"

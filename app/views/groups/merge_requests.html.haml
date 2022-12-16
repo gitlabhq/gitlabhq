@@ -1,6 +1,7 @@
 - @can_bulk_update = can?(current_user, :admin_merge_request, @group) && @group.licensed_feature_available?(:group_bulk_edit) && issuables_count_for_state(:merge_requests, :all) > 0
 
 - page_title _("Merge requests")
+- add_page_specific_style 'page_bundles/issuable_list'
 
 .top-area
   = render 'shared/issuable/nav', type: :merge_requests

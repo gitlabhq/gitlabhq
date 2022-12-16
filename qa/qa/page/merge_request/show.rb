@@ -126,7 +126,7 @@ module QA
           element :title_content, required: true
         end
 
-        view 'app/views/projects/merge_requests/show.html.haml' do
+        view 'app/views/projects/merge_requests/_page.html.haml' do
           element :notes_tab, required: true
           element :commits_tab, required: true
           element :diffs_tab, required: true

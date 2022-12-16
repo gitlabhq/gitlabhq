@@ -155,7 +155,7 @@ module QA
       end
 
       def self.fabricate_or_use(username = nil, password = nil)
-        if Runtime::Env.signup_disabled? && !QA::Support::FIPS.enabled?
+        if Runtime::Env.signup_disabled? && !Runtime::Env.personal_access_tokens_disabled?
           fabricate_via_api! do |user|
             user.username = username
             user.password = password

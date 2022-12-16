@@ -10,7 +10,7 @@ module QA
       class << self
         # Force top level group creation via UI if test is executed on dot_com environment
         def fabricate!(*args, &prepare_block)
-          if Specs::Helpers::ContextSelector.dot_com? || QA::Support::FIPS.enabled?
+          if Specs::Helpers::ContextSelector.dot_com? || Runtime::Env.personal_access_tokens_disabled?
             return fabricate_via_browser_ui!(*args, &prepare_block)
           end
 

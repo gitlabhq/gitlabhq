@@ -174,6 +174,11 @@ function getActionFromHref(href) {
   return action;
 }
 
+const pageBundles = {
+  show: () => import(/* webpackPrefetch: true */ '~/mr_notes/init_notes'),
+  diffs: () => import(/* webpackPrefetch: true */ '~/diffs'),
+};
+
 export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
     this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
@@ -199,10 +204,10 @@ export default class MergeRequestTabs {
 
     this.currentTab = null;
     this.diffsLoaded = false;
-    this.pipelinesLoaded = false;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
     this.eventHub = createEventHub();
+    this.loadedPages = { [action]: true };
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);
@@ -294,6 +299,20 @@ export default class MergeRequestTabs {
       if (tabPane) tabPane.style.display = 'block';
       const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
       if (tab) tab.classList.add('active');
+
+      if (!this.loadedPages[action] && action in pageBundles) {
+        toggleLoader(true);
+        pageBundles[action]()
+          .then(({ default: init }) => {
+            toggleLoader(false);
+            init();
+            this.loadedPages[action] = true;
+          })
+          .catch(() => {
+            toggleLoader(false);
+            createAlert({ message: __('MergeRequest|Failed to load the page') });
+          });
+      }
 
       if (window.gon?.features?.movedMrSidebar) {
         this.expandSidebar?.forEach((el) =>

@@ -626,11 +626,6 @@
         display: none;
       }
 
-      .avatar-counter:hover {
-        color: $gl-text-color-secondary;
-        border-color: $gl-text-color-secondary;
-      }
-
       .btn-clipboard {
         /*
           This change should be temporary, because the DOM currently gets

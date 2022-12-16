@@ -7,7 +7,10 @@ class CopyCodeButton extends HTMLElement {
   connectedCallback() {
     this.for = uniqueId('code-');
 
-    this.parentNode.querySelector('pre').setAttribute('id', this.for);
+    const target = this.parentNode.querySelector('pre');
+    if (!target) return;
+
+    target.setAttribute('id', this.for);
 
     this.appendChild(this.createButton());
   }

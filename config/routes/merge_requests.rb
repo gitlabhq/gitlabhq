@@ -34,7 +34,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     scope action: :show do
       get :commits, defaults: { tab: 'commits' }
       get :pipelines, defaults: { tab: 'pipelines' }
-      get :diffs, defaults: { tab: 'diffs' }
+      get :diffs, to: 'merge_requests#diffs', defaults: { tab: 'diffs' }
     end
 
     get :diff_for_path, controller: 'merge_requests/diffs'

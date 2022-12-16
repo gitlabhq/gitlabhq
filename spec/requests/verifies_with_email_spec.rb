@@ -198,6 +198,18 @@ feature_category: :user_management do
           expect(response).to redirect_to(users_successful_verification_path)
         end
       end
+
+      context 'when not completing identity verification and logging in with another account' do
+        let(:another_user) { create(:user) }
+
+        before do
+          post user_session_path, params: { user: { login: another_user.username, password: another_user.password } }
+        end
+
+        it 'does not redirect to the successful verification path' do
+          expect(response).not_to redirect_to(users_successful_verification_path)
+        end
+      end
     end
 
     context 'when signing in with a valid password' do

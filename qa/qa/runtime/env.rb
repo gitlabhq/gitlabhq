@@ -133,6 +133,11 @@ module QA
         enabled?(ENV['SIGNUP_DISABLED'], default: false)
       end
 
+      # PATs are disabled for FedRamp
+      def personal_access_tokens_disabled?
+        enabled?(ENV['PERSONAL_ACCESS_TOKENS_DISABLED'], default: false)
+      end
+
       def admin_password
         ENV['GITLAB_ADMIN_PASSWORD']
       end

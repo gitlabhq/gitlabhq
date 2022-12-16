@@ -16,7 +16,7 @@ export const getRenderedMarkdown = (documentPath) => {
   return axios
     .get(helpPagePath(documentPath))
     .then(({ data }) => {
-      const { body, title } = splitDocument(data.html);
+      const { body, title } = splitDocument(data);
       return {
         body,
         title,

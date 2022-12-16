@@ -15,7 +15,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   prepend_before_action(only: [:index]) { authenticate_sessionless_user!(:rss) }
   skip_before_action :merge_request, only: [:index, :bulk_update, :export_csv]
-  before_action :apply_diff_view_cookie!, only: [:show]
+  before_action :apply_diff_view_cookie!, only: [:show, :diffs]
   before_action :disable_query_limiting, only: [:assign_related_issues, :update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :authorize_read_actual_head_pipeline!, only: [
@@ -31,7 +31,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
-  before_action only: [:show] do
+  before_action only: [:show, :diffs] do
     push_frontend_feature_flag(:core_security_mr_widget_counts, project)
     push_frontend_feature_flag(:issue_assignees_widget, @project)
     push_frontend_feature_flag(:refactor_security_extension, @project)
@@ -48,15 +48,15 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:permit_all_shared_groups_for_approval, @project)
   end
 
-  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :discussions]
+  around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :discussions]
 
-  after_action :log_merge_request_show, only: [:show]
+  after_action :log_merge_request_show, only: [:show, :diffs]
 
   feature_category :code_review, [
     :assign_related_issues, :bulk_update, :cancel_auto_merge,
     :commit_change_content, :commits, :context_commits, :destroy,
     :discussions, :edit, :index, :merge, :rebase, :remove_wip,
-    :show, :toggle_award_emoji, :toggle_subscription, :update
+    :show, :diffs, :toggle_award_emoji, :toggle_subscription, :update
   ]
 
   feature_category :code_testing, [:test_reports, :coverage_reports]
@@ -69,6 +69,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   urgency :low, [
     :index,
     :show,
+    :diffs,
     :commits,
     :bulk_update,
     :edit,
@@ -102,74 +103,13 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   def show
-    close_merge_request_if_no_source_project
-    @merge_request.check_mergeability(async: true)
-
-    respond_to do |format|
-      format.html do
-        # use next to appease Rubocop
-        next render('invalid') if target_branch_missing?
-
-        preload_assignees_for_render(@merge_request)
-
-        # Build a note object for comment form
-        @note = @project.notes.new(noteable: @merge_request)
-
-        @noteable = @merge_request
-        @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
-        @diffs_count = get_diffs_count
-        @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
-        @current_user_data = Gitlab::Json.dump(UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity))
-        @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
-        @file_by_file_default = current_user&.view_diffs_file_by_file
-        @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
-        @update_current_user_path = expose_path(api_v4_user_preferences_path)
-        @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
-        @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
-
-        set_pipeline_variables
-
-        @number_of_pipelines = @pipelines.size
-
-        render
-      end
-
-      format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 10_000)
-
-        if params[:serializer] == 'sidebar_extras'
-          cache_context = [
-            params[:serializer],
-            current_user&.cache_key,
-            @merge_request.merge_request_assignees.map(&:cache_key),
-            @merge_request.merge_request_reviewers.map(&:cache_key)
-          ]
-
-          render_cached(@merge_request,
-                        with: serializer,
-                        cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
-                        serializer: params[:serializer])
-        else
-          render json: serializer.represent(@merge_request, serializer: params[:serializer])
-        end
-      end
-
-      format.patch do
-        break render_404 unless @merge_request.diff_refs
-
-        send_git_patch @project.repository, @merge_request.diff_refs
-      end
-
-      format.diff do
-        break render_404 unless @merge_request.diff_refs
-
-        send_git_diff @project.repository, @merge_request.diff_refs
-      end
-    end
+    show_merge_request
   end
-  # rubocop:enable Metrics/AbcSize
+
+  def diffs
+    show_merge_request
+  end
 
   def commits
     # Get context commits from repository
@@ -413,6 +353,77 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   private
+
+  def show_merge_request
+    close_merge_request_if_no_source_project
+    @merge_request.check_mergeability(async: true)
+
+    respond_to do |format|
+      format.html do
+        # use next to appease Rubocop
+        next render('invalid') if target_branch_missing?
+
+        render_html_page
+      end
+
+      format.json do
+        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
+        if params[:serializer] == 'sidebar_extras'
+          cache_context = [
+            params[:serializer],
+            current_user&.cache_key,
+            @merge_request.merge_request_assignees.map(&:cache_key),
+            @merge_request.merge_request_reviewers.map(&:cache_key)
+          ]
+
+          render_cached(@merge_request,
+                        with: serializer,
+                        cache_context: ->(_) { [Digest::SHA256.hexdigest(cache_context.to_s)] },
+                        serializer: params[:serializer])
+        else
+          render json: serializer.represent(@merge_request, serializer: params[:serializer])
+        end
+      end
+
+      format.patch do
+        break render_404 unless @merge_request.diff_refs
+
+        send_git_patch @project.repository, @merge_request.diff_refs
+      end
+
+      format.diff do
+        break render_404 unless @merge_request.diff_refs
+
+        send_git_diff @project.repository, @merge_request.diff_refs
+      end
+    end
+  end
+
+  def render_html_page
+    preload_assignees_for_render(@merge_request)
+
+    # Build a note object for comment form
+    @note = @project.notes.new(noteable: @merge_request)
+
+    @noteable = @merge_request
+    @commits_count = @merge_request.commits_count + @merge_request.context_commits_count
+    @diffs_count = get_diffs_count
+    @issuable_sidebar = serializer.represent(@merge_request, serializer: 'sidebar')
+    @current_user_data = Gitlab::Json.dump(UserSerializer.new(project: @project).represent(current_user, {}, MergeRequestCurrentUserEntity))
+    @show_whitespace_default = current_user.nil? || current_user.show_whitespace_in_diffs
+    @file_by_file_default = current_user&.view_diffs_file_by_file
+    @coverage_path = coverage_reports_project_merge_request_path(@project, @merge_request, format: :json) if @merge_request.has_coverage_reports?
+    @update_current_user_path = expose_path(api_v4_user_preferences_path)
+    @endpoint_metadata_url = endpoint_metadata_url(@project, @merge_request)
+    @endpoint_diff_batch_url = endpoint_diff_batch_url(@project, @merge_request)
+
+    set_pipeline_variables
+
+    @number_of_pipelines = @pipelines.size
+
+    render
+  end
 
   def get_diffs_count
     if show_only_context_commits?

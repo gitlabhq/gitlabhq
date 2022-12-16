@@ -1,6 +1,6 @@
 <script>
 import { s__ } from '~/locale';
-import StatusIcon from '../mr_widget_status_icon.vue';
+import StateContainer from '../state_container.vue';
 import { DETAILED_MERGE_STATUS } from '../../constants';
 
 export default {
@@ -12,7 +12,7 @@ export default {
     externalStatusChecksFailed: s__('mrWidget|Merge blocked: all status checks must pass.'),
   },
   components: {
-    StatusIcon,
+    StateContainer,
   },
   props: {
     mr: {
@@ -37,10 +37,11 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-body media gl-flex-wrap">
-    <status-icon status="failed" />
-    <p class="media-body gl-m-0! gl-font-weight-bold gl-text-black-normal!">
+  <state-container :mr="mr" status="failed">
+    <span
+      class="gl-ml-3 gl-font-weight-bold gl-w-100 gl-flex-grow-1 gl-md-mr-3 gl-ml-0! gl-text-body!"
+    >
       {{ failedText }}
-    </p>
-  </div>
+    </span>
+  </state-container>
 </template>

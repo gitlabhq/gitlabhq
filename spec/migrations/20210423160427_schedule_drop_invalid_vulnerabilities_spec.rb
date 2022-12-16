@@ -82,7 +82,7 @@ RSpec.describe ScheduleDropInvalidVulnerabilities, :migration, feature_category:
     vulnerability_id:, project_id:, scanner_id:, primary_identifier_id:,
                       name: "test", severity: 7, confidence: 7, report_type: 0,
                       project_fingerprint: '123qweasdzxc', location_fingerprint: 'test',
-                      metadata_version: 'test', raw_metadata: 'test', uuid: 'test')
+                      metadata_version: 'test', raw_metadata: 'test', uuid: SecureRandom.uuid)
     vulnerabilities_findings.create!(
       vulnerability_id: vulnerability_id,
       project_id: project_id,

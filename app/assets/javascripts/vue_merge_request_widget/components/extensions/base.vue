@@ -318,19 +318,23 @@ export default {
       @mouseup="onRowMouseUp"
     >
       <div
+        :class="{ 'gl-h-full': isLoadingSummary }"
         class="media-body gl-display-flex gl-flex-direction-row! gl-w-full"
         data-testid="widget-extension-top-level"
       >
-        <div class="gl-flex-grow-1" data-testid="widget-extension-top-level-summary">
+        <div
+          class="gl-flex-grow-1 gl-display-flex gl-align-items-center"
+          data-testid="widget-extension-top-level-summary"
+        >
           <template v-if="isLoadingSummary">{{ widgetLoadingText }}</template>
           <template v-else-if="hasFetchError">{{ widgetErrorText }}</template>
-          <div v-else>
+          <template v-else>
             <span v-safe-html="hydratedSummary.subject"></span>
             <template v-if="hydratedSummary.meta">
               <br />
               <span v-safe-html="hydratedSummary.meta" class="gl-font-sm"></span>
             </template>
-          </div>
+          </template>
         </div>
         <actions
           :widget="$options.label || $options.name"

@@ -21,7 +21,7 @@ module NavHelper
   def page_gutter_class
     moved_sidebar_enabled = current_controller?('merge_requests') && moved_mr_sidebar_enabled?
 
-    if page_has_markdown? && !current_controller?('conflicts')
+    if (page_has_markdown? || current_path?('projects/merge_requests#diffs')) && !current_controller?('conflicts')
       if cookies[:collapsed_gutter] == 'true'
         ["page-gutter", ('right-sidebar-collapsed' unless moved_sidebar_enabled).to_s]
       else

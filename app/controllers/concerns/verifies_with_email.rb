@@ -68,7 +68,7 @@ module VerifiesWithEmail
   # After successful verification and calling sign_in, devise redirects the
   # user to this path. Override it to show the successful verified page.
   def after_sign_in_path_for(resource)
-    if action_name == 'create' && session[:verification_user_id]
+    if action_name == 'create' && session[:verification_user_id] == resource.id
       return users_successful_verification_path
     end
 

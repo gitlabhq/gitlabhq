@@ -1,8 +1,10 @@
 ---
-stage: none
-group: unassigned
-comments: false
-description: 'Improve scalability of GitLab CI/CD'
+status: in progress
+creation-date: "2021-01-21"
+authors: [ "@grzesiek" ]
+coach: "@grzesiek"
+approvers: [ "@cheryl.li", "@jreporter" ]
+owning-stage: "~devops::verify"
 ---
 
 # CI/CD Scaling

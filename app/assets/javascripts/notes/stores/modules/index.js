@@ -50,6 +50,7 @@ export default () => ({
     descriptionVersions: {},
     isTimelineEnabled: false,
     isFetching: false,
+    isPollingInitialized: false,
   },
   actions,
   getters,

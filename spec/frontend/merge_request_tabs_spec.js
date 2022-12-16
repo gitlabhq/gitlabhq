@@ -303,6 +303,7 @@ describe('MergeRequestTabs', () => {
     const tabContent = document.createElement('div');
 
     beforeEach(() => {
+      $.fn.renderGFM = jest.fn();
       jest.spyOn(mainContent, 'getBoundingClientRect').mockReturnValue({ top: 10 });
       jest.spyOn(tabContent, 'getBoundingClientRect').mockReturnValue({ top: 100 });
       jest.spyOn(window, 'scrollTo').mockImplementation(() => {});

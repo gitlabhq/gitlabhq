@@ -290,6 +290,8 @@ RSpec.describe 'Every Sidekiq worker' do
         'Gitlab::GithubImport::Stage::ImportPullRequestsWorker' => 5,
         'Gitlab::GithubImport::Stage::ImportRepositoryWorker' => 5,
         'Gitlab::GithubGistsImport::ImportGistWorker' => 5,
+        'Gitlab::GithubGistsImport::StartImportWorker' => 5,
+        'Gitlab::GithubGistsImport::FinishImportWorker' => 5,
         'Gitlab::JiraImport::AdvanceStageWorker' => 5,
         'Gitlab::JiraImport::ImportIssueWorker' => 5,
         'Gitlab::JiraImport::Stage::FinishImportWorker' => 5,

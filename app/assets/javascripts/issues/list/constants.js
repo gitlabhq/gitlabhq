@@ -158,6 +158,12 @@ export const TYPE_TOKEN_OBJECTIVE_OPTION = {
   value: 'objective',
 };
 
+export const TYPE_TOKEN_KEY_RESULT_OPTION = {
+  icon: 'issue-type-key-result',
+  title: 'key_result',
+  value: 'key_result',
+};
+
 // This should be consistent with Issue::TYPES_FOR_LIST in the backend
 // https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/models/issue.rb#L48
 export const defaultWorkItemTypes = [

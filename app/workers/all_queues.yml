@@ -1065,10 +1065,28 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: github_gists_importer:github_gists_import_finish_import
+  :worker_name: Gitlab::GithubGistsImport::FinishImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: github_gists_importer:github_gists_import_import_gist
   :worker_name: Gitlab::GithubGistsImport::ImportGistWorker
   :feature_category: :importers
   :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
+- :name: github_gists_importer:github_gists_import_start_import
+  :worker_name: Gitlab::GithubGistsImport::StartImportWorker
+  :feature_category: :importers
+  :has_external_dependencies: true
   :urgency: :low
   :resource_boundary: :unknown
   :weight: 1

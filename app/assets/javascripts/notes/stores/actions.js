@@ -114,6 +114,39 @@ export const fetchDiscussions = (
   });
 };
 
+export const fetchNotes = ({ dispatch, getters }) => {
+  if (getters.isFetching) return null;
+
+  dispatch('setFetchingState', true);
+
+  return dispatch('fetchDiscussions', getters.getFetchDiscussionsConfig)
+    .then(() => dispatch('initPolling'))
+    .then(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      notesEventHub.$emit('fetchedNotesData');
+      dispatch('setFetchingState', false);
+    })
+    .catch(() => {
+      dispatch('setLoadingState', false);
+      dispatch('setNotesFetchedState', true);
+      createAlert({
+        message: __('Something went wrong while fetching comments. Please try again.'),
+      });
+    });
+};
+
+export const initPolling = ({ state, dispatch, getters, commit }) => {
+  if (state.isPollingInitialized) {
+    return;
+  }
+
+  dispatch('setLastFetchedAt', getters.getNotesDataByProp('lastFetchedAt'));
+
+  dispatch('poll');
+  commit(types.SET_IS_POLLING_INITIALIZED, true);
+};
+
 export const fetchDiscussionsBatch = ({ commit, dispatch }, { path, config, cursor, perPage }) => {
   const params = { ...config?.params, per_page: perPage };
 

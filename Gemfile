@@ -277,11 +277,7 @@ gem 'asana', '~> 0.10.13'
 gem 'ruby-fogbugz', '~> 0.3.0'
 
 # Kubernetes integration
-# rubocop: disable Cop/GemFetcher
-gem 'kubeclient',
-  git: 'https://github.com/dhstewart/kubeclient.git',
-  ref: '17e7dbeacf1e54a61182ac0ada10c346c4f0b37d'
-# rubocop: enable Cop/GemFetcher
+gem 'kubeclient', '~> 4.9.3'
 
 # Sanitize user input
 gem 'sanitize', '~> 6.0'

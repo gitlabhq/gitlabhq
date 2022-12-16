@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
+RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category: :import do
   let_it_be(:project) { create(:project) }
   let_it_be(:group) { create(:group) }
 
@@ -103,7 +103,9 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
 
       context 'when dynamic path is nil' do
         it 'returns' do
-          expect { pipeline.load(context, File.join(tmpdir, 'test')) }.not_to change { portable.uploads.count }
+          path = File.join(tmpdir, 'test')
+          FileUtils.touch(path)
+          expect { pipeline.load(context, path) }.not_to change { portable.uploads.count }
         end
       end
 
@@ -120,6 +122,20 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline do
           FileUtils.ln_s(File.join(tmpdir, upload_file_path), symlink)
 
           expect { pipeline.load(context, symlink) }.not_to change { portable.uploads.count }
+        end
+      end
+
+      context 'when path traverses' do
+        it 'does not upload the file' do
+          path_traversal = "#{uploads_dir_path}/avatar/../../../../etc/passwd"
+          expect { pipeline.load(context, path_traversal) }.to not_change { portable.uploads.count }.and raise_error(Gitlab::Utils::PathTraversalAttackError)
+        end
+      end
+
+      context 'when path is outside the tmpdir' do
+        it 'does not upload the file' do
+          path = "/etc/passwd"
+          expect { pipeline.load(context, path) }.to not_change { portable.uploads.count }.and raise_error(StandardError, /not allowed/)
         end
       end
     end
