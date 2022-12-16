@@ -4,7 +4,7 @@ require 'spec_helper'
 
 require_relative '../../metrics_server/metrics_server'
 
-RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
+RSpec.describe MetricsServer, feature_category: :application_performance do # rubocop:disable RSpec/FilePath
   let(:prometheus_config) { ::Prometheus::Client.configuration }
   let(:metrics_dir) { Dir.mktmpdir }
 
@@ -118,6 +118,7 @@ RSpec.describe MetricsServer do # rubocop:disable RSpec/FilePath
           let(:expected_port) { target == 'puma' ? '8083' : '8082' }
           let(:expected_env) do
             {
+              'GOGC' => '10',
               'GME_MMAP_METRICS_DIR' => metrics_dir,
               'GME_PROBES' => 'self,mmap',
               'GME_SERVER_HOST' => 'localhost',

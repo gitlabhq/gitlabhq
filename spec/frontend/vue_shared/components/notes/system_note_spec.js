@@ -1,10 +1,12 @@
 import MockAdapter from 'axios-mock-adapter';
 import { mount } from '@vue/test-utils';
-import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
 import createStore from '~/notes/stores';
 import IssueSystemNote from '~/vue_shared/components/notes/system_note.vue';
 import axios from '~/lib/utils/axios_utils';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('system note component', () => {
   let vm;
@@ -75,11 +77,9 @@ describe('system note component', () => {
   });
 
   it('should renderGFM onMount', () => {
-    const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
-
     createComponent(props);
 
-    expect(renderGFMSpy).toHaveBeenCalled();
+    expect(renderGFM).toHaveBeenCalled();
   });
 
   it('renders outdated code lines', async () => {

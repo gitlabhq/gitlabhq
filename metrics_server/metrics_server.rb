@@ -43,6 +43,7 @@ class MetricsServer # rubocop:disable Gitlab/NamespacedClass
       path = options[:path]&.then { |p| Pathname.new(p) } || Pathname.new('')
       cmd = path.join('gitlab-metrics-exporter').to_path
       env = {
+        'GOGC' => '10', # Set Go GC heap goal to 10% to curb memory growth.
         'GME_MMAP_METRICS_DIR' => metrics_dir.to_s,
         'GME_PROBES' => 'self,mmap',
         'GME_SERVER_HOST' => settings['address'],

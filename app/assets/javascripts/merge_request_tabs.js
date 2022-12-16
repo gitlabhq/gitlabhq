@@ -5,6 +5,7 @@ import { createAlert } from '~/flash';
 import { getCookie, isMetaClick, parseBoolean, scrollToElement } from '~/lib/utils/common_utils';
 import { parseUrlPathname } from '~/lib/utils/url_utility';
 import createEventHub from '~/helpers/event_hub_factory';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import Diff from './diff';
 import { initDiffStatsDropdown } from './init_diff_stats_dropdown';
@@ -346,7 +347,7 @@ export default class MergeRequestTabs {
         this.commitPipelinesTable = destroyPipelines(this.commitPipelinesTable);
       }
 
-      $('.detail-page-description').renderGFM();
+      renderGFM(document.querySelector('.detail-page-description'));
 
       if (shouldScroll) this.recallScroll(action);
     } else if (action === this.currentAction) {

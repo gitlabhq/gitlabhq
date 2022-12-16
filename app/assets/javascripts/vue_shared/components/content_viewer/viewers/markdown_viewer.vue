@@ -1,11 +1,10 @@
 <script>
 import { GlSkeletonLoader } from '@gitlab/ui';
-import $ from 'jquery';
-import '~/behaviors/markdown/render_gfm';
 import { forEach, escape } from 'lodash';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 const { CancelToken } = axios;
 let axiosSource;
@@ -97,7 +96,7 @@ export default {
             this.isLoading = false;
 
             this.$nextTick(() => {
-              $(this.$refs.markdownPreview).renderGFM();
+              renderGFM(this.$refs.markdownPreview);
             });
           })
           .catch(() => {

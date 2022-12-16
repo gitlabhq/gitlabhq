@@ -750,6 +750,9 @@ msgstr ""
 msgid "%{itemsCount} issues with a limit of %{maxIssueCount}"
 msgstr ""
 
+msgid "%{key} is not a valid URL."
+msgstr ""
+
 msgid "%{labelStart}Actual response:%{labelEnd} %{headers}"
 msgstr ""
 
@@ -49327,9 +49330,6 @@ msgid "is not"
 msgstr ""
 
 msgid "is not a descendant of the Group owning the template"
-msgstr ""
-
-msgid "is not a valid URL."
 msgstr ""
 
 msgid "is not a valid X509 certificate."

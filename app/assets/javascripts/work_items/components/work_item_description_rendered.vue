@@ -1,8 +1,7 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import $ from 'jquery';
-import '~/behaviors/markdown/render_gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
@@ -47,7 +46,7 @@ export default {
     async renderGFM() {
       await this.$nextTick();
 
-      $(this.$refs['gfm-content']).renderGFM();
+      renderGFM(this.$refs['gfm-content']);
 
       if (this.canEdit) {
         this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');

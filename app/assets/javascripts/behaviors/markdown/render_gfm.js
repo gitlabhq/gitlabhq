@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import syntaxHighlight from '~/syntax_highlight';
 import highlightCurrentUser from './highlight_current_user';
 import { renderKroki } from './render_kroki';
@@ -8,40 +7,46 @@ import renderMetrics from './render_metrics';
 import renderObservability from './render_observability';
 import { renderJSONTable } from './render_json_table';
 
+function initPopovers(elements) {
+  if (!elements.length) return;
+  import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
+    .then(({ default: initIssuablePopovers }) => {
+      initIssuablePopovers(elements);
+    })
+    .catch(() => {});
+}
+
 // Render GitLab flavoured Markdown
-//
-// Delegates to syntax highlight and render math & mermaid diagrams.
-//
-$.fn.renderGFM = function renderGFM() {
-  syntaxHighlight(this.find('.js-syntax-highlight').get());
-  renderKroki(this.find('.js-render-kroki[hidden]').get());
-  renderMath(this.find('.js-render-math'));
-  renderSandboxedMermaid(this.find('.js-render-mermaid').get());
-  renderJSONTable(
-    Array.from(this.find('[lang="json"][data-lang-params="table"]').get()).map((e) => e.parentNode),
-  );
+export function renderGFM(element) {
+  const [
+    highlightEls,
+    krokiEls,
+    mathEls,
+    mermaidEls,
+    tableEls,
+    userEls,
+    popoverEls,
+    metricsEls,
+    observabilityEls,
+  ] = [
+    '.js-syntax-highlight',
+    '.js-render-kroki[hidden]',
+    '.js-render-math',
+    '.js-render-mermaid',
+    '[lang="json"][data-lang-params="table"]',
+    '.gfm-project_member',
+    '.gfm-issue, .gfm-merge_request',
+    '.js-render-metrics',
+    '.js-render-observability',
+  ].map((selector) => Array.from(element.querySelectorAll(selector)));
 
-  highlightCurrentUser(this.find('.gfm-project_member').get());
-
-  const issuablePopoverElements = this.find('.gfm-issue, .gfm-merge_request').get();
-  if (issuablePopoverElements.length) {
-    import(/* webpackChunkName: 'IssuablePopoverBundle' */ '~/issuable/popover')
-      .then(({ default: initIssuablePopovers }) => {
-        initIssuablePopovers(issuablePopoverElements);
-      })
-      .catch(() => {});
-  }
-
-  renderMetrics(this.find('.js-render-metrics').get());
-  renderObservability(this.find('.js-render-observability').get());
-  return this;
-};
-
-$(() => {
-  window.requestIdleCallback(
-    () => {
-      $('body').renderGFM();
-    },
-    { timeout: 500 },
-  );
-});
+  syntaxHighlight(highlightEls);
+  renderKroki(krokiEls);
+  renderMath(mathEls);
+  renderSandboxedMermaid(mermaidEls);
+  renderJSONTable(tableEls.map((e) => e.parentNode));
+  highlightCurrentUser(userEls);
+  renderMetrics(metricsEls);
+  renderObservability(observabilityEls);
+  initPopovers(popoverEls);
+}

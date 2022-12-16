@@ -1,9 +1,11 @@
 import { shallowMount } from '@vue/test-utils';
-import $ from 'jquery';
 
 import IssuableDescription from '~/vue_shared/issuable/show/components/issuable_description.vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 import { mockIssuable } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const createComponent = ({
   issuable = mockIssuable,
@@ -16,11 +18,9 @@ const createComponent = ({
   });
 
 describe('IssuableDescription', () => {
-  let renderGFMSpy;
   let wrapper;
 
   beforeEach(() => {
-    renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
     wrapper = createComponent();
   });
 
@@ -30,17 +30,7 @@ describe('IssuableDescription', () => {
 
   describe('mounted', () => {
     it('calls `renderGFM`', () => {
-      expect(renderGFMSpy).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('methods', () => {
-    describe('renderGFM', () => {
-      it('calls `renderGFM` on container element', () => {
-        wrapper.vm.renderGFM();
-
-        expect(renderGFMSpy).toHaveBeenCalled();
-      });
+      expect(renderGFM).toHaveBeenCalledTimes(1);
     });
   });
 

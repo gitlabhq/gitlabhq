@@ -26,12 +26,6 @@ describe('Pipeline Stages', () => {
     expect(findPipelineStages()).toHaveLength(mockStages.length);
   });
 
-  it('renders stages with a custom class', () => {
-    createComponent({ stagesClass: 'my-class' });
-
-    expect(wrapper.findAll('.my-class')).toHaveLength(mockStages.length);
-  });
-
   it('does not fail when stages are empty', () => {
     createComponent({ stages: [] });
 

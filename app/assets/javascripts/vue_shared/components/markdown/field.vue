@@ -1,7 +1,6 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
-import '~/behaviors/markdown/render_gfm';
 import { debounce, unescape } from 'lodash';
 import { createAlert } from '~/flash';
 import GLForm from '~/gl_form';
@@ -11,6 +10,7 @@ import { stripHtml } from '~/lib/utils/text_utility';
 import { __, sprintf } from '~/locale';
 import Suggestions from '~/vue_shared/components/markdown/suggestions.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import MarkdownHeader from './header.vue';
 import MarkdownToolbar from './toolbar.vue';
 
@@ -314,7 +314,9 @@ export default {
       this.markdownPreview = data.body || __('Nothing to preview.');
 
       this.$nextTick()
-        .then(() => $(this.$refs['markdown-preview']).renderGFM())
+        .then(() => {
+          renderGFM(this.$refs['markdown-preview']);
+        })
         .catch(() =>
           createAlert({
             message: __('Error rendering Markdown preview'),

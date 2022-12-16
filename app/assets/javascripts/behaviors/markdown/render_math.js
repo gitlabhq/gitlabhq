@@ -175,14 +175,14 @@ class SafeMathRenderer {
   }
 }
 
-export default function renderMath($els) {
-  if (!$els.length) return;
+export default function renderMath(elements) {
+  if (!elements.length) return;
   Promise.all([
     import(/* webpackChunkName: 'katex' */ 'katex'),
     import(/* webpackChunkName: 'katex' */ 'katex/dist/katex.min.css'),
   ])
     .then(([katex]) => {
-      const renderer = new SafeMathRenderer($els.get(), katex);
+      const renderer = new SafeMathRenderer(elements, katex);
       renderer.render();
       renderer.attachEvents();
     })

@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import { GlButton, GlIntersectionObserver } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 
@@ -7,8 +6,8 @@ import { FLASH_TYPES, FLASH_CLOSED_EVENT } from '~/flash';
 import { isLoggedIn } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
 import csrf from '~/lib/utils/csrf';
-import '~/behaviors/markdown/render_gfm';
 import { trackTrialAcceptTerms } from '~/google_tag_manager';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 export default {
   name: 'TermsApp',
@@ -55,7 +54,7 @@ export default {
   },
   methods: {
     renderGFM() {
-      $(this.$refs.gfmContainer).renderGFM();
+      renderGFM(this.$refs.gfmContainer);
     },
     handleBottomReached() {
       this.acceptDisabled = false;

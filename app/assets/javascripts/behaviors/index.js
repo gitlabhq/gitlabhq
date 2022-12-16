@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import './autosize';
-import './markdown/render_gfm';
 import initCollapseSidebarOnWindowResize from './collapse_sidebar_on_window_resize';
 import initCopyToClipboard from './copy_to_clipboard';
 import installGlEmojiElement from './gl_emoji';

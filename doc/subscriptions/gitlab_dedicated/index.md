@@ -76,7 +76,9 @@ The following AWS regions are not available:
 - Cape Town (`af-south-1`)
 - Milan (`eu-south-1`)
 - Paris (`eu-west-3`)
-- GovCloud
+- Zurich (`eu-central-2`)
+- GovCloud (US-East) (`us-gov-east-1`)
+- GovCloud (US-West) (`us-gov-west-1`)
 
 ## Planned features
 

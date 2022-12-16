@@ -28,6 +28,7 @@ import {
   TASK_TYPE_NAME,
   WIDGET_TYPE_DESCRIPTION,
 } from '~/work_items/constants';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import animateMixin from '../mixins/animate';
 import { convertDescriptionWithNewSort } from '../utils';
 
@@ -178,7 +179,7 @@ export default {
   },
   methods: {
     renderGFM() {
-      $(this.$refs['gfm-content']).renderGFM();
+      renderGFM(this.$refs['gfm-content']);
 
       if (this.canUpdate) {
         // eslint-disable-next-line no-new

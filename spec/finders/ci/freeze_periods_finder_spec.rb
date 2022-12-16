@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe FreezePeriodsFinder do
+RSpec.describe Ci::FreezePeriodsFinder, feature_category: :release_orchestration do
   subject(:finder) { described_class.new(project, user).execute }
 
   let(:project) { create(:project, :private) }

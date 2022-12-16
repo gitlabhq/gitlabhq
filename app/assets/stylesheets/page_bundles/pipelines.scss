@@ -70,33 +70,20 @@
   }
 }
 
-// Mini Pipelines
+// Pipeline mini graph
+.pipeline-mini-graph-stage-container {
+  &:last-child {
+    margin-right: 0;
+  }
 
-.stage-cell {
-  .stage-container {
-    &:last-child {
-      margin-right: 0;
-    }
-
-    // Hack to show a button tooltip inline
-    button.has-tooltip + .tooltip {
-      min-width: 105px;
-    }
-
-    // Bootstrap way of showing the content inline for anchors.
-    a.has-tooltip {
-      white-space: nowrap;
-    }
-
-    &:not(:last-child) {
-      &::after {
-        content: '';
-        border-bottom: 2px solid $gray-200;
-        position: absolute;
-        right: -4px;
-        top: 11px;
-        width: 4px;
-      }
+  &:not(:last-child) {
+    &::after {
+      content: '';
+      border-bottom: 2px solid $gray-200;
+      position: absolute;
+      right: -4px;
+      top: 11px;
+      width: 4px;
     }
   }
 }

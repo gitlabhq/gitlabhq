@@ -5,7 +5,6 @@ import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import '~/behaviors/markdown/render_gfm';
 import { createAlert } from '~/flash';
 import { IssuableStatus, IssuableStatusText, IssuableType } from '~/issues/constants';
 import IssuableApp from '~/issues/show/components/app.vue';
@@ -30,6 +29,7 @@ import {
 jest.mock('~/flash');
 jest.mock('~/issues/show/event_hub');
 jest.mock('~/lib/utils/url_utility');
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 

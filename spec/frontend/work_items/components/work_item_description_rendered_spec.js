@@ -1,8 +1,10 @@
 import { shallowMount } from '@vue/test-utils';
-import $ from 'jquery';
 import { nextTick } from 'vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { descriptionTextWithCheckboxes, descriptionHtmlWithCheckboxes } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('WorkItemDescription', () => {
   let wrapper;
@@ -32,13 +34,11 @@ describe('WorkItemDescription', () => {
   });
 
   it('renders gfm', async () => {
-    const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
-
     createComponent();
 
     await nextTick();
 
-    expect(renderGFMSpy).toHaveBeenCalled();
+    expect(renderGFM).toHaveBeenCalled();
   });
 
   describe('with checkboxes', () => {

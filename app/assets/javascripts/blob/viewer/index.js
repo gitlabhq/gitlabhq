@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import '~/behaviors/markdown/render_gfm';
+import '~/behaviors/markdown/init_gfm';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import {

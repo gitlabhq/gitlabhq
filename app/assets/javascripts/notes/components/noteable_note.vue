@@ -12,6 +12,7 @@ import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { __, s__, sprintf } from '~/locale';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -287,7 +288,7 @@ export default {
       this.isEditing = false;
       this.isRequesting = false;
       this.oldContent = null;
-      $(this.$refs.noteBody.$el).renderGFM();
+      renderGFM(this.$refs.noteBody.$el);
       this.$refs.noteBody.resetAutoSave();
       this.$emit('updateSuccess');
     },

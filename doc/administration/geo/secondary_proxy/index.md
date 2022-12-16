@@ -70,39 +70,6 @@ a single URL used by all Geo sites, including the primary.
 
 In Kubernetes, you can use the same domain under `global.hosts.domain` as for the primary site.
 
-## Disable Geo proxying
-
-You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
-
-1. SSH into each application node (serving user traffic directly) on your secondary Geo site
-   and add the following environment variable:
-
-   ```shell
-   sudo editor /etc/gitlab/gitlab.rb
-   ```
-
-   ```ruby
-   gitlab_workhorse['env'] = {
-     "GEO_SECONDARY_PROXY" => "0"
-   }
-   ```
-
-1. Reconfigure the updated nodes for the change to take effect:
-
-   ```shell
-   gitlab-ctl reconfigure
-   ```
-
-In Kubernetes, you can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
-or specify the following in your values file:
-
-```yaml
-gitlab:
-  webservice:
-    extraEnv:
-      GEO_SECONDARY_PROXY: "0"
-```
-
 ## Geo proxying with Separate URLs
 
 > Geo secondary proxying for separate URLs is [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
@@ -192,3 +159,42 @@ It does not cover all data types, more will be added in the future as they are t
 1. Git reads are served from the local secondary while pushes get proxied to the primary.
    Selective sync or cases where repositories don't exist locally on the Geo secondary throw a "not found" error.
 1. Pages can use the same URL (without access control), but must be configured separately and are not proxied.
+
+## Disable Geo proxying
+
+Secondary proxying is enabled by default on a secondary site when it uses a unified URL, meaning, the same `external_url` as the primary site. Disabling proxying in this case tends to not be helpful due to completely different behavior being served at the same URL, depending on routing.
+
+Secondary proxying is enabled by default in GitLab 15.1 on a secondary site even without a unified URL. If proxying needs to be disabled on a secondary site, it is much easier to disable the feature flag in [Geo proxying with Separate URLs](#geo-proxying-with-separate-urls). However, if there are multiple secondary sites, then the instructions in this section can be used to disable secondary proxying per site.
+
+Additionally, the `gitlab-workhorse` service polls `/api/v4/geo/proxy` every 10 seconds. In GitLab 15.2 and later, it is only polled once, if Geo is not enabled. Prior to GitLab 15.2, you can stop this polling by disabling secondary proxying.
+
+You can disable the secondary proxying on each Geo site, separately, by following these steps with Omnibus-based packages:
+
+1. SSH into each application node (serving user traffic directly) on your secondary Geo site
+   and add the following environment variable:
+
+   ```shell
+   sudo editor /etc/gitlab/gitlab.rb
+   ```
+
+   ```ruby
+   gitlab_workhorse['env'] = {
+     "GEO_SECONDARY_PROXY" => "0"
+   }
+   ```
+
+1. Reconfigure the updated nodes for the change to take effect:
+
+   ```shell
+   gitlab-ctl reconfigure
+   ```
+
+In Kubernetes, you can use `--set gitlab.webservice.extraEnv.GEO_SECONDARY_PROXY="0"`,
+or specify the following in your values file:
+
+```yaml
+gitlab:
+  webservice:
+    extraEnv:
+      GEO_SECONDARY_PROXY: "0"
+```

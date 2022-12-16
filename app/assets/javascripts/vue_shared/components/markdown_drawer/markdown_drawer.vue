@@ -1,10 +1,9 @@
 <script>
 import { GlDrawer, GlAlert, GlSkeletonLoader } from '@gitlab/ui';
-import $ from 'jquery';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import '~/behaviors/markdown/render_gfm';
 import { s__ } from '~/locale';
 import { contentTop } from '~/lib/utils/common_utils';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { getRenderedMarkdown } from './utils/fetch';
 
 export const cache = {};
@@ -78,7 +77,7 @@ export default {
     },
     renderGLFM() {
       this.$nextTick(() => {
-        $(this.$refs['content-element']).renderGFM();
+        renderGFM(this.$refs['content-element']);
       });
     },
     closeDrawer() {

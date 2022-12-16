@@ -199,10 +199,16 @@ You can configure GitLab to use multiple SAML 2.0 identity providers if:
 
 Example multiple providers configuration for Omnibus GitLab:
 
+To allow your users to use SAML to sign up without having to manually create an account from either of the providers, add the following values to your configuration.
+
+```ruby
+gitlab_rails['omniauth_allow_single_sign_on'] = ['saml', 'saml1']
+```
+
 ```ruby
 gitlab_rails['omniauth_providers'] = [
   {
-    name: 'saml',
+    name: 'saml', # This must match the following name configuration parameter
     args: {
             name: 'saml', # This is mandatory and must match the provider name
             strategy_class: 'OmniAuth::Strategies::SAML',
@@ -212,7 +218,7 @@ gitlab_rails['omniauth_providers'] = [
     label: 'Provider 1' # Differentiate the two buttons and providers in the UI
   },
   {
-    name: 'saml1',
+    name: 'saml1', # This must match the following name configuration parameter
     args: {
             name: 'saml1', # This is mandatory and must match the provider name
             strategy_class: 'OmniAuth::Strategies::SAML',
@@ -351,13 +357,19 @@ For a full list of supported assertions, see the [OmniAuth SAML gem](https://git
 
 ## Configure users based on SAML group membership
 
-You can require users to be members of a certain group, or assign users [external](../user/admin_area/external_users.md), administrator or [auditor](../administration/auditor_users.md) access levels based on group membership.
-These groups are checked on each SAML login and user attributes updated as necessary.
-This feature **does not** allow you to
-automatically add users to GitLab [Groups](../user/group/index.md).
+You can:
 
-Support for these groups depends on your [subscription](https://about.gitlab.com/pricing/)
-and whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
+- Require users to be members of a certain group.
+- Assign users [external](../user/admin_area/external_users.md), administrator or [auditor](../administration/auditor_users.md) roles based on group membership.
+
+GitLab checks these groups on each SAML sign in and updates user attributes as necessary.
+This feature **does not** allow you to automatically add users to GitLab
+[Groups](../user/group/index.md).
+
+Support for these groups depends on:
+
+- Your [subscription](https://about.gitlab.com/pricing/).
+- Whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
 
 | Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
 |------------------------------|--------------------|--------------------------------------|
@@ -368,9 +380,9 @@ and whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitl
 
 ### Prerequisites
 
-First tell GitLab where to look for group information. For this, you
-must make sure that your IdP server sends a specific `AttributeStatement` along
-with the regular SAML response. Here is an example:
+You must tell GitLab where to look for group information. To do this, make sure
+that your IdP server sends a specific `AttributeStatement` along with the regular
+SAML response. For example:
 
 ```xml
 <saml:AttributeStatement>
@@ -383,9 +395,9 @@ with the regular SAML response. Here is an example:
 </saml:AttributeStatement>
 ```
 
-The name of the attribute can be anything you like, but it must contain the groups
-to which a user belongs. To tell GitLab where to find these groups, you need
-to add a `groups_attribute:` element to your SAML settings.
+The name of the attribute must contain the groups that a user belongs to.
+To tell GitLab where to find these groups, add a `groups_attribute:`
+element to your SAML settings.
 
 ### Required groups
 
@@ -585,17 +597,13 @@ list.
 
 ## Validate response signatures
 
-We require Identity Providers to sign SAML responses to ensure that the assertions are
-not tampered with.
+IdPs must sign SAML responses to ensure that the assertions are not tampered with.
 
-This prevents user impersonation and prevents privilege escalation when specific group
-membership is required. Typically this:
+This prevents user impersonation and privilege escalation when specific group
+membership is required.
 
-- Is configured using `idp_cert_fingerprint`.
-- Includes the full certificate in the response, although if your Identity Provider
-  doesn't support this, you can directly configure GitLab using the `idp_cert` option.
-
-Example configuration with `idp_cert_fingerprint`:
+You configure the response signature validation using `idp_cert_fingerprint`.
+An example configuration:
 
 ```yaml
 args: {
@@ -607,7 +615,8 @@ args: {
 }
 ```
 
-Example configuration with `idp_cert`:
+If your IdP does not support configuring this using `idp_cert_fingerprint`, you
+can instead configure GitLab directly using `idp_cert`. An example configuration:
 
 ```yaml
 args: {
@@ -621,15 +630,14 @@ args: {
 }
 ```
 
-If the response signature validation is configured incorrectly, you can see error messages
-such as:
+If you have configured the response signature validation incorrectly, you might see
+error messages such as:
 
 - A key validation error.
 - Digest mismatch.
 - Fingerprint mismatch.
 
-Refer to the [troubleshooting section](#troubleshooting) for more information on
-solving these errors.
+For more information on solving these errors, see the [troubleshooting SAML guide](../user/group/saml_sso/troubleshooting.md).
 
 ## Customize SAML settings
 

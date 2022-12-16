@@ -4,8 +4,9 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import PreviewDropdown from '~/batch_comments/components/preview_dropdown.vue';
 import { createStore } from '~/mr_notes/stores';
-import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 Vue.use(Vuex);
 

@@ -35,7 +35,7 @@ RSpec.describe 'Merge request > User sees pipelines', :js, feature_category: :co
         end
         wait_for_requests
 
-        expect(page).to have_selector('.stage-cell')
+        expect(page).to have_css('[data-testid="pipeline-mini-graph"]')
       end
 
       context 'with a detached merge request pipeline' do

@@ -1,12 +1,14 @@
 import { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import $ from 'jquery';
 import { TEST_HOST, FIXTURES_PATH } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import MarkdownFieldHeader from '~/vue_shared/components/markdown/header.vue';
 import MarkdownToolbar from '~/vue_shared/components/markdown/toolbar.vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const markdownPreviewPath = `${TEST_HOST}/preview`;
 const markdownDocsPath = `${TEST_HOST}/docs`;
@@ -138,15 +140,13 @@ describe('Markdown field component', () => {
       });
 
       it('renders markdown preview and GFM', async () => {
-        const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
-
         previewLink = getPreviewLink();
 
         previewLink.vm.$emit('click', { target: {} });
 
         await axios.waitFor(markdownPreviewPath);
         expect(subject.find('.md-preview-holder').element.innerHTML).toContain(previewHTML);
-        expect(renderGFMSpy).toHaveBeenCalled();
+        expect(renderGFM).toHaveBeenCalled();
       });
 
       it('calls video.pause() on comment input when isSubmitting is changed to true', async () => {

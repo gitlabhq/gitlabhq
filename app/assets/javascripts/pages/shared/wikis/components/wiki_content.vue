@@ -5,7 +5,7 @@ import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
 import { handleLocationHash } from '~/lib/utils/common_utils';
-import { renderGFM } from '../render_gfm_facade';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 
 export default {
   components: {

@@ -23,6 +23,8 @@ import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 
+jest.mock('~/behaviors/markdown/render_gfm');
+
 describe('Work items router', () => {
   let wrapper;
 

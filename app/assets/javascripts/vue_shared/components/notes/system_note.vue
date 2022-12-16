@@ -21,12 +21,12 @@ import $ from 'jquery';
 import { mapGetters, mapActions, mapState } from 'vuex';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
-import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { spriteIcon } from '~/lib/utils/common_utils';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
@@ -89,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    $(this.$refs['gfm-content']).renderGFM();
+    renderGFM(this.$refs['gfm-content']);
   },
   methods: {
     ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),

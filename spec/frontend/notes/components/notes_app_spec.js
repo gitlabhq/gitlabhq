@@ -14,10 +14,11 @@ import NotesApp from '~/notes/components/notes_app.vue';
 import NotesActivityHeader from '~/notes/components/notes_activity_header.vue';
 import * as constants from '~/notes/constants';
 import createStore from '~/notes/stores';
-import '~/behaviors/markdown/render_gfm';
 // TODO: use generated fixture (https://gitlab.com/gitlab-org/gitlab-foss/issues/62491)
 import OrderedLayout from '~/vue_shared/components/ordered_layout.vue';
 import * as mockData from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const TYPE_COMMENT_FORM = 'comment-form';
 const TYPE_NOTES_LIST = 'notes-list';

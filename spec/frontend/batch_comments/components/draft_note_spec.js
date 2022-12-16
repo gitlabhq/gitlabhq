@@ -6,8 +6,9 @@ import DraftNote from '~/batch_comments/components/draft_note.vue';
 import PublishButton from '~/batch_comments/components/publish_button.vue';
 import { createStore } from '~/batch_comments/stores';
 import NoteableNote from '~/notes/components/noteable_note.vue';
-import '~/behaviors/markdown/render_gfm';
 import { createDraft } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const NoteableNoteStub = stubComponent(NoteableNote, {
   template: `

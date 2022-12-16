@@ -1,9 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlLoadingIcon } from '@gitlab/ui';
-import $ from 'jquery';
 import SafeHtml from '~/vue_shared/directives/safe_html';
-import '~/behaviors/markdown/render_gfm';
 import { handleLocationHash } from '~/lib/utils/common_utils';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import readmeQuery from '../../queries/readme.query.graphql';
 
 export default {
@@ -43,7 +42,7 @@ export default {
       if (newVal) {
         this.$nextTick(() => {
           handleLocationHash();
-          $(this.$refs.readme).renderGFM();
+          renderGFM(this.$refs.readme);
         });
       }
     },

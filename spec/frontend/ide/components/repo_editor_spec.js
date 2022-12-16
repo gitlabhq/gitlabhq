@@ -4,7 +4,6 @@ import { editor as monacoEditor, Range } from 'monaco-editor';
 import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import { shallowMount } from '@vue/test-utils';
-import '~/behaviors/markdown/render_gfm';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubPerformanceWebAPI } from 'helpers/performance';
 import { exampleConfigs, exampleFiles } from 'jest/ide/lib/editorconfig/mock_data';
@@ -27,6 +26,7 @@ import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer
 import SourceEditorInstance from '~/editor/source_editor_instance';
 import { file } from '../helpers';
 
+jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/editor/extensions/source_editor_ci_schema_ext');
 
 const PREVIEW_MARKDOWN_PATH = '/foo/bar/preview_markdown';

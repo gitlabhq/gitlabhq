@@ -1,11 +1,13 @@
 import { GlIcon } from '@gitlab/ui';
 import MockAdapter from 'axios-mock-adapter';
 import { shallowMount } from '@vue/test-utils';
-import $ from 'jquery';
 import waitForPromises from 'helpers/wait_for_promises';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import WorkItemSystemNote from '~/work_items/components/notes/system_note.vue';
 import NoteHeader from '~/notes/components/note_header.vue';
 import axios from '~/lib/utils/axios_utils';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('system note component', () => {
   let wrapper;
@@ -84,11 +86,9 @@ describe('system note component', () => {
   });
 
   it('should renderGFM onMount', () => {
-    const renderGFMSpy = jest.spyOn($.fn, 'renderGFM');
-
     createComponent(props);
 
-    expect(renderGFMSpy).toHaveBeenCalled();
+    expect(renderGFM).toHaveBeenCalled();
   });
 
   // eslint-disable-next-line jest/no-disabled-tests

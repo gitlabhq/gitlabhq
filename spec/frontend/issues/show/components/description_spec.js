@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import '~/behaviors/markdown/render_gfm';
 import { GlTooltip, GlModal } from '@gitlab/ui';
 
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -21,6 +20,7 @@ import createWorkItemFromTaskMutation from '~/work_items/graphql/create_work_ite
 import TaskList from '~/task_list';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import {
   projectWorkItemTypesQueryResponse,
   createWorkItemFromTaskMutationResponse,
@@ -37,6 +37,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   updateHistory: jest.fn(),
 }));
 jest.mock('~/task_list');
+jest.mock('~/behaviors/markdown/render_gfm');
 
 const showModal = jest.fn();
 const hideModal = jest.fn();
@@ -161,7 +162,6 @@ describe('Description component', () => {
   });
 
   it('applies syntax highlighting and math when description changed', async () => {
-    const prototypeSpy = jest.spyOn($.prototype, 'renderGFM');
     createComponent();
 
     await wrapper.setProps({
@@ -169,7 +169,7 @@ describe('Description component', () => {
     });
 
     expect(findGfmContent().exists()).toBe(true);
-    expect(prototypeSpy).toHaveBeenCalled();
+    expect(renderGFM).toHaveBeenCalled();
   });
 
   it('sets data-update-url', () => {

@@ -40,6 +40,7 @@ import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash } from './lib/utils/url_utility';
 import { sprintf, s__, __ } from './locale';
 import TaskList from './task_list';
+import '~/behaviors/markdown/init_gfm';
 
 window.autosize = Autosize;
 

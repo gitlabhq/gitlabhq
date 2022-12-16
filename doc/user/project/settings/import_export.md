@@ -12,7 +12,22 @@ then imported into a new GitLab instance. You can also:
 - [Migrate groups](../../group/import/index.md) using the preferred method.
 - [Migrate groups using file exports](../../group/settings/import_export.md).
 
-## Set up project import/export
+GitLab maps user contributions correctly when an admin access token is used to perform the import.
+
+As a result, migrating projects using file exports does not map user contributions correctly when you are importing
+projects from a self-managed instance to GitLab.com.
+
+Instead, all GitLab user associations (such as comment author) are changed to the user importing the project. For more
+information, see the prerequisites and important notes in these sections:
+
+- [Export a project and its data](../settings/import_export.md#export-a-project-and-its-data).
+- [Import the project](../settings/import_export.md#import-a-project-and-its-data).
+
+To preserve contribution history, [migrate using direct transfer](../../group/import/index.md#migrate-groups-by-direct-transfer-recommended).
+
+If you migrate from GitLab.com to self-managed GitLab, an administrator can create users on the self-managed GitLab instance.
+
+## Set up project to migrate using file exports
 
 Before you can import or export a project and its data, you must set it up.
 
@@ -24,8 +39,7 @@ Before you can import or export a project and its data, you must set it up.
 ## Between CE and EE
 
 You can export projects from the [Community Edition to the Enterprise Edition](https://about.gitlab.com/install/ce-or-ee/)
-and vice versa. This assumes [version history](#version-history)
-requirements are met.
+and vice versa. This assumes [version history](#version-history) requirements are met.
 
 If you're exporting a project from the Enterprise Edition to the Community Edition, you may lose
 data that is retained only in the Enterprise Edition. For more information, see
@@ -37,8 +51,7 @@ Before you can import a project, you must export it.
 
 Prerequisites:
 
-- Review the list of [items that are exported](#items-that-are-exported).
-  Not all items are exported.
+- Review the list of [items that are exported](#items-that-are-exported). Not all items are exported.
 - You must have at least the Maintainer role for the project.
 
 To export a project and its data, follow these steps:
@@ -134,7 +147,7 @@ To import a project:
 1. Enter your project name and URL. Then select the file you exported previously.
 1. Select **Import project** to begin importing. Your newly imported project page appears shortly.
 
-To get the status of an import, you can query it through the [Project import/export API](../../../api/project_import_export.md#import-status).
+To get the status of an import, you can query it through the [API](../../../api/project_import_export.md#import-status).
 As described in the API documentation, the query may return an import error or exceptions.
 
 ### Changes to imported items
@@ -218,36 +231,9 @@ For example:
 | 13.0            | 13.0, 12.10, 12.9                |
 | 13.1            | 13.1, 13.0, 12.10                |
 
-### 12.x
-
-Prior to 13.0 this was a defined compatibility table:
-
-| Exporting GitLab version   | Importing GitLab version   |
-| -------------------------- | -------------------------- |
-| 11.7 to 12.10              | 11.7 to 12.10              |
-| 11.1 to 11.6               | 11.1 to 11.6               |
-| 10.8 to 11.0               | 10.8 to 11.0               |
-| 10.4 to 10.7               | 10.4 to 10.7               |
-| 10.3                       | 10.3                       |
-| 10.0 to 10.2               | 10.0 to 10.2               |
-| 9.4 to 9.6                 | 9.4 to 9.6                 |
-| 9.2 to 9.3                 | 9.2 to 9.3                 |
-| 8.17 to 9.1                | 8.17 to 9.1                |
-| 8.13 to 8.16               | 8.13 to 8.16               |
-| 8.12                       | 8.12                       |
-| 8.10.3 to 8.11             | 8.10.3 to 8.11             |
-| 8.10.0 to 8.10.2           | 8.10.0 to 8.10.2           |
-| 8.9.5 to 8.9.11            | 8.9.5 to 8.9.11            |
-| 8.9.0 to 8.9.4             | 8.9.0 to 8.9.4             |
-
-Projects can be exported and imported only between versions of GitLab with matching Import/Export versions.
-
-For example, 8.10.3 and 8.11 have the same Import/Export version (0.1.3)
-and the exports between them are compatible.
-
 ## Related topics
 
-- [Project import/export API](../../../api/project_import_export.md)
-- [Project import/export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
-- [Group import/export](../../group/settings/import_export.md)
-- [Group import/export API](../../../api/group_import_export.md)
+- [Project import and export API](../../../api/project_import_export.md)
+- [Project import and export administration Rake tasks](../../../administration/raketasks/project_import_export.md)
+- [Migrating GitLab groups](../../group/import/index.md)
+- [Group import and export API](../../../api/group_import_export.md)

@@ -17,9 +17,9 @@
  */
 import { GlButton, GlSkeletonLoader, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
-import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import { getLocationHash } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
@@ -89,7 +89,7 @@ export default {
     },
   },
   mounted() {
-    $(this.$refs['gfm-content']).renderGFM();
+    renderGFM(this.$refs['gfm-content']);
   },
   methods: {
     fetchDescriptionVersion() {},

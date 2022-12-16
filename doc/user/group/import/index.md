@@ -18,6 +18,8 @@ You can migrate groups in two ways:
 - By direct transfer (recommended).
 - By uploading an export file.
 
+If you migrate from GitLab.com to self-managed GitLab, an administrator can create users on the self-managed GitLab instance.
+
 ## Migrate groups by direct transfer (recommended)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/249160) in GitLab 13.7 for group resources [with a flag](../../feature_flags.md) named `bulk_import`. Disabled by default.
@@ -67,6 +69,12 @@ GitLab maps users and their contributions correctly provided:
 
 You might need to reconfigure your firewall to prevent blocking the connection on the self-managed
 instance.
+
+If you use [SAML SSO for GitLab.com groups](../../group/saml_sso/index.md),
+contributing users must have [linked their SAML identity to their GitLab.com account](../../group/saml_sso/index.md#linking-saml-to-your-existing-gitlabcom-account).
+
+When migrating to GitLab.com, you must create users manually unless [SCIM](../../group/saml_sso/scim_setup.md) is used. Creating users with the API is only
+available to self-managed instances because it requires administrator access.
 
 ### Connect to the source GitLab instance
 
@@ -252,6 +260,22 @@ import = BulkImports::Entity.where(namespace_id: Group.id).map(&:bulk_import)
 import.status #=> 3 means that the import timed out.
 ```
 
+#### Error: `404 Group Not Found`
+
+If you attempt to import a group that has a path comprised of only numbers (for example, `5000`), GitLab attempts to
+find the group by ID instead of the path. This causes a `404 Group Not Found` error in GitLab 15.4 and earlier.
+
+To solve this, you must change the source group path to include a non-numerical character using either:
+
+- The GitLab UI:
+
+  1. On the top bar, select **Main menu > Groups** and find your group.
+  1. On the left sidebar, select **Settings > General**.
+  1. Expand **Advanced**.
+  1. Under **Change group URL**, change the group URL to include non-numeric characters.
+
+- The [Groups API](../../../api/groups.md#update-group).
+
 ### Provide feedback
 
 Please leave your feedback about migrating groups by direct transfer in
@@ -286,7 +310,7 @@ Professional Services team.
 Note the following:
 
 - Exports are stored in a temporary directory and are deleted every 24 hours by a specific worker.
-- To preserve group-level relationships from imported projects, run the Group Import/Export first, to allow projects to
+- To preserve group-level relationships from imported projects, export and import groups first so that projects can
   be imported into the desired group structure.
 - Imported groups are given a `private` visibility level, unless imported into a parent group.
 - If imported into a parent group, a subgroup inherits the same level of visibility unless otherwise restricted.
@@ -360,7 +384,7 @@ To export the contents of a group:
    1. In the **Advanced** section, select **Download export**.
       You can also generate a new file by selecting **Regenerate export**.
 
-You can also use the [group import/export API](../../../api/group_import_export.md).
+You can also export a group [using the API](../../../api/group_import_export.md).
 
 ### Import the group
 

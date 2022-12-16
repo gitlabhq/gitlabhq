@@ -9,7 +9,6 @@ import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_i
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import createStore from '~/notes/stores';
-import '~/behaviors/markdown/render_gfm';
 import {
   noteableDataMock,
   discussionMock,
@@ -17,6 +16,8 @@ import {
   loggedOutnoteableData,
   userDataMock,
 } from '../mock_data';
+
+jest.mock('~/behaviors/markdown/render_gfm');
 
 describe('noteable_discussion component', () => {
   let store;

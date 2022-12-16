@@ -135,6 +135,7 @@ class RegistrationsController < Devise::RegistrationsController
 
     return identity_verification_redirect_path if custom_confirmation_enabled?
 
+    Gitlab::Tracking.event(self.class.name, 'render', user: resource)
     users_almost_there_path(email: resource.email)
   end
 

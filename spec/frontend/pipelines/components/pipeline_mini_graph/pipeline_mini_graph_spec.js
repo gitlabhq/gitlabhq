@@ -48,7 +48,6 @@ describe('Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        stagesClass: '',
         updateDropdown: false,
         upstreamPipeline: undefined,
       });
@@ -83,7 +82,6 @@ describe('Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: '',
         stages: expect.any(Array),
-        stagesClass: '',
         updateDropdown: false,
         upstreamPipeline: expect.any(Object),
       });
@@ -115,7 +113,6 @@ describe('Pipeline Mini Graph', () => {
         isMergeTrain: false,
         pipelinePath: 'my/pipeline/path',
         stages: expect.any(Array),
-        stagesClass: '',
         updateDropdown: false,
         upstreamPipeline: undefined,
       });

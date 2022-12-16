@@ -167,6 +167,16 @@ RSpec.describe RegistrationsController do
             expect(controller.current_user).to be_nil
           end
 
+          it 'tracks an almost there redirect' do
+            post_create
+
+            expect_snowplow_event(
+              category: described_class.name,
+              action: 'render',
+              user: User.find_by(email: base_user_params[:email])
+            )
+          end
+
           context 'when registration is triggered from an accepted invite' do
             context 'when it is part from the initial invite email', :snowplow do
               let_it_be(:member) { create(:project_member, :invited, invite_email: user_params.dig(:user, :email)) }
@@ -258,6 +268,16 @@ RSpec.describe RegistrationsController do
             expect { subject }.to have_enqueued_mail(DeviseMailer, :confirmation_instructions)
             expect(controller.current_user).to be_present
             expect(response).to redirect_to(users_sign_up_welcome_path)
+          end
+
+          it 'does not track an almost there redirect' do
+            post_create
+
+            expect_no_snowplow_event(
+              category: described_class.name,
+              action: 'render',
+              user: User.find_by(email: base_user_params[:email])
+            )
           end
 
           context 'when invite email matches email used on registration' do
