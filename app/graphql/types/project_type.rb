@@ -539,6 +539,13 @@ module Types
           resolver: Resolvers::Projects::ForkTargetsResolver,
           description: 'Namespaces in which the current user can fork the project into.'
 
+    field :fork_details, Types::Projects::ForkDetailsType,
+          calls_gitaly: true,
+          alpha: { milestone: '15.7' },
+          authorize: :read_code,
+          resolver: Resolvers::Projects::ForkDetailsResolver,
+          description: 'Details of the fork project compared to its upstream project.'
+
     field :branch_rules,
           Types::Projects::BranchRuleType.connection_type,
           null: true,

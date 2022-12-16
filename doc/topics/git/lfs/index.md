@@ -148,6 +148,12 @@ LFS object.
 
 Technical details about how this works can be found in the [development documentation for LFS](../../../development/lfs.md#including-lfs-blobs-in-project-archives).
 
+## Related topics
+
+- Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- [Git LFS developer information](../../../development/lfs.md)
+- [GitLab Git Large File Storage (LFS) Administration](../../../administration/lfs/index.md) for self-managed instances
+
 ## Troubleshooting
 
 ### Encountered `n` files that should have been pointers, but weren't

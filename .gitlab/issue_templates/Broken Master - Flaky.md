@@ -22,4 +22,4 @@ Please read the below documentations for a workflow of triaging and resolving br
 
 Please refer to the [Resolution guidance](https://about.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master) to learn more about resolution of broken master.
 
-/label ~"failure::flaky-test" ~"Engineering Productivity" ~"priority::2" ~"severity::2"
+/label ~"failure::flaky-test" ~"Engineering Productivity" ~"priority::2" ~"severity::3" ~"type::bug" ~"bug::transient"

@@ -2128,6 +2128,9 @@ msgstr ""
 msgid "Activate Service Desk"
 msgstr ""
 
+msgid "Activated"
+msgstr ""
+
 msgid "Active"
 msgstr ""
 
@@ -30289,6 +30292,9 @@ msgstr ""
 msgid "PipelineSchedules|Are you sure you want to delete this pipeline schedule?"
 msgstr ""
 
+msgid "PipelineSchedules|Cron timezone"
+msgstr ""
+
 msgid "PipelineSchedules|Delete pipeline schedule"
 msgstr ""
 
@@ -30299,6 +30305,9 @@ msgid "PipelineSchedules|Edit pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Inactive"
+msgstr ""
+
+msgid "PipelineSchedules|Interval Pattern"
 msgstr ""
 
 msgid "PipelineSchedules|Last Pipeline"
@@ -30326,6 +30335,9 @@ msgid "PipelineSchedules|Provide a short description for this pipeline"
 msgstr ""
 
 msgid "PipelineSchedules|Run pipeline schedule"
+msgstr ""
+
+msgid "PipelineSchedules|Save pipeline schedule"
 msgstr ""
 
 msgid "PipelineSchedules|Successfully taken ownership from %{owner}."
@@ -40829,15 +40841,6 @@ msgstr ""
 msgid "TemporaryStorageIncrease|can only be set with more than %{percentage}%% usage"
 msgstr ""
 
-msgid "TemporaryStorage|GitLab allows you a %{strongStart}free, one-time storage increase%{strongEnd}. For 30 days your storage will be unlimited. This gives you time to reduce your storage usage. After 30 days, your original storage limit of %{limit} applies. If you are at maximum storage capacity, your account will be read-only. To continue using GitLab you'll have to purchase additional storage or decrease storage usage."
-msgstr ""
-
-msgid "TemporaryStorage|Increase storage temporarily"
-msgstr ""
-
-msgid "TemporaryStorage|Temporarily increase storage now?"
-msgstr ""
-
 msgid "Terminal"
 msgstr ""
 
@@ -42727,7 +42730,7 @@ msgstr ""
 msgid "This variable can not be masked."
 msgstr ""
 
-msgid "This vulnerability type has been deprecated from GitLab's default ruleset and automatically resolved."
+msgid "This vulnerability was automatically resolved because its vulnerability type was disabled in this project or removed from GitLab's default ruleset."
 msgstr ""
 
 msgid "This will invalidate your registered applications and U2F / WebAuthn devices."
@@ -44473,9 +44476,6 @@ msgid "UsageQuota|Group settings &gt; Usage quotas"
 msgstr ""
 
 msgid "UsageQuota|Includes artifacts, repositories, wiki, uploads, and other items."
-msgstr ""
-
-msgid "UsageQuota|Increase storage temporarily"
 msgstr ""
 
 msgid "UsageQuota|LFS storage"

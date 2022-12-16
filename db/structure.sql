@@ -31239,6 +31239,8 @@ CREATE INDEX index_user_statuses_on_user_id ON user_statuses USING btree (user_i
 
 CREATE UNIQUE INDEX index_user_synced_attributes_metadata_on_user_id ON user_synced_attributes_metadata USING btree (user_id);
 
+CREATE INDEX index_users_for_active_billable ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[NULL::integer, 6, 4]))) AND ((user_type IS NULL) OR (user_type <> ALL ('{1,2,3,4,5,6,7,8,9,11}'::smallint[]))));
+
 CREATE INDEX index_users_on_accepted_term_id ON users USING btree (accepted_term_id);
 
 CREATE INDEX index_users_on_admin ON users USING btree (admin);
@@ -31470,8 +31472,6 @@ CREATE INDEX index_web_hooks_on_group_id ON web_hooks USING btree (group_id) WHE
 CREATE INDEX index_web_hooks_on_integration_id ON web_hooks USING btree (integration_id);
 
 CREATE INDEX index_web_hooks_on_project_id ON web_hooks USING btree (project_id);
-
-CREATE INDEX index_users_for_active_billable ON users USING btree (id) WHERE (((state)::text = 'active'::text) AND ((user_type IS NULL) OR (user_type = ANY (ARRAY[NULL::integer, 6, 4]))) AND ((user_type IS NULL) OR (user_type <> ALL ('{1,2,3,4,5,6,7,8,9,11}'::smallint[]))));
 
 CREATE INDEX index_web_hooks_on_project_id_recent_failures ON web_hooks USING btree (project_id, recent_failures);
 

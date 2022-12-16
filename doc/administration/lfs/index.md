@@ -7,7 +7,8 @@ disqus_identifier: 'https://docs.gitlab.com/ee/workflow/lfs/lfs_administration.h
 
 # GitLab Git Large File Storage (LFS) Administration **(FREE SELF)**
 
-Documentation about how to use Git LFS are under [Managing large binary files with Git LFS doc](../../topics/git/lfs/index.md).
+This page contains information about configuring Git LFS in self-managed GitLab instances.
+For user documentation about Git LFS, see [Git Large File Storage](../../topics/git/lfs/index.md).
 
 LFS is enabled in GitLab self-managed instances by default.
 
@@ -216,6 +217,12 @@ You can see the total storage used for LFS objects on groups and projects:
 
 - In the administration area.
 - In the [groups](../../api/groups.md) and [projects APIs](../../api/projects.md).
+
+## Related topics
+
+- Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- User documentation: [Git Large File Storage (LFS)](../../topics/git/lfs/index.md)
+- [Git LFS developer information](../../development/lfs.md)
 
 ## Troubleshooting
 

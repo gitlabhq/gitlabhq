@@ -13112,6 +13112,17 @@ Describes an external status check.
 | <a id="fileuploadpath"></a>`path` | [`String!`](#string) | Path of the upload. |
 | <a id="fileuploadsize"></a>`size` | [`Int!`](#int) | Size of the upload in bytes. |
 
+### `ForkDetails`
+
+Details of the fork project compared to its upstream project.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="forkdetailsahead"></a>`ahead` | [`Int`](#int) | Number of commits ahead of upstream. |
+| <a id="forkdetailsbehind"></a>`behind` | [`Int`](#int) | Number of commits behind upstream. |
+
 ### `GeoNode`
 
 #### Fields
@@ -17456,6 +17467,22 @@ four standard [pagination arguments](#connection-pagination-arguments):
 | <a id="projectenvironmentssearch"></a>`search` | [`String`](#string) | Search query for environment name. |
 | <a id="projectenvironmentsstates"></a>`states` | [`[String!]`](#string) | States of environments that should be included in result. |
 | <a id="projectenvironmentstype"></a>`type` | [`String`](#string) | Search query for environment type. |
+
+##### `Project.forkDetails`
+
+Details of the fork project compared to its upstream project.
+
+WARNING:
+**Introduced** in 15.7.
+This feature is in Alpha. It can be changed or removed at any time.
+
+Returns [`ForkDetails`](#forkdetails).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectforkdetailsref"></a>`ref` | [`String`](#string) | Ref of the fork. Default value is HEAD. |
 
 ##### `Project.forkTargets`
 

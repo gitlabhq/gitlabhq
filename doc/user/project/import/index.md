@@ -18,7 +18,7 @@ See these documents to migrate to GitLab:
 - [From GitLab.com](gitlab_com.md)
 - [From Gitea](gitea.md)
 - [From Perforce](perforce.md)
-- [From SVN](svn.md)
+- [From SVN](https://git-scm.com/book/en/v2/Git-and-Other-Systems-Git-as-a-Client)
 - [From TFVC](tfvc.md)
 - [From repository by URL](repo_by_url.md)
 - [By uploading a manifest file (AOSP)](manifest.md)

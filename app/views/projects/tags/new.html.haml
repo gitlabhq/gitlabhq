@@ -20,14 +20,9 @@
       = label_tag :tag_name, nil
       = text_field_tag :tag_name, params[:tag_name], required: true, autofocus: true, class: 'form-control', data: { qa_selector: "tag_name_field" }
   .form-group.row
-    .col-sm-12.create-from
+    .col-sm-auto.create-from
       = label_tag :ref, 'Create from'
-      .dropdown
-        = hidden_field_tag :ref, default_ref
-        = button_tag type: 'button', title: default_ref, class: 'dropdown-menu-toggle wide js-branch-select monospace', required: true, data: { toggle: 'dropdown', selected: default_ref, field_name: 'ref' } do
-          .text-left.dropdown-toggle-text= default_ref
-          = sprite_icon('chevron-down', css_class: 'dropdown-menu-toggle-icon gl-top-3')
-        = render 'shared/ref_dropdown', dropdown_class: 'wide'
+      .js-new-tag-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }
       .form-text.text-muted
         = s_('TagsPage|Existing branch name, tag, or commit SHA')
   .form-group.row
@@ -42,5 +37,4 @@
       = s_('TagsPage|Create tag')
     = render Pajamas::ButtonComponent.new(href: project_tags_path(@project)) do
       = s_('TagsPage|Cancel')
--# haml-lint:disable InlineJavaScript
-%script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe
+

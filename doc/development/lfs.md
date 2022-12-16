@@ -4,7 +4,10 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://about.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Git LFS **(FREE)**
+# Git LFS developer information **(FREE)**
+
+This page contains developer-centric information for GitLab team members. For the
+user documentation, see [Git Large File Storage](../topics/git/lfs/index.md).
 
 ## Deep Dive
 
@@ -86,3 +89,9 @@ request is not preserved for the internal API requests made by Gitaly
 correlation IDs for those API requests are random values until
 [this Workhorse issue](https://gitlab.com/gitlab-org/gitlab-workhorse/-/issues/309) is
 resolved.
+
+## Related topics
+
+- Blog post: [Getting started with Git LFS](https://about.gitlab.com/blog/2017/01/30/getting-started-with-git-lfs-tutorial/)
+- User documentation: [Git Large File Storage (LFS)](../topics/git/lfs/index.md)
+- [GitLab Git Large File Storage (LFS) Administration](../administration/lfs/index.md) for self-managed instances

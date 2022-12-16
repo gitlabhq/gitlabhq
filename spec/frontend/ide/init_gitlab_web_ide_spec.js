@@ -9,6 +9,10 @@ import waitForPromises from 'helpers/wait_for_promises';
 jest.mock('@gitlab/web-ide');
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_action');
 jest.mock('~/lib/utils/create_and_submit_form');
+jest.mock('~/lib/utils/csrf', () => ({
+  token: 'mock-csrf-token',
+  headerKey: 'mock-csrf-header',
+}));
 
 const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
@@ -77,6 +81,10 @@ describe('ide/init_gitlab_web_ide', () => {
       ref: TEST_BRANCH_NAME,
       gitlabUrl: TEST_GITLAB_URL,
       nonce: TEST_NONCE,
+      httpHeaders: {
+        'mock-csrf-header': 'mock-csrf-token',
+        'X-Requested-With': 'XMLHttpRequest',
+      },
       links: {
         userPreferences: TEST_USER_PREFERENCES_PATH,
         feedbackIssue: GITLAB_WEB_IDE_FEEDBACK_ISSUE,

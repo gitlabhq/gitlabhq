@@ -3,6 +3,7 @@ import { __ } from '~/locale';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
 import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
+import csrf from '~/lib/utils/csrf';
 import { getBaseConfig } from './lib/gitlab_web_ide/get_base_config';
 import { setupRootElement } from './lib/gitlab_web_ide/setup_root_element';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
@@ -27,9 +28,15 @@ export const initGitlabWebIDE = async (el) => {
 
   const rootEl = setupRootElement(el);
 
+  // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
   start(rootEl, {
     ...getBaseConfig(),
     nonce,
+    // Use same headers as defined in axios_utils
+    httpHeaders: {
+      [csrf.headerKey]: csrf.token,
+      'X-Requested-With': 'XMLHttpRequest',
+    },
     projectPath,
     ref,
     links: {

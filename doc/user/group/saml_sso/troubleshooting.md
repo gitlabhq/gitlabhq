@@ -269,3 +269,15 @@ Pay particular attention to the following 403 errors:
 
 - `app_not_configured`
 - `app_not_configured_for_user`
+
+## SAML Name ID and email address do not match your user account **(PREMIUM SAAS)**
+
+If users encounter the error `SAML Name ID and email address do not match your user account. Contact an administrator.`
+this means:
+
+- The NameID value sent by SAML does not match the existing SAML identity `extern_uid` value.
+- Either the SAML response did not include an email address or the email address did not match the user's GitLab email address.
+
+A GitLab group Owner can use the [SAML API](../../../api/saml.md) to update the user's SAML `extern_uid`.
+The `extern_uid` value must match the Name ID value sent by the SAML identity provider (IdP). Depending on the IdP configuration
+this may be a generated unique ID, an email address, or other value.

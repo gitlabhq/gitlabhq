@@ -9,6 +9,6 @@
   = _("Schedule a new pipeline")
 
 - if Feature.enabled?(:pipeline_schedules_vue, @project)
-  #pipeline-schedules-form-new{ data: { full_path: @project.full_path } }
+  #pipeline-schedules-form-new{ data: { full_path: @project.full_path, cron: @schedule.cron, daily_limit: @schedule.daily_limit, timezone_data: timezone_data.to_json, cron_timezone: @schedule.cron_timezone, project_id: @project.id, default_branch: @project.default_branch, settings_link: project_settings_ci_cd_path(@project), } }
 - else
   = render "form"

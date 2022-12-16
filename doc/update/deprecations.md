@@ -191,6 +191,31 @@ From GitLab 16.0 and later, the runner registration methods implemented by the n
 
 <div class="deprecation removal-160 breaking-change">
 
+### Support for periods (`.`) in Terraform state names might break existing states
+
+End of Support: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)<br />
+Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)
+
+WARNING:
+This is a [breaking change](https://docs.gitlab.com/ee/development/deprecation_guidelines/).
+Review the details carefully before upgrading.
+
+Previously, Terraform state names containing periods were not supported. However, you could still use state names with periods via a workaround.
+
+GitLab 15.7 [adds full support](https://docs.gitlab.com/ee/user/infrastructure/iac/troubleshooting.html#state-not-found-if-the-state-name-contains-a-period) for state names that contain periods. If you used a workaround to handle these state names, your jobs might fail, or it might look like you've run Terraform for the first time.
+
+To resolve the issue:
+
+  1. Change any references to the state file by excluding the period and any characters that follow.
+     - For example, if your state name is `state.name`, change all references to `state`.
+  1. Run your Terraform commands.
+
+To use the full state name, including the period, [migrate to the full state file](https://docs.gitlab.com/ee/user/infrastructure/iac/terraform_state.html#migrate-to-a-gitlab-managed-terraform-state).
+
+</div>
+
+<div class="deprecation removal-160 breaking-change">
+
 ### The Phabricator task importer is deprecated
 
 Planned removal: GitLab <span class="removal-milestone">16.0</span> (2023-05-22)

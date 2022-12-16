@@ -39,6 +39,11 @@ export default {
       required: false,
       default: '',
     },
+    sendNativeErrors: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -114,9 +119,11 @@ export default {
     cronInterval() {
       // updates field validation state when model changes, as
       // glFieldError only updates on input.
-      this.$nextTick(() => {
-        gl.pipelineScheduleFieldErrors.updateFormValidityState();
-      });
+      if (this.sendNativeErrors) {
+        this.$nextTick(() => {
+          gl.pipelineScheduleFieldErrors.updateFormValidityState();
+        });
+      }
     },
     radioValue: {
       immediate: true,

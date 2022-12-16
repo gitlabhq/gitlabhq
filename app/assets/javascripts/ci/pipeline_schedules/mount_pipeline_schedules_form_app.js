@@ -16,7 +16,16 @@ export default (selector) => {
     return false;
   }
 
-  const { fullPath } = containerEl.dataset;
+  const {
+    fullPath,
+    cron,
+    dailyLimit,
+    timezoneData,
+    cronTimezone,
+    projectId,
+    defaultBranch,
+    settingsLink,
+  } = containerEl.dataset;
 
   return new Vue({
     el: containerEl,
@@ -24,9 +33,20 @@ export default (selector) => {
     apolloProvider,
     provide: {
       fullPath,
+      projectId,
+      defaultBranch,
+      dailyLimit: dailyLimit ?? '',
+      cronTimezone: cronTimezone ?? '',
+      cron: cron ?? '',
+      settingsLink,
     },
     render(createElement) {
-      return createElement(PipelineSchedulesForm);
+      return createElement(PipelineSchedulesForm, {
+        props: {
+          timezoneData: JSON.parse(timezoneData),
+          refParam: defaultBranch,
+        },
+      });
     },
   });
 };

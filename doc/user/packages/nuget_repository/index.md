@@ -118,27 +118,25 @@ A project-level endpoint is also required to install NuGet packages from a proje
 To use the [project-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
-1. In Windows, select **File > Options**. On macOS, select **Visual Studio > Preferences**.
+1. In Windows, select **Tools > Options**. On macOS, select **Visual Studio > Preferences**.
 1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
 1. Select **Add**.
 1. Complete the following fields:
 
    - **Name**: Name for the source.
-   - **Location**: `https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json`,
+   - **Source**: `https://gitlab.example.com/api/v4/projects/<your_project_id>/packages/nuget/index.json`,
      where `<your_project_id>` is your project ID, and `gitlab.example.com` is
      your domain name.
+
+1. Select **Save**.
+1. When you access the package, you must enter your **Username** and **Password**:
+
    - **Username**: Your GitLab username or deploy token username.
    - **Password**: Your personal access token or deploy token.
 
-   ![Visual Studio Adding a NuGet source](img/visual_studio_adding_nuget_source.png)
-
-1. Select **Save**.
-
 The source is displayed in your list.
 
-![Visual Studio NuGet source added](img/visual_studio_nuget_source_added.png)
-
-If you get a warning, ensure that the **Location**, **Username**, and
+If you get a warning, ensure that the **Source**, **Username**, and
 **Password** are correct.
 
 #### Group-level endpoint
@@ -148,27 +146,25 @@ To install a package from a group, use a group-level endpoint.
 To use the [group-level](#use-the-gitlab-endpoint-for-nuget-packages) NuGet endpoint, add the Package Registry as a source with Visual Studio:
 
 1. Open [Visual Studio](https://visualstudio.microsoft.com/vs/).
-1. In Windows, select **File > Options**. On macOS, select **Visual Studio > Preferences**.
+1. In Windows, select **Tools > Options**. On macOS, select **Visual Studio > Preferences**.
 1. In the **NuGet** section, select **Sources** to view a list of all your NuGet sources.
 1. Select **Add**.
 1. Complete the following fields:
 
    - **Name**: Name for the source.
-   - **Location**: `https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json`,
+   - **Source**: `https://gitlab.example.com/api/v4/groups/<your_group_id>/-/packages/nuget/index.json`,
      where `<your_group_id>` is your group ID, and `gitlab.example.com` is
      your domain name.
+
+1. Select **Save**.
+1. When you access the package, you must enter your **Username** and **Password**.
+
    - **Username**: Your GitLab username or deploy token username.
    - **Password**: Your personal access token or deploy token.
 
-   ![Visual Studio Adding a NuGet source](img/visual_studio_adding_nuget_source.png)
-
-1. Select **Save**.
-
 The source is displayed in your list.
 
-![Visual Studio NuGet source added](img/visual_studio_nuget_source_added.png)
-
-If you get a warning, ensure that the **Location**, **Username**, and
+If you get a warning, ensure that the **Source**, **Username**, and
 **Password** are correct.
 
 ### Add a source with the .NET CLI
