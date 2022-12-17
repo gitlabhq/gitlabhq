@@ -13,6 +13,7 @@ import {
   RECEIVE_IMPORT_SUCCESS,
   RECEIVE_IMPORT_ERROR,
   RECEIVE_JOBS_SUCCESS,
+  CANCEL_IMPORT_SUCCESS,
   SET_PAGE,
   SET_FILTER,
   SET_PAGE_CURSORS,
@@ -28,6 +29,7 @@ const endpoints = {
   reposPath: MOCK_ENDPOINT,
   importPath: MOCK_ENDPOINT,
   jobsPath: MOCK_ENDPOINT,
+  cancelPath: MOCK_ENDPOINT,
 };
 
 const {
@@ -36,6 +38,7 @@ const {
   importAll,
   fetchRepos,
   fetchImport,
+  cancelImport,
   fetchJobs,
   setFilter,
 } = actionsFactory({
@@ -55,14 +58,17 @@ describe('import_projects store actions', () => {
       ...state(),
       defaultTargetNamespace,
       repositories: [
-        { importSource: { id: importRepoId, sanitizedName }, importStatus: STATUSES.NONE },
+        {
+          importSource: { id: importRepoId, sanitizedName },
+          importedProject: { importStatus: STATUSES.NONE },
+        },
         {
           importSource: { id: otherImportRepoId, sanitizedName: 's2' },
-          importStatus: STATUSES.NONE,
+          importedProject: { importStatus: STATUSES.NONE },
         },
         {
           importSource: { id: 3, sanitizedName: 's3', incompatible: true },
-          importStatus: STATUSES.NONE,
+          importedProject: { importStatus: STATUSES.NONE },
         },
       ],
       provider: 'provider',
@@ -415,6 +421,53 @@ describe('import_projects store actions', () => {
         [{ type: SET_FILTER, payload: 'filteredRepo' }],
         [{ type: 'fetchRepos' }],
       );
+    });
+  });
+
+  describe('cancelImport', () => {
+    let mock;
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+    });
+
+    afterEach(() => mock.restore());
+
+    it('commits CANCEL_IMPORT_SUCCESS on success', async () => {
+      mock.onPost(MOCK_ENDPOINT).reply(200);
+
+      await testAction(
+        cancelImport,
+        { repoId: importRepoId },
+        localState,
+        [
+          {
+            type: CANCEL_IMPORT_SUCCESS,
+            payload: { repoId: 1 },
+          },
+        ],
+        [],
+      );
+    });
+
+    it('shows generic error message on an unsuccessful request', async () => {
+      mock.onPost(MOCK_ENDPOINT).reply(500);
+
+      await testAction(cancelImport, { repoId: importRepoId }, localState, [], []);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Cancelling project import failed',
+      });
+    });
+
+    it('shows detailed error message on an unsuccessful request with errors fields in response', async () => {
+      const ERROR_MESSAGE = 'dummy';
+      mock.onPost(MOCK_ENDPOINT).reply(500, { errors: ERROR_MESSAGE });
+
+      await testAction(cancelImport, { repoId: importRepoId }, localState, [], []);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: `Cancelling project import failed: ${ERROR_MESSAGE}`,
+      });
     });
   });
 });

@@ -19,6 +19,7 @@ export function initStoreFromElement(element) {
     reposPath,
     jobsPath,
     importPath,
+    cancelPath,
     defaultTargetNamespace,
     paginatable,
   } = element.dataset;
@@ -34,6 +35,7 @@ export function initStoreFromElement(element) {
       reposPath,
       jobsPath,
       importPath,
+      cancelPath,
     },
     hasPagination: parseBoolean(paginatable),
   });
@@ -45,6 +47,7 @@ export function initPropsFromElement(element) {
     filterable: parseBoolean(element.dataset.filterable),
     paginatable: parseBoolean(element.dataset.paginatable),
     optionalStages: JSON.parse(element.dataset.optionalStages),
+    cancelable: Boolean(element.dataset.cancelPath),
   };
 }
 

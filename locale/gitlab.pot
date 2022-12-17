@@ -21085,10 +21085,22 @@ msgstr ""
 msgid "ImportProjects|Blocked import URL: %{message}"
 msgstr ""
 
+msgid "ImportProjects|Cancel import"
+msgstr ""
+
+msgid "ImportProjects|Cancelling project import failed"
+msgstr ""
+
+msgid "ImportProjects|Cancelling project import failed: %{reason}"
+msgstr ""
+
 msgid "ImportProjects|Error importing repository %{project_safe_import_url} into %{project_full_path} - %{message}"
 msgstr ""
 
 msgid "ImportProjects|Import repositories"
+msgstr ""
+
+msgid "ImportProjects|Imported files will be kept. You can import this repository again later."
 msgstr ""
 
 msgid "ImportProjects|Importing the project failed"

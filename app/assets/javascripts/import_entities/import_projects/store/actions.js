@@ -159,6 +159,42 @@ const fetchImportFactory = (importPath = isRequired()) => (
     });
 };
 
+export const cancelImportFactory = (cancelImportPath) => ({ state, commit }, { repoId }) => {
+  const existingRepo = state.repositories.find((r) => r.importSource.id === repoId);
+
+  if (!existingRepo?.importedProject) {
+    throw new Error(`Attempting to cancel project which is not started: ${repoId}`);
+  }
+
+  const { id } = existingRepo.importedProject;
+
+  return axios
+    .post(cancelImportPath, {
+      project_id: id,
+    })
+    .then(() => {
+      commit(types.CANCEL_IMPORT_SUCCESS, {
+        repoId,
+      });
+    })
+    .catch((e) => {
+      const serverErrorMessage = e?.response?.data?.errors;
+      const flashMessage = serverErrorMessage
+        ? sprintf(
+            s__('ImportProjects|Cancelling project import failed: %{reason}'),
+            {
+              reason: serverErrorMessage,
+            },
+            false,
+          )
+        : s__('ImportProjects|Cancelling project import failed');
+
+      createAlert({
+        message: flashMessage,
+      });
+    });
+};
+
 export const fetchJobsFactory = (jobsPath = isRequired()) => ({ state, commit, dispatch }) => {
   if (eTagPoll) {
     stopJobsPolling();
@@ -211,5 +247,6 @@ export default ({ endpoints = isRequired() }) => ({
   importAll,
   fetchRepos: fetchReposFactory({ reposPath: endpoints.reposPath }),
   fetchImport: fetchImportFactory(endpoints.importPath),
+  cancelImport: cancelImportFactory(endpoints.cancelPath),
   fetchJobs: fetchJobsFactory(endpoints.jobsPath),
 });

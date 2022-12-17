@@ -8,13 +8,15 @@ import {
   GlDropdownItem,
   GlDropdownDivider,
   GlDropdownSectionHeader,
+  GlTooltip,
 } from '@gitlab/ui';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import { __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import ImportGroupDropdown from '../../components/group_dropdown.vue';
 import ImportStatus from '../../components/import_status.vue';
 import { STATUSES } from '../../constants';
-import { isProjectImportable, isIncompatible, getImportStatus } from '../utils';
+import { isProjectImportable, isImporting, isIncompatible, getImportStatus } from '../utils';
 
 export default {
   name: 'ProviderRepoTableRow',
@@ -29,6 +31,7 @@ export default {
     GlIcon,
     GlBadge,
     GlLink,
+    GlTooltip,
   },
   props: {
     repo: {
@@ -42,6 +45,11 @@ export default {
     optionalStages: {
       type: Object,
       required: true,
+    },
+    cancelable: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 
@@ -69,6 +77,14 @@ export default {
       return getImportStatus(this.repo);
     },
 
+    isImporting() {
+      return isImporting(this.repo);
+    },
+
+    isCancelable() {
+      return this.cancelable && this.isImporting && this.importStatus !== STATUSES.SCHEDULING;
+    },
+
     stats() {
       return this.repo.importedProject?.stats;
     },
@@ -92,7 +108,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['fetchImport', 'setImportTarget']),
+    ...mapActions(['fetchImport', 'cancelImport', 'setImportTarget']),
     updateImportTarget(changedValues) {
       this.setImportTarget({
         repoId: this.repo.importSource.id,
@@ -100,6 +116,8 @@ export default {
       });
     },
   },
+
+  helpUrl: helpPagePath('/user/project/import/github.md'),
 };
 </script>
 
@@ -160,6 +178,26 @@ export default {
       <import-status :status="importStatus" :stats="stats" />
     </td>
     <td data-testid="actions" class="gl-vertical-align-top gl-pt-4">
+      <gl-tooltip :target="() => $refs.cancelButton.$el">
+        <div class="gl-text-left">
+          <p class="gl-mb-5 gl-font-weight-bold">{{ s__('ImportProjects|Cancel import') }}</p>
+          {{
+            s__(
+              'ImportProjects|Imported files will be kept. You can import this repository again later.',
+            )
+          }}
+          <gl-link :href="$options.helpUrl" target="_blank">{{ __('Learn more.') }}</gl-link>
+        </div>
+      </gl-tooltip>
+      <gl-button
+        v-show="isCancelable"
+        ref="cancelButton"
+        variant="danger"
+        category="secondary"
+        icon="cancel"
+        :aria-label="__('Cancel')"
+        @click="cancelImport({ repoId: repo.importSource.id })"
+      />
       <gl-button
         v-if="isFinished"
         class="btn btn-default"

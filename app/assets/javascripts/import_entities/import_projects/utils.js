@@ -9,7 +9,10 @@ export function getImportStatus(project) {
 }
 
 export function isProjectImportable(project) {
-  return !isIncompatible(project) && getImportStatus(project) === STATUSES.NONE;
+  return (
+    !isIncompatible(project) &&
+    [STATUSES.NONE, STATUSES.CANCELED].includes(getImportStatus(project))
+  );
 }
 
 export function isImporting(repo) {

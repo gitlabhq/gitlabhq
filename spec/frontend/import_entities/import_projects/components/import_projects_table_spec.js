@@ -59,7 +59,6 @@ describe('ImportProjectsTable', () => {
       actions: {
         fetchRepos: fetchReposFn,
         fetchJobs: jest.fn(),
-        fetchNamespaces: jest.fn(),
         importAll: importAllFn,
         stopJobsPolling: jest.fn(),
         clearJobsEtagPoll: jest.fn(),

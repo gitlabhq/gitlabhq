@@ -326,4 +326,24 @@ describe('import_projects store mutations', () => {
       expect(state.pageInfo).toEqual({ ...NEW_CURSORS, page: 1 });
     });
   });
+
+  describe(`${types.CANCEL_IMPORT_SUCCESS}`, () => {
+    const payload = { repoId: 1 };
+
+    beforeEach(() => {
+      state = {
+        repositories: [
+          {
+            importSource: { id: 1 },
+            importedProject: { importStatus: STATUSES.NONE },
+          },
+        ],
+      };
+      mutations[types.CANCEL_IMPORT_SUCCESS](state, payload);
+    });
+
+    it('updates project status', () => {
+      expect(state.repositories[0].importedProject.importStatus).toBe(STATUSES.CANCELED);
+    });
+  });
 });
