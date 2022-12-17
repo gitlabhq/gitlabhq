@@ -43,7 +43,7 @@ RSpec.describe WorkItems::Type do
     end
 
     it 'does not delete type when there are related issues' do
-      type = create(:work_item_type, work_items: [work_item])
+      type = work_item.work_item_type
 
       expect { type.destroy! }.to raise_error(ActiveRecord::InvalidForeignKey)
       expect(Issue.count).to eq(1)

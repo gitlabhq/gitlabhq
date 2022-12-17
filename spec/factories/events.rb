@@ -64,6 +64,11 @@ FactoryBot.define do
       target_type { 'WorkItem' }
     end
 
+    trait :for_merge_request do
+      target { association(:merge_request) }
+      target_type { 'MergeRequest' }
+    end
+
     factory :design_event, traits: [:has_design] do
       action { :created }
       target { design }

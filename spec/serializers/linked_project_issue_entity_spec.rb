@@ -6,10 +6,10 @@ RSpec.describe LinkedProjectIssueEntity do
   include Gitlab::Routing.url_helpers
 
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project) }
   let_it_be(:issue_link) { create(:issue_link) }
 
   let(:request) { double('request') }
+  let(:issue_type) { :task }
   let(:related_issue) { issue_link.source.related_issues(user).first }
   let(:entity) { described_class.new(related_issue, request: request, current_user: user) }
 
@@ -31,9 +31,7 @@ RSpec.describe LinkedProjectIssueEntity do
     end
 
     context 'when related issue is a task' do
-      before do
-        related_issue.update!(issue_type: :task, work_item_type: WorkItems::Type.default_by_type(:task))
-      end
+      let_it_be(:issue_link) { create(:issue_link, target: create(:issue, :task)) }
 
       it 'returns a work item issue type' do
         expect(serialized_entity).to include(type: 'TASK')
@@ -47,9 +45,7 @@ RSpec.describe LinkedProjectIssueEntity do
     end
 
     context 'when related issue is a task' do
-      before do
-        related_issue.update!(issue_type: :task, work_item_type: WorkItems::Type.default_by_type(:task))
-      end
+      let_it_be(:issue_link) { create(:issue_link, target: create(:issue, :task)) }
 
       context 'when use_iid_in_work_items_path feature flag is disabled' do
         before do

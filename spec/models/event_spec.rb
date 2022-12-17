@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Event do
+RSpec.describe Event, feature_category: :users do
+  let_it_be_with_reload(:project) { create(:project) }
+
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:target) }
@@ -17,8 +19,6 @@ RSpec.describe Event do
   end
 
   describe 'Callbacks' do
-    let(:project) { create(:project) }
-
     describe 'after_create :reset_project_activity' do
       it 'calls the reset_project_activity method' do
         expect_next_instance_of(described_class) do |instance|
@@ -105,7 +105,7 @@ RSpec.describe Event do
     describe 'created_at' do
       it 'can find the right event' do
         time = 1.day.ago
-        event = create(:event, created_at: time)
+        event = create(:event, created_at: time, project: project)
         false_positive = create(:event, created_at: 2.days.ago)
 
         found = described_class.created_at(time)
@@ -116,11 +116,11 @@ RSpec.describe Event do
     end
 
     describe '.for_fingerprint' do
-      let_it_be(:with_fingerprint) { create(:event, fingerprint: 'aaa') }
+      let_it_be(:with_fingerprint) { create(:event, fingerprint: 'aaa', project: project) }
 
       before_all do
-        create(:event)
-        create(:event, fingerprint: 'bbb')
+        create(:event, project: project)
+        create(:event, fingerprint: 'bbb', project: project)
       end
 
       it 'returns none if there is no fingerprint' do
@@ -137,28 +137,43 @@ RSpec.describe Event do
           .to contain_exactly(with_fingerprint)
       end
     end
+
+    describe '.contributions' do
+      let!(:merge_request_event) { create(:event, :created, :for_merge_request, project: project) }
+      let!(:issue_event) { create(:event, :created, :for_issue, project: project) }
+      let!(:work_item_event) { create(:event, :created, :for_work_item, project: project) }
+      let!(:design_event) { create(:design_event, project: project) }
+
+      it 'returns events for MergeRequest, Issue and WorkItem' do
+        expect(described_class.contributions).to contain_exactly(
+          merge_request_event,
+          issue_event,
+          work_item_event
+        )
+      end
+    end
   end
 
   describe '#fingerprint' do
     it 'is unique scoped to target' do
-      issue = create(:issue)
-      mr = create(:merge_request)
+      issue = create(:issue, project: project)
+      mr = create(:merge_request, source_project: project)
 
-      expect { create_list(:event, 2, target: issue, fingerprint: '1234') }
+      expect { create_list(:event, 2, target: issue, fingerprint: '1234', project: project) }
         .to raise_error(include('fingerprint'))
 
       expect do
-        create(:event, target: mr, fingerprint: 'abcd')
-        create(:event, target: issue, fingerprint: 'abcd')
-        create(:event, target: issue, fingerprint: 'efgh')
+        create(:event, target: mr, fingerprint: 'abcd', project: project)
+        create(:event, target: issue, fingerprint: 'abcd', project: project)
+        create(:event, target: issue, fingerprint: 'efgh', project: project)
       end.not_to raise_error
     end
   end
 
   describe "Push event" do
-    let(:project) { create(:project, :private) }
-    let(:user) { project.first_owner }
-    let(:event) { create_push_event(project, user) }
+    let(:private_project) { create(:project, :private) }
+    let(:user) { private_project.first_owner }
+    let(:event) { create_push_event(private_project, user) }
 
     it do
       expect(event.push_action?).to be_truthy
@@ -171,8 +186,6 @@ RSpec.describe Event do
   end
 
   describe '#target_title' do
-    let_it_be(:project) { create(:project) }
-
     let(:author) { project.first_owner }
     let(:target) { nil }
 

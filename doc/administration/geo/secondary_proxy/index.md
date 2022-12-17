@@ -83,11 +83,18 @@ You can also add feedback in the epic about any use-cases that
 are not possible anymore with proxying enabled.
 
 If you run into issues, to disable this feature, disable the `geo_secondary_proxy_separate_urls` feature flag.
-SSH into one node running Rails on your primary Geo site and run:
 
-```shell
-sudo gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
-```
+1. SSH into one node running Rails on your primary Geo site and run:
+
+   ```shell
+   sudo gitlab-rails runner "Feature.disable(:geo_secondary_proxy_separate_urls)"
+   ```
+
+1. Restart Puma on all of the nodes running Rails on your secondary Geo site:
+
+   ```shell
+   sudo gitlab-ctl restart puma
+   ```
 
 In Kubernetes, you can run the same command in the toolbox pod. Refer to the
 [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information)

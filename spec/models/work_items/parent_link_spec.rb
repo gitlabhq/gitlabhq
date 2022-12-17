@@ -31,18 +31,6 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         expect(build(:parent_link, work_item: task1, work_item_parent: incident)).to be_valid
       end
 
-      shared_examples_for 'checks valid types' do
-        it 'validates if child can be added to the parent' do
-          parent_type = WorkItems::Type.default_by_type(parent_type_sym)
-          child_type = WorkItems::Type.default_by_type(child_type_sym)
-          parent = build(:work_item, issue_type: parent_type_sym, work_item_type: parent_type, project: project)
-          child = build(:work_item, issue_type: child_type_sym, work_item_type: child_type, project: project)
-          link = build(:parent_link, work_item: child, work_item_parent: parent)
-
-          expect(link.valid?).to eq(is_valid)
-        end
-      end
-
       context 'when assigning to various parent types' do
         using RSpec::Parameterized::TableSyntax
 
@@ -60,32 +48,15 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
         end
 
         with_them do
-          it_behaves_like 'checks valid types'
-        end
-      end
+          it 'validates if child can be added to the parent' do
+            parent_type = WorkItems::Type.default_by_type(parent_type_sym)
+            child_type = WorkItems::Type.default_by_type(child_type_sym)
+            parent = build(:work_item, issue_type: parent_type_sym, work_item_type: parent_type, project: project)
+            child = build(:work_item, issue_type: child_type_sym, work_item_type: child_type, project: project)
+            link = build(:parent_link, work_item: child, work_item_parent: parent)
 
-      context 'when hierarchy_db_restrictions is disabled' do
-        before do
-          stub_feature_flags(hierarchy_db_restrictions: false)
-        end
-
-        using RSpec::Parameterized::TableSyntax
-
-        where(:parent_type_sym, :child_type_sym, :is_valid) do
-          :issue      | :task       | true
-          :incident   | :task       | true
-          :task       | :issue      | false
-          :issue      | :issue      | false
-          :objective  | :objective  | false
-          :objective  | :key_result | false
-          :key_result | :objective  | false
-          :key_result | :key_result | false
-          :objective  | :issue      | false
-          :task       | :objective  | false
-        end
-
-        with_them do
-          it_behaves_like 'checks valid types'
+            expect(link.valid?).to eq(is_valid)
+          end
         end
       end
 

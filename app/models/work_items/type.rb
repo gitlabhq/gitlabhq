@@ -85,6 +85,11 @@ module WorkItems
       ]
     }.freeze
 
+    # A list of types user can change between - both original and new
+    # type must be included in this list. This is needed for legacy issues
+    # where it's possible to switch between issue and incident.
+    CHANGEABLE_BASE_TYPES = %w[issue incident test_case].freeze
+
     WI_TYPES_WITH_CREATED_HEADER = %w[issue incident].freeze
 
     cache_markdown_field :description, pipeline: :single_line

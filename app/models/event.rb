@@ -132,7 +132,7 @@ class Event < ApplicationRecord
       where(
         'action IN (?) OR (target_type IN (?) AND action IN (?))',
         [actions[:pushed], actions[:commented]],
-        %w(MergeRequest Issue), [actions[:created], actions[:closed], actions[:merged]]
+        %w(MergeRequest Issue WorkItem), [actions[:created], actions[:closed], actions[:merged]]
       )
     end
 

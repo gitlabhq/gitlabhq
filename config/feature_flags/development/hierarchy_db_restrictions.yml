@@ -1,8 +1,0 @@
----
-name: hierarchy_db_restrictions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105104
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/384112
-milestone: '15.7'
-type: development
-group: group::product planning
-default_enabled: false

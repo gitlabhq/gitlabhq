@@ -13767,6 +13767,9 @@ msgstr ""
 msgid "Deployment Target|Select the deployment target"
 msgstr ""
 
+msgid "Deployment approvals is not configured for this environment."
+msgstr ""
+
 msgid "Deployment frequency"
 msgstr ""
 
@@ -27347,9 +27350,6 @@ msgstr ""
 msgid "New directory"
 msgstr ""
 
-msgid "New discussion"
-msgstr ""
-
 msgid "New email address added"
 msgstr ""
 
@@ -39602,13 +39602,13 @@ msgstr ""
 msgid "Start a Free Ultimate Trial"
 msgstr ""
 
-msgid "Start a new discussion…"
-msgstr ""
-
 msgid "Start a new merge request with these changes"
 msgstr ""
 
 msgid "Start a review"
+msgstr ""
+
+msgid "Start another thread"
 msgstr ""
 
 msgid "Start by choosing a group to start exploring the merge requests in that group. You can then proceed to filter by projects, labels, milestones and authors."
@@ -41794,6 +41794,9 @@ msgid "There are no Spam Logs"
 msgstr ""
 
 msgid "There are no abuse reports!"
+msgstr ""
+
+msgid "There are no approval rules for the given `represent_as` parameter. Use a valid User/Group/Role name instead."
 msgstr ""
 
 msgid "There are no archived requirements"
@@ -47637,7 +47640,7 @@ msgstr ""
 msgid "You don't have any recent searches"
 msgstr ""
 
-msgid "You don't have permission to review this deployment. Contact the project or group owner for help."
+msgid "You don't have permission to approve this deployment. Contact the project or group owner for help."
 msgstr ""
 
 msgid "You don't have permission to view this epic"
@@ -48483,6 +48486,9 @@ msgid "can contain only lowercase letters, digits, and '_'."
 msgstr ""
 
 msgid "can not be changed for existing notes"
+msgstr ""
+
+msgid "can not be changed to %{new_type}"
 msgstr ""
 
 msgid "can not be set for this resource"
@@ -49966,12 +49972,6 @@ msgid "nounSeries|%{item}, %{nextItem}"
 msgstr ""
 
 msgid "nounSeries|%{item}, and %{lastItem}"
-msgstr ""
-
-msgid "only %{parent_types} can be parent of Task."
-msgstr ""
-
-msgid "only Task can be assigned as a child in hierarchy."
 msgstr ""
 
 msgid "only available on top-level groups."

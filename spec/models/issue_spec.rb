@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Issue do
+RSpec.describe Issue, feature_category: :project_management do
   include ExternalAuthorizationServiceHelpers
 
   using RSpec::Parameterized::TableSyntax
@@ -135,6 +135,31 @@ RSpec.describe Issue do
         let(:issue_type) { nil }
 
         it { is_expected.to eq(false) }
+      end
+    end
+
+    describe '#allowed_work_item_type_change' do
+      where(:old_type, :new_type, :is_valid) do
+        :issue     | :incident  | true
+        :incident  | :issue     | true
+        :test_case | :issue     | true
+        :issue     | :test_case | true
+        :issue     | :task      | false
+        :test_case | :task      | false
+        :incident  | :task      | false
+        :task      | :issue     | false
+        :task      | :incident  | false
+        :task      | :test_case | false
+      end
+
+      with_them do
+        it 'is possible to change type only between selected types' do
+          issue = create(:issue, old_type, project: reusable_project)
+
+          issue.work_item_type_id = WorkItems::Type.default_by_type(new_type).id
+
+          expect(issue.valid?).to eq(is_valid)
+        end
       end
     end
 

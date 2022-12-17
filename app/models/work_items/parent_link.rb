@@ -12,8 +12,6 @@ module WorkItems
 
     validates :work_item_parent, presence: true
     validates :work_item, presence: true, uniqueness: true
-    validate :validate_child_type
-    validate :validate_parent_type
     validate :validate_hierarchy_restrictions
     validate :validate_cyclic_reference
     validate :validate_same_project
@@ -36,33 +34,6 @@ module WorkItems
     end
 
     private
-
-    def db_restrictions_enabled?
-      Feature.enabled?(:hierarchy_db_restrictions, work_item&.project)
-    end
-
-    def validate_child_type
-      return if db_restrictions_enabled?
-      return unless work_item
-
-      unless work_item.task?
-        errors.add :work_item, _('only Task can be assigned as a child in hierarchy.')
-      end
-    end
-
-    def validate_parent_type
-      return if db_restrictions_enabled?
-      return unless work_item_parent
-
-      base_type = work_item_parent.work_item_type.base_type.to_sym
-      unless PARENT_TYPES.include?(base_type)
-        parent_names = WorkItems::Type::BASE_TYPES.slice(*WorkItems::ParentLink::PARENT_TYPES)
-          .values.map { |type| type[:name] }
-
-        errors.add :work_item_parent, _('only %{parent_types} can be parent of Task.') %
-                                        { parent_types: parent_names.to_sentence }
-      end
-    end
 
     def validate_same_project
       return if work_item.nil? || work_item_parent.nil?
@@ -91,7 +62,6 @@ module WorkItems
     end
 
     def validate_hierarchy_restrictions
-      return unless db_restrictions_enabled?
       return unless work_item && work_item_parent
 
       restriction = ::WorkItems::HierarchyRestriction
@@ -115,7 +85,6 @@ module WorkItems
     end
 
     def validate_cyclic_reference
-      return unless db_restrictions_enabled?
       return unless work_item_parent&.id && work_item&.id
 
       if work_item.id == work_item_parent.id

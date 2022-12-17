@@ -7,17 +7,48 @@ module Gitlab
         class Build < Base
           include Gitlab::Utils::StrongMemoize
 
-          attr_reader :build
+          attr_reader :attributes
 
-          def initialize(pipeline, build)
+          def initialize(pipeline, attributes = {}, build = nil)
             super(pipeline)
+
             @build = build
+            @attributes = attributes
           end
 
           def variables
             build.scoped_variables
           end
           strong_memoize_attr :variables
+
+          private
+
+          def build
+            @build || stub_build
+          end
+
+          def stub_build
+            # This is a temporary piece of technical debt to allow us access
+            # to the CI variables to evaluate rules before we persist a Build
+            # with the result. We should refactor away the extra Build.new,
+            # but be able to get CI Variables directly from the Seed::Build.
+            ::Ci::Build.new(build_attributes)
+          end
+
+          def build_attributes
+            attributes.merge(pipeline_attributes, ci_stage_attributes)
+          end
+
+          def ci_stage_attributes
+            {
+              ci_stage: ::Ci::Stage.new(
+                name: attributes[:stage],
+                position: attributes[:stage_idx],
+                pipeline: pipeline_attributes[:pipeline],
+                project: pipeline_attributes[:project]
+              )
+            }
+          end
         end
       end
     end

@@ -108,6 +108,7 @@ class Issue < ApplicationRecord
   validates :namespace, presence: true
   validates :work_item_type, presence: true
 
+  validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
   validate :due_date_after_start_date
   validate :parent_link_confidentiality
 
@@ -742,6 +743,17 @@ class Issue < ApplicationRecord
     return if work_item_type_id.present? || work_item_type_id_change&.last.present?
 
     self.work_item_type = WorkItems::Type.default_by_type(issue_type)
+  end
+
+  def allowed_work_item_type_change
+    return unless changes[:work_item_type_id]
+
+    involved_types = WorkItems::Type.where(id: changes[:work_item_type_id].compact).pluck(:base_type).uniq
+    disallowed_types = involved_types - WorkItems::Type::CHANGEABLE_BASE_TYPES
+
+    return if disallowed_types.empty?
+
+    errors.add(:work_item_type_id, format(_('can not be changed to %{new_type}'), new_type: work_item_type&.name))
   end
 end
 
