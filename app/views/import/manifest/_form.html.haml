@@ -2,11 +2,14 @@
   .form-group
     = label_tag :group_id, nil, class: 'label-bold' do
       = _('Group')
-    .input-group
-      .input-group-prepend.has-tooltip{ title: root_url }
-        .input-group-text
-          = root_url
-      = select_tag :group_id, namespaces_options(params[:namespace_id], display_path: true, groups_only: true), { class: 'select2 js-select-namespace' }
+    .input-group.gl-max-w-62
+      - namespace_id = namespace_id_from(params) || current_user.manageable_groups(include_groups_with_developer_maintainer_access: true)&.first&.id
+      - namespace_full_path = GroupFinder.new(current_user).execute(id: namespace_id)&.full_path
+      .js-vue-new-project-url-select{ data: { namespace_full_path: namespace_full_path,
+        namespace_id: namespace_id ,
+        input_id: 'group_id',
+        input_name: 'group_id',
+        root_url: root_url } }
     .form-text.text-muted
       = _('Choose the top-level group for your repository imports.')
 
