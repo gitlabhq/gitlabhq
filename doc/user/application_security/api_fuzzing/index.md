@@ -2653,6 +2653,50 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 1. Review the supported media types in the [OpenAPI Specification](#openapi-specification) section.
 1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
 
+### ``Error, error occurred trying to download `<URL>`: There was an error when retrieving content from Uri:' <URL>'. Error:The SSL connection could not be established, see inner exception.``
+
+API fuzzing is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
+Despite broad support, you might encounter connection errors. This error occurs because API fuzzing could not establish a secure connection with the server at the given URL.
+
+To resolve the issue:
+
+If the host in the error message supports non-TLS connections, change `https://` to `http://` in your configuration.
+For example, if an error occurs with the following configuration:
+
+```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+variables:
+  FUZZAPI_TARGET_URL: https://test-deployment/
+  FUZZAPI_OPENAPI: https://specs/openapi.json
+```
+
+Change the prefix of `FUZZAPI_OPENAPI` from `https://` to `http://`:
+
+```yaml
+stages:
+  - fuzz
+
+include:
+  - template: API-Fuzzing.gitlab-ci.yml
+
+variables:
+  FUZZAPI_TARGET_URL: https://test-deployment/
+  FUZZAPI_OPENAPI: http://specs/openapi.json
+```
+
+If you cannot use a non-TLS connection to access the URL, contact the Support team for help.
+
+You can expedite the investigation with the [testssl.sh tool](https://testssl.sh/). From a machine with a bash shell and connectivity to the affected server:
+
+1. Download the latest release `zip` or `tar.gz` file and extract from <https://github.com/drwetter/testssl.sh/releases>.
+1. Run `./testssl.sh --log https://specs`.
+1. Attach the log file to your support ticket.
+
 ## Get support or request an improvement
 
 To get support for your particular problem use the [getting help channels](https://about.gitlab.com/get-help/).

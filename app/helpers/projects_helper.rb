@@ -260,7 +260,7 @@ module ProjectsHelper
   # https://gitlab.com/gitlab-org/gitlab/merge_requests/11209#note_162234863
   # make sure to remove from the EE specific controller as well: ee/app/controllers/ee/dashboard/projects_controller.rb
   def show_projects?(projects, params)
-    Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || any_projects?(projects))
+    Feature.enabled?(:project_list_filter_bar) || !!(params[:personal] || params[:name] || params[:language] || any_projects?(projects))
   end
 
   def push_to_create_project_command(user = current_user)

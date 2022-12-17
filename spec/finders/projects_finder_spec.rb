@@ -392,6 +392,23 @@ RSpec.describe ProjectsFinder do
         it { is_expected.to match_array([project]) }
       end
 
+      describe 'filter by language' do
+        let_it_be(:ruby) { create(:programming_language, name: 'Ruby') }
+        let_it_be(:repository_language) { create(:repository_language, project: internal_project, programming_language: ruby) }
+
+        let(:params) { { language: ruby.id } }
+
+        it { is_expected.to match_array([internal_project]) }
+
+        context 'when project_language_search feature flag disabled' do
+          before do
+            stub_feature_flags(project_language_search: false)
+          end
+
+          it { is_expected.to match_array([internal_project, public_project]) }
+        end
+      end
+
       describe 'sorting' do
         let_it_be(:more_projects) do
           [

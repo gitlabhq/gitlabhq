@@ -3,11 +3,11 @@
 
 = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1 gl-w-full nav gl-tabs-nav' }) do
   = gl_tab_link_to dashboard_projects_path, { item_active: is_your_projects_path, class: 'shortcuts-activity', data: { placement: 'right' } } do
-    = _("Your projects")
+    = s_("ProjectList|Yours")
     = gl_tab_counter_badge(limited_counter_with_delimiter(@total_user_projects_count))
   = gl_tab_link_to starred_dashboard_projects_path, { data: { placement: 'right' } } do
-    = _("Starred projects")
+    = s_("ProjectList|Starred")
     = gl_tab_counter_badge(limited_counter_with_delimiter(@total_starred_projects_count))
-  = gl_tab_link_to _("Explore projects"), explore_root_path, { item_active: is_explore_projects_path, data: { placement: 'right' } }
-  = gl_tab_link_to _("Explore topics"), topics_explore_projects_path, { data: { placement: 'right' } }
+  = gl_tab_link_to s_("ProjectList|Explore"), explore_root_path, { item_active: is_explore_projects_path, data: { placement: 'right' } }
+  = gl_tab_link_to s_("ProjectList|Topics"), topics_explore_projects_path, { data: { placement: 'right' } }
   = render_if_exists "dashboard/removed_projects_tab"

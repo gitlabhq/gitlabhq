@@ -89,6 +89,7 @@ class ProjectsFinder < UnionFinder
     collection = by_not_aimed_for_deletion(collection)
     collection = by_last_activity_after(collection)
     collection = by_last_activity_before(collection)
+    collection = by_language(collection)
     by_repository_storage(collection)
   end
 
@@ -232,6 +233,14 @@ class ProjectsFinder < UnionFinder
   def by_repository_storage(items)
     if params[:repository_storage].present?
       items.where(repository_storage: params[:repository_storage]) # rubocop: disable CodeReuse/ActiveRecord
+    else
+      items
+    end
+  end
+
+  def by_language(items)
+    if Feature.enabled?(:project_language_search, current_user) && params[:language].present?
+      items.with_programming_language_id(params[:language])
     else
       items
     end

@@ -13,14 +13,13 @@
         = _("New project")
 
 .top-area
-  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0
     .fade-left= sprite_icon('chevron-lg-left', size: 12)
     .fade-right= sprite_icon('chevron-lg-right', size: 12)
     = render 'dashboard/projects_nav'
   - unless feature_project_list_filter_bar
     .nav-controls
       = render 'shared/projects/search_form'
-      = render 'shared/projects/dropdown'
 - if feature_project_list_filter_bar
   .project-filters
     = render 'shared/projects/search_bar', project_tab_filter: project_tab_filter

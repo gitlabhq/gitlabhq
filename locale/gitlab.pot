@@ -16598,9 +16598,6 @@ msgstr ""
 msgid "Explore snippets"
 msgstr ""
 
-msgid "Explore topics"
-msgstr ""
-
 msgid "Export"
 msgstr ""
 
@@ -32269,6 +32266,18 @@ msgid "ProjectFileTree|Show more"
 msgstr ""
 
 msgid "ProjectLastActivity|Never"
+msgstr ""
+
+msgid "ProjectList|Explore"
+msgstr ""
+
+msgid "ProjectList|Starred"
+msgstr ""
+
+msgid "ProjectList|Topics"
+msgstr ""
+
+msgid "ProjectList|Yours"
 msgstr ""
 
 msgid "ProjectOverview|Fork"

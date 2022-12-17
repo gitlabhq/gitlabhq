@@ -10,4 +10,22 @@ class ProgrammingLanguage < ApplicationRecord
     sanitized_names = names.map(&method(:sanitize_sql_like))
     where(arel_table[:name].matches_any(sanitized_names))
   end
+
+  def self.most_popular(limit = 25)
+    sql = <<~SQL
+      SELECT
+        mcv
+      FROM
+        pg_stats
+      CROSS JOIN LATERAL
+        unnest(most_common_vals::text::int[]) mt(mcv)
+      WHERE
+        tablename = 'repository_languages' and attname='programming_language_id'
+      LIMIT
+        $1
+    SQL
+    ids = connection.exec_query(sql, 'SQL', [limit]).rows.flatten
+
+    where(id: ids).order(:name)
+  end
 end

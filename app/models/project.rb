@@ -653,6 +653,11 @@ class Project < ApplicationRecord
         .where(repository_languages: { programming_language_id: lang_id_query })
   end
 
+  scope :with_programming_language_id, ->(language_id) do
+    joins(:repository_languages)
+        .where(repository_languages: { programming_language_id: language_id })
+  end
+
   scope :service_desk_enabled, -> { where(service_desk_enabled: true) }
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
