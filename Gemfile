@@ -166,9 +166,9 @@ gem 'seed-fu', '~> 2.3.7'
 gem 'elasticsearch-model', '~> 7.2'
 gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation'
 gem 'elasticsearch-api',   '7.13.3'
-gem 'aws-sdk-core', '~> 3.168.2'
+gem 'aws-sdk-core', '~> 3.168.4'
 gem 'aws-sdk-cloudformation', '~> 1'
-gem 'aws-sdk-s3', '~> 1.117.1'
+gem 'aws-sdk-s3', '~> 1.117.2'
 gem 'faraday_middleware-aws-sigv4', '~>0.3.0'
 gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections
 
