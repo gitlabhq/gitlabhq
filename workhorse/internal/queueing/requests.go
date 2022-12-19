@@ -6,7 +6,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 )
 
 const (
@@ -46,7 +46,7 @@ func QueueRequests(name string, h http.Handler, limit, queueLimit uint, queueTim
 			http.Error(w, "Service Unavailable", http.StatusServiceUnavailable)
 
 		default:
-			helper.Fail500(w, r, err)
+			fail.Request(w, r, err)
 		}
 
 	})

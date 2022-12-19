@@ -12,6 +12,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/redis"
 )
 
@@ -119,7 +120,8 @@ func RegisterHandler(h http.Handler, watchHandler WatchKeyHandler, pollingDurati
 		requestBody, err := readRunnerBody(w, r)
 		if err != nil {
 			registerHandlerBodyReadErrors.Inc()
-			helper.RequestEntityTooLarge(w, r, &largeBodyError{err})
+			fail.Request(w, r, &largeBodyError{err},
+				fail.WithStatus(http.StatusRequestEntityTooLarge))
 			return
 		}
 

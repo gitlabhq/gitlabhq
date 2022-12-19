@@ -12,7 +12,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/exif"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
@@ -51,23 +51,23 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	err := rewriteFormFilesFromMultipart(r, writer, filter, fa, p)
 	if err != nil {
 		switch err {
-		case ErrInjectedClientParam, http.ErrMissingBoundary:
-			helper.CaptureAndFail(w, r, err, "Bad Request", http.StatusBadRequest)
-		case ErrTooManyFilesUploaded:
-			helper.CaptureAndFail(w, r, err, err.Error(), http.StatusBadRequest)
 		case http.ErrNotMultipart:
 			h.ServeHTTP(w, r)
-		case destination.ErrEntityTooLarge:
-			helper.RequestEntityTooLarge(w, r, err)
-		case zipartifacts.ErrBadMetadata:
-			helper.RequestEntityTooLarge(w, r, err)
+		case ErrInjectedClientParam, http.ErrMissingBoundary:
+			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest))
+		case ErrTooManyFilesUploaded:
+			fail.Request(w, r, err, fail.WithStatus(http.StatusBadRequest), fail.WithBody(err.Error()))
+		case destination.ErrEntityTooLarge, zipartifacts.ErrBadMetadata:
+			fail.Request(w, r, err, fail.WithStatus(http.StatusRequestEntityTooLarge))
 		case exif.ErrRemovingExif:
-			helper.CaptureAndFail(w, r, err, "Failed to process image", http.StatusUnprocessableEntity)
+			fail.Request(w, r, err, fail.WithStatus(http.StatusUnprocessableEntity),
+				fail.WithBody("Failed to process image"))
 		default:
 			if errors.Is(err, context.DeadlineExceeded) {
-				helper.CaptureAndFail(w, r, err, "deadline exceeded", http.StatusGatewayTimeout)
+				fail.Request(w, r, err, fail.WithStatus(http.StatusGatewayTimeout),
+					fail.WithBody("deadline exceeded"))
 			} else {
-				helper.Fail500(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
+				fail.Request(w, r, fmt.Errorf("handleFileUploads: extract files from multipart: %v", err))
 			}
 		}
 		return
@@ -82,7 +82,7 @@ func interceptMultipartFiles(w http.ResponseWriter, r *http.Request, h http.Hand
 	r.Header.Set("Content-Type", writer.FormDataContentType())
 
 	if err := filter.Finalize(r.Context()); err != nil {
-		helper.Fail500(w, r, fmt.Errorf("handleFileUploads: Finalize: %v", err))
+		fail.Request(w, r, fmt.Errorf("handleFileUploads: Finalize: %v", err))
 		return
 	}
 

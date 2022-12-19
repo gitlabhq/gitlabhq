@@ -20,8 +20,8 @@ import (
 	"gitlab.com/gitlab-org/labkit/tracing"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/command"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
@@ -420,7 +420,7 @@ func handleOutcome(w http.ResponseWriter, req *http.Request, startTime time.Time
 	switch outcome.status {
 	case statusRequestFailure:
 		if outcome.bytesWritten <= 0 {
-			helper.Fail500WithFields(w, req, outcome.err, fields)
+			fail.Request(w, req, outcome.err, fail.WithFields(fields))
 		} else {
 			log.WithError(outcome.err).Error(outcome.status)
 		}

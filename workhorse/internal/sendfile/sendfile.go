@@ -20,6 +20,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/headers"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/nginx"
 )
 
@@ -130,7 +131,7 @@ func sendFileFromDisk(w http.ResponseWriter, r *http.Request, file string) {
 	if contentTypeHeaderPresent {
 		data, err := io.ReadAll(io.LimitReader(content, headers.MaxDetectSize))
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("content type detection: %v", err))
+			fail.Request(w, r, fmt.Errorf("content type detection: %v", err))
 			return
 		}
 

@@ -23,7 +23,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 )
@@ -53,14 +53,14 @@ var (
 func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	var params archiveParams
 	if err := a.Unpack(&params, sendData); err != nil {
-		helper.Fail500(w, r, fmt.Errorf("SendArchive: unpack sendData: %v", err))
+		fail.Request(w, r, fmt.Errorf("SendArchive: unpack sendData: %v", err))
 		return
 	}
 
 	urlPath := r.URL.Path
 	format, ok := parseBasename(filepath.Base(urlPath))
 	if !ok {
-		helper.Fail500(w, r, fmt.Errorf("SendArchive: invalid format: %s", urlPath))
+		fail.Request(w, r, fmt.Errorf("SendArchive: invalid format: %s", urlPath))
 		return
 	}
 
@@ -93,7 +93,7 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 		// to finalize the cached archive.
 		tempFile, err = prepareArchiveTempfile(path.Dir(params.ArchivePath), archiveFilename)
 		if err != nil {
-			helper.Fail500(w, r, fmt.Errorf("SendArchive: create tempfile: %v", err))
+			fail.Request(w, r, fmt.Errorf("SendArchive: create tempfile: %v", err))
 			return
 		}
 		defer tempFile.Close()
@@ -104,7 +104,7 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 
 	archiveReader, err = handleArchiveWithGitaly(r, &params, format)
 	if err != nil {
-		helper.Fail500(w, r, fmt.Errorf("operations.GetArchive: %v", err))
+		fail.Request(w, r, fmt.Errorf("operations.GetArchive: %v", err))
 		return
 	}
 

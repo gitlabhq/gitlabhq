@@ -18,6 +18,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
 )
@@ -335,7 +336,7 @@ func (api *API) PreAuthorizeHandler(next HandleFunc, suffix string) http.Handler
 		}
 
 		if err != nil {
-			helper.Fail500(w, r, err)
+			fail.Request(w, r, err)
 			return
 		}
 
@@ -390,7 +391,7 @@ func passResponseBack(httpResponse *http.Response, w http.ResponseWriter, r *htt
 	// the entire response body in memory before sending it on.
 	responseBody, err := bufferResponse(httpResponse.Body)
 	if err != nil {
-		helper.Fail500(w, r, err)
+		fail.Request(w, r, err)
 		return
 	}
 	httpResponse.Body.Close() // Free up the Puma thread

@@ -1,4 +1,4 @@
-package helper
+package fail
 
 import (
 	"bytes"
@@ -9,13 +9,13 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestFail500WorksWithNils(t *testing.T) {
+func TestRequestWorksWithNils(t *testing.T) {
 	body := bytes.NewBuffer(nil)
 	w := httptest.NewRecorder()
 	w.Body = body
 
-	Fail500(w, nil, nil)
+	Request(w, nil, nil)
 
 	require.Equal(t, http.StatusInternalServerError, w.Code)
-	require.Equal(t, "Internal server error\n", body.String())
+	require.Equal(t, "Internal Server Error\n", body.String())
 }

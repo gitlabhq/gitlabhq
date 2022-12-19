@@ -14,7 +14,7 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/gitaly"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 )
 
 func GetInfoRefsHandler(a *api.API) http.Handler {
@@ -47,9 +47,10 @@ func handleGetInfoRefs(rw http.ResponseWriter, r *http.Request, a *api.Response)
 		err = fmt.Errorf("handleGetInfoRefs: %v", err)
 
 		if status != nil && status.Code() == grpccodes.Unavailable {
-			helper.CaptureAndFail(responseWriter, r, err, "The git server, Gitaly, is not available at this time. Please contact your administrator.", http.StatusServiceUnavailable)
+			fail.Request(responseWriter, r, err, fail.WithStatus(http.StatusServiceUnavailable),
+				fail.WithBody("The git server, Gitaly, is not available at this time. Please contact your administrator."))
 		} else {
-			helper.Fail500(responseWriter, r, err)
+			fail.Request(responseWriter, r, err)
 		}
 	}
 }

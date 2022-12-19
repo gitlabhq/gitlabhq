@@ -12,7 +12,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 )
 
 var (
@@ -26,7 +26,7 @@ var (
 func Handler(myAPI *api.API) http.Handler {
 	return myAPI.PreAuthorizeHandler(func(w http.ResponseWriter, r *http.Request, a *api.Response) {
 		if err := a.Channel.Validate(); err != nil {
-			helper.Fail500(w, r, err)
+			fail.Request(w, r, err)
 			return
 		}
 
@@ -47,7 +47,7 @@ func Handler(myAPI *api.API) http.Handler {
 func ProxyChannel(w http.ResponseWriter, r *http.Request, settings *api.ChannelSettings, proxy *Proxy) {
 	server, err := connectToServer(settings, r)
 	if err != nil {
-		helper.Fail500(w, r, err)
+		fail.Request(w, r, err)
 		log.ContextLogger(r.Context()).WithError(err).Print("Channel: connecting to server failed")
 		return
 	}

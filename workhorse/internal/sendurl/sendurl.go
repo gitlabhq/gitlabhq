@@ -10,7 +10,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/mask"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
@@ -83,7 +83,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	defer sendURLOpenRequests.Dec()
 
 	if err := e.Unpack(&params, sendData); err != nil {
-		helper.Fail500(w, r, fmt.Errorf("SendURL: unpack sendData: %v", err))
+		fail.Request(w, r, fmt.Errorf("SendURL: unpack sendData: %v", err))
 		return
 	}
 
@@ -94,7 +94,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 
 	if params.URL == "" {
 		sendURLRequestsInvalidData.Inc()
-		helper.Fail500(w, r, fmt.Errorf("SendURL: URL is empty"))
+		fail.Request(w, r, fmt.Errorf("SendURL: URL is empty"))
 		return
 	}
 
@@ -102,7 +102,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	newReq, err := http.NewRequest("GET", params.URL, nil)
 	if err != nil {
 		sendURLRequestsInvalidData.Inc()
-		helper.Fail500(w, r, fmt.Errorf("SendURL: NewRequest: %v", err))
+		fail.Request(w, r, fmt.Errorf("SendURL: NewRequest: %v", err))
 		return
 	}
 	newReq = newReq.WithContext(r.Context())
@@ -120,7 +120,7 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	}
 	if err != nil {
 		sendURLRequestsRequestFailed.Inc()
-		helper.Fail500(w, r, fmt.Errorf("SendURL: Do request: %v", err))
+		fail.Request(w, r, fmt.Errorf("SendURL: Do request: %v", err))
 		return
 	}
 

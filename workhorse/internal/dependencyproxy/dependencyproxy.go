@@ -8,7 +8,7 @@ import (
 
 	"gitlab.com/gitlab-org/labkit/log"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper/fail"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/senddata"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/transport"
 )
@@ -57,7 +57,7 @@ func (p *Injector) SetUploadHandler(uploadHandler http.Handler) {
 func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData string) {
 	dependencyResponse, err := p.fetchUrl(r.Context(), sendData)
 	if err != nil {
-		helper.Fail500(w, r, err)
+		fail.Request(w, r, err)
 		return
 	}
 	defer dependencyResponse.Body.Close()
@@ -72,7 +72,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	teeReader := io.TeeReader(dependencyResponse.Body, w)
 	saveFileRequest, err := http.NewRequestWithContext(r.Context(), "POST", r.URL.String()+"/upload", teeReader)
 	if err != nil {
-		helper.Fail500(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
+		fail.Request(w, r, fmt.Errorf("dependency proxy: failed to create request: %w", err))
 	}
 	saveFileRequest.Header = r.Header.Clone()
 
@@ -96,7 +96,7 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	if nrw.status != http.StatusOK {
 		fields := log.Fields{"code": nrw.status}
 
-		helper.Fail500WithFields(nrw, r, fmt.Errorf("dependency proxy: failed to upload file"), fields)
+		fail.Request(nrw, r, fmt.Errorf("dependency proxy: failed to upload file"), fail.WithFields(fields))
 	}
 }
 
