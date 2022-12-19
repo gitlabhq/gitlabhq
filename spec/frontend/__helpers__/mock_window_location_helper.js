@@ -21,6 +21,12 @@ const useMockLocation = (fn) => {
   afterEach(() => {
     currentWindowLocation = origWindowLocation;
   });
+
+  return () => {
+    beforeEach(() => {
+      currentWindowLocation = origWindowLocation;
+    });
+  };
 };
 
 /**

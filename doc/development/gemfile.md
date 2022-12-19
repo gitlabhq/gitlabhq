@@ -47,7 +47,8 @@ This needs to be done for any new, or updated gems.
 
 We do not allow gems that are fetched from Git repositories. All gems have
 to be available in the RubyGems index. We want to minimize external build
-dependencies and build times.
+dependencies and build times. It's enforced by the RuboCop rule
+[`Cop/GemFetcher`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-styles/-/blob/master/lib/rubocop/cop/gem_fetcher.rb).
 
 ## Review the new dependency for quality
 

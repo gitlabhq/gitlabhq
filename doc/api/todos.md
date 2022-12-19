@@ -20,14 +20,14 @@ GET /todos
 
 Parameters:
 
-| Attribute | Type | Required | Description                                                                                                                                                               |
-| --------- | ---- | -------- |---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Attribute | Type | Required | Description                                                                                                                                                                                        |
+| --------- | ---- | -------- |----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `action` | string | no | The action to be filtered. Can be `assigned`, `mentioned`, `build_failed`, `marked`, `approval_required`, `unmergeable`, `directly_addressed`, `merge_train_removed` or `member_access_requested`. |
-| `author_id` | integer | no | The ID of an author                                                                                                                                                       |
-| `project_id` | integer | no | The ID of a project                                                                                                                                                       |
-| `group_id` | integer | no | The ID of a group                                                                                                                                                         |
-| `state` | string | no | The state of the to-do item. Can be either `pending` or `done`                                                                                                            |
-| `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `Commit`, `Epic`, `DesignManagement::Design` or `AlertManagement::Alert`                                   |
+| `author_id` | integer | no | The ID of an author                                                                                                                                                                                |
+| `project_id` | integer | no | The ID of a project                                                                                                                                                                                |
+| `group_id` | integer | no | The ID of a group                                                                                                                                                                                  |
+| `state` | string | no | The state of the to-do item. Can be either `pending` or `done`                                                                                                                                     |
+| `type` | string | no | The type of to-do item. Can be either `Issue`, `MergeRequest`, `Commit`, `Epic`, `DesignManagement::Design`, `AlertManagement::Alert` or `Namespace`                                               |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/todos"

@@ -7,7 +7,7 @@ import axios from '~/lib/utils/axios_utils';
 import extensionsContainer from '~/vue_merge_request_widget/components/extensions/container';
 import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
 import codeQualityExtension from '~/vue_merge_request_widget/extensions/code_quality';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import { i18n } from '~/vue_merge_request_widget/extensions/code_quality/constants';
 import {
   codeQualityResponseNewErrors,
@@ -63,7 +63,7 @@ describe('Code Quality extension', () => {
     });
 
     it('with a 204 response, continues to display loading state', async () => {
-      mockApi(httpStatusCodes.NO_CONTENT, '');
+      mockApi(HTTP_STATUS_NO_CONTENT, '');
       createComponent();
 
       await waitForPromises();

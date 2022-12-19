@@ -221,6 +221,8 @@ class Todo < ApplicationRecord
   def body
     if note.present?
       note.note
+    elsif member_access_requested?
+      target.full_path
     else
       target.title
     end
@@ -258,6 +260,8 @@ class Todo < ApplicationRecord
   def target_reference
     if for_commit?
       target.reference_link_text
+    elsif member_access_requested?
+      target.full_path
     else
       target.to_reference
     end

@@ -8,7 +8,7 @@
     "^[A-Za-z]+[0-9]*(?:[._-][A-Za-z0-9]+)*$": {
       "type": "string",
       "minLength": 1,
-      "maxLength": 100
+      "maxLength": 2048
     }
   }
 }

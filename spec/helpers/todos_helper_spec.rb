@@ -14,6 +14,8 @@ RSpec.describe TodosHelper do
            note: 'I am note, hear me roar')
   end
 
+  let_it_be(:group) { create(:group, :public, name: 'Group 1') }
+
   let_it_be(:design_todo) do
     create(:todo, :mentioned,
            user: user,
@@ -35,6 +37,10 @@ RSpec.describe TodosHelper do
 
   let_it_be(:issue_todo) do
     create(:todo, target: issue)
+  end
+
+  let_it_be(:group_todo) do
+    create(:todo, target: group)
   end
 
   describe '#todos_count_format' do
@@ -155,9 +161,7 @@ RSpec.describe TodosHelper do
     end
 
     context 'when a user requests access to group' do
-      let(:group) { create(:group, :public) }
-
-      let(:group_access_request_todo) do
+      let_it_be(:group_access_request_todo) do
         create(:todo,
                target_id: group.id,
                target_type: group.class.polymorphic_name,
@@ -358,7 +362,6 @@ RSpec.describe TodosHelper do
       Todo::APPROVAL_REQUIRED   | false | format(s_("Todos|set %{who} as an approver"), who: _('you'))
       Todo::UNMERGEABLE         | true  | s_('Todos|Could not merge')
       Todo::MERGE_TRAIN_REMOVED | true  | s_("Todos|Removed from Merge Train")
-      Todo::MEMBER_ACCESS_REQUESTED | true | s_("Todos|has requested access")
     end
 
     with_them do
@@ -368,6 +371,18 @@ RSpec.describe TodosHelper do
       end
 
       it { expect(helper.todo_action_name(alert_todo)).to eq(expected_action_name) }
+    end
+
+    context 'member access requested' do
+      context 'when source is group' do
+        it 'returns group access message' do
+          group_todo.action = Todo::MEMBER_ACCESS_REQUESTED
+
+          expect(helper.todo_action_name(group_todo)).to eq(
+            format(s_("Todos|has requested access to group %{which}"), which: _(group.name))
+          )
+        end
+      end
     end
   end
 

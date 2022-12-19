@@ -197,8 +197,7 @@
   - "spec/support/gitlab-git-test.git/**/*"
 
 .yaml-lint-patterns: &yaml-lint-patterns
-  - "*.yml"
-  - "**/*.yml"
+  - "**/*.{yml,yaml}{,.*}"
 
 .lint-pipeline-yaml-patterns: &lint-pipeline-yaml-patterns
   - ".gitlab-ci.yml"

@@ -1,6 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { backOff } from '~/lib/utils/common_utils';
-import statusCodes from '~/lib/utils/http_status';
+import statusCodes, { HTTP_STATUS_ACCEPTED } from '~/lib/utils/http_status';
 import { __, s__ } from '~/locale';
 import * as types from './mutation_types';
 
@@ -10,7 +10,7 @@ function backOffRequest(makeRequestCallback) {
   return backOff((next, stop) => {
     makeRequestCallback()
       .then((resp) => {
-        if (resp.status === statusCodes.ACCEPTED) {
+        if (resp.status === HTTP_STATUS_ACCEPTED) {
           next();
         } else {
           stop(resp);
@@ -31,7 +31,7 @@ export const requestCreateProject = ({ dispatch, state, commit }) => {
   axios
     .post(state.createProjectEndpoint)
     .then((resp) => {
-      if (resp.status === statusCodes.ACCEPTED) {
+      if (resp.status === HTTP_STATUS_ACCEPTED) {
         dispatch('requestCreateProjectStatus', resp.data.job_id);
       }
     })
@@ -83,7 +83,7 @@ export const requestDeleteProject = ({ dispatch, state, commit }) => {
   axios
     .delete(state.deleteProjectEndpoint)
     .then((resp) => {
-      if (resp.status === statusCodes.ACCEPTED) {
+      if (resp.status === HTTP_STATUS_ACCEPTED) {
         dispatch('requestDeleteProjectStatus', resp.data.job_id);
       }
     })

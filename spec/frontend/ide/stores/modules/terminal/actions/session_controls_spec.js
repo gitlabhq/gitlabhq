@@ -6,7 +6,7 @@ import { STARTING, PENDING, STOPPING, STOPPED } from '~/ide/stores/modules/termi
 import * as messages from '~/ide/stores/modules/terminal/messages';
 import * as mutationTypes from '~/ide/stores/modules/terminal/mutation_types';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -285,7 +285,7 @@ describe('IDE store terminal session controls actions', () => {
       );
     });
 
-    [httpStatus.NOT_FOUND, httpStatus.UNPROCESSABLE_ENTITY].forEach((status) => {
+    [httpStatus.NOT_FOUND, HTTP_STATUS_UNPROCESSABLE_ENTITY].forEach((status) => {
       it(`dispatches request and startSession on ${status}`, () => {
         mock
           .onPost(state.session.retryPath, { branch: rootState.currentBranchId, format: 'json' })

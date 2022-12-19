@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import testAction from 'helpers/vuex_action_helper';
-import statusCodes from '~/lib/utils/http_status';
+import statusCodes, { HTTP_STATUS_ACCEPTED } from '~/lib/utils/http_status';
 import * as actions from '~/self_monitor/store/actions';
 import * as types from '~/self_monitor/store/mutation_types';
 import createState from '~/self_monitor/store/state';
@@ -44,7 +44,7 @@ describe('self-monitor actions', () => {
       beforeEach(() => {
         state.createProjectEndpoint = '/create';
         state.createProjectStatusEndpoint = '/create_status';
-        mock.onPost(state.createProjectEndpoint).reply(statusCodes.ACCEPTED, {
+        mock.onPost(state.createProjectEndpoint).reply(HTTP_STATUS_ACCEPTED, {
           job_id: '123',
         });
         mock.onGet(state.createProjectStatusEndpoint).reply(statusCodes.OK, {
@@ -151,7 +151,7 @@ describe('self-monitor actions', () => {
       beforeEach(() => {
         state.deleteProjectEndpoint = '/delete';
         state.deleteProjectStatusEndpoint = '/delete-status';
-        mock.onDelete(state.deleteProjectEndpoint).reply(statusCodes.ACCEPTED, {
+        mock.onDelete(state.deleteProjectEndpoint).reply(HTTP_STATUS_ACCEPTED, {
           job_id: '456',
         });
         mock.onGet(state.deleteProjectStatusEndpoint).reply(statusCodes.OK, {

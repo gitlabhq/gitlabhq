@@ -14,12 +14,11 @@
         %span
           = todo_parent_path(todo)
 
-        - unless todo.member_access_requested?
-          %span.todo-label
-            - if todo.target
-              = link_to todo_target_name(todo), todo_target_path(todo), class: 'todo-target-link gl-text-gray-500! gl-text-decoration-none!', :'aria-describedby' => dom_id(todo) + "_describer", :'aria-label' => todo_target_aria_label(todo)
-            - else
-              = _("(removed)")
+        %span.todo-label
+          - if todo.target
+            = link_to todo_target_name(todo), todo_target_path(todo), class: 'todo-target-link gl-text-gray-500! gl-text-decoration-none!', :'aria-describedby' => dom_id(todo) + "_describer", :'aria-label' => todo_target_aria_label(todo)
+          - else
+            = _("(removed)")
 
       .todo-body.gl-mb-2.gl-px-2.gl-display-flex.gl-align-items-flex-start.gl-lg-align-items-center
         .todo-avatar.gl-display-none.gl-sm-display-inline-block

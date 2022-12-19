@@ -1,7 +1,7 @@
 import axios from '~/lib/utils/axios_utils';
 import { EXTENSION_ICONS } from '~/vue_merge_request_widget/constants';
 import { SEVERITY_ICONS_MR_WIDGET } from '~/ci/reports/codequality_report/constants';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_NO_CONTENT } from '~/lib/utils/http_status';
 import { parseCodeclimateMetrics } from '~/ci/reports/codequality_report/store/utils/codequality_parser';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { i18n } from './constants';
@@ -43,7 +43,7 @@ export default {
         return {
           ...response,
           data: {
-            parsingInProgress: status === httpStatusCodes.NO_CONTENT,
+            parsingInProgress: status === HTTP_STATUS_NO_CONTENT,
             resolvedErrors: parseCodeclimateMetrics(data.resolved_errors, this.blobPath.head_path),
             newErrors: parseCodeclimateMetrics(data.new_errors, this.blobPath.head_path),
             existingErrors: parseCodeclimateMetrics(data.existing_errors, this.blobPath.head_path),

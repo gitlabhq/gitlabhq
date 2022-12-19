@@ -77,7 +77,7 @@ RSpec.describe Gitlab::ImportExport::Group::LegacyTreeRestorer do
     let(:group) { create(:group) }
     let(:shared) { Gitlab::ImportExport::Shared.new(group) }
     let(:group_tree_restorer) { described_class.new(user: importer_user, shared: shared, group: group, group_hash: nil) }
-    let(:group_json) { Gitlab::Json.parse(IO.read(File.join(shared.export_path, 'group.json'))) }
+    let(:group_json) { Gitlab::Json.parse(File.read(File.join(shared.export_path, 'group.json'))) }
 
     shared_examples 'excluded attributes' do
       excluded_attributes = %w[

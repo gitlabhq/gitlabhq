@@ -2816,7 +2816,7 @@ RSpec.describe Group do
   end
 
   describe 'has_project_with_service_desk_enabled?' do
-    let_it_be(:group) { create(:group, :private) }
+    let_it_be_with_refind(:group) { create(:group, :private) }
 
     subject { group.has_project_with_service_desk_enabled? }
 

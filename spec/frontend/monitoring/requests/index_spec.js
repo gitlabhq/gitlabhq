@@ -2,7 +2,10 @@ import MockAdapter from 'axios-mock-adapter';
 import { backoffMockImplementation } from 'helpers/backoff_helper';
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
-import statusCodes from '~/lib/utils/http_status';
+import statusCodes, {
+  HTTP_STATUS_NO_CONTENT,
+  HTTP_STATUS_UNPROCESSABLE_ENTITY,
+} from '~/lib/utils/http_status';
 import { getDashboard, getPrometheusQueryData } from '~/monitoring/requests';
 import { metricsDashboardResponse } from '../fixture_data';
 
@@ -37,8 +40,8 @@ describe('monitoring metrics_requests', () => {
     });
 
     it('returns a dashboard response after retrying twice', () => {
-      mock.onGet(dashboardEndpoint).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(dashboardEndpoint).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(dashboardEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
+      mock.onGet(dashboardEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
       mock.onGet(dashboardEndpoint).reply(statusCodes.OK, response);
 
       return getDashboard(dashboardEndpoint, params).then((data) => {
@@ -81,8 +84,8 @@ describe('monitoring metrics_requests', () => {
 
     it('returns a dashboard response after retrying twice', () => {
       // Mock multiple attempts while the cache is filling up
-      mock.onGet(prometheusEndpoint).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpoint).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
+      mock.onGet(prometheusEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
       mock.onGet(prometheusEndpoint).reply(statusCodes.OK, response); // 3rd attempt
 
       return getPrometheusQueryData(prometheusEndpoint, params).then((data) => {
@@ -116,8 +119,8 @@ describe('monitoring metrics_requests', () => {
 
     it('rejects after retrying twice and getting an HTTP 500 error', () => {
       // Mock multiple attempts while the cache is filling up and fails
-      mock.onGet(prometheusEndpoint).replyOnce(statusCodes.NO_CONTENT);
-      mock.onGet(prometheusEndpoint).replyOnce(statusCodes.NO_CONTENT);
+      mock.onGet(prometheusEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
+      mock.onGet(prometheusEndpoint).replyOnce(HTTP_STATUS_NO_CONTENT);
       mock.onGet(prometheusEndpoint).reply(500, {
         status: 'error',
         error: 'An error occurred',
@@ -132,7 +135,7 @@ describe('monitoring metrics_requests', () => {
     it.each`
       code                                | reason
       ${statusCodes.BAD_REQUEST}          | ${'Parameters are missing or incorrect'}
-      ${statusCodes.UNPROCESSABLE_ENTITY} | ${"Expression can't be executed"}
+      ${HTTP_STATUS_UNPROCESSABLE_ENTITY} | ${"Expression can't be executed"}
       ${statusCodes.SERVICE_UNAVAILABLE}  | ${'Query timed out or aborted'}
     `('rejects with details: "$reason" after getting an HTTP $code error', ({ code, reason }) => {
       mock.onGet(prometheusEndpoint).reply(code, {

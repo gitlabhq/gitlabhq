@@ -122,10 +122,21 @@ which has a related schema in `/config/metrics/objects_schemas/topology_schema.j
 
 ### Metric `time_frame`
 
-- `7d`: The metric data applies to the most recent 7-day interval. For example, the following metric counts the number of users that create epics over a 7-day interval: `ee/config/metrics/counts_7d/20210305145820_g_product_planning_epic_created_weekly.yml`.
-- `28d`: The metric data applies to the most recent 28-day interval. For example, the following metric counts the number of unique users that create issues over a 28-day interval: `config/metrics/counts_28d/20210216181139_issues.yml`.
-- `all`: The metric data applies for the whole time the metric has been active (all-time interval). For example, the following metric counts all users that create issues: `/config/metrics/counts_all/20210216181115_issues.yml`.
-- `none`: The metric collects a type of data that's not tracked over time, such as settings and configuration information. Therefore, a time interval is not applicable. For example, `uuid` has no time interval applicable: `config/metrics/license/20210201124933_uuid.yml`.
+A metric's time frame is calculated based on the `time_frame` field and the `data_source` of the metric.
+For `redis_hll` metrics, the type of aggregation is also taken into consideration. In this context, the term "aggregation" refers to [chosen events data storage interval](implement.md#add-new-events), and is **NOT** related to the Aggregated Metrics feature.
+For more information about the aggregation type of each feature, see the [`common.yml` file](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/usage_data_counters/known_events/common.yml). Weeks run from Monday to Sunday.
+
+| data_source            | time_frame | aggregation    | Description                                     | 
+|------------------------|------------|----------------|-------------------------------------------------|
+| any                    | `none`     | not applicable | A type of data that’s not tracked over time, such as settings and configuration information |
+| `database`             | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
+| `database`             | `7d`       | not applicable | 9 days ago to 2 days ago |
+| `database`             | `28d`      | not applicable | 30 days ago to 2 days ago |
+| `redis`                | `all`      | not applicable | The whole time the metric has been active (all-time interval) |
+| `redis_hll`            | `7d`       | `daily`        | Most recent 7 complete days |
+| `redis_hll`            | `7d`       | `weekly`       | Most recent complete week |
+| `redis_hll`            | `28d`      | `daily`        | Most recent 28 complete days |
+| `redis_hll`            | `28d`      | `weekly`       | Most recent 4 complete weeks |
 
 ### Data category
 

@@ -24,7 +24,7 @@ import {
 import eventHub from '~/invite_members/event_hub';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
@@ -467,7 +467,7 @@ describe('InviteMembersModal', () => {
 
         describe('clearing the invalid state and message', () => {
           beforeEach(async () => {
-            mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_TAKEN);
+            mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_TAKEN);
 
             clickInviteButton();
 
@@ -526,7 +526,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the restricted user api message for response with bad request', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
 
           clickInviteButton();
 
@@ -539,7 +539,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays all errors when there are multiple existing users that are restricted by email', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           clickInviteButton();
 
@@ -636,7 +636,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays the restricted email error when restricted email is invited', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EMAIL_RESTRICTED);
 
           clickInviteButton();
 
@@ -650,7 +650,7 @@ describe('InviteMembersModal', () => {
         });
 
         it('displays all errors when there are multiple emails that return a restricted error message', async () => {
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.MULTIPLE_RESTRICTED);
 
           clickInviteButton();
 
@@ -701,7 +701,7 @@ describe('InviteMembersModal', () => {
           createInviteMembersToGroupWrapper();
 
           await triggerMembersTokenSelect([user3, user4, user5, user6]);
-          mockInvitationsApi(httpStatus.CREATED, invitationsApiResponse.EXPANDED_RESTRICTED);
+          mockInvitationsApi(HTTP_STATUS_CREATED, invitationsApiResponse.EXPANDED_RESTRICTED);
 
           clickInviteButton();
 

@@ -86,7 +86,7 @@ RSpec.describe 'Test coverage of the Project Import' do
   end
 
   def relations_from_json(json_file)
-    json = Gitlab::Json.parse(IO.read(json_file))
+    json = Gitlab::Json.parse(File.read(json_file))
 
     [].tap { |res| gather_relations({ project: json }, res, []) }
       .map { |relation_names| relation_names.join('.') }

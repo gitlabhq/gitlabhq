@@ -1,5 +1,12 @@
 <script>
-import { GlLabel, GlAvatar, GlAvatarLink, GlAvatarsInline, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlIcon,
+  GlLabel,
+  GlAvatar,
+  GlAvatarLink,
+  GlAvatarsInline,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 
 import { s__, sprintf } from '~/locale';
 import { isScopedLabel } from '~/lib/utils/common_utils';
@@ -8,6 +15,7 @@ import ItemMilestone from '~/issuable/components/issue_milestone.vue';
 
 export default {
   components: {
+    GlIcon,
     GlLabel,
     GlAvatar,
     GlAvatarLink,
@@ -22,6 +30,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    progress: {
+      type: Number,
+      required: false,
+      default: 0,
     },
     milestone: {
       type: Object,
@@ -40,6 +53,9 @@ export default {
     },
   },
   computed: {
+    hasProgress() {
+      return !(this.progress === null || this.progress === undefined);
+    },
     assigneesCollapsedTooltip() {
       if (this.assignees.length > 2) {
         return sprintf(s__('WorkItem|%{count} more assignees'), {
@@ -56,12 +72,6 @@ export default {
       }
       return '';
     },
-    labelsContainerClass() {
-      if (this.milestone || this.assignees.length) {
-        return 'gl-sm-ml-5';
-      }
-      return '';
-    },
   },
   methods: {
     showScopedLabel(label) {
@@ -73,6 +83,16 @@ export default {
 
 <template>
   <div class="gl-display-flex gl-flex-wrap gl-align-items-center">
+    <div
+      v-if="hasProgress"
+      v-gl-tooltip.bottom
+      :title="__('Progress')"
+      class="gl-display-flex gl-align-items-center gl-mr-5 gl-cursor-help gl-line-height-normal"
+      data-testid="item-progress"
+    >
+      <gl-icon name="progress" />
+      <span class="gl-text-primary gl-ml-2">{{ progress }}%</span>
+    </div>
     <item-milestone
       v-if="milestone"
       :milestone="milestone"
@@ -87,6 +107,7 @@ export default {
       badge-tooltip-prop="name"
       :badge-sr-only-text="assigneesCollapsedTooltip"
       :class="assigneesContainerClass"
+      class="gl-mr-5"
     >
       <template #avatar="{ avatar }">
         <gl-avatar-link v-gl-tooltip target="blank" :href="avatar.webUrl" :title="avatar.name">
@@ -94,7 +115,7 @@ export default {
         </gl-avatar-link>
       </template>
     </gl-avatars-inline>
-    <div v-if="labels.length" class="gl-display-flex gl-flex-wrap" :class="labelsContainerClass">
+    <div v-if="labels.length" class="gl-display-flex gl-flex-wrap">
       <gl-label
         v-for="label in labels"
         :key="label.id"
@@ -102,7 +123,7 @@ export default {
         :background-color="label.color"
         :description="label.description"
         :scoped="showScopedLabel(label)"
-        class="gl-mt-2 gl-sm-mt-0 gl-mr-2 gl-mb-auto gl-label-sm"
+        class="gl-mt-3 gl-sm-mt-0 gl-mr-2 gl-mb-auto gl-label-sm"
         tooltip-placement="top"
       />
     </div>

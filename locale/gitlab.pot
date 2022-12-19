@@ -5078,6 +5078,9 @@ msgstr ""
 msgid "Approvals are optional."
 msgstr ""
 
+msgid "Approvals required"
+msgstr ""
+
 msgid "Approvals|Section: %section"
 msgstr ""
 
@@ -22161,7 +22164,7 @@ msgstr ""
 msgid "Insights|Configure a custom report for insights into your group processes such as amount of issues, bugs, and merge requests per month. %{linkStart}How do I configure an insights report?%{linkEnd}"
 msgstr ""
 
-msgid "Insights|Some items are not visible beacuse the project was filtered out in the insights.yml file (see the projects.only config for more information)."
+msgid "Insights|Some items are not visible beacuse the project was filtered out in the insights.yml file (see the projects.only config in the YAML file or the enabled project features (issues, merge requests) in the project settings)."
 msgstr ""
 
 msgid "Insights|This project is filtered out in the insights.yml file (see the projects.only config for more information)."
@@ -33669,6 +33672,24 @@ msgstr ""
 msgid "ProtectedBranch|default"
 msgstr ""
 
+msgid "ProtectedEnvironments|Allowed to deploy"
+msgstr ""
+
+msgid "ProtectedEnvironments|An error occurred while fetching information on the selected approvers."
+msgstr ""
+
+msgid "ProtectedEnvironments|Approval rules"
+msgstr ""
+
+msgid "ProtectedEnvironments|Number of approvals must be between 1 and 5"
+msgstr ""
+
+msgid "ProtectedEnvironments|Set which groups, access levels or users are required to approve."
+msgstr ""
+
+msgid "ProtectedEnvironments|Set which groups, access levels or users that are allowed to deploy to this environment"
+msgstr ""
+
 msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
 msgstr ""
 
@@ -33679,6 +33700,9 @@ msgid "ProtectedEnvironment|Allowed to deploy"
 msgstr ""
 
 msgid "ProtectedEnvironment|Allowed to deploy to %{project} / %{environment}"
+msgstr ""
+
+msgid "ProtectedEnvironment|Approvers"
 msgstr ""
 
 msgid "ProtectedEnvironment|Environment"
@@ -33715,6 +33739,9 @@ msgid "ProtectedEnvironment|Required approvals"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select an environment"
+msgstr ""
+
+msgid "ProtectedEnvironment|Select environment"
 msgstr ""
 
 msgid "ProtectedEnvironment|Select groups"
@@ -43479,7 +43506,7 @@ msgstr ""
 msgid "Todos|added a to-do item"
 msgstr ""
 
-msgid "Todos|has requested access"
+msgid "Todos|has requested access to group %{which}"
 msgstr ""
 
 msgid "Todos|mentioned %{who}"

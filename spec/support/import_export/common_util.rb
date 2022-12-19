@@ -83,7 +83,7 @@ module ImportExport
       path = File.join(dir_path, "#{exportable_path}.json")
       return unless File.exist?(path)
 
-      Gitlab::Json.parse(IO.read(path))
+      Gitlab::Json.parse(File.read(path))
     end
 
     def consume_relations(dir_path, exportable_path, key)
@@ -101,7 +101,7 @@ module ImportExport
     end
 
     def project_json(filename)
-      Gitlab::Json.parse(IO.read(filename))
+      Gitlab::Json.parse(File.read(filename))
     end
   end
 end

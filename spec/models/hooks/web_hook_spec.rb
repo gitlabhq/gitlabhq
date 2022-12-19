@@ -31,7 +31,7 @@ RSpec.describe WebHook do
       it { is_expected.to allow_value({ 'MY_TOKEN' => 'bar' }).for(:url_variables) }
       it { is_expected.to allow_value({ 'foo2' => 'bar' }).for(:url_variables) }
       it { is_expected.to allow_value({ 'x' => 'y' }).for(:url_variables) }
-      it { is_expected.to allow_value({ 'x' => ('a' * 100) }).for(:url_variables) }
+      it { is_expected.to allow_value({ 'x' => ('a' * 2048) }).for(:url_variables) }
       it { is_expected.to allow_value({ 'foo' => 'bar', 'bar' => 'baz' }).for(:url_variables) }
       it { is_expected.to allow_value((1..20).to_h { ["k#{_1}", 'value'] }).for(:url_variables) }
       it { is_expected.to allow_value({ 'MY-TOKEN' => 'bar' }).for(:url_variables) }
@@ -45,7 +45,7 @@ RSpec.describe WebHook do
       it { is_expected.not_to allow_value({ 'bar' => :baz }).for(:url_variables) }
       it { is_expected.not_to allow_value({ 'bar' => nil }).for(:url_variables) }
       it { is_expected.not_to allow_value({ 'foo' => '' }).for(:url_variables) }
-      it { is_expected.not_to allow_value({ 'foo' => ('a' * 101) }).for(:url_variables) }
+      it { is_expected.not_to allow_value({ 'foo' => ('a' * 2049) }).for(:url_variables) }
       it { is_expected.not_to allow_value({ 'has spaces' => 'foo' }).for(:url_variables) }
       it { is_expected.not_to allow_value({ '' => 'foo' }).for(:url_variables) }
       it { is_expected.not_to allow_value({ '1foo' => 'foo' }).for(:url_variables) }

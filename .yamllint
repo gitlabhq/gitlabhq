@@ -2,6 +2,15 @@
 
 extends: default
 
+yaml-files:
+  # defaults
+  - '*.yaml'
+  - '*.yml'
+  - '.yamllint'
+  # match more extensions
+  - '*.yaml.*'
+  - '*.yml.*'
+
 # Ideally, we should have nothing in this ignore section.
 #
 # Please consider removing entries below by fixing them.
@@ -18,6 +27,16 @@ ignore: |
 
   # Broken on purpose (for testing)
   spec/fixtures/lib/gitlab/metrics/dashboard/broken_yml_syntax.yml
+
+  # Dynamic YAML files have syntax errors sometimes.
+  *.erb
+
+  # Vim temporary files.
+  *.sw[pon]
+
+  # Zipped files (by e.g. asset pipeline)
+  *.gz
+  *.bz2
 
   #### Folders ####
   node_modules/

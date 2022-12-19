@@ -27,7 +27,9 @@ module TodosHelper
     )
     when Todo::UNMERGEABLE then s_('Todos|Could not merge')
     when Todo::MERGE_TRAIN_REMOVED then s_("Todos|Removed from Merge Train")
-    when Todo::MEMBER_ACCESS_REQUESTED then s_("Todos|has requested access")
+    when Todo::MEMBER_ACCESS_REQUESTED then format(
+      s_("Todos|has requested access to group %{which}"), which: _(todo.target.name)
+    )
     end
   end
 

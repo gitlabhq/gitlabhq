@@ -13,7 +13,7 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '@sentry/browser';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_PAYLOAD_TOO_LARGE } from '~/lib/utils/http_status';
 import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -145,7 +145,7 @@ export default {
       let message = '';
       if (error?.response?.data?.message?.name) {
         message = this.$options.i18n.uploadErrorMessages.duplicate;
-      } else if (error.response.status === httpStatusCodes.PAYLOAD_TOO_LARGE) {
+      } else if (error.response.status === HTTP_STATUS_PAYLOAD_TOO_LARGE) {
         message = sprintf(this.$options.i18n.uploadErrorMessages.tooLarge, {
           limit: this.fileSizeLimit,
         });

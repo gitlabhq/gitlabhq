@@ -7,7 +7,7 @@ import SafeHtml from '~/vue_shared/directives/safe_html';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { INLINE_DIFF_LINES_KEY } from '~/diffs/constants';
 import { createAlert } from '~/flash';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_GONE } from '~/lib/utils/http_status';
 import { ignoreWhilePending } from '~/lib/utils/ignore_while_pending';
 import { truncateSha } from '~/lib/utils/text_utility';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
@@ -338,7 +338,7 @@ export default {
           callback();
         })
         .catch((response) => {
-          if (response.status === httpStatusCodes.GONE) {
+          if (response.status === HTTP_STATUS_GONE) {
             this.removeNote(this.note);
             this.updateSuccess();
             callback();

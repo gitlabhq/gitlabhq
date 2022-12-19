@@ -32,7 +32,7 @@ import {
 } from '~/alerts_settings/utils/error_messages';
 import { createAlert, VARIANT_SUCCESS } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import {
   createHttpVariables,
   updateHttpVariables,
@@ -358,7 +358,7 @@ describe('AlertsSettingsWrapper', () => {
       });
 
       it('shows an error alert when integration test payload is invalid', async () => {
-        mock.onPost(/(.*)/).replyOnce(httpStatusCodes.UNPROCESSABLE_ENTITY);
+        mock.onPost(/(.*)/).replyOnce(HTTP_STATUS_UNPROCESSABLE_ENTITY);
         await wrapper.vm.testAlertPayload({ endpoint: '', data: '', token: '' });
         expect(createAlert).toHaveBeenCalledWith({ message: INTEGRATION_PAYLOAD_TEST_ERROR });
         expect(createAlert).toHaveBeenCalledTimes(1);

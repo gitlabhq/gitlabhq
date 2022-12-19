@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import { dismiss } from '~/feature_highlight/feature_highlight_helper';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import httpStatusCodes, { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
 
 jest.mock('~/flash');
 
@@ -11,7 +11,7 @@ describe('feature highlight helper', () => {
     let mockAxios;
     const endpoint = '/-/callouts/dismiss';
     const highlightId = '123';
-    const { CREATED, INTERNAL_SERVER_ERROR } = httpStatusCodes;
+    const { INTERNAL_SERVER_ERROR } = httpStatusCodes;
 
     beforeEach(() => {
       mockAxios = new MockAdapter(axios);
@@ -22,7 +22,7 @@ describe('feature highlight helper', () => {
     });
 
     it('calls persistent dismissal endpoint with highlightId', async () => {
-      mockAxios.onPost(endpoint, { feature_name: highlightId }).replyOnce(CREATED);
+      mockAxios.onPost(endpoint, { feature_name: highlightId }).replyOnce(HTTP_STATUS_CREATED);
 
       await expect(dismiss(endpoint, highlightId)).resolves.toEqual(expect.anything());
     });

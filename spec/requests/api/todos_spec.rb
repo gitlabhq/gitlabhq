@@ -15,6 +15,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
   let_it_be(:work_item) { create(:work_item, :task, project: project_1) }
   let_it_be(:merge_request) { create(:merge_request, source_project: project_1) }
   let_it_be(:alert) { create(:alert_management_alert, project: project_1) }
+  let_it_be(:group_request_todo) { create(:todo, author: author_1, user: john_doe, target: group, action: Todo::MEMBER_ACCESS_REQUESTED) }
   let_it_be(:alert_todo) { create(:todo, project: project_1, author: john_doe, user: john_doe, target: alert) }
   let_it_be(:merge_request_todo) { create(:todo, project: project_1, author: author_2, user: john_doe, target: merge_request) }
   let_it_be(:pending_1) { create(:todo, :mentioned, project: project_1, author: author_1, user: john_doe, target: issue) }
@@ -71,7 +72,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(6)
+        expect(json_response.length).to eq(7)
 
         expect(json_response[0]).to include(
           'id' => pending_5.id,
@@ -127,6 +128,17 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
             'title' => alert.title
           )
         )
+
+        expect(json_response[6]).to include(
+          'target_type' => 'Namespace',
+          'action_name' => 'member_access_requested',
+          'target' => hash_including(
+            'id' => group.id,
+            'name' => group.name,
+            'full_path' => group.full_path
+          ),
+          'target_url' => Gitlab::Routing.url_helpers.group_group_members_url(group, tab: 'access_requests')
+        )
       end
 
       context "when current user does not have access to one of the TODO's target" do
@@ -137,7 +149,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
 
           get api('/todos', john_doe)
 
-          expect(json_response.count).to eq(6)
+          expect(json_response.count).to eq(7)
           expect(json_response.map { |t| t['id'] }).not_to include(no_access_todo.id, pending_4.id)
         end
       end
@@ -231,7 +243,7 @@ RSpec.describe API::Todos, feature_category: :source_code_management do
       create(:on_commit_todo, project: new_todo.project, author: author_1, user: john_doe, target: merge_request_3)
       create(:todo, project: new_todo.project, author: author_2, user: john_doe, target: merge_request_3)
 
-      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(5)
+      expect { get api('/todos', john_doe) }.not_to exceed_query_limit(control1).with_threshold(6)
       control2 = ActiveRecord::QueryRecorder.new { get api('/todos', john_doe) }
 
       create_issue_todo_for(john_doe)

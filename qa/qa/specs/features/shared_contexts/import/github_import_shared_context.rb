@@ -1,12 +1,10 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.shared_context "with github import", :github, :skip_live_env, :requires_admin, quarantine: {
-    type: :broken,
-    issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/382166"
-  } do
+  RSpec.shared_context "with github import", :github, :import, :requires_admin, :orchestrated do
     include QA::Support::Data::Github
 
+    let!(:github_repo) { "#{github_username}/import-test" }
     let!(:api_client) { Runtime::API::Client.as_admin }
 
     let!(:group) do
@@ -30,7 +28,7 @@ module QA
         project.name = 'imported-project'
         project.group = group
         project.github_personal_access_token = Runtime::Env.github_access_token
-        project.github_repository_path = "#{github_username}/import-test"
+        project.github_repository_path = github_repo
         project.api_client = user_api_client
         project.issue_events_import = true
         project.full_notes_import = true
@@ -39,10 +37,6 @@ module QA
 
     before do
       group.add_member(user, Resource::Members::AccessLevel::MAINTAINER)
-    end
-
-    after do
-      user.remove_via_api!
     end
   end
 end

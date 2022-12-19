@@ -37,11 +37,6 @@ workflow:
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME =~ /^release-tools\/\d+\.\d+\.\d+-rc\d+$/ && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee)?$/ && $CI_PROJECT_PATH == "gitlab-org/gitlab"'
       when: never
     # For merge requests running exclusively in Ruby 3.0
-    - if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
-      variables:
-        RUBY_VERSION: "3.0"
-        PIPELINE_NAME: 'Ruby 3 $CI_MERGE_REQUEST_EVENT_TYPE MR pipeline'
-    # For merge requests running exclusively in Ruby 3.0
     - if: '$CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby3/'
       variables:
         RUBY_VERSION: "3.0"

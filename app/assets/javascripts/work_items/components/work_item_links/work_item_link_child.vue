@@ -10,6 +10,7 @@ import {
   STATE_OPEN,
   TASK_TYPE_NAME,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+  WIDGET_TYPE_PROGRESS,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_ASSIGNEES,
@@ -113,7 +114,15 @@ export default {
       return this.isExpanded ? __('Collapse') : __('Expand');
     },
     hasMetadata() {
-      return this.milestone || this.assignees.length > 0 || this.labels.length > 0;
+      return (
+        this.progress !== undefined ||
+        this.milestone !== undefined ||
+        this.assignees.length > 0 ||
+        this.labels.length > 0
+      );
+    },
+    progress() {
+      return this.getWidgetByType(this.childItem, WIDGET_TYPE_PROGRESS)?.progress;
     },
     milestone() {
       return this.getWidgetByType(this.childItem, WIDGET_TYPE_MILESTONE)?.milestone;
@@ -231,6 +240,7 @@ export default {
           <work-item-link-child-metadata
             v-if="hasMetadata"
             :allows-scoped-labels="allowsScopedLabels"
+            :progress="progress"
             :milestone="milestone"
             :assignees="assignees"
             :labels="labels"

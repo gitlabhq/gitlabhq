@@ -61,6 +61,8 @@ GitLab.
 For this association to succeed, each GitHub author and assignee in the repository
 must have a [public-facing email address](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address)
 on GitHub that matches their GitLab email address (regardless of how the account was created).
+If their email address from GitHub is set as their secondary email address in GitLab, it must be
+confirmed.
 
 GitLab content imports that use GitHub accounts require that the GitHub public-facing email address is populated. This means
 all comments and contributions are properly mapped to the same user in GitLab. GitHub Enterprise does not require this

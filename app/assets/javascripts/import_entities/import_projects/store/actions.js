@@ -3,7 +3,7 @@ import _ from 'lodash';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import httpStatusCodes from '~/lib/utils/http_status';
+import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { visitUrl, objectToQuery } from '~/lib/utils/url_utility';
@@ -16,7 +16,7 @@ let eTagPoll;
 
 const hasRedirectInError = (e) => e?.response?.data?.error?.redirect;
 const redirectToUrlInError = (e) => visitUrl(e.response.data.error.redirect);
-const tooManyRequests = (e) => e.response.status === httpStatusCodes.TOO_MANY_REQUESTS;
+const tooManyRequests = (e) => e.response.status === HTTP_STATUS_TOO_MANY_REQUESTS;
 const pathWithParams = ({ path, ...params }) => {
   const filteredParams = Object.fromEntries(
     Object.entries(params).filter(([, value]) => value !== ''),

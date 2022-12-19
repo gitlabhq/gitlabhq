@@ -154,6 +154,6 @@ RSpec.describe Gitlab::ImportExport::Group::LegacyTreeSaver do
   end
 
   def group_json(filename)
-    ::JSON.parse(IO.read(filename))
+    ::JSON.parse(File.read(filename))
   end
 end

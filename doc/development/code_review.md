@@ -124,6 +124,8 @@ page, with these behaviors:
   branch name (unless their out-of-office (`OOO`) status changes, as in point 1). It
   removes leading `ce-` and `ee-`, and trailing `-ce` and `-ee`, so
   that it can be stable for backport branches.
+- People whose Slack or [GitLab status](../user/profile/index.md#set-your-current-status) emoji
+  is Ⓜ `:m:`are only suggested as reviewers on projects they are a maintainer of.
 
 The [Roulette dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/) contains:
 

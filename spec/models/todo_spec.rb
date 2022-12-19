@@ -56,6 +56,15 @@ RSpec.describe Todo do
 
       expect(subject.body).to eq 'quick fix'
     end
+
+    it 'returns full path of target when action is member_access_requested' do
+      group = create(:group)
+
+      subject.target = group
+      subject.action = Todo::MEMBER_ACCESS_REQUESTED
+
+      expect(subject.body).to eq group.full_path
+    end
   end
 
   describe '#done' do
@@ -181,6 +190,17 @@ RSpec.describe Todo do
       subject.target = issue
 
       expect(subject.target_reference).to eq issue.to_reference(full: false)
+    end
+
+    context 'when target is member access requested' do
+      it 'returns group full path' do
+        group = create(:group)
+
+        subject.target = group
+        subject.action = Todo::MEMBER_ACCESS_REQUESTED
+
+        expect(subject.target_reference).to eq group.full_path
+      end
     end
   end
 

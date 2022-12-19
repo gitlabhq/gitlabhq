@@ -28,7 +28,7 @@ pre-push:
     yamllint:
       tags: backend style
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
-      glob: '*.{yml,yaml}'
+      glob: '*.{yml,yaml}{,.*}'
       run: scripts/lint-yaml.sh {files}
     stylelint:
       tags: stylesheet css style

@@ -205,7 +205,7 @@ module GitalySetup
     # This code needs to work in an environment where we cannot use bundler,
     # so we cannot easily use the toml-rb gem. This ad-hoc parser should be
     # good enough.
-    config_text = IO.read(toml)
+    config_text = File.read(toml)
 
     config_text.lines.each do |line|
       match_data = line.match(/^\s*(socket_path|listen_addr)\s*=\s*"([^"]*)"$/)

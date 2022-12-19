@@ -1,5 +1,5 @@
 import { escape } from 'lodash';
-import httpStatus from '~/lib/utils/http_status';
+import httpStatus, { HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/http_status';
 import { __, sprintf } from '~/locale';
 
 export const UNEXPECTED_ERROR_CONFIG = __(
@@ -28,7 +28,7 @@ export const ERROR_PERMISSION = __(
 );
 
 export const configCheckError = (status, helpUrl) => {
-  if (status === httpStatus.UNPROCESSABLE_ENTITY) {
+  if (status === HTTP_STATUS_UNPROCESSABLE_ENTITY) {
     return sprintf(
       ERROR_CONFIG,
       {

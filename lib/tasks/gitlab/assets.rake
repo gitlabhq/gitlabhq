@@ -137,7 +137,7 @@ namespace :gitlab do
         File.open(gzip, 'wb+') do |f|
           gz = Zlib::GzipWriter.new(f, Zlib::BEST_COMPRESSION)
           gz.mtime = mtime
-          gz.write IO.binread(file)
+          gz.write File.binread(file)
           gz.close
 
           File.utime(mtime, mtime, f.path)

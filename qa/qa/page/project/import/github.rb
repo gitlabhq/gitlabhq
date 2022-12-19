@@ -81,7 +81,8 @@ module QA
                 reload: false,
                 skip_finished_loading_check_on_refresh: true
               ) do
-                is_partial_import = has_css?(:import_status_indicator, text: "Partial import")
+                status_selector = 'import_status_indicator'
+                is_partial_import = has_css?(status_selector, text: "Partial import")
 
                 # Temporarily adding this for investigation purposes. This makes sure that the details section is
                 # expanded when the screenshot is taken when the test fails. This can be removed or repurposed later
@@ -92,7 +93,7 @@ module QA
                   end
                 end
 
-                has_element?(:import_status_indicator, text: "Complete")
+                has_element?(status_selector, text: "Complete")
               end
             end
           end

@@ -112,7 +112,7 @@ RSpec.describe Gitlab::ImportExport::Group::TreeRestorer, feature: :subgroups do
       let(:shared) { Gitlab::ImportExport::Shared.new(group) }
       let(:group_tree_restorer) { described_class.new(user: importer_user, shared: shared, group: group) }
       let(:exported_file) { File.join(shared.export_path, 'tree/groups/4352.json') }
-      let(:group_json) { Gitlab::Json.parse(IO.read(exported_file)) }
+      let(:group_json) { Gitlab::Json.parse(File.read(exported_file)) }
 
       shared_examples 'excluded attributes' do
         excluded_attributes = %w[
