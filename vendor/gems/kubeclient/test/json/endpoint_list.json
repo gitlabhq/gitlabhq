@@ -1,0 +1,48 @@
+{
+  "kind": "EndpointsList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/namespaces/endpoints",
+    "resourceVersion": "39"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "example",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/endpoints/example",
+        "uid": "db467530-b6aa-11e4-974a-525400c903c1",
+        "resourceVersion": "38",
+        "creationTimestamp": "2015-02-17T08:42:46-05:00"
+      },
+      "endpoints": [
+        "172.17.0.63:80",
+        "172.17.0.64:80"
+      ]
+    },
+    {
+      "metadata": {
+        "name": "kubernetes",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/endpoints/kubernetes",
+        "resourceVersion": "8",
+        "creationTimestamp": null
+      },
+      "endpoints": [
+        "192.168.122.4:6443"
+      ]
+    },
+    {
+      "metadata": {
+        "name": "kubernetes-ro",
+        "namespace": "default",
+        "selfLink": "/api/v1/namespaces/default/endpoints/kubernetes-ro",
+        "resourceVersion": "7",
+        "creationTimestamp": null
+      },
+      "endpoints": [
+        "192.168.122.4:7080"
+      ]
+    }
+  ]
+}

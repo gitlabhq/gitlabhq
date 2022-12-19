@@ -1,0 +1,13 @@
+{
+    "kind": "Namespace",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "staging",
+        "selfLink": "/api/v1/namespaces/staging",
+        "uid": "e388bc10-c021-11e4-a514-3c970e4a436a",
+        "resourceVersion": "1168",
+        "creationTimestamp": "2015-03-01T16:47:31+02:00"
+    },
+    "spec": {},
+    "status": {}
+}

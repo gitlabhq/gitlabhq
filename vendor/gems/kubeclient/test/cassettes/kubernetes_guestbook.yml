@@ -1,0 +1,879 @@
+---
+http_interactions:
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '253'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "namespaces \"kubeclient-ns\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "kubeclient-ns",
+            "kind": "namespaces"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services/guestbook
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '239'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "service \"guestbook\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "guestbook",
+            "kind": "service"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services/redis-master
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '245'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "service \"redis-master\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "redis-master",
+            "kind": "service"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services/redis-slave
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '243'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "service \"redis-slave\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "redis-slave",
+            "kind": "service"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers/guestbook
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '269'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "replicationControllers \"guestbook\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "guestbook",
+            "kind": "replicationControllers"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-master
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '275'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "replicationControllers \"redis-master\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "redis-master",
+            "kind": "replicationControllers"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-slave
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '273'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Failure",
+          "message": "replicationControllers \"redis-slave\" not found",
+          "reason": "NotFound",
+          "details": {
+            "name": "redis-slave",
+            "kind": "replicationControllers"
+          },
+          "code": 404
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"name":"kubeclient-ns"},"kind":"Namespace","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '74'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '297'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns","uid":"f41e6b27-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"534","creationTimestamp":"2015-08-09T10:03:59Z"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"namespace":"kubeclient-ns","labels":{"name":"guestbook"},"name":"guestbook"},"spec":{"selector":{"app":"guestbook"},"ports":[{"port":3000,"targetPort":"http-server"}]},"type":"LoadBalancer","kind":"Service","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '239'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '521'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Service","apiVersion":"v1","metadata":{"name":"guestbook","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/services/guestbook","uid":"f42187e1-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"538","creationTimestamp":"2015-08-09T10:03:59Z","labels":{"name":"guestbook"}},"spec":{"ports":[{"protocol":"TCP","port":3000,"targetPort":"http-server","nodePort":0}],"selector":{"app":"guestbook"},"clusterIP":"10.0.0.80","type":"ClusterIP","sessionAffinity":"None"},"status":{"loadBalancer":{}}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"namespace":"kubeclient-ns","labels":{"app":"redis","role":"master"},"name":"redis-master"},"spec":{"selector":{"app":"redis","role":"master"},"ports":[{"port":6379,"targetPort":"redis-server"}]},"kind":"Service","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '244'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '552'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Service","apiVersion":"v1","metadata":{"name":"redis-master","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/services/redis-master","uid":"f423bf8b-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"542","creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"master"}},"spec":{"ports":[{"protocol":"TCP","port":6379,"targetPort":"redis-server","nodePort":0}],"selector":{"app":"redis","role":"master"},"clusterIP":"10.0.0.140","type":"ClusterIP","sessionAffinity":"None"},"status":{"loadBalancer":{}}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"namespace":"kubeclient-ns","labels":{"app":"redis","role":"slave"},"name":"redis-slave"},"spec":{"selector":{"app":"redis","role":"slave"},"ports":[{"port":6379,"targetPort":"redis-server"}]},"kind":"Service","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '241'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '548'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Service","apiVersion":"v1","metadata":{"name":"redis-slave","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/services/redis-slave","uid":"f4264678-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"545","creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"slave"}},"spec":{"ports":[{"protocol":"TCP","port":6379,"targetPort":"redis-server","nodePort":0}],"selector":{"app":"redis","role":"slave"},"clusterIP":"10.0.0.154","type":"ClusterIP","sessionAffinity":"None"},"status":{"loadBalancer":{}}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"namespace":"kubeclient-ns","labels":{"app":"guestbook","role":"slave"},"name":"guestbook"},"spec":{"selector":{"app":"guestbook"},"template":{"metadata":{"labels":{"app":"guestbook"}},"spec":{"containers":[{"name":"guestbook","image":"kubernetes/guestbook:v2","ports":[{"name":"http-server","containerPort":3000}]}]}},"replicas":3},"kind":"ReplicationController","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '395'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '815'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationController","apiVersion":"v1","metadata":{"name":"guestbook","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers/guestbook","uid":"f4287784-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"547","generation":1,"creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"guestbook","role":"slave"}},"spec":{"replicas":3,"selector":{"app":"guestbook"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"guestbook"}},"spec":{"containers":[{"name":"guestbook","image":"kubernetes/guestbook:v2","ports":[{"name":"http-server","containerPort":3000,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"namespace":"kubeclient-ns","labels":{"app":"redis","role":"master"},"name":"redis-master"},"spec":{"selector":{"app":"redis","role":"master"},"template":{"metadata":{"labels":{"app":"redis","role":"master"}},"spec":{"containers":[{"name":"redis-master","image":"redis","ports":[{"name":"redis-server","containerPort":6379}]}]}},"replicas":1},"kind":"ReplicationController","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '405'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '828'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationController","apiVersion":"v1","metadata":{"name":"redis-master","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-master","uid":"f42a9800-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"558","generation":1,"creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"master"}},"spec":{"replicas":1,"selector":{"app":"redis","role":"master"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"redis","role":"master"}},"spec":{"containers":[{"name":"redis-master","image":"redis","ports":[{"name":"redis-server","containerPort":6379,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: post
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers
+    body:
+      encoding: UTF-8
+      string: '{"metadata":{"namespace":"kubeclient-ns","labels":{"app":"redis","role":"slave"},"name":"redis-slave"},"spec":{"selector":{"app":"redis","role":"slave"},"template":{"metadata":{"labels":{"app":"redis","role":"slave"}},"spec":{"containers":[{"name":"redis-slave","image":"kubernetes/redis-slave:v2","ports":[{"name":"redis-server","containerPort":6379}]}]}},"replicas":2},"kind":"ReplicationController","apiVersion":"v1"}'
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      Content-Length:
+      - '420'
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 201
+      message: Created
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '842'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationController","apiVersion":"v1","metadata":{"name":"redis-slave","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-slave","uid":"f42e1d09-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"567","generation":1,"creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"slave"}},"spec":{"replicas":2,"selector":{"app":"redis","role":"slave"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"redis","role":"slave"}},"spec":{"containers":[{"name":"redis-slave","image":"kubernetes/redis-slave:v2","ports":[{"name":"redis-server","containerPort":6379,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: get
+    uri: http://10.35.0.23:8080/api/v1/namespaces
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '629'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"NamespaceList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces","resourceVersion":"570"},"items":[{"metadata":{"name":"default","selfLink":"/api/v1/namespaces/default","uid":"37360c82-3e77-11e5-a75a-18037327aaeb","resourceVersion":"6","creationTimestamp":"2015-08-09T09:15:45Z"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}},{"metadata":{"name":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns","uid":"f41e6b27-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"534","creationTimestamp":"2015-08-09T10:03:59Z"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Active"}}]}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: get
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '1661'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ServiceList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubeclient-ns/services","resourceVersion":"571"},"items":[{"metadata":{"name":"guestbook","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/services/guestbook","uid":"f42187e1-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"538","creationTimestamp":"2015-08-09T10:03:59Z","labels":{"name":"guestbook"}},"spec":{"ports":[{"protocol":"TCP","port":3000,"targetPort":"http-server","nodePort":0}],"selector":{"app":"guestbook"},"clusterIP":"10.0.0.80","type":"ClusterIP","sessionAffinity":"None"},"status":{"loadBalancer":{}}},{"metadata":{"name":"redis-master","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/services/redis-master","uid":"f423bf8b-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"542","creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"master"}},"spec":{"ports":[{"protocol":"TCP","port":6379,"targetPort":"redis-server","nodePort":0}],"selector":{"app":"redis","role":"master"},"clusterIP":"10.0.0.140","type":"ClusterIP","sessionAffinity":"None"},"status":{"loadBalancer":{}}},{"metadata":{"name":"redis-slave","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/services/redis-slave","uid":"f4264678-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"545","creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"slave"}},"spec":{"ports":[{"protocol":"TCP","port":6379,"targetPort":"redis-server","nodePort":0}],"selector":{"app":"redis","role":"slave"},"clusterIP":"10.0.0.154","type":"ClusterIP","sessionAffinity":"None"},"status":{"loadBalancer":{}}}]}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: get
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"ReplicationControllerList","apiVersion":"v1","metadata":{"selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers","resourceVersion":"571"},"items":[{"metadata":{"name":"guestbook","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers/guestbook","uid":"f4287784-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"557","generation":1,"creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"guestbook","role":"slave"}},"spec":{"replicas":3,"selector":{"app":"guestbook"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"guestbook"}},"spec":{"containers":[{"name":"guestbook","image":"kubernetes/guestbook:v2","ports":[{"name":"http-server","containerPort":3000,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"replicas":3,"observedGeneration":1}},{"metadata":{"name":"redis-master","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-master","uid":"f42a9800-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"565","generation":1,"creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"master"}},"spec":{"replicas":1,"selector":{"app":"redis","role":"master"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"redis","role":"master"}},"spec":{"containers":[{"name":"redis-master","image":"redis","ports":[{"name":"redis-server","containerPort":6379,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0,"observedGeneration":1}},{"metadata":{"name":"redis-slave","namespace":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-slave","uid":"f42e1d09-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"567","generation":1,"creationTimestamp":"2015-08-09T10:03:59Z","labels":{"app":"redis","role":"slave"}},"spec":{"replicas":2,"selector":{"app":"redis","role":"slave"},"template":{"metadata":{"creationTimestamp":null,"labels":{"app":"redis","role":"slave"}},"spec":{"containers":[{"name":"redis-slave","image":"kubernetes/redis-slave:v2","ports":[{"name":"redis-server","containerPort":6379,"protocol":"TCP"}],"resources":{},"terminationMessagePath":"/dev/termination-log","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","dnsPolicy":"ClusterFirst"}}},"status":{"replicas":0}}]}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services/guestbook
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services/redis-master
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/services/redis-slave
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers/guestbook
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-master
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns/replicationcontrollers/redis-slave
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '100'
+    body:
+      encoding: UTF-8
+      string: |-
+        {
+          "kind": "Status",
+          "apiVersion": "v1",
+          "metadata": {},
+          "status": "Success",
+          "code": 200
+        }
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: delete
+    uri: http://10.35.0.23:8080/api/v1/namespaces/kubeclient-ns
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - '*/*; q=0.5, application/xml'
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Sun, 09 Aug 2015 10:03:59 GMT
+      Content-Length:
+      - '345'
+    body:
+      encoding: UTF-8
+      string: '{"kind":"Namespace","apiVersion":"v1","metadata":{"name":"kubeclient-ns","selfLink":"/api/v1/namespaces/kubeclient-ns","uid":"f41e6b27-3e7d-11e5-a75a-18037327aaeb","resourceVersion":"584","creationTimestamp":"2015-08-09T10:03:59Z","deletionTimestamp":"2015-08-09T10:03:59Z"},"spec":{"finalizers":["kubernetes"]},"status":{"phase":"Terminating"}}'
+    http_version: 
+  recorded_at: Sun, 09 Aug 2015 10:00:02 GMT
+- request:
+    method: get
+    uri: http://10.35.0.23:8080/api/v1
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - "*/*"
+      Accept-Encoding:
+      - gzip, deflate
+      User-Agent:
+      - rest-client/2.0.0 (linux-gnu x86_64) ruby/2.3.0p0
+      Host:
+      - localhost:8080
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json
+      Date:
+      - Mon, 29 Aug 2016 15:51:30 GMT
+      Transfer-Encoding:
+      - chunked
+    body:
+      encoding: UTF-8
+      string: '{"kind":"APIResourceList","groupVersion":"v1","resources":[{"name":"bindings","namespaced":true,"kind":"Binding"},{"name":"componentstatuses","namespaced":false,"kind":"ComponentStatus"},{"name":"configmaps","namespaced":true,"kind":"ConfigMap"},{"name":"endpoints","namespaced":true,"kind":"Endpoints"},{"name":"events","namespaced":true,"kind":"Event"},{"name":"limitranges","namespaced":true,"kind":"LimitRange"},{"name":"namespaces","namespaced":false,"kind":"Namespace"},{"name":"namespaces/finalize","namespaced":false,"kind":"Namespace"},{"name":"namespaces/status","namespaced":false,"kind":"Namespace"},{"name":"nodes","namespaced":false,"kind":"Node"},{"name":"nodes/proxy","namespaced":false,"kind":"Node"},{"name":"nodes/status","namespaced":false,"kind":"Node"},{"name":"persistentvolumeclaims","namespaced":true,"kind":"PersistentVolumeClaim"},{"name":"persistentvolumeclaims/status","namespaced":true,"kind":"PersistentVolumeClaim"},{"name":"persistentvolumes","namespaced":false,"kind":"PersistentVolume"},{"name":"persistentvolumes/status","namespaced":false,"kind":"PersistentVolume"},{"name":"pods","namespaced":true,"kind":"Pod"},{"name":"pods/attach","namespaced":true,"kind":"Pod"},{"name":"pods/binding","namespaced":true,"kind":"Binding"},{"name":"pods/exec","namespaced":true,"kind":"Pod"},{"name":"pods/log","namespaced":true,"kind":"Pod"},{"name":"pods/portforward","namespaced":true,"kind":"Pod"},{"name":"pods/proxy","namespaced":true,"kind":"Pod"},{"name":"pods/status","namespaced":true,"kind":"Pod"},{"name":"podtemplates","namespaced":true,"kind":"PodTemplate"},{"name":"replicationcontrollers","namespaced":true,"kind":"ReplicationController"},{"name":"replicationcontrollers/scale","namespaced":true,"kind":"Scale"},{"name":"replicationcontrollers/status","namespaced":true,"kind":"ReplicationController"},{"name":"resourcequotas","namespaced":true,"kind":"ResourceQuota"},{"name":"resourcequotas/status","namespaced":true,"kind":"ResourceQuota"},{"name":"secrets","namespaced":true,"kind":"Secret"},{"name":"serviceaccounts","namespaced":true,"kind":"ServiceAccount"},{"name":"services","namespaced":true,"kind":"Service"},{"name":"services/proxy","namespaced":true,"kind":"Service"},{"name":"services/status","namespaced":true,"kind":"Service"}]}
+
+'
+    http_version: 
+  recorded_at: Mon, 29 Aug 2016 15:51:30 GMT
+recorded_with: VCR 3.0.3

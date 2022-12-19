@@ -1,0 +1,679 @@
+{
+  "kind": "APIResourceList",
+  "apiVersion": "v1",
+  "groupVersion": "config.istio.io/v1alpha2",
+  "resources": [
+    {
+      "name": "metrics",
+      "singularName": "metric",
+      "namespaced": true,
+      "kind": "metric",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "servicecontrolreports",
+      "singularName": "servicecontrolreport",
+      "namespaced": true,
+      "kind": "servicecontrolreport",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "opas",
+      "singularName": "opa",
+      "namespaced": true,
+      "kind": "opa",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "redisquotas",
+      "singularName": "redisquota",
+      "namespaced": true,
+      "kind": "redisquota",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "authorizations",
+      "singularName": "authorization",
+      "namespaced": true,
+      "kind": "authorization",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "listentries",
+      "singularName": "listentry",
+      "namespaced": true,
+      "kind": "listentry",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "logentries",
+      "singularName": "logentry",
+      "namespaced": true,
+      "kind": "logentry",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "tracespans",
+      "singularName": "tracespan",
+      "namespaced": true,
+      "kind": "tracespan",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "quotaspecs",
+      "singularName": "quotaspec",
+      "namespaced": true,
+      "kind": "QuotaSpec",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "fluentds",
+      "singularName": "fluentd",
+      "namespaced": true,
+      "kind": "fluentd",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "rbacs",
+      "singularName": "rbac",
+      "namespaced": true,
+      "kind": "rbac",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "checknothings",
+      "singularName": "checknothing",
+      "namespaced": true,
+      "kind": "checknothing",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "edges",
+      "singularName": "edge",
+      "namespaced": true,
+      "kind": "edge",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "apikeys",
+      "singularName": "apikey",
+      "namespaced": true,
+      "kind": "apikey",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "kuberneteses",
+      "singularName": "kubernetes",
+      "namespaced": true,
+      "kind": "kubernetes",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "httpapispecs",
+      "singularName": "httpapispec",
+      "namespaced": true,
+      "kind": "HTTPAPISpec",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "attributemanifests",
+      "singularName": "attributemanifest",
+      "namespaced": true,
+      "kind": "attributemanifest",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "kubernetesenvs",
+      "singularName": "kubernetesenv",
+      "namespaced": true,
+      "kind": "kubernetesenv",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "listcheckers",
+      "singularName": "listchecker",
+      "namespaced": true,
+      "kind": "listchecker",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "quotas",
+      "singularName": "quota",
+      "namespaced": true,
+      "kind": "quota",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "instances",
+      "singularName": "instance",
+      "namespaced": true,
+      "kind": "instance",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "memquotas",
+      "singularName": "memquota",
+      "namespaced": true,
+      "kind": "memquota",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "noops",
+      "singularName": "noop",
+      "namespaced": true,
+      "kind": "noop",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "prometheuses",
+      "singularName": "prometheus",
+      "namespaced": true,
+      "kind": "prometheus",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "solarwindses",
+      "singularName": "solarwinds",
+      "namespaced": true,
+      "kind": "solarwinds",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "cloudwatches",
+      "singularName": "cloudwatch",
+      "namespaced": true,
+      "kind": "cloudwatch",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "reportnothings",
+      "singularName": "reportnothing",
+      "namespaced": true,
+      "kind": "reportnothing",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "stackdrivers",
+      "singularName": "stackdriver",
+      "namespaced": true,
+      "kind": "stackdriver",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "statsds",
+      "singularName": "statsd",
+      "namespaced": true,
+      "kind": "statsd",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "httpapispecbindings",
+      "singularName": "httpapispecbinding",
+      "namespaced": true,
+      "kind": "HTTPAPISpecBinding",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "quotaspecbindings",
+      "singularName": "quotaspecbinding",
+      "namespaced": true,
+      "kind": "QuotaSpecBinding",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "bypasses",
+      "singularName": "bypass",
+      "namespaced": true,
+      "kind": "bypass",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "circonuses",
+      "singularName": "circonus",
+      "namespaced": true,
+      "kind": "circonus",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "deniers",
+      "singularName": "denier",
+      "namespaced": true,
+      "kind": "denier",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "signalfxs",
+      "singularName": "signalfx",
+      "namespaced": true,
+      "kind": "signalfx",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "adapters",
+      "singularName": "adapter",
+      "namespaced": true,
+      "kind": "adapter",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "servicecontrols",
+      "singularName": "servicecontrol",
+      "namespaced": true,
+      "kind": "servicecontrol",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "templates",
+      "singularName": "template",
+      "namespaced": true,
+      "kind": "template",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "handlers",
+      "singularName": "handler",
+      "namespaced": true,
+      "kind": "handler",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "rules",
+      "singularName": "rule",
+      "namespaced": true,
+      "kind": "rule",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "dogstatsds",
+      "singularName": "dogstatsd",
+      "namespaced": true,
+      "kind": "dogstatsd",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    },
+    {
+      "name": "stdios",
+      "singularName": "stdio",
+      "namespaced": true,
+      "kind": "stdio",
+      "verbs": [
+        "delete",
+        "deletecollection",
+        "get",
+        "list",
+        "patch",
+        "create",
+        "update",
+        "watch"
+      ]
+    }
+  ]
+}

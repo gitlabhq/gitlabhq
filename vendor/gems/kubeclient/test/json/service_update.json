@@ -1,0 +1,22 @@
+{
+   "status" : {},
+   "kind" : "Service",
+   "apiVersion" : "v1",
+   "spec" : {
+      "ports" : [
+         {
+            "targetPort" : 80,
+            "nodePort" : 0,
+            "port" : 80,
+            "protocol" : "TCP"
+         }
+      ],
+      "clusterIP" : "1.2.3.4"
+   },
+   "metadata" : {
+      "name" : "my_service",
+      "creationTimestamp" : null,
+      "namespace" : "default",
+      "resourceVersion" : "2"
+   }
+}

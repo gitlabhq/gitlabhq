@@ -1,0 +1,92 @@
+{
+    "kind": "Pod",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "redis-master3",
+        "namespace": "default",
+        "selfLink": "/api/v1/pods/redis-master3?namespace=default",
+        "uid": "a344023f-a23c-11e4-a36b-3c970e4a436a",
+        "resourceVersion": "9",
+        "creationTimestamp": "2015-01-22T15:43:24+02:00",
+        "labels": {
+            "name": "redis-master"
+        }
+    },
+    "spec": {
+        "volumes": null,
+        "containers": [
+            {
+                "name": "master",
+                "image": "dockerfile/redis",
+                "ports": [
+                    {
+                        "hostPort": 6379,
+                        "containerPort": 6379,
+                        "protocol": "TCP"
+                    }
+                ],
+                "memory": "0",
+                "cpu": "100m",
+                "imagePullPolicy": ""
+            },
+            {
+                "name": "php-redis",
+                "image": "kubernetes/example-guestbook-php-redis",
+                "ports": [
+                    {
+                        "hostPort": 8000,
+                        "containerPort": 80,
+                        "protocol": "TCP"
+                    }
+                ],
+                "memory": "50000000",
+                "cpu": "100m",
+                "imagePullPolicy": ""
+            }
+        ],
+        "restartPolicy": {
+            "always": {
+
+            }
+        },
+        "dnsPolicy": "ClusterFirst"
+    },
+    "status": {
+        "phase": "Running",
+        "host": "127.0.0.1",
+        "podIP": "172.17.0.2",
+        "info": {
+            "master": {
+                "state": {
+                    "running": {
+                        "startedAt": "2015-01-22T13:43:29Z"
+                    }
+                },
+                "restartCount": 0,
+                "containerID": "docker://87458d9a12f9dc9a01b52c1eee5f09cf48939380271c0eaf31af298ce67b125e",
+                "image": "dockerfile/redis"
+            },
+            "net": {
+                "state": {
+                    "running": {
+                        "startedAt": "2015-01-22T13:43:27Z"
+                    }
+                },
+                "restartCount": 0,
+                "containerID": "docker://3bb5ced1f831322d370f70b58137e1dd41216c2960b7a99394542b5230cbd259",
+                "podIP": "172.17.0.2",
+                "image": "kubernetes/pause:latest"
+            },
+            "php-redis": {
+                "state": {
+                    "running": {
+                        "startedAt": "2015-01-22T13:43:31Z"
+                    }
+                },
+                "restartCount": 0,
+                "containerID": "docker://5f08685c0a7a5c974d438a52c6560d72bb0aae7e805d2a34302b9b460f1297c7",
+                "image": "kubernetes/example-guestbook-php-redis"
+            }
+        }
+    }
+}

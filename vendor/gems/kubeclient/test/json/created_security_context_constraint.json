@@ -1,0 +1,65 @@
+{
+    "allowHostDirVolumePlugin": false,
+    "allowHostIPC": false,
+    "allowHostNetwork": false,
+    "allowHostPID": false,
+    "allowHostPorts": false,
+    "allowPrivilegedContainer": false,
+    "allowedCapabilities": null,
+    "allowedFlexVolumes": null,
+    "apiVersion": "security.openshift.io/v1",
+    "defaultAddCapabilities": null,
+    "fsGroup": {
+        "type": "RunAsAny"
+    },
+    "groups": [],
+    "kind": "SecurityContextConstraints",
+    "metadata": {
+        "creationTimestamp": "2018-11-23T10:01:42Z",
+        "name": "teleportation",
+        "resourceVersion": "5274",
+        "selfLink": "/apis/security.openshift.io/v1/securitycontextconstraints/teleportation",
+        "uid": "c6e8e2ec-ef06-11e8-b4c0-68f728fac3ab"
+    },
+    "priority": null,
+    "readOnlyRootFilesystem": false,
+    "requiredDropCapabilities": null,
+    "runAsUser": {
+        "type": "MustRunAs"
+    },
+    "seLinuxContext": {
+        "type": "MustRunAs"
+    },
+    "supplementalGroups": {
+        "type": "RunAsAny"
+    },
+    "users": [],
+    "volumes": [
+        "awsElasticBlockStore",
+        "azureDisk",
+        "azureFile",
+        "cephFS",
+        "cinder",
+        "configMap",
+        "downwardAPI",
+        "emptyDir",
+        "fc",
+        "flexVolume",
+        "flocker",
+        "gcePersistentDisk",
+        "gitRepo",
+        "glusterfs",
+        "iscsi",
+        "nfs",
+        "persistentVolumeClaim",
+        "photonPersistentDisk",
+        "portworxVolume",
+        "projected",
+        "quobyte",
+        "rbd",
+        "scaleIO",
+        "secret",
+        "storageOS",
+        "vsphere"
+    ]
+}

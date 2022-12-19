@@ -59,7 +59,7 @@
     "@gitlab/svgs": "3.13.0",
     "@gitlab/ui": "52.5.0",
     "@gitlab/visual-review-tools": "1.7.3",
-    "@gitlab/web-ide": "0.0.1-dev-20221216140656",
+    "@gitlab/web-ide": "0.0.1-dev-20221217175648",
     "@rails/actioncable": "6.1.4-7",
     "@rails/ujs": "6.1.4-7",
     "@sourcegraph/code-host-integration": "0.0.84",

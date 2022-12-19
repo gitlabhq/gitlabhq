@@ -1,0 +1,45 @@
+{
+  "kind": "PersistentVolumeList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/persistentvolumes",
+    "resourceVersion": "2999"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "pv0001",
+        "selfLink": "/api/v1/persistentvolumes/pv0001",
+        "uid": "c83eece1-4b38-11e5-8d27-28d2447dcefe",
+        "resourceVersion": "1585",
+        "creationTimestamp": "2015-08-25T14:51:35Z",
+        "labels": {
+          "type": "local"
+        }
+      },
+      "spec": {
+        "capacity": {
+          "storage": "10Gi"
+        },
+        "hostPath": {
+          "path": "/tmp/data01"
+        },
+        "accessModes": [
+          "ReadWriteOnce"
+        ],
+        "claimRef": {
+          "kind": "PersistentVolumeClaim",
+          "namespace": "default",
+          "name": "myclaim-1",
+          "uid": "d47384a3-4b38-11e5-8d27-28d2447dcefe",
+          "apiVersion": "v1",
+          "resourceVersion": "1582"
+        },
+        "persistentVolumeReclaimPolicy": "Retain"
+      },
+      "status": {
+        "phase": "Bound"
+      }
+    }
+  ]
+}

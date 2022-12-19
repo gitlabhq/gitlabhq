@@ -1,0 +1,17 @@
+{
+  "kind": "ComponentStatus",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "etcd-0",
+    "selfLink": "/api/v1/namespaces/componentstatuses/etcd-0",
+    "creationTimestamp": null
+  },
+  "conditions": [
+    {
+      "type": "Healthy",
+      "status": "True",
+      "message": "{\"health\": \"true\"}",
+      "error": "nil"
+    }
+  ]
+}

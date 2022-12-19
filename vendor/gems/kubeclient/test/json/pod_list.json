@@ -1,0 +1,79 @@
+{
+    "kind": "PodList",
+    "apiVersion": "v1",
+    "metadata": {
+        "selfLink": "/api/v1/pods",
+        "resourceVersion": "1315"
+    },
+    "items": [
+        {
+            "metadata": {
+                "name": "redis-master3",
+                "namespace": "default",
+                "selfLink": "/api/v1/pods/redis-master3?namespace=default",
+                "uid": "1da148b4-cef5-11e4-ac24-3c970e4a436a",
+                "resourceVersion": "1301",
+                "creationTimestamp": "2015-03-20T13:34:48+02:00",
+                "labels": {
+                    "mylabel": "mylabelvalue",
+                    "role": "pod"
+                }
+            },
+            "spec": {
+                "volumes": null,
+                "containers": [
+                    {
+                        "name": "master",
+                        "image": "dockerfile/redis",
+                        "ports": [
+                            {
+                                "hostPort": 6379,
+                                "containerPort": 6379,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "cpu": "100m"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "imagePullPolicy": "IfNotPresent",
+                        "securityContext": {
+                            "capabilities": {}
+                        }
+                    },
+                    {
+                        "name": "php-redis",
+                        "image": "kubernetes/example-guestbook-php-redis",
+                        "ports": [
+                            {
+                                "hostPort": 8000,
+                                "containerPort": 80,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {
+                            "limits": {
+                                "cpu": "100m",
+                                "memory": "50000000"
+                            }
+                        },
+                        "terminationMessagePath": "/dev/termination-log",
+                        "imagePullPolicy": "IfNotPresent",
+                        "securityContext": {
+                            "capabilities": {}
+                        }
+                    }
+                ],
+                "restartPolicy": {
+                    "always": {}
+                },
+                "dnsPolicy": "ClusterFirst"
+            },
+            "status": {
+                "phase": "Pending"
+            }
+        }
+    ]
+}

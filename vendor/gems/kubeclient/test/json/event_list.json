@@ -1,0 +1,35 @@
+{
+    "kind": "EventList",
+    "apiVersion": "v1",
+    "metadata": {
+        "selfLink": "/api/v1/events",
+        "resourceVersion": "152"
+    },
+    "items": [
+        {
+            "metadata": {
+                "name": "php.13c130f78da4641e",
+                "namespace": "default",
+                "selfLink": "/api/v1/events/php.13c130f78da4641e?namespace=default",
+                "uid": "f3a454d2-b03a-11e4-89e4-525400c903c1",
+                "resourceVersion": "178",
+                "creationTimestamp": "2015-02-09T04:06:37-05:00"
+            },
+            "involvedObject": {
+                "kind": "BoundPod",
+                "namespace": "default",
+                "name": "php",
+                "uid": "64273d20-b03a-11e4-89e4-525400c903c1",
+                "apiVersion": "v1beta1",
+                "fieldPath": "spec.containers{nginx}"
+            },
+            "reason": "created",
+            "message": "Created with docker id 9ba2a714411d2d0dd1e826b2fe5c3222b5cbfd9dd9133c841585cbb96b8c2c0f",
+            "source": {
+                "component": "kubelet",
+                "host": "127.0.0.1"
+            },
+            "timestamp": "2015-02-09T04:06:37-05:00"
+        }
+    ]
+}

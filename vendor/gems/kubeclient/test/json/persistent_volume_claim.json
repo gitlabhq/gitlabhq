@@ -1,0 +1,32 @@
+{
+  "kind": "PersistentVolumeClaim",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "myclaim-1",
+    "namespace": "default",
+    "selfLink": "/api/v1/namespaces/default/persistentvolumeclaims/myclaim-1",
+    "uid": "d47384a3-4b38-11e5-8d27-28d2447dcefe",
+    "resourceVersion": "1584",
+    "creationTimestamp": "2015-08-25T14:51:55Z"
+  },
+  "spec": {
+    "accessModes": [
+      "ReadWriteOnce"
+    ],
+    "resources": {
+      "requests": {
+        "storage": "3Gi"
+      }
+    },
+    "volumeName": "pv0001"
+  },
+  "status": {
+    "phase": "Bound",
+    "accessModes": [
+      "ReadWriteOnce"
+    ],
+    "capacity": {
+      "storage": "10Gi"
+    }
+  }
+}

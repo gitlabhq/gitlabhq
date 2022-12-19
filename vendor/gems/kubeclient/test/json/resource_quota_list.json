@@ -1,0 +1,54 @@
+{
+  "kind": "ResourceQuotaList",
+  "apiVersion": "v1",
+  "metadata": {
+    "selfLink": "/api/v1/namespaces/quota-example/resourcequotas/",
+    "resourceVersion": "102452"
+  },
+  "items": [
+    {
+      "metadata": {
+        "name": "quota",
+        "namespace": "quota-example",
+        "selfLink": "/api/v1/namespaces/quota-example/resourcequotas/quota",
+        "uid": "ab9f24a4-3c43-11e5-8214-0aaeec44370e",
+        "resourceVersion": "12919",
+        "creationTimestamp": "2015-08-06T14:01:44Z"
+      },
+      "spec": {
+        "hard": {
+          "cpu": "20",
+          "memory": "1Gi",
+          "persistentvolumeclaims": "10",
+          "pods": "10",
+          "replicationcontrollers": "20",
+          "resourcequotas": "1",
+          "secrets": "10",
+          "services": "5"
+        }
+      },
+      "status": {
+        "hard": {
+          "cpu": "20",
+          "memory": "1Gi",
+          "persistentvolumeclaims": "10",
+          "pods": "10",
+          "replicationcontrollers": "20",
+          "resourcequotas": "1",
+          "secrets": "10",
+          "services": "5"
+        },
+        "used": {
+          "cpu": "0",
+          "memory": "0",
+          "persistentvolumeclaims": "0",
+          "pods": "0",
+          "replicationcontrollers": "1",
+          "resourcequotas": "1",
+          "secrets": "9",
+          "services": "0"
+        }
+      }
+    }
+  ]
+}
