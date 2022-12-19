@@ -36381,6 +36381,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|in namespaces"
 msgstr ""
 
+msgid "ScanResultPolicy|%{count} licenses"
+msgstr ""
+
 msgid "ScanResultPolicy|%{ifLabelStart}if%{ifLabelEnd} %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
 msgstr ""
 
@@ -36390,10 +36393,34 @@ msgstr ""
 msgid "ScanResultPolicy|%{thenLabelStart}Then%{thenLabelEnd} Require approval from %{approvalsRequired} of the following approvers:"
 msgstr ""
 
+msgid "ScanResultPolicy|Newly Detected"
+msgstr ""
+
+msgid "ScanResultPolicy|Pre-existing"
+msgstr ""
+
 msgid "ScanResultPolicy|add an approver"
 msgstr ""
 
+msgid "ScanResultPolicy|except"
+msgstr ""
+
+msgid "ScanResultPolicy|finds any license %{matchType} %{licenseType} and is %{licenseStates} in an open merge request targeting %{branches}"
+msgstr ""
+
 msgid "ScanResultPolicy|from %{scanners} find(s) more than %{vulnerabilitiesAllowed} %{severities} %{vulnerabilityStates} vulnerabilities in an open merge request targeting %{branches}"
+msgstr ""
+
+msgid "ScanResultPolicy|license states"
+msgstr ""
+
+msgid "ScanResultPolicy|license type"
+msgstr ""
+
+msgid "ScanResultPolicy|matching"
+msgstr ""
+
+msgid "ScanResultPolicy|matching type"
 msgstr ""
 
 msgid "ScanResultPolicy|scanners"

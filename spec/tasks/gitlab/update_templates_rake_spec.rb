@@ -2,13 +2,14 @@
 
 require 'rake_helper'
 
-RSpec.describe 'gitlab:update_project_templates rake task', :silence_stdout do
+RSpec.describe 'gitlab:update_project_templates rake task', :silence_stdout, feature_category: :importers do
   let!(:tmpdir) { Dir.mktmpdir }
   let(:template) { Gitlab::ProjectTemplate.find(:rails) }
 
   before do
     Rake.application.rake_require 'tasks/gitlab/update_templates'
-    create(:admin)
+    admin = create(:admin)
+    create(:key, user: admin)
 
     allow(Gitlab::ProjectTemplate)
       .to receive(:archive_directory)
@@ -28,6 +29,9 @@ RSpec.describe 'gitlab:update_project_templates rake task', :silence_stdout do
   end
 
   it 'updates valid project templates' do
+    expect(Gitlab::TaskHelpers).to receive(:run_command!).with(anything).exactly(6).times.and_call_original
+    expect(Gitlab::TaskHelpers).to receive(:run_command!).with(%w[git push -u origin master])
+
     expect { run_rake_task('gitlab:update_project_templates', [template.name]) }
       .to change { Dir.entries(tmpdir) }
         .by(["#{template.name}.tar.gz"])
