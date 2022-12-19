@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Plan', quarantine: {
-    issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/366839',
-    type: :test_environment,
-    only: { job: 'review-qa-*' }
-  } do
+  RSpec.describe 'Plan', product_group: :product_planning do
     describe 'Design Management' do
       let(:issue) { Resource::Issue.fabricate_via_api! }
       let(:design_filename) { 'banana_sample.gif' }
