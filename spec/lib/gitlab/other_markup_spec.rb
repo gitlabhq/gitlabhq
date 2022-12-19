@@ -45,16 +45,6 @@ RSpec.describe Gitlab::OtherMarkup do
 
       expect(render(file_name, text, context)).to eq("<p>#{text}</p>")
     end
-
-    context 'when markup_rendering_timeout is disabled' do
-      it 'waits until the execution completes' do
-        stub_feature_flags(markup_rendering_timeout: false)
-
-        expect(Gitlab::RenderTimeout).not_to receive(:timeout)
-
-        expect(render(file_name, text, context)).to eq(text)
-      end
-    end
   end
 
   def render(*args)

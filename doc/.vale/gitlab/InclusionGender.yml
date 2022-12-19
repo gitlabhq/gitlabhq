@@ -1,5 +1,5 @@
 ---
-# Suggestion: gitlab.InclusionGender
+# Warning: gitlab.InclusionGender
 #
 # Suggests alternatives for words that are gender-specific.
 #
@@ -7,7 +7,7 @@
 extends: substitution
 message: "Use inclusive language. Consider '%s' instead of '%s'."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
-level: suggestion
+level: warning
 ignorecase: true
 swap:
   mankind: humanity, people

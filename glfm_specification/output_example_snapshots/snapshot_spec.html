@@ -363,6 +363,7 @@
 <li><a href="#word_break">word_break</a></li>
 </ul>
 </li>
+<li><a href="#image-attributes">Image Attributes</a></li>
 </ul>
 </li>
 </ul>
@@ -13474,6 +13475,74 @@ also requires an EE license enabling the <code>group_wikis</code> feature:</p>
 </div>
 <div class="gl-relative markdown-code-block js-markdown-code">
 <pre data-sourcepos="15067:1-15069:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">TODO: Write canonical HTML for this example</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<h2 data-sourcepos="15072:1-15072:19" dir="auto">
+<a id="user-content-image-attributes" class="anchor" href="#image-attributes" aria-hidden="true"></a>Image Attributes</h2>
+<p data-sourcepos="15074:1-15076:46" dir="auto">See
+<a href="https://docs.gitlab.com/ee/user/markdown.html#change-the-image-dimensions" rel="nofollow noreferrer noopener" target="_blank">Change the image dimensions</a>
+in the GitLab Flavored Markdown documentation.</p>
+<p data-sourcepos="15078:1-15079:19" dir="auto">The <code>width</code> and <code>height</code> attributes for an image can be specified directly after
+the image markdown.</p>
+<p data-sourcepos="15081:1-15083:21" dir="auto">General syntax conforms to the
+<a href="https://github.com/jgm/commonmark-hs/blob/master/commonmark-extensions/test/attributes.md" rel="nofollow noreferrer noopener" target="_blank">commonmark-hs attribute syntax</a>
+where it makes sense.</p>
+<div>
+<div><a href="#example-750">Example 750</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15088:1-15090:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){width="100" height="100"}</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15092:1-15094:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100" height="100"&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="15097:1-15097:41" dir="auto"><code>%</code> and <code>px</code> units may also be specified.</p>
+<div>
+<div><a href="#example-751">Example 751</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15102:1-15104:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){width="100%"}</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15106:1-15108:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100%"&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<div>
+<div><a href="#example-752">Example 752</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15114:1-15116:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){height="100px"}</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15118:1-15120:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" height="100px"&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="15123:1-15123:46" dir="auto">Whitespace is tolerated around the delimiters:</p>
+<div>
+<div><a href="#example-753">Example 753</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15128:1-15130:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png){ width="100" height="100" }</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15132:1-15134:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png" width="100" height="100"&gt;&lt;/p&gt;</span></code></pre>
+<copy-code></copy-code>
+</div>
+</div>
+<p data-sourcepos="15137:1-15137:54" dir="auto">Attributes must immediately follow the image markdown.</p>
+<div>
+<div><a href="#example-754">Example 754</a></div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15142:1-15144:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="example" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">![](https://gitlab.com/logo.png) {width="100" height="100"}</span></code></pre>
+<copy-code></copy-code>
+</div>
+<div class="gl-relative markdown-code-block js-markdown-code">
+<pre data-sourcepos="15146:1-15148:32" lang="plaintext" class="code highlight js-syntax-highlight language-plaintext" data-canonical-lang="" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;p&gt;&lt;img src="https://gitlab.com/logo.png"&gt; {width="100" height="100"}&lt;/p&gt;</span></code></pre>
 <copy-code></copy-code>
 </div>
 </div>

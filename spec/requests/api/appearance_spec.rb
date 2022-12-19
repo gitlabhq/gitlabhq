@@ -33,6 +33,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         expect(json_response['new_project_guidelines']).to eq('')
         expect(json_response['profile_image_guidelines']).to eq('')
         expect(json_response['title']).to eq('')
+        expect(json_response['short_title']).to eq('')
       end
     end
   end
@@ -51,6 +52,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
         it "allows updating the settings" do
           put api("/application/appearance", admin), params: {
             title: "GitLab Test Instance",
+            short_title: "GitLab",
             description: "gitlab-test.example.com",
             new_project_guidelines: "Please read the FAQs for help.",
             profile_image_guidelines: "Custom profile image guidelines"
@@ -70,6 +72,7 @@ RSpec.describe API::Appearance, 'Appearance', feature_category: :navigation do
           expect(json_response['new_project_guidelines']).to eq('Please read the FAQs for help.')
           expect(json_response['profile_image_guidelines']).to eq('Custom profile image guidelines')
           expect(json_response['title']).to eq('GitLab Test Instance')
+          expect(json_response['short_title']).to eq('GitLab')
         end
       end
 

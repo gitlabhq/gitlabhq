@@ -52,6 +52,22 @@ export default Image.extend({
           return img.getAttribute('title');
         },
       },
+      width: {
+        default: null,
+        parseHTML: (element) => {
+          const img = resolveImageEl(element);
+
+          return img.getAttribute('width');
+        },
+      },
+      height: {
+        default: null,
+        parseHTML: (element) => {
+          const img = resolveImageEl(element);
+
+          return img.getAttribute('height');
+        },
+      },
       isReference: {
         default: false,
         renderHTML: () => '',
@@ -76,6 +92,8 @@ export default Image.extend({
         src: HTMLAttributes.src,
         alt: HTMLAttributes.alt,
         title: HTMLAttributes.title,
+        width: HTMLAttributes.width,
+        height: HTMLAttributes.height,
       },
     ];
   },

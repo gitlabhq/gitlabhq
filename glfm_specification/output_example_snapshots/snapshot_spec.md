@@ -10576,3 +10576,53 @@ Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz
 .
 TODO: Write canonical HTML for this example
 ````````````````````````````````
+
+## Image Attributes
+
+See
+[Change the image dimensions](https://docs.gitlab.com/ee/user/markdown.html#change-the-image-dimensions)
+in the GitLab Flavored Markdown documentation.
+
+The `width` and `height` attributes for an image can be specified directly after
+the image markdown.
+
+General syntax conforms to the 
+[commonmark-hs attribute syntax](https://github.com/jgm/commonmark-hs/blob/master/commonmark-extensions/test/attributes.md)
+where it makes sense.
+
+```````````````````````````````` example gitlab
+![](https://gitlab.com/logo.png){width="100" height="100"}
+.
+<p><img src="https://gitlab.com/logo.png" width="100" height="100"></p>
+````````````````````````````````
+
+`%` and `px` units may also be specified.
+
+```````````````````````````````` example gitlab
+![](https://gitlab.com/logo.png){width="100%"}
+.
+<p><img src="https://gitlab.com/logo.png" width="100%"></p>
+````````````````````````````````
+
+```````````````````````````````` example gitlab
+![](https://gitlab.com/logo.png){height="100px"}
+.
+<p><img src="https://gitlab.com/logo.png" height="100px"></p>
+````````````````````````````````
+
+Whitespace is tolerated around the delimiters:
+
+```````````````````````````````` example gitlab
+![](https://gitlab.com/logo.png){ width="100" height="100" }
+.
+<p><img src="https://gitlab.com/logo.png" width="100" height="100"></p>
+````````````````````````````````
+
+Attributes must immediately follow the image markdown.
+
+```````````````````````````````` example gitlab
+![](https://gitlab.com/logo.png) {width="100" height="100"}
+.
+<p><img src="https://gitlab.com/logo.png"> {width="100" height="100"}</p>
+````````````````````````````````
+

@@ -956,6 +956,12 @@ msgstr ""
 msgid "%{ref} cannot be added: %{error}"
 msgstr ""
 
+msgid "%{relation_type} epic does not exist."
+msgstr ""
+
+msgid "%{relation_type} epic is not present."
+msgstr ""
+
 msgid "%{releases} release"
 msgid_plural "%{releases} releases"
 msgstr[0] ""
@@ -8467,12 +8473,6 @@ msgid "Child"
 msgstr ""
 
 msgid "Child epic"
-msgstr ""
-
-msgid "Child epic does not exist."
-msgstr ""
-
-msgid "Child epic doesn't exist."
 msgstr ""
 
 msgid "Child issues and epics"
@@ -29791,12 +29791,6 @@ msgid "Parameters"
 msgstr ""
 
 msgid "Parent"
-msgstr ""
-
-msgid "Parent epic doesn't exist."
-msgstr ""
-
-msgid "Parent epic is not present."
 msgstr ""
 
 msgid "Parsing error for param :embed_json. %{message}"

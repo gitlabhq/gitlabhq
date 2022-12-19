@@ -68,6 +68,7 @@ class Admin::ApplicationSettings::AppearancesController < Admin::ApplicationCont
   def allowed_appearance_params
     %i[
       title
+      short_title
       description
       logo
       logo_cache

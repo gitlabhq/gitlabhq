@@ -13,11 +13,7 @@ module Banzai
       RENDER_TIMEOUT = 10.seconds
 
       def call
-        if Feature.enabled?(:markup_rendering_timeout, context[:project])
-          Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) { call_with_timeout }
-        else
-          call_with_timeout
-        end
+        Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) { call_with_timeout }
       rescue Timeout::Error => e
         class_name = self.class.name.demodulize
         timeout_counter.increment(source: class_name)

@@ -17020,10 +17020,11 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingreporttype"></a>`reportType` | [`VulnerabilityReportType`](#vulnerabilityreporttype) | Type of the security report that found the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingscanner"></a>`scanner` | [`VulnerabilityScanner`](#vulnerabilityscanner) | Scanner metadata for the vulnerability. |
 | <a id="pipelinesecurityreportfindingseverity"></a>`severity` | [`VulnerabilitySeverity`](#vulnerabilityseverity) | Severity of the vulnerability finding. |
-| <a id="pipelinesecurityreportfindingsolution"></a>`solution` | [`String`](#string) | URL to the vulnerability's details page. |
+| <a id="pipelinesecurityreportfindingsolution"></a>`solution` | [`String`](#string) | Solution for resolving the security report finding. |
 | <a id="pipelinesecurityreportfindingstate"></a>`state` | [`VulnerabilityState`](#vulnerabilitystate) | Finding status. |
 | <a id="pipelinesecurityreportfindingtitle"></a>`title` | [`String`](#string) | Title of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindinguuid"></a>`uuid` | [`String`](#string) | UUIDv5 digest based on the vulnerability's report type, primary identifier, location, fingerprint, project identifier. |
+| <a id="pipelinesecurityreportfindingvulnerability"></a>`vulnerability` | [`Vulnerability`](#vulnerability) | Vulnerability related to the security report finding. |
 
 ### `PreviewBillableUserChange`
 

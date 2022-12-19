@@ -19,6 +19,8 @@ RSpec.shared_examples 'thread comments for commit and snippet' do |resource_name
 
     find('.js-comment-button').click
 
+    wait_for_all_requests
+
     expect(page).to have_content(comment)
 
     new_comment = all(comments_selector).last

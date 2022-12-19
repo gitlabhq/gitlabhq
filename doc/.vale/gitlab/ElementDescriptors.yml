@@ -1,13 +1,14 @@
 ---
-# Suggestion: gitlab.ElementDescriptors
+# Warning: gitlab.ElementDescriptors
 #
-# Suggests the correct way to describe elements in a form.
+# Suggests the correct way to describe a button.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
-extends: substitution
-message: "When describing elements, %s '%s'."
-link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#language
-level: suggestion
+extends: existence
+message: "If possible, rewrite to remove 'button'."
+link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#button
+level: warning
 ignorecase: true
-swap:
-  button: 'if possible, rewrite to remove'
+scope: raw
+raw:
+  - \*\*.+?\*\* button

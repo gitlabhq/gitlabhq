@@ -2547,3 +2547,13 @@
   ![Sample Video](https://gitlab.com/gitlab.mp4)
 08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001: |
   Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz
+08_05_00__gitlab_internal_extension_markdown__image_attributes__001: |
+  ![](https://gitlab.com/logo.png){width="100" height="100"}
+08_05_00__gitlab_internal_extension_markdown__image_attributes__002: |
+  ![](https://gitlab.com/logo.png){width="100%"}
+08_05_00__gitlab_internal_extension_markdown__image_attributes__003: |
+  ![](https://gitlab.com/logo.png){height="100px"}
+08_05_00__gitlab_internal_extension_markdown__image_attributes__004: |
+  ![](https://gitlab.com/logo.png){ width="100" height="100" }
+08_05_00__gitlab_internal_extension_markdown__image_attributes__005: |
+  ![](https://gitlab.com/logo.png) {width="100" height="100"}

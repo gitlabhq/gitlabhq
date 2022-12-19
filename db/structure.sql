@@ -11063,7 +11063,9 @@ CREATE TABLE appearances (
     email_header_and_footer_enabled boolean DEFAULT false NOT NULL,
     profile_image_guidelines text,
     profile_image_guidelines_html text,
-    CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096))
+    short_title text,
+    CONSTRAINT appearances_profile_image_guidelines CHECK ((char_length(profile_image_guidelines) <= 4096)),
+    CONSTRAINT check_fdf3064682 CHECK ((char_length(short_title) <= 255))
 );
 
 CREATE SEQUENCE appearances_id_seq
@@ -14529,6 +14531,21 @@ CREATE SEQUENCE dast_scanner_profiles_id_seq
     CACHE 1;
 
 ALTER SEQUENCE dast_scanner_profiles_id_seq OWNED BY dast_scanner_profiles.id;
+
+CREATE TABLE dast_scanner_profiles_tags (
+    id bigint NOT NULL,
+    dast_scanner_profile_id bigint NOT NULL,
+    tag_id bigint NOT NULL
+);
+
+CREATE SEQUENCE dast_scanner_profiles_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE dast_scanner_profiles_tags_id_seq OWNED BY dast_scanner_profiles_tags.id;
 
 CREATE TABLE dast_site_profile_secret_variables (
     id bigint NOT NULL,
@@ -23957,6 +23974,8 @@ ALTER TABLE ONLY dast_profiles ALTER COLUMN id SET DEFAULT nextval('dast_profile
 
 ALTER TABLE ONLY dast_scanner_profiles ALTER COLUMN id SET DEFAULT nextval('dast_scanner_profiles_id_seq'::regclass);
 
+ALTER TABLE ONLY dast_scanner_profiles_tags ALTER COLUMN id SET DEFAULT nextval('dast_scanner_profiles_tags_id_seq'::regclass);
+
 ALTER TABLE ONLY dast_site_profile_secret_variables ALTER COLUMN id SET DEFAULT nextval('dast_site_profile_secret_variables_id_seq'::regclass);
 
 ALTER TABLE ONLY dast_site_profiles ALTER COLUMN id SET DEFAULT nextval('dast_site_profiles_id_seq'::regclass);
@@ -25819,6 +25838,9 @@ ALTER TABLE ONLY dast_scanner_profiles_builds
 
 ALTER TABLE ONLY dast_scanner_profiles
     ADD CONSTRAINT dast_scanner_profiles_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY dast_scanner_profiles_tags
+    ADD CONSTRAINT dast_scanner_profiles_tags_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY dast_site_profile_secret_variables
     ADD CONSTRAINT dast_site_profile_secret_variables_pkey PRIMARY KEY (id);
@@ -28131,6 +28153,8 @@ CREATE INDEX i_compliance_frameworks_on_id_and_created_at ON compliance_manageme
 
 CREATE INDEX i_dast_pre_scan_verification_steps_on_pre_scan_verification_id ON dast_pre_scan_verification_steps USING btree (dast_pre_scan_verification_id);
 
+CREATE INDEX i_dast_scanner_profiles_tags_on_scanner_profiles_id ON dast_scanner_profiles_tags USING btree (dast_scanner_profile_id);
+
 CREATE UNIQUE INDEX i_pm_licenses_on_spdx_identifier ON pm_licenses USING btree (spdx_identifier);
 
 CREATE UNIQUE INDEX i_pm_package_versions_on_package_id_and_version ON pm_package_versions USING btree (pm_package_id, version);
@@ -29090,6 +29114,8 @@ CREATE UNIQUE INDEX index_dast_profiles_on_project_id_and_name ON dast_profiles 
 CREATE UNIQUE INDEX index_dast_profiles_pipelines_on_ci_pipeline_id ON dast_profiles_pipelines USING btree (ci_pipeline_id);
 
 CREATE UNIQUE INDEX index_dast_scanner_profiles_on_project_id_and_name ON dast_scanner_profiles USING btree (project_id, name);
+
+CREATE INDEX index_dast_scanner_profiles_tags_on_tag_id ON dast_scanner_profiles_tags USING btree (tag_id);
 
 CREATE INDEX index_dast_site_profiles_on_dast_site_id ON dast_site_profiles USING btree (dast_site_id);
 
@@ -35411,6 +35437,9 @@ ALTER TABLE ONLY incident_management_timeline_event_tags
 
 ALTER TABLE ONLY user_callouts
     ADD CONSTRAINT fk_rails_ddfdd80f3d FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY dast_scanner_profiles_tags
+    ADD CONSTRAINT fk_rails_deb79b7f19 FOREIGN KEY (dast_scanner_profile_id) REFERENCES dast_scanner_profiles(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_feedback
     ADD CONSTRAINT fk_rails_debd54e456 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

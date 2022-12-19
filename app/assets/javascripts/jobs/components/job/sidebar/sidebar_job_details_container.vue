@@ -1,6 +1,7 @@
 <script>
 import { mapState } from 'vuex';
 import { GlBadge } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
@@ -79,7 +80,9 @@ export default {
     TAGS: __('Tags:'),
     TIMEOUT: __('Timeout'),
   },
-  RUNNER_HELP_URL: 'https://docs.gitlab.com/runner/register/index.html',
+  TIMEOUT_HELP_URL: helpPagePath('/ci/pipelines/settings.md', {
+    anchor: 'set-a-limit-for-how-long-jobs-can-run',
+  }),
 };
 </script>
 
@@ -96,7 +99,7 @@ export default {
     <detail-row v-if="job.queued_duration" :value="queuedDuration" :title="$options.i18n.QUEUED" />
     <detail-row
       v-if="hasTimeout"
-      :help-url="$options.RUNNER_HELP_URL"
+      :help-url="$options.TIMEOUT_HELP_URL"
       :value="timeout"
       data-testid="job-timeout"
       :title="$options.i18n.TIMEOUT"

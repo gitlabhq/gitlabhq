@@ -1,12 +1,12 @@
 ---
-# Suggestion: gitlab.Simplicity
+# Warning: gitlab.Simplicity
 #
 # Checks for words implying ease of use, to avoid cognitive dissonance for frustrated users.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: existence
 message: "Remove '%s'. Be precise instead of subjective."
-level: suggestion
+level: warning
 ignorecase: true
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html
 tokens:

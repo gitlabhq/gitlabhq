@@ -8625,3 +8625,28 @@
     <p data-sourcepos="1:1-1:60" dir="auto">Fernstraßen<wbr>bau<wbr>privat<wbr>finanzierungs<wbr>gesetz</wbr></wbr></wbr></wbr></p>
   wysiwyg: |-
     <p>Fernstraßenbauprivatfinanzierungsgesetz</p>
+08_05_00__gitlab_internal_extension_markdown__image_attributes__001:
+  canonical: |
+    <p><img src="https://gitlab.com/logo.png" width="100" height="100"></p>
+  static: |-
+    <p data-sourcepos="1:1-1:58" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100" height="100" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+08_05_00__gitlab_internal_extension_markdown__image_attributes__002:
+  canonical: |
+    <p><img src="https://gitlab.com/logo.png" width="100%"></p>
+  static: |-
+    <p data-sourcepos="1:1-1:46" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100%" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+08_05_00__gitlab_internal_extension_markdown__image_attributes__003:
+  canonical: |
+    <p><img src="https://gitlab.com/logo.png" height="100px"></p>
+  static: |-
+    <p data-sourcepos="1:1-1:48" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" height="100px" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+08_05_00__gitlab_internal_extension_markdown__image_attributes__004:
+  canonical: |
+    <p><img src="https://gitlab.com/logo.png" width="100" height="100"></p>
+  static: |-
+    <p data-sourcepos="1:1-1:60" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" width="100" height="100" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a></p>
+08_05_00__gitlab_internal_extension_markdown__image_attributes__005:
+  canonical: |
+    <p><img src="https://gitlab.com/logo.png"> {width="100" height="100"}</p>
+  static: |-
+    <p data-sourcepos="1:1-1:59" dir="auto"><a class="no-attachment-icon" href="https://gitlab.com/logo.png" target="_blank" rel="nofollow noreferrer noopener"><img src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" decoding="async" class="lazy" data-src="https://gitlab.com/logo.png"></a> {width="100" height="100"}</p>

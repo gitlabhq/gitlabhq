@@ -78,3 +78,33 @@
   skip_running_conformance_wysiwyg_tests: Example currently fails. See https://gitlab.com/gitlab-org/gitlab/-/issues/383866
   skip_running_snapshot_wysiwyg_html_tests: Example currently fails. See https://gitlab.com/gitlab-org/gitlab/-/issues/383866
   skip_running_snapshot_prosemirror_json_tests: Example currently fails. See https://gitlab.com/gitlab-org/gitlab/-/issues/383866
+08_05_00__gitlab_internal_extension_markdown__image_attributes__001:
+  skip_update_example_snapshot_html_wysiwyg: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_update_example_snapshot_prosemirror_json: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_conformance_wysiwyg_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_wysiwyg_html_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_prosemirror_json_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+08_05_00__gitlab_internal_extension_markdown__image_attributes__002:
+  skip_update_example_snapshot_html_wysiwyg: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_update_example_snapshot_prosemirror_json: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_conformance_wysiwyg_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_wysiwyg_html_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_prosemirror_json_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+08_05_00__gitlab_internal_extension_markdown__image_attributes__003:
+  skip_update_example_snapshot_html_wysiwyg: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_update_example_snapshot_prosemirror_json: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_conformance_wysiwyg_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_wysiwyg_html_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_prosemirror_json_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+08_05_00__gitlab_internal_extension_markdown__image_attributes__004:
+  skip_update_example_snapshot_html_wysiwyg: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_update_example_snapshot_prosemirror_json: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_conformance_wysiwyg_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_wysiwyg_html_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_prosemirror_json_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+08_05_00__gitlab_internal_extension_markdown__image_attributes__005:
+  skip_update_example_snapshot_html_wysiwyg: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_update_example_snapshot_prosemirror_json: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_conformance_wysiwyg_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_wysiwyg_html_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340
+  skip_running_snapshot_prosemirror_json_tests: WYSYWIG and prosemirror examples not generated correctly. See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106733#note_1206201340

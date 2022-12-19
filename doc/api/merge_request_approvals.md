@@ -85,6 +85,7 @@ Supported attributes:
 > - Pagination support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31011) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `approval_rules_pagination`. Enabled by default.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
 > - Pagination support [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366823) in GitLab 15.7. Feature flag `approval_rules_pagination` removed.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 15.8.
 
 You can request information about a project's approval rules using the following endpoint:
 
@@ -188,6 +189,7 @@ Supported attributes:
 
 > - Introduced in GitLab 13.7.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 1x.x.
 
 You can request information about a single project approval rules using the following endpoint:
 
@@ -289,6 +291,7 @@ Supported attributes:
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 1x.x.
 
 You can create project approval rules using the following endpoint:
 
@@ -309,6 +312,7 @@ Supported attributes:
 | `report_type`                       | string            | **{dotted-circle}** No       | The report type required when the rule type is `report_approver`. The supported report types are `license_scanning` and `code_coverage`. |
 | `rule_type`                         | string            | **{dotted-circle}** No       | The type of rule. `any_approver` is a pre-configured default rule with `approvals_required` at `0`. Other rules are `regular`. |
 | `user_ids`                          | Array             | **{dotted-circle}** No       | The IDs of users as approvers. |
+| `usernames`                         | string array      | **{dotted-circle}** No       | The usernames for this rule. |
 
 ```json
 {
@@ -414,6 +418,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 > - Moved to GitLab Premium in 13.9.
 > - [Removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357300) the Vulnerability-Check feature in GitLab 15.0.
 > - `applies_to_all_protected_branches` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335316) in GitLab 15.3.
+> - `usernames` property was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 1x.x.
 
 You can update project approval rules using the following endpoint:
 
@@ -436,6 +441,7 @@ Supported attributes:
 | `protected_branch_ids`              | Array             | **{dotted-circle}** No       | The IDs of protected branches to scope the rule by. To identify the ID, [use the API](protected_branches.md#list-protected-branches). |
 | `remove_hidden_groups`              | boolean           | **{dotted-circle}** No       | Whether hidden groups should be removed. |
 | `user_ids`                          | Array             | **{dotted-circle}** No       | The IDs of users as approvers. |
+| `usernames`                         | string array      | **{dotted-circle}** No       | The usernames for this rule. |
 
 ```json
 {
@@ -879,6 +885,7 @@ Supported attributes:
 | `approval_project_rule_id` | integer | **{dotted-circle}** No       | The ID of a project-level approval rule.        |
 | `group_ids`                | Array   | **{dotted-circle}** No       | The IDs of groups as approvers.                 |
 | `user_ids`                 | Array   | **{dotted-circle}** No       | The IDs of users as approvers.                  |
+| `usernames`                | string array  | **{dotted-circle}** No       | The usernames for this rule. |
 
 **Important:** When `approval_project_rule_id` is set, the `name`, `users` and
 `groups` of project-level rule are copied. The `approvals_required` specified
@@ -969,6 +976,7 @@ Supported attributes:
 | `group_ids`          | Array   | **{dotted-circle}** No       | The IDs of groups as approvers.                 |
 | `remove_hidden_groups` | boolean | **{dotted-circle}** No | Whether hidden groups should be removed. |
 | `user_ids`           | Array   | **{dotted-circle}** No       | The IDs of users as approvers.                  |
+| `usernames`          | string array      | **{dotted-circle}** No       | The usernames for this rule. |
 
 ```json
 {

@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
-  let_it_be(:project, reload: true) { create(:project, :repository) }
+RSpec.describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities, feature_category: :pipeline_execution do
+  let(:project) { create(:project, :test_repo) }
   let_it_be(:user) { create(:user) }
 
   let(:pipeline) do

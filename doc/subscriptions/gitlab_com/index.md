@@ -323,10 +323,17 @@ For details on upgrading your subscription tier, see
 
 ### Automatic subscription renewal
 
-When you enable automatic renewal, the subscription automatically renews on the
-expiration date without a gap in available service. An invoice is
-generated for the renewal and available for viewing or download on the
-[View invoices](https://customers.gitlab.com/receipts) page.
+When a subscription is set to auto-renew, it renews automatically on the
+expiration date without a gap in available service. Subscriptions purchased through Customers Portal or GitLab.com are set to auto-renew by default. The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal. You can view and download your renewal invoice on the
+[View invoices](https://customers.gitlab.com/receipts) page. If your account has a [saved credit card](../index.md#change-your-payment-method), the card is charged for the invoice amount. If we are unable to process a payment or the auto-renewal fails for any other reason, you have 14 days to renew your subscription. After that, your access is downgraded.
+
+#### Email notifications
+
+15 days before a subscription automatically renews, an email is sent with information about the renewal.
+
+- If your credit card is expired, the email tells you how to update it.
+- If you have any outstanding overages, the email tells you to contact our Sales team.
+- If there are no issues, the email specifies the names and quantity of the products being renewed. The email also includes the total amount you owe. If your usage increases or decreases before renewal, this amount can change.
 
 #### Enable or disable automatic subscription renewal
 

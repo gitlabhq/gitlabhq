@@ -2240,3 +2240,18 @@
 08_04_52__gitlab_internal_extension_markdown__migrated_golden_master_examples__word_break__001:
   spec_example_position: 749
   source_specification: gitlab
+08_05_00__gitlab_internal_extension_markdown__image_attributes__001:
+  spec_example_position: 750
+  source_specification: gitlab
+08_05_00__gitlab_internal_extension_markdown__image_attributes__002:
+  spec_example_position: 751
+  source_specification: gitlab
+08_05_00__gitlab_internal_extension_markdown__image_attributes__003:
+  spec_example_position: 752
+  source_specification: gitlab
+08_05_00__gitlab_internal_extension_markdown__image_attributes__004:
+  spec_example_position: 753
+  source_specification: gitlab
+08_05_00__gitlab_internal_extension_markdown__image_attributes__005:
+  spec_example_position: 754
+  source_specification: gitlab

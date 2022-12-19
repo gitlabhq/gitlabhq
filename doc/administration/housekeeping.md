@@ -45,11 +45,12 @@ be slow.
 
 ### Heuristical housekeeping
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 14.9 for the [manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger) [with a flag](feature_flags.md) named `optimized_housekeeping`. Disabled by default.
+> - [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/2634) in GitLab 14.9 for the [manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger) [with a flag](feature_flags.md) named `optimized_housekeeping`. Enabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/353607) in GitLab 14.10.
 
 FLAG:
-On self-managed GitLab, by default this feature is not available for the [manual trigger](#manual-trigger) and the [push-based trigger](#push-based-trigger).
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](feature_flags.md) named `optimize_repository`.
+
 To make it available, ask an administrator to [enable the feature flag](feature_flags.md) named `optimized_housekeeping`.
 
 The heuristical (or "opportunistic") housekeeping strategy analyzes the
@@ -78,6 +79,19 @@ Gitaly does this to offset the fact that optimizing those data structures takes
 more time the bigger they get. It is especially important in large
 monorepos (which receive a lot of traffic) to avoid optimizing them too
 frequently.
+
+You can change how often Gitaly is asked to optimize a repository.
+
+1. On the top bar, select **Main menu > Admin**.
+1. On the left sidebar, select **Settings > Repository**.
+1. Expand **Repository maintenance**.
+1. In the **Housekeeping** section, configure the housekeeping options.
+1. Select **Save changes**.
+
+- **Enable automatic repository housekeeping**: Regularly ask Gitaly to run repository optimization. If you
+  keep this setting disabled for a long time, Git repository access on your GitLab server becomes
+  slower and your repositories use more disk space.
+- **Optimize repository period**: Number of Git pushes after which Gitaly is asked to optimize a repository.
 
 ## Running housekeeping tasks
 
@@ -108,7 +122,12 @@ To trigger housekeeping tasks manually:
 This starts an asynchronous background worker for the project's repository. The
 background worker executes `git gc`, which performs a number of optimizations.
 
+<!--- start_remove The following content will be removed on remove_date: '2023-04-22' -->
+
 ### Push-based trigger
+
+FLAG:
+On self-managed GitLab, by default this feature is not available and superseded by [heuristical housekeeping](#heuristical-housekeeping). It is planned to be removed in 15.8. To enable the feature, ask an administrator to [disable the feature flag](feature_flags.md) named `optimize_repository`.
 
 GitLab automatically runs repository housekeeping tasks after a configured
 number of pushes:
