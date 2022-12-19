@@ -88,6 +88,7 @@ pre-push:
       run: echo "Changes to removals files detected. Checking removals..\n"; bundle exec rake gitlab:docs:check_removals
   scripts:
     "merge_conflicts":
+      skip: true # This is disabled by default. You can enable this check by adding skip: false in lefhook-local.yml https://github.com/evilmartians/lefthook/blob/master/docs/configuration.md#skip
       runner: bash
 pre-commit:
   parallel: true

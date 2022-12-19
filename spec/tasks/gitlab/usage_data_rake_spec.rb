@@ -70,8 +70,15 @@ RSpec.describe 'gitlab:usage data take tasks', :silence_stdout do
     end
 
     describe 'generate_ci_template_events' do
-      it "generates #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}" do
+      around do |example|
         FileUtils.rm_rf(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH)
+
+        example.run
+
+        `git checkout -- #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}`
+      end
+
+      it "generates #{Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH}" do
         run_rake_task('gitlab:usage_data:generate_ci_template_events')
 
         expect(File.exist?(Gitlab::UsageDataCounters::CiTemplateUniqueCounter::KNOWN_EVENTS_FILE_PATH)).to be true

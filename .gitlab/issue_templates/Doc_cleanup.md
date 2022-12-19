@@ -8,37 +8,33 @@
 * Feature development work should not use this template. Use the Feature Request template instead.
 -->
 
-If you are a community contributor, please **do not work on this issue if it is not assigned to you**.
+## Hi community contributors! :wave:
 
-If the issue is unassigned, in a comment, type `@gl-docsteam I would like to work on this issue.`
-A technical writer will assign the issue to you. Then you can begin.
-   
-If someone has already chosen this issue, choose another issue, or view docs
-[in the docs directory](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc)
-and open a merge request for any page you feel can be improved.
+Do you want to work on this issue?
 
-### To open a merge request and resolve the issue
+- **If the issue is assigned to someone already**, choose another issue.
 
-1. Review the [merge request guidelines for contributors](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#merge-request-guidelines-for-contributors).
+- **If the issue is unassigned**, in a comment, type `@gl-docsteam I would like to work on this issue` and a writer will assign it to you.
 
-1. Review the [commit message guidelines](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines).
-   Use three to five words for your commit message, start with message with a capital letter, and do not end it in a period.
-   Other commit messages can cause the pipeline to fail.
+## To resolve the issue
 
-1. Create a merge request by following the instructions for [how to update the docs](https://docs.gitlab.com/ee/development/documentation/workflow.html#how-to-update-the-docs).
+[Follow these instructions to create a merge request](https://docs.gitlab.com/ee/development/documentation/workflow.html#how-to-update-the-docs).
 
-   - Unless otherwise indicated, try to create only one merge request to address the issue.
-   - When you create the merge request, select the **Documentation** merge request description template.
-   - In the merge request's description, add a link to this issue.
+- Try to address the issue in a single merge request.
+- Try to stick to the scope of the issue. If you see other improvements that can be made in the file, open a separate merge request.
+- When you create the merge request, select the **Documentation** merge request description template.
+- In the merge request's description, add a link to this issue.
+- Follow the [commit message guidelines](https://docs.gitlab.com/ee/development/contributing/merge_request_workflow.html#commit-messages-guidelines).
+  Use three to five words for your commit message, start with message with a capital letter, and do **not** end it in a period.
+  Other commit messages can cause the pipeline to fail.
 
 Thank you again for contributing to the GitLab documentation!
 
 ### A few additional notes
 
 - If you were not assigned the issue, do not create a merge request. It will not be accepted.
-- If this issue is for a Hackathon, do not create the merge request before the Hackathon has started
-  or it will not count towards the Hackathon.
-- If you notice issues in the doc that you'd like to fix, but they're not part of the issue, open separate merge requests.
+- If this issue is for a Hackathon, merge requests created before the Hackathon has started
+  do not count towards the Hackathon.
 
 ## Documentation issue
 

@@ -234,7 +234,7 @@ export default {
     <gl-dropdown
       v-else
       id="milestone-value"
-      class="col-9 gl-pl-0"
+      class="gl-pl-0 gl-max-w-full"
       :toggle-class="dropdownClasses"
       :text="dropdownText"
       :loading="updateInProgress"
