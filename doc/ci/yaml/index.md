@@ -3747,7 +3747,7 @@ job:
 
 ### `services`
 
-Use `services` to specify an additional Docker image to run scripts in. The [`services` image](../services/index.md) is linked
+Use `services` to specify any additional Docker images that your scripts require to run successfully. The [`services` image](../services/index.md) is linked
 to the image specified in the [`image`](#image) keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the
@@ -3783,9 +3783,11 @@ test:
     - bundle exec rake spec
 ```
 
-In this example, the job launches a Ruby container. Then, from that container, the job launches
-another container that's running PostgreSQL. Then the job then runs scripts
-in that container.
+In this example, GitLab launches two containers for the job:
+
+- A Ruby container that runs the `script` commands.
+- A PostgreSQL container. The `script` commands in the Ruby container can connect to
+  the PostgreSQL database at the `db-postgrest` hostname.
 
 **Related topics**:
 

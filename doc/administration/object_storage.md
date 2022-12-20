@@ -536,7 +536,7 @@ supported by consolidated configuration form, refer to the following guides:
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
 | [Container Registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | **{check-circle}** Yes |
-| [Mattermost](https://docs.mattermost.com/administration/config-settings.html#file-storage)| **{dotted-circle}** No |
+| [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
 | [Packages](packages/index.md#use-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | **{check-circle}** Yes |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |

@@ -1,4 +1,4 @@
-import { GlIcon, GlLabel, GlAvatarsInline } from '@gitlab/ui';
+import { GlLabel, GlAvatarsInline } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
@@ -12,7 +12,6 @@ describe('WorkItemLinkChildMetadata', () => {
 
   const createComponent = ({
     allowsScopedLabels = true,
-    progress = 10,
     milestone = mockMilestone,
     assignees = mockAssignees,
     labels = mockLabels,
@@ -20,7 +19,6 @@ describe('WorkItemLinkChildMetadata', () => {
     wrapper = shallowMountExtended(WorkItemLinkChildMetadata, {
       propsData: {
         allowsScopedLabels,
-        progress,
         milestone,
         assignees,
         labels,
@@ -32,16 +30,7 @@ describe('WorkItemLinkChildMetadata', () => {
     createComponent();
   });
 
-  it('renders item progress', () => {
-    const progressEl = wrapper.findByTestId('item-progress');
-
-    expect(progressEl.exists()).toBe(true);
-    expect(progressEl.attributes('title')).toBe('Progress');
-    expect(progressEl.text().trim()).toBe('10%');
-    expect(progressEl.findComponent(GlIcon).props('name')).toBe('progress');
-  });
-
-  it('renders item milestone', () => {
+  it('renders milestone link button', () => {
     const milestoneLink = wrapper.findComponent(ItemMilestone);
 
     expect(milestoneLink.exists()).toBe(true);

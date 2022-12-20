@@ -941,6 +941,10 @@ If you want to stop using and disconnect the NFS server, you need to
 
 #### S3-compatible connection settings
 
+In GitLab 13.2 and later, you should use the
+[consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
+This section describes the earlier configuration format.
+
 See [the available connection settings for different providers](../object_storage.md#connection-settings).
 
 In Omnibus installations:

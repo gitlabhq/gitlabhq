@@ -57,9 +57,11 @@ This configuration relies on valid AWS credentials to be configured already.
 
 [Read more about using object storage with GitLab](object_storage.md).
 
-You should use the [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration). The following instructions apply to the original configuration format.
-
 ### Object Storage Settings
+
+In GitLab 13.2 and later, you should use the
+[consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
+This section describes the earlier configuration format.
 
 For source installations the following settings are nested under `uploads:` and then `object_store:`. On Omnibus GitLab installs they are prefixed by `uploads_object_store_`.
 
@@ -104,7 +106,7 @@ _The uploads are stored by default in
    ```
 
 1. Save the file and [reconfigure GitLab](restart_gitlab.md#omnibus-gitlab-reconfigure) for the changes to take effect.
-1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Migrate any existing local uploads to the object storage with the [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
 
 **In installations from source:**
 
@@ -127,4 +129,4 @@ _The uploads are stored by default in
    ```
 
 1. Save the file and [restart GitLab](restart_gitlab.md#installations-from-source) for the changes to take effect.
-1. Migrate any existing local uploads to the object storage using [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).
+1. Migrate any existing local uploads to the object storage with the [`gitlab:uploads:migrate:all` Rake task](raketasks/uploads/migrate.md).

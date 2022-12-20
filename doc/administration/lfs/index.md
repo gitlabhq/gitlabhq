@@ -66,9 +66,9 @@ You can also use external object storage in a private local network. For example
 [Read more about using object storage with GitLab](../object_storage.md).
 
 NOTE:
-In GitLab 13.2 and later, we recommend using the
+In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](../object_storage.md#consolidated-object-storage-configuration).
-This section describes the earlier configuration format.
+This section describes the earlier configuration format. [Migration steps still apply](#migrating-to-object-storage).
 
 1. User pushes an `lfs` file to the GitLab instance.
 1. GitLab-workhorse uploads the file directly to the external object storage.

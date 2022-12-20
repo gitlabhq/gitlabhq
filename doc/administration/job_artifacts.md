@@ -100,8 +100,7 @@ In a multi-server setup you must use one of the options to
 
 #### Object Storage Settings
 
-NOTE:
-In GitLab 13.2 and later, we recommend using the
+In GitLab 13.2 and later, you should use the
 [consolidated object storage settings](object_storage.md#consolidated-object-storage-configuration).
 This section describes the earlier configuration format.
 

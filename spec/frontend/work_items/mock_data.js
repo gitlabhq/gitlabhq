@@ -969,11 +969,6 @@ export const workItemObjectiveWithChild = {
       __typename: 'WorkItemWidgetHierarchy',
     },
     {
-      type: 'PROGRESS',
-      __typename: 'WorkItemWidgetProgress',
-      progress: 10,
-    },
-    {
       type: 'MILESTONE',
       __typename: 'WorkItemWidgetMilestone',
       milestone: mockMilestone,
