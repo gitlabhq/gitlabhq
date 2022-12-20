@@ -1,4 +1,4 @@
-package zipartifacts_test
+package zipartifacts
 
 import (
 	"bytes"
@@ -11,8 +11,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 	zip "gitlab.com/gitlab-org/golang-archive-zip"
-
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/zipartifacts"
 )
 
 func generateTestArchive(w io.Writer) error {
@@ -72,10 +70,10 @@ func TestGenerateZipMetadataFromFile(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	archive, err := zipartifacts.OpenArchive(ctx, f.Name())
+	archive, err := OpenArchive(ctx, f.Name())
 	require.NoError(t, err, "zipartifacts: OpenArchive failed")
 
-	err = zipartifacts.GenerateZipMetadata(&metaBuffer, archive)
+	err = GenerateZipMetadata(&metaBuffer, archive)
 	require.NoError(t, err, "zipartifacts: GenerateZipMetadata failed")
 
 	err = validateMetadata(&metaBuffer)
@@ -96,6 +94,6 @@ func TestErrNotAZip(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	_, err = zipartifacts.OpenArchive(ctx, f.Name())
-	require.Equal(t, zipartifacts.ErrorCode[zipartifacts.CodeNotZip], err, "OpenArchive requires a zip file")
+	_, err = OpenArchive(ctx, f.Name())
+	require.Equal(t, ErrorCode[CodeNotZip], err, "OpenArchive requires a zip file")
 }

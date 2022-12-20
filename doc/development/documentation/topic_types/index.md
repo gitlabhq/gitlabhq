@@ -28,7 +28,7 @@ If inline links are not sufficient, you can create a topic called **Related topi
 and include an unordered list of related topics. This topic should be above the Troubleshooting section.
 
 ```markdown
-# Related topics
+## Related topics
 
 - [Configure your pipeline](link-to-topic).
 - [Trigger a pipeline manually](link-to-topic).

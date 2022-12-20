@@ -212,6 +212,7 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build::Cache do
           paths: ['vendor/ruby'],
           untracked: true,
           policy: 'push',
+          unprotect: true,
           when: 'on_success'
         }
       end

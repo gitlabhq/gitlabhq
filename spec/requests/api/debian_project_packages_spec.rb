@@ -5,7 +5,17 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
   include HttpBasicAuthHelpers
   include WorkhorseHelpers
 
-  include_context 'Debian repository shared context', :project, true do
+  include_context 'Debian repository shared context', :project, false do
+    shared_examples 'accept GET request on private project with access to package registry for everyone' do
+      include_context 'Debian repository access', :private, :anonymous, :basic do
+        before do
+          container.project_feature.reload.update!(package_registry_access_level: ProjectFeature::PUBLIC)
+        end
+
+        it_behaves_like 'Debian packages GET request', :success
+      end
+    end
+
     context 'with invalid parameter' do
       let(:url) { "/projects/1/packages/debian/dists/with+space/InRelease" }
 
@@ -16,54 +26,63 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/Release.gpg" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNATURE-----/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/Release' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/Release" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Codename: fixture-distribution\n$/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/InRelease' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/InRelease" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^-----BEGIN PGP SIGNED MESSAGE-----/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/Packages' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Packages file/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/binary-:architecture/by-hash/SHA256/:file_sha256' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/binary-#{architecture.name}/by-hash/SHA256/#{component_file_older_sha256.file_sha256}" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
-    describe 'GET projects/:id/packages/debian/dists/*distribution/source/Sources' do
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/source/Sources' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/Sources" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete Sources file/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
-    describe 'GET projects/:id/packages/debian/dists/*distribution/source/by-hash/SHA256/:file_sha256' do
+    describe 'GET projects/:id/packages/debian/dists/*distribution/:component/source/by-hash/SHA256/:file_sha256' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/source/by-hash/SHA256/#{component_file_sources_older_sha256.file_sha256}" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/Packages' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/Packages" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /Description: This is an incomplete D-I Packages file/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/dists/*distribution/:component/debian-installer/binary-:architecture/by-hash/SHA256/:file_sha256' do
       let(:url) { "/projects/#{container.id}/packages/debian/dists/#{distribution.codename}/#{component.name}/debian-installer/binary-#{architecture.name}/by-hash/SHA256/#{component_file_di_older_sha256.file_sha256}" }
 
       it_behaves_like 'Debian packages read endpoint', 'GET', :success, /^Other SHA256$/
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone'
     end
 
     describe 'GET projects/:id/packages/debian/pool/:codename/:letter/:package_name/:package_version/:file_name' do
@@ -89,6 +108,10 @@ RSpec.describe API::DebianProjectPackages, feature_category: :package_registry d
             it_behaves_like 'bumping the package last downloaded at field'
           end
         end
+      end
+
+      it_behaves_like 'accept GET request on private project with access to package registry for everyone' do
+        let(:file_name) { 'sample_1.2.3~alpha2.dsc' }
       end
     end
 

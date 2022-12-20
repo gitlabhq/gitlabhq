@@ -1136,6 +1136,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
           it do
             is_expected.to all(a_hash_including(key: a_string_matching(/-protected$/)))
           end
+
+          context 'and the cache has the `unprotect` option' do
+            let(:options) do
+              { cache: [
+                { key: "key", paths: ["public"], policy: "pull-push", unprotect: true },
+                { key: "key2", paths: ["public"], policy: "pull-push", unprotect: true }
+              ] }
+            end
+
+            it do
+              is_expected.to all(a_hash_including(key: a_string_matching(/-non_protected$/)))
+            end
+          end
         end
 
         context 'when pipeline is not on a protected ref' do

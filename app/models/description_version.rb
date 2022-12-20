@@ -6,6 +6,8 @@ class DescriptionVersion < ApplicationRecord
 
   validate :exactly_one_issuable
 
+  delegate :resource_parent, to: :issuable
+
   def self.issuable_attrs
     %i(issue merge_request).freeze
   end

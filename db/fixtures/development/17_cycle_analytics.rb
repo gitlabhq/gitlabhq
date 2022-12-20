@@ -50,6 +50,17 @@ class Gitlab::Seeder::CycleAnalytics
   end
 
   def seed!
+    unless project.repository_exists?
+      puts
+      puts 'WARNING'
+      puts '======='
+      puts "Seeding #{self.class} is not possible because the given project (#{project.full_path}) doesn't have a repository."
+      puts 'Try specifying a project with working repository or omit the VSA_SEED_PROJECT_ID parameter so the seed script will automatically create one.'
+      puts
+
+      return
+    end
+
     create_developers!
     create_issues!
 
@@ -169,6 +180,7 @@ class Gitlab::Seeder::CycleAnalytics
     )
     project = FactoryBot.create(
       :project,
+      :repository,
       name: "Value Stream Management Project #{suffix}",
       path: "vsmp-#{suffix}",
       creator: admin,

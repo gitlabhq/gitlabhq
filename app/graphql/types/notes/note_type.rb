@@ -11,54 +11,65 @@ module Types
 
       implements(Types::ResolvableInterface)
 
-      field :id, ::Types::GlobalIDType[::Note], null: false,
-                                                description: 'ID of the note.'
+      field :id, ::Types::GlobalIDType[::Note],
+        null: false,
+        description: 'ID of the note.'
 
       field :project, Types::ProjectType,
-            null: true,
-            description: 'Project associated with the note.'
+        null: true,
+        description: 'Project associated with the note.'
 
       field :author, Types::UserType,
-            null: false,
-            description: 'User who wrote this note.'
+        null: false,
+        description: 'User who wrote this note.'
 
       field :system, GraphQL::Types::Boolean,
-            null: false,
-            description: 'Indicates whether this note was created by the system or by a user.'
+        null: false,
+        description: 'Indicates whether this note was created by the system or by a user.'
       field :system_note_icon_name,
-            GraphQL::Types::String,
-            null: true,
-            description: 'Name of the icon corresponding to a system note.'
+        GraphQL::Types::String,
+        null: true,
+        description: 'Name of the icon corresponding to a system note.'
 
       field :body, GraphQL::Types::String,
-            null: false,
-            method: :note,
-            description: 'Content of the note.'
+        null: false,
+        method: :note,
+        description: 'Content of the note.'
 
-      field :confidential, GraphQL::Types::Boolean, null: true,
-                                                    description: 'Indicates if this note is confidential.',
-                                                    method: :confidential?,
-                                                    deprecated: {
-                                                      reason: :renamed,
-                                                      replacement: 'internal',
-                                                      milestone: '15.5'
-                                                    }
+      field :confidential, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates if this note is confidential.',
+        method: :confidential?,
+        deprecated: {
+          reason: :renamed,
+          replacement: 'internal',
+          milestone: '15.5'
+        }
 
-      field :internal, GraphQL::Types::Boolean, null: true,
-                                                description: 'Indicates if this note is internal.',
-                                                method: :confidential?
+      field :internal, GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates if this note is internal.',
+        method: :confidential?
 
-      field :created_at, Types::TimeType, null: false,
-                                          description: 'Timestamp of the note creation.'
-      field :discussion, Types::Notes::DiscussionType, null: true,
-                                                       description: 'Discussion this note is a part of.'
-      field :position, Types::Notes::DiffPositionType, null: true,
-                                                       description: 'Position of this note on a diff.'
-      field :updated_at, Types::TimeType, null: false,
-                                          description: "Timestamp of the note's last activity."
+      field :created_at, Types::TimeType,
+        null: false,
+        description: 'Timestamp of the note creation.'
+      field :discussion, Types::Notes::DiscussionType,
+        null: true,
+        description: 'Discussion this note is a part of.'
+      field :position, Types::Notes::DiffPositionType,
+        null: true,
+        description: 'Position of this note on a diff.'
+      field :updated_at, Types::TimeType,
+        null: false,
+        description: "Timestamp of the note's last activity."
       field :url, GraphQL::Types::String,
-            null: true,
-            description: 'URL to view this Note in the Web UI.'
+        null: true,
+        description: 'URL to view this Note in the Web UI.'
+
+      field :system_note_metadata, Types::Notes::SystemNoteMetadataType,
+        null: true,
+        description: 'Metadata for the given note if it is a system note.'
 
       markdown_field :body_html, null: true, method: :note
 

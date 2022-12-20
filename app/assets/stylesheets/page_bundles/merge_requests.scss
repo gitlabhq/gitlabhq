@@ -1197,13 +1197,13 @@ $tabs-holder-z-index: 250;
 }
 
 .mr-section-container {
+  .media-body {
+    column-gap: 0;
+  }
+
   .state-container-action-buttons {
     @include media-breakpoint-up(md) {
       flex-direction: row-reverse;
-
-      .btn {
-        margin-left: auto;
-      }
     }
   }
 }

@@ -409,6 +409,7 @@ module QA
           fill_element(:reply_field, '')
           fill_element(:reply_field, initial_content.gsub(/(```suggestion:-0\+0\n).*(\n```)/, "\\1#{suggestion}\\2"))
           click_element(:comment_now_button)
+          wait_for_requests
         end
 
         def apply_suggestion_with_message(message)

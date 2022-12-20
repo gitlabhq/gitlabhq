@@ -88,25 +88,24 @@ export default {
     </template>
     <template v-if="!isLoading && !state.shouldBeRebased" #actions>
       <gl-button
+        v-if="showResolveButton"
+        :href="mr.conflictResolutionPath"
+        size="small"
+        variant="confirm"
+        class="gl-align-self-start"
+        data-testid="resolve-conflicts-button"
+      >
+        {{ s__('mrWidget|Resolve conflicts') }}
+      </gl-button>
+      <gl-button
         v-if="userPermissions.canMerge"
         size="small"
         variant="confirm"
         category="secondary"
         data-testid="merge-locally-button"
         class="js-check-out-modal-trigger gl-align-self-start"
-        :class="{ 'gl-mr-2': showResolveButton }"
       >
         {{ s__('mrWidget|Resolve locally') }}
-      </gl-button>
-      <gl-button
-        v-if="showResolveButton"
-        :href="mr.conflictResolutionPath"
-        size="small"
-        variant="confirm"
-        class="gl-mb-2 gl-md-mb-0 gl-align-self-start"
-        data-testid="resolve-conflicts-button"
-      >
-        {{ s__('mrWidget|Resolve conflicts') }}
       </gl-button>
     </template>
   </state-container>

@@ -1103,10 +1103,16 @@ job:
 
 ### `cache`
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0, caches are not shared between protected and unprotected branches.
+
 Use `cache` to specify a list of files and directories to
 cache between jobs. You can only use paths that are in the local working copy.
 
-Caching is shared between pipelines and jobs. Caches are restored before [artifacts](#artifacts).
+Caches are:
+
+- Shared between pipelines and jobs.
+- By default, not shared between [protected](../../user/project/protected_branches.md) and unprotected branches.
+- Restored before [artifacts](#artifacts).
 
 Learn more about caches in [Caching in GitLab CI/CD](../caching/index.md).
 
@@ -1318,6 +1324,33 @@ rspec:
       paths:
         - binaries/
   ```
+
+#### `cache:unprotect`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362114) in GitLab 15.8.
+
+Use `cache:unprotect` to set a cache to be shared between [protected](../../user/project/protected_branches.md)
+and unprotected branches.
+
+WARNING:
+When set to `true`, users without access to protected branches can read and write to
+cache keys used by protected branches.
+
+**Keyword type**: Job keyword. You can use it only as part of a job or in the
+[`default` section](#default).
+
+**Possible inputs**:
+
+- `true` or `false` (default).
+
+**Example of `cache:untracked`**:
+
+```yaml
+rspec:
+  script: test
+  cache:
+    unprotect: true
+```
 
 #### `cache:when`
 

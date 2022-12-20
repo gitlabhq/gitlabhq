@@ -103,6 +103,14 @@ function deferredInitialisation() {
   initCopyCodeButton();
   initGitlabVersionCheck();
 
+  // Init super sidebar
+  if (gon.use_new_navigation) {
+    // eslint-disable-next-line promise/catch-or-return
+    import('./super_sidebar/super_sidebar_bundle').then(({ initSuperSidebar }) => {
+      initSuperSidebar();
+    });
+  }
+
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   const glTooltipDelay = localStorage.getItem('gl-tooltip-delay');

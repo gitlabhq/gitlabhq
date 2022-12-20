@@ -1,12 +1,12 @@
 <script>
 import { CHILD_VIEW, TRACKING_CATEGORIES } from '~/pipelines/constants';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import Tracking from '~/tracking';
 import PipelinesTimeago from './time_ago.vue';
 
 export default {
   components: {
-    CiBadge,
+    CiBadgeLink,
     PipelinesTimeago,
   },
   mixins: [Tracking.mixin()],
@@ -38,7 +38,7 @@ export default {
 
 <template>
   <div>
-    <ci-badge
+    <ci-badge-link
       class="gl-mb-3"
       :status="pipelineStatus"
       :show-text="!isChildView"

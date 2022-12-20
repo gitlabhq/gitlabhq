@@ -248,40 +248,37 @@ enabled a feature flag for [moved sidebar actions](../project/merge_requests/ind
 The following table presents the events that generate notifications for issues, merge requests, and
 epics:
 
-| Event                  | Sent to |
-|------------------------|---------|
-| Change milestone issue | Subscribers and participants mentioned. |
-| Change milestone merge request | Subscribers and participants mentioned. |
-| Close epic             |         |
-| Close issue            |         |
-| Close merge request    |         |
-| Failed pipeline        | The author of the pipeline. |
-| Fixed pipeline         | The author of the pipeline. Enabled by default. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1._ |
-| Issue due              | Participants and Custom notification level with this event selected. |
-| Merge merge request    |         |
-| Merge when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4._ |
-| Merge request [marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10._ |
-| New epic               |         |
-| New issue              |         |
-| New merge request      |         |
-| New note               | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
-| Push to merge request  | Participants and Custom notification level with this event selected. |
-| Reassign issue         | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Reassign merge request | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
-| Remove milestone issue | Subscribers and participants mentioned. |
-| Remove milestone merge request | Subscribers and participants mentioned. |
-| Reopen epic            |         |
-| Reopen issue           |         |
-| Reopen merge request   |         |
-| Successful pipeline    | The author of the pipeline, with Custom notification level for successful pipelines. If the pipeline failed previously, a "Fixed pipeline" message is sent for the first successful pipeline after the failure, and then a "Successful pipeline" message for any further successful pipelines. |
-
-If the title or description of an issue or merge request is
-changed, notifications are sent to any **new** mentions by username as
-if they had been mentioned in the original text.
-
-If an open merge request becomes unmergeable due to conflict, its author is notified about the cause.
-If a user has also set the merge request to automatically merge when pipeline succeeds,
-then that user is also notified.
+| Type | Event | Sent to |
+|------|-------|---------|
+| Epic | Closed | Subscribers and participants mentioned. |
+| Epic | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
+| Epic | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
+| Epic | Reopened | Subscribers and participants mentioned. |
+| Issue | Closed | Subscribers and participants mentioned. |
+| Issue | Due | Participants and Custom notification level with this event selected. |
+| Issue | Milestone changed | Subscribers and participants mentioned. |
+| Issue | Milestone removed | Subscribers and participants mentioned. |
+| Issue | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
+| Issue | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
+| Issue | Title or description changed | Any new mentions by username. |
+| Issue | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
+| Issue | Reopened | Subscribers and participants mentioned. |
+| Merge Request | Closed | Subscribers and participants mentioned. |
+| Merge Request | Conflict | Author and any user that has set the merge request to automatically merge when pipeline succeeds. |
+| Merge Request | [Marked as ready](../project/merge_requests/drafts.md) | Watchers and participants. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15332) in GitLab 13.10._ |
+| Merge Request | Merged | Subscribers and participants mentioned. |
+| Merge Request | Merged when pipeline succeeds | Author, Participants, Watchers, Subscribers, and Custom notification level with this event selected. Custom notification level is ignored for Author, Watchers and Subscribers. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/211961) in GitLab 13.4._ |
+| Merge Request | Milestone changed | Subscribers and participants mentioned. |
+| Merge Request | Milestone removed | Subscribers and participants mentioned. |
+| Merge Request | New | Anyone mentioned by username in the description, with notification level "Mention" or higher. |
+| Merge Request | New note | Participants, Watchers, Subscribers, and Custom notification level with this event selected. Also anyone mentioned by username in the comment, with notification level "Mention" or higher. |
+| Merge Request | Pushed | Participants and Custom notification level with this event selected. |
+| Merge Request | Reassigned | Participants, Watchers, Subscribers, Custom notification level with this event selected, and the old assignee. |
+| Merge Request | Reopened | Subscribers and participants mentioned. |
+| Merge Request | Title or description changed | Any new mentions by username. |
+| Pipeline | Failed | The author of the pipeline. |
+| Pipeline | Fixed | The author of the pipeline. Enabled by default. _[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24309) in GitLab 13.1._ |
+| Pipeline | Successful | The author of the pipeline, with Custom notification level for successful pipelines. If the pipeline failed previously, a "Fixed pipeline" message is sent for the first successful pipeline after the failure, and then a "Successful pipeline" message for any further successful pipelines. |
 
 By default, you don't receive notifications for issues, merge requests, or epics created by yourself.
 To always receive notifications on your own issues, merge requests, and so on, turn on

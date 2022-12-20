@@ -1,4 +1,4 @@
-package objectstore_test
+package objectstore
 
 import (
 	"context"
@@ -17,7 +17,6 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -50,7 +49,7 @@ func TestS3ObjectUpload(t *testing.T) {
 			objectName := filepath.Join(tmpDir, "s3-test-data")
 			ctx, cancel := context.WithCancel(context.Background())
 
-			object, err := objectstore.NewS3Object(objectName, creds, config)
+			object, err := NewS3Object(objectName, creds, config)
 			require.NoError(t, err)
 
 			// copy data
@@ -107,7 +106,7 @@ func TestConcurrentS3ObjectUpload(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			object, err := objectstore.NewS3Object(objectName, creds, config)
+			object, err := NewS3Object(objectName, creds, config)
 			require.NoError(t, err)
 
 			// copy data
@@ -134,7 +133,7 @@ func TestS3ObjectUploadCancel(t *testing.T) {
 
 	objectName := filepath.Join(tmpDir, "s3-test-data")
 
-	object, err := objectstore.NewS3Object(objectName, creds, config)
+	object, err := NewS3Object(objectName, creds, config)
 
 	require.NoError(t, err)
 
@@ -155,7 +154,7 @@ func TestS3ObjectUploadLimitReached(t *testing.T) {
 	tmpDir := t.TempDir()
 
 	objectName := filepath.Join(tmpDir, "s3-test-data")
-	object, err := objectstore.NewS3Object(objectName, creds, config)
+	object, err := NewS3Object(objectName, creds, config)
 	require.NoError(t, err)
 
 	_, err = object.Consume(context.Background(), &failedReader{}, deadline)

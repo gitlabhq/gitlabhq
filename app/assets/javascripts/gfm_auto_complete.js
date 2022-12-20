@@ -39,8 +39,18 @@ export const CONTACTS_REMOVE_COMMAND = '/remove_contacts';
  * @param string user input
  * @return {string} escaped user input
  */
-function escape(string) {
-  return lodashEscape(string).replace(/\$/g, '&dollar;');
+export function escape(string) {
+  // To prevent double (or multiple) enconding attack
+  // Decode the user input repeatedly prior to escaping the final decoded string.
+  let encodedString = string;
+  let decodedString = decodeURIComponent(encodedString);
+
+  while (decodedString !== encodedString) {
+    encodedString = decodeURIComponent(decodedString);
+    decodedString = decodeURIComponent(encodedString);
+  }
+
+  return lodashEscape(decodedString.replace(/\$/g, '&dollar;'));
 }
 
 export function showAndHideHelper($input, alias = '') {
@@ -106,6 +116,7 @@ export const defaultAutocompleteConfig = {
   issues: true,
   mergeRequests: true,
   epics: true,
+  iterations: true,
   milestones: true,
   labels: true,
   snippets: true,
@@ -208,6 +219,10 @@ class GfmAutoComplete {
           } else {
             [[referencePrefix]] = value.params;
             if (/^[@%~]/.test(referencePrefix)) {
+              tpl += '<%- referencePrefix %>';
+            } else if (/^[*]/.test(referencePrefix)) {
+              // EE-ONLY
+              referencePrefix = '*iteration:';
               tpl += '<%- referencePrefix %>';
             }
           }
@@ -883,7 +898,8 @@ class GfmAutoComplete {
     const atSymbolsWithBar = Object.keys(controllers)
       .join('|')
       .replace(/[$]/, '\\$&')
-      .replace(/([[\]:])/g, '\\$1');
+      .replace(/([[\]:])/g, '\\$1')
+      .replace(/([*])/g, '\\$1');
 
     const atSymbolsWithoutBar = Object.keys(controllers).join('');
     const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
@@ -912,6 +928,7 @@ GfmAutoComplete.atTypeMap = {
   '#': 'issues',
   '!': 'mergeRequests',
   '&': 'epics',
+  '*iteration:': 'iterations',
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',

@@ -12080,6 +12080,33 @@ Tags for a given deployment.
 | <a id="deploymenttagname"></a>`name` | [`String`](#string) | Name of this git tag. |
 | <a id="deploymenttagpath"></a>`path` | [`String`](#string) | Path for this tag. |
 
+### `DescriptionVersion`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="descriptionversioncandelete"></a>`canDelete` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversiondeletepath"></a>`deletePath` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversiondeleted"></a>`deleted` **{warning-solid}** | [`Boolean`](#boolean) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversiondescription"></a>`description` | [`String`](#string) | Content of the given description version. |
+| <a id="descriptionversiondiffpath"></a>`diffPath` **{warning-solid}** | [`String`](#string) | **Deprecated** in 15.7. For backwards compatibility with REST API version and to be removed in a next iteration. |
+| <a id="descriptionversionid"></a>`id` | [`DescriptionVersionID!`](#descriptionversionid) | ID of the description version. |
+
+#### Fields with arguments
+
+##### `DescriptionVersion.diff`
+
+Description diff between versions.
+
+Returns [`String`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="descriptionversiondiffversionid"></a>`versionId` | [`DescriptionVersionID`](#descriptionversionid) | ID of a previous version to compare. If not specified first previous version is used. |
+
 ### `Design`
 
 A single design.
@@ -16357,6 +16384,7 @@ Represents the network policy.
 | <a id="noteresolvedby"></a>`resolvedBy` | [`UserCore`](#usercore) | User who resolved the object. |
 | <a id="notesystem"></a>`system` | [`Boolean!`](#boolean) | Indicates whether this note was created by the system or by a user. |
 | <a id="notesystemnoteiconname"></a>`systemNoteIconName` | [`String`](#string) | Name of the icon corresponding to a system note. |
+| <a id="notesystemnotemetadata"></a>`systemNoteMetadata` | [`SystemNoteMetadata`](#systemnotemetadata) | Metadata for the given note if it is a system note. |
 | <a id="noteupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the note's last activity. |
 | <a id="noteurl"></a>`url` | [`String`](#string) | URL to view this Note in the Web UI. |
 | <a id="noteuserpermissions"></a>`userPermissions` | [`NotePermissions!`](#notepermissions) | Permissions for the current user on the resource. |
@@ -19548,9 +19576,18 @@ Represents a Suggested Reviewers result set.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="suggestedreviewerstypereviewers"></a>`reviewers` | [`[String!]!`](#string) | List of reviewers. |
-| <a id="suggestedreviewerstypetopn"></a>`topN` | [`Int`](#int) | Number of reviewers returned. |
-| <a id="suggestedreviewerstypeversion"></a>`version` | [`String`](#string) | Suggested reviewer version. |
+| <a id="suggestedreviewerstypeaccepted"></a>`accepted` | [`[String!]`](#string) | List of accepted reviewer usernames. |
+| <a id="suggestedreviewerstypesuggested"></a>`suggested` | [`[String!]!`](#string) | List of suggested reviewer usernames. |
+
+### `SystemNoteMetadata`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="systemnotemetadataaction"></a>`action` | [`String`](#string) | System note metadata action. |
+| <a id="systemnotemetadatadescriptionversion"></a>`descriptionVersion` | [`DescriptionVersion`](#descriptionversion) | Version of the changed description. |
+| <a id="systemnotemetadataid"></a>`id` | [`SystemNoteMetadataID!`](#systemnotemetadataid) | Global ID of the specific system note metadata. |
 
 ### `TaskCompletionStatus`
 
@@ -23361,6 +23398,12 @@ A `DependencyProxyManifestID` is a global ID. It is encoded as a string.
 
 An example `DependencyProxyManifestID` is: `"gid://gitlab/DependencyProxy::Manifest/1"`.
 
+### `DescriptionVersionID`
+
+A `DescriptionVersionID` is a global ID. It is encoded as a string.
+
+An example `DescriptionVersionID` is: `"gid://gitlab/DescriptionVersion/1"`.
+
 ### `DesignManagementDesignAtVersionID`
 
 A `DesignManagementDesignAtVersionID` is a global ID. It is encoded as a string.
@@ -23697,6 +23740,12 @@ An example `SnippetID` is: `"gid://gitlab/Snippet/1"`.
 ### `String`
 
 Represents textual data as UTF-8 character sequences. This type is most often used by GraphQL to represent free-form human-readable text.
+
+### `SystemNoteMetadataID`
+
+A `SystemNoteMetadataID` is a global ID. It is encoded as a string.
+
+An example `SystemNoteMetadataID` is: `"gid://gitlab/SystemNoteMetadata/1"`.
 
 ### `TerraformStateID`
 

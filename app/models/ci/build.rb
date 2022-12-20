@@ -884,8 +884,9 @@ module Ci
 
       return cache unless project.ci_separated_caches
 
-      type_suffix = pipeline.protected_ref? ? 'protected' : 'non_protected'
       cache.map do |entry|
+        type_suffix = !entry[:unprotect] && pipeline.protected_ref? ? 'protected' : 'non_protected'
+
         entry.merge(key: "#{entry[:key]}-#{type_suffix}")
       end
     end

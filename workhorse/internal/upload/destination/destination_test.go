@@ -1,4 +1,4 @@
-package destination_test
+package destination
 
 import (
 	"context"
@@ -17,12 +17,11 @@ import (
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
 func testDeadline() time.Time {
-	return time.Now().Add(destination.DefaultObjectStoreTimeout)
+	return time.Now().Add(DefaultObjectStoreTimeout)
 }
 
 func requireFileGetsRemovedAsync(t *testing.T, filePath string) {
@@ -44,10 +43,10 @@ func TestUploadWrongSize(t *testing.T) {
 
 	tmpFolder := t.TempDir()
 
-	opts := &destination.UploadOpts{LocalTempPath: tmpFolder}
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, "upload", opts)
+	opts := &UploadOpts{LocalTempPath: tmpFolder}
+	fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize+1, "upload", opts)
 	require.Error(t, err)
-	_, isSizeError := err.(destination.SizeError)
+	_, isSizeError := err.(SizeError)
 	require.True(t, isSizeError, "Should fail with SizeError")
 	require.Nil(t, fh)
 }
@@ -58,10 +57,10 @@ func TestUploadWithKnownSizeExceedLimit(t *testing.T) {
 
 	tmpFolder := t.TempDir()
 
-	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
+	opts := &UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
+	fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
 	require.Error(t, err)
-	_, isSizeError := err.(destination.SizeError)
+	_, isSizeError := err.(SizeError)
 	require.True(t, isSizeError, "Should fail with SizeError")
 	require.Nil(t, fh)
 }
@@ -72,9 +71,9 @@ func TestUploadWithUnknownSizeExceedLimit(t *testing.T) {
 
 	tmpFolder := t.TempDir()
 
-	opts := &destination.UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), -1, "upload", opts)
-	require.Equal(t, err, destination.ErrEntityTooLarge)
+	opts := &UploadOpts{LocalTempPath: tmpFolder, MaximumSize: test.ObjectSize - 1}
+	fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), -1, "upload", opts)
+	require.Equal(t, err, ErrEntityTooLarge)
 	require.Nil(t, fh)
 }
 
@@ -94,7 +93,7 @@ func TestUploadWrongETag(t *testing.T) {
 
 			objectURL := ts.URL + test.ObjectPath
 
-			opts := &destination.UploadOpts{
+			opts := &UploadOpts{
 				RemoteID:        "test-file",
 				RemoteURL:       objectURL,
 				PresignedPut:    objectURL + "?Signature=ASignature",
@@ -110,7 +109,7 @@ func TestUploadWrongETag(t *testing.T) {
 				osStub.InitiateMultipartUpload(test.ObjectPath)
 			}
 			ctx, cancel := context.WithCancel(context.Background())
-			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
+			fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", opts)
 			require.Nil(t, fh)
 			require.Error(t, err)
 			require.Equal(t, 1, osStub.PutsCnt(), "File not uploaded")
@@ -146,7 +145,7 @@ func TestUpload(t *testing.T) {
 
 	for _, spec := range tests {
 		t.Run(spec.name, func(t *testing.T) {
-			var opts destination.UploadOpts
+			var opts UploadOpts
 			var expectedDeletes, expectedPuts int
 
 			osStub, ts := test.StartObjectStore()
@@ -187,7 +186,7 @@ func TestUpload(t *testing.T) {
 			ctx, cancel := context.WithCancel(context.Background())
 			defer cancel()
 
-			fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
+			fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 			require.NoError(t, err)
 			require.NotNil(t, fh)
 
@@ -206,7 +205,7 @@ func TestUpload(t *testing.T) {
 			}
 
 			require.Equal(t, test.ObjectSize, fh.Size)
-			if destination.FIPSEnabled() {
+			if FIPSEnabled() {
 				require.Empty(t, fh.MD5())
 			} else {
 				require.Equal(t, test.ObjectMD5, fh.MD5())
@@ -255,7 +254,7 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 			name:        "unknown object size with limit",
 			objectSize:  -1,
 			maxSize:     test.ObjectSize - 1,
-			expectedErr: destination.ErrEntityTooLarge,
+			expectedErr: ErrEntityTooLarge,
 		},
 	}
 
@@ -269,12 +268,12 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 			defer cancel()
 
 			remoteObject := "tmp/test-file/1"
-			opts := destination.UploadOpts{
+			opts := UploadOpts{
 				RemoteID:           "test-file",
 				Deadline:           testDeadline(),
 				UseWorkhorseClient: true,
 				RemoteTempObjectID: remoteObject,
-				ObjectStorageConfig: destination.ObjectStorageConfig{
+				ObjectStorageConfig: ObjectStorageConfig{
 					Provider:      "AWS",
 					S3Credentials: s3Creds,
 					S3Config:      s3Config,
@@ -282,7 +281,7 @@ func TestUploadWithS3WorkhorseClient(t *testing.T) {
 				MaximumSize: tc.maxSize,
 			}
 
-			_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), tc.objectSize, "upload", &opts)
+			_, err := Upload(ctx, strings.NewReader(test.ObjectContent), tc.objectSize, "upload", &opts)
 
 			if tc.expectedErr == nil {
 				require.NoError(t, err)
@@ -302,19 +301,19 @@ func TestUploadWithAzureWorkhorseClient(t *testing.T) {
 	defer cancel()
 
 	remoteObject := "tmp/test-file/1"
-	opts := destination.UploadOpts{
+	opts := UploadOpts{
 		RemoteID:           "test-file",
 		Deadline:           testDeadline(),
 		UseWorkhorseClient: true,
 		RemoteTempObjectID: remoteObject,
-		ObjectStorageConfig: destination.ObjectStorageConfig{
+		ObjectStorageConfig: ObjectStorageConfig{
 			Provider:      "AzureRM",
 			URLMux:        mux,
 			GoCloudConfig: config.GoCloudConfig{URL: "azblob://test-container"},
 		},
 	}
 
-	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
+	_, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 	require.NoError(t, err)
 
 	test.GoCloudObjectExists(t, bucketDir, remoteObject)
@@ -327,19 +326,19 @@ func TestUploadWithUnknownGoCloudScheme(t *testing.T) {
 	mux := new(blob.URLMux)
 
 	remoteObject := "tmp/test-file/1"
-	opts := destination.UploadOpts{
+	opts := UploadOpts{
 		RemoteID:           "test-file",
 		Deadline:           testDeadline(),
 		UseWorkhorseClient: true,
 		RemoteTempObjectID: remoteObject,
-		ObjectStorageConfig: destination.ObjectStorageConfig{
+		ObjectStorageConfig: ObjectStorageConfig{
 			Provider:      "SomeCloud",
 			URLMux:        mux,
 			GoCloudConfig: config.GoCloudConfig{URL: "foo://test-container"},
 		},
 	}
 
-	_, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
+	_, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 	require.Error(t, err)
 }
 
@@ -351,7 +350,7 @@ func TestUploadMultipartInBodyFailure(t *testing.T) {
 	// this is the only way to get an in-body failure from our ObjectStoreStub
 	objectPath := "/bucket-but-no-object-key"
 	objectURL := ts.URL + objectPath
-	opts := destination.UploadOpts{
+	opts := UploadOpts{
 		RemoteID:                   "test-file",
 		RemoteURL:                  objectURL,
 		PartSize:                   test.ObjectSize,
@@ -365,7 +364,7 @@ func TestUploadMultipartInBodyFailure(t *testing.T) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	fh, err := destination.Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
+	fh, err := Upload(ctx, strings.NewReader(test.ObjectContent), test.ObjectSize, "upload", &opts)
 	require.Nil(t, fh)
 	require.Error(t, err)
 	require.EqualError(t, err, test.MultipartUploadInternalError().Error())
@@ -405,20 +404,20 @@ func TestUploadRemoteFileWithLimit(t *testing.T) {
 			testData:    test.ObjectContent,
 			objectSize:  -1,
 			maxSize:     test.ObjectSize - 1,
-			expectedErr: destination.ErrEntityTooLarge,
+			expectedErr: ErrEntityTooLarge,
 		},
 		{
 			name:        "large object with unknown size with limit",
 			testData:    string(make([]byte, 20000)),
 			objectSize:  -1,
 			maxSize:     19000,
-			expectedErr: destination.ErrEntityTooLarge,
+			expectedErr: ErrEntityTooLarge,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			var opts destination.UploadOpts
+			var opts UploadOpts
 
 			for _, remoteType := range remoteTypes {
 				osStub, ts := test.StartObjectStore()
@@ -454,7 +453,7 @@ func TestUploadRemoteFileWithLimit(t *testing.T) {
 				ctx, cancel := context.WithCancel(context.Background())
 				defer cancel()
 
-				fh, err := destination.Upload(ctx, strings.NewReader(tc.testData), tc.objectSize, "upload", &opts)
+				fh, err := Upload(ctx, strings.NewReader(tc.testData), tc.objectSize, "upload", &opts)
 
 				if tc.expectedErr == nil {
 					require.NoError(t, err)
@@ -468,7 +467,7 @@ func TestUploadRemoteFileWithLimit(t *testing.T) {
 	}
 }
 
-func checkFileHandlerWithFields(t *testing.T, fh *destination.FileHandler, fields map[string]string, prefix string) {
+func checkFileHandlerWithFields(t *testing.T, fh *FileHandler, fields map[string]string, prefix string) {
 	key := func(field string) string {
 		if prefix == "" {
 			return field
@@ -482,7 +481,7 @@ func checkFileHandlerWithFields(t *testing.T, fh *destination.FileHandler, field
 	require.Equal(t, fh.RemoteURL, fields[key("remote_url")])
 	require.Equal(t, fh.RemoteID, fields[key("remote_id")])
 	require.Equal(t, strconv.FormatInt(test.ObjectSize, 10), fields[key("size")])
-	if destination.FIPSEnabled() {
+	if FIPSEnabled() {
 		require.Empty(t, fields[key("md5")])
 	} else {
 		require.Equal(t, test.ObjectMD5, fields[key("md5")])

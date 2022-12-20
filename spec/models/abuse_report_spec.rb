@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe AbuseReport do
+RSpec.describe AbuseReport, feature_category: :insider_threat do
   let_it_be(:report, reload: true) { create(:abuse_report) }
   let_it_be(:user, reload: true) { create(:admin) }
 
@@ -24,6 +24,7 @@ RSpec.describe AbuseReport do
     it { is_expected.to validate_presence_of(:user) }
     it { is_expected.to validate_presence_of(:message) }
     it { is_expected.to validate_uniqueness_of(:user_id).with_message('has already been reported') }
+    it { is_expected.to validate_presence_of(:category) }
   end
 
   describe '#remove_user' do
@@ -53,5 +54,22 @@ RSpec.describe AbuseReport do
 
       report.notify
     end
+  end
+
+  describe 'enums' do
+    let(:categories) do
+      {
+        spam: 1,
+        offensive: 2,
+        phishing: 3,
+        crypto: 4,
+        credentials: 5,
+        copyright: 6,
+        malware: 7,
+        other: 8
+      }
+    end
+
+    it { is_expected.to define_enum_for(:category).with_values(**categories) }
   end
 end

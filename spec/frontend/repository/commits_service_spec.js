@@ -4,6 +4,7 @@ import { loadCommits, isRequested, resetRequestedCommits } from '~/repository/co
 import httpStatus from '~/lib/utils/http_status';
 import { createAlert } from '~/flash';
 import { I18N_COMMIT_DATA_FETCH_ERROR } from '~/repository/constants';
+import { refWithSpecialCharMock, encodedRefWithSpecialCharMock } from './mock_data';
 
 jest.mock('~/flash');
 
@@ -39,10 +40,11 @@ describe('commits service', () => {
     expect(axios.get).toHaveBeenCalledWith(testUrl, { params: { format: 'json', offset } });
   });
 
-  it('encodes the path correctly', async () => {
-    await requestCommits(1, 'some-project', 'with $peci@l ch@rs/');
+  it('encodes the path and ref', async () => {
+    const encodedUrl = `/some-project/-/refs/${encodedRefWithSpecialCharMock}/logs_tree/with%20%24peci%40l%20ch%40rs%2F`;
 
-    const encodedUrl = '/some-project/-/refs/main/logs_tree/with%20%24peci%40l%20ch%40rs%2F';
+    await requestCommits(1, 'some-project', 'with $peci@l ch@rs/', refWithSpecialCharMock);
+
     expect(axios.get).toHaveBeenCalledWith(encodedUrl, expect.anything());
   });
 

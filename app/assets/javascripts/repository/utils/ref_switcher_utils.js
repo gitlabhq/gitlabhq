@@ -24,7 +24,12 @@ export function generateRefDestinationPath(projectRootPath, selectedRef) {
     [, namespace, , target] = match;
   }
 
-  const destinationPath = joinPaths(projectRootPath, namespace, selectedRef, target);
+  const destinationPath = joinPaths(
+    projectRootPath,
+    namespace,
+    encodeURIComponent(selectedRef),
+    target,
+  );
 
   return `${destinationPath}${window.location.hash}`;
 }

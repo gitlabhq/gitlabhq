@@ -1699,7 +1699,8 @@ module Gitlab
               untracked: true,
               key: 'key',
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1723,7 +1724,8 @@ module Gitlab
               untracked: true,
               key: { files: ['file'] },
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1749,14 +1751,16 @@ module Gitlab
                 untracked: true,
                 key: 'keya',
                 policy: 'pull-push',
-                when: 'on_success'
+                when: 'on_success',
+                unprotect: false
               },
               {
                 paths: ['logs/', 'binaries/'],
                 untracked: true,
                 key: 'key',
                 policy: 'pull-push',
-                when: 'on_success'
+                when: 'on_success',
+                unprotect: false
               }
             ]
           )
@@ -1783,7 +1787,8 @@ module Gitlab
               untracked: true,
               key: { files: ['file'] },
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1808,7 +1813,8 @@ module Gitlab
               untracked: true,
               key: { files: ['file'], prefix: 'prefix' },
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
 
@@ -1831,7 +1837,8 @@ module Gitlab
               untracked: false,
               key: 'local',
               policy: 'pull-push',
-              when: 'on_success'
+              when: 'on_success',
+              unprotect: false
             ])
         end
       end

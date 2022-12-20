@@ -1,13 +1,13 @@
 ---
-# Warning: gitlab.Uppercase
+# Suggestion: gitlab.Uppercase
 #
 # Checks for use of all uppercase letters with unknown reason.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: conditional
-message: "Instead of uppercase for '%s', use lowercase or backticks (`) if possible. Otherwise, add this word or acronym to the rule's exception list."
+message: "Instead of uppercase for '%s', use lowercase or backticks (`) if possible. Otherwise, ask a Technical Writer to add this word or acronym to the rule's exception list."
 link: https://docs.gitlab.com/ee/development/documentation/testing.html#vale-uppercase-acronym-test
-level: warning
+level: suggestion
 ignorecase: false
 # Ensures that the existence of 'first' implies the existence of 'second'.
 first: '\b([A-Z]{3,5})\b'

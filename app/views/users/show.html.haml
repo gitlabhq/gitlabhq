@@ -23,9 +23,7 @@
             icon: 'error',
             button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: s_('UserProfile|Already reported for abuse'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
         - else
-          = render Pajamas::ButtonComponent.new(href: new_abuse_report_path(user_id: @user.id, ref_url: request.referer),
-            icon: 'error',
-            button_options: { class: 'gl-flex-grow-1 gl-mx-1 has-tooltip', title: _('Report abuse to administrator'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' }})
+          #js-report-abuse{ data: { form_submit_path: add_category_abuse_reports_path, user_id: @user.id, reported_from_url: user_url(@user) } }
       - verified_gpg_keys = @user.gpg_keys.select(&:verified?)
       - if verified_gpg_keys.any?
         = render Pajamas::ButtonComponent.new(href: user_gpg_keys_path,

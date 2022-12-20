@@ -1,4 +1,4 @@
-package objectstore_test
+package objectstore
 
 import (
 	"context"
@@ -11,7 +11,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -48,7 +47,7 @@ func TestMultipartUploadWithUpcaseETags(t *testing.T) {
 
 	deadline := time.Now().Add(testTimeout)
 
-	m, err := objectstore.NewMultipart(
+	m, err := NewMultipart(
 		[]string{ts.URL},    // a single presigned part URL
 		ts.URL,              // the complete multipart upload URL
 		"",                  // no abort

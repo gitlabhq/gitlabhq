@@ -198,22 +198,22 @@ _This can only be run against a primary Geo node._
 PUT /geo_nodes/:id
 ```
 
-| Attribute                   | Type    | Required  | Description                                                               |
-|-----------------------------|---------|-----------|---------------------------------------------------------------------------|
-| `id`                        | integer | yes       | The ID of the Geo node.                                                   |
-| `enabled`                   | boolean | no        | Flag indicating if the Geo node is enabled.                               |
-| `name`                      | string  | yes       | The unique identifier for the Geo node. Must match `geo_node_name` if it is set in `gitlab.rb`, otherwise it must match `external_url`. |
-| `url`                       | string  | yes       | The user-facing URL of the Geo node. |
-| `internal_url`              | string  | no        | The URL defined on the primary node that secondary nodes should use to contact it. Returns `url` if not set.|
-| `files_max_capacity`        | integer | no        | Control the maximum concurrency of LFS/attachment backfill for this secondary node. |
-| `repos_max_capacity`        | integer | no        | Control the maximum concurrency of repository backfill for this secondary node.     |
-| `verification_max_capacity` | integer | no        | Control the maximum concurrency of verification for this node. |
-| `container_repositories_max_capacity` | integer | no | Control the maximum concurrency of container repository sync for this node. |
-| `sync_object_storage`       | boolean | no        | Flag indicating if the secondary Geo node should replicate blobs in Object Storage. |
-| `selective_sync_type`       | string  | no        | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`. |
-| `selective_sync_shards`     | array   | no        | The repository storage for the projects synced if `selective_sync_type` == `shards`. |
-| `selective_sync_namespace_ids` | array | no       | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`. |
-| `minimum_reverification_interval` | integer | no | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary node. |
+| Attribute                   | Type    | Required | Description                                                               |
+|-----------------------------|---------|---------|---------------------------------------------------------------------------|
+| `id`                        | integer | yes     | The ID of the Geo node.                                                   |
+| `enabled`                   | boolean | no      | Flag indicating if the Geo node is enabled.                               |
+| `name`                      | string  | no      | The unique identifier for the Geo node. Must match `geo_node_name` if it is set in `gitlab.rb`, otherwise it must match `external_url`. |
+| `url`                       | string  | no      | The user-facing URL of the Geo node. |
+| `internal_url`              | string  | no      | The URL defined on the primary node that secondary nodes should use to contact it. Returns `url` if not set.|
+| `files_max_capacity`        | integer | no      | Control the maximum concurrency of LFS/attachment backfill for this secondary node. |
+| `repos_max_capacity`        | integer | no      | Control the maximum concurrency of repository backfill for this secondary node.     |
+| `verification_max_capacity` | integer | no      | Control the maximum concurrency of verification for this node. |
+| `container_repositories_max_capacity` | integer | no      | Control the maximum concurrency of container repository sync for this node. |
+| `sync_object_storage`       | boolean | no      | Flag indicating if the secondary Geo node should replicate blobs in Object Storage. |
+| `selective_sync_type`       | string  | no      | Limit syncing to only specific groups or shards. Valid values: `"namespaces"`, `"shards"`, or `null`. |
+| `selective_sync_shards`     | array   | no      | The repository storage for the projects synced if `selective_sync_type` == `shards`. |
+| `selective_sync_namespace_ids` | array | no      | The IDs of groups that should be synced, if `selective_sync_type` == `namespaces`. |
+| `minimum_reverification_interval` | integer | no      | The interval (in days) in which the repository verification is valid. Once expired, it is reverified. This has no effect when set on a secondary node. |
 
 Example response:
 
@@ -254,9 +254,6 @@ in GitLab 14.9.
 ## Delete a Geo node
 
 Removes the Geo node.
-
-NOTE:
-Only a Geo primary node accepts this request.
 
 ```plaintext
 DELETE /geo_nodes/:id

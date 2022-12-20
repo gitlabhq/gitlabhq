@@ -1,5 +1,5 @@
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import PipelineScheduleLastPipeline from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_last_pipeline.vue';
 import { mockPipelineScheduleNodes } from '../../../mock_data';
 
@@ -18,7 +18,7 @@ describe('Pipeline schedule last pipeline', () => {
     });
   };
 
-  const findCIBadge = () => wrapper.findComponent(CiBadge);
+  const findCIBadgeLink = () => wrapper.findComponent(CiBadgeLink);
   const findStatusText = () => wrapper.findByTestId('pipeline-schedule-status-text');
 
   afterEach(() => {
@@ -28,8 +28,10 @@ describe('Pipeline schedule last pipeline', () => {
   it('displays pipeline status', () => {
     createComponent();
 
-    expect(findCIBadge().exists()).toBe(true);
-    expect(findCIBadge().props('status')).toBe(defaultProps.schedule.lastPipeline.detailedStatus);
+    expect(findCIBadgeLink().exists()).toBe(true);
+    expect(findCIBadgeLink().props('status')).toBe(
+      defaultProps.schedule.lastPipeline.detailedStatus,
+    );
     expect(findStatusText().exists()).toBe(false);
   });
 
@@ -37,6 +39,6 @@ describe('Pipeline schedule last pipeline', () => {
     createComponent({ schedule: mockPipelineScheduleNodes[0] });
 
     expect(findStatusText().text()).toBe('None');
-    expect(findCIBadge().exists()).toBe(false);
+    expect(findCIBadgeLink().exists()).toBe(false);
   });
 });

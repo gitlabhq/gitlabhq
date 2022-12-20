@@ -2,7 +2,9 @@
 import { GlDropdown, GlDropdownItem } from '@gitlab/ui';
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import { mapActions } from 'vuex';
+import * as Sentry from '@sentry/browser';
 import { s__ } from '~/locale';
+import { guestOverageConfirmAction } from 'ee_else_ce/members/guest_overage_confirm_action';
 
 export default {
   name: 'RoleDropdown',
@@ -50,12 +52,25 @@ export default {
         return dispatch(`${this.namespace}/updateMemberRole`, payload);
       },
     }),
-    handleSelect(value, name) {
-      if (value === this.member.accessLevel.integerValue) {
+    async handleOverageConfirm(currentAccessLevel, value) {
+      return guestOverageConfirmAction({
+        currentAccessIntValue: currentAccessLevel,
+        dropdownIntValue: value,
+      });
+    },
+    async handleSelect(value, name) {
+      const currentAccessLevel = this.member.accessLevel.integerValue;
+      if (value === currentAccessLevel) {
         return;
       }
 
       this.busy = true;
+
+      const confirmed = await this.handleOverageConfirm(currentAccessLevel, value);
+      if (!confirmed) {
+        this.busy = false;
+        return;
+      }
 
       this.updateMemberRole({
         memberId: this.member.id,
@@ -63,9 +78,11 @@ export default {
       })
         .then(() => {
           this.$toast.show(s__('Members|Role updated successfully.'));
-          this.busy = false;
         })
-        .catch(() => {
+        .catch((error) => {
+          Sentry.captureException(error);
+        })
+        .finally(() => {
           this.busy = false;
         });
     },

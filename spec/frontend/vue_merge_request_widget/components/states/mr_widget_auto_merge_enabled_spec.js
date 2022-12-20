@@ -128,14 +128,6 @@ describe('MRWidgetAutoMergeEnabled', () => {
   });
 
   describe('template', () => {
-    it('should have correct elements', () => {
-      factory({
-        ...defaultMrProps(),
-      });
-
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it('should disable cancel auto merge button when the action is in progress', async () => {
       factory({
         ...defaultMrProps(),

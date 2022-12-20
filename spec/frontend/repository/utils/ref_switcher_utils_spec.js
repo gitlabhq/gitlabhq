@@ -1,5 +1,6 @@
 import { generateRefDestinationPath } from '~/repository/utils/ref_switcher_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { refWithSpecialCharMock, encodedRefWithSpecialCharMock } from '../mock_data';
 
 const projectRootPath = 'root/Project1';
 const currentRef = 'main';
@@ -18,5 +19,11 @@ describe('generateRefDestinationPath', () => {
   `('generates the correct destination path for  $currentPath', ({ currentPath, result }) => {
     setWindowLocation(currentPath);
     expect(generateRefDestinationPath(projectRootPath, selectedRef)).toBe(result);
+  });
+
+  it('encodes the selected ref', () => {
+    const result = `${projectRootPath}/-/tree/${encodedRefWithSpecialCharMock}`;
+
+    expect(generateRefDestinationPath(projectRootPath, refWithSpecialCharMock)).toBe(result);
   });
 });

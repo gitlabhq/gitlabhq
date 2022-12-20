@@ -1,5 +1,5 @@
 ---
-# Warning: gitlab.HeadingDepth
+# Suggestion: gitlab.HeadingDepth
 #
 # Checks that there are no headings greater than 3 levels
 #
@@ -7,7 +7,7 @@
 extends: existence
 message: "Refactor the section or page to avoid headings greater than H5."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html#headings-in-markdown
-level: warning
+level: suggestion
 scope: raw
 raw:
   - '(?<=\n)#{5,}\s.*'

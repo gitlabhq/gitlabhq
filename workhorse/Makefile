@@ -144,7 +144,7 @@ testdata/scratch:
 	mkdir -p testdata/scratch
 
 .PHONY: verify
-verify: lint vet detect-context detect-assert check-formatting staticcheck deps-check
+verify: lint vet detect-context detect-assert detect-external-tests check-formatting staticcheck deps-check
 
 .PHONY: lint
 lint:
@@ -166,6 +166,11 @@ detect-context:
 detect-assert:
 	$(call message,Verify: $@)
 	_support/detect-assert.sh
+
+.PHONY: detect-external-tests
+detect-external-tests:
+	$(call message,Verify: $@)
+	_support/detect-external-tests.sh
 
 .PHONY: check-formatting
 check-formatting: install-goimports

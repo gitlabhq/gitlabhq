@@ -166,8 +166,6 @@ class Milestone < ApplicationRecord
   end
 
   def self.states_count(projects, groups = nil)
-    return STATE_COUNT_HASH unless projects || groups
-
     counts = Milestone
                .for_projects_and_groups(projects, groups)
                .reorder(nil)

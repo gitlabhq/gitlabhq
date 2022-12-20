@@ -37,8 +37,8 @@ export const crmContactsMock = [
   {
     id: 1,
     email: 'contact.1@email.com',
-    firstName: 'Contact',
-    lastName: 'One',
+    first_name: 'Contact',
+    last_name: 'One',
     search: 'contact.1@email.com',
     state: 'active',
     set: false,
@@ -46,8 +46,8 @@ export const crmContactsMock = [
   {
     id: 2,
     email: 'contact.2@email.com',
-    firstName: 'Contact',
-    lastName: 'Two',
+    first_name: 'Contact',
+    last_name: 'Two',
     search: 'contact.2@email.com',
     state: 'active',
     set: false,
@@ -55,8 +55,8 @@ export const crmContactsMock = [
   {
     id: 3,
     email: 'contact.3@email.com',
-    firstName: 'Contact',
-    lastName: 'Three',
+    first_name: 'Contact',
+    last_name: 'Three',
     search: 'contact.3@email.com',
     state: 'inactive',
     set: false,
@@ -64,8 +64,8 @@ export const crmContactsMock = [
   {
     id: 4,
     email: 'contact.4@email.com',
-    firstName: 'Contact',
-    lastName: 'Four',
+    first_name: 'Contact',
+    last_name: 'Four',
     search: 'contact.4@email.com',
     state: 'inactive',
     set: true,
@@ -73,8 +73,8 @@ export const crmContactsMock = [
   {
     id: 5,
     email: 'contact.5@email.com',
-    firstName: 'Contact',
-    lastName: 'Five',
+    first_name: 'Contact',
+    last_name: 'Five',
     search: 'contact.5@email.com',
     state: 'active',
     set: true,
@@ -82,8 +82,8 @@ export const crmContactsMock = [
   {
     id: 5,
     email: 'contact.6@email.com',
-    firstName: 'Contact',
-    lastName: 'Six',
+    first_name: 'Contact',
+    last_name: 'Six',
     search: 'contact.6@email.com',
     state: 'active',
     set: undefined, // On purpose

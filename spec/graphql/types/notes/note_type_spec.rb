@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Note'] do
+RSpec.describe GitlabSchema.types['Note'], feature_category: :team_planning do
   it 'exposes the expected fields' do
     expected_fields = %i[
       author
@@ -24,6 +24,7 @@ RSpec.describe GitlabSchema.types['Note'] do
       updated_at
       user_permissions
       url
+      system_note_metadata
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

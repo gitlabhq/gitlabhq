@@ -87,12 +87,10 @@ function upload_package() {
 
 function read_curl_package() {
   local package_url="${1}"
-  local token_header="${CURL_TOKEN_HEADER}"
-  local token="${CI_JOB_TOKEN}"
 
   echoinfo "Downloading from ${package_url} ..."
 
-  curl --fail --silent --retry 3 --header "${token_header}: ${token}" "${package_url}"
+  curl --fail --silent --retry 3 "${package_url}"
 }
 
 function extract_package() {

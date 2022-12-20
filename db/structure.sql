@@ -10602,7 +10602,8 @@ CREATE TABLE abuse_reports (
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     message_html text,
-    cached_markdown_version integer
+    cached_markdown_version integer,
+    category smallint DEFAULT 1 NOT NULL
 );
 
 CREATE SEQUENCE abuse_reports_id_seq

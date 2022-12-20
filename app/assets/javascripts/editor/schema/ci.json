@@ -997,6 +997,11 @@
             "pull-push"
           ]
         },
+        "unprotect": {
+          "type": "boolean",
+          "markdownDescription": "Use `unprotect: true` to set a cache to be shared between protected and unprotected branches.",
+          "default": false
+        },
         "untracked": {
           "type": "boolean",
           "markdownDescription": "Use `untracked: true` to cache all files that are untracked in your Git repository. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#cacheuntracked)",

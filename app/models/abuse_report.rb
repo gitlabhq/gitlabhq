@@ -12,10 +12,22 @@ class AbuseReport < ApplicationRecord
   validates :reporter, presence: true
   validates :user, presence: true
   validates :message, presence: true
+  validates :category, presence: true
   validates :user_id, uniqueness: { message: 'has already been reported' }
 
   scope :by_user, ->(user) { where(user_id: user) }
   scope :with_users, -> { includes(:reporter, :user) }
+
+  enum category: {
+    spam: 1,
+    offensive: 2,
+    phishing: 3,
+    crypto: 4,
+    credentials: 5,
+    copyright: 6,
+    malware: 7,
+    other: 8
+  }
 
   # For CacheMarkdownField
   alias_method :author, :reporter

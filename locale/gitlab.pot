@@ -825,6 +825,9 @@ msgstr ""
 msgid "%{level_name} is not allowed since the fork source project has lower visibility."
 msgstr ""
 
+msgid "%{linkStart} Learn more%{linkEnd}."
+msgstr ""
+
 msgid "%{link_start}Remove the %{draft_snippet} prefix%{link_end} from the title to allow this merge request to be merged when it's ready."
 msgstr ""
 
@@ -10969,6 +10972,9 @@ msgid "Continue editing"
 msgstr ""
 
 msgid "Continue to the next step"
+msgstr ""
+
+msgid "Continue with overages"
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
@@ -27237,6 +27243,27 @@ msgstr ""
 msgid "NavigationTheme|Red"
 msgstr ""
 
+msgid "Navigation|Context navigation"
+msgstr ""
+
+msgid "Navigation|Recent groups"
+msgstr ""
+
+msgid "Navigation|Recent projects"
+msgstr ""
+
+msgid "Navigation|Switch to..."
+msgstr ""
+
+msgid "Navigation|View all groups"
+msgstr ""
+
+msgid "Navigation|View all projects"
+msgstr ""
+
+msgid "Navigation|Your work"
+msgstr ""
+
 msgid "Nav|Help"
 msgstr ""
 
@@ -34829,6 +34856,33 @@ msgid "Report version not provided, %{report_type} report type supports versions
 msgstr ""
 
 msgid "Report your license usage data to GitLab"
+msgstr ""
+
+msgid "ReportAbuse|Something else."
+msgstr ""
+
+msgid "ReportAbuse|They're being offsensive or abusive."
+msgstr ""
+
+msgid "ReportAbuse|They're crypto mining."
+msgstr ""
+
+msgid "ReportAbuse|They're phising."
+msgstr ""
+
+msgid "ReportAbuse|They're posting malware."
+msgstr ""
+
+msgid "ReportAbuse|They're posting personal information or credentials."
+msgstr ""
+
+msgid "ReportAbuse|They're posting spam."
+msgstr ""
+
+msgid "ReportAbuse|They're violating a copyright or trademark."
+msgstr ""
+
+msgid "ReportAbuse|Why are you reporting this user?"
 msgstr ""
 
 msgid "Reported %{timeAgo} by %{reportedBy}"
@@ -47335,6 +47389,9 @@ msgid "You are about to delete this forked project containing:"
 msgstr ""
 
 msgid "You are about to delete this project containing:"
+msgstr ""
+
+msgid "You are about to incur additional charges"
 msgstr ""
 
 msgid "You are about to transfer the control of your account to %{group_name} group. This action is NOT reversible, you won't be able to access any of your groups and projects outside of %{group_name} once this transfer is complete."

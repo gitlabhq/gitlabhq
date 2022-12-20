@@ -4,6 +4,7 @@ import $ from 'jquery';
 import labelsFixture from 'test_fixtures/autocomplete_sources/labels.json';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import GfmAutoComplete, {
+  escape,
   membersBeforeSave,
   highlighter,
   CONTACT_STATE_ACTIVE,
@@ -20,6 +21,20 @@ import {
   eventlistenersMockDefaultMap,
   crmContactsMock,
 } from 'ee_else_ce_jest/gfm_auto_complete/mock_data';
+
+describe('escape', () => {
+  it.each`
+    xssPayload                                           | escapedPayload
+    ${'<script>alert(1)</script>'}                       | ${'&lt;script&gt;alert(1)&lt;/script&gt;'}
+    ${'%3Cscript%3E alert(1) %3C%2Fscript%3E'}           | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
+    ${'%253Cscript%253E alert(1) %253C%252Fscript%253E'} | ${'&lt;script&gt; alert(1) &lt;/script&gt;'}
+  `(
+    'escapes the input string correctly accounting for multiple encoding',
+    ({ xssPayload, escapedPayload }) => {
+      expect(escape(xssPayload)).toBe(escapedPayload);
+    },
+  );
+});
 
 describe('GfmAutoComplete', () => {
   const fetchDataMock = { fetchData: jest.fn() };
@@ -590,7 +605,7 @@ describe('GfmAutoComplete', () => {
           id: 5,
           title: '${search}<script>oh no $', // eslint-disable-line no-template-curly-in-string
         }),
-      ).toBe('<li><small>5</small> &dollar;{search}&lt;script&gt;oh no &dollar;</li>');
+      ).toBe('<li><small>5</small> &amp;dollar;{search}&lt;script&gt;oh no &amp;dollar;</li>');
     });
   });
 
@@ -636,7 +651,7 @@ describe('GfmAutoComplete', () => {
             availabilityStatus: '',
           }),
         ).toBe(
-          '<li>IMG my-group <small>&dollar;{search}&lt;script&gt;oh no &dollar;</small> <i class="icon"/></li>',
+          '<li>IMG my-group <small>&amp;dollar;{search}&lt;script&gt;oh no &amp;dollar;</small> <i class="icon"/></li>',
         );
       });
 
@@ -813,7 +828,7 @@ describe('GfmAutoComplete', () => {
       const title = '${search}<script>oh no $'; // eslint-disable-line no-template-curly-in-string
 
       expect(GfmAutoComplete.Labels.templateFunction(color, title)).toBe(
-        '<li><span class="dropdown-label-box" style="background: #123456"></span> &dollar;{search}&lt;script&gt;oh no &dollar;</li>',
+        '<li><span class="dropdown-label-box" style="background: #123456"></span> &amp;dollar;{search}&lt;script&gt;oh no &amp;dollar;</li>',
       );
     });
   });
@@ -868,7 +883,7 @@ describe('GfmAutoComplete', () => {
       const title = '${search}<script>oh no $'; // eslint-disable-line no-template-curly-in-string
 
       expect(GfmAutoComplete.Milestones.templateFunction(title, expired)).toBe(
-        '<li>&dollar;{search}&lt;script&gt;oh no &dollar;</li>',
+        '<li>&amp;dollar;{search}&lt;script&gt;oh no &amp;dollar;</li>',
       );
     });
   });
@@ -925,7 +940,9 @@ describe('GfmAutoComplete', () => {
     const expectContacts = ({ input, output }) => {
       triggerDropdown(input);
 
-      expect(getDropdownItems()).toEqual(output.map((contact) => contact.email));
+      expect(getDropdownItems()).toEqual(
+        output.map((contact) => `${contact.first_name} ${contact.last_name} ${contact.email}`),
+      );
     };
 
     describe('with no contacts assigned', () => {

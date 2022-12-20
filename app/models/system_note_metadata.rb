@@ -34,6 +34,12 @@ class SystemNoteMetadata < ApplicationRecord
   belongs_to :note
   belongs_to :description_version
 
+  delegate_missing_to :note
+
+  def declarative_policy_delegate
+    note
+  end
+
   def icon_types
     ICON_TYPES
   end

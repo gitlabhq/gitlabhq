@@ -65,6 +65,10 @@ module NavHelper
     %w(dev_ops_report usage_trends)
   end
 
+  def show_super_sidebar?
+    Feature.enabled?(:super_sidebar_nav, current_user) && current_user&.use_new_navigation
+  end
+
   private
 
   def get_header_links

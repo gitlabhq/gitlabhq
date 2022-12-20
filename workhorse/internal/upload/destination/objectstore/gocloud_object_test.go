@@ -1,4 +1,4 @@
-package objectstore_test
+package objectstore
 
 import (
 	"context"
@@ -10,7 +10,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
-	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
 )
 
@@ -22,8 +21,8 @@ func TestGoCloudObjectUpload(t *testing.T) {
 
 	objectName := "test.png"
 	testURL := "azuretest://azure.example.com/test-container"
-	p := &objectstore.GoCloudObjectParams{Ctx: ctx, Mux: mux, BucketURL: testURL, ObjectName: objectName}
-	object, err := objectstore.NewGoCloudObject(p)
+	p := &GoCloudObjectParams{Ctx: ctx, Mux: mux, BucketURL: testURL, ObjectName: objectName}
+	object, err := NewGoCloudObject(p)
 	require.NotNil(t, object)
 	require.NoError(t, err)
 
@@ -48,8 +47,8 @@ func TestGoCloudObjectUpload(t *testing.T) {
 
 		if exists {
 			return fmt.Errorf("file %s is still present", objectName)
-		} else {
-			return nil
 		}
+
+		return nil
 	})
 }

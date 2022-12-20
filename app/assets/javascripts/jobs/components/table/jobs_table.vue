@@ -1,7 +1,7 @@
 <script>
 import { GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
-import CiBadge from '~/vue_shared/components/ci_badge_link.vue';
+import CiBadgeLink from '~/vue_shared/components/ci_badge_link.vue';
 import ActionsCell from './cells/actions_cell.vue';
 import DurationCell from './cells/duration_cell.vue';
 import JobCell from './cells/job_cell.vue';
@@ -14,7 +14,7 @@ export default {
   },
   components: {
     ActionsCell,
-    CiBadge,
+    CiBadgeLink,
     DurationCell,
     GlTable,
     JobCell,
@@ -55,7 +55,7 @@ export default {
     </template>
 
     <template #cell(status)="{ item }">
-      <ci-badge :status="item.detailedStatus" />
+      <ci-badge-link :status="item.detailedStatus" />
     </template>
 
     <template #cell(job)="{ item }">

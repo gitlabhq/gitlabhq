@@ -11,7 +11,14 @@
     = render "layouts/visual_review" if ENV['REVIEW_APPS_ENABLED']
     = render 'peek/bar'
     = header_message
-    = render partial: "layouts/header/default", locals: { project: @project, group: @group }
+
+    - if show_super_sidebar? # TODO: Move this CSS to a better place
+      :css
+        body {
+          --header-height: 0px;
+        }
+    - else
+      = render partial: "layouts/header/default", locals: { project: @project, group: @group }
     = render 'layouts/page', sidebar: sidebar, nav: nav
     = footer_message
 

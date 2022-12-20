@@ -134,4 +134,62 @@ RSpec.describe NavHelper do
       it { is_expected.to eq(true) }
     end
   end
+
+  describe '#show_super_sidebar?' do
+    shared_examples '#show_super_sidebar returns false' do
+      it 'returns false' do
+        expect(helper.show_super_sidebar?).to eq(false)
+      end
+    end
+
+    it 'returns false by default' do
+      allow(helper).to receive(:current_user).and_return(nil)
+
+      expect(helper.show_super_sidebar?).to be_falsy
+    end
+
+    context 'when used is signed-in' do
+      let_it_be(:user) { create(:user) }
+
+      before do
+        allow(helper).to receive(:current_user).and_return(user)
+        stub_feature_flags(super_sidebar_nav: new_nav_ff)
+        user.update!(use_new_navigation: user_preference)
+      end
+
+      context 'with feature flag off' do
+        let(:new_nav_ff) { false }
+
+        context 'when user has new nav disabled' do
+          let(:user_preference) { false }
+
+          it_behaves_like '#show_super_sidebar returns false'
+        end
+
+        context 'when user has new nav enabled' do
+          let(:user_preference) { true }
+
+          it_behaves_like '#show_super_sidebar returns false'
+        end
+      end
+
+      context 'with feature flag on' do
+        let(:new_nav_ff) { true }
+
+        context 'when user has new nav disabled' do
+          let(:user_preference) { false }
+
+          it_behaves_like '#show_super_sidebar returns false'
+        end
+
+        context 'when user has new nav enabled' do
+          let(:user_preference) { true }
+
+          it 'returns true' do
+            expect(helper.show_super_sidebar?).to eq(true)
+          end
+        end
+      end
+    end
+  end
 end
