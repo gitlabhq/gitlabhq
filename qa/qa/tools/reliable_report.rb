@@ -326,7 +326,7 @@ module QA
       def test_runs(reliable:)
         puts("Fetching data on #{reliable ? 'reliable ' : ''}test execution for past #{range} days\n".colorize(:green))
 
-        all_runs = query_api.query(query: query(reliable)).values
+        all_runs = query_api.query(query: query(reliable))
         all_runs.each_with_object(Hash.new { |hsh, key| hsh[key] = {} }) do |table, result|
           records = table.records.sort_by { |record| record.values["_time"] }
           # skip specs that executed less time than defined by range or stopped executing before report date

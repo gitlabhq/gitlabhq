@@ -155,7 +155,7 @@ GEM
     httpclient (2.8.3)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
-    influxdb-client (2.8.0)
+    influxdb-client (2.9.0)
     jwt (2.5.0)
     knapsack (4.0.0)
       rake

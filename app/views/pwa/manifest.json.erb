@@ -1,7 +1,7 @@
 {
-  "name": "GitLab",
-  "short_name": "GitLab",
-  "description": "<%= _("The complete DevOps platform. One application with endless possibilities. Organizations rely on GitLab’s source code management, CI/CD, security, and more to deliver software rapidly.") %>",
+  "name": "<%= Appearance.current&.title.presence || _('GitLab') %>",
+  "short_name": "<%= Appearance.current&.short_title.presence || _('GitLab') %>",
+  "description": "<%= Appearance.current&.description.presence || _("The complete DevOps platform. One application with endless possibilities. Organizations rely on GitLab’s source code management, CI/CD, security, and more to deliver software rapidly.") %>",
   "start_url": "<%= explore_projects_path %>",
   "scope": "<%= root_path %>",
   "display": "browser",

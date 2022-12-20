@@ -158,17 +158,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         .to change { upstream_pipeline.reload.duration }.from(nil).to(an_instance_of(Integer))
     end
 
-    context 'when feature flag ci_run_bridge_for_pipeline_duration_calculation is disabled' do
-      before do
-        stub_feature_flags(ci_run_bridge_for_pipeline_duration_calculation: false)
-      end
-
-      it 'does not trigger the upstream pipeline duration calculation', :sidekiq_inline do
-        expect { subject }
-          .not_to change { upstream_pipeline.reload.duration }.from(nil)
-      end
-    end
-
     context 'when bridge job has already any downstream pipeline' do
       before do
         bridge.create_sourced_pipeline!(
@@ -677,26 +666,6 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect { subject }.not_to change(downstream_project.ci_pipelines, :count)
         expect(subject).to be_error
         expect(subject.message).to eq('Can not run the bridge')
-      end
-
-      context 'when feature flag ci_run_bridge_for_pipeline_duration_calculation is disabled' do
-        before do
-          stub_feature_flags(ci_run_bridge_for_pipeline_duration_calculation: false)
-        end
-
-        it 'tracks the exception' do
-          expect(Gitlab::ErrorTracking)
-            .to receive(:track_exception)
-            .with(
-              instance_of(Ci::Bridge::InvalidTransitionError),
-              bridge_id: bridge.id,
-              downstream_pipeline_id: kind_of(Numeric))
-
-          expect(subject).to be_error
-          expect(subject.message).to eq(
-            "Cannot transition status via :drop from :failed (Reason(s): Status cannot transition via \"drop\")"
-          )
-        end
       end
     end
 

@@ -116,8 +116,7 @@ module QA
         # @return [Array]
         def flaky_specs
           @flaky_specs ||= influx_data.lazy.each_with_object({}) do |data, result|
-            # Do not consider failures in same merge request
-            records = data.records.reject { |r| r.values["_value"] == merge_request_iid }
+            records = data.records
 
             runs = records.count
             failed = records.count { |r| r.values["status"] == "failed" }
@@ -136,14 +135,14 @@ module QA
         def influx_data
           return [] unless run_type
 
-          query_api.query(query: <<~QUERY).values
-            from(bucket: "#{Support::InfluxdbTools::INFLUX_TEST_METRICS_BUCKET}")
-              |> range(start: -14d)
+          query_api.query(query: <<~QUERY)
+            from(bucket: "#{Support::InfluxdbTools::INFLUX_MAIN_TEST_METRICS_BUCKET}")
+              |> range(start: -30d)
               |> filter(fn: (r) => r._measurement == "test-stats")
               |> filter(fn: (r) => r.run_type == "#{run_type}" and
                 r.status != "pending" and
                 r.quarantined == "false" and
-                r._field == "merge_request_iid"
+                r._field == "id"
               )
               |> group(columns: ["testcase"])
           QUERY

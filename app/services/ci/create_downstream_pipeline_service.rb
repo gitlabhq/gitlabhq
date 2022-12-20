@@ -29,9 +29,7 @@ module Ci
 
       return ServiceResponse.error(message: 'Pre-conditions not met') unless ensure_preconditions!(target_ref)
 
-      if Feature.enabled?(:ci_run_bridge_for_pipeline_duration_calculation, project) && !@bridge.run
-        return ServiceResponse.error(message: 'Can not run the bridge')
-      end
+      return ServiceResponse.error(message: 'Can not run the bridge') unless @bridge.run
 
       service = ::Ci::CreatePipelineService.new(
         pipeline_params.fetch(:project),

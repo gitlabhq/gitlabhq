@@ -1,8 +1,0 @@
----
-name: ci_run_bridge_for_pipeline_duration_calculation
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99473
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/356759
-milestone: '15.7'
-type: development
-group: group::pipeline execution
-default_enabled: false

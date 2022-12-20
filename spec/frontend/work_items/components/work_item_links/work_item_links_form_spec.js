@@ -176,16 +176,22 @@ describe('WorkItemLinksForm', () => {
         preventDefault: jest.fn(),
       });
       await waitForPromises();
-      expect(updateMutationResolver).toHaveBeenCalledWith({
+      expect(createMutationResolver).toHaveBeenCalledWith({
         input: {
-          id: 'gid://gitlab/WorkItem/1',
+          title: 'Create task test',
+          projectPath: 'project/path',
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/1',
+          },
+          confidential: false,
           iterationWidget: {
             iterationId: mockParentIteration.id,
           },
         },
       });
     });
-    it('does not update when parent has no iteration associated', async () => {
+    it('does not send the iteration widget to mutation when parent has no iteration associated', async () => {
       await createComponent({
         hasIterationsFeature: true,
       });
@@ -195,7 +201,20 @@ describe('WorkItemLinksForm', () => {
         preventDefault: jest.fn(),
       });
       await waitForPromises();
-      expect(updateMutationResolver).not.toHaveBeenCalled();
+      expect(createMutationResolver).not.toHaveBeenCalledWith({
+        input: {
+          title: 'Create task test',
+          projectPath: 'project/path',
+          workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/1',
+          },
+          confidential: false,
+          iterationWidget: {
+            iterationId: mockParentIteration.id,
+          },
+        },
+      });
     });
   });
 });

@@ -130,6 +130,16 @@ export default {
           },
         };
       }
+
+      if (this.associateIteration) {
+        workItemInput = {
+          ...workItemInput,
+          iterationWidget: {
+            iterationId: this.parentIterationId,
+          },
+        };
+      }
+
       return workItemInput;
     },
     workItemsMvcEnabled() {
@@ -228,13 +238,6 @@ export default {
           } else {
             this.unsetError();
             this.$emit('addWorkItemChild', data.workItemCreate.workItem);
-            /**
-             * call update mutation only when there is an iteration associated with the issue
-             */
-            // TODO: setting the iteration should be moved to the creation mutation once the backend is done
-            if (this.associateIteration) {
-              this.addIterationToWorkItem(data.workItemCreate.workItem.id);
-            }
           }
         })
         .catch(() => {
@@ -244,19 +247,6 @@ export default {
           this.search = '';
           this.childToCreateTitle = null;
         });
-    },
-    async addIterationToWorkItem(workItemId) {
-      await this.$apollo.mutate({
-        mutation: updateWorkItemMutation,
-        variables: {
-          input: {
-            id: workItemId,
-            iterationWidget: {
-              iterationId: this.parentIterationId,
-            },
-          },
-        },
-      });
     },
     setSearchKey(value) {
       this.search = value;

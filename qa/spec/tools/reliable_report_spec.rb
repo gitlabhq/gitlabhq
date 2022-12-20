@@ -22,8 +22,8 @@ describe QA::Tools::ReliableReport do
       "stage" => "manage",
       "_time" => time
     }
-    {
-      0 => instance_double(
+    [
+      instance_double(
         "InfluxDB2::FluxTable",
         records: [
           instance_double("InfluxDB2::FluxRecord", values: values),
@@ -31,7 +31,7 @@ describe QA::Tools::ReliableReport do
           instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
         ]
       )
-    }
+    ]
   end
 
   let(:reliable_runs) do
@@ -42,8 +42,8 @@ describe QA::Tools::ReliableReport do
       "stage" => "create",
       "_time" => time
     }
-    {
-      0 => instance_double(
+    [
+      instance_double(
         "InfluxDB2::FluxTable",
         records: [
           instance_double("InfluxDB2::FluxRecord", values: { **values, "status" => "passed" }),
@@ -51,7 +51,7 @@ describe QA::Tools::ReliableReport do
           instance_double("InfluxDB2::FluxRecord", values: values.merge({ "_time" => Time.now.to_s }))
         ]
       )
-    }
+    ]
   end
 
   def flux_query(reliable:)

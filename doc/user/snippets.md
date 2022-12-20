@@ -267,3 +267,7 @@ creating a new snippet, use this workaround:
 1. Enter any string into the text area for the second file.
 1. Scroll back to the first filename, and select **Delete file**.
 1. Create the rest of your file, and select **Create snippet** when done.
+
+## Related topics
+
+- [Configure snippet settings](../administration/snippets/index.md) on a self-managed GitLab instance
