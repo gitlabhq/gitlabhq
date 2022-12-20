@@ -34,8 +34,10 @@ a pipeline deploys your Pages website.
 To complete the setup and generate a GitLab Pages deployment:
 
 1. On the top bar, select **Main menu > Projects** and find your project.
-1. On the left sidebar, select **Settings > Pages**. A **Get Started with Pages** form appears.
-   If this form is not available, see [Troubleshooting](#if-the-get-started-with-pages-form-is-not-available).
+1. On the left sidebar, select **Settings > Pages** (Note: this may also be
+   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
+   A **Get Started with Pages** form appears. If this form is not available,
+   see [Troubleshooting](#if-the-get-started-with-pages-form-is-not-available).
 1. For **Step 1**, enter an image name and verify that your files are in a `public` folder.
 1. Select **Next**.
 1. For **Step 2**, enter your installation steps. If your framework's build process does not

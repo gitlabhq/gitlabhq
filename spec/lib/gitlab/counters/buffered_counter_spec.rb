@@ -52,6 +52,31 @@ RSpec.describe Gitlab::Counters::BufferedCounter, :clean_gitlab_redis_shared_sta
     end
   end
 
+  describe '#bulk_increment' do
+    let(:increments) { [123, 456] }
+
+    it 'increments the key by the given values' do
+      counter.bulk_increment(increments)
+
+      expect(counter.get).to eq(increments.sum)
+    end
+
+    it 'returns the value of the key after the increment' do
+      counter.increment(100)
+
+      result = counter.bulk_increment(increments)
+
+      expect(result).to eq(100 + increments.sum)
+    end
+
+    it 'schedules a worker to commit the counter into database' do
+      expect(FlushCounterIncrementsWorker).to receive(:perform_in)
+        .with(described_class::WORKER_DELAY, counter_record.class.to_s, counter_record.id, attribute)
+
+      counter.bulk_increment(increments)
+    end
+  end
+
   describe '#reset!' do
     before do
       allow(counter_record).to receive(:update!)

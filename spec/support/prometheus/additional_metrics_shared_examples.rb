@@ -100,7 +100,7 @@ RSpec.shared_examples 'additional metrics query' do
           }
         ]
 
-        expect(query_result).to match_schema('prometheus/additional_metrics_query_result')
+        expect(query_result.to_json).to match_schema('prometheus/additional_metrics_query_result')
         expect(query_result).to eq(expected)
       end
     end
@@ -128,7 +128,7 @@ RSpec.shared_examples 'additional metrics query' do
         queries_with_result_a = { queries: [{ query_range: 'query_range_a', result: query_range_result }] }
         queries_with_result_b = { queries: [{ query_range: 'query_range_b', result: query_range_result }] }
 
-        expect(query_result).to match_schema('prometheus/additional_metrics_query_result')
+        expect(query_result.to_json).to match_schema('prometheus/additional_metrics_query_result')
 
         expect(query_result.count).to eq(2)
         expect(query_result).to all(satisfy { |r| r[:metrics].count == 1 })
@@ -147,7 +147,7 @@ RSpec.shared_examples 'additional metrics query' do
       it 'return group data only for query with results' do
         queries_with_result = { queries: [{ query_range: 'query_range_a', result: query_range_result }] }
 
-        expect(query_result).to match_schema('prometheus/additional_metrics_query_result')
+        expect(query_result.to_json).to match_schema('prometheus/additional_metrics_query_result')
 
         expect(query_result.count).to eq(1)
         expect(query_result).to all(satisfy { |r| r[:metrics].count == 1 })

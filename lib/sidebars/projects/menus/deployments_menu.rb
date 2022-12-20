@@ -10,6 +10,10 @@ module Sidebars
           add_item(feature_flags_menu_item)
           add_item(releases_menu_item)
 
+          if Feature.enabled?(:show_pages_in_deployments_menu, context.project, type: :experiment)
+            add_item(pages_menu_item)
+          end
+
           true
         end
 
@@ -72,6 +76,17 @@ module Sidebars
             item_id: :releases,
             active_routes: { controller: :releases },
             container_html_options: { class: 'shortcuts-deployments-releases' }
+          )
+        end
+
+        def pages_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :pages) unless context.project.pages_available?
+
+          ::Sidebars::MenuItem.new(
+            title: _('Pages'),
+            link: project_pages_path(context.project),
+            active_routes: { path: 'pages#show' },
+            item_id: :pages
           )
         end
       end

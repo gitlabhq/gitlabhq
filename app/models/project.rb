@@ -2920,12 +2920,6 @@ class Project < ApplicationRecord
     Gitlab::Routing.url_helpers.activity_project_path(self)
   end
 
-  def increment_statistic_value(statistic, delta)
-    return if pending_delete?
-
-    ProjectStatistics.increment_statistic(self, statistic, delta)
-  end
-
   def ci_forward_deployment_enabled?
     return false unless ci_cd_settings
 

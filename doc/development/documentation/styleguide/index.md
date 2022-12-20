@@ -523,10 +523,10 @@ When using code block style:
 
 ## Lists
 
-- Use a period after every sentence, including those that complete an introductory phrase.
-  Do not use semicolons or commas.
-- Majority rules. Use either full sentences or all fragments. Avoid a mix.
-- Always start list items with a capital letter.
+- Do not use a period if the phrase is not a full sentence.
+- Use a period after every sentence. Do not use semicolons or commas.
+- Majority rules. All items should have the same punctuation.
+- Start list items with a capital letter.
 - Separate the introductory phrase from explanatory text with a colon (`:`). For example:
 
   ```markdown

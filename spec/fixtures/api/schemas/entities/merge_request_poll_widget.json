@@ -35,10 +35,7 @@
       "type": "boolean"
     },
     "ff_only_enabled": {
-      "type": [
-        "boolean",
-        false
-      ]
+      "type": "boolean"
     },
     "merge_user": {
       "type": [

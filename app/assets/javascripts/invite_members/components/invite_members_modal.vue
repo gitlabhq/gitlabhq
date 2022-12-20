@@ -29,6 +29,10 @@ import eventHub from '../event_hub';
 import { responseFromSuccess } from '../utils/response_message_parser';
 import { memberName } from '../utils/member_utils';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '../utils/trigger_successful_invite_alert';
 import ModalConfetti from './confetti.vue';
 import MembersTokenSelect from './members_token_select.vue';
 import UserLimitNotification from './user_limit_notification.vue';
@@ -106,6 +110,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    reloadPageOnSubmit: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -225,6 +234,10 @@ export default {
     },
   },
   mounted() {
+    if (this.reloadPageOnSubmit) {
+      displaySuccessfulInvitationAlert();
+    }
+
     eventHub.$on('openModal', (options) => {
       this.openModal(options);
       if (this.isOnLearnGitlab) {
@@ -306,7 +319,7 @@ export default {
           if (error) {
             this.showMemberErrors(message);
           } else {
-            this.showSuccessMessage();
+            this.onInviteSuccess();
           }
         })
         .catch((e) => this.showInvalidFeedbackMessage(e))
@@ -338,6 +351,13 @@ export default {
     },
     changeSelectedTaskProject(project) {
       this.selectedTaskProject = project;
+    },
+    onInviteSuccess() {
+      if (this.reloadPageOnSubmit) {
+        reloadOnInvitationSuccess();
+      } else {
+        this.showSuccessMessage();
+      }
     },
     showSuccessMessage() {
       if (this.isOnLearnGitlab) {

@@ -71,6 +71,51 @@ RSpec.shared_examples_for CounterAttribute do |counter_attributes|
           end
         end
       end
+
+      describe '#bulk_increment_counter', :redis do
+        let(:increments) { [10, 5] }
+        let(:total_amount) { increments.sum }
+        let(:counter_key) { model.counter(attribute).key }
+
+        subject { model.bulk_increment_counter(attribute, increments) }
+
+        context 'when attribute is a counter attribute' do
+          it 'increments the counter in Redis and logs it' do
+            expect(Gitlab::AppLogger).to receive(:info).with(
+              hash_including(
+                message: 'Increment counter attribute',
+                attribute: attribute,
+                project_id: model.project_id,
+                increment: total_amount,
+                new_counter_value: 0 + total_amount,
+                current_db_value: model.read_attribute(attribute),
+                'correlation_id' => an_instance_of(String),
+                'meta.feature_category' => 'test',
+                'meta.caller_id' => 'caller'
+              )
+            )
+
+            subject
+
+            Gitlab::Redis::SharedState.with do |redis|
+              counter = redis.get(counter_key)
+              expect(counter).to eq(total_amount.to_s)
+            end
+          end
+
+          it 'does not increment the counter for the record' do
+            expect { subject }.not_to change { model.reset.read_attribute(attribute) }
+          end
+
+          it 'schedules a worker to flush counter increments asynchronously' do
+            expect(FlushCounterIncrementsWorker).to receive(:perform_in)
+              .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, model.class.name, model.id, attribute)
+              .and_call_original
+
+            subject
+          end
+        end
+      end
     end
   end
 

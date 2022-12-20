@@ -16,7 +16,11 @@ module Sidebars
           add_item(merge_requests_menu_item)
           add_item(ci_cd_menu_item)
           add_item(packages_and_registries_menu_item)
-          add_item(pages_menu_item)
+
+          if Feature.disabled?(:show_pages_in_deployments_menu, context.project, type: :experiment)
+            add_item(pages_menu_item)
+          end
+
           add_item(monitor_menu_item)
           add_item(usage_quotas_menu_item)
 

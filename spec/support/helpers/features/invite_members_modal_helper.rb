@@ -5,7 +5,7 @@ module Spec
     module Helpers
       module Features
         module InviteMembersModalHelper
-          def invite_member(names, role: 'Guest', expires_at: nil, refresh: true)
+          def invite_member(names, role: 'Guest', expires_at: nil)
             click_on 'Invite members'
 
             page.within invite_modal_selector do
@@ -15,8 +15,6 @@ module Spec
             end
 
             wait_for_requests
-
-            page.refresh if refresh
           end
 
           def invite_member_by_email(role)
@@ -61,8 +59,6 @@ module Spec
             choose_options(role, expires_at)
 
             submit_invites
-
-            page.refresh
           end
 
           def submit_invites

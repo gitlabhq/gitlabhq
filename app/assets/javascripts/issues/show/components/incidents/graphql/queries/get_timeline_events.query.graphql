@@ -9,6 +9,12 @@ query GetTimelineEvents($fullPath: ID!, $incidentId: IssueID!) {
         action
         occurredAt
         createdAt
+        timelineEventTags {
+          nodes {
+            id
+            name
+          }
+        }
       }
     }
   }

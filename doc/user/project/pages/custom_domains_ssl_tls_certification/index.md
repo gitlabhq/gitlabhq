@@ -165,7 +165,8 @@ If you're using Cloudflare, check
 
 Once you have added all the DNS records:
 
-1. Go back at your project's **Settings > Pages**.
+1. Go back at your project's **Settings > Pages** (Note: this may also be
+   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
 1. Locate your domain name and select **Details**.
 1. Select the **Retry verification** button to activate your new domain.
 
@@ -287,9 +288,14 @@ meet these requirements.
 #### Steps
 
 - To add the certificate at the time you add a new domain, go to your
-  project's **Settings > Pages > New Domain**, add the domain name and the certificate.
+  project's **Settings > Pages > New Domain** (Note: this may also be
+  located at **Deployments > Pages**, [more information](../index.md#menu-position-test)), add the domain name and the
+  certificate.
 - To add the certificate to a domain previously added, go to your
   project's **Settings > Pages**, locate your domain name, select **Details** and **Edit** to add the certificate.
+
+NOTE:
+The Pages menu entry may also be located at **Deployments > Pages**, [more information](../index.md#menu-position-test)
 
 1. Add the PEM certificate to its corresponding field.
 1. If your certificate is missing its intermediate, copy
@@ -313,7 +319,8 @@ domain (as long as you've set a valid certificate for it).
 
 To enable this setting:
 
-1. Navigate to your project's **Settings > Pages**.
+1. Navigate to your project's **Settings > Pages** (Note: this may also be
+   located at **Deployments > Pages**, [more information](../index.md#menu-position-test)).
 1. Tick the checkbox **Force HTTPS (requires valid certificates)**.
 
 If you use Cloudflare CDN in front of GitLab Pages, make sure to set the SSL connection setting to

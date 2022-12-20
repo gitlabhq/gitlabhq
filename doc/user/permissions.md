@@ -236,7 +236,7 @@ The following table lists project permissions available for each role:
 10. Users can only view events based on their individual actions.
 11. Project access tokens are supported for self-managed instances on Free and above. They are also
     supported on GitLab SaaS Premium and above (excluding [trial licenses](https://about.gitlab.com/free-trial/)).
-12. If the [tag is protected](#release-permissions-with-protected-tags), this depends on the access given to Developers and Maintainers.
+12. If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers.
 13. A Maintainer or Owner can't change project features visibility level if
     [project visibility](public_access.md) is set to private.
 14. Attached design files are moved together with the issue even if the user doesn't have the
@@ -331,24 +331,6 @@ This table shows granted privileges for jobs triggered by specific types of user
 
 1. Only if the triggering user is not an external one.
 1. Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](http://docs.gitlabl.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy).
-
-### File Locking permissions **(PREMIUM)**
-
-The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
-
-Read through the documentation on [permissions for File Locking](project/file_lock.md#permissions) to learn more.
-
-### Confidential Issues permissions
-
-[Confidential issues](project/issues/confidential_issues.md) can be accessed by users with reporter and higher permission levels,
-as well as by guest users that create a confidential issue or are assigned to it. To learn more,
-read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
-
-### Container Registry visibility permissions
-
-The ability to view the Container Registry and pull images is controlled by the Container Registry's
-visibility permissions. Find these permissions for the Container Registry as described in the
-[related documentation](packages/container_registry/index.md#container-registry-visibility-permissions).
 
 ## Group members permissions
 
@@ -470,20 +452,15 @@ Users with even a "minimal access" role are counted against your number of licen
 requirement does not apply for [GitLab Ultimate](https://about.gitlab.com/pricing/)
 subscriptions.
 
-## Release permissions with protected tags
-
-[The permission to create tags](project/protected_tags.md) is used to define if a user can
-create, edit, and delete [Releases](project/releases/index.md).
-
-See [Release permissions](project/releases/index.md#release-permissions)
-for more information.
-
 ## Related topics
 
 - [The GitLab principles behind permissions](https://about.gitlab.com/handbook/product/gitlab-the-product/#permissions-in-gitlab)
 - [Members](project/members/index.md)
 - Customize permissions on [protected branches](project/protected_branches.md)
-- [LDAP users permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
+- [LDAP user permissions](group/access_and_permissions.md#manage-group-memberships-via-ldap)
 - [Value stream analytics permissions](analytics/value_stream_analytics.md#access-permissions-for-value-stream-analytics)
 - [Project aliases](../user/project/import/index.md#project-aliases)
 - [Auditor users](../administration/auditor_users.md)
+- [Confidential issues](project/issues/confidential_issues.md)
+- [Container Registry permissions](packages/container_registry/index.md#container-registry-visibility-permissions)
+- [Release permissions](project/releases/index.md#release-permissions)

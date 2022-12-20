@@ -26,6 +26,10 @@ import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import axios from '~/lib/utils/axios_utils';
 import httpStatus, { HTTP_STATUS_CREATED } from '~/lib/utils/http_status';
 import { getParameterValues } from '~/lib/utils/url_utility';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '~/invite_members/utils/trigger_successful_invite_alert';
 import { GROUPS_INVITATIONS_PATH, invitationsApiResponse } from '../mock_data/api_responses';
 import {
   propsData,
@@ -40,6 +44,7 @@ import {
   GlEmoji,
 } from '../mock_data/member_modal';
 
+jest.mock('~/invite_members/utils/trigger_successful_invite_alert');
 jest.mock('~/experimentation/experiment_tracking');
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -420,6 +425,29 @@ describe('InviteMembersModal', () => {
         tasks_project_id: '',
       };
 
+      describe('when reloadOnSubmit is true', () => {
+        beforeEach(async () => {
+          createComponent({ reloadPageOnSubmit: true });
+          await triggerMembersTokenSelect([user1, user2]);
+
+          wrapper.vm.$toast = { show: jest.fn() };
+          jest.spyOn(Api, 'inviteGroupMembers').mockResolvedValue({ data: postData });
+          clickInviteButton();
+        });
+
+        it('calls displaySuccessfulInvitationAlert on mount', () => {
+          expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
+        });
+
+        it('calls reloadOnInvitationSuccess', () => {
+          expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+        });
+
+        it('does not show the toast message', () => {
+          expect(wrapper.vm.$toast.show).not.toHaveBeenCalled();
+        });
+      });
+
       describe('when member is added successfully', () => {
         beforeEach(async () => {
           createComponent();
@@ -440,6 +468,14 @@ describe('InviteMembersModal', () => {
 
           it('displays the successful toastMessage', () => {
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+          });
+
+          it('does not call displaySuccessfulInvitationAlert on mount', () => {
+            expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+          });
+
+          it('does not call reloadOnInvitationSuccess', () => {
+            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
           });
         });
 
@@ -593,6 +629,14 @@ describe('InviteMembersModal', () => {
           it('displays the successful toastMessage', () => {
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
           });
+
+          it('does not call displaySuccessfulInvitationAlert on mount', () => {
+            expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+          });
+
+          it('does not call reloadOnInvitationSuccess', () => {
+            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+          });
         });
       });
 
@@ -679,6 +723,14 @@ describe('InviteMembersModal', () => {
 
           expect(membersFormGroupInvalidFeedback()).toBe(expectedSyntaxError);
           expect(findMembersSelect().props('exceptionState')).toBe(false);
+        });
+
+        it('does not call displaySuccessfulInvitationAlert on mount', () => {
+          expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+        });
+
+        it('does not call reloadOnInvitationSuccess', () => {
+          expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
         });
       });
 
@@ -793,6 +845,14 @@ describe('InviteMembersModal', () => {
 
           it('displays the successful toastMessage', () => {
             expect(wrapper.vm.$toast.show).toHaveBeenCalledWith('Members were successfully added');
+          });
+
+          it('does not call displaySuccessfulInvitationAlert on mount', () => {
+            expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
+          });
+
+          it('does not call reloadOnInvitationSuccess', () => {
+            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
           });
         });
 

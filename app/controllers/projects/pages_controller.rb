@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Projects::PagesController < Projects::ApplicationController
-  layout 'project_settings'
+  layout 'project_settings' if Feature.disabled?(:show_pages_in_deployments_menu, @project, type: :experiment)
 
   before_action :require_pages_enabled!
   before_action :authorize_read_pages!, only: [:show]
@@ -9,6 +9,10 @@ class Projects::PagesController < Projects::ApplicationController
   before_action :authorize_remove_pages!, only: [:destroy]
 
   feature_category :pages
+
+  before_action do
+    push_frontend_feature_flag(:show_pages_in_deployments_menu, project, type: :experiment)
+  end
 
   def new
     @pipeline_wizard_data = {

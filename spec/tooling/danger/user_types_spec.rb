@@ -4,7 +4,7 @@ require 'gitlab-dangerfiles'
 require 'gitlab/dangerfiles/spec_helper'
 require_relative '../../../tooling/danger/user_types'
 
-RSpec.describe Tooling::Danger::UserTypes, feature_category: :subscription_usage_reports do
+RSpec.describe Tooling::Danger::UserTypes, feature_category: :subscription_cost_management do
   include_context 'with dangerfile'
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }

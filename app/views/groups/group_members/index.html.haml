@@ -15,8 +15,8 @@
             classes: 'gl-md-w-auto gl-w-full gl-md-ml-3 gl-md-mt-0 gl-mt-3',
             trigger_source: 'group-members-page',
             display_text: _('Invite members') } }
-        = render 'groups/invite_groups_modal', group: @group
-        = render 'groups/invite_members_modal', group: @group
+        = render 'groups/invite_groups_modal', group: @group, reload_page_on_submit: true
+        = render 'groups/invite_members_modal', group: @group, reload_page_on_submit: true
 
     = render_if_exists 'groups/group_members/ldap_sync'
 

@@ -9,6 +9,7 @@ export const INVITE_MEMBERS_FOR_TASK = {
   view: 'modal_opened_from_email',
   submit: 'submit',
 };
+export const TOAST_MESSAGE_LOCALSTORAGE_KEY = 'members_invited_successfully';
 
 export const GROUP_FILTERS = {
   ALL: 'all',

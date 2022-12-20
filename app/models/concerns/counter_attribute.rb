@@ -97,6 +97,14 @@ module CounterAttribute
     end
   end
 
+  def bulk_increment_counter(attribute, increments)
+    run_after_commit_or_now do
+      new_value = counter(attribute).bulk_increment(increments)
+
+      log_increment_counter(attribute, increments.sum, new_value)
+    end
+  end
+
   def update_counters_with_lease(increments)
     detect_race_on_record(log_fields: { caller: __method__, attributes: increments.keys }) do
       self.class.update_counters(id, increments)

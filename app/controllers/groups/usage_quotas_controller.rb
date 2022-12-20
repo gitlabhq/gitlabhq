@@ -5,7 +5,7 @@ module Groups
     before_action :authorize_read_usage_quotas!
     before_action :verify_usage_quotas_enabled!
 
-    feature_category :subscription_usage_reports
+    feature_category :subscription_cost_management
     urgency :low
 
     def index

@@ -41,6 +41,20 @@ module Gitlab
         result
       end
 
+      def bulk_increment(increments)
+        result = redis_state do |redis|
+          redis.pipelined do |pipeline|
+            increments.each do |increment|
+              pipeline.incrby(key, increment)
+            end
+          end
+        end
+
+        FlushCounterIncrementsWorker.perform_in(WORKER_DELAY, counter_record.class.name, counter_record.id, attribute)
+
+        result.last
+      end
+
       def reset!
         counter_record.update!(attribute => 0)
 

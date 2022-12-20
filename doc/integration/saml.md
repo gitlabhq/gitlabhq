@@ -772,15 +772,20 @@ unchangeable.
 
 ## Assertion encryption (optional)
 
-GitLab requires the use of TLS encryption with SAML 2.0, but in some cases there can be a
-need for additional encryption of the assertions.
+GitLab requires the use of TLS encryption with SAML 2.0. Sometimes, GitLab needs
+additional assertion encryption. For example, if you:
 
-This may be the case, for example, if you terminate TLS encryption early at a load
-balancer and include sensitive details in assertions that you do not want appearing
-in logs. Most organizations should not need additional encryption at this layer.
+- Terminate TLS encryption early at a load balancer.
+- Include sensitive details in assertions that you do not want appearing in logs.
 
-The SAML integration supports EncryptedAssertion. You should define the private
-key and the public certificate of your GitLab instance in the SAML settings. When you define the key and certificate, replace all line feeds in the key file with `\n`. This makes the key file one long string with no line feeds.
+Most organizations should not need additional encryption at this layer.
+
+The SAML integration supports `EncryptedAssertion`. To encrypt your assertions,
+define the private key and the public certificate of your GitLab instance in the
+SAML settings.
+
+When you define the key and certificate, replace all line feeds in the key file with `\n`.
+This makes the key file one long string with no line feeds.
 
 ```yaml
 args: {
@@ -794,10 +799,12 @@ args: {
 }
 ```
 
-Your Identity Provider encrypts the assertion with the public certificate of GitLab. GitLab decrypts the EncryptedAssertion with its private key.
+Your IdP encrypts the assertion with the public certificate of GitLab.
+GitLab decrypts the `EncryptedAssertion` with its private key.
 
 NOTE:
-This integration uses the `certificate` and `private_key` settings for both assertion encryption and request signing.
+This integration uses the `certificate` and `private_key` settings for both
+assertion encryption and request signing.
 
 ## Sign SAML authentication requests (optional)
 

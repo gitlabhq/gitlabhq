@@ -72,7 +72,7 @@ RSpec.describe 'Groups > Members > Manage members', feature_category: :subgroups
 
       visit group_group_members_path(group)
 
-      invite_member(user1.name, role: 'Reporter', refresh: false)
+      invite_member(user1.name, role: 'Reporter')
 
       invite_modal = page.find(invite_modal_selector)
       expect(invite_modal).to have_content("not authorized to update member")

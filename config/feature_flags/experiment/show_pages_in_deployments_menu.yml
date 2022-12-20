@@ -1,0 +1,8 @@
+---
+name: show_pages_in_deployments_menu
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97783
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/373561
+milestone: '15.4'
+type: experiment
+group: group::incubation
+default_enabled: false

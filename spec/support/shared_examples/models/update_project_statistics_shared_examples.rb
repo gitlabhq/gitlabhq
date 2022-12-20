@@ -108,11 +108,8 @@ RSpec.shared_examples 'UpdateProjectStatistics' do |with_counter_attribute|
         end
 
         context 'when it is destroyed from the project level' do
-          it 'does not update the project statistics' do
-            expect(ProjectStatistics)
-              .not_to receive(:increment_statistic)
-
-            expect(Projects::DestroyService.new(project, project.first_owner).execute).to eq(true)
+          it 'does not store pending increments for async update' do
+            expect { Projects::DestroyService.new(project, project.first_owner).execute }.not_to change { read_pending_increment }
           end
 
           it 'does not schedule a namespace statistics worker' do

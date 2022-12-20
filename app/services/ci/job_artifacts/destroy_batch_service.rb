@@ -46,14 +46,13 @@ module Ci
 
         after_batch_destroy_hook(@job_artifacts)
 
-        # This is executed outside of the transaction because it depends on Redis
         update_project_statistics! if update_stats
+
         increment_monitoring_statistics(artifacts_count, artifacts_bytes)
 
         Gitlab::Ci::Artifacts::Logger.log_deleted(@job_artifacts, 'Ci::JobArtifacts::DestroyBatchService#execute')
 
-        success(destroyed_artifacts_count: artifacts_count,
-                statistics_updates: affected_project_statistics)
+        success(destroyed_artifacts_count: artifacts_count, statistics_updates: statistics_updates_per_project)
       end
       # rubocop: enable CodeReuse/ActiveRecord
 
@@ -74,17 +73,17 @@ module Ci
 
       # using ! here since this can't be called inside a transaction
       def update_project_statistics!
-        affected_project_statistics.each do |project, delta|
-          project.increment_statistic_value(Ci::JobArtifact.project_statistics_name, delta)
+        statistics_updates_per_project.each do |project, updates|
+          ProjectStatistics.bulk_increment_statistic(project, Ci::JobArtifact.project_statistics_name, updates)
         end
       end
 
-      def affected_project_statistics
-        strong_memoize(:affected_project_statistics) do
-          artifacts_by_project = @job_artifacts.group_by(&:project)
-          artifacts_by_project.each.with_object({}) do |(project, artifacts), accumulator|
-            delta = -artifacts.sum { |artifact| artifact.size.to_i }
-            accumulator[project] = delta
+      def statistics_updates_per_project
+        strong_memoize(:statistics_updates_per_project) do
+          result = Hash.new { |updates, project| updates[project] = [] }
+
+          @job_artifacts.each_with_object(result) do |job_artifact, result|
+            result[job_artifact.project] << -job_artifact.size.to_i
           end
         end
       end

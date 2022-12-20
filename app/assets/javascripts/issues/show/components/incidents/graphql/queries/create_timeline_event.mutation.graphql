@@ -7,6 +7,12 @@ mutation CreateTimelineEvent($input: TimelineEventCreateInput!) {
       action
       occurredAt
       createdAt
+      timelineEventTags {
+        nodes {
+          id
+          name
+        }
+      }
     }
     errors
   }

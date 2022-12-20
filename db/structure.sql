@@ -28643,9 +28643,13 @@ CREATE UNIQUE INDEX index_ci_build_needs_on_build_id_and_name ON ci_build_needs 
 
 CREATE UNIQUE INDEX index_ci_build_pending_states_on_build_id ON ci_build_pending_states USING btree (build_id);
 
+CREATE INDEX index_ci_build_pending_states_on_partition_id_build_id ON ci_build_pending_states USING btree (partition_id, build_id);
+
 CREATE INDEX index_ci_build_report_results_on_project_id ON ci_build_report_results USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ci_build_trace_chunks_on_build_id_and_chunk_index ON ci_build_trace_chunks USING btree (build_id, chunk_index);
+
+CREATE INDEX index_ci_build_trace_chunks_on_partition_id_build_id ON ci_build_trace_chunks USING btree (partition_id, build_id);
 
 CREATE INDEX index_ci_build_trace_metadata_on_trace_artifact_id ON ci_build_trace_metadata USING btree (trace_artifact_id);
 
@@ -28962,6 +28966,8 @@ CREATE INDEX index_ci_triggers_on_owner_id ON ci_triggers USING btree (owner_id)
 CREATE INDEX index_ci_triggers_on_project_id ON ci_triggers USING btree (project_id);
 
 CREATE INDEX index_ci_unit_test_failures_on_build_id ON ci_unit_test_failures USING btree (build_id);
+
+CREATE INDEX index_ci_unit_test_failures_on_partition_id_build_id ON ci_unit_test_failures USING btree (partition_id, build_id);
 
 CREATE UNIQUE INDEX index_ci_unit_tests_on_project_id_and_key_hash ON ci_unit_tests USING btree (project_id, key_hash);
 
@@ -30140,6 +30146,8 @@ CREATE INDEX index_namespaces_on_owner_id ON namespaces USING btree (owner_id);
 CREATE UNIQUE INDEX index_namespaces_on_parent_id_and_id ON namespaces USING btree (parent_id, id);
 
 CREATE INDEX index_namespaces_on_path ON namespaces USING btree (path);
+
+CREATE INDEX index_namespaces_on_path_for_top_level_non_projects ON namespaces USING btree (lower((path)::text)) WHERE ((parent_id IS NULL) AND ((type)::text <> 'Project'::text));
 
 CREATE INDEX index_namespaces_on_path_trigram ON namespaces USING gin (path gin_trgm_ops);
 
@@ -33098,6 +33106,9 @@ ALTER TABLE ONLY lists
 ALTER TABLE ONLY ci_unit_test_failures
     ADD CONSTRAINT fk_0f09856e1f FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_unit_test_failures
+    ADD CONSTRAINT fk_0f09856e1f_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY deployment_approvals
     ADD CONSTRAINT fk_0f58311058 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -34061,6 +34072,9 @@ ALTER TABLE ONLY related_epic_links
 ALTER TABLE ONLY ci_build_pending_states
     ADD CONSTRAINT fk_rails_0bbbfeaf9d FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_build_pending_states
+    ADD CONSTRAINT fk_rails_0bbbfeaf9d_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY audit_events_external_audit_event_destinations
     ADD CONSTRAINT fk_rails_0bc80a4edc FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34090,6 +34104,9 @@ ALTER TABLE ONLY merge_request_context_commits
 
 ALTER TABLE ONLY ci_build_trace_chunks
     ADD CONSTRAINT fk_rails_1013b761f2 FOREIGN KEY (build_id) REFERENCES ci_builds(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_build_trace_chunks
+    ADD CONSTRAINT fk_rails_1013b761f2_p FOREIGN KEY (partition_id, build_id) REFERENCES ci_builds(partition_id, id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_rails_1019162882 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

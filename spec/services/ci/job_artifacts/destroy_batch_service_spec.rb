@@ -29,7 +29,7 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
     create(:ci_job_artifact, :trace, :expired)
   end
 
-  describe '.execute' do
+  describe '#execute' do
     subject(:execute) { service.execute }
 
     it 'creates a deleted object for artifact with attached file' do
@@ -207,44 +207,38 @@ RSpec.describe Ci::JobArtifacts::DestroyBatchService do
       end
     end
 
-    context 'ProjectStatistics' do
-      it 'resets project statistics' do
-        expect(ProjectStatistics).to receive(:increment_statistic).once
-          .with(artifact_with_file.project, :build_artifacts_size, -artifact_with_file.file.size)
-          .and_call_original
-        expect(ProjectStatistics).to receive(:increment_statistic).once
-          .with(artifact_without_file.project, :build_artifacts_size, 0)
-          .and_call_original
+    context 'ProjectStatistics', :sidekiq_inline do
+      let(:artifact_with_file) { create(:ci_job_artifact, :zip) }
+      let(:artifact_with_file_2) { create(:ci_job_artifact, :zip, project: artifact_with_file.project) }
+      let(:artifact_without_file) { create(:ci_job_artifact) }
+      let(:affected_statistics) { artifact_with_file.project.statistics }
+      let(:unaffected_statistics) { artifact_without_file.project.statistics }
+      let!(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id, artifact_with_file_2.id]) }
 
-        execute
+      it 'updates project statistics by the relevant amount' do
+        expected_amount = -(artifact_with_file.size + artifact_with_file_2.size)
+
+        expect { execute }
+          .to change { affected_statistics.reload.build_artifacts_size }.by(expected_amount)
+          .and change { unaffected_statistics.reload.build_artifacts_size }.by(0)
       end
 
       context 'with update_stats: false' do
-        let_it_be(:extra_artifact_with_file) do
-          create(:ci_job_artifact, :zip, project: artifact_with_file.project)
-        end
-
-        let(:artifacts) do
-          Ci::JobArtifact.where(id: [artifact_with_file.id, extra_artifact_with_file.id,
-                                     artifact_without_file.id, trace_artifact.id])
-        end
+        subject(:execute) { service.execute(update_stats: false) }
 
         it 'does not update project statistics' do
-          expect(ProjectStatistics).not_to receive(:increment_statistic)
-
-          service.execute(update_stats: false)
+          expect { execute }.not_to change { [affected_statistics.reload.build_artifacts_size, unaffected_statistics.reload.build_artifacts_size] }
         end
 
-        it 'returns size statistics' do
+        it 'returns statistic updates per project' do
           expected_updates = {
             statistics_updates: {
-              artifact_with_file.project => -(artifact_with_file.file.size + extra_artifact_with_file.file.size),
-              artifact_without_file.project => 0
+              artifact_with_file.project => match_array([-artifact_with_file.file.size, -artifact_with_file_2.file.size]),
+              artifact_without_file.project => [0]
             }
           }
 
-          expect(service.execute(update_stats: false)).to match(
-            a_hash_including(expected_updates))
+          expect(execute).to match(a_hash_including(expected_updates))
         end
       end
     end

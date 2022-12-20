@@ -92,6 +92,9 @@ describe('IncidentTimelineEventList', () => {
       expect(findItems().at(1).props('occurredAt')).toBe(mockEvents[1].occurredAt);
       expect(findItems().at(1).props('action')).toBe(mockEvents[1].action);
       expect(findItems().at(1).props('noteHtml')).toBe(mockEvents[1].noteHtml);
+      expect(findItems().at(1).props('eventTag')).toBe(
+        mockEvents[1].timelineEventTags.nodes[0].name,
+      );
     });
 
     it('formats dates correctly', () => {
@@ -117,6 +120,20 @@ describe('IncidentTimelineEventList', () => {
         it('displays the correct time', () => {
           expect(findDates().at(0).text()).toBe('2022-03-22');
         });
+      });
+    });
+
+    describe('getFirstTag', () => {
+      it('returns undefined, when timelineEventTags contains an empty array', () => {
+        const returnedTag = wrapper.vm.getFirstTag(mockEvents[0].timelineEventTags);
+
+        expect(returnedTag).toEqual(undefined);
+      });
+
+      it('returns the first string, when timelineEventTags contains array with at least one tag', () => {
+        const returnedTag = wrapper.vm.getFirstTag(mockEvents[1].timelineEventTags);
+
+        expect(returnedTag).toBe(mockEvents[1].timelineEventTags.nodes[0].name);
       });
     });
 

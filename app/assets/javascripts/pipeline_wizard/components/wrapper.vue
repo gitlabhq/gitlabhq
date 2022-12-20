@@ -6,6 +6,7 @@ import { merge } from '~/lib/utils/yaml';
 import { __ } from '~/locale';
 import { isValidStepSeq } from '~/pipeline_wizard/validators';
 import Tracking from '~/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import YamlEditor from './editor.vue';
 import WizardStep from './step.vue';
 import CommitStep from './commit.vue';
@@ -28,7 +29,7 @@ export default {
     WizardStep,
     CommitStep,
   },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagsMixin()],
   props: {
     steps: {
       type: Object,
@@ -91,6 +92,11 @@ export default {
         category: `pipeline_wizard:${this.templateId}`,
       };
     },
+    trackingExtraData() {
+      return {
+        features: this.glFeatures,
+      };
+    },
   },
   watch: {
     isLastStep(value) {
@@ -125,6 +131,7 @@ export default {
         extra: {
           fromStep: this.currentStepIndex + 1,
           toStep: this.currentStepIndex,
+          ...this.trackingExtraData,
         },
       });
     },
@@ -136,6 +143,7 @@ export default {
         extra: {
           fromStep: this.currentStepIndex - 1,
           toStep: this.currentStepIndex,
+          ...this.trackingExtraData,
         },
       });
     },
@@ -144,6 +152,7 @@ export default {
       this.track('click_button', {
         label: 'pipeline_wizard_commit',
         property: 'commit',
+        extra: this.trackingExtraData,
       });
     },
     onEditorTouched() {
@@ -151,6 +160,7 @@ export default {
         label: 'pipeline_wizard_editor_interaction',
         extra: {
           currentStep: this.currentStepIndex,
+          ...this.trackingExtraData,
         },
       });
     },

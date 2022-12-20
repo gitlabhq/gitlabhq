@@ -42,6 +42,7 @@ export default function initInviteGroupsModal() {
           groupSelectParentId: parseInt(el.dataset.parentId, 10),
           invalidGroups: JSON.parse(el.dataset.invalidGroups || '[]'),
           freeUserCapEnabled: parseBoolean(el.dataset.freeUserCapEnabled),
+          reloadPageOnSubmit: parseBoolean(el.dataset.reloadPageOnSubmit),
         },
       }),
   });

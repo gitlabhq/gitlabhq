@@ -166,7 +166,7 @@ RSpec.describe 'Database schema' do
           context 'columns ending with _id' do
             let(:column_names) { columns.map(&:name) }
             let(:column_names_with_id) { column_names.select { |column_name| column_name.ends_with?('_id') } }
-            let(:foreign_keys_columns) { all_foreign_keys.map(&:column).uniq } # we can have FK and loose FK present at the same time
+            let(:foreign_keys_columns) { all_foreign_keys.reject { |fk| fk.name&.end_with?("_p") }.map(&:column).uniq } # we can have FK and loose FK present at the same time
             let(:ignored_columns) { ignored_fk_columns(table) }
 
             it 'do have the foreign keys' do

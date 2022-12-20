@@ -68,7 +68,7 @@ For more information, see the [list of settings that can be accessed through API
 Open the [Rails console](../../../administration/operations/rails_console.md) and run the following:
 
 ```ruby
-::Gitlab::CurrentSettings.update!(admin_mode true)
+::Gitlab::CurrentSettings.update!(admin_mode: true)
 ```
 
 #### Use the UI to enable Admin Mode

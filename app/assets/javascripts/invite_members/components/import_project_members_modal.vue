@@ -5,6 +5,10 @@ import { importProjectMembers } from '~/api/projects_api';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import { s__, __, sprintf } from '~/locale';
 import eventHub from '../event_hub';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '../utils/trigger_successful_invite_alert';
 import ProjectSelect from './project_select.vue';
 
 export default {
@@ -23,6 +27,11 @@ export default {
     projectName: {
       type: String,
       required: true,
+    },
+    reloadPageOnSubmit: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -59,6 +68,10 @@ export default {
     },
   },
   mounted() {
+    if (this.reloadPageOnSubmit) {
+      displaySuccessfulInvitationAlert();
+    }
+
     eventHub.$on('openProjectMembersModal', () => {
       this.openModal();
     });
@@ -74,16 +87,22 @@ export default {
     submitImport() {
       this.isLoading = true;
       return importProjectMembers(this.projectId, this.projectToBeImported.id)
-        .then(this.showToastMessage)
+        .then(this.onInviteSuccess)
         .catch(this.showErrorAlert)
         .finally(() => {
           this.isLoading = false;
           this.projectToBeImported = {};
         });
     },
+    onInviteSuccess() {
+      if (this.reloadPageOnSubmit) {
+        reloadOnInvitationSuccess();
+      } else {
+        this.showToastMessage();
+      }
+    },
     showToastMessage() {
       this.$toast.show(this.$options.i18n.successMessage, this.$options.toastOptions);
-
       this.closeModal();
     },
     showErrorAlert() {

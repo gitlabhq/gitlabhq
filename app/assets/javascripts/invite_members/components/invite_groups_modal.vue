@@ -6,6 +6,10 @@ import InviteModalBase from 'ee_else_ce/invite_members/components/invite_modal_b
 import { GROUP_FILTERS, GROUP_MODAL_LABELS } from '../constants';
 import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
+import {
+  displaySuccessfulInvitationAlert,
+  reloadOnInvitationSuccess,
+} from '../utils/trigger_successful_invite_alert';
 import GroupSelect from './group_select.vue';
 import InviteGroupNotification from './invite_group_notification.vue';
 
@@ -67,6 +71,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    reloadPageOnSubmit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -95,6 +104,10 @@ export default {
     },
   },
   mounted() {
+    if (this.reloadPageOnSubmit) {
+      displaySuccessfulInvitationAlert();
+    }
+
     eventHub.$on('openGroupModal', () => {
       this.openModal();
     });
@@ -124,7 +137,7 @@ export default {
         expires_at: expiresAt,
       })
         .then(() => {
-          this.showSuccessMessage();
+          this.onInviteSuccess();
         })
         .catch((e) => {
           this.showInvalidFeedbackMessage(e);
@@ -137,6 +150,13 @@ export default {
       this.invalidFeedbackMessage = '';
       this.isLoading = false;
       this.groupToBeSharedWith = {};
+    },
+    onInviteSuccess() {
+      if (this.reloadPageOnSubmit) {
+        reloadOnInvitationSuccess();
+      } else {
+        this.showSuccessMessage();
+      }
     },
     showSuccessMessage() {
       this.$toast.show(this.$options.labels.toastMessageSuccessful, this.toastOptions);

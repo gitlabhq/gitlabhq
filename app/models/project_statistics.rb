@@ -124,8 +124,22 @@ class ProjectStatistics < ApplicationRecord
   #
   # For non-counter attributes, storage_size is updated depending on key => [columns] in INCREMENTABLE_COLUMNS
   def self.increment_statistic(project, key, amount)
+    return if project.pending_delete?
+
     project.statistics.try do |project_statistics|
       project_statistics.increment_statistic(key, amount)
+    end
+  end
+
+  def self.bulk_increment_statistic(project, key, amounts)
+    unless Feature.enabled?(:project_statistics_bulk_increment, type: :development)
+      return increment_statistic(project, key, amounts.sum)
+    end
+
+    return if project.pending_delete?
+
+    project.statistics.try do |project_statistics|
+      project_statistics.bulk_increment_statistic(key, amounts)
     end
   end
 
@@ -133,6 +147,12 @@ class ProjectStatistics < ApplicationRecord
     raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
 
     increment_counter(key, amount)
+  end
+
+  def bulk_increment_statistic(key, increments)
+    raise ArgumentError, "Cannot increment attribute: #{key}" unless incrementable_attribute?(key)
+
+    bulk_increment_counter(key, increments)
   end
 
   private

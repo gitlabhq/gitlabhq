@@ -3353,7 +3353,7 @@
   :tags: []
 - :name: update_highest_role
   :worker_name: UpdateHighestRoleWorker
-  :feature_category: :subscription_usage_reports
+  :feature_category: :subscription_cost_management
   :has_external_dependencies: false
   :urgency: :high
   :resource_boundary: :unknown

@@ -455,7 +455,7 @@ RSpec.describe ProjectStatistics do
   end
 
   describe '.increment_statistic' do
-    shared_examples 'a statistic that increases storage_size' do
+    shared_examples 'a statistic that increases storage_size synchronously' do
       it 'increases the statistic by that amount' do
         expect { described_class.increment_statistic(project, stat, 13) }
           .to change { statistics.reload.send(stat) || 0 }
@@ -473,6 +473,17 @@ RSpec.describe ProjectStatistics do
          .with(statistics.project.namespace.id)
 
         described_class.increment_statistic(project, stat, 20)
+      end
+
+      context 'when the project is pending delete' do
+        before do
+          project.update_attribute(:pending_delete, true)
+        end
+
+        it 'does not change the statistics' do
+          expect { described_class.increment_statistic(project, stat, 13) }
+            .not_to change { statistics.reload.send(stat) }
+        end
       end
     end
 
@@ -497,6 +508,17 @@ RSpec.describe ProjectStatistics do
           .to change { statistics.reload.send(stat) }.by(20)
           .and change { statistics.reload.send(:storage_size) }.by(20)
       end
+
+      context 'when the project is pending delete' do
+        before do
+          project.update_attribute(:pending_delete, true)
+        end
+
+        it 'does not change the statistics' do
+          expect { described_class.increment_statistic(project, stat, 13) }
+            .not_to change { [statistics.reload.send(stat), statistics.reload.send(:storage_size)] }
+        end
+      end
     end
 
     context 'when adjusting :build_artifacts_size' do
@@ -508,7 +530,7 @@ RSpec.describe ProjectStatistics do
     context 'when adjusting :pipeline_artifacts_size' do
       let(:stat) { :pipeline_artifacts_size }
 
-      it_behaves_like 'a statistic that increases storage_size'
+      it_behaves_like 'a statistic that increases storage_size synchronously'
     end
 
     context 'when adjusting :packages_size' do
@@ -528,6 +550,116 @@ RSpec.describe ProjectStatistics do
     context 'when using an invalid column' do
       it 'raises an error' do
         expect { described_class.increment_statistic(project, :id, 13) }
+          .to raise_error(ArgumentError, "Cannot increment attribute: id")
+      end
+    end
+  end
+
+  describe '.bulk_increment_statistic' do
+    let(:increments) { [10, 3] }
+    let(:total_amount) { increments.sum }
+
+    shared_examples 'a statistic that increases storage_size synchronously' do
+      it 'increases the statistic by that amount' do
+        expect { described_class.bulk_increment_statistic(project, stat, increments) }
+          .to change { statistics.reload.send(stat) || 0 }
+                .by(total_amount)
+      end
+
+      it 'increases also storage size by that amount' do
+        expect { described_class.bulk_increment_statistic(project, stat, increments) }
+          .to change { statistics.reload.storage_size }
+                .by(total_amount)
+      end
+
+      it 'schedules a namespace aggregation worker' do
+        expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
+                                                           .with(statistics.project.namespace.id)
+
+        described_class.bulk_increment_statistic(project, stat, increments)
+      end
+
+      context 'when the project is pending delete' do
+        before do
+          project.update_attribute(:pending_delete, true)
+        end
+
+        it 'does not change the statistics' do
+          expect { described_class.bulk_increment_statistic(project, stat, increments) }
+            .not_to change { statistics.reload.send(stat) }
+        end
+      end
+    end
+
+    shared_examples 'a statistic that increases storage_size asynchronously' do
+      it 'stores the increment temporarily in Redis', :clean_gitlab_redis_shared_state do
+        described_class.bulk_increment_statistic(project, stat, increments)
+
+        Gitlab::Redis::SharedState.with do |redis|
+          key = statistics.counter(stat).key
+          increment = redis.get(key)
+          expect(increment.to_i).to eq(total_amount)
+        end
+      end
+
+      it 'schedules a worker to update the statistic and storage_size async', :sidekiq_inline do
+        expect(FlushCounterIncrementsWorker)
+          .to receive(:perform_in)
+                .with(Gitlab::Counters::BufferedCounter::WORKER_DELAY, described_class.name, statistics.id, stat)
+                .and_call_original
+
+        expect { described_class.bulk_increment_statistic(project, stat, increments) }
+          .to change { statistics.reload.send(stat) }.by(total_amount)
+          .and change { statistics.reload.send(:storage_size) }.by(total_amount)
+      end
+
+      context 'when the project is pending delete' do
+        before do
+          project.update_attribute(:pending_delete, true)
+        end
+
+        it 'does not change the statistics' do
+          expect { described_class.bulk_increment_statistic(project, stat, increments) }
+            .not_to change { [statistics.reload.send(stat), statistics.reload.send(:storage_size)] }
+        end
+      end
+    end
+
+    context 'when adjusting :build_artifacts_size' do
+      let(:stat) { :build_artifacts_size }
+
+      it_behaves_like 'a statistic that increases storage_size asynchronously'
+
+      context 'when :project_statistics_bulk_increment flag is disabled' do
+        before do
+          stub_feature_flags(project_statistics_bulk_increment: false)
+        end
+
+        it 'calls increment_statistic on once with the sum of the increments' do
+          expect(statistics).to receive(:increment_statistic).with(stat, increments.sum).and_call_original
+
+          described_class.bulk_increment_statistic(project, stat, increments)
+        end
+
+        it_behaves_like 'a statistic that increases storage_size asynchronously'
+      end
+    end
+
+    context 'when adjusting :pipeline_artifacts_size' do
+      let(:stat) { :pipeline_artifacts_size }
+
+      it_behaves_like 'a statistic that increases storage_size synchronously'
+    end
+
+    context 'when adjusting :packages_size' do
+      let(:stat) { :packages_size }
+
+      it_behaves_like 'a statistic that increases storage_size asynchronously'
+    end
+
+    context 'when using an invalid column' do
+      it 'raises an error' do
+        expect { described_class.bulk_increment_statistic(project, :id, increments) }
           .to raise_error(ArgumentError, "Cannot increment attribute: id")
       end
     end

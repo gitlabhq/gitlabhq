@@ -10,6 +10,10 @@ RSpec.describe Sidebars::Projects::Menus::SettingsMenu do
 
   subject { described_class.new(context) }
 
+  before do
+    Feature.disable(:show_pages_in_deployments_menu, :project)
+  end
+
   describe '#render?' do
     it 'returns false when menu does not have any menu items' do
       allow(subject).to receive(:has_renderable_items?).and_return(false)
