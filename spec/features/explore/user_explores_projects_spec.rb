@@ -35,8 +35,6 @@ RSpec.describe 'User explores projects', feature_category: :users do
 
       before do
         sign_in(user)
-
-        stub_feature_flags(project_list_filter_bar: false)
       end
 
       shared_examples 'empty search results' do

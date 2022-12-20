@@ -1,6 +1,3 @@
-- project_tab_filter = local_assigns.fetch(:project_tab_filter, "")
-- feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
-
 = content_for :flash_message do
   = render 'shared/project_limit'
 
@@ -17,9 +14,5 @@
     .fade-left= sprite_icon('chevron-lg-left', size: 12)
     .fade-right= sprite_icon('chevron-lg-right', size: 12)
     = render 'dashboard/projects_nav'
-  - unless feature_project_list_filter_bar
-    .nav-controls
-      = render 'shared/projects/search_form'
-- if feature_project_list_filter_bar
-  .project-filters
-    = render 'shared/projects/search_bar', project_tab_filter: project_tab_filter
+  .nav-controls
+    = render 'shared/projects/search_form'

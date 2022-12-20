@@ -23,12 +23,11 @@
           "type": "string"
         },
         "lifecycle_stage": {
-          "type": {
-            "enum": [
-              "active",
-              "deleted"
-            ]
-          }
+          "type": "string",
+          "enum": [
+            "active",
+            "deleted"
+          ]
         },
         "tags": {
           "type": "array",

@@ -13,6 +13,7 @@ module IncidentManagement
       def initialize(timeline_event, user, params)
         @timeline_event = timeline_event
         @incident = timeline_event.incident
+        @project = incident.project
         @user = user
         @note = params[:note]
         @occurred_at = params[:occurred_at]
@@ -24,6 +25,9 @@ module IncidentManagement
         return error_no_permissions unless allowed?
 
         unless timeline_event_tags.nil?
+          auto_create_predefined_tags(timeline_event_tags)
+
+          # Refetches the tag objects to consider predefined tags as well
           new_tags = timeline_event
                       .project
                       .incident_management_timeline_event_tags
@@ -52,7 +56,8 @@ module IncidentManagement
 
       private
 
-      attr_reader :timeline_event, :incident, :user, :note, :occurred_at, :validation_context, :timeline_event_tags
+      attr_reader :timeline_event, :incident, :project, :user,
+        :note, :occurred_at, :validation_context, :timeline_event_tags
 
       def update_timeline_event_and_event_tags(new_tags)
         ApplicationRecord.transaction do

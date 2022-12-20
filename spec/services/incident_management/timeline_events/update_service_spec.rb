@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
+RSpec.describe IncidentManagement::TimelineEvents::UpdateService, feature_category: :incident_management do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
@@ -196,6 +196,28 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService do
       end
 
       context 'when timeline event tags are passed' do
+        context 'when predefined tags are passed' do
+          let(:params) do
+            {
+              note: 'Updated note',
+              occurred_at: occurred_at,
+              timeline_event_tag_names: ['start time', 'end time']
+            }
+          end
+
+          it 'returns the new tag in response' do
+            timeline_event = execute.payload[:timeline_event]
+
+            expect(timeline_event.timeline_event_tags.pluck_names).to contain_exactly('Start time', 'End time')
+          end
+
+          it 'creates the predefined tags on the project' do
+            execute
+
+            expect(project.incident_management_timeline_event_tags.pluck_names).to include('Start time', 'End time')
+          end
+        end
+
         context 'when they exist' do
           let(:params) do
             {

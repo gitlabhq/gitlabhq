@@ -12,6 +12,7 @@ export const initWorkItemsRoot = () => {
     issuesListPath,
     hasIterationsFeature,
     hasOkrsFeature,
+    hasIssuableHealthStatusFeature,
   } = el.dataset;
 
   return new Vue({
@@ -26,6 +27,7 @@ export const initWorkItemsRoot = () => {
       hasOkrsFeature: parseBoolean(hasOkrsFeature),
       issuesListPath,
       hasIterationsFeature: parseBoolean(hasIterationsFeature),
+      hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),
     },
     render(createElement) {
       return createElement(App);

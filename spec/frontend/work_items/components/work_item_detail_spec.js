@@ -122,6 +122,7 @@ describe('WorkItemDetail component', () => {
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         hasOkrsFeature: true,
+        hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
       },

@@ -1,8 +1,0 @@
----
-name: project_list_filter_bar
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/11209
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/321404
-milestone: '11.11'
-type: development
-group: group::workspace
-default_enabled: false

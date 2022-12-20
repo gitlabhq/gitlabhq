@@ -44,24 +44,17 @@ module SortingHelper
   # rubocop: enable Metrics/AbcSize
 
   def projects_sort_options_hash
-    use_old_sorting = Feature.disabled?(:project_list_filter_bar) || current_controller?('admin/projects')
-
     options = {
       sort_value_latest_activity => sort_title_latest_activity,
       sort_value_recently_created => sort_title_created_date,
       sort_value_name => sort_title_name,
       sort_value_name_desc => sort_title_name_desc,
-      sort_value_stars_desc => sort_title_stars
+      sort_value_stars_desc => sort_title_stars,
+      sort_value_oldest_activity => sort_title_oldest_activity,
+      sort_value_oldest_created => sort_title_oldest_created,
+      sort_value_recently_created => sort_title_recently_created,
+      sort_value_stars_desc => sort_title_most_stars
     }
-
-    if use_old_sorting
-      options = options.merge({
-        sort_value_oldest_activity => sort_title_oldest_activity,
-        sort_value_oldest_created => sort_title_oldest_created,
-        sort_value_recently_created => sort_title_recently_created,
-        sort_value_stars_desc => sort_title_most_stars
-      })
-    end
 
     if current_controller?('admin/projects')
       options[sort_value_largest_repo] = sort_title_largest_repo
@@ -76,29 +69,6 @@ module SortingHelper
       sort_value_oldest_created => sort_title_created_date,
       sort_value_latest_activity => sort_title_latest_activity,
       sort_value_oldest_activity => sort_title_latest_activity
-    }
-  end
-
-  def projects_sort_option_titles
-    # Only used for the project filter search bar
-    projects_sort_options_hash.merge({
-      sort_value_oldest_activity => sort_title_latest_activity,
-      sort_value_oldest_created => sort_title_created_date,
-      sort_value_name_desc => sort_title_name,
-      sort_value_stars_asc => sort_title_stars
-    })
-  end
-
-  def projects_reverse_sort_options_hash
-    {
-      sort_value_latest_activity => sort_value_oldest_activity,
-      sort_value_recently_created => sort_value_oldest_created,
-      sort_value_name => sort_value_name_desc,
-      sort_value_stars_desc => sort_value_stars_asc,
-      sort_value_oldest_activity => sort_value_latest_activity,
-      sort_value_oldest_created => sort_value_recently_created,
-      sort_value_name_desc => sort_value_name,
-      sort_value_stars_asc => sort_value_stars_desc
     }
   end
 
@@ -318,13 +288,6 @@ module SortingHelper
   def issuable_sort_direction_button(sort_value)
     reverse_sort = issuable_reverse_sort_order_hash[sort_value]
     url = page_filter_path(sort: reverse_sort)
-
-    sort_direction_button(url, reverse_sort, sort_value)
-  end
-
-  def project_sort_direction_button(sort_value)
-    reverse_sort = projects_reverse_sort_options_hash[sort_value]
-    url = filter_projects_path(sort: reverse_sort)
 
     sort_direction_button(url, reverse_sort, sort_value)
   end

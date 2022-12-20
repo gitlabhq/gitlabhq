@@ -11106,7 +11106,7 @@ CREATE TABLE application_settings (
     help_text text,
     restricted_visibility_levels text,
     version_check_enabled boolean DEFAULT true,
-    max_attachment_size integer DEFAULT 10 NOT NULL,
+    max_attachment_size integer DEFAULT 100 NOT NULL,
     default_project_visibility integer DEFAULT 0 NOT NULL,
     default_snippet_visibility integer DEFAULT 0 NOT NULL,
     user_oauth_applications boolean DEFAULT true,

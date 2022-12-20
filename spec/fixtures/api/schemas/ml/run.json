@@ -45,24 +45,24 @@
             "end_time": {
               "type": "integer"
             },
-            "user_id": "",
+            "user_id": {
+              "type": "string"
+            },
             "status": {
-              "type": {
-                "enum": [
-                  "RUNNING",
-                  "SCHEDULED",
-                  "FINISHED",
-                  "FAILED",
-                  "KILLED"
-                ]
-              }
+              "type": "string",
+              "enum": [
+                "RUNNING",
+                "SCHEDULED",
+                "FINISHED",
+                "FAILED",
+                "KILLED"
+              ]
             },
             "lifecycle_stage": {
-              "type": {
-                "enum": [
-                  "active"
-                ]
-              }
+              "type": "string",
+              "enum": [
+                "active"
+              ]
             }
           }
         },

@@ -29,6 +29,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WIDGET_TYPE_MILESTONE,
   WIDGET_TYPE_ITERATION,
+  WIDGET_TYPE_HEALTH_STATUS,
   WORK_ITEM_TYPE_VALUE_ISSUE,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WIDGET_TYPE_NOTES,
@@ -77,6 +78,8 @@ export default {
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemTypeIcon,
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
+    WorkItemHealthStatus: () =>
+      import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemMilestone,
     WorkItemTree,
     WorkItemNotes,
@@ -262,6 +265,9 @@ export default {
     },
     workItemIteration() {
       return this.isWidgetPresent(WIDGET_TYPE_ITERATION);
+    },
+    workItemHealthStatus() {
+      return this.isWidgetPresent(WIDGET_TYPE_HEALTH_STATUS);
     },
     workItemMilestone() {
       return this.isWidgetPresent(WIDGET_TYPE_MILESTONE);
@@ -590,6 +596,15 @@ export default {
         :fetch-by-iid="fetchByIid"
         :query-variables="queryVariables"
         :full-path="fullPath"
+        @error="updateError = $event"
+      />
+      <work-item-health-status
+        v-if="workItemHealthStatus"
+        class="gl-mb-5"
+        :health-status="workItemHealthStatus.healthStatus"
+        :can-update="canUpdate"
+        :work-item-id="workItem.id"
+        :work-item-type="workItemType"
         @error="updateError = $event"
       />
       <work-item-description

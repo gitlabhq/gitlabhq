@@ -267,6 +267,7 @@ export const workItemResponseFactory = ({
   progressWidgetPresent = true,
   milestoneWidgetPresent = true,
   iterationWidgetPresent = true,
+  healthStatusWidgetPresent = true,
   confidential = false,
   canInviteMembers = false,
   allowsScopedLabels = false,
@@ -370,6 +371,13 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetMilestone',
               type: 'MILESTONE',
               milestone: mockMilestone,
+            }
+          : { type: 'MOCK TYPE' },
+        healthStatusWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetHealthStatus',
+              type: 'HEALTH_STATUS',
+              healthStatus: 'onTrack',
             }
           : { type: 'MOCK TYPE' },
         {

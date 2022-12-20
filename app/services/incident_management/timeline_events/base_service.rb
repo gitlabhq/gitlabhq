@@ -5,6 +5,8 @@ module IncidentManagement
     class BaseService
       include Gitlab::Utils::UsageData
 
+      AUTOCREATE_TAGS = [TimelineEventTag::START_TIME_TAG_NAME, TimelineEventTag::END_TIME_TAG_NAME].freeze
+
       def allowed?
         user&.can?(:admin_incident_management_timeline_event, incident)
       end
@@ -40,6 +42,16 @@ module IncidentManagement
           label: 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly',
           context: [Gitlab::Tracking::ServicePingContext.new(data_source: :redis_hll, event: event).to_context]
         )
+      end
+
+      def auto_create_predefined_tags(new_tags)
+        new_tags = new_tags.map(&:downcase)
+
+        tags_to_create = AUTOCREATE_TAGS.select { |tag| tag.downcase.in?(new_tags) }
+
+        tags_to_create.each do |name|
+          project.incident_management_timeline_event_tags.create(name: name)
+        end
       end
     end
   end

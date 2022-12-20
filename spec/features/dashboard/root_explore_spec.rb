@@ -32,27 +32,23 @@ RSpec.describe 'Root explore', feature_category: :not_owned do
   end
 
   describe 'project language dropdown' do
-    using RSpec::Parameterized::TableSyntax
+    let(:has_language_dropdown?) { page.has_selector?('[data-testid="project-language-dropdown"]') }
 
-    where(:project_language_search, :project_list_filter_bar, :render_project_language_dropdown) do
-      false | false | false
-      false | true  | false
-      true  | false | true
-      true  | true  | false
+    it 'is conditionally rendered' do
+      visit explore_projects_path
+
+      expect(has_language_dropdown?).to eq(true)
     end
 
-    with_them do
+    context 'with project_language_search ff disabled' do
       before do
-        stub_feature_flags(project_language_search: project_language_search)
-        stub_feature_flags(project_list_filter_bar: project_list_filter_bar)
+        stub_feature_flags(project_language_search: false)
       end
-
-      let(:has_language_dropdown?) { page.has_selector?('[data-testid="project-language-dropdown"]') }
 
       it 'is conditionally rendered' do
         visit explore_projects_path
 
-        expect(has_language_dropdown?).to eq(render_project_language_dropdown)
+        expect(has_language_dropdown?).to eq(false)
       end
     end
   end

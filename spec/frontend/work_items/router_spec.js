@@ -69,6 +69,7 @@ describe('Work items router', () => {
         hasIssueWeightsFeature: false,
         hasIterationsFeature: false,
         hasOkrsFeature: false,
+        hasIssuableHealthStatusFeature: false,
       },
       stubs: {
         WorkItemWeight: true,

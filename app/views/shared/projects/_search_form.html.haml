@@ -1,10 +1,9 @@
-- form_field_classes = local_assigns[:admin_view] || !Feature.enabled?(:project_list_filter_bar) ? 'input-short js-projects-list-filter' : 'gl-w-full! gl-pl-7 '
 - placeholder = local_assigns[:search_form_placeholder] ? search_form_placeholder : _('Filter by name')
 
 = form_tag filter_projects_path, method: :get, class: 'project-filter-form', data: { qa_selector: 'project_filter_form_container' }, id: 'project-filter-form' do |f|
   = search_field_tag :name, params[:name],
     placeholder: placeholder,
-    class: "project-filter-form-field form-control #{form_field_classes}",
+    class: "project-filter-form-field form-control input-short js-projects-list-filter",
     spellcheck: false,
     id: 'project-filter-form-field',
     autofocus: local_assigns[:autofocus]
@@ -27,7 +26,7 @@
   - if params[:language].present?
     = hidden_field_tag :language, params[:language]
 
-  - if Feature.enabled?(:project_language_search, current_user) && !Feature.enabled?(:project_list_filter_bar)
+  - if Feature.enabled?(:project_language_search, current_user)
     .dropdown.inline
       = dropdown_toggle(search_language_placeholder, { toggle: 'dropdown', testid: 'project-language-dropdown' })
       %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
@@ -40,6 +39,6 @@
 
   = submit_tag nil, class: 'gl-display-none!'
 
-  = render 'shared/projects/dropdown' unless Feature.enabled?(:project_list_filter_bar)
+  = render 'shared/projects/dropdown'
 
   = render_if_exists 'shared/projects/search_fields'

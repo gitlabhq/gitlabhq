@@ -12401,9 +12401,6 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
-msgid "DashboardProjects|Trending"
-msgstr ""
-
 msgid "Dashboards"
 msgstr ""
 
@@ -36636,9 +36633,6 @@ msgstr ""
 msgid "Search projects"
 msgstr ""
 
-msgid "Search projects..."
-msgstr ""
-
 msgid "Search protected branches"
 msgstr ""
 
@@ -38948,10 +38942,10 @@ msgstr ""
 msgid "SlackService|Perform common operations in this project by entering slash commands in Slack."
 msgstr ""
 
-msgid "Slack|%{asterisk}Step 1.%{asterisk} Connect your GitLab account to get started."
+msgid "Slack|%{asterisk}Channel notifications%{asterisk}"
 msgstr ""
 
-msgid "Slack|%{asterisk}Step 2.%{asterisk} Try it out!"
+msgid "Slack|%{asterisk}Slash commands%{asterisk}"
 msgstr ""
 
 msgid "Slack|%{emoji}Connected to GitLab account %{account}"
@@ -38963,22 +38957,16 @@ msgstr ""
 msgid "Slack|Connect your GitLab account"
 msgstr ""
 
-msgid "Slack|Create a new issue"
+msgid "Slack|Control GitLab from Slack with %{startMarkup}slash commands%{endMarkup}. For a list of available commands, enter %{command}."
 msgstr ""
 
-msgid "Slack|Create new issues from Slack: %{command}"
+msgid "Slack|GitLab for Slack now supports channel-based notifications.Let your team know when new issues are created or new CI/CD jobs are run.%{startMarkup}Learn more%{endMarkup}."
 msgstr ""
 
-msgid "Slack|Run a CI/CD job"
+msgid "Slack|To start using notifications,  %{startMarkup}enable the Slack integration%{endMarkup} in your project settings."
 msgstr ""
 
-msgid "Slack|See a list of available commands: %{command})"
-msgstr ""
-
-msgid "Slack|Streamline your GitLab deployments with ChatOps. Once you've configured your %{startMarkup}CI/CD pipelines%{endMarkup}, try: %{command}"
-msgstr ""
-
-msgid "Slack|View and control GitLab content while you're working in Slack. Type the command as a message in your chat client to activate it. %{startMarkup}Learn more%{endMarkup}."
+msgid "Slack|To start using slash commands, connect your GitLab account."
 msgstr ""
 
 msgid "Slice multiplier"
@@ -45832,9 +45820,6 @@ msgstr ""
 msgid "Violation"
 msgstr ""
 
-msgid "Visibility"
-msgstr ""
-
 msgid "Visibility and access controls"
 msgstr ""
 
@@ -47111,6 +47096,9 @@ msgid "WorkItem|Existing task"
 msgstr ""
 
 msgid "WorkItem|Expand tasks"
+msgstr ""
+
+msgid "WorkItem|Health status"
 msgstr ""
 
 msgid "WorkItem|Incident"

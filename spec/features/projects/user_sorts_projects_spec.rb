@@ -73,7 +73,7 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :proj
       end
     end
 
-    it_behaves_like "sort order persists across all views", "Created date", "Created"
+    it_behaves_like "sort order persists across all views", "Oldest created", "Created"
   end
 
   context 'from group details', :js do
@@ -82,11 +82,11 @@ RSpec.describe 'User sorts projects and order persists', feature_category: :proj
       visit(details_group_path(group))
       within '[data-testid=group_sort_by_dropdown]' do
         find('button.gl-dropdown-toggle').click
-        first(:button, 'Stars').click
+        first(:button, 'Updated').click
         wait_for_requests
       end
     end
 
-    it_behaves_like "sort order persists across all views", "Stars", "Stars"
+    it_behaves_like "sort order persists across all views", "Oldest updated", "Updated"
   end
 end

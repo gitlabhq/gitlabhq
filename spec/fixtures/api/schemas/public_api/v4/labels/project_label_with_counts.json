@@ -1,9 +1,11 @@
 {
   "type": "object",
-  "properties": {
-    "allOf": [
-      { "$ref": "project_label.json" },
-      { "$ref": "label_with_counts.json" }
-    ]
-  }
+  "allOf": [
+    {
+      "$ref": "project_label.json"
+    },
+    {
+      "$ref": "label_with_counts.json"
+    }
+  ]
 }

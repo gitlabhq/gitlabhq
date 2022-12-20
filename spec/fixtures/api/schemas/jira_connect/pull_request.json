@@ -26,7 +26,8 @@
       "type": "string"
     },
     "lastUpdate": {
-      "type": "timestamp"
+      "type": "string",
+      "format": "date-time"
     },
     "status": {
       "type": "string"

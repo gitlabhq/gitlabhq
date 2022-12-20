@@ -5,7 +5,6 @@ module IncidentManagement
     DEFAULT_ACTION = 'comment'
     DEFAULT_EDITABLE = false
     DEFAULT_AUTO_CREATED = false
-    AUTOCREATE_TAGS = [TimelineEventTag::START_TIME_TAG_NAME, TimelineEventTag::END_TIME_TAG_NAME].freeze
 
     class CreateService < TimelineEvents::BaseService
       def initialize(incident, user, params)
@@ -151,16 +150,6 @@ module IncidentManagement
         end
 
         IncidentManagement::TimelineEventTagLink.insert_all(tag_links) if tag_links.any?
-      end
-
-      def auto_create_predefined_tags(new_tags)
-        new_tags = new_tags.map(&:downcase)
-
-        tags_to_create = AUTOCREATE_TAGS.select { |tag| tag.downcase.in?(new_tags) }
-
-        tags_to_create.each do |name|
-          project.incident_management_timeline_event_tags.create(name: name)
-        end
       end
 
       def validate_tags(project, tag_names)

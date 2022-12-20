@@ -16,7 +16,6 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :projects 
 
   describe 'filtering personal projects' do
     before do
-      stub_feature_flags(project_list_filter_bar: false)
       project2.add_developer(user)
 
       visit dashboard_projects_path
@@ -33,7 +32,6 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :projects 
 
   describe 'filtering starred projects', :js do
     before do
-      stub_feature_flags(project_list_filter_bar: false)
       user.toggle_star(project)
 
       visit dashboard_projects_path
@@ -49,8 +47,6 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :projects 
 
   describe 'without search bar', :js do
     before do
-      stub_feature_flags(project_list_filter_bar: false)
-
       project2.add_developer(user)
       visit dashboard_projects_path
     end
@@ -63,177 +59,6 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :projects 
 
       expect(page).not_to have_content 'Victorialand'
       expect(page).not_to have_content 'Treasure'
-    end
-  end
-
-  describe 'with search bar', :js do
-    before do
-      stub_feature_flags(project_list_filter_bar: true)
-
-      project2.add_developer(user)
-      visit dashboard_projects_path
-    end
-
-    # TODO: move these helpers somewhere more useful
-    def click_sort_direction
-      page.find('.filtered-search-block #filtered-search-sorting-dropdown .reverse-sort-btn').click
-    end
-
-    def select_dropdown_option(selector, label, option_selector = '.dropdown-menu a')
-      dropdown = page.find(selector)
-      dropdown.click
-
-      dropdown.find(option_selector, text: label, match: :first).click
-    end
-
-    def expect_to_see_projects(sorted_projects)
-      list = page.all('.projects-list .project-name').map(&:text)
-      expect(list).to match(sorted_projects)
-    end
-
-    describe 'Search' do
-      it 'executes when the search button is clicked' do
-        expect(page).to have_content 'Victorialand'
-        expect(page).to have_content 'Treasure'
-
-        fill_in 'project-filter-form-field', with: 'Lord vegeta\n'
-        find('.filtered-search .btn').click
-
-        expect(page).not_to have_content 'Victorialand'
-        expect(page).not_to have_content 'Treasure'
-      end
-
-      it 'will execute when i press enter' do
-        expect(page).to have_content 'Victorialand'
-        expect(page).to have_content 'Treasure'
-
-        fill_in 'project-filter-form-field', with: 'Lord frieza\n'
-        find('#project-filter-form-field').native.send_keys :enter
-
-        expect(page).not_to have_content 'Victorialand'
-        expect(page).not_to have_content 'Treasure'
-      end
-    end
-
-    describe 'Filter' do
-      before do
-        private_project = create(:project, :private, name: 'Private project', namespace: user.namespace)
-        internal_project = create(:project, :internal, name: 'Internal project', namespace: user.namespace)
-
-        private_project.add_maintainer(user)
-        internal_project.add_maintainer(user)
-      end
-
-      it 'filters private projects only' do
-        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Private', '.dropdown-item'
-
-        expect(current_url).to match(/visibility_level=0/)
-
-        list = page.all('.projects-list .project-name').map(&:text)
-
-        expect(list).to contain_exactly("Private project", "Treasure", "Victorialand")
-      end
-
-      it 'filters internal projects only' do
-        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Internal', '.dropdown-item'
-
-        expect(current_url).to match(/visibility_level=10/)
-
-        list = page.all('.projects-list .project-name').map(&:text)
-
-        expect(list).to contain_exactly('Internal project')
-      end
-
-      it 'filters any project' do
-        # Selecting the same option in the `GlCollapsibleListbox` does not emit `select` event
-        # and that is why URL update won't be triggered. Given that `Any` is a default option
-        # we need to explicitly switch from some other option (e.g. `Internal`) to `Any`
-        # to trigger the page update
-        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Internal', '.dropdown-item'
-
-        select_dropdown_option '#filtered-search-visibility-dropdown > .dropdown', 'Any', '.dropdown-item'
-
-        list = page.all('.projects-list .project-name').map(&:text)
-
-        expect(list).to contain_exactly("Internal project", "Private project", "Treasure", "Victorialand")
-      end
-    end
-
-    describe 'Sorting' do
-      let(:desc_sorted_project_names) { %w[Treasure Victorialand] }
-
-      before do
-        user.toggle_star(project)
-        user.toggle_star(project2)
-        user2.toggle_star(project2)
-      end
-
-      it 'has all sorting options', :js do
-        sorting_dropdown = page.find('.filtered-search-block #filtered-search-sorting-dropdown')
-
-        expect(sorting_dropdown).to have_css '.reverse-sort-btn'
-
-        sorting_dropdown.click
-
-        ['Updated date', 'Created date', 'Name', 'Stars'].each do |label|
-          expect(sorting_dropdown).to have_content(label)
-        end
-      end
-
-      it 'defaults to "Name"', :js do
-        page.find('.filtered-search-block #filtered-search-sorting-dropdown').click
-        active_sorting_option = page.first('.filtered-search-block #filtered-search-sorting-dropdown .is-active')
-
-        expect(active_sorting_option).to have_content 'Name'
-      end
-
-      context 'Sorting by name' do
-        it 'sorts the project list' do
-          select_dropdown_option '#filtered-search-sorting-dropdown', 'Name'
-
-          expect_to_see_projects(desc_sorted_project_names)
-
-          click_sort_direction
-
-          expect_to_see_projects(desc_sorted_project_names.reverse)
-        end
-      end
-
-      context 'Sorting by Updated date' do
-        it 'sorts the project list' do
-          select_dropdown_option '#filtered-search-sorting-dropdown', 'Updated date'
-
-          expect_to_see_projects(desc_sorted_project_names)
-
-          click_sort_direction
-
-          expect_to_see_projects(desc_sorted_project_names.reverse)
-        end
-      end
-
-      context 'Sorting by Created date' do
-        it 'sorts the project list' do
-          select_dropdown_option '#filtered-search-sorting-dropdown', 'Created date'
-
-          expect_to_see_projects(desc_sorted_project_names)
-
-          click_sort_direction
-
-          expect_to_see_projects(desc_sorted_project_names.reverse)
-        end
-      end
-
-      context 'Sorting by Stars' do
-        it 'sorts the project list' do
-          select_dropdown_option '#filtered-search-sorting-dropdown', 'Stars'
-
-          expect_to_see_projects(desc_sorted_project_names)
-
-          click_sort_direction
-
-          expect_to_see_projects(desc_sorted_project_names.reverse)
-        end
-      end
     end
   end
 end

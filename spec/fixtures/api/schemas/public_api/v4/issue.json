@@ -97,9 +97,13 @@
             "string",
             "null"
           ],
-          "format": [
-            "date-time",
-            "date"
+          "anyOf": [
+            {
+              "format": "date-time"
+            },
+            {
+              "format": "date"
+            }
           ]
         },
         "start_date": {
@@ -107,9 +111,13 @@
             "string",
             "null"
           ],
-          "format": [
-            "date-time",
-            "date"
+          "anyOf": [
+            {
+              "format": "date-time"
+            },
+            {
+              "format": "date"
+            }
           ]
         },
         "expired": {

@@ -1,9 +1,7 @@
 - has_label = local_assigns.fetch(:has_label, false)
-- feature_project_list_filter_bar = Feature.enabled?(:project_list_filter_bar)
-- klass = feature_project_list_filter_bar ? 'gl-ml-3 gl-display-flex gl-flex-grow-1 gl-flex-shrink-1' : 'gl-ml-3'
 - selected = projects_filter_selected(params[:visibility_level])
 
 - if current_user
   - unless has_label
     %span.gl-float-left= _("Visibility:")
-  = gl_redirect_listbox_tag(projects_filter_items, selected, class: klass, data: { right: true })
+  = gl_redirect_listbox_tag(projects_filter_items, selected, class: 'gl-ml-3', data: { right: true })

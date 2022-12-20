@@ -101,14 +101,6 @@ RSpec.describe 'Dashboard Projects', feature_category: :projects do
 
       expect(first('.project-row')).to have_content(project_with_most_stars.title)
     end
-
-    it 'shows tabs to filter by all projects or personal' do
-      visit dashboard_projects_path
-      segmented_button = page.find('.filtered-search-nav .button-filter-group')
-
-      expect(segmented_button).to have_content 'All'
-      expect(segmented_button).to have_content 'Personal'
-    end
   end
 
   context 'when on Starred projects tab', :js do
