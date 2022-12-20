@@ -71,12 +71,12 @@ export const PipelineKeyOptions = [
   {
     text: __('Show Pipeline ID'),
     label: __('Pipeline ID'),
-    key: 'id',
+    value: 'id',
   },
   {
     text: __('Show Pipeline IID'),
     label: __('Pipeline IID'),
-    key: 'iid',
+    value: 'iid',
   },
 ];
 

@@ -63,7 +63,7 @@ RSpec.describe StageEntity do
 
       context 'and contains commit status' do
         before do
-          create(:generic_commit_status, pipeline: pipeline, stage: 'test')
+          create(:generic_commit_status, pipeline: pipeline, ci_stage: stage)
         end
 
         it 'contains commit status' do

@@ -75,7 +75,7 @@ Administrators can combine restricted access by IP address with
 You should consider some security implications before configuring IP address restrictions.
 
 - Administrators and group owners can access group settings from any IP address, regardless of IP restriction. However:
-  - Groups owners cannot access projects belonging to the group when accessing from a disallowed IP address.
+  - Group owners can access the subgroups, but not the projects belonging to the group or subgroups, when accessing from a disallowed IP address.
   - Administrators can access projects belonging to the group when accessing from a disallowed IP address.
     Access to projects includes cloning code from them.
   - Users can still see group and project names and hierarchies. Only the following are restricted:

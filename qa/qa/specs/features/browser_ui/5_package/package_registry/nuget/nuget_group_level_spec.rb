@@ -137,7 +137,7 @@ module QA
 
                           <PropertyGroup>
                             <OutputType>Exe</OutputType>
-                            <TargetFramework>net5.0</TargetFramework>
+                            <TargetFramework>net7.0</TargetFramework>
                           </PropertyGroup>
 
                         </Project>

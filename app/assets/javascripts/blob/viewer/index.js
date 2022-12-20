@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import '~/behaviors/markdown/init_gfm';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert } from '~/flash';
 import { __ } from '~/locale';
 import {
@@ -195,7 +195,7 @@ export class BlobViewer {
     this.toggleCopyButtonState();
     loadViewer(newViewer)
       .then((viewer) => {
-        $(viewer).renderGFM();
+        renderGFM(viewer);
         window.requestIdleCallback(() => {
           this.$fileHolder.trigger('highlight:line');
           handleLocationHash();

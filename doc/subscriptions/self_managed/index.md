@@ -18,6 +18,10 @@ GitLab subscription management requires access to the Customers Portal.
 GitLab provides the [Customers Portal](../index.md#customers-portal) where you can
 manage your subscriptions and your account details.
 
+Customers are required to use their GitLab.com account to register for a new Customers Portal account.
+
+If you have a legacy Customers Portal account that is not linked to a GitLab.com account, you may still [sign in](https://customers.gitlab.com/customers/sign_in?legacy=true) using an email and password. However, you should [create](https://gitlab.com/users/sign_up) and [link a GitLab.com account](../index.md#change-the-linked-account) to ensure continued access to the Customers Portal.
+
 Customers of resellers do not have access to this portal and should contact their reseller for any
 changes to their subscription.
 

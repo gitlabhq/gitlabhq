@@ -1,10 +1,10 @@
 /* eslint-disable func-names */
 
 import $ from 'jquery';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { createAlert } from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
-import '~/behaviors/markdown/init_gfm';
 
 // MarkdownPreview
 //
@@ -51,7 +51,7 @@ MarkdownPreview.prototype.showPreview = function ($form) {
       }
 
       preview.removeClass('md-preview-loading').html(body);
-      preview.renderGFM();
+      renderGFM(preview.get(0));
       this.renderReferencedUsers(response.references.users, $form);
 
       if (response.references.commands) {

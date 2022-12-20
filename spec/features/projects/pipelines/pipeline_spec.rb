@@ -18,6 +18,8 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
   end
 
   shared_context 'pipeline builds' do
+    let!(:external_stage) { create(:ci_stage, name: 'external', pipeline: pipeline) }
+
     let!(:build_passed) do
       create(:ci_build, :success,
              pipeline: pipeline, stage: 'build', stage_idx: 0, name: 'build')
@@ -52,7 +54,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :projects do
       create(:generic_commit_status, status: 'success',
                                      pipeline: pipeline,
                                      name: 'jenkins',
-                                     stage: 'external',
+                                     ci_stage: external_stage,
                                      ref: 'master',
                                      target_url: 'http://gitlab.com/status')
     end

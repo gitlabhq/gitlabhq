@@ -34795,9 +34795,6 @@ msgstr ""
 msgid "Replaces the clone URL root."
 msgstr ""
 
-msgid "Replication"
-msgstr ""
-
 msgid "Reply"
 msgstr ""
 

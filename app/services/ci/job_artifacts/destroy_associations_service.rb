@@ -2,6 +2,11 @@
 
 module Ci
   module JobArtifacts
+    # This class is used by Ci::JobArtifact's FastDestroyAll implementation.
+    # Ci::JobArtifact.begin_fast_destroy instantiates this service and calls #destroy_records.
+    # This will set @statistics_updates instance variables.
+    # The same instance is passed to Ci::JobArtifact.finalize_fast_destroy, which then calls
+    # #update_statistics, using @statistics_updates set by #destroy_records.
     class DestroyAssociationsService
       BATCH_SIZE = 100
 

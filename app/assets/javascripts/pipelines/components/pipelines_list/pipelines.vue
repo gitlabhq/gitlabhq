@@ -1,5 +1,5 @@
 <script>
-import { GlDropdown, GlDropdownItem, GlEmptyState, GlIcon, GlLoadingIcon } from '@gitlab/ui';
+import { GlEmptyState, GlIcon, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
 import { isEqual } from 'lodash';
 import { createAlert, VARIANT_INFO, VARIANT_WARNING } from '~/flash';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -26,8 +26,7 @@ export default {
   PipelineKeyOptions,
   components: {
     EmptyState,
-    GlDropdown,
-    GlDropdownItem,
+    GlCollapsibleListbox,
     GlEmptyState,
     GlIcon,
     GlLoadingIcon,
@@ -315,7 +314,7 @@ export default {
       this.updateContent(this.requestData);
     },
     changeVisibilityPipelineID(val) {
-      this.selectedPipelineKeyOption = val;
+      this.selectedPipelineKeyOption = PipelineKeyOptions.find((e) => val === e.value);
     },
   },
 };
@@ -355,21 +354,12 @@ export default {
           :params="validatedParams"
           @filterPipelines="filterPipelines"
         />
-        <gl-dropdown
-          class="gl-display-flex"
-          :text="selectedPipelineKeyOption.text"
-          data-testid="pipeline-key-dropdown"
-        >
-          <gl-dropdown-item
-            v-for="(val, index) in $options.PipelineKeyOptions"
-            :key="index"
-            :is-checked="selectedPipelineKeyOption.key === val.key"
-            is-check-item
-            @click="changeVisibilityPipelineID(val)"
-          >
-            {{ val.text }}
-          </gl-dropdown-item>
-        </gl-dropdown>
+        <gl-collapsible-listbox
+          data-testid="pipeline-key-collapsible-box"
+          :toggle-text="selectedPipelineKeyOption.text"
+          :items="$options.PipelineKeyOptions"
+          @select="changeVisibilityPipelineID"
+        />
       </div>
     </div>
 

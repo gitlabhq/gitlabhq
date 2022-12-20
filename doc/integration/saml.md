@@ -919,13 +919,13 @@ For example configurations, see the [notes on specific providers](#set-up-identi
 
 | Term                           | Description |
 |--------------------------------|-------------|
-| Identity provider (IdP)        | The service which manages your user identities, such as Okta or OneLogin. |
-| Service provider (SP)          | GitLab can be configured as a SAML 2.0 SP. |
-| Assertion                      | A piece of information about a user's identity, such as their name or role. Also known as claims or attributes. |
-| Single Sign-On (SSO)           | Name of authentication scheme. |
-| Assertion consumer service URL | The callback on GitLab where users are redirected after successfully authenticating with the identity provider. |
-| Issuer                         | How GitLab identifies itself to the identity provider. Also known as a "Relying party trust identifier". |
-| Certificate fingerprint        | Used to confirm that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
+| Identity provider (IdP)        | The service that manages your user identities, such as Okta or OneLogin. |
+| Service provider (SP)          | Consumes assertions from a SAML IdP, such as Okta, to authenticate users. You can configure GitLab as a SAML 2.0 SP. |
+| Assertion                      | A piece of information about a user's identity, such as their name or role. Also known as a claim or an attribute. |
+| Single Sign-On (SSO)           | Name of the authentication scheme. |
+| Assertion consumer service URL | The callback on GitLab where users are redirected after successfully authenticating with the IdP. |
+| Issuer                         | How GitLab identifies itself to the IdP. Also known as a "Relying party trust identifier". |
+| Certificate fingerprint        | Confirms that communications over SAML are secure by checking that the server is signing communications with the correct certificate. Also known as a certificate thumbprint. |
 
 ## Troubleshooting
 
