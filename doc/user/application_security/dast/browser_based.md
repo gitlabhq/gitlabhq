@@ -7,11 +7,8 @@ type: reference, howto
 
 # DAST browser-based analyzer **(ULTIMATE)**
 
-> [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323423) in GitLab 13.12.
-
-WARNING:
-This product is in an early-access stage and is considered a [beta](../../../policy/alpha-beta-support.md#beta-features)
-feature.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323423) in GitLab 13.12 as a Beta feature.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/9023) in GitLab 15.7 (GitLab DAST v3.0.50).
 
 WARNING:
 Do not run DAST scans against a production server. Not only can it perform *any* function that

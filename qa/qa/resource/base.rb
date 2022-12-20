@@ -96,11 +96,7 @@ module QA
           result = yield.tap do
             fabrication_time = Time.now - start
             fabrication_http_method = if resource.api_fabrication_http_method == :get || resource.retrieved_from_cache
-                                        if include?(Reusable)
-                                          "Retrieved for reuse"
-                                        else
-                                          "Retrieved"
-                                        end
+                                        "Retrieved"
                                       else
                                         "Built"
                                       end

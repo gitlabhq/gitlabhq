@@ -214,3 +214,64 @@ and included in `rules` definitions via [YAML anchors](../../ci/yaml/yaml_optimi
 | `code-qa-patterns`           | Combination of `code-patterns` and `qa-patterns`.                        |
 | `code-backstage-qa-patterns` | Combination of `code-patterns`, `backstage-patterns`, and `qa-patterns`. |
 | `static-analysis-patterns`   | Only create jobs for Static Analytics configuration-related changes.     |
+
+## Best Practices
+
+### When to use `extends:`, `<<: *xyz` (YAML anchors), or `!reference`
+
+[Reference](../../ci/yaml/yaml_optimization.md)
+
+#### Key takeaways
+
+- If you need to **extend a hash**, you should use `extends`
+- If you need to **extend an array**, you'll need to use `!reference`, or `YAML anchors` as last resort
+- For more complex cases (e.g. extend hash inside array, extend array inside hash, ...), you'll have to use `!reference` or `YAML anchors`
+
+#### What can `extends` and `YAML anchors` do?
+
+##### `extends`
+
+- Deep merge for hashes
+- NO merge for arrays. It overwrites ([source](../../ci/yaml/yaml_optimization.md#merge-details))
+
+##### YAML anchors
+
+- NO deep merge for hashes, BUT it can be used to extend a hash (see the example below)
+- NO merge for arrays, BUT it can be used to extend an array (see the example below)
+
+#### A great example
+
+This example shows how to extend complex YAML data structures with `!reference` and `YAML anchors`:
+
+```yaml
+.strict-ee-only-rules:
+  # `rules` is an array of hashes
+  rules:
+    - if: '$CI_PROJECT_NAME !~ /^gitlab(-ee)?$/ '
+      when: never
+
+# `if-security-merge-request` is a hash
+.if-security-merge-request: &if-security-merge-request
+  if: '$CI_PROJECT_NAMESPACE == "gitlab-org/security"'
+
+# `code-qa-patterns` is an array
+.code-qa-patterns: &code-qa-patterns
+  - "{package.json,yarn.lock}"
+  - ".browserslistrc"
+  - "babel.config.js"
+  - "jest.config.{base,integration,unit}.js"
+
+.qa:rules:as-if-foss:
+  rules:
+    # We extend the `rules` array with an array of hashes directly
+    - !reference [".strict-ee-only-rules", rules]
+    # We extend a single array entry with a hash
+    - <<: *if-security-merge-request
+      # `changes` is an array, so we pass it an entire array
+      changes: *code-qa-patterns
+
+qa:selectors-as-if-foss:
+  # We include the rules from .qa:rules:as-if-foss in this job
+  extends:
+    - .qa:rules:as-if-foss
+```

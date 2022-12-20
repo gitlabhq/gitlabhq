@@ -28,13 +28,6 @@ RSpec.configure do |config|
   config.add_formatter QA::Support::Formatters::FeatureFlagFormatter
   config.add_formatter QA::Support::Formatters::TestMetricsFormatter if QA::Runtime::Env.running_in_ci?
 
-  config.before(:suite) do |suite|
-    QA::Resource::ReusableCollection.register_resource_classes do |collection|
-      QA::Resource::ReusableProject.register(collection)
-      QA::Resource::ReusableGroup.register(collection)
-    end
-  end
-
   config.prepend_before do |example|
     QA::Runtime::Logger.info("Starting test: #{Rainbow(example.full_description).bright}")
     QA::Runtime::Example.current = example
@@ -85,24 +78,6 @@ RSpec.configure do |config|
   config.after(:suite) do |suite|
     # Write all test created resources to JSON file
     QA::Tools::TestResourceDataProcessor.write_to_file(suite.reporter.failed_examples.any?)
-
-    # If requested, confirm that resources were used appropriately (e.g., not left with changes that interfere with
-    # further reuse)
-    QA::Resource::ReusableCollection.validate_resource_reuse if QA::Runtime::Env.validate_resource_reuse?
-
-    # If any tests failed, leave the resources behind to help troubleshoot, otherwise remove them.
-    # Do not remove the shared resource on live environments
-    begin
-      next if suite.reporter.failed_examples.present?
-      next unless QA::Runtime::Scenario.attributes.include?(:gitlab_address)
-      next if QA::Runtime::Env.running_on_dot_com?
-
-      QA::Resource::ReusableCollection.remove_all_via_api!
-    rescue QA::Resource::Errors::InternalServerError => e
-      # Temporarily prevent this error from failing jobs while the cause is investigated
-      # See https://gitlab.com/gitlab-org/gitlab/-/issues/354387
-      QA::Runtime::Logger.debug(e.message)
-    end
   end
 
   config.append_after(:suite) do

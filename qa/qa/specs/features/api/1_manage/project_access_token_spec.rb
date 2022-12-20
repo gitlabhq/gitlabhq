@@ -5,7 +5,9 @@ module QA
     describe 'Project access token', product_group: :authentication_and_authorization do
       before(:all) do
         @project_access_token = QA::Resource::ProjectAccessToken.fabricate_via_api! do |pat|
-          pat.project = Resource::ReusableProject.fabricate_via_api!
+          pat.project = Resource::Project.fabricate_via_api! do |project|
+            project.initialize_with_readme = true
+          end
         end
 
         @user_api_client = Runtime::API::Client.new(:gitlab, personal_access_token: @project_access_token.token)
