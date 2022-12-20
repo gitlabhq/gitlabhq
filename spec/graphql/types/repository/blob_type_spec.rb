@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Repository::BlobType do
+RSpec.describe Types::Repository::BlobType, feature_category: :source_code_management do
+  include GraphqlHelpers
+
   specify { expect(described_class.graphql_name).to eq('RepositoryBlob') }
 
   specify do
@@ -47,5 +49,14 @@ RSpec.describe Types::Repository::BlobType do
       :fork_and_view_path,
       :language
     ).at_least
+  end
+
+  it 'handles blobs of huge size', :aggregate_failures do
+    huge_blob = Blob.new(double)
+    size = 10**10
+    allow(huge_blob).to receive_messages({ size: size, raw_size: size })
+
+    expect(resolve_field(:raw_size, huge_blob)).to eq(size)
+    expect(resolve_field(:size, huge_blob)).to eq(size)
   end
 end

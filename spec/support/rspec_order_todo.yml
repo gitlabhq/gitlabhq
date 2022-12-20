@@ -2449,7 +2449,6 @@
 - './ee/spec/routing/user_routing_spec.rb'
 - './ee/spec/routing/webhook_routes_spec.rb'
 - './ee/spec/serializers/analytics/cycle_analytics/event_entity_spec.rb'
-- './ee/spec/serializers/analytics/cycle_analytics/stage_entity_spec.rb'
 - './ee/spec/serializers/analytics/cycle_analytics/value_stream_errors_serializer_spec.rb'
 - './ee/spec/serializers/audit_event_entity_spec.rb'
 - './ee/spec/serializers/audit_event_serializer_spec.rb'

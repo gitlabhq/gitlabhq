@@ -38,7 +38,7 @@ class EventFilter
     when TEAM
       events.where(action: Event::TEAM_ACTIONS)
     when ISSUE
-      events.where(action: Event::ISSUE_ACTIONS, target_type: 'Issue')
+      events.where(action: Event::ISSUE_ACTIONS, target_type: Event::ISSUE_TYPES)
     when WIKI
       wiki_events(events)
     when DESIGNS
@@ -97,7 +97,7 @@ class EventFilter
     when ISSUE
       in_operator_params(
         array_data: array_data,
-        scope: Event.where(target_type: Issue.name),
+        scope: Event.where(target_type: Event::ISSUE_TYPES),
         in_column: :action,
         in_values: Event.actions.values_at(*Event::ISSUE_ACTIONS)
       )

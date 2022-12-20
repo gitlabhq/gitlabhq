@@ -14,9 +14,10 @@ module Ml
         ::Ml::Candidate.with_project_id_and_iid(project.id, iid)
       end
 
-      def create!(experiment, start_time, tags = nil)
+      def create!(experiment, start_time, tags = nil, name = nil)
         candidate = experiment.candidates.create!(
           user: user,
+          name: name,
           start_time: start_time || 0
         )
 

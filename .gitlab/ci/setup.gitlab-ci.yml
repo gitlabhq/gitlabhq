@@ -116,11 +116,13 @@ generate-frontend-fixtures-mapping:
 
 detect-tests:
   extends: .rails:rules:detect-tests
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
   needs: []
   stage: prepare
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
+  before_script:
+    - apt-get update && apt-get install -y curl # Not present in ruby-slim, so we add it manually
   script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh

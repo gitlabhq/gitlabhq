@@ -726,9 +726,9 @@ This also sets the `username` attribute in your SAML Response to the username in
 
 ### Allow for clock drift
 
-The clock of the Identity Provider may drift slightly ahead of your system clocks.
-To allow for a small amount of clock drift, you can use `allowed_clock_drift` in
-your settings. Its value must be given in a number (and/or fraction) of seconds.
+The clock of the IdP may drift slightly ahead of your system clocks.
+To allow for a small amount of clock drift, use `allowed_clock_drift` in
+your settings. You must enter the parameter's value in a number and fraction of seconds.
 The value given is added to the current time at which the response is validated.
 
 ```yaml
@@ -842,56 +842,38 @@ GitLab signs the request with the provided private key. GitLab includes the conf
 
 ## Password generation for users created through SAML
 
-The [Generated passwords for users created through integrated authentication](../security/passwords_for_integrated_authentication_methods.md) guide provides an overview of how GitLab generates and sets passwords for users created via SAML.
+GitLab [generates and sets passwords for users created through SAML](../security/passwords_for_integrated_authentication_methods.md).
 
-Users authenticated with SSO or SAML must not use a password for Git operations over HTTPS. These users can do one of the following instead:
+Users authenticated with SSO or SAML must not use a password for Git operations
+over HTTPS. These users can instead:
 
 - Set up a [personal access token](../user/profile/personal_access_tokens.md).
-- Use the [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager) which securely authenticates using OAuth.
+- Use the [Git Credential Manager](../user/profile/account/two_factor_authentication.md#git-credential-manager)
+  which securely authenticates using OAuth.
 
 ## Link SAML identity for an existing user
 
 A user can manually link their SAML identity to an existing GitLab account by following the steps in
 [Enable OmniAuth for an existing user](omniauth.md#enable-omniauth-for-an-existing-user).
 
-## Group SAML on a self-managed GitLab instance **(PREMIUM SELF)**
+## Configure group SAML SSO on a self-managed instance **(PREMIUM SELF)**
 
-For information on the GitLab.com implementation, please see the [SAML SSO for GitLab.com groups page](../user/group/saml_sso).
+Use group SAML SSO if you have to allow access through multiple SAML IdPs on your
+self-managed instance.
 
-Group SAML SSO helps if you have to allow access via multiple SAML identity providers, but as a multi-tenant solution is less suited to cases where you administer your own GitLab instance.
+To configure group SAML SSO:
 
-To proceed with configuring Group SAML SSO instead, enable the `group_saml` OmniAuth provider. This can be done from:
+1. [Configure GitLab with HTTPS](../install/installation.md#using-https).
+1. Enable OmniAuth and the `group_saml` provider.
 
-- `gitlab.rb` for Omnibus GitLab installations.
-- `gitlab/config/gitlab.yml` for source installations.
-
-### Self-managed instance group SAML limitations
-
-Group SAML on a self-managed instance is limited when compared to the recommended
-[instance-wide SAML](../user/group/saml_sso/index.md). The recommended solution allows you to take advantage of:
-
-- [LDAP compatibility](../administration/auth/ldap/index.md).
-- [LDAP Group Sync](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
-- [Required groups](#required-groups).
-- [Administrator groups](#administrator-groups).
-- [Auditor groups](#auditor-groups).
-
-For Omnibus installations:
-
-1. Make sure GitLab is
-   [configured with HTTPS](../install/installation.md#using-https).
-1. Enable OmniAuth and the `group_saml` provider in `gitlab.rb`:
+   To do this for Omnibus GitLab installations, edit `gitlab.rb`:
 
    ```ruby
    gitlab_rails['omniauth_enabled'] = true
    gitlab_rails['omniauth_providers'] = [{ name: 'group_saml' }]
    ```
 
-For installations from source:
-
-1. Make sure GitLab is
-   [configured with HTTPS](../install/installation.md#using-https).
-1. Enable OmniAuth and the `group_saml` provider in `gitlab/config/gitlab.yml`:
+   For installations from source, edit `gitlab/config/gitlab.yml`:
 
     ```yaml
     omniauth:
@@ -900,25 +882,36 @@ For installations from source:
         - { name: 'group_saml' }
     ```
 
+As a multi-tenant solution, group SAML on a self-managed instance is limited compared
+to the recommended [instance-wide SAML](../user/group/saml_sso/index.md). Use
+instance-wide SAML to take advantage of:
+
+- [LDAP compatibility](../administration/auth/ldap/index.md).
+- [LDAP Group Sync](../user/group/access_and_permissions.md#manage-group-memberships-via-ldap).
+- [Required groups](#required-groups).
+- [Administrator groups](#administrator-groups).
+- [Auditor groups](#auditor-groups).
+
 ## Additional configuration for SAML apps on your IdP
 
-When configuring a SAML app on the IdP, your identity provider may require additional configuration, such as the following:
+When configuring a SAML app on the IdP, your IdP may need additional configuration,
+such as the following:
 
 | Field | Value | Notes |
 |-------|-------|-------|
-| SAML profile | Web browser SSO profile | GitLab uses SAML to sign users in through their browser. No requests are made directly to the identity provider. |
-| SAML request binding | HTTP Redirect | GitLab (the service provider) redirects users to your identity provider with a base64 encoded `SAMLRequest` HTTP parameter. |
-| SAML response binding | HTTP POST | Specifies how the SAML token is sent by your identity provider. Includes the `SAMLResponse`, which a user's browser submits back to GitLab. |
+| SAML profile | Web browser SSO profile | GitLab uses SAML to sign users in through their browser. No requests are made directly to the IdP. |
+| SAML request binding | HTTP Redirect | GitLab (the SP) redirects users to your IdP with a base64 encoded `SAMLRequest` HTTP parameter. |
+| SAML response binding | HTTP POST | Specifies how the SAML token is sent by your IdP. Includes the `SAMLResponse`, which a user's browser submits back to GitLab. |
 | Sign SAML response | Required | Prevents tampering. |
-| X.509 certificate in response | Required | Signs the response and checks against the provided fingerprint. |
-| Fingerprint algorithm | SHA-1  |  GitLab uses a SHA-1 hash of the certificate to sign the SAML Response. |
+| X.509 certificate in response | Required | Signs the response and checks the response against the provided fingerprint. |
+| Fingerprint algorithm | SHA-1 | GitLab uses a SHA-1 hash of the certificate to sign the SAML Response. |
 | Signature algorithm | SHA-1/SHA-256/SHA-384/SHA-512 | Determines how a response is signed. Also known as the digest method, this can be specified in the SAML response. |
 | Encrypt SAML assertion | Optional | Uses TLS between your identity provider, the user's browser, and GitLab. |
 | Sign SAML assertion | Optional | Validates the integrity of a SAML assertion. When active, signs the whole response. |
 | Check SAML request signature | Optional | Checks the signature on the SAML response. |
-| Default RelayState | Optional | Specifies the URL users should end up on after successfully signing in through SAML at your identity provider. |
+| Default RelayState | Optional | Specifies the URL users should end up on after successfully signing in through SAML at your IdP. |
 | NameID format | Persistent | See [NameID format details](../user/group/saml_sso/index.md#nameid-format). |
-| Additional URLs | Optional | May include the issuer (or identifier) or the assertion consumer service URL in other fields on some providers. |
+| Additional URLs | Optional | May include the issuer, identifier, or assertion consumer service URL in other fields on some providers. |
 
 For example configurations, see the [notes on specific providers](#set-up-identity-providers).
 

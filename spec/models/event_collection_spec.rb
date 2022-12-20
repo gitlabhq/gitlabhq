@@ -89,6 +89,25 @@ RSpec.describe EventCollection do
         expect(events).to contain_exactly(closed_issue_event)
       end
 
+      context 'when there are multiple issue events' do
+        let!(:work_item_event) do
+          create(
+            :event,
+            :created,
+            project: project,
+            target: create(:work_item, :task, project: project),
+            target_type: 'WorkItem'
+          )
+        end
+
+        it 'includes work item events too' do
+          filter = EventFilter.new(EventFilter::ISSUE)
+          events = described_class.new(projects, filter: filter).to_a
+
+          expect(events).to contain_exactly(closed_issue_event, work_item_event)
+        end
+      end
+
       it 'allows filtering of events using an EventFilter, returning several items' do
         filter = EventFilter.new(EventFilter::MERGED)
         events = described_class.new(projects, filter: filter).to_a

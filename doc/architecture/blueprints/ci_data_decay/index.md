@@ -1,8 +1,8 @@
 ---
-status: ready
+status: ongoing
 creation-date: "2021-09-10"
 authors: [ "@grzesiek" ]
-coach: "@kamil"
+coach: [ "@ayufan", "@grzesiek" ]
 approvers: [ "@jporter", "@cheryl.li" ]
 owning-stage: "~devops::verify"
 participating-stages: []

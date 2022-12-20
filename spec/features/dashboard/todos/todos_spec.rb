@@ -152,6 +152,32 @@ RSpec.describe 'Dashboard Todos', feature_category: :team_planning do
       it_behaves_like 'deleting the todo'
       it_behaves_like 'deleting and restoring the todo'
     end
+
+    context 'when todo has a note' do
+      let(:note) { create(:note, project: project, note: "Check out stuff", noteable: create(:issue, project: project)) }
+      let!(:todo) { create(:todo, :mentioned, user: user, project: project, author: author, note: note, target: note.noteable) }
+      let(:two_line_mention_enabled_enabled) { true }
+
+      before do
+        sign_in(user)
+        stub_feature_flags(two_line_mention_enabled: two_line_mention_enabled_enabled)
+        visit dashboard_todos_path
+      end
+
+      it 'shows note preview' do
+        expect(page).to have_no_content('mentioned you:')
+        expect(page).to have_no_content('"Check out stuff"')
+        expect(page).to have_content('Check out stuff')
+      end
+
+      context 'when two_line_mention_enabled_enabled is disabled' do
+        let(:two_line_mention_enabled_enabled) { false }
+
+        it 'shows mention previews on one line' do
+          expect(page).to have_content("#{author.name} mentioned you: \"Check out stuff\"")
+        end
+      end
+    end
   end
 
   context 'User created todos for themself' do

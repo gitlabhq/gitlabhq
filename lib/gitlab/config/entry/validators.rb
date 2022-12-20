@@ -17,6 +17,7 @@ module Gitlab
 
         class DisallowedKeysValidator < ActiveModel::EachValidator
           def validate_each(record, attribute, value)
+            value = value.try(:compact) if options[:ignore_nil]
             present_keys = value.try(:keys).to_a & options[:in]
 
             if present_keys.any?

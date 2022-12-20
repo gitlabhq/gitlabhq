@@ -107,27 +107,6 @@ function install_junit_merge_gem() {
   run_timed_command "gem install junit_merge --no-document --version 0.1.2"
 }
 
-function fail_on_warnings() {
-  local cmd="$*"
-  local warnings
-  warnings="$(mktemp)"
-
-  eval "$cmd 2>$warnings"
-  local ret=$?
-
-  if test -s "$warnings";
-  then
-    echoerr "There were warnings:"
-    cat "$warnings"
-    rm "$warnings"
-    return 1
-  fi
-
-  rm "$warnings"
-
-  return $ret
-}
-
 function run_timed_command() {
   local cmd="${1}"
   local metric_name="${2:-no}"

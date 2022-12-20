@@ -1,8 +1,8 @@
 ---
-status: accepted
+status: ongoing
 creation-date: "2022-01-19"
 authors: [ "@grzesiek", "@tmaczukin", "@josephburnett" ]
-coach: "@kamil"
+coach: [ "@ayufan", "@grzesiek" ]
 approvers: [ "@DarrenEastman" ]
 owning-stage: "~devops::verify"
 participating-stages: []

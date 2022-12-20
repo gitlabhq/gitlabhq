@@ -5638,6 +5638,9 @@ msgstr ""
 msgid "AuditStreams|Custom HTTP headers (optional)"
 msgstr ""
 
+msgid "AuditStreams|Defines which streaming events are captured"
+msgstr ""
+
 msgid "AuditStreams|Delete %{link}"
 msgstr ""
 
@@ -5653,10 +5656,16 @@ msgstr ""
 msgid "AuditStreams|Edit %{link}"
 msgstr ""
 
+msgid "AuditStreams|Event filtering (optional)"
+msgstr ""
+
 msgid "AuditStreams|Header"
 msgstr ""
 
 msgid "AuditStreams|Maximum of %{number} HTTP headers has been reached."
+msgstr ""
+
+msgid "AuditStreams|No filters available. %{linkStart}How do I add a filter?%{linkEnd}"
 msgstr ""
 
 msgid "AuditStreams|Remove custom header"
@@ -17343,9 +17352,6 @@ msgid "Filter by"
 msgstr ""
 
 msgid "Filter by %{page_context_word} that are currently open."
-msgstr ""
-
-msgid "Filter by Git revision"
 msgstr ""
 
 msgid "Filter by issues that are currently closed."
@@ -38535,6 +38541,9 @@ msgstr ""
 msgid "Show file contents"
 msgstr ""
 
+msgid "Show filters"
+msgstr ""
+
 msgid "Show group milestones"
 msgstr ""
 
@@ -44300,6 +44309,9 @@ msgstr ""
 msgid "Unselect \"Expand variable reference\" if you want to use the variable value as a raw string."
 msgstr ""
 
+msgid "Unselect all"
+msgstr ""
+
 msgid "Unstar"
 msgstr ""
 
@@ -45211,10 +45223,10 @@ msgstr ""
 msgid "UserProfile|Subscribe"
 msgstr ""
 
-msgid "UserProfile|This user doesn't have any followers."
+msgid "UserProfile|There are no projects available to be displayed here."
 msgstr ""
 
-msgid "UserProfile|This user doesn't have any personal projects"
+msgid "UserProfile|This user doesn't have any followers."
 msgstr ""
 
 msgid "UserProfile|This user has a private profile"

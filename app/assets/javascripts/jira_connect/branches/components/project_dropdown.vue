@@ -1,11 +1,6 @@
 <script>
-import {
-  GlDropdown,
-  GlSearchBoxByType,
-  GlLoadingIcon,
-  GlDropdownItem,
-  GlAvatarLabeled,
-} from '@gitlab/ui';
+import { GlAvatarLabeled, GlCollapsibleListbox } from '@gitlab/ui';
+import { debounce } from 'lodash';
 import { __ } from '~/locale';
 import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
 import { PROJECTS_PER_PAGE } from '../constants';
@@ -17,11 +12,8 @@ export default {
     endCursor: '',
   },
   components: {
-    GlDropdown,
-    GlDropdownItem,
-    GlSearchBoxByType,
-    GlLoadingIcon,
     GlAvatarLabeled,
+    GlCollapsibleListbox,
   },
   props: {
     selectedProject: {
@@ -34,6 +26,7 @@ export default {
     return {
       initialProjectsLoading: true,
       projectSearchQuery: '',
+      selectedProjectId: this.selectedProject?.id,
     };
   },
   apollo: {
@@ -66,17 +59,27 @@ export default {
     projectDropdownText() {
       return this.selectedProject?.nameWithNamespace || this.$options.i18n.selectProjectText;
     },
+    projectList() {
+      return (this.projects || []).map((project) => ({
+        ...project,
+        text: project.nameWithNamespace,
+        value: String(project.id),
+      }));
+    },
   },
   methods: {
-    onProjectSelect(project) {
-      this.$emit('change', project);
+    findProjectById(id) {
+      return this.projects.find((project) => id === project.id);
+    },
+    onProjectSelect(projectId) {
+      this.$emit('change', this.findProjectById(projectId));
     },
     onError({ message } = {}) {
       this.$emit('error', { message });
     },
-    isProjectSelected(project) {
-      return project.id === this.selectedProject?.id;
-    },
+    onSearch: debounce(function debouncedSearch(query) {
+      this.projectSearchQuery = query;
+    }, 250),
   },
   i18n: {
     selectProjectText: __('Select a project'),
@@ -86,37 +89,29 @@ export default {
 </script>
 
 <template>
-  <gl-dropdown
-    :text="projectDropdownText"
-    :loading="initialProjectsLoading"
-    menu-class="gl-w-auto!"
+  <gl-collapsible-listbox
+    v-model="selectedProjectId"
+    data-testid="project-select"
+    :items="projectList"
+    :toggle-text="projectDropdownText"
     :header-text="$options.i18n.selectProjectText"
+    :loading="initialProjectsLoading"
+    :searchable="true"
+    :searching="projectsLoading"
+    @search="onSearch"
+    @select="onProjectSelect"
   >
-    <template #header>
-      <gl-search-box-by-type v-model.trim="projectSearchQuery" :debounce="250" />
+    <template #list-item="{ item: project }">
+      <gl-avatar-labeled
+        v-if="project"
+        class="gl-text-truncate"
+        :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+        :size="32"
+        :src="project.avatarUrl"
+        :label="project.name"
+        :entity-name="project.name"
+        :sub-label="project.nameWithNamespace"
+      />
     </template>
-
-    <gl-loading-icon v-show="projectsLoading" />
-    <template v-if="!projectsLoading">
-      <gl-dropdown-item
-        v-for="project in projects"
-        :key="project.id"
-        is-check-item
-        is-check-centered
-        :is-checked="isProjectSelected(project)"
-        :data-testid="`test-project-${project.id}`"
-        @click="onProjectSelect(project)"
-      >
-        <gl-avatar-labeled
-          class="gl-text-truncate"
-          :shape="$options.AVATAR_SHAPE_OPTION_RECT"
-          :size="32"
-          :src="project.avatarUrl"
-          :label="project.name"
-          :entity-name="project.name"
-          :sub-label="project.nameWithNamespace"
-        />
-      </gl-dropdown-item>
-    </template>
-  </gl-dropdown>
+  </gl-collapsible-listbox>
 </template>

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Config::Entry::Validators do
+RSpec.describe Gitlab::Config::Entry::Validators, feature_category: :pipeline_authoring do
   let(:klass) do
     Class.new do
       include ActiveModel::Validations
@@ -37,6 +37,68 @@ RSpec.describe Gitlab::Config::Entry::Validators do
         unless valid_result
           expect(instance.errors.messages_for(:config)).to include /please use only one of the following keys: foo, bar/
         end
+      end
+    end
+  end
+
+  describe described_class::DisallowedKeysValidator do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:config, :disallowed_keys, :ignore_nil, :valid_result) do
+      { foo: '1' }                     | 'foo'      | false | false
+      { foo: '1', bar: '2', baz: '3' } | 'foo, bar' | false | false
+      { baz: '1', qux: '2' }           | ''         | false | true
+      { foo: nil }                     | 'foo'      | false | false
+      { foo: nil, bar: '2', baz: '3' } | 'foo, bar' | false | false
+      { foo: nil, bar: nil, baz: '3' } | 'foo, bar' | false | false
+      { baz: nil, qux: nil }           | ''         | false | true
+      { foo: '1' }                     | 'foo'      | true  | false
+      { foo: '1', bar: '2', baz: '3' } | 'foo, bar' | true  | false
+      { baz: '1', qux: '2' }           | ''         | true  | true
+      { foo: nil }                     | ''         | true  | true
+      { foo: nil, bar: '2', baz: '3' } | 'bar'      | true  | false
+      { foo: nil, bar: nil, baz: '3' } | ''         | true  | true
+      { baz: nil, qux: nil }           | ''         | true  | true
+    end
+
+    with_them do
+      before do
+        klass.instance_variable_set(:@ignore_nil, ignore_nil)
+
+        klass.instance_eval do
+          validates :config, disallowed_keys: {
+            in: %i[foo bar],
+            ignore_nil: @ignore_nil # rubocop:disable RSpec/InstanceVariable
+          }
+        end
+
+        allow(instance).to receive(:config).and_return(config)
+      end
+
+      it 'validates the instance' do
+        expect(instance.valid?).to be(valid_result)
+
+        unless valid_result
+          expect(instance.errors.messages_for(:config)).to include "contains disallowed keys: #{disallowed_keys}"
+        end
+      end
+    end
+
+    context 'when custom message is provided' do
+      before do
+        klass.instance_eval do
+          validates :config, disallowed_keys: {
+            in: %i[foo bar],
+            message: 'custom message'
+          }
+        end
+
+        allow(instance).to receive(:config).and_return({ foo: '1' })
+      end
+
+      it 'returns the custom message when invalid' do
+        expect(instance).not_to be_valid
+        expect(instance.errors.messages_for(:config)).to include "custom message: foo"
       end
     end
   end

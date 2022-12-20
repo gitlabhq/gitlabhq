@@ -1,14 +1,14 @@
 ---
-status: accepted
+status: implemented
 creation-date: "2020-06-10"
-authors: [ "@kamil" ]
+authors: [ "@ayufan" ]
 coach: "@glopezfernandez"
 approvers: [ "@kencjohnston", "@craig-gomes" ]
 owning-stage: "~devops::non_devops"
 participating-stages: []
 ---
 
-# Architectural discussion of feature flags
+# Development Feature Flags Architecture
 
 Usage of feature flags become crucial for the development of GitLab. The
 feature flags are a convenient way to ship changes early, and safely rollout

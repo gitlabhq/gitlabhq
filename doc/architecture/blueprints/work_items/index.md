@@ -2,7 +2,7 @@
 status: accepted
 creation-date: "2022-09-28"
 authors: [ "@ntepluhina" ]
-coach: "@kamil"
+coach: "@ayufan"
 approvers: [ "@gweaver" ]
 owning-stage: "~devops::plan"
 participating-stages: []

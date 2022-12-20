@@ -347,6 +347,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
         {
           experiment_id: experiment.iid.to_s,
           start_time: Time.now.to_i,
+          run_name: "A new Run",
           tags: [
             { key: 'hello', value: 'world' }
           ]
@@ -359,6 +360,7 @@ RSpec.describe API::Ml::Mlflow, feature_category: :mlops do
         expected_properties = {
           'experiment_id' => params[:experiment_id],
           'user_id' => current_user.id.to_s,
+          'run_name' => "A new Run",
           'start_time' => params[:start_time],
           'status' => 'RUNNING',
           'lifecycle_stage' => 'active'

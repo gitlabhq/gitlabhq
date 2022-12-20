@@ -5808,22 +5808,6 @@ RSpec.describe Project, factory_default: :keep do
 
       expect(recorder.count).to be_zero
     end
-
-    context 'with cache_project_integrations disabled' do
-      before do
-        stub_feature_flags(cache_project_integrations: false)
-      end
-
-      it 'triggers extra queries when called multiple times' do
-        integration.project.execute_integrations({}, :push_hooks)
-
-        recorder = ActiveRecord::QueryRecorder.new do
-          integration.project.execute_integrations({}, :push_hooks)
-        end
-
-        expect(recorder.count).not_to be_zero
-      end
-    end
   end
 
   describe '#has_active_hooks?' do

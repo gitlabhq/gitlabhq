@@ -1,5 +1,4 @@
 <script>
-import $ from 'jquery';
 import Vue from 'vue';
 import Vuex, { mapState, mapActions, mapGetters } from 'vuex';
 import { isInViewport } from '~/lib/utils/common_utils';
@@ -260,8 +259,8 @@ export default {
           target?.parentElement?.classList.contains(className),
       );
 
-      const hasExceptionParent = ['.js-btn-back', '.js-labels-list'].some(
-        (className) => $(target).parents(className).length,
+      const hasExceptionParent = ['.js-btn-back', '.js-labels-list'].some((className) =>
+        target?.closest(className),
       );
 
       const isInDropdownButtonCollapsed = this.$refs.dropdownButtonCollapsed?.$el.contains(target);

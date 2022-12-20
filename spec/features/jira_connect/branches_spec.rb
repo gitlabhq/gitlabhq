@@ -42,7 +42,7 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
 
       expect(page).not_to have_text('Alice / bar')
 
-      click_on 'Alice / foo'
+      find('span', text: 'Alice / foo', match: :first).click
     end
 
     expect(page).to have_field('Branch name', with: 'ACME-123-my-issue-title')
@@ -57,11 +57,11 @@ RSpec.describe 'Create GitLab branches from Jira', :js, feature_category: :integ
 
     # Switch to project2
 
-    click_on 'Alice / foo'
+    find('span', text: 'Alice / foo', match: :first).click
 
     within_dropdown do
       fill_in 'Search', with: ''
-      click_on 'Alice / bar'
+      find('span', text: 'Alice / bar', match: :first).click
     end
 
     click_on 'master'

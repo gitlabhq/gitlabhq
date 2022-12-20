@@ -1,5 +1,5 @@
 ---
-status: in progress
+status: ongoing
 creation-date: "2021-01-21"
 authors: [ "@grzesiek" ]
 coach: "@grzesiek"

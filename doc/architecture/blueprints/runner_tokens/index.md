@@ -1,8 +1,11 @@
 ---
-stage: Verify
-group: Runner
-comments: false
-description: 'Next Runner Token Architecture'
+status: ready
+creation-date: "2022-10-27"
+authors: [ "@pedropombeiro", "@tmaczukin" ]
+coach: "@ayufan"
+approvers: [ "@erushton" ]
+owning-stage: "~devops::verify"
+participating-stages: []
 ---
 
 # Next GitLab Runner Token Architecture

@@ -18016,7 +18016,9 @@ CREATE TABLE ml_candidates (
     user_id bigint,
     start_time bigint,
     end_time bigint,
-    status smallint DEFAULT 0 NOT NULL
+    status smallint DEFAULT 0 NOT NULL,
+    name text,
+    CONSTRAINT check_25e6c65051 CHECK ((char_length(name) <= 255))
 );
 
 CREATE SEQUENCE ml_candidates_id_seq

@@ -63,15 +63,17 @@ module MarkupHelper
     md = markdown_field(object, attribute, options.merge(post_process: false))
     return unless md.present?
 
-    includes_code = false
-
     tags = %w(a gl-emoji b strong i em pre code p span)
 
-    if is_todo
-      fragment = Nokogiri::HTML.fragment(md)
-      includes_code = fragment.css('code').any?
+    if Feature.disabled?(:two_line_mention_enabled)
+      includes_code = false
 
-      md = fragment
+      if is_todo
+        fragment = Nokogiri::HTML.fragment(md)
+        includes_code = fragment.css('code').any?
+
+        md = fragment
+      end
     end
 
     context = markdown_field_render_context(object, attribute, options)
@@ -89,12 +91,9 @@ module MarkupHelper
         )
     )
 
-    # Extra span with relative positioning relative due to system font being behind
-    # background color when username is first word of mention
-    if is_todo && !includes_code
+    if is_todo && !includes_code && Feature.disabled?(:two_line_mention_enabled)
       text = "<span class=\"gl-relative\">\"</span>#{text}<span class=\"gl-relative\">\"</span>"
     end
-
     # since <img> tags are stripped, this can leave empty <a> tags hanging around
     # (as our markdown wraps images in links)
     strip_empty_link_tags(text).html_safe

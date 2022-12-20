@@ -31,6 +31,7 @@ class Event < ApplicationRecord
   DESIGN_ACTIONS = [:created, :updated, :destroyed].freeze
   TEAM_ACTIONS = [:joined, :left, :expired].freeze
   ISSUE_ACTIONS = [:created, :updated, :closed, :reopened].freeze
+  ISSUE_TYPES = [Issue.name, WorkItem.name].freeze
 
   TARGET_TYPES = HashWithIndifferentAccess.new(
     issue: Issue,

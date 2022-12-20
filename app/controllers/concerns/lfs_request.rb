@@ -92,8 +92,10 @@ module LfsRequest
     return false unless has_authentication_ability?(:push_code)
     return false if limit_exceeded?
 
-    lfs_deploy_token? || can?(user, :push_code,
-project) || can?(deploy_token, :push_code, project) || any_branch_allows_collaboration?
+    lfs_deploy_token? ||
+      can?(user, :push_code, project) ||
+      can?(deploy_token, :push_code, project) ||
+      any_branch_allows_collaboration?
   end
   strong_memoize_attr :lfs_upload_access?, :lfs_upload_access
 

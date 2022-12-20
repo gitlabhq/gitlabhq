@@ -1722,14 +1722,8 @@ class Project < ApplicationRecord
   def execute_integrations(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
     run_after_commit_or_now do
-      if use_integration_relations?
-        association("#{hooks_scope}_integrations").reader.each do |integration|
-          integration.async_execute(data)
-        end
-      else
-        integrations.public_send(hooks_scope).each do |integration| # rubocop:disable GitlabSecurity/PublicSend
-          integration.async_execute(data)
-        end
+      association("#{hooks_scope}_integrations").reader.each do |integration|
+        integration.async_execute(data)
       end
     end
   end
@@ -3361,12 +3355,6 @@ class Project < ApplicationRecord
       ProjectFeature::ENABLED
     else
       ProjectFeature::PRIVATE
-    end
-  end
-
-  def use_integration_relations?
-    strong_memoize(:use_integration_relations) do
-      Feature.enabled?(:cache_project_integrations, self)
     end
   end
 end

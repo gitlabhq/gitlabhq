@@ -3,6 +3,29 @@
 require 'spec_helper'
 
 RSpec.describe EventFilter do
+  let_it_be(:public_project) { create(:project, :public) }
+  let_it_be(:push_event)     { create(:push_event,        project: public_project) }
+  let_it_be(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project) }
+  let_it_be(:created_event)  { create(:event, :created,   project: public_project, target: create(:issue, project: public_project)) }
+  let_it_be(:updated_event)  { create(:event, :updated,   project: public_project, target: create(:issue, project: public_project)) }
+  let_it_be(:closed_event)   { create(:event, :closed,    project: public_project, target: create(:issue, project: public_project)) }
+  let_it_be(:reopened_event) { create(:event, :reopened,  project: public_project, target: create(:issue, project: public_project)) }
+  let_it_be(:comments_event) { create(:event, :commented, project: public_project, target: public_project) }
+  let_it_be(:joined_event)   { create(:event, :joined,    project: public_project, target: public_project) }
+  let_it_be(:left_event)     { create(:event, :left,      project: public_project, target: public_project) }
+  let_it_be(:wiki_page_event) { create(:wiki_page_event) }
+  let_it_be(:wiki_page_update_event) { create(:wiki_page_event, :updated) }
+  let_it_be(:design_event) { create(:design_event) }
+
+  let_it_be(:work_item_event) do
+    create(:event,
+      :created,
+      project: public_project,
+      target: create(:work_item, :task, project: public_project),
+      target_type: 'WorkItem'
+    )
+  end
+
   describe '#filter' do
     it 'returns "all" if given filter is nil' do
       expect(described_class.new(nil).filter).to eq(described_class::ALL)
@@ -18,20 +41,6 @@ RSpec.describe EventFilter do
   end
 
   describe '#apply_filter' do
-    let_it_be(:public_project) { create(:project, :public) }
-    let_it_be(:push_event)     { create(:push_event,        project: public_project) }
-    let_it_be(:merged_event)   { create(:event, :merged,    project: public_project, target: public_project) }
-    let_it_be(:created_event)  { create(:event, :created,   project: public_project, target: create(:issue, project: public_project)) }
-    let_it_be(:updated_event)  { create(:event, :updated,   project: public_project, target: create(:issue, project: public_project)) }
-    let_it_be(:closed_event)   { create(:event, :closed,    project: public_project, target: create(:issue, project: public_project)) }
-    let_it_be(:reopened_event) { create(:event, :reopened,  project: public_project, target: create(:issue, project: public_project)) }
-    let_it_be(:comments_event) { create(:event, :commented, project: public_project, target: public_project) }
-    let_it_be(:joined_event)   { create(:event, :joined,    project: public_project, target: public_project) }
-    let_it_be(:left_event)     { create(:event, :left,      project: public_project, target: public_project) }
-    let_it_be(:wiki_page_event) { create(:wiki_page_event) }
-    let_it_be(:wiki_page_update_event) { create(:wiki_page_event, :updated) }
-    let_it_be(:design_event) { create(:design_event) }
-
     let(:filtered_events) { described_class.new(filter).apply_filter(Event.all) }
 
     context 'with the "push" filter' do
@@ -53,8 +62,14 @@ RSpec.describe EventFilter do
     context 'with the "issue" filter' do
       let(:filter) { described_class::ISSUE }
 
-      it 'filters issue events only' do
-        expect(filtered_events).to contain_exactly(created_event, updated_event, closed_event, reopened_event)
+      it 'filters issue and work item events only' do
+        expect(filtered_events).to contain_exactly(
+          created_event,
+          updated_event,
+          closed_event,
+          reopened_event,
+          work_item_event
+        )
       end
     end
 
@@ -111,6 +126,31 @@ RSpec.describe EventFilter do
 
       it 'returns all events' do
         expect(filtered_events).to eq(Event.all)
+      end
+    end
+  end
+
+  describe '#in_operator_query_builder_params' do
+    let(:filtered_events) { described_class.new(filter).in_operator_query_builder_params(array_data) }
+    let(:array_data) do
+      {
+        scope_ids: [public_project.id],
+        scope_model: Project,
+        mapping_column: 'project_id'
+      }
+    end
+
+    context 'with the "issue" filter' do
+      let(:filter) { described_class::ISSUE }
+
+      it 'also includes work item events' do
+        expect(filtered_events[:scope]).to contain_exactly(
+          created_event,
+          updated_event,
+          closed_event,
+          reopened_event,
+          work_item_event
+        )
       end
     end
   end

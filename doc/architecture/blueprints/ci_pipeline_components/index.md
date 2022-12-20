@@ -1,8 +1,8 @@
 ---
 status: proposed
 creation-date: "2022-09-14"
-authors: [ "@fabio", "@grzesiek" ]
-coach: "@kamil"
+authors: [ "@ayufan", "@fabiopitino", "@grzesiek" ]
+coach: [ "@ayufan", "@grzesiek" ]
 approvers: [ "@dhershkovitch", "@marknuzzo" ]
 owning-stage: "~devops::verify"
 participating-stages: []

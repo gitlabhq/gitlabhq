@@ -1,0 +1,8 @@
+---
+name: two_line_mention_enabled
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106689
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/385889
+milestone: '15.7'
+type: development
+group: group::project management
+default_enabled: false

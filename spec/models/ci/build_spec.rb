@@ -5664,17 +5664,5 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration do
 
       expect(prefix).to eq(ci_testing_partition_id)
     end
-
-    context 'when ci_build_partition_id_token_prefix is disabled' do
-      before do
-        stub_feature_flags(ci_build_partition_id_token_prefix: false)
-      end
-
-      it 'does not include partition_id as a token prefix' do
-        prefix = ci_build.token.split('_').first.to_i(16)
-
-        expect(prefix).not_to eq(ci_testing_partition_id)
-      end
-    end
   end
 end

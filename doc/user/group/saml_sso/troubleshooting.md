@@ -52,7 +52,7 @@ You can use one of the following to troubleshoot SAML:
 - A [quick start guide to start a Docker container](../../../administration/troubleshooting/test_environments.md#saml)
   with a plug and play SAML 2.0 identity provider if you only require a SAML provider.
 - A local environment by
-  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#group-saml-on-a-self-managed-gitlab-instance).
+  [enabling SAML for groups on a self-managed instance](../../../integration/saml.md#configure-group-saml-sso-on-a-self-managed-instance).
 
 ## Verify configuration
 

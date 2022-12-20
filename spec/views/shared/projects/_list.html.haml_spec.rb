@@ -82,7 +82,7 @@ RSpec.describe 'shared/projects/_list' do
         it 'renders a no-content message' do
           render
 
-          expect(rendered).to have_content(s_('UserProfile|This user doesn\'t have any personal projects'))
+          expect(rendered).to have_content(s_('UserProfile|There are no projects available to be displayed here.'))
         end
       end
     end
